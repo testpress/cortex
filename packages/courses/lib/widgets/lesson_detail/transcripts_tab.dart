@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
 import '../../models/course_content.dart';
 import '../../providers/video_subtabs_provider.dart';
+import '../../utils/vtt_parser.dart';
 
 class TranscriptsTab extends ConsumerStatefulWidget {
   final Lesson lesson;
   final bool isSliver;
   final void Function(Duration)? onSeek;
+  final ValueNotifier<Duration>? videoPositionNotifier;
+  final ValueNotifier<bool>? isAutoScrollEnabledNotifier;
+  final bool isActive;
 
   const TranscriptsTab({
     super.key,
     required this.lesson,
     this.isSliver = false,
     this.onSeek,
+    this.videoPositionNotifier,
+    this.isAutoScrollEnabledNotifier,
+    required this.isActive,
   });
 
   @override
@@ -25,6 +33,156 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  int? _activeCueIndex;
+  int? _scrollingToIndex;
+  List<VttCue>? _currentCues;
+  final Map<int, GlobalKey> _itemKeys = {};
+  final ScrollController _scrollController = ScrollController();
+
+  ValueNotifier<Duration>? _oldPositionNotifier;
+  ValueNotifier<bool>? _oldAutoScrollNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupPositionListener();
+    _setupAutoScrollListener();
+  }
+
+  @override
+  void didUpdateWidget(TranscriptsTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.videoPositionNotifier != oldWidget.videoPositionNotifier) {
+      _oldPositionNotifier?.removeListener(_onPositionChanged);
+      _setupPositionListener();
+    }
+    if (widget.isAutoScrollEnabledNotifier !=
+        oldWidget.isAutoScrollEnabledNotifier) {
+      _oldAutoScrollNotifier?.removeListener(_onAutoScrollNotifierChanged);
+      _setupAutoScrollListener();
+    }
+    if (widget.isActive && !oldWidget.isActive) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onPositionChanged(forceScroll: true);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _oldPositionNotifier?.removeListener(_onPositionChanged);
+    _oldAutoScrollNotifier?.removeListener(_onAutoScrollNotifierChanged);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _setupPositionListener() {
+    _oldPositionNotifier = widget.videoPositionNotifier;
+    widget.videoPositionNotifier?.addListener(_onPositionChanged);
+  }
+
+  void _setupAutoScrollListener() {
+    _oldAutoScrollNotifier = widget.isAutoScrollEnabledNotifier;
+    widget.isAutoScrollEnabledNotifier
+        ?.addListener(_onAutoScrollNotifierChanged);
+  }
+
+  void _onAutoScrollNotifierChanged() {
+    if (widget.isAutoScrollEnabledNotifier?.value == true) {
+      _scrollToActiveCue();
+    }
+  }
+
+  void _onPositionChanged({bool forceScroll = false}) {
+    if (!widget.isActive) {
+      return;
+    }
+    if (_currentCues == null || _currentCues!.isEmpty) return;
+
+    final currentPosition =
+        widget.videoPositionNotifier?.value ?? Duration.zero;
+    int matchedIndex = -1;
+
+    for (int i = 0; i < _currentCues!.length; i++) {
+      final cue = _currentCues![i];
+      final start = _parseVttDuration(cue.startTime);
+      final end = _parseVttDuration(cue.endTime);
+      if (currentPosition >= start && currentPosition <= end) {
+        matchedIndex = i;
+        break;
+      }
+    }
+
+    if (matchedIndex == -1) {
+      if (_activeCueIndex != null) {
+        setState(() {
+          _activeCueIndex = null;
+        });
+      }
+      return;
+    }
+
+    if (matchedIndex != _activeCueIndex) {
+      setState(() {
+        _activeCueIndex = matchedIndex;
+      });
+
+      final isAutoScrollEnabled =
+          widget.isAutoScrollEnabledNotifier?.value ?? true;
+      if (isAutoScrollEnabled || forceScroll) {
+        _scrollToActiveCue();
+      }
+    } else if (forceScroll) {
+      _scrollToActiveCue();
+    }
+  }
+
+  void _scrollToActiveCue() {
+    final index = _activeCueIndex;
+    if (index == null) return;
+
+    _scrollingToIndex = index;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollingToIndex != index) {
+        return;
+      }
+
+      final key = _itemKeys[index];
+      final targetContext = key?.currentContext;
+      if (targetContext == null) {
+        return;
+      }
+
+      Scrollable.ensureVisible(
+        targetContext,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: 0.3,
+      );
+    });
+  }
+
+  Duration _parseVttDuration(String timeStr) {
+    final normalized = timeStr.replaceAll(',', '.');
+    final parts = normalized.split('.');
+    final mainTime = parts[0].split(':');
+    final ms = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+
+    if (mainTime.length == 3) {
+      final hrs = int.tryParse(mainTime[0]) ?? 0;
+      final mins = int.tryParse(mainTime[1]) ?? 0;
+      final secs = int.tryParse(mainTime[2]) ?? 0;
+      return Duration(
+          hours: hrs, minutes: mins, seconds: secs, milliseconds: ms);
+    } else if (mainTime.length == 2) {
+      final mins = int.tryParse(mainTime[0]) ?? 0;
+      final secs = int.tryParse(mainTime[1]) ?? 0;
+      return Duration(minutes: mins, seconds: secs, milliseconds: ms);
+    }
+    return Duration.zero;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +205,13 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
 
     return transcriptAsync.when(
       data: (cues) {
+        final firstLoad = _currentCues == null;
+        _currentCues = cues;
+        if (firstLoad) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _onPositionChanged(forceScroll: true);
+          });
+        }
         if (cues.isEmpty) {
           final emptyChild = Center(
             child: Padding(
@@ -62,44 +227,7 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
               : emptyChild;
         }
 
-        if (widget.isSliver) {
-          return SliverPadding(
-            padding: EdgeInsets.all(design.spacing.md),
-            sliver: SliverList.builder(
-              itemCount: cues.length,
-              itemBuilder: (context, index) {
-                final cue = cues[index];
-                return _buildTranscriptLine(
-                  cue.displayStartTime,
-                  cue.text,
-                  design,
-                  isLast: index == cues.length - 1,
-                  onTap: () {
-                    _handleSeek(cue.displayStartTime);
-                  },
-                );
-              },
-            ),
-          );
-        }
-
-        return ListView.builder(
-          physics: const ClampingScrollPhysics(),
-          padding: EdgeInsets.all(design.spacing.md),
-          itemCount: cues.length,
-          itemBuilder: (context, index) {
-            final cue = cues[index];
-            return _buildTranscriptLine(
-              cue.displayStartTime,
-              cue.text,
-              design,
-              isLast: index == cues.length - 1,
-              onTap: () {
-                _handleSeek(cue.displayStartTime);
-              },
-            );
-          },
-        );
+        return _buildTranscriptList(cues, design);
       },
       loading: () => SkeletonizerConfig(
         data: SkeletonizerConfigData(
@@ -109,38 +237,25 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
             duration: shimmerDuration,
           ),
         ),
-        child: widget.isSliver
-            ? Skeletonizer.sliver(
-                child: SliverPadding(
-                  padding: EdgeInsets.all(design.spacing.md),
-                  sliver: SliverList.builder(
-                    itemCount: 8,
-                    itemBuilder: (context, index) {
-                      return _buildTranscriptLine(
-                        '00:00',
-                        BoneMock.words(10),
-                        design,
-                        isLast: index == 7,
-                      );
-                    },
-                  ),
-                ),
-              )
-            : Skeletonizer(
-                child: ListView.builder(
-                  physics: const ClampingScrollPhysics(),
-                  padding: EdgeInsets.all(design.spacing.md),
-                  itemCount: 8,
-                  itemBuilder: (context, index) {
-                    return _buildTranscriptLine(
-                      '00:00',
-                      BoneMock.words(5),
-                      design,
-                      isLast: index == 7,
-                    );
-                  },
+        child: Skeletonizer(
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            physics: const ClampingScrollPhysics(),
+            padding: EdgeInsets.all(design.spacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                8,
+                (index) => _buildTranscriptLine(
+                  '00:00',
+                  BoneMock.words(5),
+                  design,
+                  isLast: index == 7,
                 ),
               ),
+            ),
+          ),
+        ),
       ),
       error: (err, stack) {
         final errorChild = Center(
@@ -225,39 +340,81 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
     DesignConfig design, {
     bool isLast = false,
     VoidCallback? onTap,
+    bool isActive = false,
   }) {
-    Widget timeWidget = SizedBox(
-      width: 64,
-      child: AppText.caption(
-        time,
-        color: design.colors.accent2,
-        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-      ),
+    final bodyStyle = design.typography.body;
+    final baseSize = bodyStyle.fontSize ?? 14.0;
+
+    final textStyle = bodyStyle.copyWith(
+      height: 1.5,
+      fontSize: baseSize,
+      fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+      color: isActive ? design.colors.textPrimary : design.colors.textSecondary,
     );
 
-    if (onTap != null) {
-      timeWidget = GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: timeWidget,
-      );
-    }
+    final timeStyle = TextStyle(
+      fontSize: baseSize,
+      fontWeight: FontWeight.bold,
+      color: design.colors.accent2,
+    );
 
     return Padding(
       padding: EdgeInsets.only(bottom: isLast ? 0 : design.spacing.lg),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          timeWidget,
-          SizedBox(width: design.spacing.md),
-          Expanded(
-            child: AppText.body(
-              text,
-              color: design.colors.textSecondary,
-              style: const TextStyle(height: 1.5, fontSize: 13),
-            ),
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: '$time  ',
+                style: timeStyle,
+              ),
+              TextSpan(
+                text: text,
+                style: textStyle,
+              ),
+            ],
           ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTranscriptList(List<VttCue> cues, DesignConfig design) {
+    return NotificationListener<UserScrollNotification>(
+      onNotification: (notification) {
+        if (notification.depth == 0 &&
+            notification.metrics.axis == Axis.vertical &&
+            notification.direction != ScrollDirection.idle) {
+          widget.isAutoScrollEnabledNotifier?.value = false;
+        }
+        return false;
+      },
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        physics: const ClampingScrollPhysics(),
+        padding: EdgeInsets.all(design.spacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (int index = 0; index < cues.length; index++)
+              Container(
+                key: _itemKeys.putIfAbsent(index, () => GlobalKey()),
+                child: _buildTranscriptLine(
+                  cues[index].displayStartTime,
+                  cues[index].text,
+                  design,
+                  isLast: index == cues.length - 1,
+                  isActive: index == _activeCueIndex,
+                  onTap: () {
+                    widget.isAutoScrollEnabledNotifier?.value = true;
+                    _handleSeek(cues[index].displayStartTime);
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:core/design/design_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,8 @@ class CustomVideoPlayer extends ConsumerStatefulWidget {
   final String? thumbnailUrl;
   final double initialPosition;
   final VoidCallback? onComplete;
+  final ValueChanged<Duration>? onPositionChanged;
+  final VoidCallback? onSeekOccurred;
 
   const CustomVideoPlayer({
     super.key,
@@ -22,6 +25,8 @@ class CustomVideoPlayer extends ConsumerStatefulWidget {
     this.thumbnailUrl,
     this.initialPosition = 0.0,
     this.onComplete,
+    this.onPositionChanged,
+    this.onSeekOccurred,
   });
 
   @override
@@ -34,6 +39,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   String _courseName = '';
   String _chapterName = '';
   bool _isPlayerDestroyed = false;
+  Timer? _seekDebounceTimer;
 
   // Track the playback intervals
   double _currentIntervalStart = 0.0;
@@ -58,6 +64,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
   @override
   void dispose() {
+    _seekDebounceTimer?.cancel();
     _finalizeCurrentInterval();
     if (_contentId != null && _videoAttemptNotifier != null) {
       // Force a final sync before leaving using the safe notifier reference
@@ -236,6 +243,9 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
           }
           _hasSeekedToInitial = true;
           _pendingSeekPosition = null;
+          widget.onPositionChanged?.call(
+            Duration(milliseconds: (targetSeek * 1000).toInt()),
+          );
         }
         return;
       }
@@ -252,6 +262,10 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       // Detect seek (position jumped by more than 1.5s or went backwards)
       final isSeeking = (currentPos - _lastPosition).abs() > 1.5;
       if (isSeeking) {
+        _seekDebounceTimer?.cancel();
+        _seekDebounceTimer = Timer(const Duration(milliseconds: 300), () {
+          widget.onSeekOccurred?.call();
+        });
         if (_isPlayingTracker) {
           if (_lastPosition > _currentIntervalStart) {
             _watchedTimeRanges.add([_currentIntervalStart, _lastPosition]);
@@ -275,6 +289,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
           controller.value.duration != Duration.zero) {
         widget.onComplete?.call();
       }
+
+      widget.onPositionChanged?.call(controller.value.position);
 
       _lastPosition = currentPos;
     });

@@ -292,6 +292,7 @@
   "openDetailedLesson": "പാഠം തുറക്കുക: {title}",
   "videoLessonTabNotes": "കുറിപ്പുകൾ",
   "videoLessonTabTranscript": "ട്രാൻസ്ക്രിപ്റ്റ്",
+  "videoLessonSyncToVideo": "വീഡിയോയുമായി സമന്വയിപ്പിക്കുക",
   "videoLessonTabAskDoubt": "സംശയം ചോദിക്കുക",
   "videoLessonTabAiSupport": "AI ചാറ്റ്",
   "videoLessonLectureNotes": "ലെക്ചർ കുറിപ്പുകൾ",

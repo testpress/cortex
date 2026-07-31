@@ -1691,6 +1691,12 @@ abstract class AppLocalizations {
   /// **'Transcript'**
   String get videoLessonTabTranscript;
 
+  /// No description provided for @videoLessonSyncToVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync to Video'**
+  String get videoLessonSyncToVideo;
+
   /// No description provided for @videoLessonTabAskDoubt.
   ///
   /// In en, this message translates to:

@@ -902,6 +902,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get videoLessonTabTranscript => 'ട്രാൻസ്ക്രിപ്റ്റ്';
 
   @override
+  String get videoLessonSyncToVideo => 'വീഡിയോയുമായി സമന്വയിപ്പിക്കുക';
+
+  @override
   String get videoLessonTabAskDoubt => 'സംശയം ചോദിക്കുക';
 
   @override
