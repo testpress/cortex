@@ -9,7 +9,6 @@ import '../../utils/vtt_parser.dart';
 
 class TranscriptsTab extends ConsumerStatefulWidget {
   final Lesson lesson;
-  final bool isSliver;
   final void Function(Duration)? onSeek;
   final ValueNotifier<Duration>? videoPositionNotifier;
   final ValueNotifier<bool>? isAutoScrollEnabledNotifier;
@@ -18,7 +17,6 @@ class TranscriptsTab extends ConsumerStatefulWidget {
   const TranscriptsTab({
     super.key,
     required this.lesson,
-    this.isSliver = false,
     this.onSeek,
     this.videoPositionNotifier,
     this.isAutoScrollEnabledNotifier,
@@ -102,24 +100,11 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
 
     final currentPosition =
         widget.videoPositionNotifier?.value ?? Duration.zero;
-    int matchedIndex = -1;
 
-    for (int i = 0; i < _currentCues!.length; i++) {
-      final cue = _currentCues![i];
-      final start = _parseVttDuration(cue.startTime);
-      final end = _parseVttDuration(cue.endTime);
-      if (currentPosition >= start && currentPosition <= end) {
-        matchedIndex = i;
-        break;
-      }
-    }
+    int matchedIndex = _findCueIndexAtPosition(currentPosition);
 
     if (matchedIndex == -1) {
-      if (_activeCueIndex != null) {
-        setState(() {
-          _activeCueIndex = null;
-        });
-      }
+      // Position falls between cues; keep the previous cue highlighted.
       return;
     }
 
@@ -138,14 +123,44 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
     }
   }
 
+  int _findCueIndexAtPosition(Duration position) {
+    final cues = _currentCues!;
+    int low = 0;
+    int high = cues.length - 1;
+    int matchedIndex = -1;
+
+    while (low <= high) {
+      final mid = (low + high) >> 1;
+      if (_parseVttDuration(cues[mid].startTime) <= position) {
+        matchedIndex = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    if (matchedIndex == -1) return -1;
+    if (position > _parseVttDuration(cues[matchedIndex].endTime)) return -1;
+    return matchedIndex;
+  }
+
   void _scrollToActiveCue() {
     final index = _activeCueIndex;
     if (index == null) return;
 
     _scrollingToIndex = index;
 
+    final duration = MotionPreferences.duration(
+      context,
+      Design.of(context).motion.normal,
+    );
+    final curve = MotionPreferences.curve(
+      context,
+      Design.of(context).motion.easeInOut,
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollingToIndex != index) {
+      if (!mounted || _scrollingToIndex != index) {
         return;
       }
 
@@ -157,8 +172,8 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
 
       Scrollable.ensureVisible(
         targetContext,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: duration,
+        curve: curve,
         alignment: 0.3,
       );
     });
@@ -197,8 +212,7 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
     // If subtitle URL is empty or null, transcription is not complete/in progress
     final subtitleUrl = widget.lesson.videoSubtitleUrl;
     if (subtitleUrl == null || subtitleUrl.isEmpty) {
-      final child = _buildInProgressState(context, design);
-      return widget.isSliver ? SliverToBoxAdapter(child: child) : child;
+      return _buildInProgressState(context, design);
     }
 
     final transcriptAsync = ref.watch(fetchTranscriptProvider(subtitleUrl));
@@ -222,9 +236,7 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
               ),
             ),
           );
-          return widget.isSliver
-              ? SliverToBoxAdapter(child: emptyChild)
-              : emptyChild;
+          return emptyChild;
         }
 
         return _buildTranscriptList(cues, design);
@@ -278,9 +290,7 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
             ),
           ),
         );
-        return widget.isSliver
-            ? SliverToBoxAdapter(child: errorChild)
-            : errorChild;
+        return errorChild;
       },
     );
   }
