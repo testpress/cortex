@@ -729,6 +729,17 @@
   "settingsRecommended": "Recommended",
   "settingsDefault": "Default",
   "settingsAutoPlaySubtitle": "Automatically start the next lesson",
+  "settingsRememberPlaybackSpeed": "Remember playback speed",
+  "settingsRememberPlaybackSpeedSubtitle": "Start each video at the speed you last used",
+  "playbackSpeedRestored": "Playing at {speed}x",
+  "@playbackSpeedRestored": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "playbackSpeedReset": "Reset",
   "settingsHighContrastSubtitle": "Increase visual contrast",
   "editProfileTitle": "Edit Profile",
   "editProfileNameLabel": "Full Name",

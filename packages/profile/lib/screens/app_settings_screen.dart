@@ -193,14 +193,7 @@ class _AppearanceSection extends ConsumerWidget {
             children: [
               _IconContainer(icon: icon, color: iconColor),
               SizedBox(width: (design.spacing.md + design.spacing.sm) / 2),
-              Expanded(
-                child: AppText.body(
-                  title,
-                  style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  ),
-                ),
-              ),
+              Expanded(child: AppText.cardTitle(title)),
               _RadioIndicator(isSelected: isSelected),
             ],
           ),
@@ -285,14 +278,7 @@ class _LanguageSection extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              Expanded(
-                child: AppText.body(
-                  title,
-                  style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  ),
-                ),
-              ),
+              Expanded(child: AppText.cardTitle(title)),
               _RadioIndicator(isSelected: isSelected),
             ],
           ),
@@ -333,6 +319,18 @@ class _PlaybackSection extends ConsumerWidget {
                       .read(playbackSettingsNotifierProvider.notifier)
                       .updateAutoPlay(val),
                 ),
+                _Divider(),
+                _buildToggleOption(
+                  context: context,
+                  icon: LucideIcons.gauge,
+                  iconColor: design.colors.accent1, // purple
+                  title: l10n.settingsRememberPlaybackSpeed,
+                  subtitle: l10n.settingsRememberPlaybackSpeedSubtitle,
+                  value: settings.rememberPlaybackSpeed,
+                  onChanged: (val) => ref
+                      .read(playbackSettingsNotifierProvider.notifier)
+                      .updateRememberPlaybackSpeed(val),
+                ),
               ],
             ),
           ),
@@ -370,12 +368,9 @@ class _PlaybackSection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.body(
-                  l10n.settingsVideoQuality,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: design.spacing.xs / 2),
-                AppText.labelSmall(l10n.settingsPlaybackDescription),
+                AppText.cardTitle(l10n.settingsVideoQuality),
+                SizedBox(height: design.spacing.xs),
+                AppText.cardSubtitle(l10n.settingsPlaybackDescription),
                 SizedBox(height: design.spacing.md),
                 ...VideoQuality.values.expand((v) {
                   final isSelected = settings.quality == v;
@@ -400,7 +395,7 @@ class _PlaybackSection extends ConsumerWidget {
                                     TextSpan(
                                       text:
                                           '${v.name[0].toUpperCase()}${v.name.substring(1)}',
-                                      style: design.typography.bodySmall
+                                      style: design.typography.cardTitle
                                           .copyWith(
                                             fontWeight: isSelected
                                                 ? FontWeight.bold
@@ -515,12 +510,9 @@ class _AccessibilitySection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.body(
-                  l10n.settingsTextSize,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: design.spacing.xs / 2),
-                AppText.labelSmall(l10n.settingsTextSizeDescription),
+                AppText.cardTitle(l10n.settingsTextSize),
+                SizedBox(height: design.spacing.xs),
+                AppText.cardSubtitle(l10n.settingsTextSizeDescription),
                 SizedBox(height: design.spacing.md),
                 ...TextScaleSize.values.expand((v) {
                   final isSelected = settings.textScale == v;
@@ -545,11 +537,11 @@ class _AccessibilitySection extends ConsumerWidget {
                                     TextSpan(
                                       text:
                                           '${v.name[0].toUpperCase()}${v.name.substring(1)}',
-                                      style: design.typography.bodySmall
+                                      style: design.typography.cardTitle
                                           .copyWith(
                                             fontWeight: isSelected
-                                                ? FontWeight.bold
-                                                : FontWeight.w500,
+                                                ? FontWeight.w600
+                                                : FontWeight.w400,
                                             color: design.colors.textPrimary,
                                           ),
                                     ),
@@ -829,12 +821,9 @@ Widget _buildToggleOption({
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.body(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(height: design.spacing.xs / 2),
-                  AppText.labelSmall(subtitle),
+                  AppText.cardTitle(title),
+                  SizedBox(height: design.spacing.xs),
+                  AppText.cardSubtitle(subtitle),
                 ],
               ),
             ),

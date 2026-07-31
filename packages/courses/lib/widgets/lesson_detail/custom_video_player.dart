@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:core/design/design_provider.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
@@ -8,6 +8,7 @@ import 'package:core/data/data.dart';
 import '../../providers/course_list_provider.dart';
 import '../../providers/video_attempt_provider.dart';
 import '../../providers/video_watermark_config_provider.dart';
+import 'playback_rate.dart';
 
 class CustomVideoPlayer extends ConsumerStatefulWidget {
   final String? assetId;
@@ -47,6 +48,14 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   final List<List<double>> _watchedTimeRanges = [];
   bool _isPlayingTracker = false;
 
+  // Playback speed memory
+  double _lastPersistedSpeed = 1.0;
+  double? _lastRateSampleTime;
+  double _lastRateSamplePos = 0.0;
+  int _steadyRateSamples = 0;
+  bool _speedToastVisible = false;
+  Timer? _speedToastTimer;
+
   VideoAttemptNotifier? _videoAttemptNotifier;
   late final int? _contentId;
 
@@ -65,6 +74,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   @override
   void dispose() {
     _seekDebounceTimer?.cancel();
+    _speedToastTimer?.cancel();
     _finalizeCurrentInterval();
     if (_contentId != null && _videoAttemptNotifier != null) {
       // Force a final sync before leaving using the safe notifier reference
@@ -147,6 +157,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(instituteSettingsProvider);
+    final design = Design.of(context);
 
     // Watch the provider to keep it alive while the video player is open
     if (_contentId != null) {
@@ -177,24 +188,35 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
       final isCompleted =
           downloadItemAsync.value?.status == DownloadStatus.completed;
 
-      if (isCompleted) {
-        return TestpressPlayer.offline(
-          assetId: widget.assetId!,
-          autoPlay: true,
-          onPlayerCreated: _onPlayerCreated,
-        );
-      } else {
-        return TestpressPlayer(
-          assetId: widget.assetId!,
-          autoPlay: true,
-          showDownloadOption: settings?.isVideoDownloadEnabled ?? false,
-          metadata: {
-            'course': _courseName,
-            'chapter': _chapterName,
-          },
-          onPlayerCreated: _onPlayerCreated,
-        );
-      }
+      final player = isCompleted
+          ? TestpressPlayer.offline(
+              assetId: widget.assetId!,
+              autoPlay: true,
+              onPlayerCreated: _onPlayerCreated,
+            )
+          : TestpressPlayer(
+              assetId: widget.assetId!,
+              autoPlay: true,
+              showDownloadOption: settings?.isVideoDownloadEnabled ?? false,
+              metadata: {
+                'course': _courseName,
+                'chapter': _chapterName,
+              },
+              onPlayerCreated: _onPlayerCreated,
+            );
+
+      return Stack(
+        children: [
+          player,
+          if (_speedToastVisible)
+            Positioned(
+              top: design.spacing.md,
+              left: 0,
+              right: 0,
+              child: Center(child: _buildSpeedToast(design)),
+            ),
+        ],
+      );
     }
     return const SizedBox.shrink();
   }
@@ -217,6 +239,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
         ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       });
     }
+
+    _restorePlaybackSpeed(controller);
 
     controller.addListener(() {
       final isPlaying = controller.value.isPlaying;
@@ -275,6 +299,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
         _syncVideoAttempt(currentPos);
       }
 
+      _trackPlaybackRate(controller, currentPos);
+
       // Track watched ranges
       if (isPlaying && !_isPlayingTracker) {
         _currentIntervalStart = currentPos;
@@ -294,6 +320,156 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
 
       _lastPosition = currentPos;
     });
+  }
+
+  Future<void> _restorePlaybackSpeed(
+      TestpressPlayerController controller) async {
+    try {
+      final db = await ref.read(appDatabaseProvider.future);
+      final settings = await db.getAppSettings();
+
+      if (!mounted) return;
+      if (!settings.rememberPlaybackSpeed) return;
+
+      final saved = settings.globalPlaybackSpeed;
+      if (saved == null || saved <= 0 || saved == 1.0) return;
+
+      await controller.setPlaybackSpeed(saved);
+      _lastPersistedSpeed = saved;
+
+      if (!mounted) return;
+      _showSpeedToast();
+    } catch (e, st) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
+  }
+
+  void _showSpeedToast() {
+    _speedToastTimer?.cancel();
+    setState(() {
+      _speedToastVisible = true;
+    });
+    _speedToastTimer = Timer(const Duration(seconds: 4), () {
+      if (!mounted) return;
+      setState(() {
+        _speedToastVisible = false;
+      });
+    });
+  }
+
+  Widget _buildSpeedToast(DesignConfig design) {
+    final speed = _lastPersistedSpeed;
+    final speedLabel =
+        speed == speed.roundToDouble() ? speed.toInt().toString() : '$speed';
+    final l10n = context.l10n;
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: design.spacing.sm * 1.5,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.textPrimary,
+        borderRadius: BorderRadius.circular(design.radius.xl),
+        boxShadow: design.shadows.floating,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: AppText.labelBold(
+              l10n.playbackSpeedRestored(speedLabel),
+              color: design.colors.textInverse,
+            ),
+          ),
+          SizedBox(width: design.spacing.md),
+          GestureDetector(
+            onTap: () => _resetPlaybackSpeed(_controller!),
+            behavior: HitTestBehavior.opaque,
+            child: AppText.labelBold(
+              l10n.playbackSpeedReset,
+              color: design.colors.accent2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _resetPlaybackSpeed(TestpressPlayerController controller) {
+    _speedToastTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _speedToastVisible = false;
+      });
+    }
+    controller.setPlaybackSpeed(1.0).catchError((e, st) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    });
+    _lastPersistedSpeed = 1.0;
+    _persistPlaybackSpeed(1.0);
+  }
+
+  void _trackPlaybackRate(TestpressPlayerController controller, double pos) {
+    if (!controller.value.isPlaying ||
+        controller.value.isBuffering ||
+        controller.value.isLoading) {
+      _lastRateSampleTime = null;
+      _steadyRateSamples = 0;
+      return;
+    }
+
+    final now =
+        DateTime.now().microsecondsSinceEpoch / Duration.microsecondsPerSecond;
+    final last = _lastRateSampleTime;
+    if (last == null) {
+      _lastRateSampleTime = now;
+      _lastRateSamplePos = pos;
+      return;
+    }
+
+    final wallDelta = now - last;
+    final posDelta = pos - _lastRateSamplePos;
+    _lastRateSampleTime = now;
+    _lastRateSamplePos = pos;
+
+    if (wallDelta < 0.4 || posDelta <= 0.05) {
+      _steadyRateSamples = 0;
+      return;
+    }
+
+    final measured = posDelta / wallDelta;
+    final nearest = quantizePlaybackSpeed(measured);
+    if (nearest == null) {
+      _steadyRateSamples = 0;
+      return;
+    }
+
+    if ((nearest - _lastPersistedSpeed).abs() < 0.01) {
+      _steadyRateSamples = 0;
+      return;
+    }
+
+    _steadyRateSamples++;
+    if (_steadyRateSamples >= 3) {
+      _steadyRateSamples = 0;
+      _lastPersistedSpeed = nearest;
+      _persistPlaybackSpeed(nearest);
+    }
+  }
+
+  Future<void> _persistPlaybackSpeed(double speed) async {
+    try {
+      final db = await ref.read(appDatabaseProvider.future);
+      final settings = await db.getAppSettings();
+      if (!mounted) return;
+      if (!settings.rememberPlaybackSpeed) return;
+      await db.setGlobalPlaybackSpeed(speed);
+    } catch (e, st) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
   }
 
   void _syncVideoAttempt(double currentPos) {

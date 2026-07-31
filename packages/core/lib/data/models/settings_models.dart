@@ -16,12 +16,27 @@ class AppearanceSettings {
 class PlaybackSettings {
   final VideoQuality quality;
   final bool autoPlayNext;
-  PlaybackSettings({required this.quality, required this.autoPlayNext});
+  final bool rememberPlaybackSpeed;
+  final double? globalPlaybackSpeed;
+  PlaybackSettings({
+    required this.quality,
+    required this.autoPlayNext,
+    this.rememberPlaybackSpeed = false,
+    this.globalPlaybackSpeed,
+  });
 
-  PlaybackSettings copyWith({VideoQuality? quality, bool? autoPlayNext}) {
+  PlaybackSettings copyWith({
+    VideoQuality? quality,
+    bool? autoPlayNext,
+    bool? rememberPlaybackSpeed,
+    double? globalPlaybackSpeed,
+  }) {
     return PlaybackSettings(
       quality: quality ?? this.quality,
       autoPlayNext: autoPlayNext ?? this.autoPlayNext,
+      rememberPlaybackSpeed:
+          rememberPlaybackSpeed ?? this.rememberPlaybackSpeed,
+      globalPlaybackSpeed: globalPlaybackSpeed ?? this.globalPlaybackSpeed,
     );
   }
 }
@@ -58,4 +73,5 @@ class AppSettingsDefaults {
   static const textSize = 'medium';
   static const highContrast = false;
   static const appLanguage = 'system';
+  static const rememberPlaybackSpeed = false;
 }

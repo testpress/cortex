@@ -65,7 +65,7 @@ final appearanceSettingsNotifierProvider =
 
 typedef _$AppearanceSettingsNotifier = AsyncNotifier<AppearanceSettings>;
 String _$playbackSettingsNotifierHash() =>
-    r'308fcc3ec1cf4396b5331e21f3edfa9c45291551';
+    r'459a869e7abd22f62736f62dd20623e43a94090b';
 
 /// See also [PlaybackSettingsNotifier].
 @ProviderFor(PlaybackSettingsNotifier)

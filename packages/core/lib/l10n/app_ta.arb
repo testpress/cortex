@@ -681,6 +681,17 @@
   "settingsRecommended": "பரிந்துரைக்கப்படுகிறது",
   "settingsDefault": "இயல்புநிலை",
   "settingsAutoPlaySubtitle": "அடுத்த பாடத்தை தானாகத் தொடங்கு",
+  "settingsRememberPlaybackSpeed": "பிளேபேக் வேகத்தை நினைவில் கொள்ளவும்",
+  "settingsRememberPlaybackSpeedSubtitle": "கடைசியாகப் பயன்படுத்திய வேகத்தில் ஒவ்வொரு வீடியோவையும் தொடங்கவும்",
+  "playbackSpeedRestored": "{speed}x வேகத்தில் இயங்குகிறது",
+  "@playbackSpeedRestored": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "playbackSpeedReset": "மீட்டமை",
   "settingsHighContrastSubtitle": "காட்சி முரண்பாட்டை அதிகரிக்கவும்",
   "editProfileTitle": "சுயவிவரத்தைத் திருத்து",
   "editProfileNameLabel": "முழு பெயர்",

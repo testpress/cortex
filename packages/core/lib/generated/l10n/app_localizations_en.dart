@@ -1483,6 +1483,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAutoPlaySubtitle => 'Automatically start the next lesson';
 
   @override
+  String get settingsRememberPlaybackSpeed => 'Remember playback speed';
+
+  @override
+  String get settingsRememberPlaybackSpeedSubtitle =>
+      'Start each video at the speed you last used';
+
+  @override
+  String playbackSpeedRestored(String speed) {
+    return 'Playing at ${speed}x';
+  }
+
+  @override
+  String get playbackSpeedReset => 'Reset';
+
+  @override
   String get settingsHighContrastSubtitle => 'Increase visual contrast';
 
   @override

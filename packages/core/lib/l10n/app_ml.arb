@@ -510,6 +510,17 @@
   "settingsRecommended": "ശുപാർശ ചെയ്യുന്നത്",
   "settingsDefault": "ഡിഫോൾട്ട്",
   "settingsAutoPlaySubtitle": "അടുത്ത പാഠം തനിയെ ആരംഭിക്കുക",
+  "settingsRememberPlaybackSpeed": "പ്ലേബാക്ക് വേഗത ഓർക്കുക",
+  "settingsRememberPlaybackSpeedSubtitle": "അവസാനം ഉപയോഗിച്ച വേഗതയിൽ ഓരോ വീഡിയോയും ആരംഭിക്കുക",
+  "playbackSpeedRestored": "{speed}x എന്ന വേഗതയിൽ പ്ലേ ചെയ്യുന്നു",
+  "@playbackSpeedRestored": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "playbackSpeedReset": "പുനഃസജ്ജമാക്കുക",
   "settingsHighContrastSubtitle": "കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക",
   "editProfileTitle": "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
   "editProfileNameLabel": "മുഴുവൻ പേര്",

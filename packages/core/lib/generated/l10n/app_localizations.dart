@@ -2753,6 +2753,30 @@ abstract class AppLocalizations {
   /// **'Automatically start the next lesson'**
   String get settingsAutoPlaySubtitle;
 
+  /// No description provided for @settingsRememberPlaybackSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember playback speed'**
+  String get settingsRememberPlaybackSpeed;
+
+  /// No description provided for @settingsRememberPlaybackSpeedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start each video at the speed you last used'**
+  String get settingsRememberPlaybackSpeedSubtitle;
+
+  /// No description provided for @playbackSpeedRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing at {speed}x'**
+  String playbackSpeedRestored(String speed);
+
+  /// No description provided for @playbackSpeedReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get playbackSpeedReset;
+
   /// No description provided for @settingsHighContrastSubtitle.
   ///
   /// In en, this message translates to:

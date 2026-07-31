@@ -1493,6 +1493,21 @@ class AppLocalizationsMl extends AppLocalizations {
   String get settingsAutoPlaySubtitle => 'അടുത്ത പാഠം തനിയെ ആരംഭിക്കുക';
 
   @override
+  String get settingsRememberPlaybackSpeed => 'പ്ലേബാക്ക് വേഗത ഓർക്കുക';
+
+  @override
+  String get settingsRememberPlaybackSpeedSubtitle =>
+      'അവസാനം ഉപയോഗിച്ച വേഗതയിൽ ഓരോ വീഡിയോയും ആരംഭിക്കുക';
+
+  @override
+  String playbackSpeedRestored(String speed) {
+    return '${speed}x എന്ന വേഗതയിൽ പ്ലേ ചെയ്യുന്നു';
+  }
+
+  @override
+  String get playbackSpeedReset => 'പുനഃസജ്ജമാക്കുക';
+
+  @override
   String get settingsHighContrastSubtitle =>
       'കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക';
 

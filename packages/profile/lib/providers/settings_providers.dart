@@ -48,6 +48,8 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
     return PlaybackSettings(
       quality: quality,
       autoPlayNext: settings.autoPlayNext,
+      rememberPlaybackSpeed: settings.rememberPlaybackSpeed,
+      globalPlaybackSpeed: settings.globalPlaybackSpeed,
     );
   }
 
@@ -65,6 +67,22 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
 
     final current = await future;
     state = AsyncValue.data(current.copyWith(autoPlayNext: enabled));
+  }
+
+  Future<void> updateRememberPlaybackSpeed(bool enabled) async {
+    final repository = await ref.read(settingsRepositoryProvider.future);
+    await repository.updateSettings(rememberPlaybackSpeed: enabled);
+
+    final current = await future;
+    state = AsyncValue.data(current.copyWith(rememberPlaybackSpeed: enabled));
+  }
+
+  Future<void> updateGlobalPlaybackSpeed(double speed) async {
+    final repository = await ref.read(settingsRepositoryProvider.future);
+    await repository.updateSettings(globalPlaybackSpeed: speed);
+
+    final current = await future;
+    state = AsyncValue.data(current.copyWith(globalPlaybackSpeed: speed));
   }
 }
 
