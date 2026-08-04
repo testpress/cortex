@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -128,6 +127,15 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
   bool _showPauseConfirmation = false;
 
   // Removed _dirtyAnswers to fix out-of-order submission drops.
+
+  Future<void> _showOfflineToastIfNeeded() async {
+    if (widget.isOfflineMode && mounted) {
+      final hasInternet = await hasInternetConnection();
+      if (!hasInternet && mounted) {
+        AppToast.show(context, message: L10n.of(context).offlineExamSavedToast);
+      }
+    }
+  }
 
   // Flash "Saved" indicator
   bool _isSavedVisible = false;
@@ -749,20 +757,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                   // Answers are already queued in the repository; endExam flushes them.
 
                   await ref.read(examAttemptProvider.notifier).endExam();
-                  // Show a neutral toast when offline and no internet
-                  if (widget.isOfflineMode && context.mounted) {
-                    final result = await Connectivity().checkConnectivity();
-                    final hasInternet =
-                        result.contains(ConnectivityResult.mobile) ||
-                        result.contains(ConnectivityResult.wifi) ||
-                        result.contains(ConnectivityResult.ethernet);
-                    if (!hasInternet && context.mounted) {
-                      AppToast.show(
-                        context,
-                        message: L10n.of(context).offlineExamSavedToast,
-                      );
-                    }
-                  }
+                  await _showOfflineToastIfNeeded();
                 },
               ),
             if (_showPauseConfirmation)
@@ -785,20 +780,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                   // Answers are already queued in the repository; endExam flushes them.
 
                   await ref.read(examAttemptProvider.notifier).endExam();
-                  // Show a neutral toast when offline and no internet
-                  if (widget.isOfflineMode && context.mounted) {
-                    final result = await Connectivity().checkConnectivity();
-                    final hasInternet =
-                        result.contains(ConnectivityResult.mobile) ||
-                        result.contains(ConnectivityResult.wifi) ||
-                        result.contains(ConnectivityResult.ethernet);
-                    if (!hasInternet && context.mounted) {
-                      AppToast.show(
-                        context,
-                        message: L10n.of(context).offlineExamSavedToast,
-                      );
-                    }
-                  }
+                  await _showOfflineToastIfNeeded();
                 },
               ),
             if (state.status == ExamAttemptStatus.completed)

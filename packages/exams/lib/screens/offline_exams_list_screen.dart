@@ -203,45 +203,53 @@ class _ExamCardHeader extends StatelessWidget {
     final status = exam.status;
 
     // Badge configuration per status
-    final Color badgeBg;
-    final Color badgeFg;
-    final Widget badgeLeading;
-    final String badgeLabel;
+    final AppBadge badge;
 
     switch (status) {
       case 'IN_PROGRESS':
-        badgeBg = design.colors.primary.withValues(alpha: 0.12);
-        badgeFg = design.colors.primary;
-        badgeLeading = Icon(LucideIcons.pencil, size: 14, color: badgeFg);
-        badgeLabel = l10n.inProgressStatus;
+        badge = AppBadge(
+          label: l10n.inProgressStatus,
+          backgroundColor: design.colors.primary.withValues(alpha: 0.12),
+          foregroundColor: design.colors.primary,
+          icon: LucideIcons.pencil,
+        );
         break;
       case 'PENDING_SYNC':
-        badgeBg = design.colors.warning.withValues(alpha: 0.15);
-        badgeFg = design.colors.warning;
-        badgeLeading = Icon(LucideIcons.clock, size: 14, color: badgeFg);
-        badgeLabel = l10n.pendingSyncStatus;
+        badge = AppBadge(
+          label: l10n.pendingSyncStatus,
+          backgroundColor: design.colors.warning.withValues(alpha: 0.15),
+          foregroundColor: design.colors.warning,
+          icon: LucideIcons.clock,
+        );
         break;
       case 'SYNCING':
-        badgeBg = design.colors.warning.withValues(alpha: 0.15);
-        badgeFg = design.colors.warning;
-        badgeLeading = SizedBox(
-          width: 14,
-          height: 14,
-          child: FittedBox(child: AppLoadingIndicator(color: badgeFg)),
+        final Color warningColor = design.colors.warning;
+        badge = AppBadge(
+          label: l10n.syncingStatus,
+          backgroundColor: warningColor.withValues(alpha: 0.15),
+          foregroundColor: warningColor,
+          leading: SizedBox(
+            width: 12,
+            height: 12,
+            child: FittedBox(child: AppLoadingIndicator(color: warningColor)),
+          ),
         );
-        badgeLabel = l10n.syncingStatus;
         break;
       case 'SYNCED':
-        badgeBg = design.colors.success.withValues(alpha: 0.1);
-        badgeFg = design.colors.success;
-        badgeLeading = Icon(LucideIcons.checkCircle2, size: 14, color: badgeFg);
-        badgeLabel = l10n.submittedStatus;
+        badge = AppBadge(
+          label: l10n.submittedStatus,
+          backgroundColor: design.colors.success.withValues(alpha: 0.1),
+          foregroundColor: design.colors.success,
+          icon: LucideIcons.checkCircle2,
+        );
         break;
       default: // DOWNLOADED
-        badgeBg = design.colors.success.withValues(alpha: 0.1);
-        badgeFg = design.colors.success;
-        badgeLeading = Icon(LucideIcons.checkCircle2, size: 14, color: badgeFg);
-        badgeLabel = l10n.downloadedStatus;
+        badge = AppBadge(
+          label: l10n.downloadedStatus,
+          backgroundColor: design.colors.success.withValues(alpha: 0.1),
+          foregroundColor: design.colors.success,
+          icon: LucideIcons.checkCircle2,
+        );
     }
 
     return Row(
@@ -270,25 +278,7 @@ class _ExamCardHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: design.spacing.sm),
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.sm,
-            vertical: design.spacing.xs,
-          ),
-          decoration: BoxDecoration(
-            color: badgeBg,
-            border: Border.all(color: badgeFg.withValues(alpha: 0.3)),
-            borderRadius: BorderRadius.circular(design.radius.sm),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              badgeLeading,
-              SizedBox(width: design.spacing.xs),
-              AppText.labelSmall(badgeLabel, color: badgeFg),
-            ],
-          ),
-        ),
+        badge,
       ],
     );
   }

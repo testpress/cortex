@@ -1,7 +1,21 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
 import '../data/exceptions/api_exception.dart';
 export '../data/exceptions/api_exception.dart';
+
+/// Checks if the given list of connectivity results contains mobile, wifi, or ethernet.
+bool hasConnection(List<ConnectivityResult> results) {
+  return results.contains(ConnectivityResult.mobile) ||
+      results.contains(ConnectivityResult.wifi) ||
+      results.contains(ConnectivityResult.ethernet);
+}
+
+/// Checks if there is an active internet connection (wifi, mobile, or ethernet).
+Future<bool> hasInternetConnection() async {
+  final results = await Connectivity().checkConnectivity();
+  return hasConnection(results);
+}
 
 /// Optional callback to globally track network and parsing errors
 void Function(Object error, StackTrace stackTrace)? onNetworkErrorCapture;

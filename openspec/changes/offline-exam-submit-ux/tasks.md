@@ -39,3 +39,23 @@
 
 - [x] 6.1 In `_ExamCardActions`, disable or hide the "Attend Exam" button when `exam.status == 'SYNCED'` (the exam has already been submitted; retaking offline is not applicable)
 - [x] 6.2 Optionally show a read-only info label instead of the button for `SYNCED` exams
+
+## 7. Pre-Screen Navigation and Button Height Alignment
+
+- [x] 7.1 Pushed `/exams/test/:id` with `?isOffline=true` parameter in `offline_exams_list_screen.dart`
+- [x] 7.2 Updated routes in `exams_routes.dart` and `study_routes.dart` to read `isOffline` and pass `isOfflineOnly` to `ExamPrescreen`
+- [x] 7.3 Implemented `isOfflineOnly` conditional rendering in `ExamPrescreen` to hide online attempts, retakes, and mode sheet
+- [x] 7.4 Refactored `ExamPrescreenActionButton` to use core `AppButton` primitives for consistent design and height alignment
+
+## 8. AppBadge Core Primitive Refactoring
+
+- [x] 8.1 Extended `AppBadge` in `app_badge.dart` to accept an optional `Widget? leading` widget
+- [x] 8.2 Refactored custom badges in `_ExamCardHeader` to use standard `AppBadge` core widgets
+- [x] 8.3 Handled active `SYNCING` state inside `AppBadge` by passing `AppLoadingIndicator` via `leading` parameter
+
+## 9. Unified Connectivity Helper
+
+- [x] 9.1 Extracted `hasInternetConnection()` and `hasConnection()` in `network_utils.dart` and exported them in `core.dart`
+- [x] 9.2 Reused `hasConnection()` in `SyncManager` to avoid duplicated list evaluation logic
+- [x] 9.3 Extracted `_showOfflineToastIfNeeded()` in `test_detail_screen.dart` to reuse connectivity logic and removed direct package dependency on `connectivity_plus`
+

@@ -10,6 +10,7 @@ class AppBadge extends StatelessWidget {
     this.foregroundColor,
     this.semanticStatus,
     this.icon,
+    this.leading,
     this.isPill = false,
   });
 
@@ -18,6 +19,7 @@ class AppBadge extends StatelessWidget {
   final Color? foregroundColor;
   final StatusColors? semanticStatus;
   final IconData? icon;
+  final Widget? leading;
   final bool isPill;
 
   @override
@@ -45,7 +47,10 @@ class AppBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
+          if (leading != null) ...[
+            leading!,
+            SizedBox(width: design.spacing.xs / 2),
+          ] else if (icon != null) ...[
             Icon(icon, size: 12, color: fg),
             SizedBox(width: design.spacing.xs / 2),
           ],

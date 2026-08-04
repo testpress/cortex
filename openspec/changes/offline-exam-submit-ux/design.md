@@ -55,6 +55,16 @@ The offline exam feature lets users download an exam, complete it without intern
 
 **Rationale:** The existing migration strategy only creates missing tables, not missing columns. We need a targeted `addColumn` call for the new `syncedAt` field. Schema version bumps from `1` → `2`.
 
+### D6: `isOfflineOnly` query parameter routing
+**Decision:** Pass `?isOffline=true` query parameter when pushing the exam details route from the offline exams list screen. Parse this parameter in the routing configuration and pass it down to `ExamPrescreen`.
+
+**Rationale:** This keeps the pre-screen stateless and allows us to conditionally render the offline-only UI. We hide online attempts tables, retake incorrect options, and standard start buttons.
+
+### D7: Refactor custom button container to `AppButton` core primitive
+**Decision:** Replace `ExamPrescreenActionButton`'s custom Container decoration with standard `AppButton` primitives.
+
+**Rationale:** Consolidating on standard core buttons ensures exact design and height alignment across both online and offline pre-screen buttons (conforming to `ai_context.md`).
+
 ## Risks / Trade-offs
 
 - **[Risk] Rows accumulate in the SYNCED state** → Mitigation: The "Submitted ✓" badge makes them clearly inert. A future cleanup job (out of scope here) can prune SYNCED rows older than N days. For now the user can still manually delete them.
