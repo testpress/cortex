@@ -59,6 +59,13 @@ After a successful API submission, the system SHALL update the download row's st
 - **WHEN** `OfflineExamSyncService` receives a 5xx or network error
 - **THEN** the row remains `PENDING_SYNC` (reverted from `SYNCING`) for retry on next connectivity change
 
+#### Scenario: Retaking a SYNCED exam
+- **WHEN** the user starts an exam attempt for a row with `SYNCED` status
+- **THEN** the system clears the previously saved answers for that download from `OfflineExamAnswersTable`
+- **AND** the timer/elapsed seconds is reset to 0
+- **AND** the status is updated to `IN_PROGRESS`
+- **AND** `syncedAt` is reset to null
+
 ---
 
 ### Requirement: SYNCED database status and syncedAt column

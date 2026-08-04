@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core/data/data.dart';
 import '../../../providers/exam_providers.dart';
 
 class BaseReviewDialog extends StatefulWidget {

@@ -34,7 +34,9 @@ The offline exam feature lets users download an exam, complete it without intern
 ### D2: `SYNCED` status rather than deletion
 **Decision:** After a successful sync, `OfflineExamSyncService` updates the row status to `SYNCED` and sets `syncedAt` to `DateTime.now()` instead of calling `deleteDownload`.
 
-**Rationale:** Retaining the row gives users a permanent audit trail in the downloads list and prevents confusion when the card disappears unexpectedly. It also allows us to show a "Submitted ✓" badge without any extra state.
+**Rationale:** Retaining the row gives users a permanent audit trail in the downloads list and prevents confusion when the card disappears unexpectedly. It also allows us to show a "Submitted" badge. 
+
+If the user starts an exam that has a `SYNCED` status, it is treated as a retake: the previous answers are cleared from the database, and the timer/attempt metadata is reset to 0 so they start a clean, fresh attempt.
 
 **Alternative considered:** Keep deletion but add a separate "synced_log" table. Rejected — unnecessary complexity; the existing row has all needed fields.
 

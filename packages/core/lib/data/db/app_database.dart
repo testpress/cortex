@@ -584,6 +584,13 @@ class AppDatabase extends _$AppDatabase {
       )..where((t) => t.id.equals(downloadId))).go();
     });
   }
+
+  /// Clear all saved answers for a specific download.
+  Future<void> clearAnswersForDownload(int downloadId) {
+    return (delete(
+      offlineExamAnswersTable,
+    )..where((t) => t.downloadId.equals(downloadId))).go();
+  }
 }
 
 /// Opens the SQLite database from the app documents directory.
