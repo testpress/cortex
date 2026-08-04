@@ -23,6 +23,7 @@ class DashboardDrawer extends ConsumerWidget {
     final postsEnabled = settings?.postsEnabled ?? false;
     final forumEnabled = settings?.forumEnabled ?? false;
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
+    final isAnalyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
 
     final bookmarksLabel = settings?.bookmarksLabel?.trim();
     final displayBookmarksLabel =
@@ -72,14 +73,15 @@ class DashboardDrawer extends ConsumerWidget {
                   ).push(AppRoute(page: const AnnouncementsListScreen()));
                 },
               ),
-            AppDrawerItem(
-              icon: LucideIcons.pieChart,
-              label: l10n.drawerAnalytics,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.push('/exams/analytics');
-              },
-            ),
+            if (isAnalyticsEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.pieChart,
+                label: l10n.drawerAnalytics,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/exams/analytics');
+                },
+              ),
             if (forumEnabled)
               AppDrawerItem(
                 icon: LucideIcons.messageSquare,
