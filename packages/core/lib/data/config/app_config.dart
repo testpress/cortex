@@ -131,13 +131,6 @@ class AppConfig {
     defaultValue: '',
   );
 
-  /// Organization UUID / ID used for LearnLens AI APIs.
-  /// Controlled via --dart-define=LEARNLENS_ORGANIZATION_ID=...
-  static const String learnLensOrgUuid = String.fromEnvironment(
-    'LEARNLENS_ORGANIZATION_ID',
-    defaultValue: '',
-  );
-
   static const String loginScreenImageLocalPath =
       'assets/images/login_screen_image.png';
 

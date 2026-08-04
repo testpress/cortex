@@ -58,7 +58,10 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
         await ref.read(learnlensSessionProvider(contentId).future);
 
     final sessionToken = sessionMap?['session_token'] as String? ?? '';
-    final orgUuid = AppConfig.learnLensOrgUuid;
+    final settings = ref.read(instituteSettingsProvider);
+    final orgUuid = (settings?.learnlensEnabled == true)
+        ? (settings?.learnlensOrgID ?? '')
+        : '';
     final assetId = widget.lesson.learnlensAssetId ??
         widget.lesson.contentUrl ??
         widget.lesson.id;

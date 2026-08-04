@@ -69,6 +69,10 @@ class InstituteSettings {
   final String storeLabel;
   final String currentPaymentApp;
 
+  //LearnLens AI
+  final bool learnlensEnabled;
+  final String? learnlensOrgID;
+
   const InstituteSettings({
     required this.name,
     required this.photo,
@@ -103,6 +107,8 @@ class InstituteSettings {
     required this.storeEnabled,
     required this.storeLabel,
     required this.currentPaymentApp,
+    required this.learnlensEnabled,
+    this.learnlensOrgID,
     this.videoWatermarkType,
     this.videoWatermarkPosition,
   });
@@ -170,6 +176,8 @@ class InstituteSettings {
       storeEnabled: json['store_enabled'] as bool? ?? false,
       storeLabel: json['store_label'] as String? ?? 'Store',
       currentPaymentApp: json['current_payment_app'] as String? ?? '',
+      learnlensEnabled: json['learnlens_enabled'] as bool? ?? false,
+      learnlensOrgID: json['learnlens_organization_id'] as String?,
       videoWatermarkType: switch (watermarkType) {
         'dynamic' => VideoWatermarkType.dynamic,
         'static' => VideoWatermarkType.static,
@@ -230,6 +238,8 @@ class InstituteSettings {
       'store_enabled': storeEnabled,
       'store_label': storeLabel,
       'current_payment_app': currentPaymentApp,
+      'learnlens_enabled': learnlensEnabled,
+      'learnlens_organization_id': learnlensOrgID,
       'video_watermark_type': switch (videoWatermarkType) {
         VideoWatermarkType.dynamic => 'dynamic',
         VideoWatermarkType.static => 'static',
