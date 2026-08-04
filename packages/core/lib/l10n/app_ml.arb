@@ -1077,6 +1077,7 @@
   "totalQuestionsLabel": "ആകെ ചോദ്യങ്ങൾ",
   "deleteAction": "ഇല്ലാതാക്കുക",
   "attendExamAction": "പരീക്ഷയിൽ പങ്കെടുക്കുക",
+  "openExamAction": "തുറക്കുക",
   "examDeletedToast": "പരീക്ഷ ഇല്ലാതാക്കി",
   "deleteExamTitle": "പരീക്ഷ ഇല്ലാതാക്കണോ?",
   "deleteExamConfirmationMessage": "ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?",

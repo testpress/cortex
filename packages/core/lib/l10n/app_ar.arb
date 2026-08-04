@@ -1077,6 +1077,7 @@
   "totalQuestionsLabel": "إجمالي الأسئلة",
   "deleteAction": "حذف",
   "attendExamAction": "حضور الامتحان",
+  "openExamAction": "فتح",
   "examDeletedToast": "تم حذف الامتحان",
   "deleteExamTitle": "هل تريد حذف الامتحان؟",
   "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟",

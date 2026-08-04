@@ -5099,6 +5099,12 @@ abstract class AppLocalizations {
   /// **'Attend Exam'**
   String get attendExamAction;
 
+  /// No description provided for @openExamAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openExamAction;
+
   /// No description provided for @examDeletedToast.
   ///
   /// In en, this message translates to:

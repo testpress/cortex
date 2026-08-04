@@ -2830,6 +2830,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attendExamAction => 'Attend Exam';
 
   @override
+  String get openExamAction => 'Open';
+
+  @override
   String get examDeletedToast => 'Exam deleted';
 
   @override

@@ -425,25 +425,23 @@ class _ExamCardActions extends ConsumerWidget {
             }
           },
         ),
-        if (exam.status != 'SYNCED') ...[
-          SizedBox(width: design.spacing.sm),
-          AppButton(
-            padding: EdgeInsets.symmetric(
-              horizontal: design.spacing.md,
-              vertical: design.spacing.xs,
-            ),
-            label: l10n.attendExamAction,
-            variant: AppButtonVariant.primary,
-            leading: Icon(
-              LucideIcons.play,
-              size: 18,
-              color: design.colors.onPrimary,
-            ),
-            onPressed: () {
-              context.push('/exams/test/${exam.contentId}?isOffline=true');
-            },
+        SizedBox(width: design.spacing.sm),
+        AppButton(
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.xs,
           ),
-        ],
+          label: l10n.openExamAction,
+          variant: AppButtonVariant.primary,
+          leading: Icon(
+            LucideIcons.externalLink,
+            size: 18,
+            color: design.colors.onPrimary,
+          ),
+          onPressed: () {
+            context.push('/exams/test/${exam.contentId}?isOffline=true');
+          },
+        ),
       ],
     );
   }

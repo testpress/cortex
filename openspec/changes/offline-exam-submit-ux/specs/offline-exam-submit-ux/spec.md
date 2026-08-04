@@ -87,7 +87,7 @@ The system SHALL provide a localised string `offlineExamSavedToast` for the subm
 When the user navigates to the exam details pre-screen from the offline list, the system SHALL only present the offline attendance actions, hiding all online actions and histories.
 
 #### Scenario: Launch details from offline list
-- **WHEN** the user clicks "Attend Exam" on an offline download list item
+- **WHEN** the user clicks "Open" on an offline download list item
 - **THEN** the route is loaded with `isOffline=true`
 - **AND** the details pre-screen hides "Start Online" and retake options
 - **AND** the pre-screen hides the attempts history table

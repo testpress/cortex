@@ -1414,6 +1414,7 @@
   "totalQuestionsLabel": "Total Qus",
   "deleteAction": "Delete",
   "attendExamAction": "Attend Exam",
+  "openExamAction": "Open",
   "examDeletedToast": "Exam deleted",
   "deleteExamTitle": "Delete Exam?",
   "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?",

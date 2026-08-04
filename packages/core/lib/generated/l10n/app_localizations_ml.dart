@@ -2879,6 +2879,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get attendExamAction => 'പരീക്ഷയിൽ പങ്കെടുക്കുക';
 
   @override
+  String get openExamAction => 'തുറക്കുക';
+
+  @override
   String get examDeletedToast => 'പരീക്ഷ ഇല്ലാതാക്കി';
 
   @override

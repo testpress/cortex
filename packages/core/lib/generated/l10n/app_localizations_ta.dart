@@ -2874,6 +2874,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get attendExamAction => 'தேர்வில் கலந்து கொள்';
 
   @override
+  String get openExamAction => 'திறக்கவும்';
+
+  @override
   String get examDeletedToast => 'தேர்வு அழிக்கப்பட்டது';
 
   @override

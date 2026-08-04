@@ -35,10 +35,10 @@
 - [x] 5.5 `SYNCED` → green badge with `LucideIcons.checkCircle2` and label `l10n.submittedStatus` (add l10n key if missing)
 - [x] 5.6 Add any missing l10n keys (`inProgressStatus`, `syncingStatus`, `submittedStatus`) to all four ARB files and regenerate
 
-## 6. Attend Button — Hide for SYNCED exams
+## 6. Open Button — Always show in offline list
 
-- [x] 6.1 In `_ExamCardActions`, disable or hide the "Attend Exam" button when `exam.status == 'SYNCED'` (the exam has already been submitted; retaking offline is not applicable)
-- [x] 6.2 Optionally show a read-only info label instead of the button for `SYNCED` exams
+- [x] 6.1 Replace the "Attend Exam" button label with "Open" (using `openExamAction`)
+- [x] 6.2 Ensure the "Open" button is always visible regardless of exam status (including `SYNCED`) so users can access pre-screen details
 
 ## 7. Pre-Screen Navigation and Button Height Alignment
 

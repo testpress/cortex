@@ -1311,6 +1311,7 @@
   "totalQuestionsLabel": "மொத்த கேள்விகள்",
   "deleteAction": "அழி",
   "attendExamAction": "தேர்வில் கலந்து கொள்",
+  "openExamAction": "திறக்கவும்",
   "examDeletedToast": "தேர்வு அழிக்கப்பட்டது",
   "deleteExamTitle": "தேர்வை அழிக்க வேண்டுமா?",
   "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?",

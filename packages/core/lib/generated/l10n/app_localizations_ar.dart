@@ -2833,6 +2833,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get attendExamAction => 'حضور الامتحان';
 
   @override
+  String get openExamAction => 'فتح';
+
+  @override
   String get examDeletedToast => 'تم حذف الامتحان';
 
   @override
