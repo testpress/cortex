@@ -141,6 +141,7 @@
     "description": "Label for the resume button on cards"
   },
   "labelCourseProgress": "Course progress",
+  "labelPageLoadProgress": "Page load progress",
   "homeHeaderTitle": "BrightMinds Academy",
   "todayScheduleTitle": "Today's Schedule",
   "viewAllAction": "View all",
@@ -301,6 +302,7 @@
   "drawerOfflineExams": "Offline Exams",
   "noDownloadedExamAvailable": "No downloaded exam available",
   "drawerReports": "Reports",
+  "drawerMyReport": "My report",
   "drawerProfile": "Profile",
   "drawerSettings": "App Settings",
   "drawerLoginActivity": "Login Activity",

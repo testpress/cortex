@@ -23,6 +23,8 @@ class DashboardDrawer extends ConsumerWidget {
     final postsEnabled = settings?.postsEnabled ?? false;
     final forumEnabled = settings?.forumEnabled ?? false;
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
+    final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
+    final enableStudentReport = !(settings?.disableStudentReport ?? false);
     final analyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
 
     final bookmarksLabel = settings?.bookmarksLabel?.trim();
@@ -91,14 +93,24 @@ class DashboardDrawer extends ConsumerWidget {
                   context.go('/home/discussions/forum');
                 },
               ),
-            AppDrawerItem(
-              icon: LucideIcons.messageCircleQuestionMark,
-              label: l10n.drawerDoubts,
-              action: () {
-                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                context.go('/home/discussions/doubts');
-              },
-            ),
+            if (helpdeskEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.messageCircleQuestionMark,
+                label: l10n.drawerDoubts,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.go('/home/discussions/doubts');
+                },
+              ),
+            if (enableStudentReport)
+              AppDrawerItem(
+                icon: LucideIcons.fileChartColumn,
+                label: l10n.drawerMyReport,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/my-report');
+                },
+              ),
             if (enableCustomTest)
               AppDrawerItem(
                 icon: LucideIcons.wandSparkles,

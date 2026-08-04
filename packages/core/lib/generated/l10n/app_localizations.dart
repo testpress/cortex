@@ -708,6 +708,12 @@ abstract class AppLocalizations {
   /// **'Course progress'**
   String get labelCourseProgress;
 
+  /// No description provided for @labelPageLoadProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Page load progress'**
+  String get labelPageLoadProgress;
+
   /// No description provided for @homeHeaderTitle.
   ///
   /// In en, this message translates to:
@@ -1277,6 +1283,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reports'**
   String get drawerReports;
+
+  /// No description provided for @drawerMyReport.
+  ///
+  /// In en, this message translates to:
+  /// **'My report'**
+  String get drawerMyReport;
 
   /// No description provided for @drawerProfile.
   ///

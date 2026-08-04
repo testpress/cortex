@@ -343,6 +343,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get labelCourseProgress => 'பாட முன்னேற்றம்';
 
   @override
+  String get labelPageLoadProgress => 'பக்க ஏற்றத்தின் முன்னேற்றம்';
+
+  @override
   String get homeHeaderTitle => 'BrightMinds Academy';
 
   @override
@@ -661,6 +664,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get drawerReports => 'அறிக்கைகள்';
+
+  @override
+  String get drawerMyReport => 'எனது அறிக்கை';
 
   @override
   String get drawerProfile => 'சுயவிவரம்';

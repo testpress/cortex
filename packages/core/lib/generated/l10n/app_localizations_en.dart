@@ -337,6 +337,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelCourseProgress => 'Course progress';
 
   @override
+  String get labelPageLoadProgress => 'Page load progress';
+
+  @override
   String get homeHeaderTitle => 'BrightMinds Academy';
 
   @override
@@ -649,6 +652,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drawerReports => 'Reports';
+
+  @override
+  String get drawerMyReport => 'My report';
 
   @override
   String get drawerProfile => 'Profile';

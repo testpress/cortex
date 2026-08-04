@@ -337,6 +337,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelCourseProgress => 'تقدم الدورة';
 
   @override
+  String get labelPageLoadProgress => 'تقدم تحميل الصفحة';
+
+  @override
   String get homeHeaderTitle => 'أكاديمية برايت ماينز';
 
   @override
@@ -648,6 +651,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get drawerReports => 'التقارير الخاصة بك';
+
+  @override
+  String get drawerMyReport => 'تقريري';
 
   @override
   String get drawerProfile => 'الملف الشخصي';

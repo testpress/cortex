@@ -339,6 +339,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelCourseProgress => 'കോഴ്സിന്റെ പുരോഗതി';
 
   @override
+  String get labelPageLoadProgress => 'പേജ് ലോഡ് പുരോഗതി';
+
+  @override
   String get homeHeaderTitle => 'ബ്രൈറ്റ് മൈൻഡ്സ് അക്കാദമി';
 
   @override
@@ -657,6 +660,9 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get drawerReports => 'നിങ്ങളുടെ റിപ്പോർട്ട്';
+
+  @override
+  String get drawerMyReport => 'എന്റെ റിപ്പോർട്ട്';
 
   @override
   String get drawerProfile => 'പ്രൊഫൈൽ';
