@@ -5,6 +5,8 @@ import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../data/auth/auth_provider.dart';
 import '../widgets/app_error_view.dart';
+import '../accessibility/app_semantics.dart';
+import '../localization/l10n_helper.dart';
 
 /// A platform-neutral web page viewer.
 ///
@@ -27,8 +29,9 @@ class AppWebView extends ConsumerStatefulWidget {
     if (requestUri.scheme != 'https') return headers;
 
     final initialUri = Uri.tryParse(initialUrl);
-    if (initialUri == null || requestUri.host != initialUri.host)
+    if (initialUri == null || requestUri.host != initialUri.host) {
       return headers;
+    }
 
     if (requestUrl != initialUrl) return headers;
 
@@ -138,14 +141,19 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
           valueListenable: _hasError,
           builder: (context, hasError, child) {
             if (progress < 100 && !hasError) {
-              return Container(
-                height: 3,
-                width: double.infinity,
-                alignment: Alignment.centerLeft,
-                color: design.colors.surfaceVariant,
-                child: FractionallySizedBox(
-                  widthFactor: progress / 100.0,
-                  child: Container(color: design.colors.primary),
+              final double value = progress / 100.0;
+              return AppSemantics.progressValue(
+                value: value,
+                label: L10n.of(context).labelPageLoadProgress,
+                child: Container(
+                  height: 3,
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  color: design.colors.surfaceVariant,
+                  child: FractionallySizedBox(
+                    widthFactor: value,
+                    child: Container(color: design.colors.primary),
+                  ),
                 ),
               );
             }

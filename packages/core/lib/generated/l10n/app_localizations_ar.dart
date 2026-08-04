@@ -337,6 +337,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelCourseProgress => 'تقدم الدورة';
 
   @override
+  String get labelPageLoadProgress => 'تقدم تحميل الصفحة';
+
+  @override
   String get homeHeaderTitle => 'أكاديمية برايت ماينز';
 
   @override

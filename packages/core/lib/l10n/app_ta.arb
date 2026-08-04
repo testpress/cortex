@@ -141,6 +141,7 @@
     "description": "Label for the resume button on cards"
   },
   "labelCourseProgress": "பாட முன்னேற்றம்",
+  "labelPageLoadProgress": "பக்க ஏற்றத்தின் முன்னேற்றம்",
   "homeHeaderTitle": "BrightMinds Academy",
   "todayScheduleTitle": "இன்றைய அட்டவணை",
   "viewAllAction": "அனைத்தையும் காண்க",

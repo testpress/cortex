@@ -708,6 +708,12 @@ abstract class AppLocalizations {
   /// **'Course progress'**
   String get labelCourseProgress;
 
+  /// No description provided for @labelPageLoadProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Page load progress'**
+  String get labelPageLoadProgress;
+
   /// No description provided for @homeHeaderTitle.
   ///
   /// In en, this message translates to:

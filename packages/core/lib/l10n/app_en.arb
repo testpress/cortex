@@ -141,6 +141,7 @@
     "description": "Label for the resume button on cards"
   },
   "labelCourseProgress": "Course progress",
+  "labelPageLoadProgress": "Page load progress",
   "homeHeaderTitle": "BrightMinds Academy",
   "todayScheduleTitle": "Today's Schedule",
   "viewAllAction": "View all",
