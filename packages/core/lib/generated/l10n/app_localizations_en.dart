@@ -2542,6 +2542,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Test saved locally. Results will be available once synced.';
 
   @override
+  String get offlineExamSavedToast =>
+      'Exam saved. It will be submitted automatically when you\'re back online.';
+
+  @override
+  String get inProgressStatus => 'In Progress';
+
+  @override
+  String get syncingStatus => 'Syncing…';
+
+  @override
+  String get pendingSyncStatus => 'Pending Sync';
+
+  @override
+  String get submittedStatus => 'Submitted';
+
+  @override
   String get noAnswerGiven => '(No answer given)';
 
   @override
@@ -2812,6 +2828,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get attendExamAction => 'Attend Exam';
+
+  @override
+  String get openExamAction => 'Open';
 
   @override
   String get examDeletedToast => 'Exam deleted';

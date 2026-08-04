@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../workers/offline_exam_sync_worker.dart';
 import 'offline_exam_sync_service.dart';
 import 'sentry_service.dart';
+import '../../network/network_utils.dart';
 
 part 'sync_manager.g.dart';
 
@@ -21,9 +22,7 @@ class SyncManager {
 
   void _initListener() {
     _subscription = _connectivity.onConnectivityChanged.listen((results) async {
-      if (results.contains(ConnectivityResult.mobile) ||
-          results.contains(ConnectivityResult.wifi) ||
-          results.contains(ConnectivityResult.ethernet)) {
+      if (hasConnection(results)) {
         // Immediate foreground sync attempt
         try {
           final syncService = await _ref.read(

@@ -71,6 +71,7 @@ export 'motion/accessibility_motion.dart';
 // Network
 export 'network/dio_provider.dart';
 export 'network/file_downloader.dart';
+export 'network/network_utils.dart';
 
 // Utils
 export 'utils/date_formatter.dart';

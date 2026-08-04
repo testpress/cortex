@@ -4655,6 +4655,36 @@ abstract class AppLocalizations {
   /// **'Test saved locally. Results will be available once synced.'**
   String get testSavedLocallyOffline;
 
+  /// No description provided for @offlineExamSavedToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam saved. It will be submitted automatically when you\'re back online.'**
+  String get offlineExamSavedToast;
+
+  /// No description provided for @inProgressStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get inProgressStatus;
+
+  /// No description provided for @syncingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get syncingStatus;
+
+  /// No description provided for @pendingSyncStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Sync'**
+  String get pendingSyncStatus;
+
+  /// No description provided for @submittedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get submittedStatus;
+
   /// No description provided for @noAnswerGiven.
   ///
   /// In en, this message translates to:
@@ -5068,6 +5098,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Attend Exam'**
   String get attendExamAction;
+
+  /// No description provided for @openExamAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openExamAction;
 
   /// No description provided for @examDeletedToast.
   ///

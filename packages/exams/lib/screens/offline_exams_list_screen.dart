@@ -176,7 +176,7 @@ class _OfflineExamCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _ExamCardHeader(title: title),
+              _ExamCardHeader(exam: exam),
               SizedBox(height: design.spacing.md),
               _ExamCardStats(exam: exam),
               SizedBox(height: design.spacing.md),
@@ -192,14 +192,65 @@ class _OfflineExamCard extends ConsumerWidget {
 }
 
 class _ExamCardHeader extends StatelessWidget {
-  final String title;
+  final OfflineExamDownloadsTableData exam;
 
-  const _ExamCardHeader({required this.title});
+  const _ExamCardHeader({required this.exam});
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final status = exam.status;
+
+    // Badge configuration per status
+    final AppBadge badge;
+
+    switch (status) {
+      case 'IN_PROGRESS':
+        badge = AppBadge(
+          label: l10n.inProgressStatus,
+          backgroundColor: design.colors.primary.withValues(alpha: 0.12),
+          foregroundColor: design.colors.primary,
+          icon: LucideIcons.pencil,
+        );
+        break;
+      case 'PENDING_SYNC':
+        badge = AppBadge(
+          label: l10n.pendingSyncStatus,
+          backgroundColor: design.colors.warning.withValues(alpha: 0.15),
+          foregroundColor: design.colors.warning,
+          icon: LucideIcons.clock,
+        );
+        break;
+      case 'SYNCING':
+        final Color warningColor = design.colors.warning;
+        badge = AppBadge(
+          label: l10n.syncingStatus,
+          backgroundColor: warningColor.withValues(alpha: 0.15),
+          foregroundColor: warningColor,
+          leading: SizedBox(
+            width: 12,
+            height: 12,
+            child: FittedBox(child: AppLoadingIndicator(color: warningColor)),
+          ),
+        );
+        break;
+      case 'SYNCED':
+        badge = AppBadge(
+          label: l10n.submittedStatus,
+          backgroundColor: design.colors.success.withValues(alpha: 0.1),
+          foregroundColor: design.colors.success,
+          icon: LucideIcons.checkCircle2,
+        );
+        break;
+      default: // DOWNLOADED
+        badge = AppBadge(
+          label: l10n.downloadedStatus,
+          backgroundColor: design.colors.success.withValues(alpha: 0.1),
+          foregroundColor: design.colors.success,
+          icon: LucideIcons.checkCircle2,
+        );
+    }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -223,38 +274,11 @@ class _ExamCardHeader extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [AppText.cardTitle(title)],
+            children: [AppText.cardTitle(exam.title)],
           ),
         ),
         SizedBox(width: design.spacing.sm),
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.sm,
-            vertical: design.spacing.xs,
-          ),
-          decoration: BoxDecoration(
-            color: design.colors.success.withValues(alpha: 0.1),
-            border: Border.all(
-              color: design.colors.success.withValues(alpha: 0.3),
-            ),
-            borderRadius: BorderRadius.circular(design.radius.sm),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                LucideIcons.checkCircle2,
-                size: 14,
-                color: design.colors.success,
-              ),
-              SizedBox(width: design.spacing.xs),
-              AppText.labelSmall(
-                l10n.downloadedStatus,
-                color: design.colors.success,
-              ),
-            ],
-          ),
-        ),
+        badge,
       ],
     );
   }
@@ -407,15 +431,15 @@ class _ExamCardActions extends ConsumerWidget {
             horizontal: design.spacing.md,
             vertical: design.spacing.xs,
           ),
-          label: l10n.attendExamAction,
+          label: l10n.openExamAction,
           variant: AppButtonVariant.primary,
           leading: Icon(
-            LucideIcons.play,
+            LucideIcons.externalLink,
             size: 18,
             color: design.colors.onPrimary,
           ),
           onPressed: () {
-            context.push('/exams/test/${exam.contentId}');
+            context.push('/exams/test/${exam.contentId}?isOffline=true');
           },
         ),
       ],

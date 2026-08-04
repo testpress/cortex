@@ -207,9 +207,11 @@ class ExamsRoutes {
         final lesson = extra is LessonDto
             ? extra
             : (extra is Lesson ? extra.toDto() : null);
+        final isOffline = state.uri.queryParameters['isOffline'] == 'true';
         return ExamPrescreen(
           testId: id,
           lesson: lesson,
+          isOfflineOnly: isOffline,
           onClose: () => context.pop(),
           onStartAttempt:
               (

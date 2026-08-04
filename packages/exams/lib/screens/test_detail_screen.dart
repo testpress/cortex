@@ -128,6 +128,15 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
 
   // Removed _dirtyAnswers to fix out-of-order submission drops.
 
+  Future<void> _showOfflineToastIfNeeded() async {
+    if (widget.isOfflineMode && mounted) {
+      final hasInternet = await hasInternetConnection();
+      if (!hasInternet && mounted) {
+        AppToast.show(context, message: L10n.of(context).offlineExamSavedToast);
+      }
+    }
+  }
+
   // Flash "Saved" indicator
   bool _isSavedVisible = false;
   Timer? _savedTimer;
@@ -748,6 +757,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                   // Answers are already queued in the repository; endExam flushes them.
 
                   await ref.read(examAttemptProvider.notifier).endExam();
+                  await _showOfflineToastIfNeeded();
                 },
               ),
             if (_showPauseConfirmation)
@@ -770,6 +780,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                   // Answers are already queued in the repository; endExam flushes them.
 
                   await ref.read(examAttemptProvider.notifier).endExam();
+                  await _showOfflineToastIfNeeded();
                 },
               ),
             if (state.status == ExamAttemptStatus.completed)

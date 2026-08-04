@@ -15628,6 +15628,17 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -15643,6 +15654,7 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
     completedAt,
     status,
     elapsedSeconds,
+    syncedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -15763,6 +15775,12 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
         ),
       );
     }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -15827,6 +15845,10 @@ class $OfflineExamDownloadsTableTable extends OfflineExamDownloadsTable
         DriftSqlType.int,
         data['${effectivePrefix}elapsed_seconds'],
       )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
     );
   }
 
@@ -15851,6 +15873,7 @@ class OfflineExamDownloadsTableData extends DataClass
   final DateTime? completedAt;
   final String status;
   final int elapsedSeconds;
+  final DateTime? syncedAt;
   const OfflineExamDownloadsTableData({
     required this.id,
     required this.contentId,
@@ -15865,6 +15888,7 @@ class OfflineExamDownloadsTableData extends DataClass
     this.completedAt,
     required this.status,
     required this.elapsedSeconds,
+    this.syncedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -15888,6 +15912,9 @@ class OfflineExamDownloadsTableData extends DataClass
     }
     map['status'] = Variable<String>(status);
     map['elapsed_seconds'] = Variable<int>(elapsedSeconds);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
     return map;
   }
 
@@ -15912,6 +15939,9 @@ class OfflineExamDownloadsTableData extends DataClass
           : Value(completedAt),
       status: Value(status),
       elapsedSeconds: Value(elapsedSeconds),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
     );
   }
 
@@ -15934,6 +15964,7 @@ class OfflineExamDownloadsTableData extends DataClass
       completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
       status: serializer.fromJson<String>(json['status']),
       elapsedSeconds: serializer.fromJson<int>(json['elapsedSeconds']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
     );
   }
   @override
@@ -15953,6 +15984,7 @@ class OfflineExamDownloadsTableData extends DataClass
       'completedAt': serializer.toJson<DateTime?>(completedAt),
       'status': serializer.toJson<String>(status),
       'elapsedSeconds': serializer.toJson<int>(elapsedSeconds),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
     };
   }
 
@@ -15970,6 +16002,7 @@ class OfflineExamDownloadsTableData extends DataClass
     Value<DateTime?> completedAt = const Value.absent(),
     String? status,
     int? elapsedSeconds,
+    Value<DateTime?> syncedAt = const Value.absent(),
   }) => OfflineExamDownloadsTableData(
     id: id ?? this.id,
     contentId: contentId ?? this.contentId,
@@ -15986,6 +16019,7 @@ class OfflineExamDownloadsTableData extends DataClass
     completedAt: completedAt.present ? completedAt.value : this.completedAt,
     status: status ?? this.status,
     elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
   );
   OfflineExamDownloadsTableData copyWithCompanion(
     OfflineExamDownloadsTableCompanion data,
@@ -16016,6 +16050,7 @@ class OfflineExamDownloadsTableData extends DataClass
       elapsedSeconds: data.elapsedSeconds.present
           ? data.elapsedSeconds.value
           : this.elapsedSeconds,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
     );
   }
 
@@ -16034,7 +16069,8 @@ class OfflineExamDownloadsTableData extends DataClass
           ..write('startedAt: $startedAt, ')
           ..write('completedAt: $completedAt, ')
           ..write('status: $status, ')
-          ..write('elapsedSeconds: $elapsedSeconds')
+          ..write('elapsedSeconds: $elapsedSeconds, ')
+          ..write('syncedAt: $syncedAt')
           ..write(')'))
         .toString();
   }
@@ -16054,6 +16090,7 @@ class OfflineExamDownloadsTableData extends DataClass
     completedAt,
     status,
     elapsedSeconds,
+    syncedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -16071,7 +16108,8 @@ class OfflineExamDownloadsTableData extends DataClass
           other.startedAt == this.startedAt &&
           other.completedAt == this.completedAt &&
           other.status == this.status &&
-          other.elapsedSeconds == this.elapsedSeconds);
+          other.elapsedSeconds == this.elapsedSeconds &&
+          other.syncedAt == this.syncedAt);
 }
 
 class OfflineExamDownloadsTableCompanion
@@ -16089,6 +16127,7 @@ class OfflineExamDownloadsTableCompanion
   final Value<DateTime?> completedAt;
   final Value<String> status;
   final Value<int> elapsedSeconds;
+  final Value<DateTime?> syncedAt;
   const OfflineExamDownloadsTableCompanion({
     this.id = const Value.absent(),
     this.contentId = const Value.absent(),
@@ -16103,6 +16142,7 @@ class OfflineExamDownloadsTableCompanion
     this.completedAt = const Value.absent(),
     this.status = const Value.absent(),
     this.elapsedSeconds = const Value.absent(),
+    this.syncedAt = const Value.absent(),
   });
   OfflineExamDownloadsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -16118,6 +16158,7 @@ class OfflineExamDownloadsTableCompanion
     this.completedAt = const Value.absent(),
     this.status = const Value.absent(),
     this.elapsedSeconds = const Value.absent(),
+    this.syncedAt = const Value.absent(),
   }) : contentId = Value(contentId),
        examId = Value(examId),
        title = Value(title),
@@ -16139,6 +16180,7 @@ class OfflineExamDownloadsTableCompanion
     Expression<DateTime>? completedAt,
     Expression<String>? status,
     Expression<int>? elapsedSeconds,
+    Expression<DateTime>? syncedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -16154,6 +16196,7 @@ class OfflineExamDownloadsTableCompanion
       if (completedAt != null) 'completed_at': completedAt,
       if (status != null) 'status': status,
       if (elapsedSeconds != null) 'elapsed_seconds': elapsedSeconds,
+      if (syncedAt != null) 'synced_at': syncedAt,
     });
   }
 
@@ -16171,6 +16214,7 @@ class OfflineExamDownloadsTableCompanion
     Value<DateTime?>? completedAt,
     Value<String>? status,
     Value<int>? elapsedSeconds,
+    Value<DateTime?>? syncedAt,
   }) {
     return OfflineExamDownloadsTableCompanion(
       id: id ?? this.id,
@@ -16186,6 +16230,7 @@ class OfflineExamDownloadsTableCompanion
       completedAt: completedAt ?? this.completedAt,
       status: status ?? this.status,
       elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+      syncedAt: syncedAt ?? this.syncedAt,
     );
   }
 
@@ -16231,6 +16276,9 @@ class OfflineExamDownloadsTableCompanion
     if (elapsedSeconds.present) {
       map['elapsed_seconds'] = Variable<int>(elapsedSeconds.value);
     }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
     return map;
   }
 
@@ -16249,7 +16297,8 @@ class OfflineExamDownloadsTableCompanion
           ..write('startedAt: $startedAt, ')
           ..write('completedAt: $completedAt, ')
           ..write('status: $status, ')
-          ..write('elapsedSeconds: $elapsedSeconds')
+          ..write('elapsedSeconds: $elapsedSeconds, ')
+          ..write('syncedAt: $syncedAt')
           ..write(')'))
         .toString();
   }
@@ -24794,6 +24843,7 @@ typedef $$OfflineExamDownloadsTableTableCreateCompanionBuilder =
       Value<DateTime?> completedAt,
       Value<String> status,
       Value<int> elapsedSeconds,
+      Value<DateTime?> syncedAt,
     });
 typedef $$OfflineExamDownloadsTableTableUpdateCompanionBuilder =
     OfflineExamDownloadsTableCompanion Function({
@@ -24810,6 +24860,7 @@ typedef $$OfflineExamDownloadsTableTableUpdateCompanionBuilder =
       Value<DateTime?> completedAt,
       Value<String> status,
       Value<int> elapsedSeconds,
+      Value<DateTime?> syncedAt,
     });
 
 final class $$OfflineExamDownloadsTableTableReferences
@@ -24928,6 +24979,11 @@ class $$OfflineExamDownloadsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> offlineExamAnswersTableRefs(
     Expression<bool> Function($$OfflineExamAnswersTableTableFilterComposer f) f,
   ) {
@@ -25028,6 +25084,11 @@ class $$OfflineExamDownloadsTableTableOrderingComposer
     column: $table.elapsedSeconds,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$OfflineExamDownloadsTableTableAnnotationComposer
@@ -25089,6 +25150,9 @@ class $$OfflineExamDownloadsTableTableAnnotationComposer
     column: $table.elapsedSeconds,
     builder: (column) => column,
   );
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
 
   Expression<T> offlineExamAnswersTableRefs<T extends Object>(
     Expression<T> Function($$OfflineExamAnswersTableTableAnnotationComposer a)
@@ -25173,6 +25237,7 @@ class $$OfflineExamDownloadsTableTableTableManager
                 Value<DateTime?> completedAt = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<int> elapsedSeconds = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
               }) => OfflineExamDownloadsTableCompanion(
                 id: id,
                 contentId: contentId,
@@ -25187,6 +25252,7 @@ class $$OfflineExamDownloadsTableTableTableManager
                 completedAt: completedAt,
                 status: status,
                 elapsedSeconds: elapsedSeconds,
+                syncedAt: syncedAt,
               ),
           createCompanionCallback:
               ({
@@ -25203,6 +25269,7 @@ class $$OfflineExamDownloadsTableTableTableManager
                 Value<DateTime?> completedAt = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<int> elapsedSeconds = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
               }) => OfflineExamDownloadsTableCompanion.insert(
                 id: id,
                 contentId: contentId,
@@ -25217,6 +25284,7 @@ class $$OfflineExamDownloadsTableTableTableManager
                 completedAt: completedAt,
                 status: status,
                 elapsedSeconds: elapsedSeconds,
+                syncedAt: syncedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(

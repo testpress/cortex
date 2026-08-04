@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core.dart';
 import '../data/providers/bookmark_provider.dart';
 import '../data/models/bookmark_dto.dart';
-import '../data/exceptions/api_exception.dart';
 
 /// A premium, platform-neutral bottom sheet widget that displays a list of
 /// bookmark folders, letting the user add/remove a lesson from them.

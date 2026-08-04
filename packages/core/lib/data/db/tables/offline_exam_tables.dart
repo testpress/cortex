@@ -19,7 +19,8 @@ class OfflineExamDownloadsTable extends Table {
   DateTimeColumn get completedAt => dateTime().nullable()();
   TextColumn get status => text().withDefault(const Constant('DOWNLOADED'))();
   IntColumn get elapsedSeconds => integer().withDefault(const Constant(0))();
-  // Status can be: DOWNLOADED, IN_PROGRESS, PENDING_SYNC
+  DateTimeColumn get syncedAt => dateTime().nullable()();
+  // Status can be: DOWNLOADED, IN_PROGRESS, PENDING_SYNC, SYNCING, SYNCED
 }
 
 /// Drift table for offline attempt items (user answers).
