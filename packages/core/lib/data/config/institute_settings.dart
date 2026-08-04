@@ -24,6 +24,7 @@ class InstituteSettings {
   final bool dashboardEnabled;
   final bool leaderboardEnabled;
   final String? leaderboardLabel;
+  final bool disableStudentAnalytics;
 
   //Login settings
   final List<LoginMethod> allowedLoginMethods;
@@ -76,6 +77,7 @@ class InstituteSettings {
     required this.dashboardEnabled,
     required this.leaderboardEnabled,
     required this.leaderboardLabel,
+    required this.disableStudentAnalytics,
     required this.allowedLoginMethods,
     required this.allowSignup,
     required this.enableUserPhoto,
@@ -123,6 +125,8 @@ class InstituteSettings {
       dashboardEnabled: json['dashboard_enabled'] as bool? ?? false,
       leaderboardEnabled: json['leaderboard_enabled'] as bool? ?? false,
       leaderboardLabel: json['leaderboard_label'] as String?,
+      disableStudentAnalytics:
+          json['disable_student_analytics'] as bool? ?? false,
 
       allowedLoginMethods: () {
         final parsed = (json['allowed_login_methods'] as List<dynamic>?)
@@ -194,6 +198,7 @@ class InstituteSettings {
       'dashboard_enabled': dashboardEnabled,
       'leaderboard_enabled': leaderboardEnabled,
       'leaderboard_label': leaderboardLabel,
+      'disable_student_analytics': disableStudentAnalytics,
       'allowed_login_methods': allowedLoginMethods.map((e) {
         switch (e) {
           case LoginMethod.formLogin:
