@@ -2585,6 +2585,22 @@ class AppLocalizationsTa extends AppLocalizations {
       'தேர்வு லோக்கலாக சேமிக்கப்பட்டது. ஒத்திசைக்கப்பட்டதும் முடிவுகள் கிடைக்கும்.';
 
   @override
+  String get offlineExamSavedToast =>
+      'தேர்வு சேமிக்கப்பட்டது. நீங்கள் மீண்டும் ஆன்லைனில் இருக்கும்போது தானாக சமர்ப்பிக்கப்படும்.';
+
+  @override
+  String get inProgressStatus => 'நடைபெறுகிறது';
+
+  @override
+  String get syncingStatus => 'ஒத்திசைக்கிறது…';
+
+  @override
+  String get pendingSyncStatus => 'ஒத்திசைவு நிலுவையில் உள்ளது';
+
+  @override
+  String get submittedStatus => 'சமர்ப்பிக்கப்பட்டது';
+
+  @override
   String get noAnswerGiven => '(பதில் அளிக்கப்படவில்லை)';
 
   @override

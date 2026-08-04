@@ -18,6 +18,7 @@ class ExamPrescreen extends ConsumerStatefulWidget {
   final VoidCallback onClose;
   final Future<void> Function(bool isQuizMode, {bool isPartial, bool isOffline})
   onStartAttempt;
+  final bool isOfflineOnly;
 
   const ExamPrescreen({
     super.key,
@@ -25,6 +26,7 @@ class ExamPrescreen extends ConsumerStatefulWidget {
     this.lesson,
     required this.onClose,
     required this.onStartAttempt,
+    this.isOfflineOnly = false,
   });
 
   @override
@@ -175,7 +177,8 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
         !isMetadataLoading &&
         exam != null &&
         exam.enableQuizMode == true &&
-        !isResuming;
+        !isResuming &&
+        !widget.isOfflineOnly;
 
     final bool isButtonEnabled =
         !isMetadataLoading && (!showModeSelection || _isModeSheetOpen == false);
@@ -188,9 +191,12 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
           onBack: widget.onClose,
           stickyFooter: true,
           backgroundColor: design.colors.card,
-          bottomBar: (isMetadataLoading || isAttemptsLoading)
+          bottomBar:
+              (isMetadataLoading ||
+                  (!widget.isOfflineOnly && isAttemptsLoading))
               ? null
-              : ((exam?.allowRetake ?? true) ||
+              : (widget.isOfflineOnly ||
+                    (exam?.allowRetake ?? true) ||
                     !((lesson?.hasAttempts ?? false) &&
                         (exam?.pausedAttemptsCount ?? 0) == 0))
               ? Container(
@@ -219,47 +225,48 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                             );
                           },
                         ),
-                      ExamPrescreenActionButton(
-                        isButtonEnabled: isButtonEnabled,
-                        isResuming: isResuming,
-                        isRetaking: isRetaking,
-                        onTap: isButtonEnabled
-                            ? () async {
-                                if (showModeSelection) {
-                                  setState(() {
-                                    _selectedRetakeIsPartial = false;
-                                    _isModeSheetOpen = true;
-                                  });
-                                } else {
-                                  ref
-                                      .read(examAttemptProvider.notifier)
-                                      .reset();
-                                  await widget.onStartAttempt(
-                                    false,
-                                    isPartial: false,
-                                  );
+                      if (!widget.isOfflineOnly)
+                        ExamPrescreenActionButton(
+                          isButtonEnabled: isButtonEnabled,
+                          isResuming: isResuming,
+                          isRetaking: isRetaking,
+                          onTap: isButtonEnabled
+                              ? () async {
+                                  if (showModeSelection) {
+                                    setState(() {
+                                      _selectedRetakeIsPartial = false;
+                                      _isModeSheetOpen = true;
+                                    });
+                                  } else {
+                                    ref
+                                        .read(examAttemptProvider.notifier)
+                                        .reset();
+                                    await widget.onStartAttempt(
+                                      false,
+                                      isPartial: false,
+                                    );
+                                  }
                                 }
-                              }
-                            : null,
-                        onRetakeIncorrectTap: isButtonEnabled
-                            ? () async {
-                                if (showModeSelection) {
-                                  setState(() {
-                                    _selectedRetakeIsPartial = true;
-                                    _isModeSheetOpen = true;
-                                  });
-                                } else {
-                                  ref
-                                      .read(examAttemptProvider.notifier)
-                                      .reset();
-                                  await widget.onStartAttempt(
-                                    false,
-                                    isPartial: true,
-                                  );
+                              : null,
+                          onRetakeIncorrectTap: isButtonEnabled
+                              ? () async {
+                                  if (showModeSelection) {
+                                    setState(() {
+                                      _selectedRetakeIsPartial = true;
+                                      _isModeSheetOpen = true;
+                                    });
+                                  } else {
+                                    ref
+                                        .read(examAttemptProvider.notifier)
+                                        .reset();
+                                    await widget.onStartAttempt(
+                                      false,
+                                      isPartial: true,
+                                    );
+                                  }
                                 }
-                              }
-                            : null,
-                      ),
+                              : null,
+                        ),
                     ],
                   ),
                 )
@@ -289,7 +296,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
                     wrongMarks: wrongMarks,
                   ),
                   SizedBox(height: design.spacing.lg),
-                  if (attemptsUrl != null)
+                  if (attemptsUrl != null && !widget.isOfflineOnly)
                     attemptsAsync.when(
                       data: (attempts) {
                         final completedAttempts = attempts

@@ -898,6 +898,11 @@
     }
   },
   "testSavedLocallyOffline": "تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.",
+  "offlineExamSavedToast": "تم حفظ الاختبار. سيتم إرساله تلقائيًا عند عودتك إلى الإنترنت.",
+  "inProgressStatus": "جارٍ التنفيذ",
+  "syncingStatus": "جارٍ المزامنة…",
+  "pendingSyncStatus": "في انتظار المزامنة",
+  "submittedStatus": "تم الإرسال",
   "noAnswerGiven": "(لم يتم تقديم إجابة)",
   "correctAnswerLabel": "الإجابة الصحيحة:",
   "errorOfflineDataNotFound": "لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك.",

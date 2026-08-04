@@ -562,9 +562,10 @@ class AppDatabase extends _$AppDatabase {
 
   /// Get all pending synced downloads.
   Future<List<OfflineExamDownloadsTableData>> getPendingSyncDownloads() {
-    return (select(
-      offlineExamDownloadsTable,
-    )..where((t) => t.status.equals('PENDING_SYNC'))).get();
+    return (select(offlineExamDownloadsTable)..where(
+          (t) => t.status.equals('PENDING_SYNC') | t.status.equals('SYNCING'),
+        ))
+        .get();
   }
 
   /// Watch all downloaded offline exams for reactive UI updates.

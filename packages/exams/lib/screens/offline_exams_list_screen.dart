@@ -176,7 +176,7 @@ class _OfflineExamCard extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _ExamCardHeader(title: title),
+              _ExamCardHeader(exam: exam),
               SizedBox(height: design.spacing.md),
               _ExamCardStats(exam: exam),
               SizedBox(height: design.spacing.md),
@@ -192,14 +192,57 @@ class _OfflineExamCard extends ConsumerWidget {
 }
 
 class _ExamCardHeader extends StatelessWidget {
-  final String title;
+  final OfflineExamDownloadsTableData exam;
 
-  const _ExamCardHeader({required this.title});
+  const _ExamCardHeader({required this.exam});
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final status = exam.status;
+
+    // Badge configuration per status
+    final Color badgeBg;
+    final Color badgeFg;
+    final Widget badgeLeading;
+    final String badgeLabel;
+
+    switch (status) {
+      case 'IN_PROGRESS':
+        badgeBg = design.colors.primary.withValues(alpha: 0.12);
+        badgeFg = design.colors.primary;
+        badgeLeading = Icon(LucideIcons.pencil, size: 14, color: badgeFg);
+        badgeLabel = l10n.inProgressStatus;
+        break;
+      case 'PENDING_SYNC':
+        badgeBg = design.colors.warning.withValues(alpha: 0.15);
+        badgeFg = design.colors.warning;
+        badgeLeading = Icon(LucideIcons.clock, size: 14, color: badgeFg);
+        badgeLabel = l10n.pendingSyncStatus;
+        break;
+      case 'SYNCING':
+        badgeBg = design.colors.warning.withValues(alpha: 0.15);
+        badgeFg = design.colors.warning;
+        badgeLeading = SizedBox(
+          width: 14,
+          height: 14,
+          child: FittedBox(child: AppLoadingIndicator(color: badgeFg)),
+        );
+        badgeLabel = l10n.syncingStatus;
+        break;
+      case 'SYNCED':
+        badgeBg = design.colors.success.withValues(alpha: 0.1);
+        badgeFg = design.colors.success;
+        badgeLeading = Icon(LucideIcons.checkCircle2, size: 14, color: badgeFg);
+        badgeLabel = l10n.submittedStatus;
+        break;
+      default: // DOWNLOADED
+        badgeBg = design.colors.success.withValues(alpha: 0.1);
+        badgeFg = design.colors.success;
+        badgeLeading = Icon(LucideIcons.checkCircle2, size: 14, color: badgeFg);
+        badgeLabel = l10n.downloadedStatus;
+    }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -223,7 +266,7 @@ class _ExamCardHeader extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [AppText.cardTitle(title)],
+            children: [AppText.cardTitle(exam.title)],
           ),
         ),
         SizedBox(width: design.spacing.sm),
@@ -233,25 +276,16 @@ class _ExamCardHeader extends StatelessWidget {
             vertical: design.spacing.xs,
           ),
           decoration: BoxDecoration(
-            color: design.colors.success.withValues(alpha: 0.1),
-            border: Border.all(
-              color: design.colors.success.withValues(alpha: 0.3),
-            ),
+            color: badgeBg,
+            border: Border.all(color: badgeFg.withValues(alpha: 0.3)),
             borderRadius: BorderRadius.circular(design.radius.sm),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                LucideIcons.checkCircle2,
-                size: 14,
-                color: design.colors.success,
-              ),
+              badgeLeading,
               SizedBox(width: design.spacing.xs),
-              AppText.labelSmall(
-                l10n.downloadedStatus,
-                color: design.colors.success,
-              ),
+              AppText.labelSmall(badgeLabel, color: badgeFg),
             ],
           ),
         ),
@@ -401,23 +435,25 @@ class _ExamCardActions extends ConsumerWidget {
             }
           },
         ),
-        SizedBox(width: design.spacing.sm),
-        AppButton(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.md,
-            vertical: design.spacing.xs,
+        if (exam.status != 'SYNCED') ...[
+          SizedBox(width: design.spacing.sm),
+          AppButton(
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacing.md,
+              vertical: design.spacing.xs,
+            ),
+            label: l10n.attendExamAction,
+            variant: AppButtonVariant.primary,
+            leading: Icon(
+              LucideIcons.play,
+              size: 18,
+              color: design.colors.onPrimary,
+            ),
+            onPressed: () {
+              context.push('/exams/test/${exam.contentId}?isOffline=true');
+            },
           ),
-          label: l10n.attendExamAction,
-          variant: AppButtonVariant.primary,
-          leading: Icon(
-            LucideIcons.play,
-            size: 18,
-            color: design.colors.onPrimary,
-          ),
-          onPressed: () {
-            context.push('/exams/test/${exam.contentId}');
-          },
-        ),
+        ],
       ],
     );
   }

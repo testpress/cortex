@@ -2588,6 +2588,22 @@ class AppLocalizationsMl extends AppLocalizations {
       'പരീക്ഷ ലോക്കലായി സേവ് ചെയ്തു. സിങ്ക് ചെയ്തുകഴിഞ്ഞാൽ ഫലങ്ങൾ ലഭ്യമാകും.';
 
   @override
+  String get offlineExamSavedToast =>
+      'പരീക്ഷ സേവ് ചെയ്തു. ഇന്റർനെറ്റ് ലഭ്യമാകുമ്പോൾ ഇത് സ്വയം സമർപ്പിക്കപ്പെടും.';
+
+  @override
+  String get inProgressStatus => 'പുരോഗതിയിൽ';
+
+  @override
+  String get syncingStatus => 'സിങ്ക് ചെയ്യുന്നു…';
+
+  @override
+  String get pendingSyncStatus => 'സിങ്ക് ചെയ്യാനുണ്ട്';
+
+  @override
+  String get submittedStatus => 'സമർപ്പിക്കപ്പെട്ടു';
+
+  @override
   String get noAnswerGiven => '(ഉത്തരം നൽകിയിട്ടില്ല)';
 
   @override

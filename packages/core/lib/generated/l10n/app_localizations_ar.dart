@@ -2548,6 +2548,22 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.';
 
   @override
+  String get offlineExamSavedToast =>
+      'تم حفظ الاختبار. سيتم إرساله تلقائيًا عند عودتك إلى الإنترنت.';
+
+  @override
+  String get inProgressStatus => 'جارٍ التنفيذ';
+
+  @override
+  String get syncingStatus => 'جارٍ المزامنة…';
+
+  @override
+  String get pendingSyncStatus => 'في انتظار المزامنة';
+
+  @override
+  String get submittedStatus => 'تم الإرسال';
+
+  @override
   String get noAnswerGiven => '(لم يتم تقديم إجابة)';
 
   @override

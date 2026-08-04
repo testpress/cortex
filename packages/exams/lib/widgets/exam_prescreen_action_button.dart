@@ -34,11 +34,10 @@ class ExamPrescreenActionButton extends StatelessWidget {
     if (isResuming || !isRetaking) {
       final label = isResuming ? l10n.resumeExamOnline : l10n.startExamOnline;
       return Skeleton.ignore(
-        child: AppSemantics.button(
+        child: AppButton.primary(
           label: label,
-          onTap: onTap,
-          enabled: isButtonEnabled,
-          child: _buildButtonContainer(context, label, onTap, isPrimary: true),
+          onPressed: isButtonEnabled ? onTap : null,
+          fullWidth: true,
         ),
       );
     }
@@ -48,81 +47,21 @@ class ExamPrescreenActionButton extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: AppSemantics.button(
+            child: AppButton.secondary(
               label: l10n.retakeExamOnline,
-              onTap: onTap,
-              enabled: isButtonEnabled,
-              child: _buildButtonContainer(
-                context,
-                l10n.retakeExamOnline,
-                onTap,
-                isPrimary: false,
-              ),
+              onPressed: isButtonEnabled ? onTap : null,
+              borderColor: design.colors.primary,
+              foregroundColor: design.colors.primary,
             ),
           ),
           SizedBox(width: design.spacing.md),
           Expanded(
-            child: AppSemantics.button(
+            child: AppButton.primary(
               label: l10n.retakeIncorrectExamOnline,
-              onTap: onRetakeIncorrectTap,
-              enabled: isButtonEnabled,
-              child: _buildButtonContainer(
-                context,
-                l10n.retakeIncorrectExamOnline,
-                onRetakeIncorrectTap,
-                isPrimary: true,
-              ),
+              onPressed: isButtonEnabled ? onRetakeIncorrectTap : null,
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildButtonContainer(
-    BuildContext context,
-    String label,
-    VoidCallback? action, {
-    required bool isPrimary,
-  }) {
-    final design = Design.of(context);
-
-    final Color bgColor;
-    final Color textColor;
-    final Border? border;
-
-    if (!isButtonEnabled) {
-      bgColor = design.colors.border.withValues(alpha: 0.5);
-      textColor = design.colors.textSecondary;
-      border = null;
-    } else if (isPrimary) {
-      bgColor = design.colors.primary;
-      textColor = design.colors.onPrimary;
-      border = null;
-    } else {
-      bgColor = design.colors.surface;
-      textColor = design.colors.primary;
-      border = Border.all(color: design.colors.primary, width: 1.5);
-    }
-
-    return GestureDetector(
-      onTap: isButtonEnabled ? action : null,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(design.spacing.md),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(design.radius.lg),
-          border: border,
-        ),
-        child: AppText.body(
-          label,
-          textAlign: TextAlign.center,
-          style: design.typography.body.copyWith(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
       ),
     );
   }
