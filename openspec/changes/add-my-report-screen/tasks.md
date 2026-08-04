@@ -2,6 +2,7 @@
 
 - [x] 1.1 Implement core `AppWebView` widget to load pages and pass JWT token headers
 - [x] 1.2 Add localizations for "My report" in English, Arabic, Malayalam, and Tamil arb files and run `flutter gen-l10n`
+- [x] 1.3 Add unit tests for AppWebView.buildHeaders covering security-sensitive token/host attachment logic
 
 ## 2. Screen and Navigation Implementation
 

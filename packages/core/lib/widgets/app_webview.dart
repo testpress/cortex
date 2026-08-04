@@ -15,6 +15,29 @@ class AppWebView extends ConsumerStatefulWidget {
 
   final String url;
 
+  /// Helper to construct headers with auth token for secure requests.
+  @visibleForTesting
+  static Map<String, String> buildHeaders({
+    required Uri requestUri,
+    required String requestUrl,
+    required String initialUrl,
+    required String? token,
+  }) {
+    final headers = <String, String>{};
+    if (requestUri.scheme != 'https') return headers;
+
+    final initialUri = Uri.tryParse(initialUrl);
+    if (initialUri == null || requestUri.host != initialUri.host)
+      return headers;
+
+    if (requestUrl != initialUrl) return headers;
+
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'JWT $token';
+    }
+    return headers;
+  }
+
   @override
   ConsumerState<AppWebView> createState() => _AppWebViewState();
 }
@@ -74,21 +97,17 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
   }
 
   Future<Map<String, String>> _buildHeaders(Uri uri, String url) async {
-    final headers = <String, String>{};
-    if (uri.scheme != 'https') return headers;
-
-    final widgetUri = Uri.tryParse(widget.url);
-    if (widgetUri == null || uri.host != widgetUri.host) return headers;
-
     final authDataSource = ref.read(authLocalDataSourceProvider);
     final token = await authDataSource.getToken();
 
-    if (!mounted || url != widget.url) return headers;
+    if (!mounted || url != widget.url) return <String, String>{};
 
-    if (token != null && token.isNotEmpty) {
-      headers['Authorization'] = 'JWT $token';
-    }
-    return headers;
+    return AppWebView.buildHeaders(
+      requestUri: uri,
+      requestUrl: url,
+      initialUrl: widget.url,
+      token: token,
+    );
   }
 
   Future<void> _loadUrl(String url) async {

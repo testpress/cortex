@@ -24,7 +24,7 @@ class DashboardDrawer extends ConsumerWidget {
     final forumEnabled = settings?.forumEnabled ?? false;
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
     final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
-    final disableStudentReport = settings?.disableStudentReport ?? false;
+    final enableStudentReport = !(settings?.disableStudentReport ?? false);
     final analyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
 
     final bookmarksLabel = settings?.bookmarksLabel?.trim();
@@ -102,7 +102,7 @@ class DashboardDrawer extends ConsumerWidget {
                   context.go('/home/discussions/doubts');
                 },
               ),
-            if (!disableStudentReport)
+            if (enableStudentReport)
               AppDrawerItem(
                 icon: LucideIcons.fileChartColumn,
                 label: l10n.drawerMyReport,
