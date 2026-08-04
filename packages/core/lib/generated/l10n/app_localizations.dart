@@ -1278,6 +1278,12 @@ abstract class AppLocalizations {
   /// **'Reports'**
   String get drawerReports;
 
+  /// No description provided for @drawerMyReport.
+  ///
+  /// In en, this message translates to:
+  /// **'My report'**
+  String get drawerMyReport;
+
   /// No description provided for @drawerProfile.
   ///
   /// In en, this message translates to:

@@ -659,6 +659,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerReports => 'നിങ്ങളുടെ റിപ്പോർട്ട്';
 
   @override
+  String get drawerMyReport => 'എന്റെ റിപ്പോർട്ട്';
+
+  @override
   String get drawerProfile => 'പ്രൊഫൈൽ';
 
   @override

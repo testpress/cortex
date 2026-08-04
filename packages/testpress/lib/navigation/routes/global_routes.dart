@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../../screens/bookmarks/bookmarks_screen.dart';
+import '../../screens/my_report_screen.dart';
 
 class GlobalRoutes {
   static List<RouteBase> storeRoutes(
@@ -125,6 +126,11 @@ class GlobalRoutes {
   static List<RouteBase> immersiveRoutes(
     GlobalKey<NavigatorState> rootNavigatorKey,
   ) => [
+    GoRoute(
+      path: '/my-report',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const MyReportScreen(),
+    ),
     GoRoute(
       path: '/typography-gallery',
       parentNavigatorKey: rootNavigatorKey,

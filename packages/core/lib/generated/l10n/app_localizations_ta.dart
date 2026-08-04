@@ -663,6 +663,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get drawerReports => 'அறிக்கைகள்';
 
   @override
+  String get drawerMyReport => 'எனது அறிக்கை';
+
+  @override
   String get drawerProfile => 'சுயவிவரம்';
 
   @override

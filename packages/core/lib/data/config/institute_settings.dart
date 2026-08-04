@@ -15,6 +15,8 @@ enum VideoWatermarkPosition {
 
 @immutable
 class InstituteSettings {
+  final String domainUrl;
+
   // APP Specific
   final String name;
   final String photo;
@@ -74,7 +76,10 @@ class InstituteSettings {
   final bool learnlensEnabled;
   final String? learnlensOrgID;
 
+  final bool disableStudentReport;
+
   const InstituteSettings({
+    required this.domainUrl,
     required this.name,
     required this.photo,
     required this.timezone,
@@ -110,6 +115,7 @@ class InstituteSettings {
     required this.storeLabel,
     required this.currentPaymentApp,
     required this.learnlensEnabled,
+    required this.disableStudentReport,
     this.learnlensOrgID,
     this.videoWatermarkType,
     this.videoWatermarkPosition,
@@ -124,6 +130,7 @@ class InstituteSettings {
         .toLowerCase();
 
     return InstituteSettings(
+      domainUrl: json['domain_url'] as String? ?? '',
       name: json['name'] as String? ?? '',
       photo: json['photo'] as String? ?? '',
       timezone: json['timezone'] as String? ?? '',
@@ -182,6 +189,8 @@ class InstituteSettings {
       currentPaymentApp: json['current_payment_app'] as String? ?? '',
       learnlensEnabled: json['learnlens_enabled'] as bool? ?? false,
       learnlensOrgID: json['learnlens_organization_id'] as String?,
+      disableStudentReport: json['disable_student_report'] as bool? ?? false,
+
       videoWatermarkType: switch (watermarkType) {
         'dynamic' => VideoWatermarkType.dynamic,
         'static' => VideoWatermarkType.static,
@@ -200,6 +209,7 @@ class InstituteSettings {
 
   Map<String, dynamic> toJson() {
     return {
+      'domain_url': domainUrl,
       'name': name,
       'photo': photo,
       'timezone': timezone,
@@ -245,6 +255,7 @@ class InstituteSettings {
       'current_payment_app': currentPaymentApp,
       'learnlens_enabled': learnlensEnabled,
       'learnlens_organization_id': learnlensOrgID,
+      'disable_student_report': disableStudentReport,
       'video_watermark_type': switch (videoWatermarkType) {
         VideoWatermarkType.dynamic => 'dynamic',
         VideoWatermarkType.static => 'static',

@@ -301,6 +301,7 @@
   "drawerOfflineExams": "Offline Exams",
   "noDownloadedExamAvailable": "No downloaded exam available",
   "drawerReports": "Reports",
+  "drawerMyReport": "My report",
   "drawerProfile": "Profile",
   "drawerSettings": "App Settings",
   "drawerLoginActivity": "Login Activity",

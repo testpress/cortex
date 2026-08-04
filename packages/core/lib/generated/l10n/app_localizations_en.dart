@@ -651,6 +651,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerReports => 'Reports';
 
   @override
+  String get drawerMyReport => 'My report';
+
+  @override
   String get drawerProfile => 'Profile';
 
   @override

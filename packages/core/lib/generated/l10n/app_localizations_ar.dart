@@ -650,6 +650,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerReports => 'التقارير الخاصة بك';
 
   @override
+  String get drawerMyReport => 'تقريري';
+
+  @override
   String get drawerProfile => 'الملف الشخصي';
 
   @override
