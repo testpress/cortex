@@ -32,11 +32,12 @@ The system SHALL parse the `completed_learning` section (renamed from `recently_
 - **THEN** it compiles successfully
 
 ### Requirement: What's new feed shape
-The system SHALL parse the `whats_new` section from the unified response using the same nested join logic as `resume_learning`.
+The system SHALL parse the `whats_new` section from the unified response, extracting newly added contents and matching them with their chapters.
 
 #### Scenario: What's new items mapped from nested response
 - **WHEN** `whats_new` is parsed from the unified response
-- **THEN** each content attempt is joined with its matching user video and chapter content
+- **THEN** each chapter content is mapped to a dashboard feed item with progress set to null (as it represents new, unattempted content)
+- **THEN** chapter name is resolved from the corresponding `chapters` list
 - **THEN** items are stored in the DB under `DashboardSectionType.whatsNew`
 
 ## REMOVED Requirements
