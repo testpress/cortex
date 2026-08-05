@@ -26,7 +26,7 @@ class _CustomExamSubjectBottomSheetState
     extends ConsumerState<CustomExamSubjectBottomSheet> {
   bool _isAllSelected = true;
   int? _selectedSubjectId;
-  int _noOfQuestions = 15;
+  int _noOfQuestions = QuestionnaireBlock.minQuestions;
   final List<String> _selectedDifficulties = [];
   final List<String> _selectedQuestionTypes = [];
 
@@ -236,7 +236,6 @@ class _CustomExamSubjectBottomSheetState
             }).toList(),
           ),
         ],
-
         SizedBox(height: design.spacing.lg),
         _sectionLabel(design, l10n.customExamNumberOfQuestions),
         SizedBox(height: design.spacing.sm),
@@ -248,11 +247,11 @@ class _CustomExamSubjectBottomSheetState
           final int remainingQuota =
               config.limits.maxQuestionsPerTest - usedQuestions;
 
-          final double maxVal = remainingQuota < 5
-              ? 5.0
+          final double maxVal = remainingQuota < QuestionnaireBlock.minQuestions
+              ? QuestionnaireBlock.minQuestions.toDouble()
               : remainingQuota.toDouble();
           final double currentVal = _noOfQuestions.toDouble().clamp(
-            5.0,
+            QuestionnaireBlock.minQuestions.toDouble(),
             maxVal,
           );
 
@@ -269,9 +268,11 @@ class _CustomExamSubjectBottomSheetState
                   Expanded(
                     child: _SimpleSlider(
                       value: currentVal,
-                      min: 5,
+                      min: QuestionnaireBlock.minQuestions.toDouble(),
                       max: maxVal,
-                      divisions: (maxVal - 5) > 0 ? (maxVal - 5).toInt() : 1,
+                      divisions: (maxVal - QuestionnaireBlock.minQuestions) > 0
+                          ? (maxVal - QuestionnaireBlock.minQuestions).toInt()
+                          : 1,
                       onChanged: (val) {
                         setState(() => _noOfQuestions = val.toInt());
                       },
@@ -327,8 +328,10 @@ class _CustomExamSubjectBottomSheetState
     final int remainingQuota =
         config.limits.maxQuestionsPerTest - usedQuestions;
     final int safeNoOfQuestions = _noOfQuestions.clamp(
-      5,
-      remainingQuota < 5 ? 5 : remainingQuota,
+      QuestionnaireBlock.minQuestions,
+      remainingQuota < QuestionnaireBlock.minQuestions
+          ? QuestionnaireBlock.minQuestions
+          : remainingQuota,
     );
 
     final resolvedIds = notifier.resolveSubjectIds(

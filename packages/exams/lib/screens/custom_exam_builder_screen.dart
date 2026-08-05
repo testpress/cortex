@@ -30,6 +30,20 @@ class _CustomExamBuilderScreenState
     final builderState = ref.watch(customExamBuilderProvider(widget.courseId));
     final configAsync = ref.watch(customExamConfigProvider(widget.courseId));
 
+    final config = configAsync.valueOrNull;
+    final maxLimit = config?.limits.maxQuestionsPerTest ?? 0;
+    final totalLimit =
+        maxLimit > 0 && maxLimit < QuestionnaireBlock.minQuestions
+        ? QuestionnaireBlock.minQuestions
+        : maxLimit;
+
+    final usedQuestions = builderState.blocks.fold<int>(
+      0,
+      (sum, b) => sum + b.noOfQuestions,
+    );
+    final remainingQuota = totalLimit - usedQuestions;
+    final canAddMore = remainingQuota >= QuestionnaireBlock.minQuestions;
+
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.card),
       child: Stack(
@@ -73,7 +87,7 @@ class _CustomExamBuilderScreenState
                                 ),
                               ),
                               AppText.body(
-                                '${builderState.blocks.fold<int>(0, (sum, b) => sum + b.noOfQuestions)} / ${configAsync.valueOrNull?.limits.maxQuestionsPerTest ?? 0}',
+                                '$usedQuestions / $totalLimit',
                                 color: design.colors.textPrimary,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
@@ -91,47 +105,13 @@ class _CustomExamBuilderScreenState
 
                       // + Add (more) subjects button — full width
                       if (!configAsync.isLoading && !configAsync.hasError)
-                        () {
-                          final config = configAsync.valueOrNull;
-                          final totalLimit =
-                              config?.limits.maxQuestionsPerTest ?? 0;
-                          final usedQuestions = builderState.blocks.fold<int>(
-                            0,
-                            (sum, b) => sum + b.noOfQuestions,
-                          );
-                          final remainingQuota = totalLimit - usedQuestions;
-                          final canAddMore = remainingQuota >= 5;
-
-                          if (builderState.blocks.isEmpty) {
-                            return AppButton.primary(
-                              label: canAddMore
-                                  ? '+ ${l10n.customExamAddQuestionnaire}'
-                                  : l10n.customExamLimitReached(
-                                      usedQuestions,
-                                      totalLimit,
-                                    ),
-                              fullWidth: true,
-                              onPressed: canAddMore ? _openSubjectSheet : null,
-                            );
-                          } else {
-                            return AppButton.secondary(
-                              label: canAddMore
-                                  ? '+ ${l10n.customExamAddMoreQuestionnaires}'
-                                  : l10n.customExamLimitReached(
-                                      usedQuestions,
-                                      totalLimit,
-                                    ),
-                              fullWidth: true,
-                              borderColor: canAddMore
-                                  ? design.colors.border
-                                  : null,
-                              foregroundColor: canAddMore
-                                  ? design.colors.textSecondary
-                                  : null,
-                              onPressed: canAddMore ? _openSubjectSheet : null,
-                            );
-                          }
-                        }(),
+                        _buildAddButton(
+                          design,
+                          builderState,
+                          totalLimit,
+                          usedQuestions,
+                          canAddMore,
+                        ),
 
                       // Bottom padding so content clears the fixed footer
                       SizedBox(height: padding.bottom + 96),
@@ -281,6 +261,36 @@ class _CustomExamBuilderScreenState
         ),
       ),
     );
+  }
+
+  Widget _buildAddButton(
+    DesignConfig design,
+    CustomExamBuilderState builderState,
+    int totalLimit,
+    int usedQuestions,
+    bool canAddMore,
+  ) {
+    final l10n = L10n.of(context);
+
+    if (builderState.blocks.isEmpty) {
+      return AppButton.primary(
+        label: canAddMore
+            ? '+ ${l10n.customExamAddQuestionnaire}'
+            : l10n.customExamLimitReached(usedQuestions, totalLimit),
+        fullWidth: true,
+        onPressed: canAddMore ? _openSubjectSheet : null,
+      );
+    } else {
+      return AppButton.secondary(
+        label: canAddMore
+            ? '+ ${l10n.customExamAddMoreQuestionnaires}'
+            : l10n.customExamLimitReached(usedQuestions, totalLimit),
+        fullWidth: true,
+        borderColor: canAddMore ? design.colors.border : null,
+        foregroundColor: canAddMore ? design.colors.textSecondary : null,
+        onPressed: canAddMore ? _openSubjectSheet : null,
+      );
+    }
   }
 
   // ── Empty state ────────────────────────────────────────────────────────────
