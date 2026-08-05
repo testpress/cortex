@@ -11,16 +11,7 @@ part 'dashboard_providers.g.dart';
 @riverpod
 Future<void> dashboardBootstrap(Ref ref) async {
   final repository = await ref.watch(dashboardRepositoryProvider.future);
-  final leaderboardRepository =
-      await ref.watch(leaderboardRepositoryProvider.future);
-
-  await Future.wait([
-    repository.refreshHeroBanners(),
-    leaderboardRepository.refreshLeaderboard(LeaderboardTimeline.thisWeek),
-    repository.refreshWhatsNewFeed(),
-    repository.refreshResumeLearningFeed(),
-    repository.refreshRecentlyCompletedFeed(),
-  ]);
+  await repository.refreshDashboard();
 }
 
 @riverpod

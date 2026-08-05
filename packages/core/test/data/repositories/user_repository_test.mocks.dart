@@ -79,14 +79,14 @@ class _FakeInstallmentPlansResponseDto_9 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeLearnerDto_10 extends _i1.SmartFake implements _i2.LearnerDto {
-  _FakeLearnerDto_10(Object parent, Invocation parentInvocation)
+class _FakeDashboardResponseDto_10 extends _i1.SmartFake
+    implements _i2.DashboardResponseDto {
+  _FakeDashboardResponseDto_10(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDashboardContentsDto_11 extends _i1.SmartFake
-    implements _i2.DashboardContentsDto {
-  _FakeDashboardContentsDto_11(Object parent, Invocation parentInvocation)
+class _FakeLearnerDto_11 extends _i1.SmartFake implements _i2.LearnerDto {
+  _FakeLearnerDto_11(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -862,18 +862,24 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<_i2.InstallmentPlansResponseDto>);
 
   @override
-  _i3.Future<List<_i2.DashboardBannerDto>> getDashboardBanners() =>
+  _i3.Future<_i2.DashboardResponseDto> getDashboard() =>
       (super.noSuchMethod(
-            Invocation.method(#getDashboardBanners, []),
-            returnValue: _i3.Future<List<_i2.DashboardBannerDto>>.value(
-              <_i2.DashboardBannerDto>[],
+            Invocation.method(#getDashboard, []),
+            returnValue: _i3.Future<_i2.DashboardResponseDto>.value(
+              _FakeDashboardResponseDto_10(
+                this,
+                Invocation.method(#getDashboard, []),
+              ),
             ),
             returnValueForMissingStub:
-                _i3.Future<List<_i2.DashboardBannerDto>>.value(
-                  <_i2.DashboardBannerDto>[],
+                _i3.Future<_i2.DashboardResponseDto>.value(
+                  _FakeDashboardResponseDto_10(
+                    this,
+                    Invocation.method(#getDashboard, []),
+                  ),
                 ),
           )
-          as _i3.Future<List<_i2.DashboardBannerDto>>);
+          as _i3.Future<_i2.DashboardResponseDto>);
 
   @override
   _i3.Future<List<_i2.LearnerDto>> fetchLeaderboard({
@@ -901,10 +907,10 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
       (super.noSuchMethod(
             Invocation.method(#fetchMyRank, []),
             returnValue: _i3.Future<_i2.LearnerDto>.value(
-              _FakeLearnerDto_10(this, Invocation.method(#fetchMyRank, [])),
+              _FakeLearnerDto_11(this, Invocation.method(#fetchMyRank, [])),
             ),
             returnValueForMissingStub: _i3.Future<_i2.LearnerDto>.value(
-              _FakeLearnerDto_10(this, Invocation.method(#fetchMyRank, [])),
+              _FakeLearnerDto_11(this, Invocation.method(#fetchMyRank, [])),
             ),
           )
           as _i3.Future<_i2.LearnerDto>);
@@ -934,50 +940,6 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
             ),
           )
           as _i3.Future<List<_i2.LearnerDto>>);
-
-  @override
-  _i3.Future<_i2.DashboardContentsDto> getWhatsNewFeed(
-    _i2.DashboardSectionType? sectionType,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getWhatsNewFeed, [sectionType]),
-            returnValue: _i3.Future<_i2.DashboardContentsDto>.value(
-              _FakeDashboardContentsDto_11(
-                this,
-                Invocation.method(#getWhatsNewFeed, [sectionType]),
-              ),
-            ),
-            returnValueForMissingStub:
-                _i3.Future<_i2.DashboardContentsDto>.value(
-                  _FakeDashboardContentsDto_11(
-                    this,
-                    Invocation.method(#getWhatsNewFeed, [sectionType]),
-                  ),
-                ),
-          )
-          as _i3.Future<_i2.DashboardContentsDto>);
-
-  @override
-  _i3.Future<_i2.DashboardContentsDto> getResumeLearningFeed(
-    _i2.DashboardSectionType? sectionType,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getResumeLearningFeed, [sectionType]),
-            returnValue: _i3.Future<_i2.DashboardContentsDto>.value(
-              _FakeDashboardContentsDto_11(
-                this,
-                Invocation.method(#getResumeLearningFeed, [sectionType]),
-              ),
-            ),
-            returnValueForMissingStub:
-                _i3.Future<_i2.DashboardContentsDto>.value(
-                  _FakeDashboardContentsDto_11(
-                    this,
-                    Invocation.method(#getResumeLearningFeed, [sectionType]),
-                  ),
-                ),
-          )
-          as _i3.Future<_i2.DashboardContentsDto>);
 
   @override
   _i3.Future<_i2.PaginatedResponseDto<_i2.PostDto>> getPosts({
@@ -1406,28 +1368,6 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
             ),
           )
           as _i3.Future<_i2.SectionDto>);
-
-  @override
-  _i3.Future<_i2.DashboardContentsDto> getRecentlyCompletedFeed(
-    _i2.DashboardSectionType? sectionType,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getRecentlyCompletedFeed, [sectionType]),
-            returnValue: _i3.Future<_i2.DashboardContentsDto>.value(
-              _FakeDashboardContentsDto_11(
-                this,
-                Invocation.method(#getRecentlyCompletedFeed, [sectionType]),
-              ),
-            ),
-            returnValueForMissingStub:
-                _i3.Future<_i2.DashboardContentsDto>.value(
-                  _FakeDashboardContentsDto_11(
-                    this,
-                    Invocation.method(#getRecentlyCompletedFeed, [sectionType]),
-                  ),
-                ),
-          )
-          as _i3.Future<_i2.DashboardContentsDto>);
 
   @override
   _i3.Future<_i2.UserDto> getProfile() =>

@@ -361,7 +361,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get laterTodaySection => 'LATER TODAY';
 
   @override
-  String get topLearnersTitle => 'Top Learners This Week';
+  String get topLearnersTitle => 'Top Learners';
 
   @override
   String get updatesAnnouncementsTitle => 'Updates & Announcements';

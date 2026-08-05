@@ -269,7 +269,7 @@ const mockRecentlyCompletedFeed = DashboardContentsDto(
       coverImage:
           'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
       contentType: DashboardContentType.video,
-      sectionType: DashboardSectionType.recentlyCompleted,
+      sectionType: DashboardSectionType.completedLearning,
     ),
     DashboardContentDto(
       id: '7',
@@ -280,7 +280,7 @@ const mockRecentlyCompletedFeed = DashboardContentsDto(
       coverImage:
           'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
       contentType: DashboardContentType.video,
-      sectionType: DashboardSectionType.recentlyCompleted,
+      sectionType: DashboardSectionType.completedLearning,
     ),
     DashboardContentDto(
       id: '8',
@@ -291,7 +291,7 @@ const mockRecentlyCompletedFeed = DashboardContentsDto(
       coverImage:
           'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
       contentType: DashboardContentType.video,
-      sectionType: DashboardSectionType.recentlyCompleted,
+      sectionType: DashboardSectionType.completedLearning,
     ),
   ],
 );

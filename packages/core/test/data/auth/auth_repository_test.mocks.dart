@@ -1882,6 +1882,15 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> clearAnswersForDownload(int? downloadId) =>
+      (super.noSuchMethod(
+            Invocation.method(#clearAnswersForDownload, [downloadId]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i3.Migrator createMigrator() =>
       (super.noSuchMethod(
             Invocation.method(#createMigrator, []),

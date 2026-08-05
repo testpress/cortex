@@ -367,7 +367,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get laterTodaySection => 'இன்று பின்னர்';
 
   @override
-  String get topLearnersTitle => 'இந்த வாரத்தின் சிறந்த கற்பவர்கள்';
+  String get topLearnersTitle => 'சிறந்த கற்பவர்கள்';
 
   @override
   String get updatesAnnouncementsTitle => 'புதுப்பிப்புகள் & அறிவிப்புகள்';

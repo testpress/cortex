@@ -1180,9 +1180,9 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<List<DashboardBannerDto>> getDashboardBanners() async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return [
+  Future<DashboardResponseDto> getDashboard() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final bannerAdsList = [
       const DashboardBannerDto(
         id: "1",
         imageUrl:
@@ -1202,6 +1202,180 @@ class MockDataSource implements DataSource {
         title: "Special Merit Scholarship Program",
       ),
     ];
+
+    final mockResumeLearning = ResumeLearningDto(
+      contentAttempts: const [
+        ContentAttemptDto(
+          id: '1',
+          chapterContentId: '376154',
+          contentType: 'video',
+          state: 'Started',
+          userVideoId: '100',
+        ),
+        ContentAttemptDto(
+          id: '2',
+          chapterContentId: '363107',
+          contentType: 'exam',
+          state: 'Started',
+          assessmentId: '200',
+        ),
+      ],
+      userVideos: const [
+        UserVideoDto(
+          id: '100',
+          watchedPercentage: 65.0,
+          remainingDuration: '45m',
+          videoContent: VideoContentDto(
+            id: '1000',
+            title: 'Rectilinear Motion : Part 01',
+            duration: '1h 36m',
+          ),
+        ),
+      ],
+      userExams: const [UserExamDto(id: '200', examId: '2000')],
+      chapterContents: const [
+        ChapterContentSummaryDto(
+          id: '376154',
+          title: 'Rectilinear Motion : Part 01',
+          chapterId: '10',
+          contentType: 'Video',
+          coverImageMedium:
+              'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/192570/7f977cf2e71e4ecba9909788605737a7.png',
+        ),
+        ChapterContentSummaryDto(
+          id: '363107',
+          title: 'IISER Previous Year Model - 2025',
+          chapterId: '20',
+          contentType: 'Exam',
+          examId: '2000',
+          coverImageMedium:
+              'https://d1j3vi2u94ebt0.cloudfront.net/institute/brilliantpalalms/chapter_contents/363107/047b484129f04324b36ceaf5ebadf348.png',
+        ),
+      ],
+      chapters: const [
+        ChapterSummaryDto(id: '10', name: 'Rectilinear Motion'),
+        ChapterSummaryDto(
+          id: '20',
+          name: 'IISER PREVIOUS YEAR MODEL EXAM [ 2017-2025]',
+        ),
+      ],
+      courses: const [],
+    );
+
+    final mockCompletedLearning = CompletedLearningDto(
+      contentAttempts: const [
+        ContentAttemptDto(
+          id: '3',
+          chapterContentId: '6',
+          contentType: 'video',
+          state: 'Completed',
+          userVideoId: '300',
+        ),
+        ContentAttemptDto(
+          id: '4',
+          chapterContentId: '7',
+          contentType: 'video',
+          state: 'Completed',
+          userVideoId: '400',
+        ),
+        ContentAttemptDto(
+          id: '5',
+          chapterContentId: '8',
+          contentType: 'video',
+          state: 'Completed',
+          userVideoId: '500',
+        ),
+      ],
+      userVideos: const [
+        UserVideoDto(
+          id: '300',
+          watchedPercentage: 100.0,
+          videoContent: VideoContentDto(
+            id: '3000',
+            title: 'Cell Biology',
+            duration: '1h',
+          ),
+        ),
+        UserVideoDto(
+          id: '400',
+          watchedPercentage: 100.0,
+          videoContent: VideoContentDto(
+            id: '4000',
+            title: 'Genetics',
+            duration: '2h 15m',
+          ),
+        ),
+        UserVideoDto(
+          id: '500',
+          watchedPercentage: 100.0,
+          videoContent: VideoContentDto(
+            id: '5000',
+            title: 'Plant Physiology',
+            duration: '1h 20m',
+          ),
+        ),
+      ],
+      userExams: const [],
+      chapterContents: const [
+        ChapterContentSummaryDto(
+          id: '6',
+          title: 'Cell Biology',
+          chapterId: '30',
+          contentType: 'Video',
+          coverImageMedium:
+              'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+        ),
+        ChapterContentSummaryDto(
+          id: '7',
+          title: 'Genetics',
+          chapterId: '40',
+          contentType: 'Video',
+          coverImageMedium:
+              'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+        ),
+        ChapterContentSummaryDto(
+          id: '8',
+          title: 'Plant Physiology',
+          chapterId: '30',
+          contentType: 'Video',
+          coverImageMedium:
+              'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=500&q=80',
+        ),
+      ],
+      chapters: const [
+        ChapterSummaryDto(id: '30', name: 'Biology Class 11'),
+        ChapterSummaryDto(id: '40', name: 'Biology Class 12'),
+      ],
+      courses: const [],
+    );
+
+    final mockWhatsNew = WhatsNewDto(
+      chapterContents: const [
+        ChapterContentSummaryDto(
+          id: '1',
+          title: 'Introduction to Calculus',
+          chapterId: '50',
+          contentType: 'Video',
+          coverImageMedium: 'https://placeholder.com/video1.png',
+        ),
+        ChapterContentSummaryDto(
+          id: '2',
+          title: 'Practice Set 1',
+          chapterId: '50',
+          contentType: 'Exam',
+          coverImageMedium: 'https://placeholder.com/test1.png',
+        ),
+      ],
+      chapters: const [ChapterSummaryDto(id: '50', name: 'Calculus Basics')],
+    );
+
+    return DashboardResponseDto(
+      bannerAds: bannerAdsList,
+      resumeLearning: mockResumeLearning,
+      completedLearning: mockCompletedLearning,
+      whatsNew: mockWhatsNew,
+      leaderboard: mockLearners,
+    );
   }
 
   @override
@@ -1242,30 +1416,6 @@ class MockDataSource implements DataSource {
       LearnerDto(id: 'c3', rank: 0, name: 'Threat 1', avatar: '', points: 420),
       LearnerDto(id: 'c4', rank: 0, name: 'Threat 2', avatar: '', points: 400),
     ];
-  }
-
-  @override
-  Future<DashboardContentsDto> getWhatsNewFeed(
-    DashboardSectionType sectionType,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return mockWhatsNewFeed;
-  }
-
-  @override
-  Future<DashboardContentsDto> getResumeLearningFeed(
-    DashboardSectionType sectionType,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return mockResumeLearningFeed;
-  }
-
-  @override
-  Future<DashboardContentsDto> getRecentlyCompletedFeed(
-    DashboardSectionType sectionType,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return mockRecentlyCompletedFeed;
   }
 
   // ─────────────────────────────────────────────────────────────────────────

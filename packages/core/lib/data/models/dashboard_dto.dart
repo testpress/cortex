@@ -41,7 +41,7 @@ class DashboardContentDto {
       title: json['title'] ?? '',
       chapterId: chapterId,
       chapterTitle: chapterMap?[chapterId],
-      contentType: _mapContentType(
+      contentType: mapContentType(
         (json['content_type'] ?? json['type'] ?? 'unknown').toString(),
       ),
       totalDuration: json['total_duration'] ?? json['duration'],
@@ -52,7 +52,7 @@ class DashboardContentDto {
     );
   }
 
-  static DashboardContentType _mapContentType(String type) {
+  static DashboardContentType mapContentType(String type) {
     final t = type.toLowerCase();
     if (t.contains('video')) return DashboardContentType.video;
     if (t.contains('pdf')) return DashboardContentType.pdf;
@@ -88,7 +88,7 @@ class DashboardContentsDto {
     switch (sectionType) {
       case DashboardSectionType.resumeLearning:
         return _parseResumeLearning(results);
-      case DashboardSectionType.recentlyCompleted:
+      case DashboardSectionType.completedLearning:
         return _parseRecentlyCompleted(results);
       case DashboardSectionType.whatsNew:
         return _parseWhatsNewFeed(results, sectionType);
@@ -111,7 +111,7 @@ class DashboardContentsDto {
       return DashboardContentDto.fromJson(
         map,
         chapterMap: chapterMap,
-        sectionType: DashboardSectionType.recentlyCompleted,
+        sectionType: DashboardSectionType.completedLearning,
       );
     }).toList();
 
@@ -352,6 +352,372 @@ class LearnerDto {
       avatar: avatar ?? this.avatar,
       points: points ?? this.points,
       isCurrentUser: isCurrentUser ?? this.isCurrentUser,
+    );
+  }
+}
+
+class DashboardResponseDto {
+  final List<DashboardBannerDto> bannerAds;
+  final ResumeLearningDto resumeLearning;
+  final WhatsNewDto whatsNew;
+  final CompletedLearningDto completedLearning;
+  final List<LearnerDto> leaderboard;
+
+  const DashboardResponseDto({
+    required this.bannerAds,
+    required this.resumeLearning,
+    required this.whatsNew,
+    required this.completedLearning,
+    required this.leaderboard,
+  });
+
+  factory DashboardResponseDto.fromJson(Map<String, dynamic> json) {
+    final bannerAdsList =
+        (json['banner_ads'] as List?)
+            ?.map((e) => DashboardBannerDto.fromJson(e as Map<String, dynamic>))
+            .whereType<DashboardBannerDto>()
+            .toList() ??
+        [];
+
+    final leaderboardList =
+        (json['leaderboard'] as List?)
+            ?.map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0))
+            .toList() ??
+        [];
+
+    return DashboardResponseDto(
+      bannerAds: bannerAdsList,
+      resumeLearning: ResumeLearningDto.fromJson(
+        json['resume_learning'] as Map<String, dynamic>? ?? {},
+      ),
+      whatsNew: WhatsNewDto.fromJson(
+        json['whats_new'] as Map<String, dynamic>? ?? {},
+      ),
+      completedLearning: CompletedLearningDto.fromJson(
+        json['completed_learning'] as Map<String, dynamic>? ?? {},
+      ),
+      leaderboard: leaderboardList,
+    );
+  }
+}
+
+class ResumeLearningDto {
+  final List<ContentAttemptDto> contentAttempts;
+  final List<UserVideoDto> userVideos;
+  final List<CourseSummaryDto> courses;
+  final List<ChapterSummaryDto> chapters;
+  final List<ChapterContentSummaryDto> chapterContents;
+  final List<UserExamDto> userExams;
+
+  const ResumeLearningDto({
+    required this.contentAttempts,
+    required this.userVideos,
+    required this.courses,
+    required this.chapters,
+    required this.chapterContents,
+    required this.userExams,
+  });
+
+  factory ResumeLearningDto.fromJson(Map<String, dynamic> json) {
+    return ResumeLearningDto(
+      contentAttempts:
+          (json['content_attempts'] as List?)
+              ?.map(
+                (e) => ContentAttemptDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
+      userVideos:
+          (json['user_videos'] as List?)
+              ?.map((e) => UserVideoDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      courses:
+          (json['courses'] as List?)
+              ?.map((e) => CourseSummaryDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      chapters:
+          (json['chapters'] as List?)
+              ?.map(
+                (e) => ChapterSummaryDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
+      chapterContents:
+          (json['chapter_contents'] as List?)
+              ?.map(
+                (e) => ChapterContentSummaryDto.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          [],
+      userExams:
+          (json['user_exams'] as List?)
+              ?.map((e) => UserExamDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class CompletedLearningDto {
+  final List<ContentAttemptDto> contentAttempts;
+  final List<UserVideoDto> userVideos;
+  final List<CourseSummaryDto> courses;
+  final List<ChapterSummaryDto> chapters;
+  final List<ChapterContentSummaryDto> chapterContents;
+  final List<UserExamDto> userExams;
+
+  const CompletedLearningDto({
+    required this.contentAttempts,
+    required this.userVideos,
+    required this.courses,
+    required this.chapters,
+    required this.chapterContents,
+    required this.userExams,
+  });
+
+  factory CompletedLearningDto.fromJson(Map<String, dynamic> json) {
+    return CompletedLearningDto(
+      contentAttempts:
+          (json['content_attempts'] as List?)
+              ?.map(
+                (e) => ContentAttemptDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
+      userVideos:
+          (json['user_videos'] as List?)
+              ?.map((e) => UserVideoDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      courses:
+          (json['courses'] as List?)
+              ?.map((e) => CourseSummaryDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      chapters:
+          (json['chapters'] as List?)
+              ?.map(
+                (e) => ChapterSummaryDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
+      chapterContents:
+          (json['chapter_contents'] as List?)
+              ?.map(
+                (e) => ChapterContentSummaryDto.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          [],
+      userExams:
+          (json['user_exams'] as List?)
+              ?.map((e) => UserExamDto.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class WhatsNewDto {
+  final List<ChapterSummaryDto> chapters;
+  final List<ChapterContentSummaryDto> chapterContents;
+
+  const WhatsNewDto({required this.chapters, required this.chapterContents});
+
+  factory WhatsNewDto.fromJson(Map<String, dynamic> json) {
+    return WhatsNewDto(
+      chapters:
+          (json['chapters'] as List?)
+              ?.map(
+                (e) => ChapterSummaryDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
+      chapterContents:
+          (json['chapter_contents'] as List?)
+              ?.map(
+                (e) => ChapterContentSummaryDto.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class ContentAttemptDto {
+  final String id;
+  final String chapterContentId;
+  final String contentType;
+  final String state;
+  final String? remainingTime;
+  final String? userVideoId;
+  final String? assessmentId;
+  final String? courseId;
+  final String? chapterId;
+
+  const ContentAttemptDto({
+    required this.id,
+    required this.chapterContentId,
+    required this.contentType,
+    required this.state,
+    this.remainingTime,
+    this.userVideoId,
+    this.assessmentId,
+    this.courseId,
+    this.chapterId,
+  });
+
+  factory ContentAttemptDto.fromJson(Map<String, dynamic> json) {
+    return ContentAttemptDto(
+      id: json['id']?.toString() ?? '',
+      chapterContentId: json['chapter_content_id']?.toString() ?? '',
+      contentType: json['content_type']?.toString() ?? '',
+      state: json['state']?.toString() ?? '',
+      remainingTime: json['remaining_time']?.toString(),
+      userVideoId: json['user_video_id']?.toString(),
+      assessmentId: json['assessment_id']?.toString(),
+      courseId: json['course_id']?.toString(),
+      chapterId: json['chapter_id']?.toString(),
+    );
+  }
+}
+
+class UserVideoDto {
+  final String id;
+  final double watchedPercentage;
+  final String? remainingDuration;
+  final VideoContentDto? videoContent;
+
+  const UserVideoDto({
+    required this.id,
+    required this.watchedPercentage,
+    this.remainingDuration,
+    this.videoContent,
+  });
+
+  factory UserVideoDto.fromJson(Map<String, dynamic> json) {
+    return UserVideoDto(
+      id: json['id']?.toString() ?? '',
+      watchedPercentage:
+          (json['watched_percentage'] as num?)?.toDouble() ?? 0.0,
+      remainingDuration: json['remaining_duration']?.toString(),
+      videoContent: json['video_content'] != null
+          ? VideoContentDto.fromJson(
+              json['video_content'] as Map<String, dynamic>,
+            )
+          : null,
+    );
+  }
+}
+
+class VideoContentDto {
+  final String id;
+  final String title;
+  final String? duration;
+
+  const VideoContentDto({required this.id, required this.title, this.duration});
+
+  factory VideoContentDto.fromJson(Map<String, dynamic> json) {
+    return VideoContentDto(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      duration: json['duration']?.toString(),
+    );
+  }
+}
+
+class CourseSummaryDto {
+  final String id;
+  final String title;
+  final String slug;
+
+  const CourseSummaryDto({
+    required this.id,
+    required this.title,
+    required this.slug,
+  });
+
+  factory CourseSummaryDto.fromJson(Map<String, dynamic> json) {
+    return CourseSummaryDto(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      slug: json['slug']?.toString() ?? '',
+    );
+  }
+}
+
+class ChapterSummaryDto {
+  final String id;
+  final String name;
+
+  const ChapterSummaryDto({required this.id, required this.name});
+
+  factory ChapterSummaryDto.fromJson(Map<String, dynamic> json) {
+    return ChapterSummaryDto(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+    );
+  }
+}
+
+class ChapterContentSummaryDto {
+  final String id;
+  final String title;
+  final String chapterId;
+  final String contentType;
+  final String? coverImageMedium;
+  final String? examId;
+
+  const ChapterContentSummaryDto({
+    required this.id,
+    required this.title,
+    required this.chapterId,
+    required this.contentType,
+    this.coverImageMedium,
+    this.examId,
+  });
+
+  factory ChapterContentSummaryDto.fromJson(Map<String, dynamic> json) {
+    return ChapterContentSummaryDto(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      chapterId: json['chapter_id']?.toString() ?? '',
+      contentType: json['content_type']?.toString() ?? '',
+      coverImageMedium: json['cover_image_medium']?.toString(),
+      examId: json['exam_id']?.toString(),
+    );
+  }
+}
+
+class UserExamDto {
+  final String id;
+  final String examId;
+  final String? totalScore;
+  final int? numberOfCorrectAnswers;
+  final int? numberOfIncorrectAnswers;
+
+  const UserExamDto({
+    required this.id,
+    required this.examId,
+    this.totalScore,
+    this.numberOfCorrectAnswers,
+    this.numberOfIncorrectAnswers,
+  });
+
+  factory UserExamDto.fromJson(Map<String, dynamic> json) {
+    return UserExamDto(
+      id: json['id']?.toString() ?? '',
+      examId: json['exam_id']?.toString() ?? '',
+      totalScore: json['total_score']?.toString(),
+      numberOfCorrectAnswers: json['number_of_correct_answers'] as int?,
+      numberOfIncorrectAnswers: json['number_of_incorrect_answers'] as int?,
     );
   }
 }
