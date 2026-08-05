@@ -1511,5 +1511,25 @@
   "customExamEmptyStateTitle": "No Questionnaires added yet",
   "customExamEmptyStateDesc": "Build your perfect test by combining subjects, difficulties, and question types.",
   "customExamAddQuestionnaire": "Add Questionnaire",
-  "customExamAddMoreQuestionnaires": "Add more Questionnaires"
+  "customExamAddMoreQuestionnaires": "Add more Questionnaires",
+  "customExamLimitReached": "Limit Reached ({used}/{total})",
+  "@customExamLimitReached": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "customExamTotalQuestions": "Total Questions",
+  "customExamRemainingQuestions": "You have {remaining} questions remaining for this exam.",
+  "@customExamRemainingQuestions": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -1408,5 +1408,8 @@
   "customExamEmptyStateTitle": "இதுவரை எந்த கேள்விகளும் சேர்க்கப்படவில்லை",
   "customExamEmptyStateDesc": "பாடங்கள், கடினத்தன்மை நிலைகள் மற்றும் கேள்வி வகைகளை ஒருங்கிணைத்து உங்கள் தேர்வை உருவாக்குங்கள்.",
   "customExamAddQuestionnaire": "கேள்விகளைச் சேர்",
-  "customExamAddMoreQuestionnaires": "மேலும் கேள்விகளைச் சேர்"
+  "customExamAddMoreQuestionnaires": "மேலும் கேள்விகளைச் சேர்",
+  "customExamLimitReached": "வரம்பை எட்டிவிட்டது ({used}/{total})",
+  "customExamTotalQuestions": "மொத்த கேள்விகள்",
+  "customExamRemainingQuestions": "இந்தத் தேர்வுக்கு உங்களிடம் {remaining} கேள்விகள் உள்ளன."
 }

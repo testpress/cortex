@@ -3111,4 +3111,17 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get customExamAddMoreQuestionnaires => 'மேலும் கேள்விகளைச் சேர்';
+
+  @override
+  String customExamLimitReached(int used, int total) {
+    return 'வரம்பை எட்டிவிட்டது ($used/$total)';
+  }
+
+  @override
+  String get customExamTotalQuestions => 'மொத்த கேள்விகள்';
+
+  @override
+  String customExamRemainingQuestions(int remaining) {
+    return 'இந்தத் தேர்வுக்கு உங்களிடம் $remaining கேள்விகள் உள்ளன.';
+  }
 }
