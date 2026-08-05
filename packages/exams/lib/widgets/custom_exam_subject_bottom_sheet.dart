@@ -26,7 +26,7 @@ class _CustomExamSubjectBottomSheetState
     extends ConsumerState<CustomExamSubjectBottomSheet> {
   bool _isAllSelected = true;
   int? _selectedSubjectId;
-  int _noOfQuestions = QuestionnaireBlock.minQuestions;
+  int _noOfQuestions = -1;
   final List<String> _selectedDifficulties = [];
   final List<String> _selectedQuestionTypes = [];
 
@@ -196,20 +196,28 @@ class _CustomExamSubjectBottomSheetState
           Wrap(
             spacing: design.spacing.sm,
             runSpacing: design.spacing.sm,
-            children: config.difficultyLevels.map((diff) {
-              final isSelected = _selectedDifficulties.contains(diff.value);
-              return AppChip(
-                label: diff.label,
-                isSelected: isSelected,
-                onTap: () => setState(() {
-                  if (isSelected) {
-                    _selectedDifficulties.remove(diff.value);
-                  } else {
-                    _selectedDifficulties.add(diff.value);
-                  }
-                }),
-              );
-            }).toList(),
+            children: config.difficultyLevels
+                .where(
+                  (d) =>
+                      d.label.toLowerCase() != 'very easy' &&
+                      d.value.toLowerCase() != 'very_easy' &&
+                      d.value.toLowerCase() != 'very easy',
+                )
+                .map((diff) {
+                  final isSelected = _selectedDifficulties.contains(diff.value);
+                  return AppChip(
+                    label: diff.label,
+                    isSelected: isSelected,
+                    onTap: () => setState(() {
+                      if (isSelected) {
+                        _selectedDifficulties.remove(diff.value);
+                      } else {
+                        _selectedDifficulties.add(diff.value);
+                      }
+                    }),
+                  );
+                })
+                .toList(),
           ),
         ],
 
@@ -250,7 +258,17 @@ class _CustomExamSubjectBottomSheetState
           final double maxVal = remainingQuota < QuestionnaireBlock.minQuestions
               ? QuestionnaireBlock.minQuestions.toDouble()
               : remainingQuota.toDouble();
-          final double currentVal = _noOfQuestions.toDouble().clamp(
+
+          final int effectiveNoOfQuestions = _noOfQuestions != -1
+              ? _noOfQuestions
+              : (remainingQuota >= 10
+                    ? 10
+                    : math.max(
+                        QuestionnaireBlock.minQuestions,
+                        remainingQuota ~/ 2,
+                      ));
+
+          final double currentVal = effectiveNoOfQuestions.toDouble().clamp(
             QuestionnaireBlock.minQuestions.toDouble(),
             maxVal,
           );
@@ -327,7 +345,14 @@ class _CustomExamSubjectBottomSheetState
     );
     final int remainingQuota =
         config.limits.maxQuestionsPerTest - usedQuestions;
-    final int safeNoOfQuestions = _noOfQuestions.clamp(
+
+    final int effectiveNoOfQuestions = _noOfQuestions != -1
+        ? _noOfQuestions
+        : (remainingQuota >= 15
+              ? 15
+              : math.max(QuestionnaireBlock.minQuestions, remainingQuota ~/ 2));
+
+    final int safeNoOfQuestions = effectiveNoOfQuestions.clamp(
       QuestionnaireBlock.minQuestions,
       remainingQuota < QuestionnaireBlock.minQuestions
           ? QuestionnaireBlock.minQuestions
