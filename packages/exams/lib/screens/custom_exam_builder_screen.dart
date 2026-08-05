@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -32,10 +33,7 @@ class _CustomExamBuilderScreenState
 
     final config = configAsync.valueOrNull;
     final maxLimit = config?.limits.maxQuestionsPerTest ?? 0;
-    final totalLimit =
-        maxLimit > 0 && maxLimit < QuestionnaireBlock.minQuestions
-        ? QuestionnaireBlock.minQuestions
-        : maxLimit;
+    final totalLimit = math.max(maxLimit, QuestionnaireBlock.minQuestions);
 
     final usedQuestions = builderState.blocks.fold<int>(
       0,
