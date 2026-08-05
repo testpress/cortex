@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
@@ -58,7 +57,8 @@ class _InfoPageState extends ConsumerState<InfoPage> {
           const _InfoPageHeader(),
           _InfoPageSeparator(color: design.colors.divider),
           Expanded(
-            child: RefreshIndicator(
+            child: AppRefreshIndicator(
+              semanticsLabel: L10n.of(context).pullToRefresh,
               onRefresh: () => ref.read(infoListProvider.notifier).refresh(),
               child: CustomScrollView(
                 controller: _scrollController,

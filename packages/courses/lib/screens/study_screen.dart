@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -172,7 +171,8 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                   color: design.colors.divider,
                 ),
                 Expanded(
-                  child: RefreshIndicator(
+                  child: AppRefreshIndicator(
+                    semanticsLabel: l10n.pullToRefresh,
                     onRefresh: () =>
                         ref.read(courseListProvider.notifier).refresh(),
                     child: CustomScrollView(

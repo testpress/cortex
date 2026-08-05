@@ -129,7 +129,7 @@ class ChapterDetailController extends _$ChapterDetailController {
       ]);
     } catch (e, st) {
       sentry.captureException(e, stackTrace: st);
-      throw e;
+      rethrow;
     } finally {
       state = false;
     }

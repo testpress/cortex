@@ -90,6 +90,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final visibleFilters = ChaptersFilterRules.getVisibleFilters();
     final activeFilter = _resolvedActiveFilter;
 
@@ -196,30 +197,35 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
               ),
               Expanded(
                 child: AppRefreshIndicator(
-                  semanticsLabel: L10n.of(context).pullToRefresh,
+                  semanticsLabel: l10n.pullToRefresh,
                   onRefresh: () async {
-                    if (showChapters) {
-                      final repo =
-                          await ref.read(courseRepositoryProvider.future);
-                      try {
+                    try {
+                      if (showChapters) {
+                        final repo =
+                            await ref.read(courseRepositoryProvider.future);
                         // Await the network call directly so the pull-to-refresh
                         // spinner stays visible until it completes.
                         await repo.refreshChapters(widget.courseId,
                             parentId: widget.parentId);
-                      } catch (_) {
-                        // Swallow — network errors are handled by the provider.
+                      } else {
+                        final type = _apiTypeForFilter(activeFilter);
+                        // Await the custom refresh method on the provider which
+                        // fetches page 1 without dropping the existing cache.
+                        await ref
+                            .read(filteredLessonsProvider(
+                              widget.courseId,
+                              chapterId: widget.parentId,
+                              type: type,
+                            ).notifier)
+                            .refresh();
                       }
-                    } else {
-                      final type = _apiTypeForFilter(activeFilter);
-                      // Await the custom refresh method on the provider which
-                      // fetches page 1 without dropping the existing cache.
-                      await ref
-                          .read(filteredLessonsProvider(
-                            widget.courseId,
-                            chapterId: widget.parentId,
-                            type: type,
-                          ).notifier)
-                          .refresh();
+                    } catch (_) {
+                      if (!context.mounted) return;
+                      AppToast.show(
+                        context,
+                        message: l10n.refreshFailed,
+                        isError: true,
+                      );
                     }
                   },
                   child: showChapters
