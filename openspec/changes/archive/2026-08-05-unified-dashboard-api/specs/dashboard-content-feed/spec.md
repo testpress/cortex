@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Resume learning feed shape
 The system SHALL parse the `resume_learning` section from the unified API response, which is a nested object, and flatten it into `DashboardContentDto` items for the DB.
@@ -39,9 +39,3 @@ The system SHALL parse the `whats_new` section from the unified response, extrac
 - **THEN** each chapter content is mapped to a dashboard feed item with progress set to null (as it represents new, unattempted content)
 - **THEN** chapter name is resolved from the corresponding `chapters` list
 - **THEN** items are stored in the DB under `DashboardSectionType.whatsNew`
-
-## REMOVED Requirements
-
-### Requirement: Individual per-section dashboard refresh
-**Reason**: Replaced by the unified `refreshDashboard()` call. Maintaining 5 separate refresh triggers adds complexity with no benefit now that the server provides all data in one call.
-**Migration**: Replace all calls to `refreshHeroBanners()`, `refreshWhatsNewFeed()`, `refreshResumeLearningFeed()`, `refreshRecentlyCompletedFeed()` with a single call to `refreshDashboard()`.
