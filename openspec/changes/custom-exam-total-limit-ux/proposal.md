@@ -5,7 +5,7 @@ The backend enforces a hard limit on the total number of questions (e.g., 200) f
 ## What Changes
 
 - Add a dynamic calculation of used vs. remaining quota based on the `CustomTestConfigDto` limit and the currently added blocks.
-- Update the custom exam builder screen to disable the `+ Add Questionnaire` button when the remaining quota drops below the minimum required (5).
+- Update the custom exam builder screen to disable the `+ Add Questionnaire` button when the remaining quota drops below the minimum required (1).
 - Display the used/total budget contextually on the builder screen (e.g., "Total Questions: 150 / 200").
 - Update the `+ Add` button text to reflect the state ("Add Questionnaire", "Add More Questionnaires", or "Limit Reached").
 - Update the `CustomExamSubjectBottomSheet` slider to dynamically cap its maximum value at the remaining quota instead of the absolute max.
