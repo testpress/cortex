@@ -363,7 +363,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get laterTodaySection => 'ഇന്ന് വൈകിട്ട്';
 
   @override
-  String get topLearnersTitle => 'ഈ ആഴ്ചയിലെ മുൻനിര ലേണേഴ്സ്';
+  String get topLearnersTitle => 'മുൻനിര ലേണേഴ്സ്';
 
   @override
   String get updatesAnnouncementsTitle => 'അപ്ഡേറ്റുകളും അറിയിപ്പുകളും';

@@ -361,7 +361,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get laterTodaySection => 'في وقت لاحق اليوم';
 
   @override
-  String get topLearnersTitle => 'أفضل المتعلمين هذا الأسبوع';
+  String get topLearnersTitle => 'أفضل المتعلمين';
 
   @override
   String get updatesAnnouncementsTitle => 'التحديثات والإعلانات';

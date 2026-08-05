@@ -142,8 +142,8 @@ abstract class DataSource {
   /// Fetch installment plans for a product
   Future<InstallmentPlansResponseDto> getInstallmentPlans(String slug);
 
-  /// Fetch hero banners for the dashboard from `/api/v3/dashboard/`.
-  Future<List<DashboardBannerDto>> getDashboardBanners();
+  /// Fetch the unified dashboard data.
+  Future<DashboardResponseDto> getDashboard();
 
   /// Fetch leaderboards from `/api/v2.3/leaderboard/` for a specific timeline and page.
   Future<List<LearnerDto>> fetchLeaderboard({
@@ -160,16 +160,6 @@ abstract class DataSource {
 
   /// Fetch users ranked equal to or below the current user.
   Future<List<LearnerDto>> fetchCompetitorThreats();
-
-  /// Fetch the latest content updates from `/api/v2.4/whats-new/`.
-  Future<DashboardContentsDto> getWhatsNewFeed(
-    DashboardSectionType sectionType,
-  );
-
-  /// Fetch the resume learning feed from `/api/v2.4/resume/`.
-  Future<DashboardContentsDto> getResumeLearningFeed(
-    DashboardSectionType sectionType,
-  );
 
   // ── Posts / Announcements ────────────────────────────────────────────────
 
@@ -263,11 +253,6 @@ abstract class DataSource {
 
   /// End an attempt section.
   Future<SectionDto> endSection(String attemptId, String sectionOrder);
-
-  /// Fetch the recently completed feed from `/api/v2.4/completed/`.
-  Future<DashboardContentsDto> getRecentlyCompletedFeed(
-    DashboardSectionType sectionType,
-  );
 
   /// Fetch the authenticated user's profile.
   Future<UserDto> getProfile();

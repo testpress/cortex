@@ -507,19 +507,11 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<DashboardBannerDto>> getDashboardBanners() async {
+  Future<DashboardResponseDto> getDashboard() async {
     return performNetworkRequest(
-      _dio.get(ApiEndpoints.bannerAds),
-      fromJson: (data) {
-        final results = data['results'] as List<dynamic>?;
-        return results
-                ?.map(
-                  (e) => DashboardBannerDto.fromJson(e as Map<String, dynamic>),
-                )
-                .whereType<DashboardBannerDto>()
-                .toList() ??
-            [];
-      },
+      _dio.get(ApiEndpoints.dashboard),
+      fromJson: (data) =>
+          DashboardResponseDto.fromJson(data as Map<String, dynamic>),
     );
   }
 
@@ -592,28 +584,6 @@ class HttpDataSource implements DataSource {
     );
   }
 
-  @override
-  Future<DashboardContentsDto> getWhatsNewFeed(
-    DashboardSectionType sectionType,
-  ) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.whatsNewFeed),
-      fromJson: (data) =>
-          DashboardContentsDto.fromJson(data, sectionType: sectionType),
-    );
-  }
-
-  @override
-  Future<DashboardContentsDto> getResumeLearningFeed(
-    DashboardSectionType sectionType,
-  ) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.resumeLearning),
-      fromJson: (data) =>
-          DashboardContentsDto.fromJson(data, sectionType: sectionType),
-    );
-  }
-
   // ── Posts / Announcements ────────────────────────────────────────────────
 
   @override
@@ -646,17 +616,6 @@ class HttpDataSource implements DataSource {
             .map((e) => PostCategoryDto.fromJson(e as Map<String, dynamic>))
             .toList();
       },
-    );
-  }
-
-  @override
-  Future<DashboardContentsDto> getRecentlyCompletedFeed(
-    DashboardSectionType sectionType,
-  ) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.recentlyCompleted),
-      fromJson: (data) =>
-          DashboardContentsDto.fromJson(data, sectionType: sectionType),
     );
   }
 

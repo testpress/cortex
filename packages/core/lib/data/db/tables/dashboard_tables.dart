@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-enum DashboardSectionType { whatsNew, resumeLearning, recentlyCompleted }
+enum DashboardSectionType { whatsNew, resumeLearning, completedLearning }
 
 enum DashboardContentType {
   video,

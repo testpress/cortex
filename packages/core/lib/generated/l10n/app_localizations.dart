@@ -759,7 +759,7 @@ abstract class AppLocalizations {
   /// No description provided for @topLearnersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Top Learners This Week'**
+  /// **'Top Learners'**
   String get topLearnersTitle;
 
   /// No description provided for @updatesAnnouncementsTitle.

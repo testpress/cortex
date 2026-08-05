@@ -48,7 +48,7 @@ class ApiEndpoints {
       '/api/v2.5/chapter_contents/$id/attempts/';
   static const String updateVideoAttempt =
       '/api/v2.5/chapter_content_attempts/videos/update/';
-  static const String bannerAds = '/api/v2.4/banner-ads/';
+  static const String dashboard = '/api/v3/dashboard/';
 
   // Posts / Announcements
   static const String posts = '/api/v3/posts/';
@@ -58,9 +58,6 @@ class ApiEndpoints {
   static const String myRank = '/api/v2.3/me/rank/';
   static const String competitorTargets = '/api/v2.3/me/targets/';
   static const String competitorThreats = '/api/v2.3/me/threats/';
-  static const String whatsNewFeed = '/api/v2.4/whats-new/';
-  static const String resumeLearning = '/api/v2.4/resume/';
-  static const String recentlyCompleted = '/api/v2.4/completed/';
 
   // Exams
   static const String subjectReports =
