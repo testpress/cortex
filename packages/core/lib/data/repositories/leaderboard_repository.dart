@@ -173,7 +173,7 @@ extension on AllTimeLeaderboardData {
 
 // ── Domain DTO → Database Companion ──────────────────────────────────────────
 
-extension on LearnerDto {
+extension LeaderboardDtoDbMapping on LearnerDto {
   WeeklyLeaderboardTableCompanion toWeeklyCompanion(int page) =>
       WeeklyLeaderboardTableCompanion(
         id: Value(id),

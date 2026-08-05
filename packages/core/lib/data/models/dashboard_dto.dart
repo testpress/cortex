@@ -381,7 +381,14 @@ class DashboardResponseDto {
 
     final leaderboardList =
         (json['leaderboard'] as List?)
-            ?.map((e) => LearnerDto.fromJson(e as Map<String, dynamic>, 0))
+            ?.asMap()
+            .entries
+            .map(
+              (entry) => LearnerDto.fromJson(
+                entry.value as Map<String, dynamic>,
+                entry.key + 1,
+              ),
+            )
             .toList() ??
         [];
 

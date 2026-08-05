@@ -3,7 +3,7 @@
 - [x] 1.1 Add `DashboardResponseDto` to `packages/core/lib/data/models/dashboard_dto.dart` with fields: `bannerAds`, `resumeLearning`, `whatsNew`, `completedLearning`, `leaderboard`
 - [x] 1.2 Add `ResumeLearningDto` with fields: `contentAttempts`, `userVideos`, `courses`, `chapters`, `chapterContents`
 - [x] 1.3 Add `CompletedLearningDto` with same fields as `ResumeLearningDto` (same shape, different key)
-- [x] 1.4 Add `WhatsNewDto` with same fields as `ResumeLearningDto` (same shape, different key)
+- [x] 1.4 Add `WhatsNewDto` with fields `chapters` and `chapterContents` (matches actual API response shape)
 - [x] 1.5 Add sub-DTOs: `ContentAttemptDto`, `UserVideoDto`, `VideoContentDto`, `CourseSummaryDto`, `ChapterSummaryDto`, `ChapterContentSummaryDto`
 - [x] 1.6 Implement `DashboardResponseDto.fromJson` parsing all 5 sections from the unified response keys: `banner_ads`, `resume_learning`, `whats_new`, `completed_learning`, `leaderboard`
 - [x] 1.7 Remove old `DashboardContentsDto` and `DashboardContentDto` classes if they become unused after migration (verify first)

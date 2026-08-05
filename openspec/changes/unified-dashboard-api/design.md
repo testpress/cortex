@@ -86,7 +86,8 @@ The existing architecture already uses a DB-first stream pattern: the UI watches
 
 ### 7. `whats_new` response shape
 
-The `whats_new` key returns a nested object with `content_attempts`, `user_videos`, `courses`, `chapters` — same shape as `resume_learning`. The existing `DashboardContentsDto.fromJson` flat-list approach cannot be reused. We'll use the same mapping logic as resume/completed.
+The `whats_new` key returns a nested object containing `chapters` and `chapter_contents`. Since these are newly added contents, they do not have user attempts (`content_attempts` or `user_videos`) associated with them yet. We parse them directly to `DashboardContentData` with progress = null.
+
 
 ## Risks / Trade-offs
 
