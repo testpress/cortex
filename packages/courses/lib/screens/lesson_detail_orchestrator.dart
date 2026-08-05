@@ -188,7 +188,6 @@ class _LessonDetailOrchestratorState
           onPrevious: widget.onPrevious,
           stickyFooter: lesson.type != LessonType.video &&
               lesson.type != LessonType.liveStream,
-          resizeToAvoidBottomInset: false,
           child: _buildLessonContent(context),
         ),
         if (lesson.isComplete &&

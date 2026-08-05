@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -78,7 +79,12 @@ class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    // Use the larger of keyboard height and nav-bar height so the reply
+    // input stays visible both when the keyboard is open and when it is
+    // closed (Android 15 edge-to-edge pushes the nav bar into the viewport).
+    final keyboardInset = MediaQuery.of(context).viewInsets.bottom;
+    final navBarInset = MediaQuery.of(context).viewPadding.bottom;
+    final bottomInset = math.max(keyboardInset, navBarInset);
 
     var threadAsync = ref.watch(globalForumThreadDetailProvider(widget.slug));
     if (threadAsync.valueOrNull == null && widget.initialThread != null) {
