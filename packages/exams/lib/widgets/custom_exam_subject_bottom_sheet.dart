@@ -26,7 +26,7 @@ class _CustomExamSubjectBottomSheetState
     extends ConsumerState<CustomExamSubjectBottomSheet> {
   bool _isAllSelected = true;
   int? _selectedSubjectId;
-  int _noOfQuestions = 15;
+  int _noOfQuestions = QuestionnaireBlock.minQuestions;
   final List<String> _selectedDifficulties = [];
   final List<String> _selectedQuestionTypes = [];
 
@@ -236,39 +236,57 @@ class _CustomExamSubjectBottomSheetState
             }).toList(),
           ),
         ],
-
         SizedBox(height: design.spacing.lg),
         _sectionLabel(design, l10n.customExamNumberOfQuestions),
         SizedBox(height: design.spacing.sm),
         (() {
-          final double maxVal = config.limits.maxQuestionsPerTest < 5
-              ? 5.0
-              : config.limits.maxQuestionsPerTest.toDouble();
+          final int usedQuestions = builderState.blocks.fold(
+            0,
+            (sum, b) => sum + b.noOfQuestions,
+          );
+          final int remainingQuota =
+              config.limits.maxQuestionsPerTest - usedQuestions;
+
+          final double maxVal = remainingQuota < QuestionnaireBlock.minQuestions
+              ? QuestionnaireBlock.minQuestions.toDouble()
+              : remainingQuota.toDouble();
           final double currentVal = _noOfQuestions.toDouble().clamp(
-            5.0,
+            QuestionnaireBlock.minQuestions.toDouble(),
             maxVal,
           );
 
-          return Row(
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: _SimpleSlider(
-                  value: currentVal,
-                  min: 5,
-                  max: maxVal,
-                  divisions: (maxVal - 5) > 0 ? (maxVal - 5).toInt() : 1,
-                  onChanged: (val) {
-                    setState(() => _noOfQuestions = val.toInt());
-                  },
-                ),
+              AppText.bodySmall(
+                l10n.customExamRemainingQuestions(remainingQuota),
+                color: design.colors.textSecondary,
               ),
-              SizedBox(width: design.spacing.md),
-              SizedBox(
-                width: 48,
-                child: AppText.title(
-                  currentVal.toInt().toString(),
-                  textAlign: TextAlign.center,
-                ),
+              SizedBox(height: design.spacing.sm),
+              Row(
+                children: [
+                  Expanded(
+                    child: _SimpleSlider(
+                      value: currentVal,
+                      min: QuestionnaireBlock.minQuestions.toDouble(),
+                      max: maxVal,
+                      divisions: (maxVal - QuestionnaireBlock.minQuestions) > 0
+                          ? (maxVal - QuestionnaireBlock.minQuestions).toInt()
+                          : 1,
+                      onChanged: (val) {
+                        setState(() => _noOfQuestions = val.toInt());
+                      },
+                    ),
+                  ),
+                  SizedBox(width: design.spacing.md),
+                  SizedBox(
+                    width: 48,
+                    child: AppText.title(
+                      currentVal.toInt().toString(),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
             ],
           );
@@ -301,13 +319,25 @@ class _CustomExamSubjectBottomSheetState
     final notifier = ref.read(
       customExamBuilderProvider(widget.courseId).notifier,
     );
+    final builderState = ref.read(customExamBuilderProvider(widget.courseId));
+
+    final int usedQuestions = builderState.blocks.fold(
+      0,
+      (sum, b) => sum + b.noOfQuestions,
+    );
+    final int remainingQuota =
+        config.limits.maxQuestionsPerTest - usedQuestions;
+    final int safeNoOfQuestions = _noOfQuestions.clamp(
+      QuestionnaireBlock.minQuestions,
+      remainingQuota < QuestionnaireBlock.minQuestions
+          ? QuestionnaireBlock.minQuestions
+          : remainingQuota,
+    );
 
     final resolvedIds = notifier.resolveSubjectIds(
       isAllSelected: _isAllSelected,
       selectedSubjectId: _selectedSubjectId,
     );
-
-    final builderState = ref.read(customExamBuilderProvider(widget.courseId));
     String subjectName = l10n.customExamAllSubjects;
     if (!_isAllSelected && _selectedSubjectId != null) {
       subjectName = config.subjects
@@ -341,7 +371,7 @@ class _CustomExamSubjectBottomSheetState
       QuestionnaireBlock(
         subjects: resolvedIds,
         subjectName: subjectName,
-        noOfQuestions: _noOfQuestions,
+        noOfQuestions: safeNoOfQuestions,
         difficultyLevels: List.from(_selectedDifficulties),
         questionTypes: List.from(_selectedQuestionTypes),
         difficultyLabels: diffLabels,

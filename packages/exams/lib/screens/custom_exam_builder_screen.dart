@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -30,6 +31,17 @@ class _CustomExamBuilderScreenState
     final builderState = ref.watch(customExamBuilderProvider(widget.courseId));
     final configAsync = ref.watch(customExamConfigProvider(widget.courseId));
 
+    final config = configAsync.valueOrNull;
+    final maxLimit = config?.limits.maxQuestionsPerTest ?? 0;
+    final totalLimit = math.max(maxLimit, QuestionnaireBlock.minQuestions);
+
+    final usedQuestions = builderState.blocks.fold<int>(
+      0,
+      (sum, b) => sum + b.noOfQuestions,
+    );
+    final remainingQuota = totalLimit - usedQuestions;
+    final canAddMore = remainingQuota >= QuestionnaireBlock.minQuestions;
+
     return DecoratedBox(
       decoration: BoxDecoration(color: design.colors.card),
       child: Stack(
@@ -59,29 +71,45 @@ class _CustomExamBuilderScreenState
                         )
                       else if (builderState.blocks.isEmpty)
                         _buildEmptyState(design)
-                      else
+                      else ...[
+                        Padding(
+                          padding: EdgeInsets.only(bottom: design.spacing.md),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AppText.body(
+                                l10n.customExamTotalQuestions,
+                                color: design.colors.textSecondary,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              AppText.body(
+                                '$usedQuestions / $totalLimit',
+                                color: design.colors.textPrimary,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         ...builderState.blocks.asMap().entries.map(
                           (e) => _buildSummaryCard(design, e.key, e.value),
                         ),
+                      ],
 
                       SizedBox(height: design.spacing.lg),
 
                       // + Add (more) subjects button — full width
                       if (!configAsync.isLoading && !configAsync.hasError)
-                        builderState.blocks.isEmpty
-                            ? AppButton.primary(
-                                label: '+ ${l10n.customExamAddQuestionnaire}',
-                                fullWidth: true,
-                                onPressed: _openSubjectSheet,
-                              )
-                            : AppButton.secondary(
-                                label:
-                                    '+ ${l10n.customExamAddMoreQuestionnaires}',
-                                fullWidth: true,
-                                borderColor: design.colors.border,
-                                foregroundColor: design.colors.textSecondary,
-                                onPressed: _openSubjectSheet,
-                              ),
+                        _buildAddButton(
+                          design,
+                          builderState,
+                          totalLimit,
+                          usedQuestions,
+                          canAddMore,
+                        ),
 
                       // Bottom padding so content clears the fixed footer
                       SizedBox(height: padding.bottom + 96),
@@ -231,6 +259,36 @@ class _CustomExamBuilderScreenState
         ),
       ),
     );
+  }
+
+  Widget _buildAddButton(
+    DesignConfig design,
+    CustomExamBuilderState builderState,
+    int totalLimit,
+    int usedQuestions,
+    bool canAddMore,
+  ) {
+    final l10n = L10n.of(context);
+
+    if (builderState.blocks.isEmpty) {
+      return AppButton.primary(
+        label: canAddMore
+            ? '+ ${l10n.customExamAddQuestionnaire}'
+            : l10n.customExamLimitReached(usedQuestions, totalLimit),
+        fullWidth: true,
+        onPressed: canAddMore ? _openSubjectSheet : null,
+      );
+    } else {
+      return AppButton.secondary(
+        label: canAddMore
+            ? '+ ${l10n.customExamAddMoreQuestionnaires}'
+            : l10n.customExamLimitReached(usedQuestions, totalLimit),
+        fullWidth: true,
+        borderColor: canAddMore ? design.colors.border : null,
+        foregroundColor: canAddMore ? design.colors.textSecondary : null,
+        onPressed: canAddMore ? _openSubjectSheet : null,
+      );
+    }
   }
 
   // ── Empty state ────────────────────────────────────────────────────────────

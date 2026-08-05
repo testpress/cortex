@@ -1174,5 +1174,8 @@
   "customExamEmptyStateTitle": "لم تتم إضافة استبيانات بعد",
   "customExamEmptyStateDesc": "ابنِ اختبارك المثالي من خلال الجمع بين المواد ومستويات الصعوبة وأنواع الأسئلة.",
   "customExamAddQuestionnaire": "إضافة استبيان",
-  "customExamAddMoreQuestionnaires": "إضافة المزيد من الاستبيانات"
+  "customExamAddMoreQuestionnaires": "إضافة المزيد من الاستبيانات",
+  "customExamLimitReached": "تم الوصول للحد ({used}/{total})",
+  "customExamTotalQuestions": "إجمالي الأسئلة",
+  "customExamRemainingQuestions": "لديك {remaining} أسئلة متبقية لهذا الامتحان."
 }

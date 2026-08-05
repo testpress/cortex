@@ -1174,5 +1174,8 @@
   "customExamEmptyStateTitle": "ചോദ്യങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല",
   "customExamEmptyStateDesc": "വിഷയങ്ങളും കാഠിന്യ നിലകളും ചോദ്യ തരങ്ങളും കൂട്ടിച്ചേർത്ത് നിങ്ങളുടെ പരീക്ഷ നിർമ്മിക്കുക.",
   "customExamAddQuestionnaire": "ചോദ്യങ്ങൾ ചേർക്കുക",
-  "customExamAddMoreQuestionnaires": "കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക"
+  "customExamAddMoreQuestionnaires": "കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക",
+  "customExamLimitReached": "പരിധി എത്തി ({used}/{total})",
+  "customExamTotalQuestions": "ആകെ ചോദ്യങ്ങൾ",
+  "customExamRemainingQuestions": "ഈ പരീക്ഷയ്ക്ക് നിങ്ങൾക്ക് {remaining} ചോദ്യങ്ങൾ അവശേഷിക്കുന്നു."
 }

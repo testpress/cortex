@@ -5536,6 +5536,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add more Questionnaires'**
   String get customExamAddMoreQuestionnaires;
+
+  /// No description provided for @customExamLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit Reached ({used}/{total})'**
+  String customExamLimitReached(int used, int total);
+
+  /// No description provided for @customExamTotalQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Questions'**
+  String get customExamTotalQuestions;
+
+  /// No description provided for @customExamRemainingQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {remaining} questions remaining for this exam.'**
+  String customExamRemainingQuestions(int remaining);
 }
 
 class _AppLocalizationsDelegate

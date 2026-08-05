@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class QuestionnaireBlock {
+  static const int minQuestions = 1;
+
   final List<int> subjects;
   final String subjectName; // For UI display on the summary card
   final int noOfQuestions;

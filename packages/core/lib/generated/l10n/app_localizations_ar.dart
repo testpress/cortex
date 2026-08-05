@@ -3065,4 +3065,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get customExamAddMoreQuestionnaires => 'إضافة المزيد من الاستبيانات';
+
+  @override
+  String customExamLimitReached(int used, int total) {
+    return 'تم الوصول للحد ($used/$total)';
+  }
+
+  @override
+  String get customExamTotalQuestions => 'إجمالي الأسئلة';
+
+  @override
+  String customExamRemainingQuestions(int remaining) {
+    return 'لديك $remaining أسئلة متبقية لهذا الامتحان.';
+  }
 }
