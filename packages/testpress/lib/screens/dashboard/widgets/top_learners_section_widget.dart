@@ -14,12 +14,14 @@ class TopLearnersSectionWidget extends ConsumerWidget {
     }
 
     final learnersState = ref.watch(
-      learnersProvider(timeline: LeaderboardTimeline.thisWeek, limit: 10),
+      learnersProvider(timeline: LeaderboardTimeline.allTime, limit: 10),
     );
     final bootstrapState = ref.watch(dashboardBootstrapProvider);
 
     final isBootstrapping =
-        bootstrapState.isLoading && (learnersState.valueOrNull == null);
+        bootstrapState.isLoading &&
+        (learnersState.valueOrNull == null ||
+            learnersState.valueOrNull!.isEmpty);
     final learners = learnersState.valueOrNull ?? const <LearnerDto>[];
 
     return TopLearnersSection(

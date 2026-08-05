@@ -245,11 +245,11 @@ void main() {
         expect(compPdf.progress, 100.0);
 
         // Verify Leaderboard
-        final weeklyLeaderboard = await db.watchWeeklyLeaderboard().first;
-        expect(weeklyLeaderboard.length, 1);
-        expect(weeklyLeaderboard[0].id, 'learner1');
-        expect(weeklyLeaderboard[0].name, 'Jane Doe');
-        expect(weeklyLeaderboard[0].rank, 1);
+        final allTimeLeaderboard = await db.watchAllTimeLeaderboard().first;
+        expect(allTimeLeaderboard.length, 1);
+        expect(allTimeLeaderboard[0].id, 'learner1');
+        expect(allTimeLeaderboard[0].name, 'Jane Doe');
+        expect(allTimeLeaderboard[0].rank, 1);
       },
     );
   });

@@ -224,13 +224,13 @@ class DashboardRepository {
           completedCompanions,
         );
 
-        // 5. Refresh Leaderboard (reuses weekly companion mapper from LeaderboardRepository)
+        // 5. Refresh Leaderboard (reuses all-time companion mapper from LeaderboardRepository)
         final leaderboardCompanions = freshDashboard.leaderboard
-            .map((dto) => dto.toWeeklyCompanion(1))
+            .map((dto) => dto.toAllTimeCompanion(1))
             .toList();
 
         await _db.saveLeaderboardPage(
-          timeline: LeaderboardTimeline.thisWeek,
+          timeline: LeaderboardTimeline.allTime,
           page: 1,
           rows: leaderboardCompanions,
         );
