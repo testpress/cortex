@@ -37,11 +37,15 @@ The system SHALL allow the user to build a custom exam by adding one or more sub
 - **THEN** system interprets this as no restriction and sends empty arrays `[]` in the block payload
 
 ### Requirement: Question Count Restriction
-The system SHALL restrict the user from requesting more questions than the `max_questions_per_test` defined in the configuration.
+The system SHALL restrict the user from requesting a total combined number of questions across all blocks that exceeds the `max_questions_per_test` defined in the configuration.
 
-#### Scenario: User sets question count
-- **WHEN** user adjusts the number of questions slider/input
+#### Scenario: User sets question count for the first block
+- **WHEN** user adjusts the number of questions slider/input for their first block
 - **THEN** the maximum value is strictly capped at `max_questions_per_test`
+
+#### Scenario: User sets question count for subsequent blocks
+- **WHEN** user adjusts the number of questions slider/input for a subsequent block
+- **THEN** the maximum value is strictly capped at the remaining quota (`max_questions_per_test` minus the sum of questions in all previously added blocks)
 
 ### Requirement: Attempt Limit Enforcement
 The system SHALL display the remaining daily and monthly attempts and prevent generation if either limit is exhausted.
