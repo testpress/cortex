@@ -37,6 +37,7 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
   List<VttCue>? _currentCues;
   final Map<int, GlobalKey> _itemKeys = {};
   final ScrollController _scrollController = ScrollController();
+  DateTime? _ignorePositionUpdatesUntil;
 
   ValueNotifier<Duration>? _oldPositionNotifier;
   ValueNotifier<bool>? _oldAutoScrollNotifier;
@@ -97,6 +98,11 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
       return;
     }
     if (_currentCues == null || _currentCues!.isEmpty) return;
+
+    if (_ignorePositionUpdatesUntil != null &&
+        DateTime.now().isBefore(_ignorePositionUpdatesUntil!)) {
+      return;
+    }
 
     final currentPosition =
         widget.videoPositionNotifier?.value ?? Duration.zero;
@@ -437,6 +443,11 @@ class _TranscriptsTabState extends ConsumerState<TranscriptsTab>
                     isLast: index == cues.length - 1,
                     isActive: index == _activeCueIndex,
                     onTap: () {
+                      setState(() {
+                        _activeCueIndex = index;
+                        _ignorePositionUpdatesUntil = DateTime.now()
+                            .add(const Duration(milliseconds: 1500));
+                      });
                       widget.isAutoScrollEnabledNotifier?.value = true;
                       _handleSeek(cues[index].displayStartTime);
                     },
