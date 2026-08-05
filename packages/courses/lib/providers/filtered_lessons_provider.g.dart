@@ -6,7 +6,7 @@ part of 'filtered_lessons_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filteredLessonsHash() => r'3577b3f3ff1f26525b32b139b6c7752bc6ab359e';
+String _$filteredLessonsHash() => r'7adea304c2073ac8fa2522762475e1c1d5450444';
 
 /// Copied from Dart SDK
 class _SystemHash {

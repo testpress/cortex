@@ -1177,5 +1177,7 @@
   "customExamAddMoreQuestionnaires": "കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക",
   "customExamLimitReached": "പരിധി എത്തി ({used}/{total})",
   "customExamTotalQuestions": "ആകെ ചോദ്യങ്ങൾ",
-  "customExamRemainingQuestions": "ഈ പരീക്ഷയ്ക്ക് നിങ്ങൾക്ക് {remaining} ചോദ്യങ്ങൾ അവശേഷിക്കുന്നു."
+  "customExamRemainingQuestions": "ഈ പരീക്ഷയ്ക്ക് നിങ്ങൾക്ക് {remaining} ചോദ്യങ്ങൾ അവശേഷിക്കുന്നു.",
+  "pullToRefresh": "പുതുക്ക് വേണ്ടി വലിക്കുക",
+  "refreshFailed": "പുതുക്കല്‍ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക."
 }

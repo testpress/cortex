@@ -3124,4 +3124,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String customExamRemainingQuestions(int remaining) {
     return 'இந்தத் தேர்வுக்கு உங்களிடம் $remaining கேள்விகள் உள்ளன.';
   }
+
+  @override
+  String get pullToRefresh => 'புதுப்பிக்க இழுக்குக';
+
+  @override
+  String get refreshFailed =>
+      'புதுப்பிக்கல் தேர்சிபெறவில்லை. மீண்டும் முயலவும்.';
 }

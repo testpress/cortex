@@ -1177,5 +1177,7 @@
   "customExamAddMoreQuestionnaires": "إضافة المزيد من الاستبيانات",
   "customExamLimitReached": "تم الوصول للحد ({used}/{total})",
   "customExamTotalQuestions": "إجمالي الأسئلة",
-  "customExamRemainingQuestions": "لديك {remaining} أسئلة متبقية لهذا الامتحان."
+  "customExamRemainingQuestions": "لديك {remaining} أسئلة متبقية لهذا الامتحان.",
+  "pullToRefresh": "اسحب للتحديث",
+  "refreshFailed": "فشل التحديث. يرجى المحاولة مرة أخرى."
 }

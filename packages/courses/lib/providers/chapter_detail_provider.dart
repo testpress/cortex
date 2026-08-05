@@ -1,5 +1,6 @@
 import 'package:async/async.dart' show StreamGroup;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:core/data/data.dart';
 import '../models/course_content.dart';
 import 'course_list_provider.dart';
 import '../repositories/course_repository.dart';
@@ -95,4 +96,42 @@ Stream<Chapter?> _watchChapter(
           .toList(),
     );
   });
+}
+
+@riverpod
+class ChapterDetailController extends _$ChapterDetailController {
+  @override
+  bool build() => true;
+
+  Future<void> initialSync(String courseId, String chapterId) async {
+    final sentry = ref.read(sentryServiceProvider);
+    try {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      await Future.wait([
+        repo.syncChapterContents(courseId, chapterId),
+        repo.refreshContentStatuses(courseId, chapterId: chapterId),
+      ]);
+    } catch (e, st) {
+      sentry.captureException(e, stackTrace: st);
+    } finally {
+      state = false;
+    }
+  }
+
+  Future<void> refresh(String courseId, String chapterId) async {
+    state = true;
+    final sentry = ref.read(sentryServiceProvider);
+    try {
+      final repo = await ref.read(courseRepositoryProvider.future);
+      await Future.wait([
+        repo.syncChapterContents(courseId, chapterId),
+        repo.refreshContentStatuses(courseId, chapterId: chapterId),
+      ]);
+    } catch (e, st) {
+      sentry.captureException(e, stackTrace: st);
+      throw e;
+    } finally {
+      state = false;
+    }
+  }
 }

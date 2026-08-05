@@ -3,6 +3,7 @@ import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/course_detail_provider.dart';
+import '../providers/course_list_provider.dart';
 import '../providers/filtered_lessons_provider.dart';
 import '../widgets/chapters_filter_tab_bar.dart';
 import '../widgets/chapter_curriculum_item.dart';
@@ -194,105 +195,158 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                 ),
               ),
               Expanded(
-                child: showChapters
-                    ? AppScroll(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: design.spacing.md,
-                          vertical: design.spacing.md,
-                        ),
-                        children: [
-                          ...chapters.asMap().entries.map((entry) {
-                            final chapter = entry.value;
-                            return ChapterCurriculumItem(
-                              chapter: chapter,
-                              index: entry.key,
-                              onTap: () {
-                                if (chapter.isLeaf) {
-                                  context.push(
-                                    '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
-                                  );
-                                } else {
-                                  context.push(
-                                    '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
-                                  );
-                                }
-                              },
-                            );
-                          }),
-                          const SizedBox(height: 80),
-                        ],
-                      )
-                    : (isLoadingFilter || isLoadingMore) &&
-                            filteredLessons.isEmpty
-                        ? ListView.builder(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: design.spacing.md,
-                              vertical: design.spacing.md,
-                            ),
-                            itemCount: _skeletonLessons.length,
-                            itemBuilder: (context, index) {
-                              return LessonListItem(
-                                lesson: _skeletonLessons[index],
-                                isSkeleton: isLoadingFilter || isLoadingMore,
-                              );
-                            },
-                          )
-                        : filteredLessons.isEmpty
-                            ? Center(
-                                child: AppText.body(
-                                  L10n.of(context).filterEmptyStateMessage(
-                                    widget.showFilters
-                                        ? (activeFilter?.displayName(context) ??
-                                            L10n.of(context)
-                                                .labelContentsPlural)
-                                        : L10n.of(context).labelExams,
-                                  ),
-                                  color: design.colors.textSecondary,
-                                ),
-                              )
-                            : ListView.builder(
-                                controller: _scrollController,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: design.spacing.md,
-                                  vertical: design.spacing.md,
-                                ),
-                                itemCount: filteredLessons.length +
-                                    (isLoadingMore || isLoadingFilter ? 1 : 0),
-                                itemBuilder: (context, index) {
-                                  if (index < filteredLessons.length) {
-                                    final lesson = filteredLessons[index];
-                                    return LessonListItem(
-                                      lesson: lesson,
-                                      onTap: () {
-                                        final route = switch (lesson.type) {
-                                          LessonType.video ||
-                                          LessonType.pdf ||
-                                          LessonType.notes ||
-                                          LessonType.embedContent ||
-                                          LessonType.liveStream ||
-                                          LessonType.attachment =>
-                                            '${widget.basePath}/lesson/${lesson.id}',
-                                          LessonType.assessment =>
-                                            '${widget.basePath}/assessment/${lesson.id}',
-                                          LessonType.test =>
-                                            '${widget.basePath}/test/${lesson.id}',
-                                          LessonType.unknown => null,
-                                        };
-                                        if (route != null) context.push(route);
-                                      },
+                child: AppRefreshIndicator(
+                  semanticsLabel: L10n.of(context).pullToRefresh,
+                  onRefresh: () async {
+                    if (showChapters) {
+                      final repo =
+                          await ref.read(courseRepositoryProvider.future);
+                      try {
+                        // Await the network call directly so the pull-to-refresh
+                        // spinner stays visible until it completes.
+                        await repo.refreshChapters(widget.courseId,
+                            parentId: widget.parentId);
+                      } catch (_) {
+                        // Swallow — network errors are handled by the provider.
+                      }
+                    } else {
+                      final type = _apiTypeForFilter(activeFilter);
+                      // Await the custom refresh method on the provider which
+                      // fetches page 1 without dropping the existing cache.
+                      await ref
+                          .read(filteredLessonsProvider(
+                            widget.courseId,
+                            chapterId: widget.parentId,
+                            type: type,
+                          ).notifier)
+                          .refresh();
+                    }
+                  },
+                  child: showChapters
+                      ? AppScroll(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.md,
+                            vertical: design.spacing.md,
+                          ),
+                          children: [
+                            ...chapters.asMap().entries.map((entry) {
+                              final chapter = entry.value;
+                              return ChapterCurriculumItem(
+                                chapter: chapter,
+                                index: entry.key,
+                                onTap: () {
+                                  if (chapter.isLeaf) {
+                                    context.push(
+                                      '${widget.basePath}/course/${widget.courseId}/chapters/${chapter.id}',
+                                    );
+                                  } else {
+                                    context.push(
+                                      '${widget.basePath}/course/${widget.courseId}/chapters?parentId=${chapter.id}',
                                     );
                                   }
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: design.spacing.md),
-                                    child: LessonListItem(
-                                      lesson: _skeletonLessons.first,
-                                      isSkeleton:
-                                          isLoadingMore || isLoadingFilter,
-                                    ),
-                                  );
                                 },
+                              );
+                            }),
+                            const SizedBox(height: 80),
+                          ],
+                        )
+                      : (isLoadingFilter || isLoadingMore) &&
+                              filteredLessons.isEmpty
+                          ? ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(
+                                parent: BouncingScrollPhysics(),
                               ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: design.spacing.md,
+                                vertical: design.spacing.md,
+                              ),
+                              itemCount: _skeletonLessons.length,
+                              itemBuilder: (context, index) {
+                                return LessonListItem(
+                                  lesson: _skeletonLessons[index],
+                                  isSkeleton: isLoadingFilter || isLoadingMore,
+                                );
+                              },
+                            )
+                          : filteredLessons.isEmpty
+                              ? CustomScrollView(
+                                  physics: const AlwaysScrollableScrollPhysics(
+                                    parent: BouncingScrollPhysics(),
+                                  ),
+                                  slivers: [
+                                    SliverFillRemaining(
+                                      hasScrollBody: false,
+                                      child: Center(
+                                        child: AppText.body(
+                                          L10n.of(context)
+                                              .filterEmptyStateMessage(
+                                            widget.showFilters
+                                                ? (activeFilter?.displayName(
+                                                        context) ??
+                                                    L10n.of(context)
+                                                        .labelContentsPlural)
+                                                : L10n.of(context).labelExams,
+                                          ),
+                                          color: design.colors.textSecondary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(
+                                    parent: BouncingScrollPhysics(),
+                                  ),
+                                  controller: _scrollController,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: design.spacing.md,
+                                    vertical: design.spacing.md,
+                                  ),
+                                  itemCount: filteredLessons.length +
+                                      (isLoadingMore || isLoadingFilter
+                                          ? 1
+                                          : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index < filteredLessons.length) {
+                                      final lesson = filteredLessons[index];
+                                      return LessonListItem(
+                                        lesson: lesson,
+                                        onTap: () {
+                                          final route = switch (lesson.type) {
+                                            LessonType.video ||
+                                            LessonType.pdf ||
+                                            LessonType.notes ||
+                                            LessonType.embedContent ||
+                                            LessonType.liveStream ||
+                                            LessonType.attachment =>
+                                              '${widget.basePath}/lesson/${lesson.id}',
+                                            LessonType.assessment =>
+                                              '${widget.basePath}/assessment/${lesson.id}',
+                                            LessonType.test =>
+                                              '${widget.basePath}/test/${lesson.id}',
+                                            LessonType.unknown => null,
+                                          };
+                                          if (route != null) {
+                                            context.push(route);
+                                          }
+                                        },
+                                      );
+                                    }
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: design.spacing.md),
+                                      child: LessonListItem(
+                                        lesson: _skeletonLessons.first,
+                                        isSkeleton:
+                                            isLoadingMore || isLoadingFilter,
+                                      ),
+                                    );
+                                  },
+                                ),
+                ),
               ),
             ],
           );

@@ -1,10 +1,8 @@
-import 'package:core/data/data.dart';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/chapter_detail_provider.dart';
-import '../providers/course_list_provider.dart';
 import '../models/course_content.dart';
 import '../widgets/chapter_status_filter_bar.dart';
 import '../widgets/chapter_content_item.dart';
@@ -33,28 +31,13 @@ class ChapterDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
-  // True while the initial background fetch is running.
-  // Prevents the "No Content" flash when filtering by status before the DB is populated.
-  bool _isSyncing = true;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final sentry = ref.read(sentryServiceProvider);
-      try {
-        final repo = await ref.read(courseRepositoryProvider.future);
-        await Future.wait([
-          repo.syncChapterContents(widget.courseId, widget.chapterId),
-          repo.refreshContentStatuses(widget.courseId,
-              chapterId: widget.chapterId),
-        ]);
-      } catch (e, st) {
-        sentry.captureException(e, stackTrace: st);
-        debugPrint('ChapterDetailPage: Background sync failed: $e');
-      } finally {
-        if (mounted) setState(() => _isSyncing = false);
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(chapterDetailControllerProvider.notifier)
+          .initialSync(widget.courseId, widget.chapterId);
     });
   }
 
@@ -66,6 +49,9 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
     // Watch the chapter detail data
     final chapterAsync =
         ref.watch(chapterDetailProvider(widget.courseId, widget.chapterId));
+
+    // Watch the sync state for skeleton loaders
+    final isSyncing = ref.watch(chapterDetailControllerProvider);
 
     // Check status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
@@ -114,41 +100,62 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                 ),
               ),
               Expanded(
-                child: AppScroll(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
+                child: AppRefreshIndicator(
+                  semanticsLabel: L10n.of(context).pullToRefresh,
+                  onRefresh: () async {
+                    try {
+                      await ref
+                          .read(chapterDetailControllerProvider.notifier)
+                          .refresh(widget.courseId, widget.chapterId);
+                    } catch (_) {
+                      if (!mounted) return;
+                      AppToast.show(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        message: l10n.refreshFailed,
+                        isError: true,
+                      );
+                    }
+                  },
+                  child: AppScroll(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.md,
+                    ),
+                    children: [
+                      if (isSyncing && filteredLessons.isEmpty)
+                        ..._skeletonLessons.map(
+                          (lesson) => ChapterContentItem(
+                            lesson: lesson,
+                            onTap: () {},
+                            isSkeleton: isSyncing,
+                          ),
+                        )
+                      else if (filteredLessons.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 40),
+                          child: Center(
+                            child: AppText.body(l10n.chapterNoContent),
+                          ),
+                        )
+                      else
+                        ...filteredLessons.map(
+                          (lesson) => ChapterContentItem(
+                            lesson: lesson,
+                            onTap: () {
+                              if (widget.onLessonClick != null) {
+                                widget.onLessonClick!(lesson);
+                              }
+                            },
+                          ),
+                        ),
+                      // Extra spacing at bottom for visibility
+                      const SizedBox(height: 80),
+                    ],
                   ),
-                  children: [
-                    if (_isSyncing && filteredLessons.isEmpty)
-                      ..._skeletonLessons.map(
-                        (lesson) => ChapterContentItem(
-                          lesson: lesson,
-                          onTap: () {},
-                          isSkeleton: _isSyncing,
-                        ),
-                      )
-                    else if (filteredLessons.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Center(
-                          child: AppText.body(l10n.chapterNoContent),
-                        ),
-                      )
-                    else
-                      ...filteredLessons.map(
-                        (lesson) => ChapterContentItem(
-                          lesson: lesson,
-                          onTap: () {
-                            if (widget.onLessonClick != null) {
-                              widget.onLessonClick!(lesson);
-                            }
-                          },
-                        ),
-                      ),
-                    // Extra spacing at bottom for visibility
-                    const SizedBox(height: 80),
-                  ],
                 ),
               ),
             ],
@@ -186,9 +193,9 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
               ),
               Expanded(
                 child: AppScroll(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.md,
                   ),
                   children: [
                     ..._skeletonLessons.map(
