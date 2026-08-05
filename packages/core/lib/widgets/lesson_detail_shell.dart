@@ -31,7 +31,6 @@ class LessonDetailShell extends StatelessWidget {
     this.isCompleted = false,
     this.stickyFooter = true,
     this.backgroundColor,
-    this.resizeToAvoidBottomInset = false,
   });
 
   /// The main title of the lesson.
@@ -82,31 +81,21 @@ class LessonDetailShell extends StatelessWidget {
   /// Optional background color override (defaults to design.colors.surface).
   final Color? backgroundColor;
 
-  /// When true, the shell pads its content by the keyboard inset height,
-  /// so the composer/input is never hidden behind the keyboard.
-  /// Equivalent to Scaffold's resizeToAvoidBottomInset behaviour.
-  final bool resizeToAvoidBottomInset;
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final bottomInset = resizeToAvoidBottomInset
-        ? MediaQuery.of(context).viewInsets.bottom
-        : 0.0;
 
     return Container(
       color: backgroundColor ?? design.colors.surface,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottomInset),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context, design),
-            if (progress != null) _buildProgressBar(design, progress!),
-            Expanded(child: child),
-            if (stickyFooter) _buildFooter(context),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(context, design),
+          if (progress != null) _buildProgressBar(design, progress!),
+
+          Expanded(child: child),
+          if (stickyFooter) _buildFooter(context),
+        ],
       ),
     );
   }
@@ -117,6 +106,9 @@ class LessonDetailShell extends StatelessWidget {
   }
 
   /// Static helper to build the navigation footer anywhere.
+  ///
+  /// Wrapped in [SafeArea] (top disabled) so the footer clears the system
+  /// navigation bar on Android 15 edge-to-edge and iOS home-indicator devices.
   static Widget buildStaticFooter(
     BuildContext context, {
     VoidCallback? onNext,
@@ -127,7 +119,31 @@ class LessonDetailShell extends StatelessWidget {
     final design = Design.of(context);
 
     if (onPrevious == null && onNext != null) {
-      return Container(
+      return SafeArea(
+        top: false,
+        child: Container(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            design.spacing.md,
+            design.spacing.md,
+            design.spacing.md,
+            design.spacing.md,
+          ),
+          decoration: BoxDecoration(color: design.colors.surface),
+          child: _buildNavButton(
+            context,
+            label: l10n.videoLessonContinueNext,
+            icon: LucideIcons.chevronRight,
+            onTap: onNext,
+            isBack: false,
+            fullWidth: true,
+          ),
+        ),
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      child: Container(
         padding: EdgeInsetsDirectional.fromSTEB(
           design.spacing.md,
           design.spacing.md,
@@ -135,52 +151,34 @@ class LessonDetailShell extends StatelessWidget {
           design.spacing.md,
         ),
         decoration: BoxDecoration(color: design.colors.surface),
-        child: _buildNavButton(
-          context,
-          label: l10n.videoLessonContinueNext,
-          icon: LucideIcons.chevronRight,
-          onTap: onNext,
-          isBack: false,
-          fullWidth: true,
-        ),
-      );
-    }
-
-    return Container(
-      padding: EdgeInsetsDirectional.fromSTEB(
-        design.spacing.md,
-        design.spacing.md,
-        design.spacing.md,
-        design.spacing.md,
-      ),
-      decoration: BoxDecoration(color: design.colors.surface),
-      child: Row(
-        children: [
-          if (onPrevious != null) ...[
-            Expanded(
-              child: _buildNavButton(
-                context,
-                label: l10n.navigationPrevious,
-                icon: LucideIcons.chevronLeft,
-                onTap: onPrevious,
-                isBack: true,
-                fullWidth: true,
+        child: Row(
+          children: [
+            if (onPrevious != null) ...[
+              Expanded(
+                child: _buildNavButton(
+                  context,
+                  label: l10n.navigationPrevious,
+                  icon: LucideIcons.chevronLeft,
+                  onTap: onPrevious,
+                  isBack: true,
+                  fullWidth: true,
+                ),
               ),
-            ),
-            if (onNext != null) SizedBox(width: design.spacing.md),
+              if (onNext != null) SizedBox(width: design.spacing.md),
+            ],
+            if (onNext != null)
+              Expanded(
+                child: _buildNavButton(
+                  context,
+                  label: l10n.navigationNext,
+                  icon: LucideIcons.chevronRight,
+                  onTap: onNext,
+                  isBack: false,
+                  fullWidth: true,
+                ),
+              ),
           ],
-          if (onNext != null)
-            Expanded(
-              child: _buildNavButton(
-                context,
-                label: l10n.navigationNext,
-                icon: LucideIcons.chevronRight,
-                onTap: onNext,
-                isBack: false,
-                fullWidth: true,
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }
@@ -408,7 +406,9 @@ class LessonDetailShell extends StatelessWidget {
   }
 
   Widget _buildFooter(BuildContext context) {
-    if (bottomBar != null) return bottomBar!;
+    // Wrap custom bottomBar in SafeArea too — callers provide a bare Container
+    // without nav-bar clearance (e.g. exam prescreen download button).
+    if (bottomBar != null) return SafeArea(top: false, child: bottomBar!);
     return buildStaticFooter(context, onNext: onNext, onPrevious: onPrevious);
   }
 }

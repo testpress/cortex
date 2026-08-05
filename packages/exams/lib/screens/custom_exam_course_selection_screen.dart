@@ -230,9 +230,11 @@ class _CustomExamCourseSelectionScreenState
                         label: l10n.customExamSelectCourse,
                         itemCount: coursesToDisplay.length,
                         child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 16,
+                          padding: EdgeInsets.fromLTRB(
+                            20,
+                            16,
+                            20,
+                            16 + MediaQuery.paddingOf(context).bottom,
                           ),
                           itemCount: coursesToDisplay.length,
                           separatorBuilder: (_, _) =>

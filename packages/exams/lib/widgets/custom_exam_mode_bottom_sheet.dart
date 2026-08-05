@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -39,7 +40,12 @@ class _CustomExamModeBottomSheetState
       margin: EdgeInsets.only(
         left: design.spacing.md,
         right: design.spacing.md,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + design.spacing.md,
+        bottom:
+            math.max(
+              MediaQuery.viewInsetsOf(context).bottom,
+              MediaQuery.paddingOf(context).bottom,
+            ) +
+            design.spacing.md,
       ),
       decoration: BoxDecoration(
         color: design.colors.card,

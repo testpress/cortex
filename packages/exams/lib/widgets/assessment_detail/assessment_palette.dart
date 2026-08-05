@@ -54,78 +54,85 @@ class AssessmentPalette extends StatelessWidget {
                   top: Radius.circular(design.radius.xl),
                 ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(design.spacing.lg),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppText.headline(
-                              l10n.assessmentPaletteTitle,
-                              style: TextStyle(
-                                fontSize: design.typographyScale.lg.fontSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: design.spacing.xs),
-                            AppText.caption(
-                              l10n.testPaletteAnsweredCount(
-                                checkedCount,
-                                questions.length,
-                              ),
-                              color: design.colors.textSecondary,
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: onClose,
-                          child: Icon(
-                            LucideIcons.x,
-                            color: design.colors.textSecondary,
-                            size: 24,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _buildLegend(design, l10n),
-                  Container(height: 1, color: design.colors.border),
-                  Flexible(
-                    child: GridView.builder(
-                      shrinkWrap: true,
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
                       padding: EdgeInsets.all(design.spacing.lg),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5,
-                        mainAxisSpacing: design.spacing.md,
-                        crossAxisSpacing: design.spacing.md,
-                      ),
-                      itemCount: questions.length,
-                      itemBuilder: (context, index) {
-                        final q = questions[index];
-                        final state = states[q.id];
-                        return GestureDetector(
-                          onTap: () => onQuestionSelected(index),
-                          child: Center(
-                            child: _buildItemContainer(
-                              design: design,
-                              index: index,
-                              q: q,
-                              state: state,
-                              isCurrent: index == currentIndex,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppText.headline(
+                                l10n.assessmentPaletteTitle,
+                                style: TextStyle(
+                                  fontSize: design.typographyScale.lg.fontSize,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: design.spacing.xs),
+                              AppText.caption(
+                                l10n.testPaletteAnsweredCount(
+                                  checkedCount,
+                                  questions.length,
+                                ),
+                                color: design.colors.textSecondary,
+                              ),
+                            ],
+                          ),
+                          AppSemantics.button(
+                            label: l10n.commonCloseButton,
+                            onTap: onClose,
+                            child: GestureDetector(
+                              onTap: onClose,
+                              child: Icon(
+                                LucideIcons.x,
+                                color: design.colors.textSecondary,
+                                size: 24,
+                              ),
                             ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    _buildLegend(design, l10n),
+                    Container(height: 1, color: design.colors.border),
+                    Flexible(
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(design.spacing.lg),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          mainAxisSpacing: design.spacing.md,
+                          crossAxisSpacing: design.spacing.md,
+                        ),
+                        itemCount: questions.length,
+                        itemBuilder: (context, index) {
+                          final q = questions[index];
+                          final state = states[q.id];
+                          return GestureDetector(
+                            onTap: () => onQuestionSelected(index),
+                            child: Center(
+                              child: _buildItemContainer(
+                                design: design,
+                                index: index,
+                                q: q,
+                                state: state,
+                                isCurrent: index == currentIndex,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

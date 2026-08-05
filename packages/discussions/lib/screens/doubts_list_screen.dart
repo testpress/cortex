@@ -182,7 +182,7 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
             ],
           ),
           Positioned(
-            bottom: design.spacing.xl,
+            bottom: design.spacing.xl + MediaQuery.paddingOf(context).bottom,
             right: design.spacing.lg,
             child: _AskDoubtFab(
               onTap: () {

@@ -52,6 +52,7 @@ class ExamPrescreenActionButton extends StatelessWidget {
               onPressed: isButtonEnabled ? onTap : null,
               borderColor: design.colors.primary,
               foregroundColor: design.colors.primary,
+              fullWidth: true,
             ),
           ),
           SizedBox(width: design.spacing.md),
@@ -59,6 +60,7 @@ class ExamPrescreenActionButton extends StatelessWidget {
             child: AppButton.primary(
               label: l10n.retakeIncorrectExamOnline,
               onPressed: isButtonEnabled ? onRetakeIncorrectTap : null,
+              fullWidth: true,
             ),
           ),
         ],

@@ -85,66 +85,69 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
     return Stack(
       children: [
-        DecoratedBox(
-          decoration: BoxDecoration(color: design.colors.card),
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                ForumHeader(title: l10n.doubtsHeaderAskDoubt),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    padding: EdgeInsets.all(design.spacing.md),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (widget.chapterContentId != null ||
-                            widget.questionId != null ||
-                            widget.isAskAi) ...[
-                          _contextLinkBadge(design, l10n),
-                          const SizedBox(height: 16),
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(color: design.colors.card),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  ForumHeader(title: l10n.doubtsHeaderAskDoubt),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      padding: EdgeInsets.all(design.spacing.md),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (widget.chapterContentId != null ||
+                              widget.questionId != null ||
+                              widget.isAskAi) ...[
+                            _contextLinkBadge(design, l10n),
+                            const SizedBox(height: 16),
+                          ],
+                          _sectionLabel(l10n.doubtsFormTitleLabel),
+                          const SizedBox(height: 8),
+                          AppTextField(
+                            label: '',
+                            hintText: l10n.doubtsFormTitleHint,
+                            controller: _titleController,
+                            autofocus: true,
+                            textStyle: design.typography.bodySmall,
+                          ),
+                          const SizedBox(height: 24),
+                          _sectionLabel(l10n.doubtsFormDescriptionLabel),
+                          const SizedBox(height: 8),
+                          ForumEditorToolbar(controller: _quillController),
+                          const SizedBox(height: 4),
+                          ForumEditorField(
+                            controller: _quillController,
+                            scrollController: _scrollController,
+                            focusNode: _focusNode,
+                            placeholder: l10n.doubtsFormDescriptionLabel,
+                            minHeight: 160,
+                            maxHeight: 240,
+                          ),
+                          const SizedBox(height: 24),
+                          _sectionLabel(l10n.doubtsFormCategoryLabel),
+                          const SizedBox(height: 8),
+                          HierarchicalTopicPicker(
+                            onTopicFinalized:
+                                (topicId, {required isFinalized}) {
+                                  setState(() {
+                                    _finalizedTopicId = topicId;
+                                    _isTopicFinalized = isFinalized;
+                                  });
+                                },
+                          ),
+                          const SizedBox(height: 32),
                         ],
-                        _sectionLabel(l10n.doubtsFormTitleLabel),
-                        const SizedBox(height: 8),
-                        AppTextField(
-                          label: '',
-                          hintText: l10n.doubtsFormTitleHint,
-                          controller: _titleController,
-                          autofocus: true,
-                          textStyle: design.typography.bodySmall,
-                        ),
-                        const SizedBox(height: 24),
-                        _sectionLabel(l10n.doubtsFormDescriptionLabel),
-                        const SizedBox(height: 8),
-                        ForumEditorToolbar(controller: _quillController),
-                        const SizedBox(height: 4),
-                        ForumEditorField(
-                          controller: _quillController,
-                          scrollController: _scrollController,
-                          focusNode: _focusNode,
-                          placeholder: l10n.doubtsFormDescriptionLabel,
-                          minHeight: 160,
-                          maxHeight: 240,
-                        ),
-                        const SizedBox(height: 24),
-                        _sectionLabel(l10n.doubtsFormCategoryLabel),
-                        const SizedBox(height: 8),
-                        HierarchicalTopicPicker(
-                          onTopicFinalized: (topicId, {required isFinalized}) {
-                            setState(() {
-                              _finalizedTopicId = topicId;
-                              _isTopicFinalized = isFinalized;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 32),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                _actionBar(design, l10n),
-              ],
+                  _actionBar(design, l10n),
+                ],
+              ),
             ),
           ),
         ),
@@ -231,61 +234,64 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         _quillController.document.toPlainText().trim().isNotEmpty &&
         _isTopicFinalized;
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        design.spacing.md,
-        8,
-        design.spacing.md,
-        design.spacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        border: Border(top: BorderSide(color: design.colors.divider)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppButton.secondary(
-              label: l10n.forumButtonCancel,
-              fullWidth: true,
-              onPressed: () => Navigator.pop(context),
-              backgroundColor: design.colors.surfaceVariant,
-              foregroundColor: design.colors.textPrimary,
-              borderColor: const Color(0x00000000),
-              height: 52,
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.md,
+          8,
+          design.spacing.md,
+          design.spacing.md,
+        ),
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          border: Border(top: BorderSide(color: design.colors.divider)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: AppButton.secondary(
+                label: l10n.forumButtonCancel,
+                fullWidth: true,
+                onPressed: () => Navigator.pop(context),
+                backgroundColor: design.colors.surfaceVariant,
+                foregroundColor: design.colors.textPrimary,
+                borderColor: const Color(0x00000000),
+                height: 52,
+              ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: AppButton.primary(
-              label: l10n.doubtsFormNextAction,
-              trailing: Icon(
-                LucideIcons.arrowRight,
-                size: 18,
-                color: canSubmit
+            const SizedBox(width: 16),
+            Expanded(
+              child: AppButton.primary(
+                label: l10n.doubtsFormNextAction,
+                trailing: Icon(
+                  LucideIcons.arrowRight,
+                  size: 18,
+                  color: canSubmit
+                      ? design.colors.textInverse
+                      : design.colors.textInverse.withValues(alpha: 0.9),
+                ),
+                fullWidth: true,
+                onPressed: canSubmit
+                    ? () {
+                        if (widget.isAskAi) {
+                          _submitDoubt(DoubtQueryType.ai);
+                        } else {
+                          setState(() => _isSubmitSheetOpen = true);
+                        }
+                      }
+                    : null,
+                height: 52,
+                backgroundColor: canSubmit
+                    ? design.colors.accent2
+                    : design.colors.accent2.withValues(alpha: 0.5),
+                foregroundColor: canSubmit
                     ? design.colors.textInverse
                     : design.colors.textInverse.withValues(alpha: 0.9),
               ),
-              fullWidth: true,
-              onPressed: canSubmit
-                  ? () {
-                      if (widget.isAskAi) {
-                        _submitDoubt(DoubtQueryType.ai);
-                      } else {
-                        setState(() => _isSubmitSheetOpen = true);
-                      }
-                    }
-                  : null,
-              height: 52,
-              backgroundColor: canSubmit
-                  ? design.colors.accent2
-                  : design.colors.accent2.withValues(alpha: 0.5),
-              foregroundColor: canSubmit
-                  ? design.colors.textInverse
-                  : design.colors.textInverse.withValues(alpha: 0.9),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
