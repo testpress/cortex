@@ -477,6 +477,12 @@ class OfflineExamRepository implements ExamRepository {
         );
       } catch (e) {
         // Ignore failures for individual assets
+        _sentryService.addBreadcrumb(
+          message: 'Failed to download offline asset: $url',
+          category: 'offline.caching',
+          level: AppErrorLevel.warning,
+          data: {'error': e.toString()},
+        );
       }
     });
 

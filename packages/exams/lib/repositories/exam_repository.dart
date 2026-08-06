@@ -504,7 +504,11 @@ class OnlineExamRepository implements ExamRepository {
         );
         heartbeatFetched = true;
       } catch (e, st) {
-        _sentryService.captureException(e, stackTrace: st);
+        _sentryService.captureException(
+          e,
+          stackTrace: st,
+          level: AppErrorLevel.warning,
+        );
       }
     }
 
@@ -518,7 +522,11 @@ class OnlineExamRepository implements ExamRepository {
               .sendHeartbeat(attempt.activeId!.toString())
               .then<AttemptDto?>((val) => val)
               .catchError((e, stackTrace) {
-                _sentryService.captureException(e, stackTrace: stackTrace);
+                _sentryService.captureException(
+                  e,
+                  stackTrace: stackTrace,
+                  level: AppErrorLevel.warning,
+                );
                 if (kDebugMode) {
                   dev.log(
                     'Failed to fetch initial heartbeat remaining time',
@@ -791,7 +799,11 @@ class OnlineExamRepository implements ExamRepository {
                 currentSection.order.toString(),
               )
               .catchError((e, stackTrace) {
-                _sentryService.captureException(e, stackTrace: stackTrace);
+                _sentryService.captureException(
+                  e,
+                  stackTrace: stackTrace,
+                  level: AppErrorLevel.warning,
+                );
                 if (kDebugMode) {
                   dev.log(
                     'Failed to end section on server, proceeding anyway',
@@ -821,7 +833,11 @@ class OnlineExamRepository implements ExamRepository {
                 nextSection.order.toString(),
               )
               .catchError((e, stackTrace) {
-                _sentryService.captureException(e, stackTrace: stackTrace);
+                _sentryService.captureException(
+                  e,
+                  stackTrace: stackTrace,
+                  level: AppErrorLevel.warning,
+                );
                 if (kDebugMode) {
                   dev.log(
                     'Failed to start section on server, proceeding anyway',
@@ -936,7 +952,11 @@ class OnlineExamRepository implements ExamRepository {
         // because the V3 API heartbeat endpoint dynamically returns 0:00:00 or static times,
         // which incorrectly overrides our local ticking timer.
       } catch (e, stackTrace) {
-        _sentryService.captureException(e, stackTrace: stackTrace);
+        _sentryService.captureException(
+          e,
+          stackTrace: stackTrace,
+          level: AppErrorLevel.warning,
+        );
         if (kDebugMode) {
           dev.log(
             'Heartbeat failure',
@@ -1158,7 +1178,11 @@ class OnlineExamRepository implements ExamRepository {
               currentSection.order.toString(),
             );
           } catch (e, st) {
-            _sentryService.captureException(e, stackTrace: st);
+            _sentryService.captureException(
+              e,
+              stackTrace: st,
+              level: AppErrorLevel.warning,
+            );
           }
         }
       }
