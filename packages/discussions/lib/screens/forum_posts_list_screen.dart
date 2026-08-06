@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
+
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -205,7 +205,7 @@ class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
                           },
                         );
                       },
-                      loading: () => const Center(child: AppLoadingIndicator()),
+                      loading: () => const SizedBox(),
                       error: (err, stack) => const SizedBox(),
                     ),
                   ),
@@ -479,52 +479,36 @@ class _ThreadListState extends State<_ThreadList> {
       );
     }
 
-    return CustomScrollView(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: widget.onRefresh,
-          builder:
-              (
-                context,
-                refreshState,
-                pulledExtent,
-                refreshTriggerPullDistance,
-                refreshIndicatorExtent,
-              ) {
-                return Opacity(
-                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
-                    0.0,
-                    1.0,
-                  ),
-                  child: Center(
-                    child: AppLoadingIndicator(color: design.colors.primary),
+    return AppRefreshIndicator(
+      onRefresh: widget.onRefresh,
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        slivers: [
+          SliverList.separated(
+            itemCount:
+                widget.state.items.length +
+                (widget.state.isLoadingMore ? 1 : 0),
+            separatorBuilder: (context, index) =>
+                Container(height: 1, color: design.colors.border),
+            itemBuilder: (context, index) {
+              if (index >= widget.state.items.length) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: _ThreadItem(
+                    thread:
+                        _mockSkeletonThreads[index %
+                            _mockSkeletonThreads.length],
                   ),
                 );
-              },
-        ),
-        SliverList.separated(
-          itemCount:
-              widget.state.items.length + (widget.state.isLoadingMore ? 1 : 0),
-          separatorBuilder: (context, index) =>
-              Container(height: 1, color: design.colors.border),
-          itemBuilder: (context, index) {
-            if (index >= widget.state.items.length) {
-              return Skeletonizer(
-                enabled: true,
-                child: _ThreadItem(
-                  thread:
-                      _mockSkeletonThreads[index % _mockSkeletonThreads.length],
-                ),
-              );
-            }
-            return _ThreadItem(thread: widget.state.items[index]);
-          },
-        ),
-      ],
+              }
+              return _ThreadItem(thread: widget.state.items[index]);
+            },
+          ),
+        ],
+      ),
     );
   }
 }
