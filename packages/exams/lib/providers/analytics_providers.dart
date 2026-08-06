@@ -10,7 +10,12 @@ part 'analytics_providers.g.dart';
 Future<SubjectAnalyticsRepository> subjectAnalyticsRepository(Ref ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final dataSource = ref.watch(dataSourceProvider);
-  return SubjectAnalyticsRepository(dataSource: dataSource, db: db);
+  final sentryService = ref.watch(sentryServiceProvider);
+  return SubjectAnalyticsRepository(
+    dataSource: dataSource,
+    db: db,
+    sentryService: sentryService,
+  );
 }
 
 @riverpod
@@ -77,6 +82,7 @@ class SubjectAnalyticsPagination extends _$SubjectAnalyticsPagination {
       _nextPage = serviceState.nextPage;
       state = AsyncData((hasMore: serviceState.hasMore, isLoadingMore: false));
     } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       state = AsyncError(e, st);
     }
   }

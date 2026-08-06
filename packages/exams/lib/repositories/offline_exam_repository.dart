@@ -11,6 +11,7 @@ class OfflineExamRepository implements ExamRepository {
   final AppDatabase _db;
   final DataSource _api;
   final FileDownloader _fileDownloader;
+  final SentryService _sentryService;
   final String _contentId; // The local lookup key (lesson/content ID)
   final _stateController = StreamController<ExamAttemptState>.broadcast();
   ExamAttemptState _currentState = const ExamAttemptState();
@@ -20,11 +21,13 @@ class OfflineExamRepository implements ExamRepository {
     required AppDatabase db,
     required DataSource api,
     required FileDownloader fileDownloader,
+    required SentryService sentryService,
     required String
     contentId, // Using contentId instead of examId route parameter
   }) : _db = db,
        _api = api,
        _fileDownloader = fileDownloader,
+       _sentryService = sentryService,
        _contentId = contentId;
 
   void _emit(ExamAttemptState state) {
@@ -297,7 +300,8 @@ class OfflineExamRepository implements ExamRepository {
       if (remainingSeconds > 0) {
         _startCountdown();
       }
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       _emit(
         ExamAttemptState(
           status: ExamAttemptStatus.error,

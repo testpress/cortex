@@ -705,7 +705,10 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                                     await ref
                                         .read(examAttemptProvider.notifier)
                                         .checkQuizAnswer(q.id, a);
-                                  } catch (e) {
+                                  } catch (e, st) {
+                                    ref
+                                        .read(sentryServiceProvider)
+                                        .captureException(e, stackTrace: st);
                                     if (context.mounted) {
                                       AppToast.show(
                                         context,

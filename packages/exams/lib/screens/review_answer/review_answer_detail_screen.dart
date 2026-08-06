@@ -144,7 +144,8 @@ class _ReviewAnswerDetailScreenState
         }
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       if (!mounted) return;
       setState(() {
         _errorMessage = e is ApiException ? e.message : e.toString();
@@ -193,6 +194,7 @@ class _ReviewAnswerDetailScreenState
         }
       });
     } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       debugPrint('Error removing bookmark: $e\n$stack');
       if (mounted) {
         AppToast.show(

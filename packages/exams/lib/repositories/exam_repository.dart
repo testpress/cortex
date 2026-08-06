@@ -138,6 +138,7 @@ abstract class ExamRepository {
 class OnlineExamRepository implements ExamRepository {
   final DataSource _dataSource;
   final Future<AppDatabase> _dbFuture;
+  final SentryService _sentryService;
   Timer? _heartbeatTimer;
   final _stateController = StreamController<ExamAttemptState>.broadcast();
   ExamAttemptState _currentState = const ExamAttemptState();
@@ -149,8 +150,10 @@ class OnlineExamRepository implements ExamRepository {
   OnlineExamRepository({
     required DataSource dataSource,
     required Future<AppDatabase> dbFuture,
+    required SentryService sentryService,
   }) : _dataSource = dataSource,
-       _dbFuture = dbFuture;
+       _dbFuture = dbFuture,
+       _sentryService = sentryService;
 
   @override
   Future<List<AttemptDto>> getAttempts(String attemptsUrl) async {
@@ -191,6 +194,7 @@ class OnlineExamRepository implements ExamRepository {
           e,
           stackTrace,
         ) {
+          _sentryService.captureException(e, stackTrace: stackTrace);
           if (kDebugMode) {
             dev.log(
               'Failed to flush answer for $questionId',
@@ -305,7 +309,8 @@ class OnlineExamRepository implements ExamRepository {
           isCustomTest: isCustomTest,
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       final msg = e is ApiException ? e.message : e.toString();
       _emit(
         ExamAttemptState(
@@ -403,7 +408,8 @@ class OnlineExamRepository implements ExamRepository {
           isCustomTest: isCustomTest,
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       final msg = e is ApiException ? e.message : e.toString();
       _emit(
         ExamAttemptState(
@@ -450,7 +456,8 @@ class OnlineExamRepository implements ExamRepository {
         isQuizMode: isQuizMode || attempt.isQuizMode,
         isCustomTest: isCustomTest,
       );
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       final msg = e is ApiException ? e.message : e.toString();
       _emit(
         ExamAttemptState(
@@ -496,7 +503,9 @@ class OnlineExamRepository implements ExamRepository {
           attempt.activeId!.toString(),
         );
         heartbeatFetched = true;
-      } catch (_) {}
+      } catch (e, st) {
+        _sentryService.captureException(e, stackTrace: st);
+      }
     }
 
     // Kick off background heartbeat query concurrently if remainingTime is null OR it's a resumed attempt
@@ -508,7 +517,8 @@ class OnlineExamRepository implements ExamRepository {
         ? _dataSource
               .sendHeartbeat(attempt.activeId!.toString())
               .then<AttemptDto?>((val) => val)
-              .catchError((e) {
+              .catchError((e, stackTrace) {
+                _sentryService.captureException(e, stackTrace: stackTrace);
                 if (kDebugMode) {
                   dev.log(
                     'Failed to fetch initial heartbeat remaining time',
@@ -781,6 +791,7 @@ class OnlineExamRepository implements ExamRepository {
                 currentSection.order.toString(),
               )
               .catchError((e, stackTrace) {
+                _sentryService.captureException(e, stackTrace: stackTrace);
                 if (kDebugMode) {
                   dev.log(
                     'Failed to end section on server, proceeding anyway',
@@ -810,6 +821,7 @@ class OnlineExamRepository implements ExamRepository {
                 nextSection.order.toString(),
               )
               .catchError((e, stackTrace) {
+                _sentryService.captureException(e, stackTrace: stackTrace);
                 if (kDebugMode) {
                   dev.log(
                     'Failed to start section on server, proceeding anyway',
@@ -901,7 +913,8 @@ class OnlineExamRepository implements ExamRepository {
       );
 
       _startCountdown();
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       _emit(
         _currentState.copyWith(
           status: ExamAttemptStatus.error,
@@ -923,6 +936,7 @@ class OnlineExamRepository implements ExamRepository {
         // because the V3 API heartbeat endpoint dynamically returns 0:00:00 or static times,
         // which incorrectly overrides our local ticking timer.
       } catch (e, stackTrace) {
+        _sentryService.captureException(e, stackTrace: stackTrace);
         if (kDebugMode) {
           dev.log(
             'Heartbeat failure',
@@ -974,6 +988,7 @@ class OnlineExamRepository implements ExamRepository {
           try {
             await _dataSource.submitAnswer(attemptId, questionId, pendingAns);
           } catch (e, stackTrace) {
+            _sentryService.captureException(e, stackTrace: stackTrace);
             // Rollback on failure
             final currentAnswers = Map<String, AnswerDto>.from(
               _currentState.answers,
@@ -1055,6 +1070,7 @@ class OnlineExamRepository implements ExamRepository {
       e,
       stackTrace,
     ) {
+      _sentryService.captureException(e, stackTrace: stackTrace);
       if (kDebugMode) {
         dev.log(
           'Background submission failed for $questionId',
@@ -1141,7 +1157,9 @@ class OnlineExamRepository implements ExamRepository {
               attemptId,
               currentSection.order.toString(),
             );
-          } catch (_) {}
+          } catch (e, st) {
+            _sentryService.captureException(e, stackTrace: st);
+          }
         }
       }
       final isContentExam =
@@ -1163,7 +1181,8 @@ class OnlineExamRepository implements ExamRepository {
           attempt: finalAttempt,
         ),
       );
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       _emit(
         _currentState.copyWith(
           status: ExamAttemptStatus.error,

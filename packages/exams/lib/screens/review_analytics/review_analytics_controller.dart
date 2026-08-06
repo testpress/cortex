@@ -71,9 +71,14 @@ class ReviewAnalyticsParam {
 class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
   final ReviewAnalyticsParam param;
   final ExamRepository examRepository;
+  final SentryService _sentryService;
 
-  ReviewAnalyticsController({required this.param, required this.examRepository})
-    : super(ReviewAnalyticsState(isLoading: true)) {
+  ReviewAnalyticsController({
+    required this.param,
+    required this.examRepository,
+    required SentryService sentryService,
+  }) : _sentryService = sentryService,
+       super(ReviewAnalyticsState(isLoading: true)) {
     _initializeData();
   }
 
@@ -262,7 +267,8 @@ class ReviewAnalyticsController extends StateNotifier<ReviewAnalyticsState> {
         sections: mappedSections,
         sectionTotals: mappedTotals,
       );
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
@@ -275,8 +281,10 @@ final reviewAnalyticsControllerProvider =
       ReviewAnalyticsParam
     >((ref, param) {
       final repository = ref.watch(examRepositoryProvider);
+      final sentryService = ref.watch(sentryServiceProvider);
       return ReviewAnalyticsController(
         param: param,
         examRepository: repository,
+        sentryService: sentryService,
       );
     });

@@ -38,7 +38,8 @@ class _OfflineExamActionButtonState
         offlineExamRepositoryFactoryProvider(widget.examId).future,
       );
       await repo.downloadExam(widget.examData);
-    } catch (e) {
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       debugPrint("Failed to download offline exam: $e");
     } finally {
       if (mounted) {
