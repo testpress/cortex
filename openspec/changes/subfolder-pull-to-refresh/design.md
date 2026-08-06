@@ -13,6 +13,7 @@ Currently, `ChaptersListPage` and `ChapterDetailPage` are shared components used
 - Add pull-to-refresh to `ChapterDetailPage` to re-run the existing sync logic on demand.
 - Ensure the pull gesture works even on short and empty lists by using `AlwaysScrollableScrollPhysics`.
 - Fix the empty state in `ChaptersListPage` to be scrollable (use `SliverFillRemaining` inside `CustomScrollView`).
+- Replace legacy `CupertinoSliverRefreshControl` with the unified `AppRefreshIndicator` in previously existing files (e.g., Discussions, Doubts, Announcements).
 
 **Non-Goals:**
 - Adding refresh to `ExamPrescreen` — exam attempt state cannot change while the user is on this screen.
@@ -37,6 +38,10 @@ Currently, `ChaptersListPage` and `ChapterDetailPage` are shared components used
 ### Decision: `AlwaysScrollableScrollPhysics` on all scroll views
 - **Choice**: Pass `physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics())` to every scroll view wrapped by the `AppRefreshIndicator`.
 - **Rationale**: Without `AlwaysScrollableScrollPhysics`, the pull gesture is disabled when the content does not overflow the viewport (i.e., very short lists). This is the same pattern used in `StudyScreen` and `ExamsScreen`.
+
+### Decision: Migrate existing screens to `AppRefreshIndicator`
+- **Choice**: Replaced legacy `CupertinoSliverRefreshControl` usages with `AppRefreshIndicator` across existing screens (such as Discussions, Doubts, Announcements, etc.).
+- **Rationale**: Maintaining two different visual styles for pull-to-refresh creates a fragmented user experience. Centralizing on the custom `AppRefreshIndicator` unifies the loading behavior across the entire app and removes reliance on iOS-styled widgets in cross-platform screens.
 
 ## Risks / Trade-offs
 
