@@ -68,7 +68,11 @@ void main() {
       // Call refresh to trigger startApiSync again
       final refreshFuture = controller.refresh();
 
-      // Should immediately increment count
+      // startApiSync awaits apiSub?.cancel(), which yields the event loop.
+      // We must wait for the event loop to flush before the stream count increments.
+      await pumpEventQueue();
+
+      // Should immediately increment count after the cancel completes
       expect(repo.apiStreamCallCount, 2);
 
       // Simulate API stream completing

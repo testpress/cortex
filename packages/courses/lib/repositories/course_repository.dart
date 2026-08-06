@@ -552,10 +552,10 @@ class CourseRepository {
 
     StreamSubscription<List<LessonDto>>? apiSub;
 
-    Future<void> startApiSync() {
+    Future<void> startApiSync() async {
       final completer = Completer<void>();
       if (isApiSyncing) {
-        apiSub?.cancel();
+        await apiSub?.cancel();
       }
       isApiSyncing = true;
       hasMore = true;
