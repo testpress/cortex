@@ -6,12 +6,15 @@ import 'package:core/data/data.dart';
 class SubjectAnalyticsRepository {
   final DataSource _dataSource;
   final AppDatabase _db;
+  final SentryService _sentryService;
 
   SubjectAnalyticsRepository({
     required DataSource dataSource,
     required AppDatabase db,
+    required SentryService sentryService,
   }) : _dataSource = dataSource,
-       _db = db;
+       _db = db,
+       _sentryService = sentryService;
 
   SubjectAnalyticsDto _mapRowToDto(SubjectAnalyticsData row) {
     return SubjectAnalyticsDto(
@@ -96,7 +99,8 @@ class SubjectAnalyticsRepository {
       }
 
       return response;
-    } catch (e) {
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
       debugPrint(
         'SubjectAnalyticsRepository: Failed to fetch subject analytics page: $e',
       );

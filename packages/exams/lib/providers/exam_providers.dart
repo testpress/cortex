@@ -15,7 +15,12 @@ part 'exam_providers.g.dart';
 ExamRepository examRepository(Ref ref) {
   final dataSource = ref.watch(dataSourceProvider);
   final dbFuture = ref.watch(appDatabaseProvider.future);
-  return OnlineExamRepository(dataSource: dataSource, dbFuture: dbFuture);
+  final sentryService = ref.watch(sentryServiceProvider);
+  return OnlineExamRepository(
+    dataSource: dataSource,
+    dbFuture: dbFuture,
+    sentryService: sentryService,
+  );
 }
 
 @riverpod
@@ -26,11 +31,13 @@ Future<OfflineExamRepository> offlineExamRepositoryFactory(
   final db = await ref.watch(appDatabaseProvider.future);
   final api = ref.watch(dataSourceProvider);
   final fileDownloader = ref.watch(fileDownloaderProvider);
+  final sentryService = ref.watch(sentryServiceProvider);
   return OfflineExamRepository(
     contentId: contentId,
     db: db,
     api: api,
     fileDownloader: fileDownloader,
+    sentryService: sentryService,
   );
 }
 
@@ -248,6 +255,9 @@ class ExamList extends _$ExamList {
           currentPage: _paginationTracker.nextPage,
         );
       }
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      rethrow;
     } finally {
       if (isReset) {
         Future.microtask(() {

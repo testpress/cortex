@@ -30,6 +30,7 @@ class GenerateCustomExam extends _$GenerateCustomExam {
       final attempt = await repository.generateCustomExam(request);
       state = AsyncValue.data(attempt);
     } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       state = AsyncValue.error(e, st);
     }
   }
