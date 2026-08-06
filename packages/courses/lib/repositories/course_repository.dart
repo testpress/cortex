@@ -552,9 +552,13 @@ class CourseRepository {
 
     StreamSubscription<List<LessonDto>>? apiSub;
 
-    void startApiSync() {
-      if (isApiSyncing) return;
+    Future<void> startApiSync() async {
+      final completer = Completer<void>();
+      if (isApiSyncing) {
+        await apiSub?.cancel();
+      }
       isApiSyncing = true;
+      hasMore = true;
       if (!isLoadingMoreController.isClosed) {
         isLoadingMoreController.add(true);
       }
@@ -572,12 +576,14 @@ class CourseRepository {
           if (!isLoadingMoreController.isClosed) {
             isLoadingMoreController.add(false);
           }
+          if (!completer.isCompleted) completer.complete();
         },
         onError: (e) {
           isApiSyncing = false;
           if (!isLoadingMoreController.isClosed) {
             isLoadingMoreController.add(false);
           }
+          if (!completer.isCompleted) completer.completeError(e);
         },
         onDone: () {
           isApiSyncing = false;
@@ -588,8 +594,11 @@ class CourseRepository {
           if (!hasMoreController.isClosed) {
             hasMoreController.add(false);
           }
+          if (!completer.isCompleted) completer.complete();
         },
       );
+
+      return completer.future;
     }
 
     // Start background sync on next loop tick
@@ -619,6 +628,7 @@ class CourseRepository {
       isLoadingMoreStream: isLoadingMoreController.stream,
       hasMoreStream: hasMoreController.stream,
       fetchNextPage: fetchNextPage,
+      refresh: startApiSync,
       dispose: dispose,
     );
   }
@@ -1378,6 +1388,7 @@ class LessonPaginationController {
   final Stream<bool> isLoadingMoreStream;
   final Stream<bool> hasMoreStream;
   final VoidCallback fetchNextPage;
+  final Future<void> Function() refresh;
   final VoidCallback dispose;
 
   LessonPaginationController({
@@ -1385,6 +1396,7 @@ class LessonPaginationController {
     required this.isLoadingMoreStream,
     required this.hasMoreStream,
     required this.fetchNextPage,
+    required this.refresh,
     required this.dispose,
   });
 }

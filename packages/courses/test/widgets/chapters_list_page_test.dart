@@ -117,4 +117,38 @@ void main() {
       expect(find.text('Tests'), findsNothing);
     }, skip: !AppConfig.showExamTab);
   });
+
+  group('ChaptersListPage refresh behavior', () {
+    testWidgets('refresh preserves cache and does not flash skeleton',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const ChaptersListPage(courseId: 'course-1'),
+          overrides: [
+            courseDetailProvider('course-1')
+                .overrideWith((ref) => Stream.value(testCourse)),
+            subChaptersProvider('course-1', null)
+                .overrideWith((ref) => Stream.value(testChapters)),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify the course title and chapter are rendered initially
+      expect(find.text('Test Course'), findsOneWidget);
+      expect(find.text('Chapter 1 Title'), findsOneWidget);
+
+      // Trigger refresh by dragging down
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, 300));
+      await tester.pump();
+
+      // During refresh, data should still be visible, and no skeleton should appear
+      expect(find.text('Test Course'), findsOneWidget);
+      expect(find.text('Chapter 1 Title'), findsOneWidget);
+
+      // Let it settle
+      await tester.pumpAndSettle();
+    });
+  });
 }

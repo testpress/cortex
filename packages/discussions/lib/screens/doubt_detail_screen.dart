@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -255,118 +254,100 @@ class _DoubtScrollBodyState extends ConsumerState<_DoubtScrollBody> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    return CustomScrollView(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: () async {
-            final repo = await ref.read(doubtRepositoryProvider.future);
-            await repo.syncReplies(widget.doubtId);
-          },
-          builder:
-              (
-                context,
-                refreshState,
-                pulledExtent,
-                refreshTriggerPullDistance,
-                refreshIndicatorExtent,
-              ) {
-                return Opacity(
-                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
-                    0.0,
-                    1.0,
-                  ),
-                  child: Center(
-                    child: AppLoadingIndicator(color: design.colors.primary),
-                  ),
-                );
-              },
+    return AppRefreshIndicator(
+      onRefresh: () async {
+        final repo = await ref.read(doubtRepositoryProvider.future);
+        await repo.syncReplies(widget.doubtId);
+      },
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
         ),
-        if (widget.doubt.status == DoubtStatus.resolved)
-          SliverToBoxAdapter(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(
-                design.spacing.md,
-                design.spacing.md,
-                design.spacing.md,
-                0,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color: design.colors.accent2.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(design.radius.md),
-                border: Border.all(
-                  color: design.colors.accent2.withValues(alpha: 0.3),
+        slivers: [
+          if (widget.doubt.status == DoubtStatus.resolved)
+            SliverToBoxAdapter(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(
+                  design.spacing.md,
+                  design.spacing.md,
+                  design.spacing.md,
+                  0,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.md,
+                  vertical: design.spacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: design.colors.accent2.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                  border: Border.all(
+                    color: design.colors.accent2.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.checkCircle,
+                      color: design.colors.accent2,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: AppText.bodySmall(
+                        l10n.messageDoubtResolved,
+                        color: design.colors.accent2,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    LucideIcons.checkCircle,
-                    color: design.colors.accent2,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: AppText.bodySmall(
-                      l10n.messageDoubtResolved,
-                      color: design.colors.accent2,
+            ),
+          if (widget.doubt.status == DoubtStatus.closed)
+            SliverToBoxAdapter(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(
+                  design.spacing.md,
+                  design.spacing.md,
+                  design.spacing.md,
+                  0,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.md,
+                  vertical: design.spacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: design.colors.textTertiary.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                  border: Border.all(color: design.colors.divider),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.lock,
+                      color: design.colors.textTertiary,
+                      size: 20,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: AppText.bodySmall(
+                        l10n.messageDiscussionClosed,
+                        color: design.colors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+          SliverToBoxAdapter(child: _DoubtHeaderCard(doubt: widget.doubt)),
+          const SliverToBoxAdapter(child: SizedBox(height: 8)),
+          _RepliesList(
+            repliesAsync: widget.repliesAsync,
+            doubtId: widget.doubtId,
           ),
-        if (widget.doubt.status == DoubtStatus.closed)
-          SliverToBoxAdapter(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(
-                design.spacing.md,
-                design.spacing.md,
-                design.spacing.md,
-                0,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color: design.colors.textTertiary.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(design.radius.md),
-                border: Border.all(color: design.colors.divider),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    LucideIcons.lock,
-                    color: design.colors.textTertiary,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: AppText.bodySmall(
-                      l10n.messageDiscussionClosed,
-                      color: design.colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        SliverToBoxAdapter(child: _DoubtHeaderCard(doubt: widget.doubt)),
-        const SliverToBoxAdapter(child: SizedBox(height: 8)),
-        _RepliesList(
-          repliesAsync: widget.repliesAsync,
-          doubtId: widget.doubtId,
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 100)),
-      ],
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+        ],
+      ),
     );
   }
 }

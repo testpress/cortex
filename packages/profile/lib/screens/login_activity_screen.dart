@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -260,27 +259,36 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                             color: design.colors.textSecondary,
                           ),
                         )
-                      : CustomScrollView(
-                          controller: _scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          slivers: [
-                            CupertinoSliverRefreshControl(
-                              onRefresh: _refreshData,
-                              builder:
-                                  (
-                                    context,
-                                    refreshState,
-                                    pulledExtent,
-                                    refreshTriggerPullDistance,
-                                    refreshIndicatorExtent,
-                                  ) {
-                                    return Opacity(
-                                      opacity:
-                                          (pulledExtent /
-                                                  refreshTriggerPullDistance)
-                                              .clamp(0.0, 1.0),
+                      : AppRefreshIndicator(
+                          onRefresh: _refreshData,
+                          child: CustomScrollView(
+                            controller: _scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
+                            slivers: [
+                              SliverPadding(
+                                padding: EdgeInsets.all(design.spacing.md),
+                                sliver: SliverList.builder(
+                                  itemCount: _isLoading
+                                      ? 4
+                                      : (_activities.length +
+                                            (_isLoadingMore ? 1 : 0)),
+                                  itemBuilder: (context, index) {
+                                    if (_isLoading) {
+                                      return LoginActivityItem(
+                                        activity: _skeletonActivity,
+                                      );
+                                    }
+                                    if (index < _activities.length) {
+                                      return LoginActivityItem(
+                                        activity: _activities[index],
+                                      );
+                                    }
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: design.spacing.md,
+                                      ),
                                       child: Center(
                                         child: AppLoadingIndicator(
                                           color: design.colors.primary,
@@ -288,39 +296,10 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
                                       ),
                                     );
                                   },
-                            ),
-                            SliverPadding(
-                              padding: EdgeInsets.all(design.spacing.md),
-                              sliver: SliverList.builder(
-                                itemCount: _isLoading
-                                    ? 4
-                                    : (_activities.length +
-                                          (_isLoadingMore ? 1 : 0)),
-                                itemBuilder: (context, index) {
-                                  if (_isLoading) {
-                                    return LoginActivityItem(
-                                      activity: _skeletonActivity,
-                                    );
-                                  }
-                                  if (index < _activities.length) {
-                                    return LoginActivityItem(
-                                      activity: _activities[index],
-                                    );
-                                  }
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: design.spacing.md,
-                                    ),
-                                    child: Center(
-                                      child: AppLoadingIndicator(
-                                        color: design.colors.primary,
-                                      ),
-                                    ),
-                                  );
-                                },
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                 ),
               ),

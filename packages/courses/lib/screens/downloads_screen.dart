@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:open_filex/open_filex.dart';
@@ -267,53 +267,55 @@ class _DownloadsList extends ConsumerWidget {
       return _DownloadsEmptyState(type: type);
     }
 
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: () => _onRefresh(ref),
+    return AppRefreshIndicator(
+      onRefresh: () => _onRefresh(ref),
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
         ),
-        SliverPadding(
-          padding: EdgeInsets.all(design.spacing.md),
-          sliver: SliverList.separated(
-            itemCount: items.length,
-            separatorBuilder: (_, __) {
-              return SizedBox(height: design.spacing.md);
-            },
-            itemBuilder: (context, index) {
-              final item = items[index];
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.all(design.spacing.md),
+            sliver: SliverList.separated(
+              itemCount: items.length,
+              separatorBuilder: (_, __) {
+                return SizedBox(height: design.spacing.md);
+              },
+              itemBuilder: (context, index) {
+                final item = items[index];
 
-              return _DownloadCard(
-                item: item,
-                onAction: () => onAction(item),
-                onDelete: () async {
-                  final l10n = L10n.of(context);
-                  final confirmed = await showConfirmationDialog(
-                    context,
-                    title: l10n.dialogDeleteDownloadTitle,
-                    content: l10n.dialogDeleteDownloadContent,
-                    confirmText: l10n.deleteAction,
-                  );
-                  if (!confirmed || !context.mounted) return;
+                return _DownloadCard(
+                  item: item,
+                  onAction: () => onAction(item),
+                  onDelete: () async {
+                    final l10n = L10n.of(context);
+                    final confirmed = await showConfirmationDialog(
+                      context,
+                      title: l10n.dialogDeleteDownloadTitle,
+                      content: l10n.dialogDeleteDownloadContent,
+                      confirmText: l10n.deleteAction,
+                    );
+                    if (!confirmed || !context.mounted) return;
 
-                  try {
-                    await ref.read(downloadsProvider.notifier).delete(item);
-                  } catch (e, st) {
-                    debugPrint('Delete Error: $e\n$st');
-                    if (context.mounted) {
-                      AppToast.show(
-                        context,
-                        message: 'Failed to delete: $e',
-                        isError: true,
-                      );
+                    try {
+                      await ref.read(downloadsProvider.notifier).delete(item);
+                    } catch (e, st) {
+                      debugPrint('Delete Error: $e\n$st');
+                      if (context.mounted) {
+                        AppToast.show(
+                          context,
+                          message: 'Failed to delete: $e',
+                          isError: true,
+                        );
+                      }
                     }
-                  }
-                },
-              );
-            },
+                  },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

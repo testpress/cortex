@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart' show Icons;
@@ -304,59 +303,42 @@ class _DoubtsBodyState extends State<_DoubtsBody> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return CustomScrollView(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: widget.onRefresh,
-          builder:
-              (
-                context,
-                refreshState,
-                pulledExtent,
-                refreshTriggerPullDistance,
-                refreshIndicatorExtent,
-              ) {
-                return Opacity(
-                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
-                    0.0,
-                    1.0,
-                  ),
-                  child: Center(
-                    child: AppLoadingIndicator(color: design.colors.primary),
-                  ),
-                );
-              },
+    return AppRefreshIndicator(
+      onRefresh: widget.onRefresh,
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
         ),
-        SliverPadding(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.md,
-            vertical: design.spacing.sm,
-          ),
-          sliver: SliverSkeletonizer(
-            enabled: widget.isInitialLoading,
-            child: SliverList.separated(
-              itemCount: widget.doubts.length + (widget.isLoadingMore ? 1 : 0),
-              separatorBuilder: (_, _) => SizedBox(height: design.spacing.xs),
-              itemBuilder: (context, index) {
-                if (index >= widget.doubts.length) {
-                  return Skeletonizer(
-                    enabled: true,
-                    child: _DoubtItem(
-                      doubt: _dummyDoubts[index % _dummyDoubts.length],
-                    ),
-                  );
-                }
-                return _DoubtItem(doubt: widget.doubts[index]);
-              },
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacing.md,
+              vertical: design.spacing.sm,
+            ),
+            sliver: SliverSkeletonizer(
+              enabled: widget.isInitialLoading,
+              child: SliverList.separated(
+                itemCount:
+                    widget.doubts.length + (widget.isLoadingMore ? 1 : 0),
+                separatorBuilder: (_, _) => SizedBox(height: design.spacing.xs),
+                itemBuilder: (context, index) {
+                  if (index >= widget.doubts.length) {
+                    return Skeletonizer(
+                      enabled: true,
+                      child: _DoubtItem(
+                        doubt: _dummyDoubts[index % _dummyDoubts.length],
+                      ),
+                    );
+                  }
+                  return _DoubtItem(doubt: widget.doubts[index]);
+                },
+              ),
             ),
           ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 16)),
-      ],
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        ],
+      ),
     );
   }
 }

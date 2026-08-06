@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/models/review_models.dart';
@@ -229,97 +229,79 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
       showIncorrect,
       showUnanswered,
     );
-    return CustomScrollView(
-      controller: _scrollController,
-      physics: const BouncingScrollPhysics(
-        parent: AlwaysScrollableScrollPhysics(),
+    return AppRefreshIndicator(
+      onRefresh: () => ref.refresh(
+        subjectAnalyticsPaginationProvider(_parsedParentId).future,
       ),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: () => ref.refresh(
-            subjectAnalyticsPaginationProvider(_parsedParentId).future,
-          ),
-          builder:
-              (
-                context,
-                refreshState,
-                pulledExtent,
-                refreshTriggerPullDistance,
-                refreshIndicatorExtent,
-              ) {
-                return Opacity(
-                  opacity: (pulledExtent / refreshTriggerPullDistance).clamp(
-                    0.0,
-                    1.0,
-                  ),
-                  child: Center(
-                    child: AppLoadingIndicator(color: design.colors.primary),
-                  ),
-                );
-              },
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
         ),
-        SliverPadding(
-          padding: EdgeInsets.fromLTRB(
-            design.spacing.md,
-            design.spacing.md,
-            design.spacing.md,
-            design.spacing.xxl,
-          ),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              // Table container
-              if (subjects.isEmpty)
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(design.spacing.xl),
-                  child: AppText.body(
-                    'No subjects found.',
-                    color: design.colors.textSecondary,
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              design.spacing.md,
+              design.spacing.md,
+              design.spacing.md,
+              design.spacing.xxl,
+            ),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Table container
+                if (subjects.isEmpty)
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(design.spacing.xl),
+                    child: AppText.body(
+                      'No subjects found.',
+                      color: design.colors.textSecondary,
+                    ),
+                  )
+                else ...[
+                  _StatsTable(
+                    subjects: subjects,
+                    activeFilter: widget.activeFilter,
+                    showCorrect: showCorrect,
+                    showIncorrect: showIncorrect,
+                    showUnanswered: showUnanswered,
+                    columnWidths: columnWidths,
                   ),
-                )
-              else ...[
-                _StatsTable(
-                  subjects: subjects,
-                  activeFilter: widget.activeFilter,
-                  showCorrect: showCorrect,
-                  showIncorrect: showIncorrect,
-                  showUnanswered: showUnanswered,
-                  columnWidths: columnWidths,
-                ),
-                if (hasMorePages && !isFetchingNextPage) ...[
-                  SizedBox(height: design.spacing.md),
-                  Center(
-                    child: GestureDetector(
-                      onTap: onLoadMore,
-                      behavior: HitTestBehavior.opaque,
-                      child: AppText.xs(
-                        'Load More Subjects',
-                        color: design.colors.primary,
-                        style: const TextStyle(fontWeight: FontWeight.w500),
+                  if (hasMorePages && !isFetchingNextPage) ...[
+                    SizedBox(height: design.spacing.md),
+                    Center(
+                      child: GestureDetector(
+                        onTap: onLoadMore,
+                        behavior: HitTestBehavior.opaque,
+                        child: AppText.xs(
+                          'Load More Subjects',
+                          color: design.colors.primary,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: design.spacing.md),
-                ] else ...[
-                  SizedBox(height: design.spacing.lg),
+                    SizedBox(height: design.spacing.md),
+                  ] else ...[
+                    SizedBox(height: design.spacing.lg),
+                  ],
                 ],
-              ],
 
-              // Donut Cards Section
-              if (donutCardsData.isNotEmpty) ...[
-                for (final cardData in donutCardsData) ...[
-                  _DonutCard(
-                    data: cardData,
-                    activeFilter: widget.activeFilter,
-                    formatPct: _formatPct,
-                  ),
-                  SizedBox(height: design.spacing.md),
+                // Donut Cards Section
+                if (donutCardsData.isNotEmpty) ...[
+                  for (final cardData in donutCardsData) ...[
+                    _DonutCard(
+                      data: cardData,
+                      activeFilter: widget.activeFilter,
+                      formatPct: _formatPct,
+                    ),
+                    SizedBox(height: design.spacing.md),
+                  ],
                 ],
-              ],
-            ]),
+              ]),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

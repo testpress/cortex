@@ -1531,5 +1531,13 @@
         "type": "int"
       }
     }
+  },
+  "pullToRefresh": "Pull to refresh",
+  "@pullToRefresh": {
+    "description": "Accessibility label for pull-to-refresh gesture"
+  },
+  "refreshFailed": "Refresh failed. Please try again.",
+  "@refreshFailed": {
+    "description": "Toast message shown when a pull-to-refresh operation fails"
   }
 }

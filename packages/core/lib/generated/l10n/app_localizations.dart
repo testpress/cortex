@@ -5554,6 +5554,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have {remaining} questions remaining for this exam.'**
   String customExamRemainingQuestions(int remaining);
+
+  /// Accessibility label for pull-to-refresh gesture
+  ///
+  /// In en, this message translates to:
+  /// **'Pull to refresh'**
+  String get pullToRefresh;
+
+  /// Toast message shown when a pull-to-refresh operation fails
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh failed. Please try again.'**
+  String get refreshFailed;
 }
 
 class _AppLocalizationsDelegate

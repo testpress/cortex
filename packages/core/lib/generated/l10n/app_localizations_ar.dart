@@ -3078,4 +3078,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String customExamRemainingQuestions(int remaining) {
     return 'لديك $remaining أسئلة متبقية لهذا الامتحان.';
   }
+
+  @override
+  String get pullToRefresh => 'اسحب للتحديث';
+
+  @override
+  String get refreshFailed => 'فشل التحديث. يرجى المحاولة مرة أخرى.';
 }

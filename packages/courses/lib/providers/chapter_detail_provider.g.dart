@@ -191,5 +191,23 @@ class _ChapterDetailProviderElement extends StreamProviderElement<Chapter?>
   @override
   String get chapterId => (origin as ChapterDetailProvider).chapterId;
 }
+
+String _$chapterDetailControllerHash() =>
+    r'33fcb4a3acdf849bbdd0bdb8827c5137057fb69e';
+
+/// See also [ChapterDetailController].
+@ProviderFor(ChapterDetailController)
+final chapterDetailControllerProvider =
+    AutoDisposeNotifierProvider<ChapterDetailController, bool>.internal(
+  ChapterDetailController.new,
+  name: r'chapterDetailControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$chapterDetailControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$ChapterDetailController = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

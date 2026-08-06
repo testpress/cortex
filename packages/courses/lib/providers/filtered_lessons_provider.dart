@@ -95,4 +95,10 @@ class FilteredLessons extends _$FilteredLessons {
   void fetchNextPage() {
     _controller?.fetchNextPage();
   }
+
+  Future<void> refresh() async {
+    if (_controller != null) {
+      await _controller!.refresh();
+    }
+  }
 }

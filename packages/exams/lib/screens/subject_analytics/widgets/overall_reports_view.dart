@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -136,135 +136,117 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
 
         // List
         Expanded(
-          child: CustomScrollView(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
+          child: AppRefreshIndicator(
+            onRefresh: () => ref.refresh(
+              subjectAnalyticsPaginationProvider(_parsedParentId).future,
             ),
-            slivers: [
-              CupertinoSliverRefreshControl(
-                onRefresh: () => ref.refresh(
-                  subjectAnalyticsPaginationProvider(_parsedParentId).future,
-                ),
-                builder:
-                    (
-                      context,
-                      refreshState,
-                      pulledExtent,
-                      refreshTriggerPullDistance,
-                      refreshIndicatorExtent,
-                    ) {
-                      return Opacity(
-                        opacity: (pulledExtent / refreshTriggerPullDistance)
-                            .clamp(0.0, 1.0),
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
+              slivers: [
+                subjectsAsync.when(
+                  data: (subjects) {
+                    if (subjects.isEmpty && !isInitialLoading) {
+                      return SliverFillRemaining(
                         child: Center(
-                          child: AppLoadingIndicator(
-                            color: design.colors.primary,
-                          ),
+                          child: AppText.body(l10n.analyticsNoSubjectsFound),
                         ),
                       );
-                    },
-              ),
-              subjectsAsync.when(
-                data: (subjects) {
-                  if (subjects.isEmpty && !isInitialLoading) {
-                    return SliverFillRemaining(
-                      child: Center(
-                        child: AppText.body(l10n.analyticsNoSubjectsFound),
+                    }
+
+                    // If loading, show skeleton list
+                    final displayList = isInitialLoading
+                        ? List.generate(15, (_) => _skeletonSubject)
+                        : subjects;
+
+                    return Skeletonizer.sliver(
+                      enabled: isInitialLoading,
+                      child: SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: design.spacing.sm + design.spacing.xs,
+                        ),
+                        sliver: SliverList.separated(
+                          itemCount:
+                              displayList.length + (isFetchingNextPage ? 3 : 0),
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: design.spacing.sm + design.spacing.xs,
+                          ),
+                          itemBuilder: (context, index) {
+                            if (index >= displayList.length) {
+                              return Skeletonizer(
+                                enabled: true,
+                                child: BarRow(
+                                  subjectAnalytics: _skeletonSubject,
+                                  activeFilter: widget.activeFilter,
+                                ),
+                              );
+                            }
+
+                            final subjectAnalytics = displayList[index];
+
+                            return subjectAnalytics.isLeaf
+                                ? AppFocusable(
+                                    onTap: () {
+                                      if (isInitialLoading) return;
+                                      context.push(
+                                        '/exams/analytics/topic/${subjectAnalytics.id}',
+                                        extra: subjectAnalytics,
+                                      );
+                                    },
+                                    child: BarRow(
+                                      subjectAnalytics: subjectAnalytics,
+                                      activeFilter: widget.activeFilter,
+                                    ),
+                                  )
+                                : AppFocusable(
+                                    onTap: () {
+                                      if (isInitialLoading) return;
+                                      context.push(
+                                        '/exams/analytics/${subjectAnalytics.id}',
+                                        extra: subjectAnalytics,
+                                      );
+                                    },
+                                    child: BarRow(
+                                      subjectAnalytics: subjectAnalytics,
+                                      activeFilter: widget.activeFilter,
+                                    ),
+                                  );
+                          },
+                        ),
                       ),
                     );
-                  }
-
-                  // If loading, show skeleton list
-                  final displayList = isInitialLoading
-                      ? List.generate(15, (_) => _skeletonSubject)
-                      : subjects;
-
-                  return Skeletonizer.sliver(
-                    enabled: isInitialLoading,
+                  },
+                  loading: () => Skeletonizer.sliver(
+                    enabled: true,
                     child: SliverPadding(
                       padding: EdgeInsets.symmetric(
                         vertical: design.spacing.sm + design.spacing.xs,
                       ),
                       sliver: SliverList.separated(
-                        itemCount:
-                            displayList.length + (isFetchingNextPage ? 3 : 0),
+                        itemCount: 15,
                         separatorBuilder: (context, index) => SizedBox(
                           height: design.spacing.sm + design.spacing.xs,
                         ),
-                        itemBuilder: (context, index) {
-                          if (index >= displayList.length) {
-                            return Skeletonizer(
-                              enabled: true,
-                              child: BarRow(
-                                subjectAnalytics: _skeletonSubject,
-                                activeFilter: widget.activeFilter,
-                              ),
-                            );
-                          }
-
-                          final subjectAnalytics = displayList[index];
-
-                          return subjectAnalytics.isLeaf
-                              ? AppFocusable(
-                                  onTap: () {
-                                    if (isInitialLoading) return;
-                                    context.push(
-                                      '/exams/analytics/topic/${subjectAnalytics.id}',
-                                      extra: subjectAnalytics,
-                                    );
-                                  },
-                                  child: BarRow(
-                                    subjectAnalytics: subjectAnalytics,
-                                    activeFilter: widget.activeFilter,
-                                  ),
-                                )
-                              : AppFocusable(
-                                  onTap: () {
-                                    if (isInitialLoading) return;
-                                    context.push(
-                                      '/exams/analytics/${subjectAnalytics.id}',
-                                      extra: subjectAnalytics,
-                                    );
-                                  },
-                                  child: BarRow(
-                                    subjectAnalytics: subjectAnalytics,
-                                    activeFilter: widget.activeFilter,
-                                  ),
-                                );
-                        },
+                        itemBuilder: (context, index) => BarRow(
+                          subjectAnalytics: _skeletonSubject,
+                          activeFilter: widget.activeFilter,
+                        ),
                       ),
                     ),
-                  );
-                },
-                loading: () => Skeletonizer.sliver(
-                  enabled: true,
-                  child: SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: design.spacing.sm + design.spacing.xs,
-                    ),
-                    sliver: SliverList.separated(
-                      itemCount: 15,
-                      separatorBuilder: (context, index) => SizedBox(
-                        height: design.spacing.sm + design.spacing.xs,
-                      ),
-                      itemBuilder: (context, index) => BarRow(
-                        subjectAnalytics: _skeletonSubject,
-                        activeFilter: widget.activeFilter,
+                  ),
+                  error: (err, stack) => SliverFillRemaining(
+                    child: Center(
+                      child: AppText.body(
+                        'Error loading subjects: $err',
+                        color: design.colors.error,
                       ),
                     ),
                   ),
                 ),
-                error: (err, stack) => SliverFillRemaining(
-                  child: Center(
-                    child: AppText.body(
-                      'Error loading subjects: $err',
-                      color: design.colors.error,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

@@ -3129,4 +3129,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String customExamRemainingQuestions(int remaining) {
     return 'ഈ പരീക്ഷയ്ക്ക് നിങ്ങൾക്ക് $remaining ചോദ്യങ്ങൾ അവശേഷിക്കുന്നു.';
   }
+
+  @override
+  String get pullToRefresh => 'പുതുക്ക് വേണ്ടി വലിക്കുക';
+
+  @override
+  String get refreshFailed => 'പുതുക്കല്‍ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.';
 }
