@@ -59,7 +59,8 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
         _hasMore = newItems.next != null;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       setState(() {
         _error = e.toString();
         _isLoading = false;
@@ -99,7 +100,8 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
         _hasMore = newItems.next != null;
         _isLoadingMore = false;
       });
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       setState(() {
         _error = e.toString();
         _isLoadingMore = false;
@@ -126,7 +128,8 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
           _fetchData();
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         AppToast.show(
           context,

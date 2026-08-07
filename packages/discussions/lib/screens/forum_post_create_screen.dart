@@ -112,7 +112,8 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
       if (mounted) {
         Navigator.of(context).pop();
       }
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() => _isSubmitting = false);
         AppToast.show(

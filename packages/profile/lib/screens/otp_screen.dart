@@ -235,7 +235,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         setState(() => _successMessage = L10n.of(context).loginResendSuccess);
         _startTimer();
       }
-    } catch (_) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() => _errorMessage = L10n.of(context).loginResendFailed);
       }
@@ -283,7 +284,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       }
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
-    } catch (_) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
       }

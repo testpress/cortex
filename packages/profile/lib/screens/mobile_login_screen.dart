@@ -189,7 +189,8 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
       }
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
-    } catch (_) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
       }

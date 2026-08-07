@@ -374,7 +374,10 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                                 message: 'Deleted folder successfully.',
                               );
                             }
-                          } catch (e) {
+                          } catch (e, stack) {
+                            ref
+                                .read(sentryServiceProvider)
+                                .captureException(e, stackTrace: stack);
                             if (context.mounted) {
                               AppToast.show(
                                 context,
@@ -474,7 +477,10 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
                             if (!context.mounted) return;
                             AppToast.show(context, message: 'Bookmark removed');
-                          } catch (e) {
+                          } catch (e, stack) {
+                            ref
+                                .read(sentryServiceProvider)
+                                .captureException(e, stackTrace: stack);
                             if (!context.mounted) return;
                             AppToast.show(
                               context,

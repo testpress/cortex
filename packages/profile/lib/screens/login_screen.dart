@@ -338,7 +338,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       await _handleParallelLogin(e);
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
-    } catch (_) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
       }
@@ -369,7 +370,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } on AuthException catch (error) {
       if (mounted) setState(() => _errorMessage = error.message);
-    } catch (e, _) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() => _errorMessage = l10n.loginErrorGenericRequest);
       }

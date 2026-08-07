@@ -38,7 +38,10 @@ class _AnnouncementsListScreenState
       if (!ref.read(announcementsFetchingPageProvider)) {
         try {
           await ref.read(announcementsProvider.notifier).loadMore();
-        } catch (_) {
+        } catch (e, stack) {
+          ref
+              .read(sentryServiceProvider)
+              .captureException(e, stackTrace: stack);
           if (mounted) {
             AppToast.show(
               context,
