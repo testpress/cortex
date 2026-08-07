@@ -20,3 +20,11 @@
 - [x] 4.1 Replace ImagePicker with FilePicker in ForumPostCreateScreen
 - [x] 4.2 Support picking and previewing multiple file types (PDF, docx, txt)
 - [x] 4.3 Fix title text input content padding alignment
+
+## 5. File Upload Pipeline & Error Handling
+
+- [x] 5.1 Implement generic uploadFile method in DataSource, HttpDataSource, and MockDataSource
+- [x] 5.2 Differentiate upload pipeline and format links as <a> anchor tags for files in forum providers
+- [x] 5.3 Wrap pickers in try-catch blocks to catch PlatformExceptions and surface them via AppToast
+- [x] 5.4 Centralize image file extension checks under AttachmentUtils.isImageFile
+- [x] 5.5 Rename confusing isFile parameter in editor toolbar to showFileIcon

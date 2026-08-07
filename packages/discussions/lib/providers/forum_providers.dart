@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/forum_repository.dart';
+import '../utils/attachment_utils.dart';
 
 part 'forum_providers.g.dart';
 
@@ -75,13 +76,7 @@ class PostForumComment extends _$PostForumComment {
 
       if (attachments.isNotEmpty) {
         final uploadFutures = attachments.map((path) {
-          final isImage = [
-            'jpg',
-            'jpeg',
-            'png',
-            'gif',
-            'webp',
-          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          final isImage = AttachmentUtils.isImageFile(path);
           return isImage
               ? repo.uploadImage(File(path))
               : repo.uploadFile(File(path));
@@ -92,13 +87,7 @@ class PostForumComment extends _$PostForumComment {
           final url = urls[i];
           final path = attachments[i];
           final fileName = path.split('/').last;
-          final isImage = [
-            'jpg',
-            'jpeg',
-            'png',
-            'gif',
-            'webp',
-          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          final isImage = AttachmentUtils.isImageFile(path);
           if (isImage) {
             finalContent += '<br><img src="$url" />';
           } else {
@@ -133,13 +122,7 @@ class CreateForumThread extends _$CreateForumThread {
 
       if (attachments.isNotEmpty) {
         final uploadFutures = attachments.map((path) {
-          final isImage = [
-            'jpg',
-            'jpeg',
-            'png',
-            'gif',
-            'webp',
-          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          final isImage = AttachmentUtils.isImageFile(path);
           return isImage
               ? repo.uploadImage(File(path))
               : repo.uploadFile(File(path));
@@ -150,13 +133,7 @@ class CreateForumThread extends _$CreateForumThread {
           final url = urls[i];
           final path = attachments[i];
           final fileName = path.split('/').last;
-          final isImage = [
-            'jpg',
-            'jpeg',
-            'png',
-            'gif',
-            'webp',
-          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          final isImage = AttachmentUtils.isImageFile(path);
           if (isImage) {
             finalContent += '<br><img src="$url" />';
           } else {

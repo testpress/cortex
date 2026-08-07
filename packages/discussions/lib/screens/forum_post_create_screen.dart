@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
@@ -58,17 +59,30 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   Future<void> _pickFiles() async {
     if (_attachments.length >= 3) return;
 
-    final result = await FilePicker.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'txt'],
-    );
+    try {
+      final result = await FilePicker.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'txt'],
+      );
 
-    if (result != null && result.paths.isNotEmpty) {
-      setState(() {
-        final remaining = 3 - _attachments.length;
-        _attachments.addAll(result.paths.whereType<String>().take(remaining));
-      });
+      if (result != null && result.paths.isNotEmpty) {
+        setState(() {
+          final remaining = 3 - _attachments.length;
+          _attachments.addAll(result.paths.whereType<String>().take(remaining));
+        });
+      }
+    } on PlatformException catch (e) {
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: e.message ?? 'Permission denied or error picking files',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.show(context, message: 'Error picking files');
+      }
     }
   }
 
@@ -184,7 +198,7 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                           controller: _quillController,
                           onImagePick: _pickFiles,
                           isImageLimitReached: _attachments.length >= 3,
-                          isFile: true,
+                          showFileIcon: true,
                         ),
                         const SizedBox(height: 4),
                         ForumEditorField(

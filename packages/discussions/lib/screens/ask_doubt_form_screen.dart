@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:image_picker/image_picker.dart';
@@ -52,23 +53,51 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   Future<void> _pickImages() async {
     if (_attachments.length >= 3) return;
 
-    final images = await _picker.pickMultiImage();
-    if (images.isNotEmpty) {
-      setState(() {
-        final remaining = 3 - _attachments.length;
-        _attachments.addAll(images.take(remaining).map((image) => image.path));
-      });
+    try {
+      final images = await _picker.pickMultiImage();
+      if (images.isNotEmpty) {
+        setState(() {
+          final remaining = 3 - _attachments.length;
+          _attachments.addAll(
+            images.take(remaining).map((image) => image.path),
+          );
+        });
+      }
+    } on PlatformException catch (e) {
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: e.message ?? 'Permission denied or error picking images',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.show(context, message: 'Error picking images');
+      }
     }
   }
 
   Future<void> _pickFromCamera() async {
     if (_attachments.length >= 3) return;
 
-    final image = await _picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      setState(() {
-        _attachments.add(image.path);
-      });
+    try {
+      final image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        setState(() {
+          _attachments.add(image.path);
+        });
+      }
+    } on PlatformException catch (e) {
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: e.message ?? 'Permission denied or error capturing photo',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        AppToast.show(context, message: 'Error capturing photo');
+      }
     }
   }
 

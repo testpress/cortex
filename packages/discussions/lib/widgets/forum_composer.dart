@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 import 'package:core/core.dart';
+import '../utils/attachment_utils.dart';
 
 // ─────────────────────────────────────────────────────
 // Service Layer
@@ -28,7 +29,7 @@ class ForumEditorToolbar extends StatelessWidget {
   final VoidCallback? onImagePick;
   final VoidCallback? onCameraPick;
   final bool isImageLimitReached;
-  final bool isFile;
+  final bool showFileIcon;
 
   const ForumEditorToolbar({
     super.key,
@@ -36,7 +37,7 @@ class ForumEditorToolbar extends StatelessWidget {
     this.onImagePick,
     this.onCameraPick,
     this.isImageLimitReached = false,
-    this.isFile = false,
+    this.showFileIcon = false,
   });
 
   @override
@@ -52,7 +53,7 @@ class ForumEditorToolbar extends StatelessWidget {
           onImagePick: onImagePick,
           onCameraPick: onCameraPick,
           isImageLimitReached: isImageLimitReached,
-          isFile: isFile,
+          showFileIcon: showFileIcon,
         ),
       ),
     );
@@ -215,14 +216,14 @@ class _ToolbarButtons extends StatelessWidget {
   final VoidCallback? onImagePick;
   final VoidCallback? onCameraPick;
   final bool isImageLimitReached;
-  final bool isFile;
+  final bool showFileIcon;
 
   const _ToolbarButtons({
     required this.controller,
     this.onImagePick,
     this.onCameraPick,
     this.isImageLimitReached = false,
-    this.isFile = false,
+    this.showFileIcon = false,
   });
 
   @override
@@ -265,7 +266,7 @@ class _ToolbarButtons extends StatelessWidget {
           const ForumToolbarDivider(),
           if (onImagePick != null)
             ForumToolbarButton(
-              icon: isFile ? LucideIcons.paperclip : LucideIcons.image,
+              icon: showFileIcon ? LucideIcons.paperclip : LucideIcons.image,
               onTap: isImageLimitReached ? () {} : onImagePick!,
               isDisabled: isImageLimitReached,
             ),
@@ -451,13 +452,7 @@ class _AttachmentItem extends StatelessWidget {
     const size = 64.0;
 
     final isPdf = imageUrl.toLowerCase().endsWith('.pdf');
-    final isImage = [
-      'jpg',
-      'jpeg',
-      'png',
-      'gif',
-      'webp',
-    ].any((ext) => imageUrl.toLowerCase().endsWith('.$ext'));
+    final isImage = AttachmentUtils.isImageFile(imageUrl);
 
     Widget child;
     if (isImage) {

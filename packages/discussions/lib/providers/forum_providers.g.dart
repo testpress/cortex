@@ -6,7 +6,7 @@ part of 'forum_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$forumRepositoryHash() => r'085755f0b01a618f5faaf049e8ed0dfe66ae4989';
+String _$forumRepositoryHash() => r'87a91de2fccbbbb42983cd55f7bd294e33b99528';
 
 /// See also [forumRepository].
 @ProviderFor(forumRepository)
@@ -42,7 +42,7 @@ final globalForumCategoriesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GlobalForumCategoriesRef = FutureProviderRef<List<ForumCategoryDto>>;
-String _$postForumCommentHash() => r'dff11df23405bb814a6b893d54a56694ade1f7ec';
+String _$postForumCommentHash() => r'093026bcf5c815f087309a8c7178a1dea1601e9e';
 
 /// See also [PostForumComment].
 @ProviderFor(PostForumComment)
@@ -58,7 +58,7 @@ final postForumCommentProvider =
     );
 
 typedef _$PostForumComment = AutoDisposeAsyncNotifier<void>;
-String _$createForumThreadHash() => r'68830dfb776fb7f593f0f6ebd16e3a2127fcad1e';
+String _$createForumThreadHash() => r'e9d1cc773a155e37b49d788419f4b902c9e817cf';
 
 /// See also [CreateForumThread].
 @ProviderFor(CreateForumThread)
@@ -74,7 +74,7 @@ final createForumThreadProvider =
     );
 
 typedef _$CreateForumThread = AutoDisposeAsyncNotifier<void>;
-String _$globalForumFeedHash() => r'736c942f31480e9c06c8589528dd7157b96c7c81';
+String _$globalForumFeedHash() => r'eec2f0bbfb8385ed885244fb4db02ab1e359d13a';
 
 /// Copied from Dart SDK
 class _SystemHash {
