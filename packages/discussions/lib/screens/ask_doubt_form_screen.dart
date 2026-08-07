@@ -338,7 +338,6 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
       }
     } catch (e, stack) {
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
-      debugPrint('Doubt submit failed: $e');
       if (mounted) {
         AppToast.show(
           context,

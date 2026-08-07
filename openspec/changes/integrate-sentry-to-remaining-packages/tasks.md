@@ -7,6 +7,7 @@
 - [x] 1.5 Integrate `sentryServiceProvider` in `packages/discussions/lib/screens/ask_doubt_form_screen.dart` for capturing exceptions when submitting doubts.
 - [x] 1.6 Integrate `sentryServiceProvider` in `packages/discussions/lib/screens/forum_post_create_screen.dart` for capturing exceptions when creating posts.
 - [x] 1.7 Integrate `sentryServiceProvider` in `packages/discussions/lib/screens/doubt_detail_screen.dart` for capturing exceptions when sending doubt replies.
+- [x] 1.8 Remove redundant `debugPrint` statements alongside Sentry capture in discussions provider and screen files.
 
 ## 2. Profile Package Sentry Integration
 

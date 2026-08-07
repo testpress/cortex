@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/forum_repository.dart';
@@ -24,8 +23,6 @@ final globalForumThreadDetailProvider =
         try {
           await repo.fetchThread(slug);
         } catch (e, stack) {
-          // Swallow network errors to prevent provider crash, but log them for debugging
-          debugPrint('DEBUG: Failed to fetch thread $slug: $e');
           ref
               .read(sentryServiceProvider)
               .captureException(e, stackTrace: stack);
