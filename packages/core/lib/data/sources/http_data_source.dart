@@ -363,6 +363,8 @@ class HttpDataSource implements DataSource {
     );
   }
 
+  // Reuses ApiEndpoints.imageUpload as a fallback because the backend lacks a separate generic uploader route.
+  // Keeping uploadFile as a separate signature decouples client logic if endpoints are split in the future.
   @override
   Future<String> uploadFile(File file) async {
     final fileName = file.path.split('/').last;

@@ -502,21 +502,25 @@ class _AttachmentItem extends StatelessWidget {
           Positioned(
             top: -10,
             right: -10,
-            child: GestureDetector(
+            child: AppSemantics.button(
+              label: context.l10n.deleteAction,
               onTap: onRemove,
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: design.colors.textPrimary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    LucideIcons.x,
-                    size: 14,
-                    color: design.colors.card,
+              child: GestureDetector(
+                onTap: onRemove,
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: design.colors.textPrimary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.x,
+                      size: 14,
+                      color: design.colors.card,
+                    ),
                   ),
                 ),
               ),
@@ -563,21 +567,25 @@ class _AttachmentItem extends StatelessWidget {
           Positioned(
             top: -10,
             right: -10,
-            child: GestureDetector(
+            child: AppSemantics.button(
+              label: context.l10n.deleteAction,
               onTap: onRemove,
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: design.colors.textPrimary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    LucideIcons.x,
-                    size: 14,
-                    color: design.colors.card,
+              child: GestureDetector(
+                onTap: onRemove,
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: design.colors.textPrimary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.x,
+                      size: 14,
+                      color: design.colors.card,
+                    ),
                   ),
                 ),
               ),
