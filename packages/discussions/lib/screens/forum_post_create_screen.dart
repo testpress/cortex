@@ -59,30 +59,17 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   Future<void> _pickFiles() async {
     if (_attachments.length >= 3) return;
 
-    try {
-      final result = await FilePicker.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'txt'],
-      );
+    final result = await FilePicker.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'txt'],
+    );
 
-      if (result != null && result.paths.isNotEmpty) {
-        setState(() {
-          final remaining = 3 - _attachments.length;
-          _attachments.addAll(result.paths.whereType<String>().take(remaining));
-        });
-      }
-    } on PlatformException catch (e) {
-      if (mounted) {
-        AppToast.show(
-          context,
-          message: e.message ?? 'Permission denied or error picking files',
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        AppToast.show(context, message: 'Error picking files');
-      }
+    if (result != null && result.paths.isNotEmpty) {
+      setState(() {
+        final remaining = 3 - _attachments.length;
+        _attachments.addAll(result.paths.whereType<String>().take(remaining));
+      });
     }
   }
 
