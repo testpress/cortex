@@ -88,7 +88,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             );
 
         if (mounted) context.pop(true);
-      } catch (e) {
+      } catch (e, stack) {
+        ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
         if (mounted) setState(() => _errorMessage = e.toString());
       } finally {
         if (mounted) setState(() => _isSaving = false);

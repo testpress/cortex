@@ -336,7 +336,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
         Navigator.pop(context);
         context.push('/home/discussions/doubts/$newDoubtId');
       }
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       debugPrint('Doubt submit failed: $e');
       if (mounted) {
         AppToast.show(

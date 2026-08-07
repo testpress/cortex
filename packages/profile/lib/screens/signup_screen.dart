@@ -317,7 +317,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                         );
                                     if (!context.mounted) return;
                                     context.go('/home');
-                                  } catch (e) {
+                                  } catch (e, stack) {
+                                    if (e is! ApiException) {
+                                      ref
+                                          .read(sentryServiceProvider)
+                                          .captureException(
+                                            e,
+                                            stackTrace: stack,
+                                          );
+                                    }
                                     if (mounted) {
                                       setState(() {
                                         if (e is ApiException) {

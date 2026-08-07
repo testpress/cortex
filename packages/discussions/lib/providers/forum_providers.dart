@@ -10,7 +10,8 @@ part 'forum_providers.g.dart';
 Future<ForumRepository> forumRepository(ForumRepositoryRef ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
-  return ForumRepository(db, source);
+  final sentry = ref.watch(sentryServiceProvider);
+  return ForumRepository(db, source, sentry);
 }
 
 final globalForumThreadDetailProvider =
@@ -22,9 +23,12 @@ final globalForumThreadDetailProvider =
       if (localData == null) {
         try {
           await repo.fetchThread(slug);
-        } catch (e) {
+        } catch (e, stack) {
           // Swallow network errors to prevent provider crash, but log them for debugging
           debugPrint('DEBUG: Failed to fetch thread $slug: $e');
+          ref
+              .read(sentryServiceProvider)
+              .captureException(e, stackTrace: stack);
         }
       } else {
         repo.fetchThread(slug).ignore();
@@ -43,8 +47,11 @@ final globalForumCommentsProvider =
       if (localData.isEmpty) {
         try {
           await fetchFuture;
-        } catch (_) {
-          // Ignore network errors so the provider doesn't crash
+        } catch (e, stack) {
+          // Ignore network errors so the provider doesn't crash, but report to Sentry
+          ref
+              .read(sentryServiceProvider)
+              .captureException(e, stackTrace: stack);
         }
       } else {
         fetchFuture.ignore();
@@ -200,7 +207,8 @@ class GlobalForumFeed extends _$GlobalForumFeed {
           isLoadingMore: false,
         ),
       );
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       state = AsyncData(currentState.copyWith(isLoadingMore: false));
       rethrow;
     }

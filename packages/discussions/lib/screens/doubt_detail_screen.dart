@@ -822,7 +822,8 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
       _controller.clear();
       _attachments.clear();
       _focusNode.unfocus();
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       debugPrint('Error posting reply: $e');
     } finally {
       if (mounted) {

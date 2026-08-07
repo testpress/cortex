@@ -7,13 +7,19 @@ import 'package:core/data/data.dart';
 class ForumRepository {
   final AppDatabase _db;
   final DataSource _source;
+  final SentryService _sentryService;
 
-  ForumRepository(this._db, this._source);
+  ForumRepository(this._db, this._source, this._sentryService);
 
   // ── Categories ───────────────────────────────────────────────────────────
 
-  Future<List<ForumCategoryDto>> fetchCategories() {
-    return _source.getForumCategories();
+  Future<List<ForumCategoryDto>> fetchCategories() async {
+    try {
+      return await _source.getForumCategories();
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
   // ── Threads ──────────────────────────────────────────────────────────────
@@ -43,25 +49,35 @@ class ForumRepository {
         ? true
         : null;
 
-    final response = await _source.getForumThreads(
-      page: page,
-      categoryId: categoryId,
-      searchQuery: searchQuery,
-      sortString: sortString,
-      postedByMe: postedByMe,
-      commentedByMe: commentedByMe,
-      likedByMe: likedByMe,
-      bookmarkedByMe: bookmarkedByMe,
-    );
-    final companions = response.results.map(_dtoToCompanion).toList();
-    await _db.upsertForumThreads(companions);
-    return response;
+    try {
+      final response = await _source.getForumThreads(
+        page: page,
+        categoryId: categoryId,
+        searchQuery: searchQuery,
+        sortString: sortString,
+        postedByMe: postedByMe,
+        commentedByMe: commentedByMe,
+        likedByMe: likedByMe,
+        bookmarkedByMe: bookmarkedByMe,
+      );
+      final companions = response.results.map(_dtoToCompanion).toList();
+      await _db.upsertForumThreads(companions);
+      return response;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
   Future<ForumThreadDto> fetchThread(String slug) async {
-    final threadDto = await _source.getForumThread(slug);
-    await _db.upsertForumThreads([_dtoToCompanion(threadDto)]);
-    return threadDto;
+    try {
+      final threadDto = await _source.getForumThread(slug);
+      await _db.upsertForumThreads([_dtoToCompanion(threadDto)]);
+      return threadDto;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
   Stream<List<ForumThreadDto>> watchAllThreads() {
@@ -100,13 +116,18 @@ class ForumRepository {
     required int threadId,
     int page = 1,
   }) async {
-    final response = await _source.getForumComments(
-      threadId: threadId,
-      page: page,
-    );
-    final companions = response.results.map(_commentDtoToCompanion).toList();
-    await _db.upsertForumComments(companions);
-    return response;
+    try {
+      final response = await _source.getForumComments(
+        threadId: threadId,
+        page: page,
+      );
+      final companions = response.results.map(_commentDtoToCompanion).toList();
+      await _db.upsertForumComments(companions);
+      return response;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
   Stream<List<ForumCommentDto>> watchComments(int threadId) {
@@ -119,17 +140,27 @@ class ForumRepository {
     required int threadId,
     required String content,
   }) async {
-    final commentDto = await _source.postForumComment(
-      threadId: threadId,
-      content: content,
-    );
-    final companion = _commentDtoToCompanion(commentDto);
-    await _db.upsertForumComments([companion]);
-    return commentDto;
+    try {
+      final commentDto = await _source.postForumComment(
+        threadId: threadId,
+        content: content,
+      );
+      final companion = _commentDtoToCompanion(commentDto);
+      await _db.upsertForumComments([companion]);
+      return commentDto;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
-  Future<String> uploadImage(File file) {
-    return _source.uploadImage(file);
+  Future<String> uploadImage(File file) async {
+    try {
+      return await _source.uploadImage(file);
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
   Future<ForumThreadDto> createThread({
@@ -138,14 +169,19 @@ class ForumRepository {
     required String categorySlug,
     String? courseId,
   }) async {
-    final threadDto = await _source.postForumThread(
-      title: title,
-      contentHtml: html,
-      categorySlug: categorySlug,
-      courseId: courseId,
-    );
-    await _db.upsertForumThreads([_dtoToCompanion(threadDto)]);
-    return threadDto;
+    try {
+      final threadDto = await _source.postForumThread(
+        title: title,
+        contentHtml: html,
+        categorySlug: categorySlug,
+        courseId: courseId,
+      );
+      await _db.upsertForumThreads([_dtoToCompanion(threadDto)]);
+      return threadDto;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
   }
 
   // ── Mappers ──────────────────────────────────────────────────────────────

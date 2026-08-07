@@ -728,7 +728,8 @@ class _StickyReplyInputState extends ConsumerState<_StickyReplyInput> {
       _controller.clear();
       setState(() => _attachments.clear());
       if (mounted) FocusScope.of(context).unfocus();
-    } catch (e) {
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         AppToast.show(context, message: l10n.forumErrorFailedToPostReply);
       }
