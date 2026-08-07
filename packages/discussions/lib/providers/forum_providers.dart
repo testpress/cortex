@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/forum_repository.dart';
+import '../utils/attachment_utils.dart';
 
 part 'forum_providers.g.dart';
 
@@ -74,13 +75,24 @@ class PostForumComment extends _$PostForumComment {
       String finalContent = content;
 
       if (attachments.isNotEmpty) {
-        final uploadFutures = attachments.map(
-          (path) => repo.uploadImage(File(path)),
-        );
+        final uploadFutures = attachments.map((path) {
+          final isImage = AttachmentUtils.isImageFile(path);
+          return isImage
+              ? repo.uploadImage(File(path))
+              : repo.uploadFile(File(path));
+        });
         final urls = await Future.wait(uploadFutures);
 
-        for (final url in urls) {
-          finalContent += '<br><img src="$url" />';
+        for (int i = 0; i < urls.length; i++) {
+          final url = urls[i];
+          final path = attachments[i];
+          final fileName = path.split('/').last;
+          final isImage = AttachmentUtils.isImageFile(path);
+          if (isImage) {
+            finalContent += '<br><img src="$url" />';
+          } else {
+            finalContent += '<br><a href="$url" target="_blank">$fileName</a>';
+          }
         }
       }
 
@@ -109,13 +121,24 @@ class CreateForumThread extends _$CreateForumThread {
       String finalContent = content;
 
       if (attachments.isNotEmpty) {
-        final uploadFutures = attachments.map(
-          (path) => repo.uploadImage(File(path)),
-        );
+        final uploadFutures = attachments.map((path) {
+          final isImage = AttachmentUtils.isImageFile(path);
+          return isImage
+              ? repo.uploadImage(File(path))
+              : repo.uploadFile(File(path));
+        });
         final urls = await Future.wait(uploadFutures);
 
-        for (final url in urls) {
-          finalContent += '<br><img src="$url" />';
+        for (int i = 0; i < urls.length; i++) {
+          final url = urls[i];
+          final path = attachments[i];
+          final fileName = path.split('/').last;
+          final isImage = AttachmentUtils.isImageFile(path);
+          if (isImage) {
+            finalContent += '<br><img src="$url" />';
+          } else {
+            finalContent += '<br><a href="$url" target="_blank">$fileName</a>';
+          }
         }
       }
 

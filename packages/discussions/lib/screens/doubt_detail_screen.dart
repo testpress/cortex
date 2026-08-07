@@ -2,7 +2,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
@@ -654,6 +654,7 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
   bool _showToolbar = true;
   bool _isSubmitting = false;
   final List<String> _attachments = [];
+  final _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -776,16 +777,11 @@ class _DoubtReplyComposerState extends ConsumerState<_DoubtReplyComposer> {
   Future<void> _pickAttachments() async {
     if (_attachments.length >= 3) return;
 
-    final result = await FilePicker.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-    );
-
-    if (result != null && result.paths.isNotEmpty) {
+    final images = await _picker.pickMultiImage();
+    if (images.isNotEmpty) {
       setState(() {
         final remaining = 3 - _attachments.length;
-        _attachments.addAll(result.paths.whereType<String>().take(remaining));
+        _attachments.addAll(images.take(remaining).map((image) => image.path));
       });
     }
   }

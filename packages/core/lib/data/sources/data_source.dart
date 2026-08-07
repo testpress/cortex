@@ -101,6 +101,8 @@ abstract class DataSource {
 
   Future<String> uploadImage(File file);
 
+  Future<String> uploadFile(File file);
+
   /// Fetch per-lesson progress for a user.
   Future<List<UserProgressDto>> getUserProgress(String userId);
 

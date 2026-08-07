@@ -163,6 +163,15 @@ class ForumRepository {
     }
   }
 
+  Future<String> uploadFile(File file) async {
+    try {
+      return await _source.uploadFile(file);
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
+  }
+
   Future<ForumThreadDto> createThread({
     required String title,
     required String html,
