@@ -120,6 +120,15 @@ class DashboardDrawer extends ConsumerWidget {
                   context.push('/exams/create-custom-exam');
                 },
               ),
+            if (AppConfig.showExamResults)
+              AppDrawerItem(
+                icon: LucideIcons.chartNoAxesColumn,
+                label: l10n.drawerMyResults,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/my-results');
+                },
+              ),
 
             AppDrawerItem(
               icon: LucideIcons.clipboardCheck,

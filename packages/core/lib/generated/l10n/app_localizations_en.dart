@@ -648,6 +648,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerOfflineExams => 'Offline Exams';
 
   @override
+  String get drawerMyResults => 'My Results';
+
+  @override
   String get noDownloadedExamAvailable => 'No downloaded exam available';
 
   @override

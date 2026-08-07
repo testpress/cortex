@@ -659,6 +659,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get drawerOfflineExams => 'ஆஃப்லைன் தேர்வுகள்';
 
   @override
+  String get drawerMyResults => 'எனது முடிவுகள்';
+
+  @override
   String get noDownloadedExamAvailable =>
       'பதிவிறக்கம் செய்யப்பட்ட தேர்வு எதுவும் இல்லை';
 

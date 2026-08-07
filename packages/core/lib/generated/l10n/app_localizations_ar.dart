@@ -647,6 +647,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerOfflineExams => 'الامتحانات غير المتصلة';
 
   @override
+  String get drawerMyResults => 'نتائجي';
+
+  @override
   String get noDownloadedExamAvailable => 'لا يتوفر امتحان تم تنزيله';
 
   @override

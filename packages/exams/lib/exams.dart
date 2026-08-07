@@ -19,3 +19,4 @@ export 'providers/exam_providers.dart';
 export 'screens/subject_analytics/subject_analytics_screen.dart';
 export 'screens/subject_analytics/topic_analytics_screen.dart';
 export 'screens/offline_exams_list_screen.dart';
+export 'screens/results/my_results_screen.dart';

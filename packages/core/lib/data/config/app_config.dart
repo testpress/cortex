@@ -126,6 +126,11 @@ class AppConfig {
     defaultValue: false,
   );
 
+  static const bool showExamResults = bool.fromEnvironment(
+    'SHOW_EXAM_RESULTS',
+    defaultValue: false,
+  );
+
   static const String instituteLogoUrl = String.fromEnvironment(
     'INSTITUTE_LOGO_URL',
     defaultValue: '',
