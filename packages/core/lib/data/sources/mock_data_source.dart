@@ -994,6 +994,12 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<String> uploadFile(File file) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return 'https://mock.url/${file.path.split('/').last}';
+  }
+
+  @override
   Future<ForumThreadDto> postForumThread({
     required String title,
     required String contentHtml,

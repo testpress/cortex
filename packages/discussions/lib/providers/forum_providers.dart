@@ -74,13 +74,36 @@ class PostForumComment extends _$PostForumComment {
       String finalContent = content;
 
       if (attachments.isNotEmpty) {
-        final uploadFutures = attachments.map(
-          (path) => repo.uploadImage(File(path)),
-        );
+        final uploadFutures = attachments.map((path) {
+          final isImage = [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          return isImage
+              ? repo.uploadImage(File(path))
+              : repo.uploadFile(File(path));
+        });
         final urls = await Future.wait(uploadFutures);
 
-        for (final url in urls) {
-          finalContent += '<br><img src="$url" />';
+        for (int i = 0; i < urls.length; i++) {
+          final url = urls[i];
+          final path = attachments[i];
+          final fileName = path.split('/').last;
+          final isImage = [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          if (isImage) {
+            finalContent += '<br><img src="$url" />';
+          } else {
+            finalContent += '<br><a href="$url" target="_blank">$fileName</a>';
+          }
         }
       }
 
@@ -109,13 +132,36 @@ class CreateForumThread extends _$CreateForumThread {
       String finalContent = content;
 
       if (attachments.isNotEmpty) {
-        final uploadFutures = attachments.map(
-          (path) => repo.uploadImage(File(path)),
-        );
+        final uploadFutures = attachments.map((path) {
+          final isImage = [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          return isImage
+              ? repo.uploadImage(File(path))
+              : repo.uploadFile(File(path));
+        });
         final urls = await Future.wait(uploadFutures);
 
-        for (final url in urls) {
-          finalContent += '<br><img src="$url" />';
+        for (int i = 0; i < urls.length; i++) {
+          final url = urls[i];
+          final path = attachments[i];
+          final fileName = path.split('/').last;
+          final isImage = [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+          ].any((ext) => path.toLowerCase().endsWith('.$ext'));
+          if (isImage) {
+            finalContent += '<br><img src="$url" />';
+          } else {
+            finalContent += '<br><a href="$url" target="_blank">$fileName</a>';
+          }
         }
       }
 

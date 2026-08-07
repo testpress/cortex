@@ -364,6 +364,19 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<String> uploadFile(File file) async {
+    final fileName = file.path.split('/').last;
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.imageUpload, data: formData),
+      fromJson: (json) => json['url'] as String,
+    );
+  }
+
+  @override
   Future<ForumThreadDto> postForumThread({
     required String title,
     required String contentHtml,
