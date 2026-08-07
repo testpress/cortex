@@ -19,3 +19,4 @@
 
 - [x] 4.1 Replace ImagePicker with FilePicker in ForumPostCreateScreen
 - [x] 4.2 Support picking and previewing multiple file types (PDF, docx, txt)
+- [x] 4.3 Fix title text input content padding alignment

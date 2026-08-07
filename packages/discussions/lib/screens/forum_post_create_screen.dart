@@ -171,10 +171,6 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                           controller: _titleController,
                           autofocus: true,
                           textStyle: design.typography.bodySmall,
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: design.spacing.sm,
-                            horizontal: 0,
-                          ),
                         ),
                         SizedBox(height: design.spacing.lg),
                         _buildCategoryPicker(design, categoriesAsync),
