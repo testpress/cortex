@@ -6,25 +6,8 @@ part of 'exam_results_api_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$examResultDioHash() => r'26a6a49ed113977d73abecc8a33e76f45a8aa418';
-
-/// See also [examResultDio].
-@ProviderFor(examResultDio)
-final examResultDioProvider = AutoDisposeProvider<Dio>.internal(
-  examResultDio,
-  name: r'examResultDioProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$examResultDioHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ExamResultDioRef = AutoDisposeProviderRef<Dio>;
 String _$examResultApiServiceHash() =>
-    r'3ef55196b6141ccedc89a79fea87f86bb09028ce';
+    r'b58ffd0cbb6b5e55e722f4673081764486ff4c5d';
 
 /// See also [examResultApiService].
 @ProviderFor(examResultApiService)

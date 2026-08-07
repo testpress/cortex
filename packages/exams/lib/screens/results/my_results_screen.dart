@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
@@ -43,22 +43,29 @@ class _MyResultsScreenState extends ConsumerState<MyResultsScreen> {
                       AppSemantics.button(
                         label: l10n.curriculumBackButton,
                         onTap: () => context.pop(),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 2,
-                          ), // Optical alignment
-                          child: Icon(
-                            LucideIcons.arrowLeft,
-                            color: design.colors.textPrimary,
-                            size: 22,
+                        child: GestureDetector(
+                          onTap: () => context.pop(),
+                          behavior: HitTestBehavior.opaque,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 2,
+                            ), // Optical alignment
+                            child: Icon(
+                              LucideIcons.arrowLeft,
+                              color: design.colors.textPrimary,
+                              size: 22,
+                            ),
                           ),
                         ),
                       ),
                       SizedBox(width: design.spacing.sm),
                       Expanded(
-                        child: AppText.title(
-                          l10n.drawerMyResults,
-                          color: design.colors.textPrimary,
+                        child: AppSemantics.header(
+                          label: l10n.drawerMyResults,
+                          child: AppText.title(
+                            l10n.drawerMyResults,
+                            color: design.colors.textPrimary,
+                          ),
                         ),
                       ),
                     ],
@@ -149,12 +156,8 @@ class _ExamResultsTabViewState extends ConsumerState<_ExamResultsTabView> {
 
         return state.when(
           data: (data) {
-            if (data.data.isEmpty) {
-              return const AppErrorView(
-                title: 'No Results',
-                message: 'No results found for this exam type.',
-              );
-            }
+            // We let the empty data fall through so _ResultsTable can render
+            // its header row and a centered "No results found" message.
             return Column(
               children: [
                 Expanded(
@@ -188,29 +191,7 @@ class _ExamResultsTabViewState extends ConsumerState<_ExamResultsTabView> {
             );
           },
           loading: () {
-            final mockData = List.generate(
-              limit,
-              (_) => ExamResultDto(
-                date: BoneMock.date,
-                examName: BoneMock.name,
-                physics: '00',
-                chemistry: '00',
-                biology: '00',
-                maths: '00',
-                aptitude: '00',
-                drawing: '00',
-                p1: '00',
-                p2: '00',
-                totalMarks: '000',
-                maxMarks: '000',
-                highestMarks: '000',
-                percent: '00.00',
-                grade: 'A',
-                rank: '000',
-                stuAppeared: '0000',
-                omr: 'NA',
-              ),
-            );
+            final mockData = List.generate(limit, (_) => _mockExamResultRow());
             return Skeletonizer(
               enabled: true,
               ignoreContainers: true,
@@ -275,11 +256,23 @@ class _ResultsTable extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Skeleton.keep(child: _buildHeaderRow(design)),
-            ...results.asMap().entries.map((entry) {
-              final index = entry.key;
-              final result = entry.value;
-              return _buildDataRow(design, result, index);
-            }),
+            if (results.isEmpty)
+              Container(
+                width:
+                    900, // Approximate width of headers to keep it visually centered
+                padding: EdgeInsets.symmetric(vertical: design.spacing.xl * 2),
+                alignment: Alignment.center,
+                child: AppText.body(
+                  'No results found',
+                  color: design.colors.textSecondary,
+                ),
+              )
+            else
+              ...results.asMap().entries.map((entry) {
+                final index = entry.key;
+                final result = entry.value;
+                return _buildDataRow(design, result, index);
+              }),
           ],
         ),
       ),
@@ -430,26 +423,13 @@ class _PaginationControl extends StatelessWidget {
     required this.onPageChanged,
   });
 
-  List<int> _buildPageList(int current, int total) {
-    if (total <= 5) return List.generate(total, (i) => i + 1);
-    final pages = <int>[1];
-    if (current <= 3) {
-      pages.addAll([2, 3, -1, total]);
-    } else if (current >= total - 2) {
-      pages.addAll([-1, total - 2, total - 1, total]);
-    } else {
-      pages.addAll([-1, current - 1, current, current + 1, -1, total]);
-    }
-    return pages;
-  }
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final totalPages = (totalCount / (limit > 0 ? limit : 10)).ceil();
     if (totalPages <= 1) return const SizedBox.shrink();
 
-    final visiblePages = _buildPageList(currentPage, totalPages);
+    final visiblePages = _buildVisiblePages(currentPage, totalPages);
 
     return Container(
       padding: EdgeInsets.all(design.spacing.md),
@@ -458,7 +438,9 @@ class _PaginationControl extends StatelessWidget {
         children: [
           Skeleton.keep(
             child: _PaginationTextBtn(
-              text: '‹ Previous',
+              text: 'Previous',
+              icon: LucideIcons.chevronLeft,
+              isLeadingIcon: true,
               isEnabled: currentPage > 1,
               onTap: () => onPageChanged(currentPage - 1),
             ),
@@ -487,8 +469,8 @@ class _PaginationControl extends StatelessWidget {
                       margin: EdgeInsets.symmetric(
                         horizontal: design.spacing.xs,
                       ),
-                      width: 40,
-                      height: 40,
+                      width: 48,
+                      height: 48,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: isSelected
@@ -516,7 +498,9 @@ class _PaginationControl extends StatelessWidget {
           ),
           Skeleton.keep(
             child: _PaginationTextBtn(
-              text: 'Next ›',
+              text: 'Next',
+              icon: LucideIcons.chevronRight,
+              isLeadingIcon: false,
               isEnabled: currentPage < totalPages,
               onTap: () => onPageChanged(currentPage + 1),
             ),
@@ -529,11 +513,15 @@ class _PaginationControl extends StatelessWidget {
 
 class _PaginationTextBtn extends StatelessWidget {
   final String text;
+  final IconData? icon;
+  final bool isLeadingIcon;
   final bool isEnabled;
   final VoidCallback onTap;
 
   const _PaginationTextBtn({
     required this.text,
+    this.icon,
+    this.isLeadingIcon = true,
     required this.isEnabled,
     required this.onTap,
   });
@@ -541,6 +529,10 @@ class _PaginationTextBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final color = isEnabled
+        ? design.colors.primary
+        : design.colors.textTertiary;
+
     return AppSemantics.button(
       label: text,
       onTap: isEnabled ? onTap : null,
@@ -552,12 +544,30 @@ class _PaginationTextBtn extends StatelessWidget {
             horizontal: design.spacing.sm,
             vertical: design.spacing.xs,
           ),
-          child: AppText.sm(
-            text,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            color: isEnabled
-                ? design.colors.primary
-                : design.colors.textTertiary,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (icon != null && isLeadingIcon) ...[
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.5), // Optical alignment
+                  child: Icon(icon, size: 16, color: color),
+                ),
+                SizedBox(width: design.spacing.xs),
+              ],
+              AppText.sm(
+                text,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                color: color,
+              ),
+              if (icon != null && !isLeadingIcon) ...[
+                SizedBox(width: design.spacing.xs),
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.5), // Optical alignment
+                  child: Icon(icon, size: 16, color: color),
+                ),
+              ],
+            ],
           ),
         ),
       ),
@@ -580,33 +590,82 @@ class _FilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final chipDecoration = BoxDecoration(
+      color: isSelected ? design.colors.primary : design.colors.card,
+      borderRadius: BorderRadius.all(Radius.circular(999)),
+      border: Border.all(
+        color: isSelected ? design.colors.primary : design.colors.border,
+      ),
+    );
+    const chipPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 10);
+    final chipChild = AppText.label(
+      label,
+      color: isSelected ? design.colors.textInverse : design.colors.textPrimary,
+      style: TextStyle(
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      ),
+    );
+
+    final chipWidget = MotionPreferences.shouldAnimate(context)
+        ? AnimatedContainer(
+            duration: MotionPreferences.duration(context, design.motion.fast),
+            padding: chipPadding,
+            decoration: chipDecoration,
+            child: chipChild,
+          )
+        : Container(
+            padding: chipPadding,
+            decoration: chipDecoration,
+            child: chipChild,
+          );
+
     return AppSemantics.button(
       label: label,
       onTap: onTap,
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
-        child: AnimatedContainer(
-          duration: design.motion.fast,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-            color: isSelected ? design.colors.primary : design.colors.card,
-            borderRadius: BorderRadius.all(Radius.circular(999)),
-            border: Border.all(
-              color: isSelected ? design.colors.primary : design.colors.border,
-            ),
-          ),
-          child: AppText.label(
-            label,
-            color: isSelected
-                ? design.colors.textInverse
-                : design.colors.textPrimary,
-            style: TextStyle(
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ),
+        child: chipWidget,
       ),
     );
   }
 }
+
+// ── Top-level pure helpers ──────────────────────────────────────────────────
+
+/// Constructs the list of visible page numbers for the pagination control.
+/// Returns -1 as a sentinel value for ellipsis (…) positions.
+List<int> _buildVisiblePages(int current, int total) {
+  if (total <= 5) return List.generate(total, (i) => i + 1);
+  final pages = <int>[1];
+  if (current <= 3) {
+    pages.addAll([2, 3, -1, total]);
+  } else if (current >= total - 2) {
+    pages.addAll([-1, total - 2, total - 1, total]);
+  } else {
+    pages.addAll([-1, current - 1, current, current + 1, -1, total]);
+  }
+  return pages;
+}
+
+/// Constructs a single mock [ExamResultDto] row used for skeleton loading states.
+ExamResultDto _mockExamResultRow() => ExamResultDto(
+  date: BoneMock.date,
+  examName: BoneMock.name,
+  physics: '00',
+  chemistry: '00',
+  biology: '00',
+  maths: '00',
+  aptitude: '00',
+  drawing: '00',
+  p1: '00',
+  p2: '00',
+  totalMarks: '000',
+  maxMarks: '000',
+  highestMarks: '000',
+  percent: '00.00',
+  grade: 'A',
+  rank: '000',
+  stuAppeared: '0000',
+  omr: 'NA',
+);
