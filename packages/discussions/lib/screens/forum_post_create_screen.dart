@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
@@ -25,7 +25,6 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   final List<String> _attachments = [];
-  final ImagePicker _picker = ImagePicker();
 
   bool _isSubmitting = false;
   int? _selectedCategoryId;
@@ -56,14 +55,19 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
   bool get _hasDescription =>
       _quillController.document.toPlainText().trim().isNotEmpty;
 
-  Future<void> _pickImages() async {
+  Future<void> _pickFiles() async {
     if (_attachments.length >= 3) return;
 
-    final images = await _picker.pickMultiImage();
-    if (images.isNotEmpty) {
+    final result = await FilePicker.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'txt'],
+    );
+
+    if (result != null && result.paths.isNotEmpty) {
       setState(() {
         final remaining = 3 - _attachments.length;
-        _attachments.addAll(images.take(remaining).map((image) => image.path));
+        _attachments.addAll(result.paths.whereType<String>().take(remaining));
       });
     }
   }
@@ -182,8 +186,9 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                         SizedBox(height: design.spacing.xs),
                         ForumEditorToolbar(
                           controller: _quillController,
-                          onImagePick: _pickImages,
+                          onImagePick: _pickFiles,
                           isImageLimitReached: _attachments.length >= 3,
+                          isFile: true,
                         ),
                         const SizedBox(height: 4),
                         ForumEditorField(

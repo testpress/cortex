@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
@@ -43,8 +44,38 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   late final quill.QuillController _quillController;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
+  final List<String> _attachments = [];
+  final ImagePicker _picker = ImagePicker();
 
   int? _finalizedTopicId;
+
+  Future<void> _pickImages() async {
+    if (_attachments.length >= 3) return;
+
+    final images = await _picker.pickMultiImage();
+    if (images.isNotEmpty) {
+      setState(() {
+        final remaining = 3 - _attachments.length;
+        _attachments.addAll(images.take(remaining).map((image) => image.path));
+      });
+    }
+  }
+
+  Future<void> _pickFromCamera() async {
+    if (_attachments.length >= 3) return;
+
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      setState(() {
+        _attachments.add(image.path);
+      });
+    }
+  }
+
+  void _removeAttachment(int index) {
+    setState(() => _attachments.removeAt(index));
+  }
+
   bool _isTopicFinalized = false;
   bool _isSubmitSheetOpen = false;
   bool _isSubmitting = false;
@@ -118,7 +149,12 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                           const SizedBox(height: 24),
                           _sectionLabel(l10n.doubtsFormDescriptionLabel),
                           const SizedBox(height: 8),
-                          ForumEditorToolbar(controller: _quillController),
+                          ForumEditorToolbar(
+                            controller: _quillController,
+                            onImagePick: _pickImages,
+                            onCameraPick: _pickFromCamera,
+                            isImageLimitReached: _attachments.length >= 3,
+                          ),
                           const SizedBox(height: 4),
                           ForumEditorField(
                             controller: _quillController,
@@ -128,6 +164,13 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                             minHeight: 160,
                             maxHeight: 240,
                           ),
+                          if (_attachments.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            ForumAttachmentPreview(
+                              imageUrls: _attachments,
+                              onRemove: _removeAttachment,
+                            ),
+                          ],
                           const SizedBox(height: 24),
                           _sectionLabel(l10n.doubtsFormCategoryLabel),
                           const SizedBox(height: 8),
@@ -231,7 +274,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   Widget _actionBar(DesignConfig design, AppLocalizations l10n) {
     final canSubmit =
         _titleController.text.trim().isNotEmpty &&
-        _quillController.document.toPlainText().trim().isNotEmpty &&
+        (_quillController.document.toPlainText().trim().isNotEmpty ||
+            _attachments.isNotEmpty) &&
         _isTopicFinalized;
 
     return SafeArea(
@@ -301,7 +345,9 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   Future<void> _submitDoubt(DoubtQueryType queryType) async {
     final title = _titleController.text.trim();
     final contentText = _quillController.document.toPlainText().trim();
-    if (title.isEmpty || contentText.isEmpty || !_isTopicFinalized) {
+    if (title.isEmpty ||
+        (contentText.isEmpty && _attachments.isEmpty) ||
+        !_isTopicFinalized) {
       return;
     }
 
@@ -318,6 +364,16 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
     try {
       final repo = await ref.read(doubtRepositoryProvider.future);
       String finalHtml = descriptionHtml;
+
+      if (_attachments.isNotEmpty) {
+        final uploadFutures = _attachments.map(
+          (path) => repo.uploadDoubtImage(path),
+        );
+        final urls = await Future.wait(uploadFutures);
+        for (final url in urls) {
+          finalHtml += '<br><img src="$url" />';
+        }
+      }
 
       final newDoubtId = await repo.createDoubt(
         title: title,

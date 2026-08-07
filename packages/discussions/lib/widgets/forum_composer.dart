@@ -26,13 +26,17 @@ class QuillEditorService {
 class ForumEditorToolbar extends StatelessWidget {
   final quill.QuillController controller;
   final VoidCallback? onImagePick;
+  final VoidCallback? onCameraPick;
   final bool isImageLimitReached;
+  final bool isFile;
 
   const ForumEditorToolbar({
     super.key,
     required this.controller,
     this.onImagePick,
+    this.onCameraPick,
     this.isImageLimitReached = false,
+    this.isFile = false,
   });
 
   @override
@@ -46,7 +50,9 @@ class ForumEditorToolbar extends StatelessWidget {
         builder: (context, _) => _ToolbarButtons(
           controller: controller,
           onImagePick: onImagePick,
+          onCameraPick: onCameraPick,
           isImageLimitReached: isImageLimitReached,
+          isFile: isFile,
         ),
       ),
     );
@@ -207,12 +213,16 @@ class ForumAttachmentPreview extends StatelessWidget {
 class _ToolbarButtons extends StatelessWidget {
   final quill.QuillController controller;
   final VoidCallback? onImagePick;
+  final VoidCallback? onCameraPick;
   final bool isImageLimitReached;
+  final bool isFile;
 
   const _ToolbarButtons({
     required this.controller,
     this.onImagePick,
+    this.onCameraPick,
     this.isImageLimitReached = false,
+    this.isFile = false,
   });
 
   @override
@@ -255,8 +265,14 @@ class _ToolbarButtons extends StatelessWidget {
           const ForumToolbarDivider(),
           if (onImagePick != null)
             ForumToolbarButton(
-              icon: LucideIcons.image,
+              icon: isFile ? LucideIcons.paperclip : LucideIcons.image,
               onTap: isImageLimitReached ? () {} : onImagePick!,
+              isDisabled: isImageLimitReached,
+            ),
+          if (onCameraPick != null)
+            ForumToolbarButton(
+              icon: LucideIcons.camera,
+              onTap: isImageLimitReached ? () {} : onCameraPick!,
               isDisabled: isImageLimitReached,
             ),
         ],
@@ -434,49 +450,146 @@ class _AttachmentItem extends StatelessWidget {
     final design = Design.of(context);
     const size = 64.0;
 
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(design.radius.md),
-            border: Border.all(color: design.colors.divider),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Image.file(
-            File(imageUrl),
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Center(
-              child: Icon(
-                LucideIcons.imageOff,
-                size: 20,
-                color: design.colors.textSecondary,
-              ),
-            ),
+    final isPdf = imageUrl.toLowerCase().endsWith('.pdf');
+    final isImage = [
+      'jpg',
+      'jpeg',
+      'png',
+      'gif',
+      'webp',
+    ].any((ext) => imageUrl.toLowerCase().endsWith('.$ext'));
+
+    Widget child;
+    if (isImage) {
+      child = Image.file(
+        File(imageUrl),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Center(
+          child: Icon(
+            LucideIcons.file,
+            size: 20,
+            color: design.colors.textSecondary,
           ),
         ),
-        Positioned(
-          top: -10,
-          right: -10,
-          child: GestureDetector(
-            onTap: onRemove,
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: design.colors.textPrimary,
-                  shape: BoxShape.circle,
+      );
+    } else if (isPdf) {
+      child = Center(
+        child: Icon(
+          LucideIcons.fileText,
+          size: 20,
+          color: design.colors.accent2,
+        ),
+      );
+    } else {
+      child = Center(
+        child: Icon(
+          LucideIcons.file,
+          size: 20,
+          color: design.colors.textSecondary,
+        ),
+      );
+    }
+
+    if (isImage) {
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(design.radius.md),
+              border: Border.all(color: design.colors.divider),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: child,
+          ),
+          Positioned(
+            top: -10,
+            right: -10,
+            child: GestureDetector(
+              onTap: onRemove,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: design.colors.textPrimary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    LucideIcons.x,
+                    size: 14,
+                    color: design.colors.card,
+                  ),
                 ),
-                child: Icon(LucideIcons.x, size: 14, color: design.colors.card),
               ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      final fileName = imageUrl.split('/').last;
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 180,
+            height: size,
+            decoration: BoxDecoration(
+              color: design.colors.surfaceVariant.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(design.radius.md),
+              border: Border.all(color: design.colors.divider),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
+            child: Row(
+              children: [
+                Icon(
+                  isPdf ? LucideIcons.fileText : LucideIcons.file,
+                  size: 24,
+                  color: isPdf
+                      ? design.colors.accent2
+                      : design.colors.textSecondary,
+                ),
+                SizedBox(width: design.spacing.sm),
+                Expanded(
+                  child: AppText.caption(
+                    fileName,
+                    color: design.colors.textPrimary,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(width: design.spacing.xs),
+              ],
+            ),
+          ),
+          Positioned(
+            top: -10,
+            right: -10,
+            child: GestureDetector(
+              onTap: onRemove,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: design.colors.textPrimary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    LucideIcons.x,
+                    size: 14,
+                    color: design.colors.card,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
   }
 }
