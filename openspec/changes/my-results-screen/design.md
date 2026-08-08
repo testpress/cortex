@@ -17,13 +17,13 @@ The Flutter application needs to display "My Results", a feature specifically re
 ## Decisions
 
 **Decision 1: Network Implementation for SSL Bypass**
-We will create a specific Dio instance exclusively for `ExamResultApiService` within `packages/exams` rather than overriding the global `HttpOverrides`. This keeps the SSL bypass restricted to just this domain and minimizes security risks across the rest of the application.
+We will create a specific Dio instance exclusively for `BPElearnExamApiService` within `packages/core` rather than overriding the global `HttpOverrides`. This keeps the SSL bypass restricted to just this domain and minimizes security risks across the rest of the application.
 
 **Decision 2: UI Tabular Implementation**
 Because the API returns many columns (ranks, scores for multiple subjects), a standard `ListView` of cards won't provide the expected Excel-like experience. We will use a `DataTable` or a custom row component wrapped inside a `SingleChildScrollView(scrollDirection: Axis.horizontal)` to allow swiping to view all data.
 
 **Decision 3: Location of the code**
-All code models, providers, and UI will be scoped inside `packages/exams/lib/screens/results/`. This encapsulates the feature while allowing `dashboard_drawer.dart` in `testpress` to route to it.
+All code models, providers, and API services will be scoped inside `packages/core/lib/data/integrations/bp_elearn/` and UI in `packages/core/lib/screens/`. This centralizes the integration in the core package while allowing `dashboard_drawer.dart` in `testpress` to route to it. Also, all components use the `BPElearn` prefix.
 
 ## Risks / Trade-offs
 

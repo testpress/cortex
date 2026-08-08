@@ -23,4 +23,4 @@ We need to provide a new "My Results" screen for students to view their exam per
 - **UI/Navigation**: `dashboard_drawer.dart` will be updated to include the new menu item.
 - **Config**: `app_config.dart` will receive a new boolean flag `showExamResults`.
 - **Network**: A custom network client/override will be introduced specifically for the external IP address to bypass SSL.
-- **Packages**: The new screens and providers will be located within `packages/exams` under a `results` subfolder.
+- **Packages**: The new screens and providers will be located within `packages/core` under an integrations subfolder (`lib/data/integrations/bp_elearn/` and `lib/screens/`).
