@@ -53,6 +53,7 @@ export 'shell/app_shell.dart';
 
 // Screens
 export 'screens/ai_screen.dart';
+export 'screens/bp_elearn_my_results_screen.dart';
 
 // Navigation
 export 'navigation/app_route.dart';
@@ -91,3 +92,7 @@ export 'payment/payment.dart';
 // User State
 export 'data/providers/user_provider.dart';
 export 'data/repositories/user_repository.dart';
+
+// Integrations
+export 'data/integrations/bp_elearn/bp_elearn_exam_provider.dart';
+export 'data/integrations/bp_elearn/models/bp_elearn_paginated_response_dto.dart';

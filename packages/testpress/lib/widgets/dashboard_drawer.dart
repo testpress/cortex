@@ -111,6 +111,15 @@ class DashboardDrawer extends ConsumerWidget {
                   context.push('/my-report');
                 },
               ),
+            if (AppConfig.showExamResults)
+              AppDrawerItem(
+                icon: LucideIcons.chartNoAxesColumn,
+                label: l10n.drawerMyResults,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/my-results');
+                },
+              ),
             if (enableCustomTest)
               AppDrawerItem(
                 icon: LucideIcons.wandSparkles,

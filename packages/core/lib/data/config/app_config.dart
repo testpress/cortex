@@ -126,6 +126,10 @@ class AppConfig {
     defaultValue: false,
   );
 
+  static bool get showExamResults {
+    return apiBaseUrl.contains('brilliantpalalms.testpress.in');
+  }
+
   static const String instituteLogoUrl = String.fromEnvironment(
     'INSTITUTE_LOGO_URL',
     defaultValue: '',

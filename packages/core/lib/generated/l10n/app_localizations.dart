@@ -1272,6 +1272,12 @@ abstract class AppLocalizations {
   /// **'Offline Exams'**
   String get drawerOfflineExams;
 
+  /// No description provided for @drawerMyResults.
+  ///
+  /// In en, this message translates to:
+  /// **'My Results'**
+  String get drawerMyResults;
+
   /// No description provided for @noDownloadedExamAvailable.
   ///
   /// In en, this message translates to:

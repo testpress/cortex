@@ -655,6 +655,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerOfflineExams => 'ഓഫ്‌ലൈൻ പരീക്ഷകൾ';
 
   @override
+  String get drawerMyResults => 'എന്റെ ഫലങ്ങൾ';
+
+  @override
   String get noDownloadedExamAvailable =>
       'ഡൗൺലോഡ് ചെയ്ത പരീക്ഷയൊന്നും ലഭ്യമല്ല';
 
