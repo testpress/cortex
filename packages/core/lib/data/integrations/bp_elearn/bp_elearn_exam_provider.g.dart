@@ -6,48 +6,48 @@ part of 'bp_elearn_exam_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bpElearnExamApiServiceHash() =>
-    r'9fab8d50d3f6a088cb129c2c9da09afce8509449';
+String _$bPElearnExamApiServiceHash() =>
+    r'e27d39d9900157edf28003e9b6271b8a2846b1fd';
 
-/// See also [bpElearnExamApiService].
-@ProviderFor(bpElearnExamApiService)
-final bpElearnExamApiServiceProvider =
-    AutoDisposeProvider<BpElearnExamApiService>.internal(
-      bpElearnExamApiService,
-      name: r'bpElearnExamApiServiceProvider',
+/// See also [bPElearnExamApiService].
+@ProviderFor(bPElearnExamApiService)
+final bPElearnExamApiServiceProvider =
+    AutoDisposeProvider<BPElearnExamApiService>.internal(
+      bPElearnExamApiService,
+      name: r'bPElearnExamApiServiceProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$bpElearnExamApiServiceHash,
+          : _$bPElearnExamApiServiceHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef BpElearnExamApiServiceRef =
-    AutoDisposeProviderRef<BpElearnExamApiService>;
-String _$bpElearnExamRepositoryHash() =>
-    r'd5e0a9e0ec77d0a048d7e655c9f59a83fea900b6';
+typedef BPElearnExamApiServiceRef =
+    AutoDisposeProviderRef<BPElearnExamApiService>;
+String _$bPElearnExamRepositoryHash() =>
+    r'a3f0b880ee1954a9320ef8e1fa09f6e7872b53a4';
 
-/// See also [bpElearnExamRepository].
-@ProviderFor(bpElearnExamRepository)
-final bpElearnExamRepositoryProvider =
-    AutoDisposeProvider<BpElearnExamRepository>.internal(
-      bpElearnExamRepository,
-      name: r'bpElearnExamRepositoryProvider',
+/// See also [bPElearnExamRepository].
+@ProviderFor(bPElearnExamRepository)
+final bPElearnExamRepositoryProvider =
+    AutoDisposeProvider<BPElearnExamRepository>.internal(
+      bPElearnExamRepository,
+      name: r'bPElearnExamRepositoryProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$bpElearnExamRepositoryHash,
+          : _$bPElearnExamRepositoryHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef BpElearnExamRepositoryRef =
-    AutoDisposeProviderRef<BpElearnExamRepository>;
-String _$bpElearnModelExamResultsHash() =>
-    r'c51a73a327465d980e9261539c8016a84c254f49';
+typedef BPElearnExamRepositoryRef =
+    AutoDisposeProviderRef<BPElearnExamRepository>;
+String _$bPElearnModelExamResultsHash() =>
+    r'0a64cd5c02e3b3b72b34f94aed7b33a4ccf26624';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -70,27 +70,27 @@ class _SystemHash {
   }
 }
 
-/// See also [bpElearnModelExamResults].
-@ProviderFor(bpElearnModelExamResults)
-const bpElearnModelExamResultsProvider = BpElearnModelExamResultsFamily();
+/// See also [bPElearnModelExamResults].
+@ProviderFor(bPElearnModelExamResults)
+const bPElearnModelExamResultsProvider = BPElearnModelExamResultsFamily();
 
-/// See also [bpElearnModelExamResults].
-class BpElearnModelExamResultsFamily
-    extends Family<AsyncValue<BpElearnPaginatedResponseDto>> {
-  /// See also [bpElearnModelExamResults].
-  const BpElearnModelExamResultsFamily();
+/// See also [bPElearnModelExamResults].
+class BPElearnModelExamResultsFamily
+    extends Family<AsyncValue<BPElearnPaginatedResponseDto>> {
+  /// See also [bPElearnModelExamResults].
+  const BPElearnModelExamResultsFamily();
 
-  /// See also [bpElearnModelExamResults].
-  BpElearnModelExamResultsProvider call({
+  /// See also [bPElearnModelExamResults].
+  BPElearnModelExamResultsProvider call({
     required int page,
     required int limit,
   }) {
-    return BpElearnModelExamResultsProvider(page: page, limit: limit);
+    return BPElearnModelExamResultsProvider(page: page, limit: limit);
   }
 
   @override
-  BpElearnModelExamResultsProvider getProviderOverride(
-    covariant BpElearnModelExamResultsProvider provider,
+  BPElearnModelExamResultsProvider getProviderOverride(
+    covariant BPElearnModelExamResultsProvider provider,
   ) {
     return call(page: provider.page, limit: provider.limit);
   }
@@ -107,33 +107,33 @@ class BpElearnModelExamResultsFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'bpElearnModelExamResultsProvider';
+  String? get name => r'bPElearnModelExamResultsProvider';
 }
 
-/// See also [bpElearnModelExamResults].
-class BpElearnModelExamResultsProvider
-    extends AutoDisposeFutureProvider<BpElearnPaginatedResponseDto> {
-  /// See also [bpElearnModelExamResults].
-  BpElearnModelExamResultsProvider({required int page, required int limit})
+/// See also [bPElearnModelExamResults].
+class BPElearnModelExamResultsProvider
+    extends AutoDisposeFutureProvider<BPElearnPaginatedResponseDto> {
+  /// See also [bPElearnModelExamResults].
+  BPElearnModelExamResultsProvider({required int page, required int limit})
     : this._internal(
-        (ref) => bpElearnModelExamResults(
-          ref as BpElearnModelExamResultsRef,
+        (ref) => bPElearnModelExamResults(
+          ref as BPElearnModelExamResultsRef,
           page: page,
           limit: limit,
         ),
-        from: bpElearnModelExamResultsProvider,
-        name: r'bpElearnModelExamResultsProvider',
+        from: bPElearnModelExamResultsProvider,
+        name: r'bPElearnModelExamResultsProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$bpElearnModelExamResultsHash,
-        dependencies: BpElearnModelExamResultsFamily._dependencies,
+            : _$bPElearnModelExamResultsHash,
+        dependencies: BPElearnModelExamResultsFamily._dependencies,
         allTransitiveDependencies:
-            BpElearnModelExamResultsFamily._allTransitiveDependencies,
+            BPElearnModelExamResultsFamily._allTransitiveDependencies,
         page: page,
         limit: limit,
       );
 
-  BpElearnModelExamResultsProvider._internal(
+  BPElearnModelExamResultsProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -149,15 +149,15 @@ class BpElearnModelExamResultsProvider
 
   @override
   Override overrideWith(
-    FutureOr<BpElearnPaginatedResponseDto> Function(
-      BpElearnModelExamResultsRef provider,
+    FutureOr<BPElearnPaginatedResponseDto> Function(
+      BPElearnModelExamResultsRef provider,
     )
     create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: BpElearnModelExamResultsProvider._internal(
-        (ref) => create(ref as BpElearnModelExamResultsRef),
+      override: BPElearnModelExamResultsProvider._internal(
+        (ref) => create(ref as BPElearnModelExamResultsRef),
         from: from,
         name: null,
         dependencies: null,
@@ -170,14 +170,14 @@ class BpElearnModelExamResultsProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<BpElearnPaginatedResponseDto>
+  AutoDisposeFutureProviderElement<BPElearnPaginatedResponseDto>
   createElement() {
-    return _BpElearnModelExamResultsProviderElement(this);
+    return _BPElearnModelExamResultsProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is BpElearnModelExamResultsProvider &&
+    return other is BPElearnModelExamResultsProvider &&
         other.page == page &&
         other.limit == limit;
   }
@@ -194,8 +194,8 @@ class BpElearnModelExamResultsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin BpElearnModelExamResultsRef
-    on AutoDisposeFutureProviderRef<BpElearnPaginatedResponseDto> {
+mixin BPElearnModelExamResultsRef
+    on AutoDisposeFutureProviderRef<BPElearnPaginatedResponseDto> {
   /// The parameter `page` of this provider.
   int get page;
 
@@ -203,41 +203,41 @@ mixin BpElearnModelExamResultsRef
   int get limit;
 }
 
-class _BpElearnModelExamResultsProviderElement
-    extends AutoDisposeFutureProviderElement<BpElearnPaginatedResponseDto>
-    with BpElearnModelExamResultsRef {
-  _BpElearnModelExamResultsProviderElement(super.provider);
+class _BPElearnModelExamResultsProviderElement
+    extends AutoDisposeFutureProviderElement<BPElearnPaginatedResponseDto>
+    with BPElearnModelExamResultsRef {
+  _BPElearnModelExamResultsProviderElement(super.provider);
 
   @override
-  int get page => (origin as BpElearnModelExamResultsProvider).page;
+  int get page => (origin as BPElearnModelExamResultsProvider).page;
   @override
-  int get limit => (origin as BpElearnModelExamResultsProvider).limit;
+  int get limit => (origin as BPElearnModelExamResultsProvider).limit;
 }
 
-String _$bpElearnWeeklyExamResultsHash() =>
-    r'5871b4e11a9a2b0272724916f621801c1147392b';
+String _$bPElearnWeeklyExamResultsHash() =>
+    r'ef86185316d886cee8214dae95bc94aa0a861e4d';
 
-/// See also [bpElearnWeeklyExamResults].
-@ProviderFor(bpElearnWeeklyExamResults)
-const bpElearnWeeklyExamResultsProvider = BpElearnWeeklyExamResultsFamily();
+/// See also [bPElearnWeeklyExamResults].
+@ProviderFor(bPElearnWeeklyExamResults)
+const bPElearnWeeklyExamResultsProvider = BPElearnWeeklyExamResultsFamily();
 
-/// See also [bpElearnWeeklyExamResults].
-class BpElearnWeeklyExamResultsFamily
-    extends Family<AsyncValue<BpElearnPaginatedResponseDto>> {
-  /// See also [bpElearnWeeklyExamResults].
-  const BpElearnWeeklyExamResultsFamily();
+/// See also [bPElearnWeeklyExamResults].
+class BPElearnWeeklyExamResultsFamily
+    extends Family<AsyncValue<BPElearnPaginatedResponseDto>> {
+  /// See also [bPElearnWeeklyExamResults].
+  const BPElearnWeeklyExamResultsFamily();
 
-  /// See also [bpElearnWeeklyExamResults].
-  BpElearnWeeklyExamResultsProvider call({
+  /// See also [bPElearnWeeklyExamResults].
+  BPElearnWeeklyExamResultsProvider call({
     required int page,
     required int limit,
   }) {
-    return BpElearnWeeklyExamResultsProvider(page: page, limit: limit);
+    return BPElearnWeeklyExamResultsProvider(page: page, limit: limit);
   }
 
   @override
-  BpElearnWeeklyExamResultsProvider getProviderOverride(
-    covariant BpElearnWeeklyExamResultsProvider provider,
+  BPElearnWeeklyExamResultsProvider getProviderOverride(
+    covariant BPElearnWeeklyExamResultsProvider provider,
   ) {
     return call(page: provider.page, limit: provider.limit);
   }
@@ -254,33 +254,33 @@ class BpElearnWeeklyExamResultsFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'bpElearnWeeklyExamResultsProvider';
+  String? get name => r'bPElearnWeeklyExamResultsProvider';
 }
 
-/// See also [bpElearnWeeklyExamResults].
-class BpElearnWeeklyExamResultsProvider
-    extends AutoDisposeFutureProvider<BpElearnPaginatedResponseDto> {
-  /// See also [bpElearnWeeklyExamResults].
-  BpElearnWeeklyExamResultsProvider({required int page, required int limit})
+/// See also [bPElearnWeeklyExamResults].
+class BPElearnWeeklyExamResultsProvider
+    extends AutoDisposeFutureProvider<BPElearnPaginatedResponseDto> {
+  /// See also [bPElearnWeeklyExamResults].
+  BPElearnWeeklyExamResultsProvider({required int page, required int limit})
     : this._internal(
-        (ref) => bpElearnWeeklyExamResults(
-          ref as BpElearnWeeklyExamResultsRef,
+        (ref) => bPElearnWeeklyExamResults(
+          ref as BPElearnWeeklyExamResultsRef,
           page: page,
           limit: limit,
         ),
-        from: bpElearnWeeklyExamResultsProvider,
-        name: r'bpElearnWeeklyExamResultsProvider',
+        from: bPElearnWeeklyExamResultsProvider,
+        name: r'bPElearnWeeklyExamResultsProvider',
         debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
             ? null
-            : _$bpElearnWeeklyExamResultsHash,
-        dependencies: BpElearnWeeklyExamResultsFamily._dependencies,
+            : _$bPElearnWeeklyExamResultsHash,
+        dependencies: BPElearnWeeklyExamResultsFamily._dependencies,
         allTransitiveDependencies:
-            BpElearnWeeklyExamResultsFamily._allTransitiveDependencies,
+            BPElearnWeeklyExamResultsFamily._allTransitiveDependencies,
         page: page,
         limit: limit,
       );
 
-  BpElearnWeeklyExamResultsProvider._internal(
+  BPElearnWeeklyExamResultsProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -296,15 +296,15 @@ class BpElearnWeeklyExamResultsProvider
 
   @override
   Override overrideWith(
-    FutureOr<BpElearnPaginatedResponseDto> Function(
-      BpElearnWeeklyExamResultsRef provider,
+    FutureOr<BPElearnPaginatedResponseDto> Function(
+      BPElearnWeeklyExamResultsRef provider,
     )
     create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: BpElearnWeeklyExamResultsProvider._internal(
-        (ref) => create(ref as BpElearnWeeklyExamResultsRef),
+      override: BPElearnWeeklyExamResultsProvider._internal(
+        (ref) => create(ref as BPElearnWeeklyExamResultsRef),
         from: from,
         name: null,
         dependencies: null,
@@ -317,14 +317,14 @@ class BpElearnWeeklyExamResultsProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<BpElearnPaginatedResponseDto>
+  AutoDisposeFutureProviderElement<BPElearnPaginatedResponseDto>
   createElement() {
-    return _BpElearnWeeklyExamResultsProviderElement(this);
+    return _BPElearnWeeklyExamResultsProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is BpElearnWeeklyExamResultsProvider &&
+    return other is BPElearnWeeklyExamResultsProvider &&
         other.page == page &&
         other.limit == limit;
   }
@@ -341,8 +341,8 @@ class BpElearnWeeklyExamResultsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin BpElearnWeeklyExamResultsRef
-    on AutoDisposeFutureProviderRef<BpElearnPaginatedResponseDto> {
+mixin BPElearnWeeklyExamResultsRef
+    on AutoDisposeFutureProviderRef<BPElearnPaginatedResponseDto> {
   /// The parameter `page` of this provider.
   int get page;
 
@@ -350,15 +350,15 @@ mixin BpElearnWeeklyExamResultsRef
   int get limit;
 }
 
-class _BpElearnWeeklyExamResultsProviderElement
-    extends AutoDisposeFutureProviderElement<BpElearnPaginatedResponseDto>
-    with BpElearnWeeklyExamResultsRef {
-  _BpElearnWeeklyExamResultsProviderElement(super.provider);
+class _BPElearnWeeklyExamResultsProviderElement
+    extends AutoDisposeFutureProviderElement<BPElearnPaginatedResponseDto>
+    with BPElearnWeeklyExamResultsRef {
+  _BPElearnWeeklyExamResultsProviderElement(super.provider);
 
   @override
-  int get page => (origin as BpElearnWeeklyExamResultsProvider).page;
+  int get page => (origin as BPElearnWeeklyExamResultsProvider).page;
   @override
-  int get limit => (origin as BpElearnWeeklyExamResultsProvider).limit;
+  int get limit => (origin as BPElearnWeeklyExamResultsProvider).limit;
 }
 
 // ignore_for_file: type=lint

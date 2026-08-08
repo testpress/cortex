@@ -8,12 +8,12 @@ import 'bp_elearn_exam_api_service.dart';
 /// latest server state. Caching them locally via Drift would risk showing
 /// stale scores to students. This feature is therefore online-only by design
 /// and does not integrate with the Drift layer.
-class BpElearnExamRepository {
-  final BpElearnExamApiService _apiService;
+class BPElearnExamRepository {
+  final BPElearnExamApiService _apiService;
 
-  BpElearnExamRepository(this._apiService);
+  BPElearnExamRepository(this._apiService);
 
-  Future<BpElearnPaginatedResponseDto> getModelExamResults({
+  Future<BPElearnPaginatedResponseDto> getModelExamResults({
     required String studentNo,
     required int page,
     required int limit,
@@ -26,7 +26,7 @@ class BpElearnExamRepository {
     );
   }
 
-  Future<BpElearnPaginatedResponseDto> getWeeklyExamResults({
+  Future<BPElearnPaginatedResponseDto> getWeeklyExamResults({
     required String studentNo,
     required int page,
     required int limit,

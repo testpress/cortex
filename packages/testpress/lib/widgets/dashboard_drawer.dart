@@ -111,15 +111,6 @@ class DashboardDrawer extends ConsumerWidget {
                   context.push('/my-report');
                 },
               ),
-            if (enableCustomTest)
-              AppDrawerItem(
-                icon: LucideIcons.wandSparkles,
-                label: l10n.drawerCustomExam,
-                action: () {
-                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
-                  context.push('/exams/create-custom-exam');
-                },
-              ),
             if (AppConfig.showExamResults)
               AppDrawerItem(
                 icon: LucideIcons.chartNoAxesColumn,
@@ -127,6 +118,15 @@ class DashboardDrawer extends ConsumerWidget {
                 action: () {
                   ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                   context.push('/my-results');
+                },
+              ),
+            if (enableCustomTest)
+              AppDrawerItem(
+                icon: LucideIcons.wandSparkles,
+                label: l10n.drawerCustomExam,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/exams/create-custom-exam');
                 },
               ),
 

@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
 
-class BpElearnMyResultsScreen extends ConsumerStatefulWidget {
-  const BpElearnMyResultsScreen({super.key});
+class BPElearnMyResultsScreen extends ConsumerStatefulWidget {
+  const BPElearnMyResultsScreen({super.key});
 
   @override
-  ConsumerState<BpElearnMyResultsScreen> createState() =>
-      _BpElearnMyResultsScreenState();
+  ConsumerState<BPElearnMyResultsScreen> createState() =>
+      _BPElearnMyResultsScreenState();
 }
 
-class _BpElearnMyResultsScreenState
-    extends ConsumerState<BpElearnMyResultsScreen> {
+class _BPElearnMyResultsScreenState
+    extends ConsumerState<BPElearnMyResultsScreen> {
   String _activeTab = 'model';
 
   @override
@@ -99,11 +99,11 @@ class _BpElearnMyResultsScreenState
               child: _activeTab == 'model'
                   ? _ExamResultsTabView(
                       key: const ValueKey('model'),
-                      provider: bpElearnModelExamResultsProvider.call,
+                      provider: bPElearnModelExamResultsProvider.call,
                     )
                   : _ExamResultsTabView(
                       key: const ValueKey('weekly'),
-                      provider: bpElearnWeeklyExamResultsProvider.call,
+                      provider: bPElearnWeeklyExamResultsProvider.call,
                     ),
             ),
           ],
@@ -114,7 +114,7 @@ class _BpElearnMyResultsScreenState
 }
 
 class _ExamResultsTabView extends ConsumerStatefulWidget {
-  final AutoDisposeFutureProvider<BpElearnPaginatedResponseDto> Function({
+  final AutoDisposeFutureProvider<BPElearnPaginatedResponseDto> Function({
     required int page,
     required int limit,
   })
@@ -170,11 +170,23 @@ class _ExamResultsTabViewState extends ConsumerState<_ExamResultsTabView> {
                     child: AppSemantics.scrollableList(
                       itemCount: data.data.length,
                       label: l10n.drawerMyResults,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(),
-                        ),
-                        child: _ResultsTable(results: data.data),
+                      child: LayoutBuilder(
+                        builder: (context, scrollConstraints) {
+                          return SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: scrollConstraints.maxHeight,
+                              ),
+                              child: _ResultsTable(
+                                results: data.data,
+                                availableHeight: scrollConstraints.maxHeight,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -224,9 +236,10 @@ class _ExamResultsTabViewState extends ConsumerState<_ExamResultsTabView> {
 }
 
 class _ResultsTable extends StatelessWidget {
-  final List<BpElearnExamResultItemDto> results;
+  final List<BPElearnExamResultItemDto> results;
+  final double? availableHeight;
 
-  const _ResultsTable({required this.results});
+  const _ResultsTable({required this.results, this.availableHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +339,7 @@ class _ResultsTable extends StatelessWidget {
 
   Widget _buildDataRow(
     DesignConfig design,
-    BpElearnExamResultItemDto result,
+    BPElearnExamResultItemDto result,
     int index,
   ) {
     final bgColor = index.isEven
@@ -657,8 +670,8 @@ List<int> _buildVisiblePages(int current, int total) {
   return pages;
 }
 
-/// Constructs a single mock [BpElearnExamResultItemDto] row used for skeleton loading states.
-BpElearnExamResultItemDto _mockExamResultRow() => BpElearnExamResultItemDto(
+/// Constructs a single mock [BPElearnExamResultItemDto] row used for skeleton loading states.
+BPElearnExamResultItemDto _mockExamResultRow() => BPElearnExamResultItemDto(
   date: BoneMock.date,
   examName: BoneMock.name,
   physics: '00',

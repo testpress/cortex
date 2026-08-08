@@ -5,12 +5,12 @@ const _baseUrl = 'https://65.108.62.51';
 const _endpoint = '/studentexamapi';
 const _apiToken = '8ee49eb9f9e3477aa36d209657024cab';
 
-class BpElearnExamApiService {
+class BPElearnExamApiService {
   final Dio _dio;
 
-  BpElearnExamApiService(this._dio);
+  BPElearnExamApiService(this._dio);
 
-  Future<BpElearnPaginatedResponseDto> fetchExamResults({
+  Future<BPElearnPaginatedResponseDto> fetchExamResults({
     required String studentNo,
     required int pageNo,
     required int limit,
@@ -27,6 +27,6 @@ class BpElearnExamApiService {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
-    return BpElearnPaginatedResponseDto.fromJson(response.data);
+    return BPElearnPaginatedResponseDto.fromJson(response.data);
   }
 }

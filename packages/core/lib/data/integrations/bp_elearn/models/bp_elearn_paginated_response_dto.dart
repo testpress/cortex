@@ -1,4 +1,4 @@
-class BpElearnExamResultItemDto {
+class BPElearnExamResultItemDto {
   final String? date;
   final String? examName;
   final String? physics;
@@ -19,7 +19,7 @@ class BpElearnExamResultItemDto {
   final String? type;
   final String? omr;
 
-  BpElearnExamResultItemDto({
+  BPElearnExamResultItemDto({
     this.date,
     this.examName,
     this.physics,
@@ -41,8 +41,8 @@ class BpElearnExamResultItemDto {
     this.omr,
   });
 
-  factory BpElearnExamResultItemDto.fromJson(Map<String, dynamic> json) {
-    return BpElearnExamResultItemDto(
+  factory BPElearnExamResultItemDto.fromJson(Map<String, dynamic> json) {
+    return BPElearnExamResultItemDto(
       date: json['date']?.toString(),
       examName: json['examname']?.toString(),
       physics: json['physics']?.toString(),
@@ -66,28 +66,28 @@ class BpElearnExamResultItemDto {
   }
 }
 
-class BpElearnPaginatedResponseDto {
+class BPElearnPaginatedResponseDto {
   final int totalCount;
   final int currentPage;
   final int limit;
-  final List<BpElearnExamResultItemDto> data;
+  final List<BPElearnExamResultItemDto> data;
 
-  BpElearnPaginatedResponseDto({
+  BPElearnPaginatedResponseDto({
     this.totalCount = 0,
     this.currentPage = 1,
     this.limit = 10,
     this.data = const [],
   });
 
-  factory BpElearnPaginatedResponseDto.fromJson(Map<String, dynamic> json) {
+  factory BPElearnPaginatedResponseDto.fromJson(Map<String, dynamic> json) {
     var dataList = json['data'] as List?;
-    List<BpElearnExamResultItemDto> results = [];
+    List<BPElearnExamResultItemDto> results = [];
     if (dataList != null) {
       results = dataList
-          .map((e) => BpElearnExamResultItemDto.fromJson(e))
+          .map((e) => BPElearnExamResultItemDto.fromJson(e))
           .toList();
     }
-    return BpElearnPaginatedResponseDto(
+    return BPElearnPaginatedResponseDto(
       totalCount: int.tryParse(json['total_count']?.toString() ?? '0') ?? 0,
       currentPage: int.tryParse(json['current_page']?.toString() ?? '1') ?? 1,
       limit: int.tryParse(json['limit']?.toString() ?? '10') ?? 10,

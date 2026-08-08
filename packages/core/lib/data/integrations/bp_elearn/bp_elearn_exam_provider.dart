@@ -13,7 +13,7 @@ import 'models/bp_elearn_paginated_response_dto.dart';
 part 'bp_elearn_exam_provider.g.dart';
 
 @riverpod
-BpElearnExamApiService bpElearnExamApiService(BpElearnExamApiServiceRef _) {
+BPElearnExamApiService bPElearnExamApiService(BPElearnExamApiServiceRef _) {
   final dio = Dio();
 
   if (!kIsWeb) {
@@ -27,17 +27,17 @@ BpElearnExamApiService bpElearnExamApiService(BpElearnExamApiServiceRef _) {
     );
   }
 
-  return BpElearnExamApiService(dio);
+  return BPElearnExamApiService(dio);
 }
 
 @riverpod
-BpElearnExamRepository bpElearnExamRepository(BpElearnExamRepositoryRef ref) {
-  return BpElearnExamRepository(ref.watch(bpElearnExamApiServiceProvider));
+BPElearnExamRepository bPElearnExamRepository(BPElearnExamRepositoryRef ref) {
+  return BPElearnExamRepository(ref.watch(bPElearnExamApiServiceProvider));
 }
 
 @riverpod
-Future<BpElearnPaginatedResponseDto> bpElearnModelExamResults(
-  BpElearnModelExamResultsRef ref, {
+Future<BPElearnPaginatedResponseDto> bPElearnModelExamResults(
+  BPElearnModelExamResultsRef ref, {
   required int page,
   required int limit,
 }) async {
@@ -45,10 +45,10 @@ Future<BpElearnPaginatedResponseDto> bpElearnModelExamResults(
   final username = user?.username ?? '';
 
   if (username.isEmpty) {
-    return BpElearnPaginatedResponseDto();
+    return BPElearnPaginatedResponseDto();
   }
 
-  final repository = ref.watch(bpElearnExamRepositoryProvider);
+  final repository = ref.watch(bPElearnExamRepositoryProvider);
   return repository.getModelExamResults(
     studentNo: username,
     page: page,
@@ -57,8 +57,8 @@ Future<BpElearnPaginatedResponseDto> bpElearnModelExamResults(
 }
 
 @riverpod
-Future<BpElearnPaginatedResponseDto> bpElearnWeeklyExamResults(
-  BpElearnWeeklyExamResultsRef ref, {
+Future<BPElearnPaginatedResponseDto> bPElearnWeeklyExamResults(
+  BPElearnWeeklyExamResultsRef ref, {
   required int page,
   required int limit,
 }) async {
@@ -66,10 +66,10 @@ Future<BpElearnPaginatedResponseDto> bpElearnWeeklyExamResults(
   final username = user?.username ?? '';
 
   if (username.isEmpty) {
-    return BpElearnPaginatedResponseDto();
+    return BPElearnPaginatedResponseDto();
   }
 
-  final repository = ref.watch(bpElearnExamRepositoryProvider);
+  final repository = ref.watch(bPElearnExamRepositoryProvider);
   return repository.getWeeklyExamResults(
     studentNo: username,
     page: page,

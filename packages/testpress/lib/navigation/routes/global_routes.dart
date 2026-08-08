@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
-import 'package:exams/exams.dart' as exams;
+
 import '../../screens/bookmarks/bookmarks_screen.dart';
 import '../../screens/my_report_screen.dart';
 
@@ -150,7 +150,7 @@ class GlobalRoutes {
     GoRoute(
       path: '/my-results',
       parentNavigatorKey: rootNavigatorKey,
-      builder: (context, state) => const exams.BpElearnMyResultsScreen(),
+      builder: (context, state) => const BPElearnMyResultsScreen(),
     ),
   ];
 }
