@@ -2,17 +2,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
-import '../../providers/exam_results_provider.dart';
-import '../../models/exam_result_response_dto.dart';
 
-class MyResultsScreen extends ConsumerStatefulWidget {
-  const MyResultsScreen({super.key});
+class BpElearnMyResultsScreen extends ConsumerStatefulWidget {
+  const BpElearnMyResultsScreen({super.key});
 
   @override
-  ConsumerState<MyResultsScreen> createState() => _MyResultsScreenState();
+  ConsumerState<BpElearnMyResultsScreen> createState() =>
+      _BpElearnMyResultsScreenState();
 }
 
-class _MyResultsScreenState extends ConsumerState<MyResultsScreen> {
+class _BpElearnMyResultsScreenState
+    extends ConsumerState<BpElearnMyResultsScreen> {
   String _activeTab = 'model';
 
   @override
@@ -99,11 +99,11 @@ class _MyResultsScreenState extends ConsumerState<MyResultsScreen> {
               child: _activeTab == 'model'
                   ? _ExamResultsTabView(
                       key: const ValueKey('model'),
-                      provider: modelExamResultsProvider.call,
+                      provider: bpElearnModelExamResultsProvider.call,
                     )
                   : _ExamResultsTabView(
                       key: const ValueKey('weekly'),
-                      provider: weeklyExamResultsProvider.call,
+                      provider: bpElearnWeeklyExamResultsProvider.call,
                     ),
             ),
           ],
@@ -114,7 +114,7 @@ class _MyResultsScreenState extends ConsumerState<MyResultsScreen> {
 }
 
 class _ExamResultsTabView extends ConsumerStatefulWidget {
-  final AutoDisposeFutureProvider<ExamResultResponseDto> Function({
+  final AutoDisposeFutureProvider<BpElearnPaginatedResponseDto> Function({
     required int page,
     required int limit,
   })
@@ -224,7 +224,7 @@ class _ExamResultsTabViewState extends ConsumerState<_ExamResultsTabView> {
 }
 
 class _ResultsTable extends StatelessWidget {
-  final List<ExamResultDto> results;
+  final List<BpElearnExamResultItemDto> results;
 
   const _ResultsTable({required this.results});
 
@@ -324,7 +324,11 @@ class _ResultsTable extends StatelessWidget {
     );
   }
 
-  Widget _buildDataRow(DesignConfig design, ExamResultDto result, int index) {
+  Widget _buildDataRow(
+    DesignConfig design,
+    BpElearnExamResultItemDto result,
+    int index,
+  ) {
     final bgColor = index.isEven
         ? design.colors.surface
         : design.colors.surfaceVariant.withValues(alpha: 0.2);
@@ -463,32 +467,37 @@ class _PaginationControl extends StatelessWidget {
                     );
                   }
                   final isSelected = p == currentPage;
-                  return GestureDetector(
+                  return AppSemantics.button(
+                    label: isSelected ? 'Page $p, selected' : 'Page $p',
                     onTap: isSelected ? null : () => onPageChanged(p),
-                    child: Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: design.spacing.xs,
-                      ),
-                      width: 48,
-                      height: 48,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? design.colors.primary
-                            : design.colors.surface,
-                        border: Border.all(
+                    child: GestureDetector(
+                      onTap: isSelected ? null : () => onPageChanged(p),
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: design.spacing.xs,
+                        ),
+                        width: 48,
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
                           color: isSelected
                               ? design.colors.primary
-                              : design.colors.border,
+                              : design.colors.surface,
+                          border: Border.all(
+                            color: isSelected
+                                ? design.colors.primary
+                                : design.colors.border,
+                          ),
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: AppText.sm(
-                        p.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                        color: isSelected
-                            ? design.colors.onPrimary
-                            : design.colors.textPrimary,
+                        child: AppText.sm(
+                          p.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          color: isSelected
+                              ? design.colors.onPrimary
+                              : design.colors.textPrimary,
+                        ),
                       ),
                     ),
                   );
@@ -648,8 +657,8 @@ List<int> _buildVisiblePages(int current, int total) {
   return pages;
 }
 
-/// Constructs a single mock [ExamResultDto] row used for skeleton loading states.
-ExamResultDto _mockExamResultRow() => ExamResultDto(
+/// Constructs a single mock [BpElearnExamResultItemDto] row used for skeleton loading states.
+BpElearnExamResultItemDto _mockExamResultRow() => BpElearnExamResultItemDto(
   date: BoneMock.date,
   examName: BoneMock.name,
   physics: '00',

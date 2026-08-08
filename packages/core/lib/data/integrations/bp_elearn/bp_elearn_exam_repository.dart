@@ -1,22 +1,19 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../models/exam_result_response_dto.dart';
-import '../network/exam_results_api_service.dart';
+import 'models/bp_elearn_paginated_response_dto.dart';
+import 'bp_elearn_exam_api_service.dart';
 
-part 'exam_results_repository.g.dart';
-
-/// Exam results repository.
+/// Exam results repository for Brilliant Pala Elearn specific integration.
 ///
 /// **Offline caching: intentionally omitted.**
 /// Exam results are real-time academic data that must always reflect the
 /// latest server state. Caching them locally via Drift would risk showing
 /// stale scores to students. This feature is therefore online-only by design
 /// and does not integrate with the Drift layer.
-class ExamResultsRepository {
-  final ExamResultApiService _apiService;
+class BpElearnExamRepository {
+  final BpElearnExamApiService _apiService;
 
-  ExamResultsRepository(this._apiService);
+  BpElearnExamRepository(this._apiService);
 
-  Future<ExamResultResponseDto> getModelExamResults({
+  Future<BpElearnPaginatedResponseDto> getModelExamResults({
     required String studentNo,
     required int page,
     required int limit,
@@ -29,7 +26,7 @@ class ExamResultsRepository {
     );
   }
 
-  Future<ExamResultResponseDto> getWeeklyExamResults({
+  Future<BpElearnPaginatedResponseDto> getWeeklyExamResults({
     required String studentNo,
     required int page,
     required int limit,
@@ -41,10 +38,4 @@ class ExamResultsRepository {
       examType: 'Weekly',
     );
   }
-}
-
-@riverpod
-ExamResultsRepository examResultsRepository(ExamResultsRepositoryRef ref) {
-  final apiService = ref.watch(examResultApiServiceProvider);
-  return ExamResultsRepository(apiService);
 }

@@ -150,7 +150,7 @@ class GlobalRoutes {
     GoRoute(
       path: '/my-results',
       parentNavigatorKey: rootNavigatorKey,
-      builder: (context, state) => const exams.MyResultsScreen(),
+      builder: (context, state) => const exams.BpElearnMyResultsScreen(),
     ),
   ];
 }

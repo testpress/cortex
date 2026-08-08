@@ -1,4 +1,4 @@
-class ExamResultDto {
+class BpElearnExamResultItemDto {
   final String? date;
   final String? examName;
   final String? physics;
@@ -19,7 +19,7 @@ class ExamResultDto {
   final String? type;
   final String? omr;
 
-  ExamResultDto({
+  BpElearnExamResultItemDto({
     this.date,
     this.examName,
     this.physics,
@@ -41,8 +41,8 @@ class ExamResultDto {
     this.omr,
   });
 
-  factory ExamResultDto.fromJson(Map<String, dynamic> json) {
-    return ExamResultDto(
+  factory BpElearnExamResultItemDto.fromJson(Map<String, dynamic> json) {
+    return BpElearnExamResultItemDto(
       date: json['date']?.toString(),
       examName: json['examname']?.toString(),
       physics: json['physics']?.toString(),
@@ -66,29 +66,28 @@ class ExamResultDto {
   }
 }
 
-class ExamResultResponseDto {
-  final String? status;
+class BpElearnPaginatedResponseDto {
   final int totalCount;
   final int currentPage;
   final int limit;
-  final List<ExamResultDto> data;
+  final List<BpElearnExamResultItemDto> data;
 
-  ExamResultResponseDto({
-    this.status,
+  BpElearnPaginatedResponseDto({
     this.totalCount = 0,
     this.currentPage = 1,
     this.limit = 10,
     this.data = const [],
   });
 
-  factory ExamResultResponseDto.fromJson(Map<String, dynamic> json) {
+  factory BpElearnPaginatedResponseDto.fromJson(Map<String, dynamic> json) {
     var dataList = json['data'] as List?;
-    List<ExamResultDto> results = [];
+    List<BpElearnExamResultItemDto> results = [];
     if (dataList != null) {
-      results = dataList.map((e) => ExamResultDto.fromJson(e)).toList();
+      results = dataList
+          .map((e) => BpElearnExamResultItemDto.fromJson(e))
+          .toList();
     }
-    return ExamResultResponseDto(
-      status: json['status']?.toString(),
+    return BpElearnPaginatedResponseDto(
       totalCount: int.tryParse(json['total_count']?.toString() ?? '0') ?? 0,
       currentPage: int.tryParse(json['current_page']?.toString() ?? '1') ?? 1,
       limit: int.tryParse(json['limit']?.toString() ?? '10') ?? 10,
