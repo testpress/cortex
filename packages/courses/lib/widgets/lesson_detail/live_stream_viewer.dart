@@ -27,6 +27,19 @@ class LiveStreamViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (lesson.isScheduled) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: ScheduledMessageView(message: lesson.scheduledMessage),
+          ),
+          if (footerBuilder != null) footerBuilder!(context),
+        ],
+      );
+    }
+
     if (_isFermion) {
       return FermionLobbyView(
         lesson: lesson,
@@ -40,11 +53,9 @@ class LiveStreamViewer extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
-          child: lesson.isScheduled
-              ? ScheduledMessageView(message: lesson.scheduledMessage)
-              : CustomVideoPlayer(
-                  assetId: lesson.contentUrl,
-                ),
+          child: CustomVideoPlayer(
+            assetId: lesson.contentUrl,
+          ),
         ),
         const Expanded(
           child: ColoredBox(color: Color(0xFF000000)),

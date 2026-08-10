@@ -56,4 +56,36 @@ void main() {
       );
     });
   });
+
+  group('TimeFormatter.formatDurationToMinutes', () {
+    test('should format minutes-only strings', () {
+      expect(TimeFormatter.formatDurationToMinutes('45 min'), '45 minutes');
+      expect(TimeFormatter.formatDurationToMinutes('30m'), '30 minutes');
+    });
+
+    test('should format hours-only strings', () {
+      expect(TimeFormatter.formatDurationToMinutes('1h'), '60 minutes');
+      expect(TimeFormatter.formatDurationToMinutes('2 h'), '120 minutes');
+    });
+
+    test('should format combined hours and minutes strings', () {
+      expect(TimeFormatter.formatDurationToMinutes('1h 30m'), '90 minutes');
+      expect(TimeFormatter.formatDurationToMinutes('2h 45min'), '165 minutes');
+    });
+
+    test('should format raw numeric minute values', () {
+      expect(TimeFormatter.formatDurationToMinutes('60'), '60 minutes');
+      expect(TimeFormatter.formatDurationToMinutes('90.5'), '90 minutes');
+    });
+
+    test('should format hh:mm:ss duration format', () {
+      expect(TimeFormatter.formatDurationToMinutes('01:20:00'), '80 minutes');
+    });
+
+    test('should return null for invalid or empty duration input', () {
+      expect(TimeFormatter.formatDurationToMinutes(null), null);
+      expect(TimeFormatter.formatDurationToMinutes(''), null);
+      expect(TimeFormatter.formatDurationToMinutes('abc'), null);
+    });
+  });
 }

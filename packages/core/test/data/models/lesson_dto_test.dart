@@ -139,4 +139,64 @@ void main() {
       },
     );
   });
+
+  group('LessonDto.fromJson — liveStream parsing', () {
+    test('should parse Jitsi/Fermion provider and stream URL correctly', () {
+      final json = {
+        'id': '10',
+        'title': 'Fermion Live',
+        'content_type': 'Live Stream',
+        'uuid': '123-abc',
+        'live_stream': {
+          'provider': 'Fermion',
+          'stream_url': 'https://fermion.embed/123',
+          'chat_embed_url': 'https://fermion.chat/123',
+          'status': 'running',
+          'duration': '60.5',
+          'show_recorded_video': true,
+        },
+      };
+
+      final dto = LessonDto.fromJson(json);
+      expect(dto.liveStreamProvider, 'Fermion');
+      expect(dto.contentUrl, 'https://fermion.embed/123');
+      expect(dto.chatEmbedUrl, 'https://fermion.chat/123');
+      expect(dto.streamStatus, 'running');
+      expect(dto.duration, '60 min');
+      expect(dto.showRecordedVideo, true);
+    });
+
+    test(
+      'should parse TpStreams provider and stream URL fallback correctly',
+      () {
+        final json = {
+          'id': '11',
+          'title': 'TpStreams Live',
+          'content_type': 'Live Stream',
+          'uuid': 'tpstreams-uuid',
+          'live_stream': {
+            'provider': 'TpStreams',
+            'stream_url': 'https://tpstreams.video/fallback',
+          },
+        };
+
+        final dto = LessonDto.fromJson(json);
+        expect(dto.liveStreamProvider, 'TpStreams');
+        expect(dto.contentUrl, 'tpstreams-uuid');
+      },
+    );
+
+    test('should handle missing live_stream object by falling back', () {
+      final json = {
+        'id': '12',
+        'title': 'Fallback Live',
+        'content_type': 'Live Stream',
+        'uuid': 'some-uuid',
+      };
+
+      final dto = LessonDto.fromJson(json);
+      expect(dto.liveStreamProvider, isNull);
+      expect(dto.contentUrl, 'some-uuid');
+    });
+  });
 }

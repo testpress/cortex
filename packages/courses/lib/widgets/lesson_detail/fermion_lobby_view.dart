@@ -100,31 +100,43 @@ class FermionLobbyView extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 420),
-      padding: EdgeInsets.all(design.spacing.lg),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(design.radius.md),
-        border: Border.all(
-          color: design.colors.border,
+    final semanticParts = <String>[];
+    if (formattedDuration != null) {
+      semanticParts.add('Duration: $formattedDuration');
+    }
+    if (formattedStart != null) {
+      semanticParts.add('Start Time: $formattedStart');
+    }
+    final semanticLabel = 'Session details: ${semanticParts.join(", ")}';
+
+    return AppSemantics.container(
+      label: semanticLabel,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 420),
+        padding: EdgeInsets.all(design.spacing.lg),
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(design.radius.md),
+          border: Border.all(
+            color: design.colors.border,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (formattedDuration != null)
-            _buildDurationRow(context, design, formattedDuration),
-          if (formattedDuration != null && formattedStart != null)
-            _buildDivider(design),
-          if (formattedStart != null)
-            _buildStartTimeRow(context, design, formattedStart),
-          if (action != _LobbyAction.ended) ...[
-            SizedBox(height: design.spacing.lg),
-            _buildActionButton(context, ref, design, action),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (formattedDuration != null)
+              _buildDurationRow(context, design, formattedDuration),
+            if (formattedDuration != null && formattedStart != null)
+              _buildDivider(design),
+            if (formattedStart != null)
+              _buildStartTimeRow(context, design, formattedStart),
+            if (action != _LobbyAction.ended) ...[
+              SizedBox(height: design.spacing.lg),
+              _buildActionButton(context, ref, design, action),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
