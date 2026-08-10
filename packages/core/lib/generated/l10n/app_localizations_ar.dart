@@ -1617,7 +1617,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forumFilterClearAll => 'مسح الكل';
 
   @override
-  String get forumBackSemantic => 'عودة';
+  String get commonBackSemantic => 'عودة';
 
   @override
   String get forumFilterSemantic => 'تصفية';

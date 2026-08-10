@@ -4,7 +4,6 @@ import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/lesson_detail/custom_video_player.dart';
-
 import '../providers/downloads_provider.dart';
 
 class OfflineVideoPlayerScreen extends ConsumerStatefulWidget {

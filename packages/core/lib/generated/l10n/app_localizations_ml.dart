@@ -1632,7 +1632,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get forumFilterClearAll => 'എല്ലാം മായ്‌ക്കുക';
 
   @override
-  String get forumBackSemantic => 'തിരികെ';
+  String get commonBackSemantic => 'തിരികെ';
 
   @override
   String get forumFilterSemantic => 'ഫിൽറ്റർ';

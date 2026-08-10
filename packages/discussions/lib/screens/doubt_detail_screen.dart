@@ -8,7 +8,6 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../widgets/doubt_context_badge.dart';
-
 import '../widgets/forum_composer.dart';
 
 // ─────────────────────────────────────────────────────

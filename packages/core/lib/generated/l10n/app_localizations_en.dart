@@ -1621,7 +1621,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forumFilterClearAll => 'Clear All';
 
   @override
-  String get forumBackSemantic => 'Back';
+  String get commonBackSemantic => 'Back';
 
   @override
   String get forumFilterSemantic => 'Filter';

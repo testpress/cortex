@@ -45,9 +45,12 @@ class AiScreen extends ConsumerWidget {
                   : design.spacing.md,
               design.spacing.md,
             ),
-            child: AppText.headline(
-              l10n.aiSupportTitle,
-              color: design.colors.textPrimary,
+            child: AppSemantics.header(
+              label: l10n.aiSupportTitle,
+              child: AppText.headline(
+                l10n.aiSupportTitle,
+                color: design.colors.textPrimary,
+              ),
             ),
           ),
           Expanded(

@@ -4,7 +4,6 @@ import 'package:core/core.dart';
 import 'package:exams/exams.dart';
 import 'widgets/bookmark_item.dart';
 import 'widgets/folder_item.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -196,7 +195,6 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
             children: [
               AppHeader(
                 title: widget.folderName ?? l10n.bookmarksTitle,
-
                 leading: AppBackButton(
                   onTap: () => Navigator.of(context).pop(),
                 ),

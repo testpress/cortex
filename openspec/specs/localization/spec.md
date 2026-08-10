@@ -36,7 +36,7 @@ The SDK MUST provide full support for the Malayalam language, including translat
 All hardcoded strings in the `courses` package and reference app `main.dart` MUST be migrated to the `AppLocalizations` system.
 
 #### Scenario: Localizing Course Library header
-- **WHEN** viewing the `CourseListScreen` in Arabic
+- **WHEN** viewing the `StudyScreen` in Arabic
 - **THEN** the subtitle MUST render as "مكتبة الدورات" instead of hardcoded English.
 
 ### Requirement: Tamil (ta) Support

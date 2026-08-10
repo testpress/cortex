@@ -17,7 +17,6 @@ import '../widgets/test_detail/test_progress_section.dart';
 import '../widgets/test_detail/test_question_card.dart';
 import '../widgets/test_detail/submit_confirmation_dialog.dart';
 import '../widgets/test_detail/pause_confirmation_dialog.dart';
-import '../widgets/test_detail/exam_instructions_view.dart';
 import '../widgets/test_detail/sections_tab_bar.dart';
 
 class TestDetailScreen extends ConsumerWidget {
@@ -356,23 +355,6 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
             ),
           ),
         ),
-      );
-    }
-
-    if (state.status == ExamAttemptStatus.instructions) {
-      return ExamInstructionsView(
-        exam: state.exam,
-        onClose: widget.onClose,
-        onStartExam: () {
-          ref
-              .read(examAttemptProvider.notifier)
-              .startStandaloneExam(
-                state.exam!,
-                isQuizMode: widget.isQuizMode,
-                isPartial: widget.isPartial,
-                isCustomTest: widget.isCustomTest,
-              );
-        },
       );
     }
 

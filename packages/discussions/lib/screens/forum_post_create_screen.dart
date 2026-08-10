@@ -6,7 +6,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
-
 import '../widgets/forum_composer.dart';
 
 class ForumPostCreateScreen extends ConsumerStatefulWidget {

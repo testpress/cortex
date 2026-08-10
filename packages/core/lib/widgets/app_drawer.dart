@@ -1,8 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../design/design_provider.dart';
+import '../accessibility/app_semantics.dart';
+import '../accessibility/app_focusable.dart';
+import '../localization/l10n_helper.dart';
 import 'app_text.dart';
 import 'app_header.dart';
+import 'app_back_button.dart';
 
 class AppDrawerItem {
   final IconData icon;
@@ -214,38 +218,48 @@ class _AppDrawerState extends State<AppDrawer>
 
   Widget _buildHeader(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final isRight = widget.slideFromRight;
 
     return AppHeader(
       title: widget.title,
       backgroundColor: design.colors.surface,
       leading: (widget.fullPage && !isRight)
-          ? GestureDetector(
-              onTap: widget.onClose,
-              child: Icon(
-                LucideIcons.arrowLeft,
-                size: 24,
-                color: design.colors.textPrimary,
-              ),
-            )
+          ? AppBackButton(onTap: widget.onClose)
           : null,
       actions: [
         if (widget.fullPage && isRight)
-          GestureDetector(
+          AppSemantics.button(
+            label: l10n.commonBackSemantic,
             onTap: widget.onClose,
-            child: Icon(
-              LucideIcons.arrowRight,
-              size: 24,
-              color: design.colors.textPrimary,
+            child: AppFocusable(
+              onTap: widget.onClose,
+              padding: const EdgeInsets.all(13),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 2), // Optical alignment
+                child: Icon(
+                  LucideIcons.arrowRight,
+                  size: 22,
+                  color: design.colors.textPrimary,
+                ),
+              ),
             ),
           )
         else if (!widget.fullPage)
-          GestureDetector(
+          AppSemantics.button(
+            label: l10n.labelClose,
             onTap: widget.onClose,
-            child: Icon(
-              LucideIcons.x,
-              size: 20,
-              color: design.colors.textSecondary,
+            child: AppFocusable(
+              onTap: widget.onClose,
+              padding: const EdgeInsets.all(13),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 2), // Optical alignment
+                child: Icon(
+                  LucideIcons.x,
+                  size: 22,
+                  color: design.colors.textSecondary,
+                ),
+              ),
             ),
           ),
       ],

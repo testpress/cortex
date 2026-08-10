@@ -63,13 +63,13 @@ The system SHALL wire all repositories through Riverpod providers. UI widgets MU
 
 ---
 
-### Requirement: Existing course list screen uses repository pattern
-The `CourseListScreen` in `packages/courses` SHALL be refactored to be a `ConsumerWidget` that reads from `courseListProvider`. Hardcoded `MockCourse` data SHALL be removed from widgets.
+### Requirement: Existing study screen uses repository pattern
+The `StudyScreen` in `packages/courses` SHALL be refactored to be a `ConsumerWidget` that reads from `courseListProvider`. Hardcoded `MockCourse` data SHALL be removed from widgets.
 
 #### Scenario: Course list populated from provider
-- **WHEN** `CourseListScreen` builds
+- **WHEN** `StudyScreen` builds
 - **THEN** it calls `ref.watch(courseListProvider)` and renders based on the returned `AsyncValue`
 
 #### Scenario: App launches and shows courses end-to-end
 - **WHEN** the app is launched in mock mode
-- **THEN** the course list screen shows at least 3 courses sourced from `MockDataSource` via the repository and Drift layer
+- **THEN** the study screen shows at least 3 courses sourced from `MockDataSource` via the repository and Drift layer

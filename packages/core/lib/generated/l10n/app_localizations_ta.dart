@@ -1643,7 +1643,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get forumFilterClearAll => 'அனைத்தையும் அழி';
 
   @override
-  String get forumBackSemantic => 'பின்செல்';
+  String get commonBackSemantic => 'பின்செல்';
 
   @override
   String get forumFilterSemantic => 'வடிகட்டி';

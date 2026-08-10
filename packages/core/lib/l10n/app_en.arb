@@ -781,7 +781,7 @@
   "forumFilterTitle": "Filters",
   "forumFilterByActivity": "Filter by Activity",
   "forumFilterClearAll": "Clear All",
-  "forumBackSemantic": "Back",
+  "commonBackSemantic": "Back",
   "forumFilterSemantic": "Filter",
   "forumFilterActivityPosted": "Posted by me",
   "forumFilterActivityCommented": "Commented by me",

@@ -23,7 +23,7 @@ class AppBackButton extends StatelessWidget {
     final l10n = L10n.of(context);
 
     return AppSemantics.button(
-      label: semanticLabel ?? l10n.forumBackSemantic,
+      label: semanticLabel ?? l10n.commonBackSemantic,
       onTap: onTap,
       child: AppFocusable(
         padding: const EdgeInsets.all(13),

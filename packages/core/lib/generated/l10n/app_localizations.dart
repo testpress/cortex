@@ -3023,11 +3023,11 @@ abstract class AppLocalizations {
   /// **'Clear All'**
   String get forumFilterClearAll;
 
-  /// No description provided for @forumBackSemantic.
+  /// No description provided for @commonBackSemantic.
   ///
   /// In en, this message translates to:
   /// **'Back'**
-  String get forumBackSemantic;
+  String get commonBackSemantic;
 
   /// No description provided for @forumFilterSemantic.
   ///

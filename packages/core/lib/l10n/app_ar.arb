@@ -562,7 +562,7 @@
   "forumFilterTitle": "عوامل التصفية",
   "forumFilterByActivity": "تصفية حسب النشاط",
   "forumFilterClearAll": "مسح الكل",
-  "forumBackSemantic": "عودة",
+  "commonBackSemantic": "عودة",
   "forumFilterSemantic": "تصفية",
   "forumFilterActivityPosted": "نشرتها أنا",
   "forumFilterActivityCommented": "علقت عليها أنا",

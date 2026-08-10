@@ -66,7 +66,6 @@ class _AnnouncementsListScreenState
         children: [
           AppHeader(
             title: l10n.updatesAnnouncementsTitle,
-
             leading: AppBackButton(onTap: () => Navigator.of(context).pop()),
           ),
           Expanded(

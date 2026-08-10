@@ -562,7 +562,7 @@
   "forumFilterTitle": "ഫിൽറ്ററുകൾ",
   "forumFilterByActivity": "പ്രവർത്തനം അനുസരിച്ച് ഫിൽറ്റർ ചെയ്യുക",
   "forumFilterClearAll": "എല്ലാം മായ്‌ക്കുക",
-  "forumBackSemantic": "തിരികെ",
+  "commonBackSemantic": "തിരികെ",
   "forumFilterSemantic": "ഫിൽറ്റർ",
   "forumFilterActivityPosted": "ഞാൻ പോസ്റ്റ് ചെയ്തത്",
   "forumFilterActivityCommented": "ഞാൻ കമന്റ് ചെയ്തത്",
