@@ -32,4 +32,15 @@ class DateFormatter {
   static String formatDateTime(DateTime date) {
     return DateFormat('dd MMM yyyy, hh:mm a').format(date);
   }
+
+  /// Formats a start date string into "dd MMM yyyy, hh.mm a" (e.g., "10 Aug 2026, 11.38 AM").
+  static String? formatStartDateTime(String? startStr) {
+    if (startStr == null || startStr.isEmpty) return null;
+    try {
+      final date = DateTime.parse(startStr).toLocal();
+      return DateFormat('dd MMM yyyy, hh.mm a').format(date);
+    } catch (_) {
+      return null;
+    }
+  }
 }

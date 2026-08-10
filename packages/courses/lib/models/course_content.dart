@@ -35,6 +35,7 @@ class Lesson {
     this.chatEmbedUrl,
     this.streamStatus,
     this.showRecordedVideo = false,
+    this.liveStreamProvider,
     this.isScheduled = false,
     this.scheduledMessage,
     this.description,
@@ -91,6 +92,7 @@ class Lesson {
   final String? chatEmbedUrl;
   final String? streamStatus;
   final bool showRecordedVideo;
+  final String? liveStreamProvider;
   final bool isScheduled;
   final String? scheduledMessage;
   final String? description;
@@ -127,6 +129,16 @@ class Lesson {
     }
   }
 
+  /// Whether this live stream uses Jitsi/Fermion.
+  bool get isFermion =>
+      liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
+
+  /// Whether this live stream is completed/ended.
+  bool get isStreamCompleted => streamStatus?.toLowerCase() == 'completed';
+
+  /// Whether this live stream is currently running.
+  bool get isStreamRunning => streamStatus?.toLowerCase() == 'running';
+
   /// Converts this domain model to a [LessonDto] for cross-package use.
   LessonDto toDto() {
     return LessonDto(
@@ -158,6 +170,7 @@ class Lesson {
       chatEmbedUrl: chatEmbedUrl,
       streamStatus: streamStatus,
       showRecordedVideo: showRecordedVideo,
+      liveStreamProvider: liveStreamProvider,
       isScheduled: isScheduled,
       scheduledMessage: scheduledMessage,
       description: description,

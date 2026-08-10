@@ -1180,5 +1180,8 @@
   "customExamTotalQuestions": "ആകെ ചോദ്യങ്ങൾ",
   "customExamRemainingQuestions": "ഈ പരീക്ഷയ്ക്ക് നിങ്ങൾക്ക് {remaining} ചോദ്യങ്ങൾ അവശേഷിക്കുന്നു.",
   "pullToRefresh": "പുതുക്ക് വേണ്ടി വലിക്കുക",
-  "refreshFailed": "പുതുക്കല്‍ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക."
+  "refreshFailed": "പുതുക്കല്‍ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.",
+  "liveStreamDuration": "ദൈർഘ്യം",
+  "liveStreamStartTime": "ആരംഭ സമയം",
+  "liveStreamAttendClass": "ക്ലാസ്സിൽ പങ്കെടുക്കുക"
 }

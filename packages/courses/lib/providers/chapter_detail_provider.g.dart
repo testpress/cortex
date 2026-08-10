@@ -193,7 +193,7 @@ class _ChapterDetailProviderElement extends StreamProviderElement<Chapter?>
 }
 
 String _$chapterDetailControllerHash() =>
-    r'33fcb4a3acdf849bbdd0bdb8827c5137057fb69e';
+    r'0c348d1734fc955a747cae94ebff0e923486c836';
 
 /// See also [ChapterDetailController].
 @ProviderFor(ChapterDetailController)

@@ -45,6 +45,7 @@ class LessonsTable extends Table {
   TextColumn get streamStatus => text().nullable()();
   BoolColumn get showRecordedVideo =>
       boolean().withDefault(const Constant(false))();
+  TextColumn get liveStreamProvider => text().nullable()();
 
   BoolColumn get isDetailFetched =>
       boolean().withDefault(const Constant(false))();

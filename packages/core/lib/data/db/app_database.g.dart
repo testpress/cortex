@@ -1836,6 +1836,17 @@ class $LessonsTableTable extends LessonsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _liveStreamProviderMeta =
+      const VerificationMeta('liveStreamProvider');
+  @override
+  late final GeneratedColumn<String> liveStreamProvider =
+      GeneratedColumn<String>(
+        'live_stream_provider',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _isDetailFetchedMeta = const VerificationMeta(
     'isDetailFetched',
   );
@@ -2111,6 +2122,7 @@ class $LessonsTableTable extends LessonsTable
     chatEmbedUrl,
     streamStatus,
     showRecordedVideo,
+    liveStreamProvider,
     isDetailFetched,
     isScheduled,
     scheduledMessage,
@@ -2360,6 +2372,15 @@ class $LessonsTableTable extends LessonsTable
         showRecordedVideo.isAcceptableOrUnknown(
           data['show_recorded_video']!,
           _showRecordedVideoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('live_stream_provider')) {
+      context.handle(
+        _liveStreamProviderMeta,
+        liveStreamProvider.isAcceptableOrUnknown(
+          data['live_stream_provider']!,
+          _liveStreamProviderMeta,
         ),
       );
     }
@@ -2652,6 +2673,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}show_recorded_video'],
       )!,
+      liveStreamProvider: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}live_stream_provider'],
+      ),
       isDetailFetched: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_detail_fetched'],
@@ -2775,6 +2800,7 @@ class LessonsTableData extends DataClass
   final String? chatEmbedUrl;
   final String? streamStatus;
   final bool showRecordedVideo;
+  final String? liveStreamProvider;
   final bool isDetailFetched;
   final bool isScheduled;
   final String? scheduledMessage;
@@ -2824,6 +2850,7 @@ class LessonsTableData extends DataClass
     this.chatEmbedUrl,
     this.streamStatus,
     required this.showRecordedVideo,
+    this.liveStreamProvider,
     required this.isDetailFetched,
     required this.isScheduled,
     this.scheduledMessage,
@@ -2908,6 +2935,9 @@ class LessonsTableData extends DataClass
       map['stream_status'] = Variable<String>(streamStatus);
     }
     map['show_recorded_video'] = Variable<bool>(showRecordedVideo);
+    if (!nullToAbsent || liveStreamProvider != null) {
+      map['live_stream_provider'] = Variable<String>(liveStreamProvider);
+    }
     map['is_detail_fetched'] = Variable<bool>(isDetailFetched);
     map['is_scheduled'] = Variable<bool>(isScheduled);
     if (!nullToAbsent || scheduledMessage != null) {
@@ -3017,6 +3047,9 @@ class LessonsTableData extends DataClass
           ? const Value.absent()
           : Value(streamStatus),
       showRecordedVideo: Value(showRecordedVideo),
+      liveStreamProvider: liveStreamProvider == null && nullToAbsent
+          ? const Value.absent()
+          : Value(liveStreamProvider),
       isDetailFetched: Value(isDetailFetched),
       isScheduled: Value(isScheduled),
       scheduledMessage: scheduledMessage == null && nullToAbsent
@@ -3098,6 +3131,9 @@ class LessonsTableData extends DataClass
       chatEmbedUrl: serializer.fromJson<String?>(json['chatEmbedUrl']),
       streamStatus: serializer.fromJson<String?>(json['streamStatus']),
       showRecordedVideo: serializer.fromJson<bool>(json['showRecordedVideo']),
+      liveStreamProvider: serializer.fromJson<String?>(
+        json['liveStreamProvider'],
+      ),
       isDetailFetched: serializer.fromJson<bool>(json['isDetailFetched']),
       isScheduled: serializer.fromJson<bool>(json['isScheduled']),
       scheduledMessage: serializer.fromJson<String?>(json['scheduledMessage']),
@@ -3160,6 +3196,7 @@ class LessonsTableData extends DataClass
       'chatEmbedUrl': serializer.toJson<String?>(chatEmbedUrl),
       'streamStatus': serializer.toJson<String?>(streamStatus),
       'showRecordedVideo': serializer.toJson<bool>(showRecordedVideo),
+      'liveStreamProvider': serializer.toJson<String?>(liveStreamProvider),
       'isDetailFetched': serializer.toJson<bool>(isDetailFetched),
       'isScheduled': serializer.toJson<bool>(isScheduled),
       'scheduledMessage': serializer.toJson<String?>(scheduledMessage),
@@ -3214,6 +3251,7 @@ class LessonsTableData extends DataClass
     Value<String?> chatEmbedUrl = const Value.absent(),
     Value<String?> streamStatus = const Value.absent(),
     bool? showRecordedVideo,
+    Value<String?> liveStreamProvider = const Value.absent(),
     bool? isDetailFetched,
     bool? isScheduled,
     Value<String?> scheduledMessage = const Value.absent(),
@@ -3269,6 +3307,9 @@ class LessonsTableData extends DataClass
     chatEmbedUrl: chatEmbedUrl.present ? chatEmbedUrl.value : this.chatEmbedUrl,
     streamStatus: streamStatus.present ? streamStatus.value : this.streamStatus,
     showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
+    liveStreamProvider: liveStreamProvider.present
+        ? liveStreamProvider.value
+        : this.liveStreamProvider,
     isDetailFetched: isDetailFetched ?? this.isDetailFetched,
     isScheduled: isScheduled ?? this.isScheduled,
     scheduledMessage: scheduledMessage.present
@@ -3369,6 +3410,9 @@ class LessonsTableData extends DataClass
       showRecordedVideo: data.showRecordedVideo.present
           ? data.showRecordedVideo.value
           : this.showRecordedVideo,
+      liveStreamProvider: data.liveStreamProvider.present
+          ? data.liveStreamProvider.value
+          : this.liveStreamProvider,
       isDetailFetched: data.isDetailFetched.present
           ? data.isDetailFetched.value
           : this.isDetailFetched,
@@ -3455,6 +3499,7 @@ class LessonsTableData extends DataClass
           ..write('chatEmbedUrl: $chatEmbedUrl, ')
           ..write('streamStatus: $streamStatus, ')
           ..write('showRecordedVideo: $showRecordedVideo, ')
+          ..write('liveStreamProvider: $liveStreamProvider, ')
           ..write('isDetailFetched: $isDetailFetched, ')
           ..write('isScheduled: $isScheduled, ')
           ..write('scheduledMessage: $scheduledMessage, ')
@@ -3509,6 +3554,7 @@ class LessonsTableData extends DataClass
     chatEmbedUrl,
     streamStatus,
     showRecordedVideo,
+    liveStreamProvider,
     isDetailFetched,
     isScheduled,
     scheduledMessage,
@@ -3562,6 +3608,7 @@ class LessonsTableData extends DataClass
           other.chatEmbedUrl == this.chatEmbedUrl &&
           other.streamStatus == this.streamStatus &&
           other.showRecordedVideo == this.showRecordedVideo &&
+          other.liveStreamProvider == this.liveStreamProvider &&
           other.isDetailFetched == this.isDetailFetched &&
           other.isScheduled == this.isScheduled &&
           other.scheduledMessage == this.scheduledMessage &&
@@ -3613,6 +3660,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<String?> chatEmbedUrl;
   final Value<String?> streamStatus;
   final Value<bool> showRecordedVideo;
+  final Value<String?> liveStreamProvider;
   final Value<bool> isDetailFetched;
   final Value<bool> isScheduled;
   final Value<String?> scheduledMessage;
@@ -3663,6 +3711,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.chatEmbedUrl = const Value.absent(),
     this.streamStatus = const Value.absent(),
     this.showRecordedVideo = const Value.absent(),
+    this.liveStreamProvider = const Value.absent(),
     this.isDetailFetched = const Value.absent(),
     this.isScheduled = const Value.absent(),
     this.scheduledMessage = const Value.absent(),
@@ -3714,6 +3763,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.chatEmbedUrl = const Value.absent(),
     this.streamStatus = const Value.absent(),
     this.showRecordedVideo = const Value.absent(),
+    this.liveStreamProvider = const Value.absent(),
     this.isDetailFetched = const Value.absent(),
     this.isScheduled = const Value.absent(),
     this.scheduledMessage = const Value.absent(),
@@ -3770,6 +3820,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<String>? chatEmbedUrl,
     Expression<String>? streamStatus,
     Expression<bool>? showRecordedVideo,
+    Expression<String>? liveStreamProvider,
     Expression<bool>? isDetailFetched,
     Expression<bool>? isScheduled,
     Expression<String>? scheduledMessage,
@@ -3822,6 +3873,8 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (chatEmbedUrl != null) 'chat_embed_url': chatEmbedUrl,
       if (streamStatus != null) 'stream_status': streamStatus,
       if (showRecordedVideo != null) 'show_recorded_video': showRecordedVideo,
+      if (liveStreamProvider != null)
+        'live_stream_provider': liveStreamProvider,
       if (isDetailFetched != null) 'is_detail_fetched': isDetailFetched,
       if (isScheduled != null) 'is_scheduled': isScheduled,
       if (scheduledMessage != null) 'scheduled_message': scheduledMessage,
@@ -3879,6 +3932,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<String?>? chatEmbedUrl,
     Value<String?>? streamStatus,
     Value<bool>? showRecordedVideo,
+    Value<String?>? liveStreamProvider,
     Value<bool>? isDetailFetched,
     Value<bool>? isScheduled,
     Value<String?>? scheduledMessage,
@@ -3930,6 +3984,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       chatEmbedUrl: chatEmbedUrl ?? this.chatEmbedUrl,
       streamStatus: streamStatus ?? this.streamStatus,
       showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
+      liveStreamProvider: liveStreamProvider ?? this.liveStreamProvider,
       isDetailFetched: isDetailFetched ?? this.isDetailFetched,
       isScheduled: isScheduled ?? this.isScheduled,
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
@@ -4042,6 +4097,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (showRecordedVideo.present) {
       map['show_recorded_video'] = Variable<bool>(showRecordedVideo.value);
     }
+    if (liveStreamProvider.present) {
+      map['live_stream_provider'] = Variable<String>(liveStreamProvider.value);
+    }
     if (isDetailFetched.present) {
       map['is_detail_fetched'] = Variable<bool>(isDetailFetched.value);
     }
@@ -4147,6 +4205,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('chatEmbedUrl: $chatEmbedUrl, ')
           ..write('streamStatus: $streamStatus, ')
           ..write('showRecordedVideo: $showRecordedVideo, ')
+          ..write('liveStreamProvider: $liveStreamProvider, ')
           ..write('isDetailFetched: $isDetailFetched, ')
           ..write('isScheduled: $isScheduled, ')
           ..write('scheduledMessage: $scheduledMessage, ')
@@ -17715,6 +17774,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<String?> chatEmbedUrl,
       Value<String?> streamStatus,
       Value<bool> showRecordedVideo,
+      Value<String?> liveStreamProvider,
       Value<bool> isDetailFetched,
       Value<bool> isScheduled,
       Value<String?> scheduledMessage,
@@ -17767,6 +17827,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<String?> chatEmbedUrl,
       Value<String?> streamStatus,
       Value<bool> showRecordedVideo,
+      Value<String?> liveStreamProvider,
       Value<bool> isDetailFetched,
       Value<bool> isScheduled,
       Value<String?> scheduledMessage,
@@ -17936,6 +17997,11 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get showRecordedVideo => $composableBuilder(
     column: $table.showRecordedVideo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get liveStreamProvider => $composableBuilder(
+    column: $table.liveStreamProvider,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18189,6 +18255,11 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get liveStreamProvider => $composableBuilder(
+    column: $table.liveStreamProvider,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isDetailFetched => $composableBuilder(
     column: $table.isDetailFetched,
     builder: (column) => ColumnOrderings(column),
@@ -18419,6 +18490,11 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get liveStreamProvider => $composableBuilder(
+    column: $table.liveStreamProvider,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isDetailFetched => $composableBuilder(
     column: $table.isDetailFetched,
     builder: (column) => column,
@@ -18571,6 +18647,7 @@ class $$LessonsTableTableTableManager
                 Value<String?> chatEmbedUrl = const Value.absent(),
                 Value<String?> streamStatus = const Value.absent(),
                 Value<bool> showRecordedVideo = const Value.absent(),
+                Value<String?> liveStreamProvider = const Value.absent(),
                 Value<bool> isDetailFetched = const Value.absent(),
                 Value<bool> isScheduled = const Value.absent(),
                 Value<String?> scheduledMessage = const Value.absent(),
@@ -18621,6 +18698,7 @@ class $$LessonsTableTableTableManager
                 chatEmbedUrl: chatEmbedUrl,
                 streamStatus: streamStatus,
                 showRecordedVideo: showRecordedVideo,
+                liveStreamProvider: liveStreamProvider,
                 isDetailFetched: isDetailFetched,
                 isScheduled: isScheduled,
                 scheduledMessage: scheduledMessage,
@@ -18673,6 +18751,7 @@ class $$LessonsTableTableTableManager
                 Value<String?> chatEmbedUrl = const Value.absent(),
                 Value<String?> streamStatus = const Value.absent(),
                 Value<bool> showRecordedVideo = const Value.absent(),
+                Value<String?> liveStreamProvider = const Value.absent(),
                 Value<bool> isDetailFetched = const Value.absent(),
                 Value<bool> isScheduled = const Value.absent(),
                 Value<String?> scheduledMessage = const Value.absent(),
@@ -18723,6 +18802,7 @@ class $$LessonsTableTableTableManager
                 chatEmbedUrl: chatEmbedUrl,
                 streamStatus: streamStatus,
                 showRecordedVideo: showRecordedVideo,
+                liveStreamProvider: liveStreamProvider,
                 isDetailFetched: isDetailFetched,
                 isScheduled: isScheduled,
                 scheduledMessage: scheduledMessage,

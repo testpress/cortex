@@ -5572,6 +5572,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh failed. Please try again.'**
   String get refreshFailed;
+
+  /// No description provided for @liveStreamDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get liveStreamDuration;
+
+  /// No description provided for @liveStreamStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get liveStreamStartTime;
+
+  /// No description provided for @liveStreamAttendClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Attend Class'**
+  String get liveStreamAttendClass;
 }
 
 class _AppLocalizationsDelegate

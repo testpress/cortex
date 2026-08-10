@@ -22,9 +22,11 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
   ref.onCancel(() {
     disposeTimer = Timer(const Duration(minutes: 5), link.close);
   });
-  ref.onResume(() {
+  ref.onResume(() async {
     disposeTimer?.cancel();
     disposeTimer = null;
+    final repository = await ref.read(courseRepositoryProvider.future);
+    repository.refreshLesson(lessonId).ignore();
   });
   ref.onDispose(() => disposeTimer?.cancel());
 
@@ -66,6 +68,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       chatEmbedUrl: lessonDto.chatEmbedUrl,
       streamStatus: lessonDto.streamStatus,
       showRecordedVideo: lessonDto.showRecordedVideo,
+      liveStreamProvider: lessonDto.liveStreamProvider,
       isScheduled: lessonDto.isScheduled,
       scheduledMessage: lessonDto.scheduledMessage,
       attemptsUrl: lessonDto.attemptsUrl,

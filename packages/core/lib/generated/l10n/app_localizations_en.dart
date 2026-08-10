@@ -3085,4 +3085,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get refreshFailed => 'Refresh failed. Please try again.';
+
+  @override
+  String get liveStreamDuration => 'Duration';
+
+  @override
+  String get liveStreamStartTime => 'Start Time';
+
+  @override
+  String get liveStreamAttendClass => 'Attend Class';
 }

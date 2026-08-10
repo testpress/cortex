@@ -1180,5 +1180,8 @@
   "customExamTotalQuestions": "إجمالي الأسئلة",
   "customExamRemainingQuestions": "لديك {remaining} أسئلة متبقية لهذا الامتحان.",
   "pullToRefresh": "اسحب للتحديث",
-  "refreshFailed": "فشل التحديث. يرجى المحاولة مرة أخرى."
+  "refreshFailed": "فشل التحديث. يرجى المحاولة مرة أخرى.",
+  "liveStreamDuration": "المدة",
+  "liveStreamStartTime": "وقت البدء",
+  "liveStreamAttendClass": "حضور الحصة"
 }
