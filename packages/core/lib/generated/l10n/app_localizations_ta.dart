@@ -3134,4 +3134,13 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get refreshFailed =>
       'புதுப்பிக்கல் தேர்சிபெறவில்லை. மீண்டும் முயலவும்.';
+
+  @override
+  String get liveStreamDuration => 'கால அளவு';
+
+  @override
+  String get liveStreamStartTime => 'தொடக்க நேரம்';
+
+  @override
+  String get liveStreamAttendClass => 'வகுப்பில் கலந்துகொள்ளவும்';
 }

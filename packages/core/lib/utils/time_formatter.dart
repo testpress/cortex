@@ -121,4 +121,46 @@ class TimeFormatter {
       return null;
     }
   }
+
+  /// Parses a duration string (formatted or raw) and returns total minutes as a String (e.g. "60 minutes").
+  static String? formatDurationToMinutes(String? durationStr) {
+    if (durationStr == null || durationStr.isEmpty) return null;
+
+    int totalMinutes = 0;
+    bool parsedSuccessfully = false;
+
+    // Check for hours (e.g., "1h" or "1 h")
+    final hourMatch = RegExp(r'(\d+)\s*h').firstMatch(durationStr);
+    if (hourMatch != null) {
+      final hours = int.tryParse(hourMatch.group(1) ?? '') ?? 0;
+      totalMinutes += hours * 60;
+      parsedSuccessfully = true;
+    }
+
+    // Check for minutes (e.g., "30m" or "45 min" or "45m")
+    final minMatch = RegExp(r'(\d+)\s*(?:m|min)').firstMatch(durationStr);
+    if (minMatch != null) {
+      final mins = int.tryParse(minMatch.group(1) ?? '') ?? 0;
+      totalMinutes += mins;
+      parsedSuccessfully = true;
+    }
+
+    if (parsedSuccessfully) {
+      return '$totalMinutes minutes';
+    }
+
+    // Fallback: Try parsing raw integers (since live stream raw durations are in minutes)
+    final doubleVal = double.tryParse(durationStr);
+    if (doubleVal != null && doubleVal > 0) {
+      return '${doubleVal.toInt()} minutes';
+    }
+
+    // Fallback: Try raw parsing of formats like "01:23:45"
+    final duration = parseDuration(durationStr);
+    if (duration != Duration.zero) {
+      return '${duration.inMinutes} minutes';
+    }
+
+    return null;
+  }
 }

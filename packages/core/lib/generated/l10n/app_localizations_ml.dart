@@ -3138,4 +3138,13 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get refreshFailed => 'പുതുക്കല്‍ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get liveStreamDuration => 'ദൈർഘ്യം';
+
+  @override
+  String get liveStreamStartTime => 'ആരംഭ സമയം';
+
+  @override
+  String get liveStreamAttendClass => 'ക്ലാസ്സിൽ പങ്കെടുക്കുക';
 }

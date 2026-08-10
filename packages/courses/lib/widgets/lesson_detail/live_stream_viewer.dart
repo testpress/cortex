@@ -2,8 +2,15 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import '../../models/course_content.dart';
 import 'custom_video_player.dart';
+import 'fermion_lobby_view.dart';
 
-/// Viewer for live stream content, combining a video player and a chat interface.
+/// Viewer for live stream content.
+///
+/// Branches on [Lesson.liveStreamProvider]:
+/// - **Fermion**: renders a lobby screen ([FermionLobbyView]) with a
+///   context-aware action button that opens the session embed URL in a
+///   full-screen [AppWebView].
+/// - **TpStreams / null**: renders the existing inline [CustomVideoPlayer].
 class LiveStreamViewer extends StatelessWidget {
   const LiveStreamViewer({
     super.key,
@@ -16,15 +23,25 @@ class LiveStreamViewer extends StatelessWidget {
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
 
+  bool get _isFermion => lesson.liveStreamProvider?.toLowerCase() == 'fermion';
+
   @override
   Widget build(BuildContext context) {
+    if (_isFermion) {
+      return FermionLobbyView(
+        lesson: lesson,
+        footerBuilder: footerBuilder,
+      );
+    }
+
+    // TpStreams / null provider — existing inline video player
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
           child: lesson.isScheduled
-              ? _ScheduledMessageView(message: lesson.scheduledMessage)
+              ? ScheduledMessageView(message: lesson.scheduledMessage)
               : CustomVideoPlayer(
                   assetId: lesson.contentUrl,
                 ),
@@ -38,8 +55,12 @@ class LiveStreamViewer extends StatelessWidget {
   }
 }
 
-class _ScheduledMessageView extends StatelessWidget {
-  const _ScheduledMessageView({this.message});
+// ---------------------------------------------------------------------------
+// Shared scheduled-state view (used by both providers)
+// ---------------------------------------------------------------------------
+
+class ScheduledMessageView extends StatelessWidget {
+  const ScheduledMessageView({super.key, this.message});
 
   final String? message;
 

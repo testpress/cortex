@@ -61,6 +61,7 @@ class LessonDto {
   final String? chatEmbedUrl;
   final String? streamStatus;
   final bool showRecordedVideo;
+  final String? liveStreamProvider;
 
   final bool isScheduled;
   final String? scheduledMessage;
@@ -139,6 +140,7 @@ class LessonDto {
     this.chatEmbedUrl,
     this.streamStatus,
     this.showRecordedVideo = false,
+    this.liveStreamProvider,
     this.isScheduled = false,
     this.scheduledMessage,
     this.attemptsUrl,
@@ -198,6 +200,7 @@ class LessonDto {
     String? chatEmbedUrl,
     String? streamStatus,
     bool? showRecordedVideo,
+    String? liveStreamProvider,
     String? attemptsUrl,
     String? slug,
     String? chapterSlug,
@@ -251,6 +254,7 @@ class LessonDto {
       chatEmbedUrl: chatEmbedUrl ?? this.chatEmbedUrl,
       streamStatus: streamStatus ?? this.streamStatus,
       showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
+      liveStreamProvider: liveStreamProvider ?? this.liveStreamProvider,
       isScheduled: isScheduled ?? this.isScheduled,
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
@@ -367,6 +371,9 @@ class LessonDto {
           ? other.streamStatus
           : streamStatus,
       showRecordedVideo: showRecordedVideo || other.showRecordedVideo,
+      liveStreamProvider: (liveStreamProvider?.isEmpty ?? true)
+          ? other.liveStreamProvider
+          : liveStreamProvider,
       isScheduled: isScheduled || other.isScheduled,
       scheduledMessage: (scheduledMessage?.isEmpty ?? true)
           ? other.scheduledMessage
@@ -545,13 +552,40 @@ class LessonDto {
   static LessonDto _parseLiveStreamLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.liveStream);
     final liveStream = json['live_stream'] as Map<String, dynamic>?;
+    final provider = liveStream?['provider']?.toString();
+    final isFermion =
+        provider != null && provider.toLowerCase().contains('fermion');
+
+    // Fermion uses the embed URL directly; TpStreams/others use the UUID as
+    // the asset ID expected by the TpStreams player SDK.
+    final String? fermionUrl = liveStream?['stream_url'] as String?;
+    final String? tpstreamsUrl =
+        json['uuid']?.toString() ??
+        liveStream?['stream_url']?.toString() ??
+        json['live_stream_url']?.toString() ??
+        json['url']?.toString();
+    final contentUrl = isFermion ? fermionUrl : tpstreamsUrl;
+
+    // For Fermion, the raw duration value from the backend is in minutes (e.g., 60 = 60 minutes).
+    // For other providers (like TpStreams), the raw value is parsed as seconds in _parseBase.
+    String? duration;
+    if (isFermion) {
+      final String? rawDuration =
+          json['duration']?.toString() ?? liveStream?['duration']?.toString();
+      if (rawDuration != null && rawDuration.isNotEmpty) {
+        final doubleValue = double.tryParse(rawDuration);
+        if (doubleValue != null) {
+          duration = '${doubleValue.toInt()} min';
+        } else {
+          duration = TimeFormatter.formatDuration(rawDuration);
+        }
+      }
+    }
 
     return base.copyWith(
-      contentUrl:
-          json['uuid']?.toString() ??
-          liveStream?['stream_url']?.toString() ??
-          json['live_stream_url']?.toString() ??
-          json['url']?.toString(),
+      liveStreamProvider: provider,
+      contentUrl: contentUrl,
+      duration: duration ?? base.duration,
       chatEmbedUrl: liveStream?['chat_embed_url']?.toString(),
       streamStatus: liveStream?['status']?.toString(),
       showRecordedVideo: liveStream?['show_recorded_video'] as bool? ?? false,
@@ -785,6 +819,7 @@ class LessonDto {
       'chatEmbedUrl': chatEmbedUrl,
       'streamStatus': streamStatus,
       'showRecordedVideo': showRecordedVideo,
+      'liveStreamProvider': liveStreamProvider,
       'description': description,
       'enableTranscript': enableTranscript,
       'videoSubtitleUrl': videoSubtitleUrl,

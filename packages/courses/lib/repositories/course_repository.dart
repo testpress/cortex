@@ -1221,6 +1221,7 @@ class CourseRepository {
         chatEmbedUrl: row.chatEmbedUrl,
         streamStatus: row.streamStatus,
         showRecordedVideo: row.showRecordedVideo,
+        liveStreamProvider: row.liveStreamProvider,
         isScheduled: row.isScheduled,
         scheduledMessage: row.scheduledMessage,
         attemptsUrl: row.attemptsUrl,
@@ -1311,6 +1312,9 @@ class CourseRepository {
             ? Value(dto.streamStatus)
             : const Value.absent(),
         showRecordedVideo: Value(dto.showRecordedVideo),
+        liveStreamProvider: dto.liveStreamProvider != null
+            ? Value(dto.liveStreamProvider)
+            : const Value.absent(),
         isScheduled: Value(dto.isScheduled),
         scheduledMessage: dto.scheduledMessage != null
             ? Value(dto.scheduledMessage)

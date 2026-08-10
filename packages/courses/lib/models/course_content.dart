@@ -35,6 +35,7 @@ class Lesson {
     this.chatEmbedUrl,
     this.streamStatus,
     this.showRecordedVideo = false,
+    this.liveStreamProvider,
     this.isScheduled = false,
     this.scheduledMessage,
     this.description,
@@ -91,6 +92,7 @@ class Lesson {
   final String? chatEmbedUrl;
   final String? streamStatus;
   final bool showRecordedVideo;
+  final String? liveStreamProvider;
   final bool isScheduled;
   final String? scheduledMessage;
   final String? description;
@@ -158,6 +160,7 @@ class Lesson {
       chatEmbedUrl: chatEmbedUrl,
       streamStatus: streamStatus,
       showRecordedVideo: showRecordedVideo,
+      liveStreamProvider: liveStreamProvider,
       isScheduled: isScheduled,
       scheduledMessage: scheduledMessage,
       description: description,

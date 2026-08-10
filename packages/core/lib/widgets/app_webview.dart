@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
@@ -13,9 +14,16 @@ import '../localization/l10n_helper.dart';
 /// Displays a single web page with loading progress and error handling.
 /// Navigation away from the loaded page is disabled.
 class AppWebView extends ConsumerStatefulWidget {
-  const AppWebView({super.key, required this.url});
+  const AppWebView({
+    super.key,
+    required this.url,
+    this.permissions,
+    this.mediaMode = false,
+  });
 
   final String url;
+  final List<Permission>? permissions;
+  final bool mediaMode;
 
   /// Helper to construct headers with auth token for secure requests.
   @visibleForTesting
@@ -54,7 +62,17 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
   void initState() {
     super.initState();
     _setupController();
-    _loadUrl(widget.url);
+    _initWebView();
+  }
+
+  Future<void> _initWebView() async {
+    final permissions = widget.permissions;
+    if (permissions != null && permissions.isNotEmpty) {
+      await permissions.request();
+    }
+    if (mounted) {
+      _loadUrl(widget.url);
+    }
   }
 
   @override
@@ -63,7 +81,7 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
     if (oldWidget.url != widget.url) {
       _progress.value = 0;
       _hasError.value = false;
-      _loadUrl(widget.url);
+      _initWebView();
     }
   }
 
@@ -75,28 +93,45 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
   }
 
   void _setupController() {
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (progress) {
-            _progress.value = progress;
-          },
-          onPageStarted: (_) {
-            _hasError.value = false;
-            _progress.value = 0;
-          },
-          onWebResourceError: (error) {
-            // Ignore minor errors or subresource failures
-            if (error.isForMainFrame == true) {
-              _hasError.value = true;
-            }
-          },
-          onNavigationRequest: (_) {
-            return NavigationDecision.prevent;
-          },
-        ),
-      );
+    _controller =
+        WebViewController(
+            onPermissionRequest: (request) {
+              request.grant();
+            },
+          )
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onProgress: (progress) {
+                _progress.value = progress;
+              },
+              onPageStarted: (_) {
+                _hasError.value = false;
+                _progress.value = 0;
+              },
+              onPageFinished: (url) async {
+                if (widget.mediaMode) {
+                  try {
+                    await _controller.runJavaScript('''
+                  document.documentElement.style.margin = '0';
+                  document.documentElement.style.padding = '0';
+                  document.body.style.margin = '0';
+                  document.body.style.padding = '0';
+                ''');
+                  } catch (_) {}
+                }
+              },
+              onWebResourceError: (error) {
+                // Ignore minor errors or subresource failures
+                if (error.isForMainFrame == true) {
+                  _hasError.value = true;
+                }
+              },
+              onNavigationRequest: (_) {
+                return NavigationDecision.prevent;
+              },
+            ),
+          );
   }
 
   Future<Map<String, String>> _buildHeaders(Uri uri, String url) async {
@@ -166,6 +201,8 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
 
   Widget _buildWebViewStack() {
     return Stack(
+      fit: StackFit
+          .expand, // Forces tight constraints on the WebView platform view
       children: [
         WebViewWidget(controller: _controller),
         ValueListenableBuilder<bool>(
@@ -193,11 +230,13 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
 
     return Container(
       color: design.colors.canvas,
-      child: Column(
-        children: [
-          _buildProgressBar(design),
-          Expanded(child: _buildWebViewStack()),
-        ],
+      child: SafeArea(
+        child: Column(
+          children: [
+            _buildProgressBar(design),
+            Expanded(child: _buildWebViewStack()),
+          ],
+        ),
       ),
     );
   }

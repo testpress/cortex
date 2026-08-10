@@ -3087,4 +3087,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get refreshFailed => 'فشل التحديث. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get liveStreamDuration => 'المدة';
+
+  @override
+  String get liveStreamStartTime => 'وقت البدء';
+
+  @override
+  String get liveStreamAttendClass => 'حضور الحصة';
 }

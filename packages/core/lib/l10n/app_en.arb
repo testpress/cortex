@@ -1540,5 +1540,8 @@
   "refreshFailed": "Refresh failed. Please try again.",
   "@refreshFailed": {
     "description": "Toast message shown when a pull-to-refresh operation fails"
-  }
+  },
+  "liveStreamDuration": "Duration",
+  "liveStreamStartTime": "Start Time",
+  "liveStreamAttendClass": "Attend Class"
 }

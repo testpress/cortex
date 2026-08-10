@@ -635,6 +635,25 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<String>);
 
   @override
+  _i3.Future<String> uploadFile(_i4.File? file) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadFile, [file]),
+            returnValue: _i3.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#uploadFile, [file]),
+              ),
+            ),
+            returnValueForMissingStub: _i3.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#uploadFile, [file]),
+              ),
+            ),
+          )
+          as _i3.Future<String>);
+
+  @override
   _i3.Future<List<_i2.UserProgressDto>> getUserProgress(String? userId) =>
       (super.noSuchMethod(
             Invocation.method(#getUserProgress, [userId]),
