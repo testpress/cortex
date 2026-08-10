@@ -25,6 +25,7 @@
 - [x] 3.4 Apply CSS reset margins and padding in `AppWebView`'s `onPageFinished` in media mode
 - [x] 3.5 Fix `lessonDetail` provider keep-alive logic to ensure background API sync triggers on every lesson re-entry
 - [x] 3.6 Invalidate `lessonDetailProvider` inside `FermionLobbyView` on returning from `AppWebView` to trigger refetches
+- [x] 3.7 Add `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys to iOS `Info.plist` to prevent runtime crashes
 
 ## 4. Verification
 

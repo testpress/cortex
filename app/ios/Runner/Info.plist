@@ -86,5 +86,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires camera access to allow you to participate in live classroom sessions.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires microphone access to allow you to speak during live classroom sessions.</string>
 </dict>
 </plist>

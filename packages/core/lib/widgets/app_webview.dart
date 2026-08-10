@@ -96,7 +96,32 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
     _controller =
         WebViewController(
             onPermissionRequest: (request) {
-              request.grant();
+              if (!widget.mediaMode) {
+                request.deny();
+                return;
+              }
+
+              if (widget.permissions == null) {
+                request.grant();
+                return;
+              }
+
+              final allowedTypes = <WebViewPermissionResourceType>[];
+              if (widget.permissions!.contains(Permission.camera)) {
+                allowedTypes.add(WebViewPermissionResourceType.camera);
+              }
+              if (widget.permissions!.contains(Permission.microphone)) {
+                allowedTypes.add(WebViewPermissionResourceType.microphone);
+              }
+
+              final requestedAllowed = request.types.every(
+                (type) => allowedTypes.contains(type),
+              );
+              if (requestedAllowed) {
+                request.grant();
+              } else {
+                request.deny();
+              }
             },
           )
           ..setJavaScriptMode(JavaScriptMode.unrestricted)
