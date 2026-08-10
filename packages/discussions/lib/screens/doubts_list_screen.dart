@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' show Icons;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../widgets/forum_header.dart';
 
 const doubtFilterOptions = [
   (label: 'All', type: null),
@@ -79,7 +78,11 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                         subtitle: l10n.doubtsEmptySubtitle,
                       )
                     else
-                      ForumHeader(title: l10n.drawerDoubts, showDivider: false),
+                      AppHeader(
+                        title: l10n.drawerDoubts,
+                        showDivider: false,
+                        leading: AppBackButton(onTap: () => context.pop()),
+                      ),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: design.spacing.md,

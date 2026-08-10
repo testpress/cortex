@@ -8,7 +8,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import '../widgets/doubt_context_badge.dart';
-import '../widgets/forum_header.dart';
+
 import '../widgets/forum_composer.dart';
 
 // ─────────────────────────────────────────────────────
@@ -193,8 +193,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
       ),
       child: Column(
         children: [
-          ForumHeader(
+          AppHeader(
             title: l10n.doubtDetailTitle,
+            leading: AppBackButton(onTap: () => context.pop()),
             actions: [
               if (doubt.status != DoubtStatus.closed)
                 AppFocusable(

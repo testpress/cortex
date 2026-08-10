@@ -8,7 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
-import '../widgets/forum_header.dart';
+
 import '../widgets/forum_composer.dart';
 
 // ─────────────────────────────────────────────────────
@@ -166,9 +166,10 @@ class _ForumPostDetailScreenState extends ConsumerState<ForumPostDetailScreen> {
     AppLocalizations l10n,
     ForumThreadDto? thread,
   ) {
-    return ForumHeader(
+    return AppHeader(
       title: l10n.forumDiscussion,
       showDivider: false,
+      leading: AppBackButton(onTap: () => context.pop()),
       actions: [
         if (thread != null)
           AppSemantics.button(

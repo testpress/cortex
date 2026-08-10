@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
-import '../widgets/forum_header.dart';
+
 import '../widgets/forum_composer.dart';
 
 class ForumPostCreateScreen extends ConsumerStatefulWidget {
@@ -153,7 +153,10 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
             bottom: false,
             child: Column(
               children: [
-                ForumHeader(title: l10n.forumCreateNewPost),
+                AppHeader(
+                  title: l10n.forumCreateNewPost,
+                  leading: AppBackButton(onTap: () => context.pop()),
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.all(design.spacing.md),

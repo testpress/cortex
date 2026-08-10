@@ -7,7 +7,6 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/forum_providers.dart';
 import '../widgets/forum_filter_bottom_sheet.dart';
-import '../widgets/forum_header.dart';
 
 class ForumPostsListScreen extends ConsumerStatefulWidget {
   const ForumPostsListScreen({super.key});
@@ -80,9 +79,10 @@ class _ForumPostsListScreenState extends ConsumerState<ForumPostsListScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ForumHeader(
+                  AppHeader(
                     title: l10n.forumTitle,
                     showDivider: false,
+                    leading: AppBackButton(onTap: () => context.pop()),
                     actions: [
                       AppSemantics.button(
                         label: l10n.forumFilterSemantic,

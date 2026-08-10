@@ -9,7 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/downloads_provider.dart';
-import '../widgets/downloads_header.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'offline_video_player_screen.dart';
 
 const _dummyDownload = DownloadItem(
@@ -64,9 +64,9 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
       color: design.colors.canvas,
       child: Column(
         children: [
-          DownloadsHeader(
+          AppHeader(
             title: l10n.downloadsTitle,
-            onBack: () => context.pop(),
+            leading: AppBackButton(onTap: () => context.pop()),
           ),
           _DownloadsTabBar(
             activeTab: _activeTab,

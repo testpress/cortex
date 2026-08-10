@@ -4,7 +4,7 @@ import 'package:core/core.dart';
 import 'package:exams/exams.dart';
 import 'widgets/bookmark_item.dart';
 import 'widgets/folder_item.dart';
-import 'widgets/bookmarks_header.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -194,40 +194,28 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                color: design.colors.card,
-                child: BookmarksHeader(
-                  title: widget.folderName ?? l10n.bookmarksTitle,
-                  onBack: () => Navigator.of(context).pop(),
-                  showDivider: false,
+              AppHeader(
+                title: widget.folderName ?? l10n.bookmarksTitle,
+
+                leading: AppBackButton(
+                  onTap: () => Navigator.of(context).pop(),
                 ),
+                bottomContent: widget.folderName == null
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFilterChips(design),
+                          SizedBox(height: design.spacing.xs),
+                          if (_activeFilter == 'folders') ...[
+                            // Folders don't have search support
+                          ] else if (_activeFilter == 'all') ...[
+                            _buildDropdownsRow(design),
+                            SizedBox(height: design.spacing.md),
+                          ],
+                        ],
+                      )
+                    : null,
               ),
-              if (widget.folderName == null)
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: design.colors.card,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: design.colors.divider.withValues(alpha: 0.5),
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildFilterChips(design),
-                      SizedBox(height: design.spacing.xs),
-                      if (_activeFilter == 'folders') ...[
-                        // Folders don't have search support
-                      ] else if (_activeFilter == 'all') ...[
-                        _buildDropdownsRow(design),
-                        SizedBox(height: design.spacing.md),
-                      ],
-                    ],
-                  ),
-                ),
               Expanded(
                 child: _activeFilter == 'folders'
                     ? foldersAsync.when(

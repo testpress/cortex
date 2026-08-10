@@ -64,47 +64,10 @@ class _AnnouncementsListScreenState
       backgroundColor: design.colors.card,
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              border: Border(bottom: BorderSide(color: design.colors.divider)),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  design.spacing.md,
-                  design.spacing.md,
-                  design.spacing.screenPadding,
-                  design.spacing.md,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 2,
-                        ), // Optical alignment
-                        child: Icon(
-                          LucideIcons.arrowLeft,
-                          color: design.colors.textPrimary,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: design.spacing.sm),
-                    Expanded(
-                      child: AppText.title(
-                        l10n.updatesAnnouncementsTitle,
-                        color: design.colors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          AppHeader(
+            title: l10n.updatesAnnouncementsTitle,
+
+            leading: AppBackButton(onTap: () => Navigator.of(context).pop()),
           ),
           Expanded(
             child: state.when(
