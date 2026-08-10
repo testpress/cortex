@@ -14,7 +14,9 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final goRouterProvider = Provider<GoRouter>((ref) {
   // Only watch the boolean login status to prevent the router from rebuilding
   // on every loading state change or refresh.
-  final isLoggedIn = ref.watch(authProvider).valueOrNull ?? false;
+  final isLoggedIn = ref.watch(
+    authProvider.select((state) => state.valueOrNull ?? false),
+  );
   const allTabs = NavTab.values;
 
   return GoRouter(
