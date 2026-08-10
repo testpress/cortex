@@ -129,6 +129,16 @@ class Lesson {
     }
   }
 
+  /// Whether this live stream uses Jitsi/Fermion.
+  bool get isFermion =>
+      liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
+
+  /// Whether this live stream is completed/ended.
+  bool get isStreamCompleted => streamStatus?.toLowerCase() == 'completed';
+
+  /// Whether this live stream is currently running.
+  bool get isStreamRunning => streamStatus?.toLowerCase() == 'running';
+
   /// Converts this domain model to a [LessonDto] for cross-package use.
   LessonDto toDto() {
     return LessonDto(

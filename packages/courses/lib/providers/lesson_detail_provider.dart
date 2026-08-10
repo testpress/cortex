@@ -25,10 +25,8 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
   ref.onResume(() async {
     disposeTimer?.cancel();
     disposeTimer = null;
-    try {
-      final repository = await ref.read(courseRepositoryProvider.future);
-      repository.refreshLesson(lessonId).ignore();
-    } catch (_) {}
+    final repository = await ref.read(courseRepositoryProvider.future);
+    repository.refreshLesson(lessonId).ignore();
   });
   ref.onDispose(() => disposeTimer?.cancel());
 

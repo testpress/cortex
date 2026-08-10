@@ -40,8 +40,8 @@ class FermionLobbyView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
 
-    final isCompleted = lesson.streamStatus?.toLowerCase() == 'completed';
-    final isRunning = lesson.streamStatus?.toLowerCase() == 'running';
+    final isCompleted = lesson.isStreamCompleted;
+    final isRunning = lesson.isStreamRunning;
     final hasRecording = lesson.showRecordedVideo;
 
     // Determine what action button to show

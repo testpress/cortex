@@ -23,7 +23,7 @@ class LiveStreamViewer extends StatelessWidget {
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
 
-  bool get _isFermion => lesson.liveStreamProvider?.toLowerCase() == 'fermion';
+  bool get _isFermion => lesson.isFermion;
 
   @override
   Widget build(BuildContext context) {
