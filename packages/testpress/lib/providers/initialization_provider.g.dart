@@ -6,7 +6,7 @@ part of 'initialization_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appInitializationHash() => r'768b1e3dd9b88d7c0b20d009a7d54bd79303eb3f';
+String _$appInitializationHash() => r'67e1624bf5450989b9523e5e6622d5a121a04613';
 
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
@@ -27,7 +27,7 @@ final appInitializationProvider = FutureProvider<void>.internal(
 // ignore: unused_element
 typedef AppInitializationRef = FutureProviderRef<void>;
 String _$settingsInitializationHash() =>
-    r'458e1505c19837778b792e51874b3cd1bb439955';
+    r'b3e2890299fd3b27b4383271e3ae9aeac33f4290';
 
 /// See also [settingsInitialization].
 @ProviderFor(settingsInitialization)

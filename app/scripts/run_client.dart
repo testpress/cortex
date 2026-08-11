@@ -25,6 +25,7 @@ void main(List<String> args) async {
     downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
     await updateBranding(appName, bundleId, appDir.path);
     await updateIosGoogleConfig(appDir.path, remoteConfig);
+    await updateAndroidGoogleConfig(appDir.path, remoteConfig);
     brandingUpdated = true;
 
     final iconConfig = await generateNativeIcons(appDir.path);
@@ -55,17 +56,16 @@ void main(List<String> args) async {
 Future<void> _runApp(
   String workingDir,
   String appName,
-  String configPath,
+  String? configPath,
   String apiBaseUrl, {
   String? serverClientId,
   String? primaryColor,
 }) async {
   print('🚀 Running the app for $appName... (Hot reload enabled)');
-  final runArgs = [
-    'run',
-    '--dart-define-from-file=../$configPath',
-    '--dart-define=API_BASE_URL=$apiBaseUrl',
-  ];
+  final runArgs = ['run', '--dart-define=API_BASE_URL=$apiBaseUrl'];
+  if (configPath != null) {
+    runArgs.add('--dart-define-from-file=../$configPath');
+  }
   if (serverClientId != null) {
     runArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
   }

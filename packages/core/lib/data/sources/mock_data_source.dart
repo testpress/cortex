@@ -1471,6 +1471,14 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<void> registerDeviceToken({
+    required String token,
+    required String hardwareId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+
+  @override
   Future<UserDto> updateProfile(Map<String, dynamic> data) async {
     await Future.delayed(const Duration(milliseconds: 500));
     final updated = mockCurrentUser.copyWith(

@@ -265,6 +265,12 @@ abstract class DataSource {
   /// Fetch the authenticated user's login activity.
   Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1});
 
+  /// Register the FCM device token on the server.
+  Future<void> registerDeviceToken({
+    required String token,
+    required String hardwareId,
+  });
+
   /// Fetch personal doubts for the current user.
   Future<PaginatedResponseDto<DoubtDto>> getDoubts({
     int page = 1,

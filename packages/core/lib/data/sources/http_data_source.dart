@@ -644,6 +644,20 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<void> registerDeviceToken({
+    required String token,
+    required String hardwareId,
+  }) async {
+    await performNetworkRequest(
+      _dio.post(
+        ApiEndpoints.registerDevice,
+        data: {'registration_id': token, 'device_id': hardwareId},
+      ),
+      fromJson: (_) => null,
+    );
+  }
+
+  @override
   Future<UserDto> getProfile() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.userProfile),

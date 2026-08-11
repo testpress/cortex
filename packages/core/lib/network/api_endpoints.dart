@@ -1,6 +1,8 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
+  static const String registerDevice = '/api/v2.2/devices/register/';
+
   static const String instituteSettings = '/api/v2.3/settings/';
 
   static const String login = '/api/v2.5/auth-token/';

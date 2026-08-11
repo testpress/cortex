@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class CliArgs {
-  final String configPath;
+  final String? configPath;
   final String apiBaseUrl;
   final String apiKey;
   CliArgs(this.configPath, this.apiBaseUrl, this.apiKey);
@@ -23,10 +23,10 @@ CliArgs parseArgs(List<String> args, String scriptName) {
     }
   }
 
-  if (configPath == null || apiBaseUrl == null) {
-    print('❌ Error: Missing required arguments.');
+  if (apiBaseUrl == null) {
+    print('❌ Error: Missing required argument: --api-base-url');
     print(
-      'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --config=config/your_client.json --api-base-url=https://your-api.com',
+      'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --api-base-url=https://your-api.com [--config=config/your_client.json]',
     );
     exit(1);
   }
@@ -213,6 +213,23 @@ Future<void> updateIosGoogleConfig(
 GOOGLE_IOS_CLIENT_ID = $iosClientId
 GOOGLE_REVERSED_CLIENT_ID = $reversedClientId
 ''');
+}
+
+Future<void> updateAndroidGoogleConfig(
+  String appDirPath,
+  Map<String, dynamic> remoteConfig,
+) async {
+  final googleServices = remoteConfig['google_services_json'];
+  if (googleServices != null) {
+    print('Writing android/app/google-services.json...');
+    final file = File('$appDirPath/android/app/google-services.json');
+    if (!file.parent.existsSync()) {
+      file.parent.createSync(recursive: true);
+    }
+    await file.writeAsString(jsonEncode(googleServices));
+  } else {
+    print('⚠️ google_services_json not found in remote config. Skipping...');
+  }
 }
 
 Future<void> restoreGitChanges() async {
