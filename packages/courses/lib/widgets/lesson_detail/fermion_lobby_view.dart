@@ -104,6 +104,11 @@ class FermionLobbyView extends ConsumerWidget {
     if (formattedStart != null) {
       semanticParts.add('Start Time: $formattedStart');
     }
+    if (state == _LobbyViewState.completedNoRecording) {
+      semanticParts.add(
+        '${L10n.of(context).liveStreamNoRecordingTitle}: ${L10n.of(context).liveStreamNoRecordingMessage}',
+      );
+    }
     final semanticLabel = 'Session details: ${semanticParts.join(", ")}';
 
     return AppSemantics.container(

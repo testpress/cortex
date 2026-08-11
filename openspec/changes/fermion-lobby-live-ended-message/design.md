@@ -17,4 +17,5 @@
 - In `_buildMetadataCard`, render the warning notice row using `_buildInfoRow` when `state == _LobbyViewState.completedNoRecording`:
   - Icon `LucideIcons.alertCircle` with color `design.colors.warning`.
   - Title text `"Recording Not Available"` and message text `"No recording is available for this class."` using `L10n.of(context)`.
+- Update `AppSemantics.container`'s label inside `_buildMetadataCard` to include the warning notice title and message when the state is `completedNoRecording`.
 - Delete redundant helper methods (`_buildDurationRow` and `_buildStartTimeRow`).
