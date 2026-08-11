@@ -5,8 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
-const double _kHeaderContentHeight = 60.0;
-
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -108,13 +106,32 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     // Padding for bottom area to handle safe area and consistent spacing
     final bottomPadding = padding.bottom + design.spacing.lg;
 
-    return ColoredBox(
-      color: design.colors.canvas,
+    return AppShell(
+      backgroundColor: design.colors.canvas,
       child: Padding(
         padding: EdgeInsets.only(bottom: viewInsets.bottom),
         child: Column(
           children: [
-            _buildHeader(context, design, l10n),
+            AppHeader(
+              title: l10n.editProfileTitle,
+              leading: AppBackButton(onTap: () => context.pop()),
+              actions: [
+                SizedBox(
+                  height: 36,
+                  child: AppButton(
+                    label: l10n.editProfileSave,
+                    onPressed: _validateAndSave,
+                    loading: _isSaving,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.lg,
+                    ),
+                    backgroundColor: design.colors.accent2,
+                    foregroundColor: design.colors.onPrimary,
+                  ),
+                ),
+                SizedBox(width: design.spacing.md),
+              ],
+            ),
             Expanded(
               child: AppScroll(
                 padding: EdgeInsets.fromLTRB(
@@ -128,7 +145,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   bottomPadding,
                 ),
                 children: [
-                  AppText.headline(l10n.editProfileTitle),
                   if (_errorMessage != null) ...[
                     SizedBox(height: design.spacing.md),
                     AppText.bodySmall(
@@ -136,9 +152,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       color: design.colors.error,
                     ),
                   ],
-                  SizedBox(height: design.spacing.xl),
+                  SizedBox(height: design.spacing.sm),
                   _buildAvatarSection(design, l10n),
-                  SizedBox(height: design.spacing.xxl),
+                  SizedBox(height: design.spacing.lg),
                   AppTextField(
                     label: l10n.editProfileFirstNameLabel,
                     hintText: l10n.editProfileFirstNameHint,
@@ -182,82 +198,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, DesignConfig design, dynamic l10n) {
-    final padding = MediaQuery.paddingOf(context);
-    final statusBarHeight = padding.top;
-
-    return Container(
-      width: double.infinity,
-      // Total height = status bar + content bar height
-      height: statusBarHeight + _kHeaderContentHeight,
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        border: Border(
-          bottom: BorderSide(color: design.colors.border, width: 1),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(top: statusBarHeight),
-        child: Container(
-          // Inner container for the interactive elements
-          padding: EdgeInsets.only(
-            left: padding.left > design.spacing.md
-                ? padding.left
-                : design.spacing.md,
-            right: padding.right > design.spacing.md
-                ? padding.right
-                : design.spacing.md,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Back Button - Standardized with Study Page
-              AppSemantics.button(
-                label: l10n.editProfileBack,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => context.pop(),
-                  child: SizedBox(
-                    height: 40,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          LucideIcons.chevronLeft,
-                          size: design.iconSize.md,
-                          color: design.colors.textPrimary,
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        AppText.label(
-                          l10n.editProfileBack,
-                          color: design.colors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Save Button - Explicitly constrained height
-              SizedBox(
-                height: 36,
-                child: AppButton(
-                  label: l10n.editProfileSave,
-                  onPressed: _validateAndSave,
-                  loading: _isSaving,
-                  padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-                  backgroundColor: design.colors.accent2,
-                  foregroundColor: design.colors.onPrimary,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

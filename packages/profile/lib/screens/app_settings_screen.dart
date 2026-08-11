@@ -12,13 +12,17 @@ class AppSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
-    return ColoredBox(
-      color: design.colors.canvas,
+    return AppShell(
+      backgroundColor: design.colors.canvas,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _SettingsHeader(onBack: onBack),
+          AppHeader(
+            title: l10n.drawerSettings,
+            leading: AppBackButton(onTap: onBack),
+          ),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.fromLTRB(
@@ -39,59 +43,6 @@ class AppSettingsScreen extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SettingsHeader extends StatelessWidget {
-  const _SettingsHeader({required this.onBack});
-
-  final VoidCallback onBack;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        border: Border(bottom: BorderSide(color: design.colors.divider)),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(
-            design.spacing.md,
-            design.spacing.md,
-            design.spacing.screenPadding,
-            design.spacing.md,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Back arrow inline with title
-              GestureDetector(
-                onTap: onBack,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2), // Optical alignment
-                  child: Icon(
-                    LucideIcons.arrowLeft,
-                    color: design.colors.textPrimary,
-                    size: 22,
-                  ),
-                ),
-              ),
-              SizedBox(width: design.spacing.sm),
-              Expanded(
-                child: AppText.title(
-                  l10n.drawerSettings,
-                  color: design.colors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

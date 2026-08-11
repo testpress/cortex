@@ -9,79 +9,18 @@ class OfflineExamsListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-
-    return ColoredBox(
-      color: design.colors.card,
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          children: const [
-            _OfflineExamsHeader(),
-            Expanded(child: _OfflineExamsListBody()),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _OfflineExamsHeader extends StatelessWidget {
-  const _OfflineExamsHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    return Container(
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        border: Border(
-          bottom: BorderSide(color: design.colors.border, width: 1),
-        ),
-        boxShadow: design.shadows.surfaceSoft,
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: design.spacing.xs,
-          horizontal: design.spacing.xs,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppSemantics.button(
-              label: l10n.actionGoBack,
-              child: AppFocusable(
-                onTap: () => context.pop(),
-                borderRadius: BorderRadius.circular(design.radius.md),
-                child: Padding(
-                  padding: EdgeInsets.all(design.spacing.xs),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Icon(
-                      LucideIcons.arrowLeft,
-                      color: design.colors.textPrimary,
-                      size: design.iconSize.md,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: design.spacing.sm),
-            Expanded(
-              child: AppSemantics.header(
-                label: l10n.drawerOfflineExams,
-                child: AppText.title(
-                  l10n.drawerOfflineExams,
-                  color: design.colors.textPrimary,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ],
-        ),
+    return AppShell(
+      backgroundColor: design.colors.card,
+      child: Column(
+        children: [
+          AppHeader(
+            title: l10n.drawerOfflineExams,
+            leading: AppBackButton(onTap: () => context.pop()),
+          ),
+          const Expanded(child: _OfflineExamsListBody()),
+        ],
       ),
     );
   }
@@ -105,7 +44,12 @@ class _OfflineExamsListBody extends ConsumerWidget {
           label: 'Offline Exams List',
           itemCount: exams.length,
           child: ListView.builder(
-            padding: EdgeInsets.all(design.spacing.lg),
+            padding: EdgeInsetsDirectional.fromSTEB(
+              design.spacing.md,
+              design.spacing.lg,
+              design.spacing.screenPadding,
+              design.spacing.lg + MediaQuery.paddingOf(context).bottom,
+            ),
             itemCount: exams.length,
             itemBuilder: (context, index) {
               return _OfflineExamCard(exam: exams[index]);

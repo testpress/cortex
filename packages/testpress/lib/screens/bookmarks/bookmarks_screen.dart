@@ -821,10 +821,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: design.spacing.sm,
-      ),
+      padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
       child: Row(
         children: filters.map((filter) {
           final filterId = filter.toLowerCase();
@@ -847,27 +844,24 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
   }
 
   Widget _buildDropdownsRow(DesignConfig design) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildDropdown(
-              _localizeContentType(_selectedContentType, context),
-              () => setState(() => _isContentTypeOptionsOpen = true),
-              design,
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: _buildDropdown(
+            _localizeContentType(_selectedContentType, context),
+            () => setState(() => _isContentTypeOptionsOpen = true),
+            design,
           ),
-          SizedBox(width: design.spacing.sm),
-          Expanded(
-            child: _buildDropdown(
-              _localizeSort(_selectedSort, context),
-              () => setState(() => _isSortOptionsOpen = true),
-              design,
-            ),
+        ),
+        SizedBox(width: design.spacing.sm),
+        Expanded(
+          child: _buildDropdown(
+            _localizeSort(_selectedSort, context),
+            () => setState(() => _isSortOptionsOpen = true),
+            design,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
