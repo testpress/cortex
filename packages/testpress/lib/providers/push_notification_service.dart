@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/providers/notification_preferences_provider.dart';
@@ -55,8 +57,6 @@ class PushNotificationService {
     // 7. Initial Token Sync if user is logged in
     final token = await messaging.getToken();
     if (token != null) {
-      // ignore: avoid_print
-      print('🚀 [FCM Token] successfully retrieved: $token');
       _syncDeviceToken(token);
     }
   }
@@ -171,7 +171,19 @@ class PushNotificationService {
 
     try {
       final userRepo = await _ref.read(userRepositoryProvider.future);
-      final hardwareId = token.hashCode.toString();
+      String hardwareId = token.hashCode.toString();
+      try {
+        final deviceInfo = DeviceInfoPlugin();
+        if (Platform.isAndroid) {
+          final androidInfo = await deviceInfo.androidInfo;
+          hardwareId = androidInfo.id;
+        } else if (Platform.isIOS) {
+          final iosInfo = await deviceInfo.iosInfo;
+          hardwareId = iosInfo.identifierForVendor ?? token.hashCode.toString();
+        }
+      } catch (_) {
+        // Fallback
+      }
       await userRepo.registerDeviceToken(token, hardwareId);
     } catch (_) {
       // Fail silently, retry on next boot or token refresh
