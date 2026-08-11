@@ -9,7 +9,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/downloads_provider.dart';
-
 import 'offline_video_player_screen.dart';
 
 const _dummyDownload = DownloadItem(

@@ -36,7 +36,7 @@ This keeps the repo root clean while providing structured documentation for:
 ## Public API
 
 ```dart
-import 'package:testpress/course_list.dart';
+import 'package:testpress/testpress.dart';
 ```
 
 Internal packages (`core`, `courses`, `exams`) are never exposed to consumers.
