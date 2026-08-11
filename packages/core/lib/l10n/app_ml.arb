@@ -1183,5 +1183,7 @@
   "refreshFailed": "പുതുക്കല്‍ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.",
   "liveStreamDuration": "ദൈർഘ്യം",
   "liveStreamStartTime": "ആരംഭ സമയം",
-  "liveStreamAttendClass": "ക്ലാസ്സിൽ പങ്കെടുക്കുക"
+  "liveStreamAttendClass": "ക്ലാസ്സിൽ പങ്കെടുക്കുക",
+  "liveStreamNoRecordingTitle": "റെക്കോർഡിംഗ് ലഭ്യമല്ല",
+  "liveStreamNoRecordingMessage": "ഈ ക്ലാസ്സിന് റെക്കോർഡിംഗ് ലഭ്യമല്ല."
 }

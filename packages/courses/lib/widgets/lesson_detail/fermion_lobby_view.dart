@@ -36,23 +36,20 @@ class FermionLobbyView extends ConsumerWidget {
     }
   }
 
+  _LobbyViewState get _viewState {
+    if (lesson.isStreamRunning) {
+      return _LobbyViewState.running;
+    }
+    if (lesson.isStreamCompleted && lesson.showRecordedVideo) {
+      return _LobbyViewState.completedWithRecording;
+    }
+    return _LobbyViewState.completedNoRecording;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-
-    final isCompleted = lesson.isStreamCompleted;
-    final isRunning = lesson.isStreamRunning;
-    final hasRecording = lesson.showRecordedVideo;
-
-    // Determine what action button to show
-    final _LobbyAction action;
-    if (isCompleted && hasRecording) {
-      action = _LobbyAction.watchRecording;
-    } else if (isRunning) {
-      action = _LobbyAction.joinNow;
-    } else {
-      action = _LobbyAction.ended;
-    }
+    final state = _viewState;
 
     final formattedDuration =
         TimeFormatter.formatDurationToMinutes(lesson.duration);
@@ -74,7 +71,7 @@ class FermionLobbyView extends ConsumerWidget {
                     context,
                     ref,
                     design,
-                    action,
+                    state,
                     formattedDuration,
                     formattedStart,
                   ),
@@ -92,7 +89,7 @@ class FermionLobbyView extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     DesignConfig design,
-    _LobbyAction action,
+    _LobbyViewState state,
     String? formattedDuration,
     String? formattedStart,
   ) {
@@ -116,7 +113,7 @@ class FermionLobbyView extends ConsumerWidget {
         padding: EdgeInsets.all(design.spacing.lg),
         decoration: BoxDecoration(
           color: design.colors.card,
-          borderRadius: BorderRadius.circular(design.radius.md),
+          borderRadius: design.radius.card,
           border: Border.all(
             color: design.colors.border,
           ),
@@ -126,70 +123,41 @@ class FermionLobbyView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (formattedDuration != null)
-              _buildDurationRow(context, design, formattedDuration),
+              _buildInfoRow(
+                design: design,
+                icon: LucideIcons.clock,
+                iconColor: design.colors.success,
+                title: L10n.of(context).liveStreamDuration,
+                subtitle: formattedDuration,
+              ),
             if (formattedDuration != null && formattedStart != null)
               _buildDivider(design),
             if (formattedStart != null)
-              _buildStartTimeRow(context, design, formattedStart),
-            if (action != _LobbyAction.ended) ...[
+              _buildInfoRow(
+                design: design,
+                icon: LucideIcons.calendar,
+                iconColor: design.colors.accent1,
+                title: L10n.of(context).liveStreamStartTime,
+                subtitle: formattedStart,
+              ),
+            if (state == _LobbyViewState.completedNoRecording) ...[
+              _buildDivider(design),
+              _buildInfoRow(
+                design: design,
+                icon: LucideIcons.alertCircle,
+                iconColor: design.colors.warning,
+                title: L10n.of(context).liveStreamNoRecordingTitle,
+                subtitle: L10n.of(context).liveStreamNoRecordingMessage,
+              ),
+            ],
+            if (state == _LobbyViewState.running ||
+                state == _LobbyViewState.completedWithRecording) ...[
               SizedBox(height: design.spacing.lg),
-              _buildActionButton(context, ref, design, action),
+              _buildActionButton(context, ref, design, state),
             ],
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildDurationRow(
-      BuildContext context, DesignConfig design, String duration) {
-    return Row(
-      children: [
-        Center(
-          child: Icon(
-            LucideIcons.clock,
-            color: design.colors.success,
-            size: design.iconSize.lg,
-          ),
-        ),
-        SizedBox(width: design.spacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText.cardSubtitle(L10n.of(context).liveStreamDuration),
-              SizedBox(height: design.spacing.sm),
-              AppText.cardTitle(duration),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStartTimeRow(
-      BuildContext context, DesignConfig design, String startTime) {
-    return Row(
-      children: [
-        Center(
-          child: Icon(
-            LucideIcons.calendar,
-            color: design.colors.accent1,
-            size: design.iconSize.lg,
-          ),
-        ),
-        SizedBox(width: design.spacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppText.cardSubtitle(L10n.of(context).liveStreamStartTime),
-              SizedBox(height: design.spacing.sm),
-              AppText.cardTitle(startTime),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -211,7 +179,7 @@ class FermionLobbyView extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     DesignConfig design,
-    _LobbyAction action,
+    _LobbyViewState state,
   ) {
     final label = L10n.of(context).liveStreamAttendClass;
     return AppSemantics.button(
@@ -228,6 +196,37 @@ class FermionLobbyView extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildInfoRow({
+    required DesignConfig design,
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    double? iconSize,
+  }) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: iconColor,
+          size: iconSize ?? design.iconSize.lg,
+        ),
+        SizedBox(width: design.spacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppText.cardSubtitle(title),
+              SizedBox(height: design.spacing.sm),
+              AppText.cardTitle(subtitle),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-enum _LobbyAction { joinNow, watchRecording, ended }
+enum _LobbyViewState { running, completedWithRecording, completedNoRecording }

@@ -1183,5 +1183,7 @@
   "refreshFailed": "فشل التحديث. يرجى المحاولة مرة أخرى.",
   "liveStreamDuration": "المدة",
   "liveStreamStartTime": "وقت البدء",
-  "liveStreamAttendClass": "حضور الحصة"
+  "liveStreamAttendClass": "حضور الحصة",
+  "liveStreamNoRecordingTitle": "التسجيل غير متاح",
+  "liveStreamNoRecordingMessage": "لا يوجد تسجيل متاح لهذه الحصة."
 }

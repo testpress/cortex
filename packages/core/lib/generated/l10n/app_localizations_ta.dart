@@ -3143,4 +3143,11 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get liveStreamAttendClass => 'வகுப்பில் கலந்துகொள்ளவும்';
+
+  @override
+  String get liveStreamNoRecordingTitle => 'பதிவு கிடைக்கவில்லை';
+
+  @override
+  String get liveStreamNoRecordingMessage =>
+      'இந்த வகுப்பிற்கு நேரலை பதிவு எதுவும் இல்லை.';
 }

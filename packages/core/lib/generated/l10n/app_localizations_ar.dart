@@ -3096,4 +3096,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get liveStreamAttendClass => 'حضور الحصة';
+
+  @override
+  String get liveStreamNoRecordingTitle => 'التسجيل غير متاح';
+
+  @override
+  String get liveStreamNoRecordingMessage => 'لا يوجد تسجيل متاح لهذه الحصة.';
 }
