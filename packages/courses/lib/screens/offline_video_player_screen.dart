@@ -38,8 +38,7 @@ class _OfflineVideoPlayerScreenState
               children: [
                 AppHeader(
                   title: l10n.downloadsTitle,
-                  leading:
-                      AppBackButton(onTap: () => Navigator.of(context).pop()),
+                  leading: AppBackButton(onTap: () => context.pop()),
                   actions: [
                     AppFocusable(
                       onTap: () => setState(() => _isSheetOpen = true),

@@ -195,9 +195,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
             children: [
               AppHeader(
                 title: widget.folderName ?? l10n.bookmarksTitle,
-                leading: AppBackButton(
-                  onTap: () => Navigator.of(context).pop(),
-                ),
+                leading: AppBackButton(onTap: () => context.pop()),
                 bottomContent: widget.folderName == null
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

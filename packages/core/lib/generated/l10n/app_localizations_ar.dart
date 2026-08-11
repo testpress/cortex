@@ -1545,9 +1545,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editProfileChangePhoto => 'تغيير الصورة';
 
   @override
-  String get editProfileBack => 'عودة';
-
-  @override
   String get storeTabTitle => 'المتجر';
 
   @override

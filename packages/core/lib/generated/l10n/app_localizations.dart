@@ -2879,12 +2879,6 @@ abstract class AppLocalizations {
   /// **'Change photo'**
   String get editProfileChangePhoto;
 
-  /// No description provided for @editProfileBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get editProfileBack;
-
   /// No description provided for @storeTabTitle.
   ///
   /// In en, this message translates to:

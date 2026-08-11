@@ -1560,9 +1560,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get editProfileChangePhoto => 'ഫോട്ടോ മാറ്റുക';
 
   @override
-  String get editProfileBack => 'പിന്നിലേക്ക്';
-
-  @override
   String get storeTabTitle => 'സ്റ്റോർ';
 
   @override

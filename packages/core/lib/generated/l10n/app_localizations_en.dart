@@ -1549,9 +1549,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editProfileChangePhoto => 'Change photo';
 
   @override
-  String get editProfileBack => 'Back';
-
-  @override
   String get storeTabTitle => 'Store';
 
   @override
