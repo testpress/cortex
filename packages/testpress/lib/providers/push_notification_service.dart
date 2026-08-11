@@ -15,9 +15,14 @@ class PushNotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
+  bool _isInitialized = false;
+
   PushNotificationService(this._ref);
 
   Future<void> initialize() async {
+    if (_isInitialized) return;
+    _isInitialized = true;
+
     final messaging = FirebaseMessaging.instance;
 
     // 1. Request Notification Permissions (iOS & Android 13+)
