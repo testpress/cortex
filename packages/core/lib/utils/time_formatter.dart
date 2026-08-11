@@ -18,6 +18,35 @@ class TimeFormatter {
       return duration;
     }
 
+    // Try parsing raw double value (seconds)
+    final doubleValue = double.tryParse(duration);
+    if (doubleValue != null) {
+      final total = doubleValue.toInt();
+      final hours = total ~/ 3600;
+      final minutes = (total % 3600) ~/ 60;
+      final seconds = total % 60;
+
+      final buffer = StringBuffer();
+      if (hours > 0) {
+        buffer.write('${hours}h ');
+      }
+      if (minutes > 0) {
+        buffer.write('${minutes}m ');
+      }
+      if (seconds > 0 && hours == 0) {
+        buffer.write('${seconds}s');
+      }
+
+      final result = buffer.toString().trim();
+      if (result.isEmpty) return null;
+
+      if (hours == 0 && seconds == 0 && minutes > 0) {
+        return '$minutes min';
+      }
+
+      return result;
+    }
+
     try {
       // Normalize: Some APIs return "0.02:17" or "0:02:17" or "45:00"
       final normalized = duration.replaceAll('.', ':');

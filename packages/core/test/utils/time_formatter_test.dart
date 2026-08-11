@@ -88,4 +88,36 @@ void main() {
       expect(TimeFormatter.formatDurationToMinutes('abc'), null);
     });
   });
+
+  group('TimeFormatter.formatDuration', () {
+    test('should format raw decimal seconds (e.g. 51.0 -> 51s)', () {
+      expect(TimeFormatter.formatDuration('51.0'), '51s');
+    });
+
+    test(
+      'should format raw floating point seconds (e.g. 7188.653453 -> 1h 59m)',
+      () {
+        expect(TimeFormatter.formatDuration('7188.653453'), '1h 59m');
+      },
+    );
+
+    test(
+      'should format raw integer seconds (e.g. 120 -> 2 min, 3600 -> 1h)',
+      () {
+        expect(TimeFormatter.formatDuration('120'), '2 min');
+        expect(TimeFormatter.formatDuration('3600'), '1h');
+      },
+    );
+
+    test('should preserve already formatted strings', () {
+      expect(TimeFormatter.formatDuration('45m'), '45m');
+      expect(TimeFormatter.formatDuration('1h 30m'), '1h 30m');
+    });
+
+    test('should return null for invalid or zero inputs', () {
+      expect(TimeFormatter.formatDuration(null), null);
+      expect(TimeFormatter.formatDuration('0'), null);
+      expect(TimeFormatter.formatDuration('00:00'), null);
+    });
+  });
 }

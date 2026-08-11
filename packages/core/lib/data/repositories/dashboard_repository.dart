@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:drift/drift.dart';
 import '../data.dart';
+import '../../utils/time_formatter.dart';
 
 part 'dashboard_repository.g.dart';
 
@@ -119,14 +120,20 @@ class DashboardRepository {
             final uv = resumeVideos[userVideoId];
             if (uv != null) {
               progress = uv.watchedPercentage;
-              totalDuration = uv.videoContent?.duration;
-              remainingDuration = uv.remainingDuration;
+              totalDuration = TimeFormatter.formatDuration(
+                uv.videoContent?.duration,
+              );
+              remainingDuration = TimeFormatter.formatDuration(
+                uv.remainingDuration,
+              );
             } else {
               continue;
             }
           } else if (type == 'exam' || type == 'test' || type == 'assessment') {
             progress = 0.0;
-            remainingDuration = attempt.remainingTime;
+            remainingDuration = TimeFormatter.formatDuration(
+              attempt.remainingTime,
+            );
           } else {
             continue;
           }
@@ -187,14 +194,20 @@ class DashboardRepository {
             final uv = completedVideos[userVideoId];
             if (uv != null) {
               progress = uv.watchedPercentage;
-              totalDuration = uv.videoContent?.duration;
-              remainingDuration = uv.remainingDuration;
+              totalDuration = TimeFormatter.formatDuration(
+                uv.videoContent?.duration,
+              );
+              remainingDuration = TimeFormatter.formatDuration(
+                uv.remainingDuration,
+              );
             } else {
               continue;
             }
           } else if (type == 'exam' || type == 'test' || type == 'assessment') {
             progress = 100.0;
-            remainingDuration = attempt.remainingTime;
+            remainingDuration = TimeFormatter.formatDuration(
+              attempt.remainingTime,
+            );
           } else {
             // Other types like PDF/notes/attachments do not have attempt-based partial progress
             // but can be marked as fully completed.

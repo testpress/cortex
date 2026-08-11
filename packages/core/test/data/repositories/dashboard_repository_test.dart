@@ -223,13 +223,13 @@ void main() {
         final videoItem = resumeFeed.firstWhere((e) => e.lessonId == 'cc2');
         expect(videoItem.title, 'Mitosis Lecture');
         expect(videoItem.progress, 45.0);
-        expect(videoItem.totalDuration, '300');
-        expect(videoItem.remainingDuration, '120');
+        expect(videoItem.totalDuration, '5 min');
+        expect(videoItem.remainingDuration, '2 min');
 
         final examItem = resumeFeed.firstWhere((e) => e.lessonId == 'cc3');
         expect(examItem.title, 'Mitosis Quiz');
         expect(examItem.progress, 0.0);
-        expect(examItem.remainingDuration, '3600');
+        expect(examItem.remainingDuration, '1h');
 
         // Verify Completed Learning Feed
         final completedFeed = await db
