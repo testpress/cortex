@@ -2879,12 +2879,6 @@ abstract class AppLocalizations {
   /// **'Change photo'**
   String get editProfileChangePhoto;
 
-  /// No description provided for @editProfileBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get editProfileBack;
-
   /// No description provided for @storeTabTitle.
   ///
   /// In en, this message translates to:
@@ -3023,11 +3017,11 @@ abstract class AppLocalizations {
   /// **'Clear All'**
   String get forumFilterClearAll;
 
-  /// No description provided for @forumBackSemantic.
+  /// No description provided for @commonBackSemantic.
   ///
   /// In en, this message translates to:
   /// **'Back'**
-  String get forumBackSemantic;
+  String get commonBackSemantic;
 
   /// No description provided for @forumFilterSemantic.
   ///
@@ -3304,24 +3298,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No doubts found'**
   String get doubtsEmptyTitle;
-
-  /// No description provided for @doubtsEmptySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask your first doubt to get help from mentors.'**
-  String get doubtsEmptySubtitle;
-
-  /// No description provided for @doubtsSearchNoResults.
-  ///
-  /// In en, this message translates to:
-  /// **'No matches found'**
-  String get doubtsSearchNoResults;
-
-  /// No description provided for @doubtsSearchNoResultsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Try adjusting your search query'**
-  String get doubtsSearchNoResultsSubtitle;
 
   /// No description provided for @doubtsHeaderAskDoubt.
   ///

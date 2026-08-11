@@ -1549,9 +1549,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editProfileChangePhoto => 'Change photo';
 
   @override
-  String get editProfileBack => 'Back';
-
-  @override
   String get storeTabTitle => 'Store';
 
   @override
@@ -1621,7 +1618,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forumFilterClearAll => 'Clear All';
 
   @override
-  String get forumBackSemantic => 'Back';
+  String get commonBackSemantic => 'Back';
 
   @override
   String get forumFilterSemantic => 'Filter';
@@ -1778,16 +1775,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get doubtsEmptyTitle => 'No doubts found';
-
-  @override
-  String get doubtsEmptySubtitle =>
-      'Ask your first doubt to get help from mentors.';
-
-  @override
-  String get doubtsSearchNoResults => 'No matches found';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle => 'Try adjusting your search query';
 
   @override
   String get doubtsHeaderAskDoubt => 'Ask a Doubt';

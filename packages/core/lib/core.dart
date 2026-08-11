@@ -24,6 +24,7 @@ export 'widgets/app_button.dart';
 export 'widgets/app_icon_button.dart';
 export 'widgets/app_card.dart';
 export 'widgets/app_header.dart';
+export 'widgets/app_back_button.dart';
 export 'widgets/app_scroll.dart';
 export 'widgets/app_refresh_indicator.dart';
 export 'widgets/app_badge.dart';

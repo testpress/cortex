@@ -26,60 +26,10 @@ class _BPElearnMyResultsScreenState
         top: false,
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(color: design.colors.card),
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(
-                    design.spacing.md,
-                    design.spacing.md,
-                    design.spacing.screenPadding,
-                    design.spacing.md,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AppSemantics.button(
-                        label: l10n.curriculumBackButton,
-                        onTap: () => context.pop(),
-                        child: GestureDetector(
-                          onTap: () => context.pop(),
-                          behavior: HitTestBehavior.opaque,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 2,
-                            ), // Optical alignment
-                            child: Icon(
-                              LucideIcons.arrowLeft,
-                              color: design.colors.textPrimary,
-                              size: 22,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: design.spacing.sm),
-                      Expanded(
-                        child: AppSemantics.header(
-                          label: l10n.drawerMyResults,
-                          child: AppText.title(
-                            l10n.drawerMyResults,
-                            color: design.colors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              color: design.colors.card,
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.sm,
-              ),
-              child: Row(
+            AppHeader(
+              title: l10n.drawerMyResults,
+              leading: AppBackButton(onTap: () => context.pop()),
+              bottomContent: Row(
                 children: [
                   _FilterChip(
                     label: 'Model Exam',

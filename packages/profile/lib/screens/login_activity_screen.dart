@@ -154,182 +154,144 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    return Container(
-      color: design.colors.surface,
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            // App Bar
-            Container(
-              decoration: BoxDecoration(
-                color: design.colors.card,
-                border: Border(
-                  bottom: BorderSide(color: design.colors.divider),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  design.spacing.screenPadding,
-                  design.spacing.md,
-                  design.spacing.screenPadding,
-                  design.spacing.md,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (context.canPop())
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        behavior: HitTestBehavior.opaque,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Icon(
-                            LucideIcons.arrowLeft,
-                            size: 22,
-                            color: design.colors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    if (context.canPop()) SizedBox(width: design.spacing.sm),
-                    Expanded(
-                      child: AppText.title(
-                        l10n.drawerLoginActivity,
-                        color: design.colors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    return AppShell(
+      backgroundColor: design.colors.surface,
+      child: Column(
+        children: [
+          // App Bar
+          AppHeader(
+            title: l10n.drawerLoginActivity,
+            leading: context.canPop()
+                ? AppBackButton(onTap: () => context.pop())
+                : null,
+          ),
 
-            // Restriction Banner
-            if (widget.restrictionMessage != null)
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.screenPadding,
-                  vertical: design.spacing.sm,
-                ),
-                color: design.colors.error.withValues(alpha: 0.1),
-                child: Row(
-                  children: [
-                    Icon(
-                      LucideIcons.alertTriangle,
-                      size: 16,
+          // Restriction Banner
+          if (widget.restrictionMessage != null)
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.screenPadding,
+                vertical: design.spacing.sm,
+              ),
+              color: design.colors.error.withValues(alpha: 0.1),
+              child: Row(
+                children: [
+                  Icon(
+                    LucideIcons.alertTriangle,
+                    size: 16,
+                    color: design.colors.error,
+                  ),
+                  SizedBox(width: design.spacing.xs),
+                  Expanded(
+                    child: AppText.bodySmall(
+                      widget.restrictionMessage!,
                       color: design.colors.error,
                     ),
-                    SizedBox(width: design.spacing.xs),
-                    Expanded(
-                      child: AppText.bodySmall(
-                        widget.restrictionMessage!,
-                        color: design.colors.error,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // Content
-            Expanded(
-              child: SkeletonizerConfig(
-                data: SkeletonizerConfigData(
-                  effect: ShimmerEffect(
-                    baseColor: design.colors.surfaceVariant,
-                    highlightColor: const Color(0xFFFFFFFF),
                   ),
-                ),
-                child: Skeletonizer(
-                  enabled: _isLoading,
-                  child: _error != null && _activities.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              AppText.body(_error!, color: design.colors.error),
-                              SizedBox(height: design.spacing.md),
-                              AppButton.secondary(
-                                label: l10n.labelRetry,
-                                onPressed: _fetchData,
-                              ),
-                            ],
-                          ),
-                        )
-                      : (_activities.isEmpty && !_isLoading)
-                      ? Center(
-                          child: AppText.body(
-                            l10n.loginActivityNoActivityFound,
-                            color: design.colors.textSecondary,
-                          ),
-                        )
-                      : AppRefreshIndicator(
-                          onRefresh: _refreshData,
-                          child: CustomScrollView(
-                            controller: _scrollController,
-                            physics: const AlwaysScrollableScrollPhysics(
-                              parent: BouncingScrollPhysics(),
-                            ),
-                            slivers: [
-                              SliverPadding(
-                                padding: EdgeInsets.all(design.spacing.md),
-                                sliver: SliverList.builder(
-                                  itemCount: _isLoading
-                                      ? 4
-                                      : (_activities.length +
-                                            (_isLoadingMore ? 1 : 0)),
-                                  itemBuilder: (context, index) {
-                                    if (_isLoading) {
-                                      return LoginActivityItem(
-                                        activity: _skeletonActivity,
-                                      );
-                                    }
-                                    if (index < _activities.length) {
-                                      return LoginActivityItem(
-                                        activity: _activities[index],
-                                      );
-                                    }
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: design.spacing.md,
-                                      ),
-                                      child: Center(
-                                        child: AppLoadingIndicator(
-                                          color: design.colors.primary,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                ),
+                ],
               ),
             ),
 
-            // Static Logout Button
-            if (_activities.isNotEmpty && !_isLoading && _error == null)
-              Container(
-                width: double.infinity,
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  design.spacing.md,
-                  design.spacing.md,
-                  design.spacing.md,
-                  design.spacing.md + MediaQuery.paddingOf(context).bottom,
-                ),
-                decoration: BoxDecoration(color: design.colors.surface),
-                child: AppButton.primary(
-                  label: l10n.loginActivityLogoutOtherDevices,
-                  fullWidth: true,
-                  loading: _isLoggingOut,
-                  backgroundColor: design.colors.error,
-                  foregroundColor: design.colors.onError,
-                  onPressed: _logoutDevices,
+          // Content
+          Expanded(
+            child: SkeletonizerConfig(
+              data: SkeletonizerConfigData(
+                effect: ShimmerEffect(
+                  baseColor: design.colors.surfaceVariant,
+                  highlightColor: const Color(0xFFFFFFFF),
                 ),
               ),
-          ],
-        ),
+              child: Skeletonizer(
+                enabled: _isLoading,
+                child: _error != null && _activities.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AppText.body(_error!, color: design.colors.error),
+                            SizedBox(height: design.spacing.md),
+                            AppButton.secondary(
+                              label: l10n.labelRetry,
+                              onPressed: _fetchData,
+                            ),
+                          ],
+                        ),
+                      )
+                    : (_activities.isEmpty && !_isLoading)
+                    ? Center(
+                        child: AppText.body(
+                          l10n.loginActivityNoActivityFound,
+                          color: design.colors.textSecondary,
+                        ),
+                      )
+                    : AppRefreshIndicator(
+                        onRefresh: _refreshData,
+                        child: CustomScrollView(
+                          controller: _scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          slivers: [
+                            SliverPadding(
+                              padding: EdgeInsets.all(design.spacing.md),
+                              sliver: SliverList.builder(
+                                itemCount: _isLoading
+                                    ? 4
+                                    : (_activities.length +
+                                          (_isLoadingMore ? 1 : 0)),
+                                itemBuilder: (context, index) {
+                                  if (_isLoading) {
+                                    return LoginActivityItem(
+                                      activity: _skeletonActivity,
+                                    );
+                                  }
+                                  if (index < _activities.length) {
+                                    return LoginActivityItem(
+                                      activity: _activities[index],
+                                    );
+                                  }
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: design.spacing.md,
+                                    ),
+                                    child: Center(
+                                      child: AppLoadingIndicator(
+                                        color: design.colors.primary,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+          ),
+
+          // Static Logout Button
+          if (_activities.isNotEmpty && !_isLoading && _error == null)
+            Container(
+              width: double.infinity,
+              padding: EdgeInsetsDirectional.fromSTEB(
+                design.spacing.md,
+                design.spacing.md,
+                design.spacing.md,
+                design.spacing.md + MediaQuery.paddingOf(context).bottom,
+              ),
+              decoration: BoxDecoration(color: design.colors.surface),
+              child: AppButton.primary(
+                label: l10n.loginActivityLogoutOtherDevices,
+                fullWidth: true,
+                loading: _isLoggingOut,
+                backgroundColor: design.colors.error,
+                foregroundColor: design.colors.onError,
+                onPressed: _logoutDevices,
+              ),
+            ),
+        ],
       ),
     );
   }

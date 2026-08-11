@@ -55,145 +55,90 @@ class _SubjectAnalyticsScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Unified Header Container (White background, same visual section)
-                Container(
-                  decoration: BoxDecoration(
-                    color: design.colors.card,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: design.colors.divider,
-                        width: 1.0,
-                      ),
-                    ),
+                AppHeader(
+                  title: title,
+                  contentPadding: EdgeInsetsDirectional.fromSTEB(
+                    design.spacing.md,
+                    10.0,
+                    design.spacing.screenPadding,
+                    10.0,
                   ),
-                  child: SafeArea(
-                    bottom: false,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Navigation Row: Chevron icon, Title, Filter icon
-                        Container(
-                          constraints: const BoxConstraints(minHeight: 56),
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                            design.spacing.md,
-                            10.0,
-                            design.spacing.screenPadding,
-                            10.0,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: widget.onBack,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 2,
-                                  ), // Optical alignment
-                                  child: Icon(
-                                    LucideIcons.arrowLeft,
-                                    color: design.colors.textPrimary,
-                                    size: 22,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: design.spacing.sm),
-                              Expanded(
-                                child: AppText.title(
-                                  title,
+                  leading: AppBackButton(onTap: widget.onBack),
+                  actions: [
+                    // Filter icon button — AppSemantics wraps for accessibility label only;
+                    // the actual tap is handled solely by AppFocusable inside.
+                    AppSemantics.button(
+                      label: l10n.analyticsFilterSubjects,
+                      child: CompositedTransformTarget(
+                        link: _layerLink,
+                        child: AppFocusable(
+                          onTap: () {
+                            setState(() {
+                              _isFilterMenuOpen = !_isFilterMenuOpen;
+                            });
+                          },
+                          child: Container(
+                            width: 48,
+                            height: 36,
+                            alignment: Alignment.center,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              clipBehavior: Clip.none,
+                              children: [
+                                Icon(
+                                  LucideIcons.filter,
                                   color: design.colors.textPrimary,
+                                  size: design.iconSize.md,
                                 ),
-                              ),
-                              // Filter icon button — AppSemantics wraps for accessibility label only;
-                              // the actual tap is handled solely by AppFocusable inside.
-                              AppSemantics.button(
-                                label: l10n.analyticsFilterSubjects,
-                                child: CompositedTransformTarget(
-                                  link: _layerLink,
-                                  child: AppFocusable(
-                                    onTap: () {
-                                      setState(() {
-                                        _isFilterMenuOpen = !_isFilterMenuOpen;
-                                      });
-                                    },
+                                if (_selectedFilter != 'All')
+                                  Positioned(
+                                    right: -1,
+                                    top: -1,
                                     child: Container(
-                                      width: 48,
-                                      height: 36,
-                                      alignment: Alignment.center,
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          Icon(
-                                            LucideIcons.filter,
-                                            color: design.colors.textPrimary,
-                                            size: design.iconSize.md,
-                                          ),
-                                          if (_selectedFilter != 'All')
-                                            Positioned(
-                                              right: -1,
-                                              top: -1,
-                                              child: Container(
-                                                width: 10,
-                                                height: 10,
-                                                decoration: BoxDecoration(
-                                                  color: design.colors.error,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                            ),
-                                        ],
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        color: design.colors.error,
+                                        shape: BoxShape.circle,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Tabs Row: Overall / Individual Report Pills
-                        if (widget.parentId == null)
-                          Container(
-                            padding: EdgeInsets.fromLTRB(
-                              design.spacing.md,
-                              design.spacing.xs,
-                              design.spacing.md,
-                              design.spacing.sm,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: _TabButton(
-                                    label: l10n.analyticsGraphReports,
-                                    isActive:
-                                        _activeTab == AnalyticsTab.overall,
-                                    onTap: () {
-                                      setState(() {
-                                        _activeTab = AnalyticsTab.overall;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: design.spacing.sm),
-                                Expanded(
-                                  child: _TabButton(
-                                    label: l10n.analyticsTableReports,
-                                    isActive:
-                                        _activeTab == AnalyticsTab.individual,
-                                    onTap: () {
-                                      setState(() {
-                                        _activeTab = AnalyticsTab.individual;
-                                      });
-                                    },
-                                  ),
-                                ),
                               ],
                             ),
                           ),
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                  bottomContent: widget.parentId == null
+                      ? Row(
+                          children: [
+                            Expanded(
+                              child: _TabButton(
+                                label: l10n.analyticsGraphReports,
+                                isActive: _activeTab == AnalyticsTab.overall,
+                                onTap: () {
+                                  setState(() {
+                                    _activeTab = AnalyticsTab.overall;
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(width: design.spacing.sm),
+                            Expanded(
+                              child: _TabButton(
+                                label: l10n.analyticsTableReports,
+                                isActive: _activeTab == AnalyticsTab.individual,
+                                onTap: () {
+                                  setState(() {
+                                    _activeTab = AnalyticsTab.individual;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      : null,
                 ),
 
                 // Content

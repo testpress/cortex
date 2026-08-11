@@ -9,7 +9,7 @@ These tests validate the **composition** of core architectural primitives into d
 We verify that the `CourseCard` correctly maps LMS data (like progress percentage) into the semantic infrastructure provided by `core`. These tests ensure that screen readers announce the *intent* of the data (e.g., Progress) rather than just its visual manifestation (e.g., a green bar).
 
 ### 2. Functional Consistency
-The `CourseListScreen` is tested to ensure it correctly renders mock data using only neutral primitives. We verify that scrolling behavior, empty states, and error states all maintain a consistent architectural footprint.
+The `StudyScreen` is tested to ensure it correctly renders mock data using only neutral primitives. We verify that scrolling behavior, empty states, and error states all maintain a consistent architectural footprint.
 
 ### 3. Contract Inheritence
 Testing verifies that any branding injected via a `DesignProvider` at the app level correctly bubbles up through the course widgets, confirming that the module remains platform-neutral and white-label ready.

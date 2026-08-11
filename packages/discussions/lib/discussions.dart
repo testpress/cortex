@@ -15,5 +15,4 @@ export 'screens/ask_doubt_form_screen.dart';
 export 'screens/forum_post_create_screen.dart';
 
 // Widgets
-export 'widgets/forum_header.dart';
 export 'widgets/forum_composer.dart';

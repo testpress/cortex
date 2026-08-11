@@ -194,15 +194,6 @@ class DoubtTab extends ConsumerWidget {
           ),
           SizedBox(height: design.spacing.md),
           AppText.body(l10n.doubtsEmptyTitle),
-          SizedBox(height: design.spacing.xs),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
-            child: AppText.bodySmall(
-              l10n.doubtsEmptySubtitle,
-              color: design.colors.textTertiary,
-              textAlign: TextAlign.center,
-            ),
-          ),
         ],
       ),
     );

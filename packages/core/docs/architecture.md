@@ -37,7 +37,7 @@ packages/
 ├── exams/             # Exam engine SDK module (placeholder)
 │
 └── testpress/         # PUBLIC SDK aggregator
-    └── course_list.dart  # Re-exports public APIs
+    └── testpress.dart  # Re-exports public APIs
 ```
 
 ## Design System
@@ -123,7 +123,7 @@ Only `package:testpress` is exposed to consumers:
 
 ```dart
 // ✅ Correct
-import 'package:testpress/course_list.dart';
+import 'package:testpress/testpress.dart';
 
 // ❌ Never expose internal packages
 import 'package:core/core.dart';      // Internal only

@@ -1571,9 +1571,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get editProfileChangePhoto => 'புகைப்படத்தை மாற்று';
 
   @override
-  String get editProfileBack => 'பின்செல்';
-
-  @override
   String get storeTabTitle => 'ஸ்டோர்';
 
   @override
@@ -1643,7 +1640,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get forumFilterClearAll => 'அனைத்தையும் அழி';
 
   @override
-  String get forumBackSemantic => 'பின்செல்';
+  String get commonBackSemantic => 'பின்செல்';
 
   @override
   String get forumFilterSemantic => 'வடிகட்டி';
@@ -1802,17 +1799,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get doubtsEmptyTitle => 'சந்தேகங்கள் எதுவும் கிடைக்கவில்லை';
-
-  @override
-  String get doubtsEmptySubtitle =>
-      'வழிகாட்டிகளிடமிருந்து உதவி பெற உங்கள் முதல் சந்தேகத்தைக் கேளுங்கள்.';
-
-  @override
-  String get doubtsSearchNoResults => 'பொருத்தங்கள் எதுவும் காணப்படவில்லை';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle =>
-      'உங்கள் தேடல் வினவலைச் சரிசெய்து முயற்சிக்கவும்';
 
   @override
   String get doubtsHeaderAskDoubt => 'சந்தேகம் கேள்';

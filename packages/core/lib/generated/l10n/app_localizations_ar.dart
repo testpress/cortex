@@ -1545,9 +1545,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editProfileChangePhoto => 'تغيير الصورة';
 
   @override
-  String get editProfileBack => 'عودة';
-
-  @override
   String get storeTabTitle => 'المتجر';
 
   @override
@@ -1617,7 +1614,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forumFilterClearAll => 'مسح الكل';
 
   @override
-  String get forumBackSemantic => 'عودة';
+  String get commonBackSemantic => 'عودة';
 
   @override
   String get forumFilterSemantic => 'تصفية';
@@ -1790,16 +1787,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get doubtsEmptyTitle => 'لم يتم العثور على أسئلة';
-
-  @override
-  String get doubtsEmptySubtitle =>
-      'اطرح سؤالك الأول للحصول على مساعدة من المعلمين.';
-
-  @override
-  String get doubtsSearchNoResults => 'لم يتم العثور على نتائج';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle => 'حاول تغيير نص البحث';
 
   @override
   String get doubtsHeaderAskDoubt => 'اسأل سؤال';

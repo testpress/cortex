@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
-import '../widgets/forum_header.dart';
 import '../widgets/forum_composer.dart';
 import '../widgets/doubt_context_badge.dart';
 import '../widgets/hierarchical_topic_picker.dart';
@@ -123,7 +122,10 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
               bottom: false,
               child: Column(
                 children: [
-                  ForumHeader(title: l10n.doubtsHeaderAskDoubt),
+                  AppHeader(
+                    title: l10n.doubtsHeaderAskDoubt,
+                    leading: AppBackButton(onTap: () => context.pop()),
+                  ),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const ClampingScrollPhysics(),
