@@ -11,10 +11,6 @@ dependencies:
     sdk: flutter
   testpress:
     path: ../packages/testpress
-  core:
-    path: ../packages/core
-  courses:
-    path: ../packages/courses
 
   flutter_riverpod: ^2.5.1
   google_fonts: ^6.2.1
