@@ -1543,5 +1543,7 @@
   },
   "liveStreamDuration": "Duration",
   "liveStreamStartTime": "Start Time",
-  "liveStreamAttendClass": "Attend Class"
+  "liveStreamAttendClass": "Attend Class",
+  "liveStreamNoRecordingTitle": "Recording Not Available",
+  "liveStreamNoRecordingMessage": "No recording is available for this class."
 }

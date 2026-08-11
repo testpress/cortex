@@ -3094,4 +3094,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get liveStreamAttendClass => 'Attend Class';
+
+  @override
+  String get liveStreamNoRecordingTitle => 'Recording Not Available';
+
+  @override
+  String get liveStreamNoRecordingMessage =>
+      'No recording is available for this class.';
 }

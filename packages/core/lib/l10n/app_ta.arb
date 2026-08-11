@@ -1417,5 +1417,7 @@
   "refreshFailed": "புதுப்பிக்கல் தேர்சிபெறவில்லை. மீண்டும் முயலவும்.",
   "liveStreamDuration": "கால அளவு",
   "liveStreamStartTime": "தொடக்க நேரம்",
-  "liveStreamAttendClass": "வகுப்பில் கலந்துகொள்ளவும்"
+  "liveStreamAttendClass": "வகுப்பில் கலந்துகொள்ளவும்",
+  "liveStreamNoRecordingTitle": "பதிவு கிடைக்கவில்லை",
+  "liveStreamNoRecordingMessage": "இந்த வகுப்பிற்கு நேரலை பதிவு எதுவும் இல்லை."
 }

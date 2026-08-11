@@ -5590,6 +5590,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Attend Class'**
   String get liveStreamAttendClass;
+
+  /// No description provided for @liveStreamNoRecordingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording Not Available'**
+  String get liveStreamNoRecordingTitle;
+
+  /// No description provided for @liveStreamNoRecordingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No recording is available for this class.'**
+  String get liveStreamNoRecordingMessage;
 }
 
 class _AppLocalizationsDelegate

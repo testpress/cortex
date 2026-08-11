@@ -3147,4 +3147,11 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get liveStreamAttendClass => 'ക്ലാസ്സിൽ പങ്കെടുക്കുക';
+
+  @override
+  String get liveStreamNoRecordingTitle => 'റെക്കോർഡിംഗ് ലഭ്യമല്ല';
+
+  @override
+  String get liveStreamNoRecordingMessage =>
+      'ഈ ക്ലാസ്സിന് റെക്കോർഡിംഗ് ലഭ്യമല്ല.';
 }
