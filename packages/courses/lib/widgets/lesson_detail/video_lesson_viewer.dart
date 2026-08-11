@@ -144,11 +144,8 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // By keeping the tree structure identical (Column -> SizedBox -> Player),
-            // Flutter will NOT kill and recreate the video player state.
-            // We simply shrink its background height in landscape to prevent the 264px overflow.
-            SizedBox(
-              height: isLandscape ? 0 : null,
+            Offstage(
+              offstage: isLandscape,
               child: _buildVideoSection(design),
             ),
             Container(
