@@ -3299,24 +3299,6 @@ abstract class AppLocalizations {
   /// **'No doubts found'**
   String get doubtsEmptyTitle;
 
-  /// No description provided for @doubtsEmptySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask your first doubt to get help from mentors.'**
-  String get doubtsEmptySubtitle;
-
-  /// No description provided for @doubtsSearchNoResults.
-  ///
-  /// In en, this message translates to:
-  /// **'No matches found'**
-  String get doubtsSearchNoResults;
-
-  /// No description provided for @doubtsSearchNoResultsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Try adjusting your search query'**
-  String get doubtsSearchNoResultsSubtitle;
-
   /// No description provided for @doubtsHeaderAskDoubt.
   ///
   /// In en, this message translates to:

@@ -883,9 +883,6 @@
     }
   },
   "doubtsEmptyTitle": "No doubts found",
-  "doubtsEmptySubtitle": "Ask your first doubt to get help from mentors.",
-  "doubtsSearchNoResults": "No matches found",
-  "doubtsSearchNoResultsSubtitle": "Try adjusting your search query",
   "doubtsHeaderAskDoubt": "Ask a Doubt",
   "doubtsSearchHint": "Search doubts",
   "doubtsLabelUnanswered": "Unanswered",

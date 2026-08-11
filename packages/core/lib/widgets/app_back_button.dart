@@ -29,7 +29,7 @@ class AppBackButton extends StatelessWidget {
         padding: const EdgeInsets.all(13),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.only(top: 2), // Optical alignment
+          padding: const EdgeInsets.only(top: 6), // Optical alignment
           child: Icon(
             LucideIcons.arrowLeft,
             color: design.colors.textPrimary,

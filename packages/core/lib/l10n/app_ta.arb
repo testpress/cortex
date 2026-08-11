@@ -834,9 +834,6 @@
     }
   },
   "doubtsEmptyTitle": "சந்தேகங்கள் எதுவும் கிடைக்கவில்லை",
-  "doubtsEmptySubtitle": "வழிகாட்டிகளிடமிருந்து உதவி பெற உங்கள் முதல் சந்தேகத்தைக் கேளுங்கள்.",
-  "doubtsSearchNoResults": "பொருத்தங்கள் எதுவும் காணப்படவில்லை",
-  "doubtsSearchNoResultsSubtitle": "உங்கள் தேடல் வினவலைச் சரிசெய்து முயற்சிக்கவும்",
   "doubtsHeaderAskDoubt": "சந்தேகம் கேள்",
   "doubtsSearchHint": "சந்தேகங்களைத் தேடு",
   "doubtsLabelUnanswered": "பதிலளிக்கப்படவில்லை",

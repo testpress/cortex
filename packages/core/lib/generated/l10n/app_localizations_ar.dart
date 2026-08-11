@@ -1789,16 +1789,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get doubtsEmptyTitle => 'لم يتم العثور على أسئلة';
 
   @override
-  String get doubtsEmptySubtitle =>
-      'اطرح سؤالك الأول للحصول على مساعدة من المعلمين.';
-
-  @override
-  String get doubtsSearchNoResults => 'لم يتم العثور على نتائج';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle => 'حاول تغيير نص البحث';
-
-  @override
   String get doubtsHeaderAskDoubt => 'اسأل سؤال';
 
   @override

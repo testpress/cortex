@@ -1801,17 +1801,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get doubtsEmptyTitle => 'சந்தேகங்கள் எதுவும் கிடைக்கவில்லை';
 
   @override
-  String get doubtsEmptySubtitle =>
-      'வழிகாட்டிகளிடமிருந்து உதவி பெற உங்கள் முதல் சந்தேகத்தைக் கேளுங்கள்.';
-
-  @override
-  String get doubtsSearchNoResults => 'பொருத்தங்கள் எதுவும் காணப்படவில்லை';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle =>
-      'உங்கள் தேடல் வினவலைச் சரிசெய்து முயற்சிக்கவும்';
-
-  @override
   String get doubtsHeaderAskDoubt => 'சந்தேகம் கேள்';
 
   @override

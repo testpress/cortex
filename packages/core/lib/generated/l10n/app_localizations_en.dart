@@ -1777,16 +1777,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get doubtsEmptyTitle => 'No doubts found';
 
   @override
-  String get doubtsEmptySubtitle =>
-      'Ask your first doubt to get help from mentors.';
-
-  @override
-  String get doubtsSearchNoResults => 'No matches found';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle => 'Try adjusting your search query';
-
-  @override
   String get doubtsHeaderAskDoubt => 'Ask a Doubt';
 
   @override

@@ -1805,16 +1805,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get doubtsEmptyTitle => 'സംശയങ്ങളൊന്നും കണ്ടെത്തിയില്ല';
 
   @override
-  String get doubtsEmptySubtitle =>
-      'മെന്റർമാരിൽ നിന്ന് സഹായം ലഭിക്കുന്നതിന് നിങ്ങളുടെ ആദ്യ സംശയം ചോദിക്കുക.';
-
-  @override
-  String get doubtsSearchNoResults => 'ഫലങ്ങളൊന്നും കണ്ടെത്തിയില്ല';
-
-  @override
-  String get doubtsSearchNoResultsSubtitle => 'തിരയൽ വാചകം മാറ്റാൻ ശ്രമിക്കുക';
-
-  @override
   String get doubtsHeaderAskDoubt => 'സംശയം ചോദിക്കുക';
 
   @override

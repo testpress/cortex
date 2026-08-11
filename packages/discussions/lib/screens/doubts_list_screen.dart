@@ -45,7 +45,6 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   Widget build(BuildContext context) {
     final activeFilter = ref.watch(doubtTypeFilterProvider);
     final isSearching = _searchQuery != null && _searchQuery!.isNotEmpty;
-    final isFiltering = activeFilter != null;
 
     final doubtsAsync = isSearching
         ? ref.watch(doubtsSearchProvider(_searchQuery!))
@@ -69,20 +68,11 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                 color: design.colors.card,
                 child: Column(
                   children: [
-                    if (doubtsAsync.valueOrNull?.isEmpty == true &&
-                        !syncAsync.isLoading &&
-                        !isSearching &&
-                        !isFiltering)
-                      AppHeader(
-                        title: l10n.drawerDoubts,
-                        subtitle: l10n.doubtsEmptySubtitle,
-                      )
-                    else
-                      AppHeader(
-                        title: l10n.drawerDoubts,
-                        showDivider: false,
-                        leading: AppBackButton(onTap: () => context.pop()),
-                      ),
+                    AppHeader(
+                      title: l10n.drawerDoubts,
+                      showDivider: false,
+                      leading: AppBackButton(onTap: () => context.pop()),
+                    ),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: design.spacing.md,
@@ -215,15 +205,6 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
           ),
           SizedBox(height: design.spacing.lg),
           AppText.body(l10n.doubtsEmptyTitle),
-          SizedBox(height: design.spacing.xs),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
-            child: AppText.bodySmall(
-              l10n.doubtsEmptySubtitle,
-              color: design.colors.textTertiary,
-              textAlign: TextAlign.center,
-            ),
-          ),
           SizedBox(height: design.spacing.xl),
           AppButton.primary(
             label: l10n.doubtsHeaderAskDoubt,
