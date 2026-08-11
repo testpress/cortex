@@ -25,6 +25,7 @@ void main(List<String> args) async {
     downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
     await updateBranding(appName, bundleId, appDir.path);
     await updateIosGoogleConfig(appDir.path, remoteConfig);
+    await updateAndroidGoogleConfig(appDir.path, remoteConfig);
     brandingUpdated = true;
 
     final iconConfig = await generateNativeIcons(appDir.path);
@@ -55,18 +56,16 @@ void main(List<String> args) async {
 Future<bool> _buildApk(
   String workingDir,
   String appName,
-  String configPath,
+  String? configPath,
   String apiBaseUrl, {
   String? serverClientId,
   String? primaryColor,
 }) async {
   print('🚀 Building the APK for $appName... (This may take a few minutes)');
-  final buildArgs = [
-    'build',
-    'apk',
-    '--dart-define-from-file=../$configPath',
-    '--dart-define=API_BASE_URL=$apiBaseUrl',
-  ];
+  final buildArgs = ['build', 'apk', '--dart-define=API_BASE_URL=$apiBaseUrl'];
+  if (configPath != null) {
+    buildArgs.add('--dart-define-from-file=../$configPath');
+  }
   if (serverClientId != null) {
     buildArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
   }

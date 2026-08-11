@@ -48,4 +48,9 @@ class UserRepository {
   Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1}) {
     return _source.getLoginActivity(page: page);
   }
+
+  /// Registers the FCM device token on the server.
+  Future<void> registerDeviceToken(String token, String hardwareId) async {
+    await _source.registerDeviceToken(token: token, hardwareId: hardwareId);
+  }
 }
