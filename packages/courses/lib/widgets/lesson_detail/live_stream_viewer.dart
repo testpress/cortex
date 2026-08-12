@@ -54,7 +54,7 @@ class LiveStreamViewer extends StatelessWidget {
         AspectRatio(
           aspectRatio: 16 / 9,
           child: CustomVideoPlayer(
-            assetId: lesson.contentUrl,
+            assetId: lesson.uuid,
           ),
         ),
         const Expanded(

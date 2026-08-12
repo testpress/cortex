@@ -286,7 +286,7 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     return CustomVideoPlayer(
       key: _videoPlayerKey,
       lessonId: widget.lesson.id,
-      assetId: widget.lesson.contentUrl,
+      assetId: widget.lesson.uuid,
       thumbnailUrl: widget.lesson.image,
       initialPosition: initialPos,
       onComplete: widget.onComplete,

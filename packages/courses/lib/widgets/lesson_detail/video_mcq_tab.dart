@@ -63,7 +63,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
         ? (settings?.learnlensOrgID ?? '')
         : '';
     final assetId = widget.lesson.learnlensAssetId ??
-        widget.lesson.contentUrl ??
+        widget.lesson.uuid ??
         widget.lesson.id;
 
     if (sessionToken.isEmpty) {

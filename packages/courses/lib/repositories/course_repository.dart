@@ -1200,6 +1200,7 @@ class CourseRepository {
         isLocked: row.isLocked,
         orderIndex: row.orderIndex,
         chapterTitle: row.chapterTitle,
+        uuid: row.uuid,
         contentUrl: row.contentUrl,
         subtitle: row.subtitle,
         subjectName: row.subjectName,
@@ -1270,6 +1271,7 @@ class CourseRepository {
         chapterTitle: dto.chapterTitle != null
             ? Value(dto.chapterTitle)
             : const Value.absent(),
+        uuid: dto.uuid != null ? Value(dto.uuid) : const Value.absent(),
         contentUrl: dto.contentUrl != null
             ? Value(dto.contentUrl)
             : const Value.absent(),

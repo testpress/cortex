@@ -107,6 +107,15 @@ class MockUserRepository extends _i1.Mock implements _i3.UserRepository {
                 ),
           )
           as _i4.Future<_i2.PaginatedLoginActivityDto>);
+
+  @override
+  _i4.Future<void> registerDeviceToken(String? token, String? hardwareId) =>
+      (super.noSuchMethod(
+            Invocation.method(#registerDeviceToken, [token, hardwareId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [AuthRepository].

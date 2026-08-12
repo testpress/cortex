@@ -81,6 +81,16 @@ void main() {
       expect(dto.progressStatus, isNot(LessonProgressStatus.completed));
     });
 
+    test('video parser captures root uuid and leaves contentUrl null', () {
+      final dto = LessonDto.fromJson({
+        ...lessonJson(contentType: 'video'),
+        'uuid': 'video-uuid-123',
+      });
+
+      expect(dto.uuid, 'video-uuid-123');
+      expect(dto.contentUrl, isNull);
+    });
+
     test(
       'live-stream with attempts_count > 0 is NOT promoted to completed',
       () {

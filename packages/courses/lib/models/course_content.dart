@@ -53,6 +53,7 @@ class Lesson {
     this.start,
     this.end,
     this.hasEnded = false,
+    this.uuid,
   });
 
   final String id;
@@ -73,6 +74,7 @@ class Lesson {
   final int? lessonNumber;
   final int? totalLessons;
   final String? contentUrl;
+  final String? uuid;
   final bool isRunning;
   final bool isUpcoming;
   final bool hasAttempts;
@@ -155,6 +157,7 @@ class Lesson {
       subjectIndex: subjectIndex,
       lessonNumber: lessonNumber,
       totalLessons: totalLessons,
+      uuid: uuid,
       contentUrl: contentUrl,
       bookmarkId: bookmarkId,
       isRunning: isRunning,

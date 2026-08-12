@@ -31,8 +31,9 @@ class LessonDto {
   final int orderIndex;
   final String? chapterTitle;
 
-  // Flattened media URL for LessonDetailScreen (PDF or Video)
-  final String? contentUrl;
+  final String? uuid; // Root-level content UUID from json['uuid']
+  final String?
+  contentUrl; // Always a URL — join URL, stream URL, PDF URL, etc.
   final String? subtitle;
   final String? subjectName;
   final int? subjectIndex;
@@ -90,6 +91,7 @@ class LessonDto {
 
     switch (type) {
       case LessonType.video:
+        return uuid != null && uuid!.isNotEmpty;
       case LessonType.liveStream:
         return contentUrl != null && contentUrl!.isNotEmpty;
       case LessonType.notes:
@@ -115,6 +117,7 @@ class LessonDto {
     required this.isLocked,
     required this.orderIndex,
     this.chapterTitle,
+    this.uuid,
     this.contentUrl,
     this.subtitle,
     this.subjectName,
@@ -174,6 +177,7 @@ class LessonDto {
     bool? isLocked,
     int? orderIndex,
     String? chapterTitle,
+    String? uuid,
     String? contentUrl,
     String? subtitle,
     String? subjectName,
@@ -228,6 +232,7 @@ class LessonDto {
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
       chapterTitle: chapterTitle ?? this.chapterTitle,
+      uuid: uuid ?? this.uuid,
       contentUrl: contentUrl ?? this.contentUrl,
       subtitle: subtitle ?? this.subtitle,
       subjectName: subjectName ?? this.subjectName,
@@ -294,6 +299,7 @@ class LessonDto {
           ? other.duration
           : duration,
       contentUrl: (contentUrl?.isEmpty ?? true) ? other.contentUrl : contentUrl,
+      uuid: (uuid?.isEmpty ?? true) ? other.uuid : uuid,
       htmlContent: (htmlContent?.isEmpty ?? true)
           ? other.htmlContent
           : htmlContent,
@@ -494,7 +500,7 @@ class LessonDto {
   static LessonDto _parseVideoLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.video);
 
-    return base.copyWith(contentUrl: json['uuid']?.toString());
+    return base.copyWith(contentUrl: null);
   }
 
   static LessonDto _parseEmbedLesson(Map<String, dynamic> json) {
@@ -669,6 +675,7 @@ class LessonDto {
       chapterSlug: json['chapter_slug'] as String?,
       chapterTitle:
           json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
+      uuid: json['uuid']?.toString(),
       subtitle: json['subtitle'] as String?,
       subjectName:
           json['subject_name'] as String? ?? json['subjectName'] as String?,
@@ -796,6 +803,7 @@ class LessonDto {
       'isLocked': isLocked,
       'orderIndex': orderIndex,
       'chapterTitle': chapterTitle,
+      'uuid': uuid,
       'contentUrl': contentUrl,
       'subtitle': subtitle,
       'subjectName': subjectName,

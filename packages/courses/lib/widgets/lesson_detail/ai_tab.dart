@@ -102,7 +102,7 @@ class _AITabState extends ConsumerState<AITab>
         ? (settings?.learnlensOrgID ?? '')
         : '';
     final assetId = widget.lesson.learnlensAssetId ??
-        widget.lesson.contentUrl ??
+        widget.lesson.uuid ??
         widget.lesson.id;
 
     if (sessionToken.isEmpty) {
