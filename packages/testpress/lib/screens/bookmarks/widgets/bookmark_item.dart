@@ -33,6 +33,9 @@ class BookmarkItem extends StatelessWidget {
       case 'video':
       case 'livestream':
         return LessonType.video;
+      case 'videoconference':
+      case 'video_conference':
+        return LessonType.videoConference;
       case 'pdf':
       case 'attachment':
         return LessonType.pdf;
@@ -90,6 +93,7 @@ class BookmarkItem extends StatelessWidget {
         return switch (lessonType) {
           LessonType.video ||
           LessonType.liveStream ||
+          LessonType.videoConference ||
           LessonType.embedContent => design.study.video,
           LessonType.pdf ||
           LessonType.notes ||

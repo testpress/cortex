@@ -3141,4 +3141,30 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get liveStreamNoRecordingMessage =>
       'ഈ ക്ലാസ്സിന് റെക്കോർഡിംഗ് ലഭ്യമല്ല.';
+
+  @override
+  String get liveStreamNotStartedTitle => 'ആരംഭിച്ചിട്ടില്ല';
+
+  @override
+  String get liveStreamWaitingForHost =>
+      'ഹോസ്റ്റ് വീഡിയോ കോൺഫറൻസ് ആരംഭിക്കുന്നതിനായി കാത്തിരിക്കുന്നു';
+
+  @override
+  String get liveStreamEndedTitle => 'അവസാനിച്ചു';
+
+  @override
+  String get liveStreamEndedMessage => 'ഈ മീറ്റിംഗ് അവസാനിച്ചു.';
+
+  @override
+  String get liveStreamScheduledDefault =>
+      'ഈ ഉള്ളടക്കം ഷെഡ്യൂൾ ചെയ്തിരിക്കുന്നു';
+
+  @override
+  String get liveStreamSessionDetails => 'സെഷൻ വിവരങ്ങൾ';
+
+  @override
+  String get liveStreamStatus => 'നില';
+
+  @override
+  String get liveStreamStatusLive => 'ലൈവ്';
 }

@@ -51,6 +51,11 @@ class LessonsTable extends Table {
   BoolColumn get isDetailFetched =>
       boolean().withDefault(const Constant(false))();
 
+  // Video Conference fields
+  TextColumn get conferenceId => text().nullable()();
+  TextColumn get password => text().nullable()();
+  TextColumn get accessToken => text().nullable()();
+
   // Scheduled content fields
   BoolColumn get isScheduled => boolean().withDefault(const Constant(false))();
   TextColumn get scheduledMessage => text().nullable()();

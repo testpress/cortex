@@ -1541,5 +1541,13 @@
   "liveStreamStartTime": "Start Time",
   "liveStreamAttendClass": "Attend Class",
   "liveStreamNoRecordingTitle": "Recording Not Available",
-  "liveStreamNoRecordingMessage": "No recording is available for this class."
+  "liveStreamNoRecordingMessage": "No recording is available for this class.",
+  "liveStreamNotStartedTitle": "Not started",
+  "liveStreamWaitingForHost": "Waiting for host to start the video conference",
+  "liveStreamEndedTitle": "Ended",
+  "liveStreamEndedMessage": "This meeting has ended.",
+  "liveStreamScheduledDefault": "This content is scheduled",
+  "liveStreamSessionDetails": "Session Details",
+  "liveStreamStatus": "Status",
+  "liveStreamStatusLive": "Live"
 }

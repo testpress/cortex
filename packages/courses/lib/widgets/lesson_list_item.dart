@@ -28,6 +28,7 @@ class LessonListItem extends StatelessWidget {
     final typeTheme = switch (lesson.type) {
       LessonType.video ||
       LessonType.liveStream ||
+      LessonType.videoConference ||
       LessonType.embedContent =>
         design.study.video,
       LessonType.pdf ||
@@ -42,6 +43,7 @@ class LessonListItem extends StatelessWidget {
     final icon = switch (lesson.type) {
       LessonType.video => LucideIcons.playCircle,
       LessonType.liveStream => LucideIcons.radio,
+      LessonType.videoConference => LucideIcons.video,
       LessonType.embedContent => LucideIcons.code,
       LessonType.notes => LucideIcons.bookOpen,
       LessonType.attachment => LucideIcons.paperclip,

@@ -11,6 +11,7 @@ enum LessonType {
   attachment,
   test,
   assessment,
+  videoConference,
   unknown,
 }
 
@@ -82,6 +83,11 @@ class LessonDto {
   final bool allowDownload;
   final bool watermarkBeforeDownload;
   final ExamDto? exam;
+
+  // Video Conference specific fields
+  final String? conferenceId;
+  final String? password;
+  final String? accessToken;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -165,6 +171,9 @@ class LessonDto {
     this.allowDownload = false,
     this.watermarkBeforeDownload = false,
     this.exam,
+    this.conferenceId,
+    this.password,
+    this.accessToken,
   });
 
   LessonDto copyWith({
@@ -223,6 +232,9 @@ class LessonDto {
     bool? allowDownload,
     bool? watermarkBeforeDownload,
     ExamDto? exam,
+    String? conferenceId,
+    String? password,
+    String? accessToken,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -281,6 +293,9 @@ class LessonDto {
       watermarkBeforeDownload:
           watermarkBeforeDownload ?? this.watermarkBeforeDownload,
       exam: exam ?? this.exam,
+      conferenceId: conferenceId ?? this.conferenceId,
+      password: password ?? this.password,
+      accessToken: accessToken ?? this.accessToken,
     );
   }
 
@@ -392,6 +407,13 @@ class LessonDto {
       watermarkBeforeDownload:
           watermarkBeforeDownload || other.watermarkBeforeDownload,
       exam: other.exam ?? exam,
+      conferenceId: (conferenceId?.isEmpty ?? true)
+          ? other.conferenceId
+          : conferenceId,
+      password: (password?.isEmpty ?? true) ? other.password : password,
+      accessToken: (accessToken?.isEmpty ?? true)
+          ? other.accessToken
+          : accessToken,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
         // If they are different, prefer the more specific one if one is 'attachment' or 'video'
@@ -440,6 +462,8 @@ class LessonDto {
         return _parseAttachmentLesson(json);
       case LessonType.liveStream:
         return _parseLiveStreamLesson(json);
+      case LessonType.videoConference:
+        return _parseVideoConferenceLesson(json);
       case LessonType.test:
       case LessonType.assessment:
         return _parseExamLesson(json, type);
@@ -462,6 +486,12 @@ class LessonDto {
             ?.toString()
             .toLowerCase() ??
         '';
+
+    if (json['video_conference'] != null ||
+        contentType.contains('conference') ||
+        contentType.contains('videoconference')) {
+      return LessonType.videoConference;
+    }
 
     if (contentType.contains('live')) {
       return LessonType.liveStream;
@@ -595,6 +625,38 @@ class LessonDto {
       chatEmbedUrl: liveStream?['chat_embed_url']?.toString(),
       streamStatus: liveStream?['status']?.toString(),
       showRecordedVideo: liveStream?['show_recorded_video'] as bool? ?? false,
+    );
+  }
+
+  static LessonDto _parseVideoConferenceLesson(Map<String, dynamic> json) {
+    final base = _parseBase(json, LessonType.videoConference);
+    final videoConference = json['video_conference'] as Map<String, dynamic>?;
+    final provider = videoConference?['provider']?.toString();
+
+    String? duration;
+    final rawDuration =
+        json['duration']?.toString() ??
+        videoConference?['duration']?.toString();
+    if (rawDuration != null && rawDuration.isNotEmpty) {
+      final doubleValue = double.tryParse(rawDuration);
+      if (doubleValue != null) {
+        duration = '${doubleValue.toInt()} min';
+      } else {
+        duration = TimeFormatter.formatDuration(rawDuration);
+      }
+    }
+
+    return base.copyWith(
+      liveStreamProvider: provider,
+      contentUrl:
+          videoConference?['join_url']?.toString() ?? json['url']?.toString(),
+      duration: duration ?? base.duration,
+      streamStatus: videoConference?['state']?.toString(),
+      showRecordedVideo:
+          videoConference?['show_recorded_video'] as bool? ?? false,
+      conferenceId: videoConference?['conference_id']?.toString(),
+      password: videoConference?['password']?.toString(),
+      accessToken: videoConference?['access_token']?.toString(),
     );
   }
 

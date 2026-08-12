@@ -92,6 +92,9 @@ Stream<Chapter?> _watchChapter(
               slug: l.slug,
               allowDownload: l.allowDownload,
               watermarkBeforeDownload: l.watermarkBeforeDownload,
+              conferenceId: l.conferenceId,
+              password: l.password,
+              accessToken: l.accessToken,
             ),
           )
           .toList(),

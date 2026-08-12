@@ -220,6 +220,8 @@ class ChapterContentItem extends StatelessWidget {
         return LucideIcons.playCircle;
       case LessonType.liveStream:
         return LucideIcons.radio;
+      case LessonType.videoConference:
+        return LucideIcons.video;
       case LessonType.embedContent:
         return LucideIcons.code;
       case LessonType.notes:
@@ -240,7 +242,10 @@ class ChapterContentItem extends StatelessWidget {
   Color _getColorForType(BuildContext context, LessonType type) {
     final design = Design.of(context);
     switch (type) {
-      case LessonType.video || LessonType.liveStream || LessonType.embedContent:
+      case LessonType.video ||
+            LessonType.liveStream ||
+            LessonType.videoConference ||
+            LessonType.embedContent:
         return design.colors.accent1; // Purple
       case LessonType.pdf || LessonType.notes || LessonType.attachment:
         return design.colors.accent2; // Blue
@@ -259,6 +264,7 @@ class ChapterContentItem extends StatelessWidget {
       case LessonType.video:
         return l10n.chapterTypeVideo;
       case LessonType.liveStream:
+      case LessonType.videoConference:
         return l10n.chapterTypeLiveStream;
       case LessonType.embedContent:
         return l10n.chapterTypeEmbed;

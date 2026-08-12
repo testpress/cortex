@@ -3088,4 +3088,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get liveStreamNoRecordingMessage =>
       'No recording is available for this class.';
+
+  @override
+  String get liveStreamNotStartedTitle => 'Not started';
+
+  @override
+  String get liveStreamWaitingForHost =>
+      'Waiting for host to start the video conference';
+
+  @override
+  String get liveStreamEndedTitle => 'Ended';
+
+  @override
+  String get liveStreamEndedMessage => 'This meeting has ended.';
+
+  @override
+  String get liveStreamScheduledDefault => 'This content is scheduled';
+
+  @override
+  String get liveStreamSessionDetails => 'Session Details';
+
+  @override
+  String get liveStreamStatus => 'Status';
+
+  @override
+  String get liveStreamStatusLive => 'Live';
 }
