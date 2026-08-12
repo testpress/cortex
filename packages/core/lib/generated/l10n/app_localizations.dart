@@ -870,12 +870,6 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get profileNotifications;
 
-  /// No description provided for @notificationsManagePreferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage your notification preferences'**
-  String get notificationsManagePreferences;
-
   /// No description provided for @notificationsLiveClassReminders.
   ///
   /// In en, this message translates to:
@@ -965,12 +959,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log out'**
   String get logoutButtonLabel;
-
-  /// No description provided for @certificatesSubtitleAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'View and download your course completion certificates'**
-  String get certificatesSubtitleAvailable;
 
   /// No description provided for @certificatesEmptyPaidNewDesc.
   ///

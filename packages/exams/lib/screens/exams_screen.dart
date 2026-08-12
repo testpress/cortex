@@ -61,32 +61,12 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
           Positioned.fill(
             child: Column(
               children: [
-                Container(
-                  width: double.infinity,
-                  color: design.colors.card,
-                  padding: EdgeInsets.fromLTRB(
-                    padding.left > design.spacing.md
-                        ? padding.left
-                        : design.spacing.md,
-                    padding.top + design.spacing.md,
-                    padding.right > design.spacing.md
-                        ? padding.right
-                        : design.spacing.md,
-                    design.spacing.md,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText.headline(
-                        l10n.examsTabTitle,
-                        color: design.colors.textPrimary,
-                      ),
-                      SizedBox(height: design.spacing.xs),
-                      AppText.body(
-                        l10n.selectExamToViewQuestions,
-                        color: design.colors.textSecondary,
-                      ),
-                    ],
+                SectionHeader(
+                  title: l10n.examsTabTitle,
+                  secondaryContentSpacing: design.spacing.xs,
+                  secondaryContent: AppText.body(
+                    l10n.selectExamToViewQuestions,
+                    color: design.colors.textSecondary,
                   ),
                 ),
                 Container(height: 1, color: design.colors.divider),

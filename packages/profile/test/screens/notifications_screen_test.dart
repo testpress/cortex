@@ -96,7 +96,6 @@ void main() {
       final l10n = L10n.of(tester.element(find.byType(NotificationsScreen)));
 
       expect(find.text(l10n.profileNotifications), findsOneWidget);
-      expect(find.text(l10n.notificationsManagePreferences), findsOneWidget);
       expect(find.text(l10n.notificationsLiveClassReminders), findsOneWidget);
       expect(find.text(l10n.notificationsTestAssessmentAlerts), findsOneWidget);
       expect(find.text(l10n.notificationsAnnouncementsUpdates), findsOneWidget);
@@ -182,15 +181,7 @@ void main() {
       await tester.tap(notificationsEntry, warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      final notificationsL10n = L10n.of(
-        tester.element(find.byType(NotificationsScreen)),
-      );
-      expect(
-        find.text(notificationsL10n.notificationsManagePreferences),
-        findsOneWidget,
-      );
-
-      await tester.tap(find.text(notificationsL10n.curriculumBackButton));
+      await tester.tap(find.byType(AppBackButton));
       await tester.pumpAndSettle();
       expect(
         find.text(profileL10n.profileAccountSettingsTitle),

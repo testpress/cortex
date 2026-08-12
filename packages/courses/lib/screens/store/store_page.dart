@@ -26,7 +26,6 @@ class _StorePageState extends ConsumerState<StorePage> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.paddingOf(context);
 
     return Column(
       children: [
@@ -37,41 +36,19 @@ class _StorePageState extends ConsumerState<StorePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title & Search Section
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  padding.left > design.spacing.md
-                      ? padding.left
-                      : design.spacing.md,
-                  padding.top + design.spacing.md,
-                  padding.right > design.spacing.md
-                      ? padding.right
-                      : design.spacing.md,
-                  design.spacing.md,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.lg(
-                      l10n.storeTabTitle,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: design.spacing.md),
-                    AppSearchBar(
-                      controller: _searchController,
-                      hintText: l10n.storeSearchHint,
-                      backgroundColor: design.colors.surface,
-                      onChanged: (value) {
-                        ref
-                            .read(storeSearchQueryProvider.notifier)
-                            .update(value);
-                      },
-                    ),
-                  ],
+              SectionHeader(
+                title: l10n.storeTabTitle,
+                backgroundColor: design.colors
+                    .transparent, // transparent so outer container color shows
+                secondaryContent: AppSearchBar(
+                  controller: _searchController,
+                  hintText: l10n.storeSearchHint,
+                  backgroundColor: design.colors.surface,
+                  onChanged: (value) {
+                    ref.read(storeSearchQueryProvider.notifier).update(value);
+                  },
                 ),
               ),
-
-              // Category Filter Bar
               const CategoryFilterBar(),
             ],
           ),

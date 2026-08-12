@@ -42,6 +42,7 @@ export 'widgets/app_drawer.dart';
 export 'widgets/app_bottom_sheet.dart';
 export 'widgets/app_error_view.dart';
 export 'widgets/app_webview.dart';
+export 'widgets/section_header.dart';
 export 'widgets/dashboard_header.dart';
 export 'widgets/lesson_detail_shell.dart';
 export 'widgets/bookmark_folders_sheet.dart';

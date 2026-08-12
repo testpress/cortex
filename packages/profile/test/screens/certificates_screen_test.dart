@@ -95,7 +95,6 @@ void main() {
       final l10n = L10n.of(tester.element(find.byType(CertificatesScreen)));
 
       expect(find.text(l10n.profileCertificates), findsOneWidget);
-      expect(find.text(l10n.certificatesSubtitleAvailable), findsOneWidget);
       expect(find.text(l10n.certificatesUnlockedBadge), findsOneWidget);
       expect(find.text(l10n.certificatesLockedBadge), findsNWidgets(3));
     });
