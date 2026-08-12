@@ -3158,4 +3158,13 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get liveStreamScheduledDefault =>
       'ഈ ഉള്ളടക്കം ഷെഡ്യൂൾ ചെയ്തിരിക്കുന്നു';
+
+  @override
+  String get liveStreamSessionDetails => 'സെഷൻ വിവരങ്ങൾ';
+
+  @override
+  String get liveStreamStatus => 'നില';
+
+  @override
+  String get liveStreamStatusLive => 'ലൈവ്';
 }

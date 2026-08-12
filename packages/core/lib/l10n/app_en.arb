@@ -1546,5 +1546,8 @@
   "liveStreamWaitingForHost": "Waiting for host to start the video conference",
   "liveStreamEndedTitle": "Ended",
   "liveStreamEndedMessage": "This meeting has ended.",
-  "liveStreamScheduledDefault": "This content is scheduled"
+  "liveStreamScheduledDefault": "This content is scheduled",
+  "liveStreamSessionDetails": "Session Details",
+  "liveStreamStatus": "Status",
+  "liveStreamStatusLive": "Live"
 }

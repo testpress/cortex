@@ -21,7 +21,6 @@
 ## 4. Lobby UI
 
 - [x] 4.1 Implement `VideoConferenceViewer` containing duration and start datetime information card
-- [x] 4.2 Display debug panel showing provider, meeting ID, passcode, state, join URL, and access token details
 
 ## 5. Verification
 

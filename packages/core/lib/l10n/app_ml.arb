@@ -1186,5 +1186,8 @@
   "liveStreamWaitingForHost": "ഹോസ്റ്റ് വീഡിയോ കോൺഫറൻസ് ആരംഭിക്കുന്നതിനായി കാത്തിരിക്കുന്നു",
   "liveStreamEndedTitle": "അവസാനിച്ചു",
   "liveStreamEndedMessage": "ഈ മീറ്റിംഗ് അവസാനിച്ചു.",
-  "liveStreamScheduledDefault": "ഈ ഉള്ളടക്കം ഷെഡ്യൂൾ ചെയ്തിരിക്കുന്നു"
+  "liveStreamScheduledDefault": "ഈ ഉള്ളടക്കം ഷെഡ്യൂൾ ചെയ്തിരിക്കുന്നു",
+  "liveStreamSessionDetails": "സെഷൻ വിവരങ്ങൾ",
+  "liveStreamStatus": "നില",
+  "liveStreamStatusLive": "ലൈവ്"
 }

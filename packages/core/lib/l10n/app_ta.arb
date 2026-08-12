@@ -1420,5 +1420,8 @@
   "liveStreamWaitingForHost": "தொகுப்பாளர் வீடியோ மாநாட்டைத் தொடங்குவதற்காகக் காத்திருக்கிறது",
   "liveStreamEndedTitle": "முடிவடைந்தது",
   "liveStreamEndedMessage": "இந்தக் கூட்டம் முடிவடைந்தது.",
-  "liveStreamScheduledDefault": "இந்த உள்ளடக்கம் திட்டமிடப்பட்டுள்ளது"
+  "liveStreamScheduledDefault": "இந்த உள்ளடக்கம் திட்டமிடப்பட்டுள்ளது",
+  "liveStreamSessionDetails": "அமர்வு விவரங்கள்",
+  "liveStreamStatus": "நிலை",
+  "liveStreamStatusLive": "நேரலை"
 }

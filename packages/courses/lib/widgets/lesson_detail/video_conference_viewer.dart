@@ -146,10 +146,24 @@ class VideoConferenceLobbyView extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final semanticLabel = 'Session details: '
-        '${formattedDuration != null ? "Duration: $formattedDuration, " : ""}'
-        '${formattedStart != null ? "Start Time: $formattedStart, " : ""}'
-        'Status: ${_isLive ? "Live" : (lesson.streamStatus?.toLowerCase() == 'completed' || lesson.streamStatus?.toLowerCase() == 'ended') ? "Ended" : "Not started"}';
+    final l10n = L10n.of(context);
+    final semanticParts = <String>[];
+    if (formattedDuration != null) {
+      semanticParts.add('${l10n.liveStreamDuration}: $formattedDuration');
+    }
+    if (formattedStart != null) {
+      semanticParts.add('${l10n.liveStreamStartTime}: $formattedStart');
+    }
+    final statusText = _isLive
+        ? l10n.liveStreamStatusLive
+        : (lesson.streamStatus?.toLowerCase() == 'completed' ||
+                lesson.streamStatus?.toLowerCase() == 'ended')
+            ? l10n.liveStreamEndedTitle
+            : l10n.liveStreamNotStartedTitle;
+    semanticParts.add('${l10n.liveStreamStatus}: $statusText');
+
+    final semanticLabel =
+        '${l10n.liveStreamSessionDetails}: ${semanticParts.join(", ")}';
 
     return AppSemantics.container(
       label: semanticLabel,

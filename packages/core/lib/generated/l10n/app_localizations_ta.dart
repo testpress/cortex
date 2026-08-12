@@ -3153,4 +3153,13 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get liveStreamScheduledDefault =>
       'இந்த உள்ளடக்கம் திட்டமிடப்பட்டுள்ளது';
+
+  @override
+  String get liveStreamSessionDetails => 'அமர்வு விவரங்கள்';
+
+  @override
+  String get liveStreamStatus => 'நிலை';
+
+  @override
+  String get liveStreamStatusLive => 'நேரலை';
 }

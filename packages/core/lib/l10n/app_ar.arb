@@ -1186,5 +1186,8 @@
   "liveStreamWaitingForHost": "بانتظار بدء المحاضر للمؤتمر المرئي",
   "liveStreamEndedTitle": "انتهت",
   "liveStreamEndedMessage": "لقد انتهى هذا الاجتماع.",
-  "liveStreamScheduledDefault": "تم جدولة هذا المحتوى"
+  "liveStreamScheduledDefault": "تم جدولة هذا المحتوى",
+  "liveStreamSessionDetails": "تفاصيل الجلسة",
+  "liveStreamStatus": "الحالة",
+  "liveStreamStatusLive": "مباشر"
 }

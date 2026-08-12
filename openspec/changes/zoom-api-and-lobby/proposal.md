@@ -1,6 +1,6 @@
 ## Why
 
-Video conference lessons (such as Zoom sessions) need to be supported by the Cortex client. To prepare for this integration, we need to parse and persist all conference metadata (meeting ID, passcode, access token, state, join URL) from the API into the local SQLite database via Drift. We also need to map this metadata through the DTOs, domain models, and providers to the UI, and implement a debugging lobby page that displays these details cleanly.
+Video conference lessons (such as Zoom sessions) need to be supported by the Cortex client. To prepare for this integration, we need to parse and persist all conference metadata (meeting ID, passcode, access token, state, join URL) from the API into the local SQLite database via Drift. We also need to map this metadata through the DTOs, domain models, and providers to the UI, and implement a lobby page that displays the session details cleanly.
 
 ---
 
@@ -8,7 +8,7 @@ Video conference lessons (such as Zoom sessions) need to be supported by the Cor
 
 *   **Database Schema (`packages/core`)**: Add `conferenceId`, `password`, and `accessToken` columns to `LessonsTable` and define the Drift database migration.
 *   **Domain Models & Mappers (`packages/courses`)**: Update `Lesson` domain model, mapping providers (`lesson_detail_provider` and `chapter_detail_provider`), and repository database row conversions to handle the new Zoom fields.
-*   **Lobby UI (`packages/courses`)**: Implement a debug lobby screen in `VideoConferenceViewer` that displays meeting details (Duration, Start Time, Provider, Meeting ID, Passcode, Access Token, and State) along with an "Attend Class" button.
+*   **Lobby UI (`packages/courses`)**: Implement a lobby screen in `VideoConferenceViewer` that displays meeting metadata (Duration, Start Time) and status checks along with an "Attend Class" button.
 *   **Routing & Exhaustive Switch Matching**: Fix pattern matching switch statements for `LessonType.videoConference` across list views, router, and the detail orchestrator.
 
 ---

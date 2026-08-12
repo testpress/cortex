@@ -3104,4 +3104,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get liveStreamScheduledDefault => 'تم جدولة هذا المحتوى';
+
+  @override
+  String get liveStreamSessionDetails => 'تفاصيل الجلسة';
+
+  @override
+  String get liveStreamStatus => 'الحالة';
+
+  @override
+  String get liveStreamStatusLive => 'مباشر';
 }

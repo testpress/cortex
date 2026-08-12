@@ -1,6 +1,6 @@
 ## Context
 
-Cortex is a white-labeled Flutter app that needs support for video conference lesson types (such as Zoom). This design focuses on parsing, persisting, and mapping the metadata returned by the API so that it can be displayed on a debug lobby page before executing the native SDK integration.
+Cortex is a white-labeled Flutter app that needs support for video conference lesson types (such as Zoom). This design focuses on parsing, persisting, and mapping the metadata returned by the API so that it can be mapped and routed properly before executing the native SDK integration.
 
 ---
 
@@ -11,7 +11,7 @@ Cortex is a white-labeled Flutter app that needs support for video conference le
 *   Persist this metadata locally using a SQLite database (Drift).
 *   Propagate fields from DTOs to domain models and providers.
 *   Fix all exhaustive switch statements to handle the new `LessonType.videoConference` enum value.
-*   Build a lobby UI displaying meeting details for debugging.
+*   Build a lobby UI displaying meeting duration, start time, and active status checks.
 
 **Non-Goals:**
 *   Integrating the Zoom Video SDK native binaries (`mobilertc` / `sqlite3_key`).
@@ -32,7 +32,3 @@ We update the `Lesson` domain model and mapping layers (`lesson_detail_provider.
 ### Decision 3: Exhaustive Match Routing
 
 Adding `videoConference` to the `LessonType` enum requires matching it in all switches over `LessonType` across the app (routing in lists, icons, themes, and detail orchestration) to comply with Dart 3 exhaustive matching.
-
-### Decision 4: Debug Lobby UI
-
-We implement a lobby screen in `VideoConferenceViewer` displaying start datetime, duration, provider, meeting ID, passcode, access token, and state to verify the data parses and persists correctly.

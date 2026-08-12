@@ -5608,6 +5608,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This content is scheduled'**
   String get liveStreamScheduledDefault;
+
+  /// No description provided for @liveStreamSessionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Details'**
+  String get liveStreamSessionDetails;
+
+  /// No description provided for @liveStreamStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get liveStreamStatus;
+
+  /// No description provided for @liveStreamStatusLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get liveStreamStatusLive;
 }
 
 class _AppLocalizationsDelegate

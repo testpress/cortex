@@ -3104,4 +3104,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get liveStreamScheduledDefault => 'This content is scheduled';
+
+  @override
+  String get liveStreamSessionDetails => 'Session Details';
+
+  @override
+  String get liveStreamStatus => 'Status';
+
+  @override
+  String get liveStreamStatusLive => 'Live';
 }
