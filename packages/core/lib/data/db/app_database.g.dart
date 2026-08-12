@@ -1634,6 +1634,15 @@ class $LessonsTableTable extends LessonsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _uuidMeta = const VerificationMeta('uuid');
+  @override
+  late final GeneratedColumn<String> uuid = GeneratedColumn<String>(
+    'uuid',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _contentUrlMeta = const VerificationMeta(
     'contentUrl',
   );
@@ -2105,6 +2114,7 @@ class $LessonsTableTable extends LessonsTable
     isLocked,
     orderIndex,
     chapterTitle,
+    uuid,
     contentUrl,
     subtitle,
     subjectName,
@@ -2238,6 +2248,12 @@ class $LessonsTableTable extends LessonsTable
           data['chapter_title']!,
           _chapterTitleMeta,
         ),
+      );
+    }
+    if (data.containsKey('uuid')) {
+      context.handle(
+        _uuidMeta,
+        uuid.isAcceptableOrUnknown(data['uuid']!, _uuidMeta),
       );
     }
     if (data.containsKey('content_url')) {
@@ -2605,6 +2621,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.string,
         data['${effectivePrefix}chapter_title'],
       ),
+      uuid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uuid'],
+      ),
       contentUrl: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}content_url'],
@@ -2783,6 +2803,7 @@ class LessonsTableData extends DataClass
   final bool isLocked;
   final int orderIndex;
   final String? chapterTitle;
+  final String? uuid;
   final String? contentUrl;
   final String? subtitle;
   final String? subjectName;
@@ -2833,6 +2854,7 @@ class LessonsTableData extends DataClass
     required this.isLocked,
     required this.orderIndex,
     this.chapterTitle,
+    this.uuid,
     this.contentUrl,
     this.subtitle,
     this.subjectName,
@@ -2891,6 +2913,9 @@ class LessonsTableData extends DataClass
     map['order_index'] = Variable<int>(orderIndex);
     if (!nullToAbsent || chapterTitle != null) {
       map['chapter_title'] = Variable<String>(chapterTitle);
+    }
+    if (!nullToAbsent || uuid != null) {
+      map['uuid'] = Variable<String>(uuid);
     }
     if (!nullToAbsent || contentUrl != null) {
       map['content_url'] = Variable<String>(contentUrl);
@@ -3004,6 +3029,7 @@ class LessonsTableData extends DataClass
       chapterTitle: chapterTitle == null && nullToAbsent
           ? const Value.absent()
           : Value(chapterTitle),
+      uuid: uuid == null && nullToAbsent ? const Value.absent() : Value(uuid),
       contentUrl: contentUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(contentUrl),
@@ -3112,6 +3138,7 @@ class LessonsTableData extends DataClass
       isLocked: serializer.fromJson<bool>(json['isLocked']),
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
       chapterTitle: serializer.fromJson<String?>(json['chapterTitle']),
+      uuid: serializer.fromJson<String?>(json['uuid']),
       contentUrl: serializer.fromJson<String?>(json['contentUrl']),
       subtitle: serializer.fromJson<String?>(json['subtitle']),
       subjectName: serializer.fromJson<String?>(json['subjectName']),
@@ -3179,6 +3206,7 @@ class LessonsTableData extends DataClass
       'isLocked': serializer.toJson<bool>(isLocked),
       'orderIndex': serializer.toJson<int>(orderIndex),
       'chapterTitle': serializer.toJson<String?>(chapterTitle),
+      'uuid': serializer.toJson<String?>(uuid),
       'contentUrl': serializer.toJson<String?>(contentUrl),
       'subtitle': serializer.toJson<String?>(subtitle),
       'subjectName': serializer.toJson<String?>(subjectName),
@@ -3234,6 +3262,7 @@ class LessonsTableData extends DataClass
     bool? isLocked,
     int? orderIndex,
     Value<String?> chapterTitle = const Value.absent(),
+    Value<String?> uuid = const Value.absent(),
     Value<String?> contentUrl = const Value.absent(),
     Value<String?> subtitle = const Value.absent(),
     Value<String?> subjectName = const Value.absent(),
@@ -3286,6 +3315,7 @@ class LessonsTableData extends DataClass
     isLocked: isLocked ?? this.isLocked,
     orderIndex: orderIndex ?? this.orderIndex,
     chapterTitle: chapterTitle.present ? chapterTitle.value : this.chapterTitle,
+    uuid: uuid.present ? uuid.value : this.uuid,
     contentUrl: contentUrl.present ? contentUrl.value : this.contentUrl,
     subtitle: subtitle.present ? subtitle.value : this.subtitle,
     subjectName: subjectName.present ? subjectName.value : this.subjectName,
@@ -3365,6 +3395,7 @@ class LessonsTableData extends DataClass
       chapterTitle: data.chapterTitle.present
           ? data.chapterTitle.value
           : this.chapterTitle,
+      uuid: data.uuid.present ? data.uuid.value : this.uuid,
       contentUrl: data.contentUrl.present
           ? data.contentUrl.value
           : this.contentUrl,
@@ -3482,6 +3513,7 @@ class LessonsTableData extends DataClass
           ..write('isLocked: $isLocked, ')
           ..write('orderIndex: $orderIndex, ')
           ..write('chapterTitle: $chapterTitle, ')
+          ..write('uuid: $uuid, ')
           ..write('contentUrl: $contentUrl, ')
           ..write('subtitle: $subtitle, ')
           ..write('subjectName: $subjectName, ')
@@ -3537,6 +3569,7 @@ class LessonsTableData extends DataClass
     isLocked,
     orderIndex,
     chapterTitle,
+    uuid,
     contentUrl,
     subtitle,
     subjectName,
@@ -3591,6 +3624,7 @@ class LessonsTableData extends DataClass
           other.isLocked == this.isLocked &&
           other.orderIndex == this.orderIndex &&
           other.chapterTitle == this.chapterTitle &&
+          other.uuid == this.uuid &&
           other.contentUrl == this.contentUrl &&
           other.subtitle == this.subtitle &&
           other.subjectName == this.subjectName &&
@@ -3643,6 +3677,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> isLocked;
   final Value<int> orderIndex;
   final Value<String?> chapterTitle;
+  final Value<String?> uuid;
   final Value<String?> contentUrl;
   final Value<String?> subtitle;
   final Value<String?> subjectName;
@@ -3694,6 +3729,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isLocked = const Value.absent(),
     this.orderIndex = const Value.absent(),
     this.chapterTitle = const Value.absent(),
+    this.uuid = const Value.absent(),
     this.contentUrl = const Value.absent(),
     this.subtitle = const Value.absent(),
     this.subjectName = const Value.absent(),
@@ -3746,6 +3782,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.isLocked = const Value.absent(),
     required int orderIndex,
     this.chapterTitle = const Value.absent(),
+    this.uuid = const Value.absent(),
     this.contentUrl = const Value.absent(),
     this.subtitle = const Value.absent(),
     this.subjectName = const Value.absent(),
@@ -3803,6 +3840,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? isLocked,
     Expression<int>? orderIndex,
     Expression<String>? chapterTitle,
+    Expression<String>? uuid,
     Expression<String>? contentUrl,
     Expression<String>? subtitle,
     Expression<String>? subjectName,
@@ -3856,6 +3894,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (isLocked != null) 'is_locked': isLocked,
       if (orderIndex != null) 'order_index': orderIndex,
       if (chapterTitle != null) 'chapter_title': chapterTitle,
+      if (uuid != null) 'uuid': uuid,
       if (contentUrl != null) 'content_url': contentUrl,
       if (subtitle != null) 'subtitle': subtitle,
       if (subjectName != null) 'subject_name': subjectName,
@@ -3915,6 +3954,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? isLocked,
     Value<int>? orderIndex,
     Value<String?>? chapterTitle,
+    Value<String?>? uuid,
     Value<String?>? contentUrl,
     Value<String?>? subtitle,
     Value<String?>? subjectName,
@@ -3967,6 +4007,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
       chapterTitle: chapterTitle ?? this.chapterTitle,
+      uuid: uuid ?? this.uuid,
       contentUrl: contentUrl ?? this.contentUrl,
       subtitle: subtitle ?? this.subtitle,
       subjectName: subjectName ?? this.subjectName,
@@ -4045,6 +4086,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     }
     if (chapterTitle.present) {
       map['chapter_title'] = Variable<String>(chapterTitle.value);
+    }
+    if (uuid.present) {
+      map['uuid'] = Variable<String>(uuid.value);
     }
     if (contentUrl.present) {
       map['content_url'] = Variable<String>(contentUrl.value);
@@ -4188,6 +4232,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('isLocked: $isLocked, ')
           ..write('orderIndex: $orderIndex, ')
           ..write('chapterTitle: $chapterTitle, ')
+          ..write('uuid: $uuid, ')
           ..write('contentUrl: $contentUrl, ')
           ..write('subtitle: $subtitle, ')
           ..write('subjectName: $subjectName, ')
@@ -17757,6 +17802,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> isLocked,
       required int orderIndex,
       Value<String?> chapterTitle,
+      Value<String?> uuid,
       Value<String?> contentUrl,
       Value<String?> subtitle,
       Value<String?> subjectName,
@@ -17810,6 +17856,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> isLocked,
       Value<int> orderIndex,
       Value<String?> chapterTitle,
+      Value<String?> uuid,
       Value<String?> contentUrl,
       Value<String?> subtitle,
       Value<String?> subjectName,
@@ -17912,6 +17959,11 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<String> get chapterTitle => $composableBuilder(
     column: $table.chapterTitle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uuid => $composableBuilder(
+    column: $table.uuid,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18170,6 +18222,11 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get uuid => $composableBuilder(
+    column: $table.uuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get contentUrl => $composableBuilder(
     column: $table.contentUrl,
     builder: (column) => ColumnOrderings(column),
@@ -18411,6 +18468,9 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get uuid =>
+      $composableBuilder(column: $table.uuid, builder: (column) => column);
+
   GeneratedColumn<String> get contentUrl => $composableBuilder(
     column: $table.contentUrl,
     builder: (column) => column,
@@ -18630,6 +18690,7 @@ class $$LessonsTableTableTableManager
                 Value<bool> isLocked = const Value.absent(),
                 Value<int> orderIndex = const Value.absent(),
                 Value<String?> chapterTitle = const Value.absent(),
+                Value<String?> uuid = const Value.absent(),
                 Value<String?> contentUrl = const Value.absent(),
                 Value<String?> subtitle = const Value.absent(),
                 Value<String?> subjectName = const Value.absent(),
@@ -18681,6 +18742,7 @@ class $$LessonsTableTableTableManager
                 isLocked: isLocked,
                 orderIndex: orderIndex,
                 chapterTitle: chapterTitle,
+                uuid: uuid,
                 contentUrl: contentUrl,
                 subtitle: subtitle,
                 subjectName: subjectName,
@@ -18734,6 +18796,7 @@ class $$LessonsTableTableTableManager
                 Value<bool> isLocked = const Value.absent(),
                 required int orderIndex,
                 Value<String?> chapterTitle = const Value.absent(),
+                Value<String?> uuid = const Value.absent(),
                 Value<String?> contentUrl = const Value.absent(),
                 Value<String?> subtitle = const Value.absent(),
                 Value<String?> subjectName = const Value.absent(),
@@ -18785,6 +18848,7 @@ class $$LessonsTableTableTableManager
                 isLocked: isLocked,
                 orderIndex: orderIndex,
                 chapterTitle: chapterTitle,
+                uuid: uuid,
                 contentUrl: contentUrl,
                 subtitle: subtitle,
                 subjectName: subjectName,

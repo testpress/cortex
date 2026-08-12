@@ -31,7 +31,7 @@ class LessonDto {
   final int orderIndex;
   final String? chapterTitle;
 
-  // Flattened media URL for LessonDetailScreen (PDF or Video)
+  final String? uuid; // Root-level content UUID from json['uuid']
   final String? contentUrl;
   final String? subtitle;
   final String? subjectName;
@@ -90,8 +90,14 @@ class LessonDto {
 
     switch (type) {
       case LessonType.video:
+        return uuid != null && uuid!.isNotEmpty;
       case LessonType.liveStream:
-        return contentUrl != null && contentUrl!.isNotEmpty;
+        final isFermion =
+            liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
+        if (isFermion) {
+          return contentUrl != null && contentUrl!.isNotEmpty;
+        }
+        return uuid != null && uuid!.isNotEmpty;
       case LessonType.notes:
       case LessonType.embedContent:
         return htmlContent != null && htmlContent!.isNotEmpty;
@@ -115,6 +121,7 @@ class LessonDto {
     required this.isLocked,
     required this.orderIndex,
     this.chapterTitle,
+    this.uuid,
     this.contentUrl,
     this.subtitle,
     this.subjectName,
@@ -174,6 +181,7 @@ class LessonDto {
     bool? isLocked,
     int? orderIndex,
     String? chapterTitle,
+    String? uuid,
     String? contentUrl,
     String? subtitle,
     String? subjectName,
@@ -228,6 +236,7 @@ class LessonDto {
       isLocked: isLocked ?? this.isLocked,
       orderIndex: orderIndex ?? this.orderIndex,
       chapterTitle: chapterTitle ?? this.chapterTitle,
+      uuid: uuid ?? this.uuid,
       contentUrl: contentUrl ?? this.contentUrl,
       subtitle: subtitle ?? this.subtitle,
       subjectName: subjectName ?? this.subjectName,
@@ -294,6 +303,7 @@ class LessonDto {
           ? other.duration
           : duration,
       contentUrl: (contentUrl?.isEmpty ?? true) ? other.contentUrl : contentUrl,
+      uuid: (uuid?.isEmpty ?? true) ? other.uuid : uuid,
       htmlContent: (htmlContent?.isEmpty ?? true)
           ? other.htmlContent
           : htmlContent,
@@ -494,7 +504,7 @@ class LessonDto {
   static LessonDto _parseVideoLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.video);
 
-    return base.copyWith(contentUrl: json['uuid']?.toString());
+    return base.copyWith(contentUrl: null);
   }
 
   static LessonDto _parseEmbedLesson(Map<String, dynamic> json) {
@@ -556,15 +566,11 @@ class LessonDto {
     final isFermion =
         provider != null && provider.toLowerCase().contains('fermion');
 
-    // Fermion uses the embed URL directly; TpStreams/others use the UUID as
-    // the asset ID expected by the TpStreams player SDK.
+    // Fermion uses the embed URL directly; TpStreams/others source the TPStreams
+    // asset id from the root `uuid` (captured in `_parseBase`), so `contentUrl`
+    // stays a real URL (or null).
     final String? fermionUrl = liveStream?['stream_url'] as String?;
-    final String? tpstreamsUrl =
-        json['uuid']?.toString() ??
-        liveStream?['stream_url']?.toString() ??
-        json['live_stream_url']?.toString() ??
-        json['url']?.toString();
-    final contentUrl = isFermion ? fermionUrl : tpstreamsUrl;
+    final contentUrl = isFermion ? fermionUrl : null;
 
     // For Fermion, the raw duration value from the backend is in minutes (e.g., 60 = 60 minutes).
     // For other providers (like TpStreams), the raw value is parsed as seconds in _parseBase.
@@ -669,6 +675,7 @@ class LessonDto {
       chapterSlug: json['chapter_slug'] as String?,
       chapterTitle:
           json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
+      uuid: json['uuid']?.toString(),
       subtitle: json['subtitle'] as String?,
       subjectName:
           json['subject_name'] as String? ?? json['subjectName'] as String?,
@@ -796,6 +803,7 @@ class LessonDto {
       'isLocked': isLocked,
       'orderIndex': orderIndex,
       'chapterTitle': chapterTitle,
+      'uuid': uuid,
       'contentUrl': contentUrl,
       'subtitle': subtitle,
       'subjectName': subjectName,

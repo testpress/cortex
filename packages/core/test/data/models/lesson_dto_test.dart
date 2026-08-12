@@ -81,6 +81,16 @@ void main() {
       expect(dto.progressStatus, isNot(LessonProgressStatus.completed));
     });
 
+    test('video parser captures root uuid and leaves contentUrl null', () {
+      final dto = LessonDto.fromJson({
+        ...lessonJson(contentType: 'video'),
+        'uuid': 'video-uuid-123',
+      });
+
+      expect(dto.uuid, 'video-uuid-123');
+      expect(dto.contentUrl, isNull);
+    });
+
     test(
       'live-stream with attempts_count > 0 is NOT promoted to completed',
       () {
@@ -182,7 +192,8 @@ void main() {
 
         final dto = LessonDto.fromJson(json);
         expect(dto.liveStreamProvider, 'TpStreams');
-        expect(dto.contentUrl, 'tpstreams-uuid');
+        expect(dto.uuid, 'tpstreams-uuid');
+        expect(dto.contentUrl, isNull);
       },
     );
 
@@ -196,7 +207,8 @@ void main() {
 
       final dto = LessonDto.fromJson(json);
       expect(dto.liveStreamProvider, isNull);
-      expect(dto.contentUrl, 'some-uuid');
+      expect(dto.uuid, 'some-uuid');
+      expect(dto.contentUrl, isNull);
     });
   });
 }

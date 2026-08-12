@@ -1435,6 +1435,21 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<_i2.PaginatedLoginActivityDto>);
 
   @override
+  _i3.Future<void> registerDeviceToken({
+    required String? token,
+    required String? hardwareId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#registerDeviceToken, [], {
+              #token: token,
+              #hardwareId: hardwareId,
+            }),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
   _i3.Future<_i2.PaginatedResponseDto<_i2.DoubtDto>> getDoubts({
     int? page = 1,
     String? searchQuery,

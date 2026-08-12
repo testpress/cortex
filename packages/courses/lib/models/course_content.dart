@@ -53,6 +53,7 @@ class Lesson {
     this.start,
     this.end,
     this.hasEnded = false,
+    this.uuid,
   });
 
   final String id;
@@ -73,6 +74,7 @@ class Lesson {
   final int? lessonNumber;
   final int? totalLessons;
   final String? contentUrl;
+  final String? uuid;
   final bool isRunning;
   final bool isUpcoming;
   final bool hasAttempts;
@@ -117,7 +119,10 @@ class Lesson {
       case LessonType.video:
         return false;
       case LessonType.liveStream:
-        return contentUrl != null && contentUrl!.isNotEmpty;
+        if (isFermion) {
+          return contentUrl != null && contentUrl!.isNotEmpty;
+        }
+        return uuid != null && uuid!.isNotEmpty;
       case LessonType.notes:
       case LessonType.embedContent:
         return htmlContent != null && htmlContent!.isNotEmpty;
@@ -155,6 +160,7 @@ class Lesson {
       subjectIndex: subjectIndex,
       lessonNumber: lessonNumber,
       totalLessons: totalLessons,
+      uuid: uuid,
       contentUrl: contentUrl,
       bookmarkId: bookmarkId,
       isRunning: isRunning,

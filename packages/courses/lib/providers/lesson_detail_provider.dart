@@ -53,6 +53,7 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       subjectIndex: lessonDto.subjectIndex,
       lessonNumber: lessonDto.lessonNumber,
       totalLessons: lessonDto.totalLessons,
+      uuid: lessonDto.uuid,
       contentUrl: lessonDto.contentUrl,
       image: lessonDto.image,
       isRunning: lessonDto.isRunning,
