@@ -23,6 +23,7 @@ class LessonRouter {
       'notes' ||
       'embedcontent' ||
       'livestream' ||
+      'videoconference' ||
       'attachment' => AppRouteNames.lessonDetail,
       'test' => AppRouteNames.testDetail,
       'assessment' => AppRouteNames.assessmentDetail,

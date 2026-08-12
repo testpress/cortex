@@ -1871,6 +1871,39 @@ class $LessonsTableTable extends LessonsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _conferenceIdMeta = const VerificationMeta(
+    'conferenceId',
+  );
+  @override
+  late final GeneratedColumn<String> conferenceId = GeneratedColumn<String>(
+    'conference_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _passwordMeta = const VerificationMeta(
+    'password',
+  );
+  @override
+  late final GeneratedColumn<String> password = GeneratedColumn<String>(
+    'password',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _accessTokenMeta = const VerificationMeta(
+    'accessToken',
+  );
+  @override
+  late final GeneratedColumn<String> accessToken = GeneratedColumn<String>(
+    'access_token',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isScheduledMeta = const VerificationMeta(
     'isScheduled',
   );
@@ -2134,6 +2167,9 @@ class $LessonsTableTable extends LessonsTable
     showRecordedVideo,
     liveStreamProvider,
     isDetailFetched,
+    conferenceId,
+    password,
+    accessToken,
     isScheduled,
     scheduledMessage,
     attemptsUrl,
@@ -2406,6 +2442,30 @@ class $LessonsTableTable extends LessonsTable
         isDetailFetched.isAcceptableOrUnknown(
           data['is_detail_fetched']!,
           _isDetailFetchedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('conference_id')) {
+      context.handle(
+        _conferenceIdMeta,
+        conferenceId.isAcceptableOrUnknown(
+          data['conference_id']!,
+          _conferenceIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('password')) {
+      context.handle(
+        _passwordMeta,
+        password.isAcceptableOrUnknown(data['password']!, _passwordMeta),
+      );
+    }
+    if (data.containsKey('access_token')) {
+      context.handle(
+        _accessTokenMeta,
+        accessToken.isAcceptableOrUnknown(
+          data['access_token']!,
+          _accessTokenMeta,
         ),
       );
     }
@@ -2701,6 +2761,18 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_detail_fetched'],
       )!,
+      conferenceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}conference_id'],
+      ),
+      password: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}password'],
+      ),
+      accessToken: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}access_token'],
+      ),
       isScheduled: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_scheduled'],
@@ -2823,6 +2895,9 @@ class LessonsTableData extends DataClass
   final bool showRecordedVideo;
   final String? liveStreamProvider;
   final bool isDetailFetched;
+  final String? conferenceId;
+  final String? password;
+  final String? accessToken;
   final bool isScheduled;
   final String? scheduledMessage;
   final String? attemptsUrl;
@@ -2874,6 +2949,9 @@ class LessonsTableData extends DataClass
     required this.showRecordedVideo,
     this.liveStreamProvider,
     required this.isDetailFetched,
+    this.conferenceId,
+    this.password,
+    this.accessToken,
     required this.isScheduled,
     this.scheduledMessage,
     this.attemptsUrl,
@@ -2964,6 +3042,15 @@ class LessonsTableData extends DataClass
       map['live_stream_provider'] = Variable<String>(liveStreamProvider);
     }
     map['is_detail_fetched'] = Variable<bool>(isDetailFetched);
+    if (!nullToAbsent || conferenceId != null) {
+      map['conference_id'] = Variable<String>(conferenceId);
+    }
+    if (!nullToAbsent || password != null) {
+      map['password'] = Variable<String>(password);
+    }
+    if (!nullToAbsent || accessToken != null) {
+      map['access_token'] = Variable<String>(accessToken);
+    }
     map['is_scheduled'] = Variable<bool>(isScheduled);
     if (!nullToAbsent || scheduledMessage != null) {
       map['scheduled_message'] = Variable<String>(scheduledMessage);
@@ -3077,6 +3164,15 @@ class LessonsTableData extends DataClass
           ? const Value.absent()
           : Value(liveStreamProvider),
       isDetailFetched: Value(isDetailFetched),
+      conferenceId: conferenceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(conferenceId),
+      password: password == null && nullToAbsent
+          ? const Value.absent()
+          : Value(password),
+      accessToken: accessToken == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accessToken),
       isScheduled: Value(isScheduled),
       scheduledMessage: scheduledMessage == null && nullToAbsent
           ? const Value.absent()
@@ -3162,6 +3258,9 @@ class LessonsTableData extends DataClass
         json['liveStreamProvider'],
       ),
       isDetailFetched: serializer.fromJson<bool>(json['isDetailFetched']),
+      conferenceId: serializer.fromJson<String?>(json['conferenceId']),
+      password: serializer.fromJson<String?>(json['password']),
+      accessToken: serializer.fromJson<String?>(json['accessToken']),
       isScheduled: serializer.fromJson<bool>(json['isScheduled']),
       scheduledMessage: serializer.fromJson<String?>(json['scheduledMessage']),
       attemptsUrl: serializer.fromJson<String?>(json['attemptsUrl']),
@@ -3226,6 +3325,9 @@ class LessonsTableData extends DataClass
       'showRecordedVideo': serializer.toJson<bool>(showRecordedVideo),
       'liveStreamProvider': serializer.toJson<String?>(liveStreamProvider),
       'isDetailFetched': serializer.toJson<bool>(isDetailFetched),
+      'conferenceId': serializer.toJson<String?>(conferenceId),
+      'password': serializer.toJson<String?>(password),
+      'accessToken': serializer.toJson<String?>(accessToken),
       'isScheduled': serializer.toJson<bool>(isScheduled),
       'scheduledMessage': serializer.toJson<String?>(scheduledMessage),
       'attemptsUrl': serializer.toJson<String?>(attemptsUrl),
@@ -3282,6 +3384,9 @@ class LessonsTableData extends DataClass
     bool? showRecordedVideo,
     Value<String?> liveStreamProvider = const Value.absent(),
     bool? isDetailFetched,
+    Value<String?> conferenceId = const Value.absent(),
+    Value<String?> password = const Value.absent(),
+    Value<String?> accessToken = const Value.absent(),
     bool? isScheduled,
     Value<String?> scheduledMessage = const Value.absent(),
     Value<String?> attemptsUrl = const Value.absent(),
@@ -3341,6 +3446,9 @@ class LessonsTableData extends DataClass
         ? liveStreamProvider.value
         : this.liveStreamProvider,
     isDetailFetched: isDetailFetched ?? this.isDetailFetched,
+    conferenceId: conferenceId.present ? conferenceId.value : this.conferenceId,
+    password: password.present ? password.value : this.password,
+    accessToken: accessToken.present ? accessToken.value : this.accessToken,
     isScheduled: isScheduled ?? this.isScheduled,
     scheduledMessage: scheduledMessage.present
         ? scheduledMessage.value
@@ -3447,6 +3555,13 @@ class LessonsTableData extends DataClass
       isDetailFetched: data.isDetailFetched.present
           ? data.isDetailFetched.value
           : this.isDetailFetched,
+      conferenceId: data.conferenceId.present
+          ? data.conferenceId.value
+          : this.conferenceId,
+      password: data.password.present ? data.password.value : this.password,
+      accessToken: data.accessToken.present
+          ? data.accessToken.value
+          : this.accessToken,
       isScheduled: data.isScheduled.present
           ? data.isScheduled.value
           : this.isScheduled,
@@ -3533,6 +3648,9 @@ class LessonsTableData extends DataClass
           ..write('showRecordedVideo: $showRecordedVideo, ')
           ..write('liveStreamProvider: $liveStreamProvider, ')
           ..write('isDetailFetched: $isDetailFetched, ')
+          ..write('conferenceId: $conferenceId, ')
+          ..write('password: $password, ')
+          ..write('accessToken: $accessToken, ')
           ..write('isScheduled: $isScheduled, ')
           ..write('scheduledMessage: $scheduledMessage, ')
           ..write('attemptsUrl: $attemptsUrl, ')
@@ -3589,6 +3707,9 @@ class LessonsTableData extends DataClass
     showRecordedVideo,
     liveStreamProvider,
     isDetailFetched,
+    conferenceId,
+    password,
+    accessToken,
     isScheduled,
     scheduledMessage,
     attemptsUrl,
@@ -3644,6 +3765,9 @@ class LessonsTableData extends DataClass
           other.showRecordedVideo == this.showRecordedVideo &&
           other.liveStreamProvider == this.liveStreamProvider &&
           other.isDetailFetched == this.isDetailFetched &&
+          other.conferenceId == this.conferenceId &&
+          other.password == this.password &&
+          other.accessToken == this.accessToken &&
           other.isScheduled == this.isScheduled &&
           other.scheduledMessage == this.scheduledMessage &&
           other.attemptsUrl == this.attemptsUrl &&
@@ -3697,6 +3821,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> showRecordedVideo;
   final Value<String?> liveStreamProvider;
   final Value<bool> isDetailFetched;
+  final Value<String?> conferenceId;
+  final Value<String?> password;
+  final Value<String?> accessToken;
   final Value<bool> isScheduled;
   final Value<String?> scheduledMessage;
   final Value<String?> attemptsUrl;
@@ -3749,6 +3876,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.showRecordedVideo = const Value.absent(),
     this.liveStreamProvider = const Value.absent(),
     this.isDetailFetched = const Value.absent(),
+    this.conferenceId = const Value.absent(),
+    this.password = const Value.absent(),
+    this.accessToken = const Value.absent(),
     this.isScheduled = const Value.absent(),
     this.scheduledMessage = const Value.absent(),
     this.attemptsUrl = const Value.absent(),
@@ -3802,6 +3932,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.showRecordedVideo = const Value.absent(),
     this.liveStreamProvider = const Value.absent(),
     this.isDetailFetched = const Value.absent(),
+    this.conferenceId = const Value.absent(),
+    this.password = const Value.absent(),
+    this.accessToken = const Value.absent(),
     this.isScheduled = const Value.absent(),
     this.scheduledMessage = const Value.absent(),
     this.attemptsUrl = const Value.absent(),
@@ -3860,6 +3993,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? showRecordedVideo,
     Expression<String>? liveStreamProvider,
     Expression<bool>? isDetailFetched,
+    Expression<String>? conferenceId,
+    Expression<String>? password,
+    Expression<String>? accessToken,
     Expression<bool>? isScheduled,
     Expression<String>? scheduledMessage,
     Expression<String>? attemptsUrl,
@@ -3915,6 +4051,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (liveStreamProvider != null)
         'live_stream_provider': liveStreamProvider,
       if (isDetailFetched != null) 'is_detail_fetched': isDetailFetched,
+      if (conferenceId != null) 'conference_id': conferenceId,
+      if (password != null) 'password': password,
+      if (accessToken != null) 'access_token': accessToken,
       if (isScheduled != null) 'is_scheduled': isScheduled,
       if (scheduledMessage != null) 'scheduled_message': scheduledMessage,
       if (attemptsUrl != null) 'attempts_url': attemptsUrl,
@@ -3974,6 +4113,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? showRecordedVideo,
     Value<String?>? liveStreamProvider,
     Value<bool>? isDetailFetched,
+    Value<String?>? conferenceId,
+    Value<String?>? password,
+    Value<String?>? accessToken,
     Value<bool>? isScheduled,
     Value<String?>? scheduledMessage,
     Value<String?>? attemptsUrl,
@@ -4027,6 +4169,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       showRecordedVideo: showRecordedVideo ?? this.showRecordedVideo,
       liveStreamProvider: liveStreamProvider ?? this.liveStreamProvider,
       isDetailFetched: isDetailFetched ?? this.isDetailFetched,
+      conferenceId: conferenceId ?? this.conferenceId,
+      password: password ?? this.password,
+      accessToken: accessToken ?? this.accessToken,
       isScheduled: isScheduled ?? this.isScheduled,
       scheduledMessage: scheduledMessage ?? this.scheduledMessage,
       attemptsUrl: attemptsUrl ?? this.attemptsUrl,
@@ -4147,6 +4292,15 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     if (isDetailFetched.present) {
       map['is_detail_fetched'] = Variable<bool>(isDetailFetched.value);
     }
+    if (conferenceId.present) {
+      map['conference_id'] = Variable<String>(conferenceId.value);
+    }
+    if (password.present) {
+      map['password'] = Variable<String>(password.value);
+    }
+    if (accessToken.present) {
+      map['access_token'] = Variable<String>(accessToken.value);
+    }
     if (isScheduled.present) {
       map['is_scheduled'] = Variable<bool>(isScheduled.value);
     }
@@ -4252,6 +4406,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('showRecordedVideo: $showRecordedVideo, ')
           ..write('liveStreamProvider: $liveStreamProvider, ')
           ..write('isDetailFetched: $isDetailFetched, ')
+          ..write('conferenceId: $conferenceId, ')
+          ..write('password: $password, ')
+          ..write('accessToken: $accessToken, ')
           ..write('isScheduled: $isScheduled, ')
           ..write('scheduledMessage: $scheduledMessage, ')
           ..write('attemptsUrl: $attemptsUrl, ')
@@ -17822,6 +17979,9 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> showRecordedVideo,
       Value<String?> liveStreamProvider,
       Value<bool> isDetailFetched,
+      Value<String?> conferenceId,
+      Value<String?> password,
+      Value<String?> accessToken,
       Value<bool> isScheduled,
       Value<String?> scheduledMessage,
       Value<String?> attemptsUrl,
@@ -17876,6 +18036,9 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> showRecordedVideo,
       Value<String?> liveStreamProvider,
       Value<bool> isDetailFetched,
+      Value<String?> conferenceId,
+      Value<String?> password,
+      Value<String?> accessToken,
       Value<bool> isScheduled,
       Value<String?> scheduledMessage,
       Value<String?> attemptsUrl,
@@ -18059,6 +18222,21 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get isDetailFetched => $composableBuilder(
     column: $table.isDetailFetched,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get conferenceId => $composableBuilder(
+    column: $table.conferenceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get password => $composableBuilder(
+    column: $table.password,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accessToken => $composableBuilder(
+    column: $table.accessToken,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18322,6 +18500,21 @@ class $$LessonsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get conferenceId => $composableBuilder(
+    column: $table.conferenceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get password => $composableBuilder(
+    column: $table.password,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accessToken => $composableBuilder(
+    column: $table.accessToken,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isScheduled => $composableBuilder(
     column: $table.isScheduled,
     builder: (column) => ColumnOrderings(column),
@@ -18560,6 +18753,19 @@ class $$LessonsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get conferenceId => $composableBuilder(
+    column: $table.conferenceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get password =>
+      $composableBuilder(column: $table.password, builder: (column) => column);
+
+  GeneratedColumn<String> get accessToken => $composableBuilder(
+    column: $table.accessToken,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get isScheduled => $composableBuilder(
     column: $table.isScheduled,
     builder: (column) => column,
@@ -18710,6 +18916,9 @@ class $$LessonsTableTableTableManager
                 Value<bool> showRecordedVideo = const Value.absent(),
                 Value<String?> liveStreamProvider = const Value.absent(),
                 Value<bool> isDetailFetched = const Value.absent(),
+                Value<String?> conferenceId = const Value.absent(),
+                Value<String?> password = const Value.absent(),
+                Value<String?> accessToken = const Value.absent(),
                 Value<bool> isScheduled = const Value.absent(),
                 Value<String?> scheduledMessage = const Value.absent(),
                 Value<String?> attemptsUrl = const Value.absent(),
@@ -18762,6 +18971,9 @@ class $$LessonsTableTableTableManager
                 showRecordedVideo: showRecordedVideo,
                 liveStreamProvider: liveStreamProvider,
                 isDetailFetched: isDetailFetched,
+                conferenceId: conferenceId,
+                password: password,
+                accessToken: accessToken,
                 isScheduled: isScheduled,
                 scheduledMessage: scheduledMessage,
                 attemptsUrl: attemptsUrl,
@@ -18816,6 +19028,9 @@ class $$LessonsTableTableTableManager
                 Value<bool> showRecordedVideo = const Value.absent(),
                 Value<String?> liveStreamProvider = const Value.absent(),
                 Value<bool> isDetailFetched = const Value.absent(),
+                Value<String?> conferenceId = const Value.absent(),
+                Value<String?> password = const Value.absent(),
+                Value<String?> accessToken = const Value.absent(),
                 Value<bool> isScheduled = const Value.absent(),
                 Value<String?> scheduledMessage = const Value.absent(),
                 Value<String?> attemptsUrl = const Value.absent(),
@@ -18868,6 +19083,9 @@ class $$LessonsTableTableTableManager
                 showRecordedVideo: showRecordedVideo,
                 liveStreamProvider: liveStreamProvider,
                 isDetailFetched: isDetailFetched,
+                conferenceId: conferenceId,
+                password: password,
+                accessToken: accessToken,
                 isScheduled: isScheduled,
                 scheduledMessage: scheduledMessage,
                 attemptsUrl: attemptsUrl,

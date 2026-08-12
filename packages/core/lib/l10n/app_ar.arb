@@ -1181,5 +1181,10 @@
   "liveStreamStartTime": "وقت البدء",
   "liveStreamAttendClass": "حضور الحصة",
   "liveStreamNoRecordingTitle": "التسجيل غير متاح",
-  "liveStreamNoRecordingMessage": "لا يوجد تسجيل متاح لهذه الحصة."
+  "liveStreamNoRecordingMessage": "لا يوجد تسجيل متاح لهذه الحصة.",
+  "liveStreamNotStartedTitle": "لم تبدأ بعد",
+  "liveStreamWaitingForHost": "بانتظار بدء المحاضر للمؤتمر المرئي",
+  "liveStreamEndedTitle": "انتهت",
+  "liveStreamEndedMessage": "لقد انتهى هذا الاجتماع.",
+  "liveStreamScheduledDefault": "تم جدولة هذا المحتوى"
 }

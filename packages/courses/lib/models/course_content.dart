@@ -54,6 +54,9 @@ class Lesson {
     this.end,
     this.hasEnded = false,
     this.uuid,
+    this.conferenceId,
+    this.password,
+    this.accessToken,
   });
 
   final String id;
@@ -109,6 +112,15 @@ class Lesson {
   final bool allowDownload;
   final bool watermarkBeforeDownload;
   final ExamDto? exam;
+
+  // Video Conference fields
+  final String? conferenceId;
+  final String? password;
+  final String? accessToken;
+
+  /// Whether this live stream or conference uses Zoom.
+  bool get isZoom =>
+      liveStreamProvider?.toLowerCase().contains('zoom') ?? false;
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -194,6 +206,9 @@ class Lesson {
       start: start,
       end: end,
       hasEnded: hasEnded,
+      conferenceId: conferenceId,
+      password: password,
+      accessToken: accessToken,
     );
   }
 }

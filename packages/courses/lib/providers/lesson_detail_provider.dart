@@ -86,6 +86,9 @@ Stream<Lesson?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       exam: lessonDto.exam,
       allowDownload: lessonDto.allowDownload,
       watermarkBeforeDownload: lessonDto.watermarkBeforeDownload,
+      conferenceId: lessonDto.conferenceId,
+      password: lessonDto.password,
+      accessToken: lessonDto.accessToken,
     );
   });
 

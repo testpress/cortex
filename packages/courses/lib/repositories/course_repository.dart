@@ -1223,6 +1223,9 @@ class CourseRepository {
         streamStatus: row.streamStatus,
         showRecordedVideo: row.showRecordedVideo,
         liveStreamProvider: row.liveStreamProvider,
+        conferenceId: row.conferenceId,
+        password: row.password,
+        accessToken: row.accessToken,
         isScheduled: row.isScheduled,
         scheduledMessage: row.scheduledMessage,
         attemptsUrl: row.attemptsUrl,
@@ -1316,6 +1319,14 @@ class CourseRepository {
         showRecordedVideo: Value(dto.showRecordedVideo),
         liveStreamProvider: dto.liveStreamProvider != null
             ? Value(dto.liveStreamProvider)
+            : const Value.absent(),
+        conferenceId: dto.conferenceId != null
+            ? Value(dto.conferenceId)
+            : const Value.absent(),
+        password:
+            dto.password != null ? Value(dto.password) : const Value.absent(),
+        accessToken: dto.accessToken != null
+            ? Value(dto.accessToken)
             : const Value.absent(),
         isScheduled: Value(dto.isScheduled),
         scheduledMessage: dto.scheduledMessage != null

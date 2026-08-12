@@ -5578,6 +5578,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recording is available for this class.'**
   String get liveStreamNoRecordingMessage;
+
+  /// No description provided for @liveStreamNotStartedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not started'**
+  String get liveStreamNotStartedTitle;
+
+  /// No description provided for @liveStreamWaitingForHost.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for host to start the video conference'**
+  String get liveStreamWaitingForHost;
+
+  /// No description provided for @liveStreamEndedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get liveStreamEndedTitle;
+
+  /// No description provided for @liveStreamEndedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This meeting has ended.'**
+  String get liveStreamEndedMessage;
+
+  /// No description provided for @liveStreamScheduledDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'This content is scheduled'**
+  String get liveStreamScheduledDefault;
 }
 
 class _AppLocalizationsDelegate

@@ -9,6 +9,7 @@ import '../widgets/lesson_detail/lesson_web_view.dart';
 import '../widgets/lesson_detail/video_lesson_viewer.dart';
 import '../widgets/lesson_detail/live_stream_viewer.dart';
 import '../widgets/lesson_detail/attachment_viewer.dart';
+import '../widgets/lesson_detail/video_conference_viewer.dart';
 import '../utils/pdf_cache_service.dart';
 import '../widgets/lesson_detail/ask_doubt_fab.dart';
 import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
@@ -326,6 +327,22 @@ class _LessonDetailOrchestratorState
             onNext: onNext,
             onPrevious: onPrevious,
           ),
+        );
+      case LessonType.videoConference:
+        final isEnded = lesson.streamStatus?.toLowerCase() == 'completed' ||
+            lesson.streamStatus?.toLowerCase() == 'ended';
+        if (isEnded && lesson.isZoom && lesson.showRecordedVideo) {
+          return VideoLessonViewer(
+            lesson: lesson,
+            onComplete: _markAsCompleted,
+            onOpenMcqFilterSheet: () => _isMcqFilterSheetOpen.value = true,
+            mcqDifficulty: _mcqDifficulty,
+            mcqQuestionCount: _mcqQuestionCount,
+          );
+        }
+        return VideoConferenceViewer(
+          lesson: lesson,
+          onComplete: _markAsCompleted,
         );
       case LessonType.attachment:
         if (lesson.contentUrl != null) {

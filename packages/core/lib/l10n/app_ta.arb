@@ -1415,5 +1415,10 @@
   "liveStreamStartTime": "தொடக்க நேரம்",
   "liveStreamAttendClass": "வகுப்பில் கலந்துகொள்ளவும்",
   "liveStreamNoRecordingTitle": "பதிவு கிடைக்கவில்லை",
-  "liveStreamNoRecordingMessage": "இந்த வகுப்பிற்கு நேரலை பதிவு எதுவும் இல்லை."
+  "liveStreamNoRecordingMessage": "இந்த வகுப்பிற்கு நேரலை பதிவு எதுவும் இல்லை.",
+  "liveStreamNotStartedTitle": "தொடங்கவில்லை",
+  "liveStreamWaitingForHost": "தொகுப்பாளர் வீடியோ மாநாட்டைத் தொடங்குவதற்காகக் காத்திருக்கிறது",
+  "liveStreamEndedTitle": "முடிவடைந்தது",
+  "liveStreamEndedMessage": "இந்தக் கூட்டம் முடிவடைந்தது.",
+  "liveStreamScheduledDefault": "இந்த உள்ளடக்கம் திட்டமிடப்பட்டுள்ளது"
 }

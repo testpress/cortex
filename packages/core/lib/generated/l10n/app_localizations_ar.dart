@@ -3089,4 +3089,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get liveStreamNoRecordingMessage => 'لا يوجد تسجيل متاح لهذه الحصة.';
+
+  @override
+  String get liveStreamNotStartedTitle => 'لم تبدأ بعد';
+
+  @override
+  String get liveStreamWaitingForHost => 'بانتظار بدء المحاضر للمؤتمر المرئي';
+
+  @override
+  String get liveStreamEndedTitle => 'انتهت';
+
+  @override
+  String get liveStreamEndedMessage => 'لقد انتهى هذا الاجتماع.';
+
+  @override
+  String get liveStreamScheduledDefault => 'تم جدولة هذا المحتوى';
 }

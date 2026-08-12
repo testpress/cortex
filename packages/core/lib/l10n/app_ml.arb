@@ -1181,5 +1181,10 @@
   "liveStreamStartTime": "ആരംഭ സമയം",
   "liveStreamAttendClass": "ക്ലാസ്സിൽ പങ്കെടുക്കുക",
   "liveStreamNoRecordingTitle": "റെക്കോർഡിംഗ് ലഭ്യമല്ല",
-  "liveStreamNoRecordingMessage": "ഈ ക്ലാസ്സിന് റെക്കോർഡിംഗ് ലഭ്യമല്ല."
+  "liveStreamNoRecordingMessage": "ഈ ക്ലാസ്സിന് റെക്കോർഡിംഗ് ലഭ്യമല്ല.",
+  "liveStreamNotStartedTitle": "ആരംഭിച്ചിട്ടില്ല",
+  "liveStreamWaitingForHost": "ഹോസ്റ്റ് വീഡിയോ കോൺഫറൻസ് ആരംഭിക്കുന്നതിനായി കാത്തിരിക്കുന്നു",
+  "liveStreamEndedTitle": "അവസാനിച്ചു",
+  "liveStreamEndedMessage": "ഈ മീറ്റിംഗ് അവസാനിച്ചു.",
+  "liveStreamScheduledDefault": "ഈ ഉള്ളടക്കം ഷെഡ്യൂൾ ചെയ്തിരിക്കുന്നു"
 }

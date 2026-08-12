@@ -3136,4 +3136,21 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get liveStreamNoRecordingMessage =>
       'இந்த வகுப்பிற்கு நேரலை பதிவு எதுவும் இல்லை.';
+
+  @override
+  String get liveStreamNotStartedTitle => 'தொடங்கவில்லை';
+
+  @override
+  String get liveStreamWaitingForHost =>
+      'தொகுப்பாளர் வீடியோ மாநாட்டைத் தொடங்குவதற்காகக் காத்திருக்கிறது';
+
+  @override
+  String get liveStreamEndedTitle => 'முடிவடைந்தது';
+
+  @override
+  String get liveStreamEndedMessage => 'இந்தக் கூட்டம் முடிவடைந்தது.';
+
+  @override
+  String get liveStreamScheduledDefault =>
+      'இந்த உள்ளடக்கம் திட்டமிடப்பட்டுள்ளது';
 }
