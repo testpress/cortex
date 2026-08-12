@@ -418,10 +418,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileNotifications => 'التنبيهات';
 
   @override
-  String get notificationsManagePreferences =>
-      'إدارة تفضيلات التنبيهات الخاصة بك';
-
-  @override
   String get notificationsLiveClassReminders => 'تذكيرات الحصص المباشرة';
 
   @override
@@ -471,10 +467,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logoutButtonLabel => 'تسجيل الخروج';
-
-  @override
-  String get certificatesSubtitleAvailable =>
-      'اعرض وحمّل شهادات إكمال الدورات الخاصة بك';
 
   @override
   String get certificatesEmptyPaidNewDesc => 'لا توجد شهادات متاحة بعد';

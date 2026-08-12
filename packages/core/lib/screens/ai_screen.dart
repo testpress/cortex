@@ -19,7 +19,6 @@ class AiScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.paddingOf(context);
     final user = ref.watch(userProvider).valueOrNull;
     final userName = user?.name;
 
@@ -28,31 +27,7 @@ class AiScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              border: Border(
-                bottom: BorderSide(color: design.colors.divider, width: 1),
-              ),
-            ),
-            padding: EdgeInsets.fromLTRB(
-              padding.left > design.spacing.md
-                  ? padding.left
-                  : design.spacing.md,
-              padding.top + design.spacing.md,
-              padding.right > design.spacing.md
-                  ? padding.right
-                  : design.spacing.md,
-              design.spacing.md,
-            ),
-            child: AppSemantics.header(
-              label: l10n.aiSupportTitle,
-              child: AppText.headline(
-                l10n.aiSupportTitle,
-                color: design.colors.textPrimary,
-              ),
-            ),
-          ),
+          SectionHeader(title: l10n.aiSupportTitle),
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.symmetric(

@@ -31,23 +31,6 @@ class NotificationsScreen extends ConsumerWidget {
                 design.spacing.xxl,
               ),
               children: [
-                AppText.xl2(
-                  l10n.profileNotifications,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    height: 1.33,
-                  ),
-                ),
-                SizedBox(height: design.spacing.xs),
-                AppText.sm(
-                  l10n.notificationsManagePreferences,
-                  color: design.colors.textSecondary,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    height: 1.4,
-                  ),
-                ),
-                SizedBox(height: design.spacing.lg),
                 AppCard(
                   showShadow: true,
                   padding: EdgeInsets.zero,
@@ -135,54 +118,11 @@ class _NotificationsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.paddingOf(context);
 
-    return SizedBox(
-      width: double.infinity,
-      child: Container(
-        padding: EdgeInsets.fromLTRB(
-          padding.left > design.spacing.md ? padding.left : design.spacing.md,
-          padding.top + design.spacing.md,
-          padding.right > design.spacing.md ? padding.right : design.spacing.md,
-          design.spacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: design.colors.card,
-          border: Border(bottom: BorderSide(color: design.colors.border)),
-        ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: AppSemantics.button(
-            label: l10n.curriculumBackButton,
-            onTap: onBack,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: onBack,
-              child: SizedBox(
-                height: design.iconSize.lg + design.spacing.xs,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.chevronLeft,
-                      size: design.iconSize.md,
-                      color: design.colors.textPrimary,
-                    ),
-                    SizedBox(width: design.spacing.xs),
-                    AppText.label(
-                      l10n.curriculumBackButton,
-                      color: design.colors.textPrimary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+    return AppHeader(
+      title: l10n.profileNotifications,
+      leading: AppBackButton(onTap: onBack),
     );
   }
 }

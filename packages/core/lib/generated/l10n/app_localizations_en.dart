@@ -418,10 +418,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileNotifications => 'Notifications';
 
   @override
-  String get notificationsManagePreferences =>
-      'Manage your notification preferences';
-
-  @override
   String get notificationsLiveClassReminders => 'Live class reminders';
 
   @override
@@ -470,10 +466,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logoutButtonLabel => 'Log out';
-
-  @override
-  String get certificatesSubtitleAvailable =>
-      'View and download your course completion certificates';
 
   @override
   String get certificatesEmptyPaidNewDesc => 'No certificates available yet';

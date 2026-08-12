@@ -60,64 +60,11 @@ class _CertificatesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.paddingOf(context);
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        padding.left > design.spacing.md ? padding.left : design.spacing.md,
-        padding.top + design.spacing.md,
-        padding.right > design.spacing.md ? padding.right : design.spacing.md,
-        design.spacing.md,
-      ),
-      decoration: _headerDecoration(design),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: _BackButton(label: l10n.curriculumBackButton, onBack: onBack),
-      ),
-    );
-  }
-
-  BoxDecoration _headerDecoration(DesignConfig design) => BoxDecoration(
-    color: design.colors.card,
-    border: Border(bottom: BorderSide(color: design.colors.border)),
-  );
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton({required this.label, required this.onBack});
-
-  final String label;
-  final VoidCallback onBack;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return AppSemantics.button(
-      label: label,
-      onTap: onBack,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onBack,
-        child: SizedBox(
-          height: design.iconSize.lg + design.spacing.xs,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                LucideIcons.chevronLeft,
-                size: design.iconSize.md,
-                color: design.colors.textPrimary,
-              ),
-              SizedBox(width: design.spacing.xs),
-              AppText.label(label, color: design.colors.textPrimary),
-            ],
-          ),
-        ),
-      ),
+    return AppHeader(
+      title: l10n.profileCertificates,
+      leading: AppBackButton(onTap: onBack),
     );
   }
 }
@@ -151,38 +98,11 @@ class _CertificatesBody extends StatelessWidget {
         design.spacing.xxl,
       ),
       children: [
-        const _ScreenTitle(),
-        SizedBox(height: design.spacing.lg),
         _CertificateList(
           certificates: certificates,
           onContinueCourse: onContinueCourse,
           onOpenPreview: onOpenPreview,
           onDownloadCertificate: onDownloadCertificate,
-        ),
-      ],
-    );
-  }
-}
-
-class _ScreenTitle extends StatelessWidget {
-  const _ScreenTitle();
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppText.xl2(
-          l10n.profileCertificates,
-          style: const TextStyle(fontWeight: FontWeight.w700, height: 1.33),
-        ),
-        SizedBox(height: design.spacing.xs),
-        AppText.sm(
-          l10n.certificatesSubtitleAvailable,
-          color: design.colors.textSecondary,
         ),
       ],
     );

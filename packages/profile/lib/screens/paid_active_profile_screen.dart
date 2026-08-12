@@ -41,14 +41,9 @@ class ProfilePage extends ConsumerWidget {
       color: design.colors.canvas,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final isLandscape = constraints.maxWidth > constraints.maxHeight;
-
           return Column(
             children: [
-              DashboardHeader(
-                title: l10n.profileTabTitle,
-                isLandscape: isLandscape,
-              ),
+              SectionHeader(title: l10n.profileTabTitle),
               Expanded(
                 child: AppScroll(
                   padding: EdgeInsets.only(

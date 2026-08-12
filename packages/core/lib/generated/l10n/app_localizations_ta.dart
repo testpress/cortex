@@ -424,10 +424,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get profileNotifications => 'அறிவிப்புகள்';
 
   @override
-  String get notificationsManagePreferences =>
-      'உங்கள் அறிவிப்பு விருப்பங்களை நிர்வகிக்கவும்';
-
-  @override
   String get notificationsLiveClassReminders => 'நேரலை வகுப்பு நினைவூட்டல்கள்';
 
   @override
@@ -478,10 +474,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get logoutButtonLabel => 'வெளியேறு';
-
-  @override
-  String get certificatesSubtitleAvailable =>
-      'உங்கள் பாடநெறி முடித்த சான்றிதழ்களைப் பார்த்து பதிவிறக்கவும்';
 
   @override
   String get certificatesEmptyPaidNewDesc =>

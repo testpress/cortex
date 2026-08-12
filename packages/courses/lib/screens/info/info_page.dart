@@ -90,30 +90,13 @@ class _InfoPageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final padding = MediaQuery.paddingOf(context);
 
-    return Container(
-      width: double.infinity,
-      color: design.colors.card,
-      padding: EdgeInsets.fromLTRB(
-        padding.left > design.spacing.md ? padding.left : design.spacing.md,
-        padding.top + design.spacing.md,
-        padding.right > design.spacing.md ? padding.right : design.spacing.md,
-        design.spacing.md,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText.headline(
-            l10n.infoPageTitle,
-            color: design.colors.textPrimary,
-          ),
-          SizedBox(height: design.spacing.xs),
-          AppText.body(
-            l10n.infoPageSubtitle,
-            color: design.colors.textSecondary,
-          ),
-        ],
+    return SectionHeader(
+      title: l10n.infoPageTitle,
+      secondaryContentSpacing: design.spacing.xs,
+      secondaryContent: AppText.body(
+        l10n.infoPageSubtitle,
+        color: design.colors.textSecondary,
       ),
     );
   }

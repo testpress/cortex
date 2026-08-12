@@ -420,10 +420,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get profileNotifications => 'നോട്ടിഫിക്കേഷനുകൾ';
 
   @override
-  String get notificationsManagePreferences =>
-      'നിങ്ങളുടെ നോട്ടിഫിക്കേഷൻ മുൻഗണനകൾ നിയന്ത്രിക്കുക';
-
-  @override
   String get notificationsLiveClassReminders => 'ലൈവ് ക്ലാസ് റിമൈൻഡറുകൾ';
 
   @override
@@ -474,10 +470,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get logoutButtonLabel => 'ലോഗൗട്ട്';
-
-  @override
-  String get certificatesSubtitleAvailable =>
-      'നിങ്ങളുടെ കോഴ്‌സ് പൂർത്തീകരണ സർട്ടിഫിക്കറ്റുകൾ കാണുകയും ഡൗൺലോഡ് ചെയ്യുകയും ചെയ്യുക';
 
   @override
   String get certificatesEmptyPaidNewDesc =>
