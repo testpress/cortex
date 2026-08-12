@@ -192,7 +192,8 @@ void main() {
 
         final dto = LessonDto.fromJson(json);
         expect(dto.liveStreamProvider, 'TpStreams');
-        expect(dto.contentUrl, 'tpstreams-uuid');
+        expect(dto.uuid, 'tpstreams-uuid');
+        expect(dto.contentUrl, isNull);
       },
     );
 
@@ -206,7 +207,8 @@ void main() {
 
       final dto = LessonDto.fromJson(json);
       expect(dto.liveStreamProvider, isNull);
-      expect(dto.contentUrl, 'some-uuid');
+      expect(dto.uuid, 'some-uuid');
+      expect(dto.contentUrl, isNull);
     });
   });
 }

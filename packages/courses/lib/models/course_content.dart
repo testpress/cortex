@@ -119,7 +119,10 @@ class Lesson {
       case LessonType.video:
         return false;
       case LessonType.liveStream:
-        return contentUrl != null && contentUrl!.isNotEmpty;
+        if (isFermion) {
+          return contentUrl != null && contentUrl!.isNotEmpty;
+        }
+        return uuid != null && uuid!.isNotEmpty;
       case LessonType.notes:
       case LessonType.embedContent:
         return htmlContent != null && htmlContent!.isNotEmpty;

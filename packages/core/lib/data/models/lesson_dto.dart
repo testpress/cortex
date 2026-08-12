@@ -32,8 +32,7 @@ class LessonDto {
   final String? chapterTitle;
 
   final String? uuid; // Root-level content UUID from json['uuid']
-  final String?
-  contentUrl; // Always a URL — join URL, stream URL, PDF URL, etc.
+  final String? contentUrl;
   final String? subtitle;
   final String? subjectName;
   final int? subjectIndex;
@@ -93,7 +92,12 @@ class LessonDto {
       case LessonType.video:
         return uuid != null && uuid!.isNotEmpty;
       case LessonType.liveStream:
-        return contentUrl != null && contentUrl!.isNotEmpty;
+        final isFermion =
+            liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
+        if (isFermion) {
+          return contentUrl != null && contentUrl!.isNotEmpty;
+        }
+        return uuid != null && uuid!.isNotEmpty;
       case LessonType.notes:
       case LessonType.embedContent:
         return htmlContent != null && htmlContent!.isNotEmpty;
@@ -562,15 +566,11 @@ class LessonDto {
     final isFermion =
         provider != null && provider.toLowerCase().contains('fermion');
 
-    // Fermion uses the embed URL directly; TpStreams/others use the UUID as
-    // the asset ID expected by the TpStreams player SDK.
+    // Fermion uses the embed URL directly; TpStreams/others source the TPStreams
+    // asset id from the root `uuid` (captured in `_parseBase`), so `contentUrl`
+    // stays a real URL (or null).
     final String? fermionUrl = liveStream?['stream_url'] as String?;
-    final String? tpstreamsUrl =
-        json['uuid']?.toString() ??
-        liveStream?['stream_url']?.toString() ??
-        json['live_stream_url']?.toString() ??
-        json['url']?.toString();
-    final contentUrl = isFermion ? fermionUrl : tpstreamsUrl;
+    final contentUrl = isFermion ? fermionUrl : null;
 
     // For Fermion, the raw duration value from the backend is in minutes (e.g., 60 = 60 minutes).
     // For other providers (like TpStreams), the raw value is parsed as seconds in _parseBase.
