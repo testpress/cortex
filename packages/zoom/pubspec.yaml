@@ -12,7 +12,8 @@ dependencies:
     sdk: flutter
   core:
     path: ../core
-  flutter_zoom_meeting_sdk: ^0.0.11
+  plugin_platform_interface: ^2.1.8
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +24,9 @@ flutter:
   plugin:
     platforms:
       android:
+        package: com.testpress.flutter_zoom_meeting_sdk
+        pluginClass: FlutterZoomMeetingSdkPlugin
         dartPluginClass: ZoomPlugin
       ios:
+        pluginClass: FlutterZoomMeetingSdkPlugin
         dartPluginClass: ZoomPlugin

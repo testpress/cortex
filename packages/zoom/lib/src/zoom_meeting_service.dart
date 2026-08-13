@@ -1,18 +1,52 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:core/core.dart';
-import 'package:flutter_zoom_meeting_sdk/enums/status_zoom_error.dart';
-import 'package:flutter_zoom_meeting_sdk/flutter_zoom_meeting_sdk.dart';
-import 'package:flutter_zoom_meeting_sdk/models/zoom_meeting_sdk_request.dart';
+import 'sdk/enums/status_zoom_error.dart';
+import 'sdk/flutter_zoom_meeting_sdk.dart';
+import 'sdk/models/zoom_meeting_sdk_request.dart';
 
-/// Service class to orchestrate Zoom Meeting SDK initialization, authentication, and joining.
+/// Service class to orchestrate Zoom Meeting SDK initialization,
+/// authentication, and joining using lazy initialization.
+///
+/// The SDK is initialized and authenticated only on the first call to
+/// [joinMeeting]. Subsequent calls reuse the existing session, joining
+/// the meeting instantly without re-initializing.
 class ZoomMeetingService implements MeetingService {
-  ZoomMeetingService() : _zoomSdk = FlutterZoomMeetingSdk();
+  ZoomMeetingService() : _zoomSdk = FlutterZoomMeetingSdk() {
+    _setupAuthListener();
+  }
 
   final FlutterZoomMeetingSdk _zoomSdk;
   StreamSubscription? _authSubscription;
 
-  /// Initializes the SDK, authenticates with [jwtToken], and automatically joins the meeting on success.
+  bool _isSdkInitialized = false;
+  bool _isSdkAuthenticated = false;
+
+  /// Holds the meeting request that is waiting for auth to complete.
+  ZoomMeetingSdkRequest? _pendingMeetingRequest;
+
+  /// Sets up the authentication callback listener once during construction.
+  void _setupAuthListener() {
+    _authSubscription = _zoomSdk.onAuthenticationReturn.listen((event) async {
+      final status = event.params?.statusEnum;
+      debugPrint(
+          '[ZoomMeetingService] Auth callback received with status: $status');
+
+      if (status == StatusZoomError.success) {
+        _isSdkAuthenticated = true;
+        _joinPendingMeeting();
+      } else {
+        _isSdkAuthenticated = false;
+        debugPrint('[ZoomMeetingService] Zoom authentication failed: $status');
+      }
+    });
+  }
+
+  /// Lazily initializes the SDK, authenticates with [jwtToken], and joins
+  /// the meeting identified by [meetingNumber] and [password].
+  ///
+  /// On the first invocation the SDK is initialized and authenticated.
+  /// Subsequent invocations reuse the existing session and join instantly.
   @override
   Future<void> joinMeeting({
     required String jwtToken,
@@ -20,55 +54,65 @@ class ZoomMeetingService implements MeetingService {
     required String password,
     required String displayName,
   }) async {
+    _pendingMeetingRequest = ZoomMeetingSdkRequest(
+      meetingNumber: meetingNumber,
+      password: password,
+      displayName: displayName,
+    );
+
     try {
-      debugPrint('[ZoomMeetingService] Initializing Zoom SDK...');
-      await _zoomSdk.initZoom();
+      // Step 1: Initialize the native SDK layer (once per app session).
+      if (!_isSdkInitialized) {
+        debugPrint('[ZoomMeetingService] Initializing Zoom SDK...');
+        await _zoomSdk.initZoom();
+        _isSdkInitialized = true;
+      }
 
-      debugPrint('[ZoomMeetingService] Authenticating Zoom SDK...');
-      await _zoomSdk.authZoom(jwtToken: jwtToken);
-
-      // Cancel any previous subscription
-      await _authSubscription?.cancel();
-
-      _authSubscription = _zoomSdk.onAuthenticationReturn.listen((event) async {
-        final status = event.params?.statusEnum;
-        debugPrint(
-            '[ZoomMeetingService] Authentication callback received with status: $status');
-
-        if (status == StatusZoomError.success) {
-          debugPrint(
-              '[ZoomMeetingService] Zoom authenticated successfully. Joining meeting: $meetingNumber');
-          try {
-            await _zoomSdk.joinMeeting(
-              ZoomMeetingSdkRequest(
-                meetingNumber: meetingNumber,
-                password: password,
-                displayName: displayName,
-              ),
-            );
-          } catch (e) {
-            debugPrint('[ZoomMeetingService] Failed to join meeting: $e');
-          }
-        } else {
-          debugPrint(
-              '[ZoomMeetingService] Zoom authentication failed: $status');
-        }
-      });
+      // Step 2: Authenticate (once per token). The auth listener will
+      // automatically call _joinPendingMeeting on success.
+      if (!_isSdkAuthenticated) {
+        debugPrint('[ZoomMeetingService] Authenticating Zoom SDK...');
+        await _zoomSdk.authZoom(jwtToken: jwtToken);
+      } else {
+        // Already authenticated — join immediately.
+        _joinPendingMeeting();
+      }
     } catch (e) {
-      debugPrint('[ZoomMeetingService] Error starting Zoom meeting: $e');
+      debugPrint('[ZoomMeetingService] Error during joinMeeting flow: $e');
+    }
+  }
+
+  /// Joins the meeting stored in [_pendingMeetingRequest].
+  Future<void> _joinPendingMeeting() async {
+    final request = _pendingMeetingRequest;
+    if (request == null) return;
+
+    try {
+      debugPrint(
+          '[ZoomMeetingService] Joining meeting: ${request.meetingNumber}');
+      await _zoomSdk.joinMeeting(request);
+      _pendingMeetingRequest = null;
+    } catch (e) {
+      debugPrint('[ZoomMeetingService] Failed to join meeting: $e');
     }
   }
 
   /// Cleans up subscriptions and uninitializes the Zoom SDK.
   Future<void> dispose() async {
-    debugPrint('[ZoomMeetingService] Cleaning up resources...');
+    debugPrint('[ZoomMeetingService] Disposing Zoom service...');
     await _authSubscription?.cancel();
     _authSubscription = null;
-    try {
-      await _zoomSdk.unInitZoom();
-    } catch (e) {
-      debugPrint(
-          '[ZoomMeetingService] Error during Zoom SDK uninitialization: $e');
+
+    if (_isSdkInitialized) {
+      try {
+        await _zoomSdk.unInitZoom();
+      } catch (e) {
+        debugPrint(
+            '[ZoomMeetingService] Error during SDK uninitialization: $e');
+      }
     }
+
+    _isSdkInitialized = false;
+    _isSdkAuthenticated = false;
   }
 }

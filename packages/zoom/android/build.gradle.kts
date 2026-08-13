@@ -28,8 +28,10 @@ plugins {
     id("com.android.library")
 }
 
+apply(from = "libs/build.gradle")
+
 android {
-    namespace = "com.example.zoom"
+    namespace = "com.testpress.flutter_zoom_meeting_sdk"
 
     compileSdk = 36
 
@@ -76,6 +78,12 @@ kotlin {
 
 dependencies {
     implementation(name = "mobilertc", ext = "aar")
+
+    val sdkDependenciesList = project.extensions.extraProperties["sdkDependenciesList"] as List<*>
+    for (dep in sdkDependenciesList) {
+        implementation(dep!!)
+    }
+
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:5.0.0")
 }
