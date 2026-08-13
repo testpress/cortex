@@ -7,6 +7,8 @@ import 'package:core/data/data.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:no_screenshot/secure_widget.dart';
+import 'package:no_screenshot/overlay_mode.dart';
 import 'lesson_detail_skeleton.dart';
 import 'watermark_overlay.dart';
 
@@ -193,18 +195,21 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       return _buildError();
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        _viewportHeight = constraints.maxHeight;
-        _viewportWidth = constraints.maxWidth;
+    return SecureWidget(
+      mode: OverlayMode.secure,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          _viewportHeight = constraints.maxHeight;
+          _viewportWidth = constraints.maxWidth;
 
-        return SfPdfViewerTheme(
-          data: SfPdfViewerThemeData(
-            backgroundColor: design.colors.surface,
-          ),
-          child: _buildViewer(),
-        );
-      },
+          return SfPdfViewerTheme(
+            data: SfPdfViewerThemeData(
+              backgroundColor: design.colors.surface,
+            ),
+            child: _buildViewer(),
+          );
+        },
+      ),
     );
   }
 
