@@ -12,9 +12,7 @@ import 'sdk/models/zoom_meeting_sdk_request.dart';
 /// [joinMeeting]. Subsequent calls reuse the existing session, joining
 /// the meeting instantly without re-initializing.
 class ZoomMeetingService implements MeetingService {
-  ZoomMeetingService() : _zoomSdk = FlutterZoomMeetingSdk() {
-    _setupAuthListener();
-  }
+  ZoomMeetingService() : _zoomSdk = FlutterZoomMeetingSdk();
 
   final FlutterZoomMeetingSdk _zoomSdk;
   StreamSubscription? _authSubscription;
@@ -24,23 +22,6 @@ class ZoomMeetingService implements MeetingService {
 
   /// Holds the meeting request that is waiting for auth to complete.
   ZoomMeetingSdkRequest? _pendingMeetingRequest;
-
-  /// Sets up the authentication callback listener once during construction.
-  void _setupAuthListener() {
-    _authSubscription = _zoomSdk.onAuthenticationReturn.listen((event) async {
-      final status = event.params?.statusEnum;
-      debugPrint(
-          '[ZoomMeetingService] Auth callback received with status: $status');
-
-      if (status == StatusZoomError.success) {
-        _isSdkAuthenticated = true;
-        _joinPendingMeeting();
-      } else {
-        _isSdkAuthenticated = false;
-        debugPrint('[ZoomMeetingService] Zoom authentication failed: $status');
-      }
-    });
-  }
 
   /// Lazily initializes the SDK, authenticates with [jwtToken], and joins
   /// the meeting identified by [meetingNumber] and [password].
@@ -54,6 +35,20 @@ class ZoomMeetingService implements MeetingService {
     required String password,
     required String displayName,
   }) async {
+    _authSubscription ??= _zoomSdk.onAuthenticationReturn.listen((event) async {
+      final status = event.params?.statusEnum;
+      debugPrint(
+          '[ZoomMeetingService] Auth callback received with status: $status');
+
+      if (status == StatusZoomError.success) {
+        _isSdkAuthenticated = true;
+        _joinPendingMeeting();
+      } else {
+        _isSdkAuthenticated = false;
+        debugPrint('[ZoomMeetingService] Zoom authentication failed: $status');
+      }
+    });
+
     _pendingMeetingRequest = ZoomMeetingSdkRequest(
       meetingNumber: meetingNumber,
       password: password,

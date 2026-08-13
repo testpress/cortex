@@ -123,7 +123,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
             domain = "zoom.us"
         }
 
-        sdk.initialize(context, FlutterZoomEventListenerAuth(eventSink), params)
+        sdk.initialize(context, FlutterZoomEventListenerAuth({ eventSink }), params)
 
         return StandardZoomResponse(
             isSuccess = true,
@@ -172,7 +172,7 @@ class FlutterZoomMeetingSdkPlugin : FlutterPlugin, MethodCallHandler {
                 action = action
             )
 
-        meetingService.addListener(FlutterZoomEventListenerMeeting(eventSink))
+        meetingService.addListener(FlutterZoomEventListenerMeeting({ eventSink }))
 
         val opts = JoinMeetingOptions()
         opts.no_video = false

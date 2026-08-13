@@ -1,13 +1,13 @@
 package com.testpress.flutter_zoom_meeting_sdk
 
-import com.simitgroup.flutter_zoom_meeting_sdk.FlutterZoomMeetingSdkPlugin.Companion.PLATFORM
+import com.testpress.flutter_zoom_meeting_sdk.FlutterZoomMeetingSdkPlugin.Companion.PLATFORM
 import io.flutter.plugin.common.EventChannel
 import us.zoom.sdk.MeetingParameter
 import us.zoom.sdk.MeetingServiceListener
 import us.zoom.sdk.MeetingStatus
 import us.zoom.sdk.ZoomSDK
 
-class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventSink?):
+class FlutterZoomEventListenerMeeting(private val eventSinkProvider: () -> EventChannel.EventSink?):
     MeetingServiceListener {
     override fun onMeetingStatusChanged(
         meetingStatus: MeetingStatus,
@@ -15,7 +15,7 @@ class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventS
         internalErrorCode: Int
     ) {
         eventLog("onMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
-        eventSink?.success(
+        eventSinkProvider()?.success(
             mapOf(
                 "platform" to PLATFORM,
                 "event" to "onMeetingStatusChanged",
@@ -67,7 +67,7 @@ class FlutterZoomEventListenerMeeting(private val eventSink: EventChannel.EventS
             "params" to paramMap
         )
 
-        eventSink?.success(eventMap)
+        eventSinkProvider()?.success(eventMap)
     }
 
 }

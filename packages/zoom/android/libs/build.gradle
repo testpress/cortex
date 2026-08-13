@@ -1,6 +1,4 @@
-apply from: 'versions.gradle'
-configurations.create("default")
-artifacts.add("default", file('mobilertc.aar'))
+apply from: 'libs/versions.gradle'
 
 ext.sdkDependenciesList = [
     libraries.securityCrypto,

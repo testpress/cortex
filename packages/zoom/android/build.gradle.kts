@@ -1,4 +1,4 @@
-group = "com.example.zoom"
+group = "com.testpress.flutter_zoom_meeting_sdk"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -14,12 +14,10 @@ buildscript {
     }
 }
 
-allprojects {
+rootProject.allprojects {
     repositories {
-        google()
-        mavenCentral()
         flatDir {
-            dirs("libs")
+            dirs(project(":zoom").file("libs"))
         }
     }
 }
@@ -42,15 +40,19 @@ android {
 
     sourceSets {
         getByName("main") {
-            java.srcDirs("src/main/kotlin")
+            java.setSrcDirs(listOf("src/main/kotlin"))
         }
         getByName("test") {
-            java.srcDirs("src/test/kotlin")
+            java.setSrcDirs(listOf("src/test/kotlin"))
         }
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 28
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     testOptions {
@@ -77,7 +79,14 @@ kotlin {
 }
 
 dependencies {
-    implementation(name = "mobilertc", ext = "aar")
+    implementation(group = "", name = "mobilertc", ext = "aar")
+
+    val libsMap = project.extensions.extraProperties["libs"] as Map<*, *>
+    val composeBomVersion = libsMap["composeBomVersion"] as String
+    implementation(platform("androidx.compose:compose-bom:$composeBomVersion"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.runtime:runtime")
 
     val sdkDependenciesList = project.extensions.extraProperties["sdkDependenciesList"] as List<*>
     for (dep in sdkDependenciesList) {

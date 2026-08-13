@@ -1,15 +1,15 @@
 package com.testpress.flutter_zoom_meeting_sdk
 
-import com.simitgroup.flutter_zoom_meeting_sdk.FlutterZoomMeetingSdkPlugin.Companion.PLATFORM
+import com.testpress.flutter_zoom_meeting_sdk.FlutterZoomMeetingSdkPlugin.Companion.PLATFORM
 import io.flutter.plugin.common.EventChannel
 import us.zoom.sdk.ZoomSDKInitializeListener
 
-class FlutterZoomEventListenerAuth(private val eventSink: EventChannel.EventSink?):
+class FlutterZoomEventListenerAuth(private val eventSinkProvider: () -> EventChannel.EventSink?):
     ZoomSDKInitializeListener {
     override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
         eventLog("onZoomSDKInitializeResult", "Init Result: errorCode=$errorCode, internalErrorCode=$internalErrorCode")
 
-        eventSink?.success(
+        eventSinkProvider()?.success(
             mapOf(
                 "platform" to PLATFORM,
                 "event" to "onAuthenticationReturn",
@@ -26,7 +26,7 @@ class FlutterZoomEventListenerAuth(private val eventSink: EventChannel.EventSink
     override fun onZoomAuthIdentityExpired() {
         eventLog("onZoomAuthIdentityExpired", "Zoom SDK auth identity expired")
 
-        eventSink?.success(
+        eventSinkProvider()?.success(
             mapOf(
                 "platform" to PLATFORM,
                 "event" to "onZoomAuthIdentityExpired",
