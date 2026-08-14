@@ -95,6 +95,9 @@ export 'payment/payment.dart';
 export 'data/providers/user_provider.dart';
 export 'data/repositories/user_repository.dart';
 
+// Services
+export 'services/meeting_service.dart';
+
 // Integrations
 export 'data/integrations/bp_elearn/bp_elearn_exam_provider.dart';
 export 'data/integrations/bp_elearn/models/bp_elearn_paginated_response_dto.dart';
