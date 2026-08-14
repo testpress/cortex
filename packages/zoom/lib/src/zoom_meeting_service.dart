@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:core/core.dart';
 import 'sdk/enums/status_zoom_error.dart';
 import 'sdk/flutter_zoom_meeting_sdk.dart';
