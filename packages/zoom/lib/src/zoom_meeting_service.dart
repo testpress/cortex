@@ -37,15 +37,12 @@ class ZoomMeetingService implements MeetingService {
   }) async {
     _authSubscription ??= _zoomSdk.onAuthenticationReturn.listen((event) async {
       final status = event.params?.statusEnum;
-      debugPrint(
-          '[ZoomMeetingService] Auth callback received with status: $status');
 
       if (status == StatusZoomError.success) {
         _isSdkAuthenticated = true;
         _joinPendingMeeting();
       } else {
         _isSdkAuthenticated = false;
-        debugPrint('[ZoomMeetingService] Zoom authentication failed: $status');
       }
     });
 
@@ -58,7 +55,6 @@ class ZoomMeetingService implements MeetingService {
     try {
       // Step 1: Initialize the native SDK layer (once per app session).
       if (!_isSdkInitialized) {
-        debugPrint('[ZoomMeetingService] Initializing Zoom SDK...');
         await _zoomSdk.initZoom();
         _isSdkInitialized = true;
       }
@@ -66,14 +62,13 @@ class ZoomMeetingService implements MeetingService {
       // Step 2: Authenticate (once per token). The auth listener will
       // automatically call _joinPendingMeeting on success.
       if (!_isSdkAuthenticated) {
-        debugPrint('[ZoomMeetingService] Authenticating Zoom SDK...');
         await _zoomSdk.authZoom(jwtToken: jwtToken);
       } else {
         // Already authenticated — join immediately.
         _joinPendingMeeting();
       }
     } catch (e) {
-      debugPrint('[ZoomMeetingService] Error during joinMeeting flow: $e');
+      rethrow;
     }
   }
 
@@ -83,18 +78,15 @@ class ZoomMeetingService implements MeetingService {
     if (request == null) return;
 
     try {
-      debugPrint(
-          '[ZoomMeetingService] Joining meeting: ${request.meetingNumber}');
       await _zoomSdk.joinMeeting(request);
       _pendingMeetingRequest = null;
     } catch (e) {
-      debugPrint('[ZoomMeetingService] Failed to join meeting: $e');
+      rethrow;
     }
   }
 
   /// Cleans up subscriptions and uninitializes the Zoom SDK.
   Future<void> dispose() async {
-    debugPrint('[ZoomMeetingService] Disposing Zoom service...');
     await _authSubscription?.cancel();
     _authSubscription = null;
 
@@ -102,8 +94,7 @@ class ZoomMeetingService implements MeetingService {
       try {
         await _zoomSdk.unInitZoom();
       } catch (e) {
-        debugPrint(
-            '[ZoomMeetingService] Error during SDK uninitialization: $e');
+        // Safe to ignore or log silently during cleanup
       }
     }
 
