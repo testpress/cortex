@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import '../../models/course_content.dart';
 
+final _meetingJoiningProvider = StateProvider.autoDispose<bool>((ref) => false);
+
 /// Entry widget for Video Conference (e.g. Zoom) lesson contents.
 /// Decides whether to show the scheduled lock screen or the lobby page.
 class VideoConferenceViewer extends ConsumerWidget {
@@ -33,13 +35,32 @@ class VideoConferenceViewer extends ConsumerWidget {
       return;
     }
 
-    // No-op for now as meeting service is excluded
-    debugPrint("Join meeting requested: ${lesson.contentUrl}");
+    final meetingService = ref.read(meetingServiceProvider);
+    if (meetingService != null) {
+      final user = ref.read(userProvider).valueOrNull;
+      final displayName = user?.name ?? user?.username ?? 'Participant';
+
+      ref.read(_meetingJoiningProvider.notifier).state = true;
+      try {
+        await meetingService.joinMeeting(
+          jwtToken: lesson.accessToken ?? '',
+          meetingNumber: lesson.conferenceId ?? '',
+          password: lesson.password ?? '',
+          displayName: displayName,
+        );
+      } finally {
+        ref.read(_meetingJoiningProvider.notifier).state = false;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
+    final isJoining = ref.watch(_meetingJoiningProvider);
+
+    // Watch meetingServiceProvider to keep the service alive if it is provided
+    ref.watch(meetingServiceProvider);
 
     if (lesson.isScheduled) {
       return VideoConferenceScheduledView(
@@ -68,6 +89,7 @@ class VideoConferenceViewer extends ConsumerWidget {
                     formattedDuration: formattedDuration,
                     formattedStart: formattedStart,
                     onAttendTap: () => _joinMeeting(context, ref),
+                    isJoining: isJoining,
                   ),
                 ],
               ),
@@ -126,12 +148,14 @@ class VideoConferenceLobbyView extends StatelessWidget {
     this.formattedDuration,
     this.formattedStart,
     required this.onAttendTap,
+    this.isJoining = false,
   });
 
   final Lesson lesson;
   final String? formattedDuration;
   final String? formattedStart;
   final VoidCallback onAttendTap;
+  final bool isJoining;
 
   bool get _isLive {
     final state = lesson.streamStatus?.toLowerCase();
@@ -201,15 +225,16 @@ class VideoConferenceLobbyView extends StatelessWidget {
               SizedBox(height: design.spacing.lg),
               AppSemantics.button(
                 label: L10n.of(context).liveStreamAttendClass,
-                onTap: onAttendTap,
+                onTap: isJoining ? null : onAttendTap,
                 child: AppButton.primary(
                   label: L10n.of(context).liveStreamAttendClass,
                   fullWidth: true,
+                  loading: isJoining,
                   leading: Icon(
                     LucideIcons.video,
                     size: design.iconSize.action,
                   ),
-                  onPressed: onAttendTap,
+                  onPressed: isJoining ? null : onAttendTap,
                 ),
               ),
             ] else if (lesson.streamStatus?.toLowerCase() == 'completed' ||

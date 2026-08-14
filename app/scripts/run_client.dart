@@ -28,6 +28,9 @@ void main(List<String> args) async {
     await updateAndroidGoogleConfig(appDir.path, remoteConfig);
     brandingUpdated = true;
 
+    final zoomEnabled = remoteConfig['zoom_enabled'] as bool? ?? false;
+    await updateZoomDependency(appDir.path, zoomEnabled);
+
     final iconConfig = await generateNativeIcons(appDir.path);
     if (iconConfig != null) {
       downloadedFiles.add(iconConfig);
