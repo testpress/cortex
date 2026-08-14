@@ -1,0 +1,66 @@
+apply from: 'libs/versions.gradle'
+
+ext.sdkDependenciesList = [
+    libraries.securityCrypto,
+    libraries.cryptoTink,
+    libraries.exoplayerCore,
+    libraries.exoplayerUI,
+    libraries.swiperefreshlayout,
+
+    libraries.supportAppcompat,
+    libraries.constraintlayout,
+    libraries.supportDesign,
+    libraries.multidex,
+    libraries.gson,
+    libraries.glideAnnotations,
+    libraries.glideGlide,
+
+    libraries.recyclerview,
+    libraries.lottie,
+
+    libraries.supportWindow,
+    libraries.windowJava,
+
+    libraries.jetbrainskotlin,
+    libraries.kotlinStdlibJdk,
+
+    libraries.kotlinxCoroutinesAndroid,
+    libraries.kotlinxCoroutinesCore,
+    libraries.androidxCoreKtx,
+    libraries.androidxCore,
+    libraries.viewmodelKtx,
+    libraries.lifecycleKtx,
+    libraries.lifecycleService,
+    libraries.workerManager,
+
+    libraries.fragmentKtx,
+    libraries.scaleImageView,
+    libraries.splashScreenLib,
+    libraries.livedataKtx,
+    libraries.rxAndroid,
+
+    libraries.composeMaterial3,
+    libraries.composeMaterial3WindowSize,
+    libraries.composeUIToolingPreview,
+    libraries.composeConstraintlayout,
+    libraries.composeActivity,
+    libraries.composeLifecycle,
+    libraries.composeNavigation,
+    libraries.coil,
+
+    libraries.androidxWebkitKtx,
+    libraries.jetbrainsAnnotations,
+    libraries.kotlinxCoroutinesCoreJvm,
+    libraries.kotlinxCoroutinesSwing,
+
+    libraries.cameraXCore,
+    libraries.cameraXCamera2,
+    libraries.cameraXLifecycle,
+    libraries.cameraXView,
+
+    libraries.mlkitTextRecognition,
+    libraries.blueparrottsdk,
+    libraries.composeLifecycleViewmodel,
+    libraries.profileinstaller,
+    libraries.coilGif,
+]
