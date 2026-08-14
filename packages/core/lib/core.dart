@@ -97,6 +97,7 @@ export 'data/repositories/user_repository.dart';
 
 // Services
 export 'services/meeting_service.dart';
+export 'data/services/sentry_service.dart';
 
 // Integrations
 export 'data/integrations/bp_elearn/bp_elearn_exam_provider.dart';

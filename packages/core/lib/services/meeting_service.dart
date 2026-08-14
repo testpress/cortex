@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/services/sentry_service.dart';
 
 /// Abstract interface for launching video conference meetings.
 abstract class MeetingService {
@@ -9,6 +10,9 @@ abstract class MeetingService {
     required String password,
     required String displayName,
   });
+
+  /// Configures Sentry logging on the meeting service dynamically.
+  set sentryService(SentryService? service);
 }
 
 /// Registry to dynamically hold the active [MeetingService] instance.
@@ -26,5 +30,9 @@ class MeetingServiceRegistry {
 /// Reactive provider for the active [MeetingService].
 /// Resolves dynamically to the registered service from the registry.
 final meetingServiceProvider = Provider<MeetingService?>((ref) {
-  return MeetingServiceRegistry.instance;
+  final service = MeetingServiceRegistry.instance;
+  if (service != null) {
+    service.sentryService = ref.watch(sentryServiceProvider);
+  }
+  return service;
 });

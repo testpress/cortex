@@ -16,6 +16,9 @@ class ZoomMeetingService implements MeetingService {
   final FlutterZoomMeetingSdk _zoomSdk;
   StreamSubscription? _authSubscription;
 
+  @override
+  SentryService? sentryService;
+
   bool _isSdkInitialized = false;
   bool _isSdkAuthenticated = false;
 
@@ -42,6 +45,9 @@ class ZoomMeetingService implements MeetingService {
         _joinPendingMeeting();
       } else {
         _isSdkAuthenticated = false;
+        sentryService?.captureException(
+          Exception('Zoom authentication failed with status: $status'),
+        );
       }
     });
 
@@ -66,7 +72,8 @@ class ZoomMeetingService implements MeetingService {
         // Already authenticated — join immediately.
         _joinPendingMeeting();
       }
-    } catch (e) {
+    } catch (e, stack) {
+      sentryService?.captureException(e, stackTrace: stack);
       rethrow;
     }
   }
@@ -79,7 +86,8 @@ class ZoomMeetingService implements MeetingService {
     try {
       await _zoomSdk.joinMeeting(request);
       _pendingMeetingRequest = null;
-    } catch (e) {
+    } catch (e, stack) {
+      sentryService?.captureException(e, stackTrace: stack);
       rethrow;
     }
   }

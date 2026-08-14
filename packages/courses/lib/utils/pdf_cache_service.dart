@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import 'package:core/data/services/sentry_service.dart';
 
 final pdfCacheServiceProvider = Provider((ref) {
   final fileDownloader = ref.watch(fileDownloaderProvider);
