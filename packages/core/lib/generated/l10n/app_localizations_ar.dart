@@ -3105,4 +3105,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get liveStreamStatusLive => 'مباشر';
+
+  @override
+  String get liveStreamJoinFailed =>
+      'فشل الانضمام إلى الاجتماع. يُرجى المحاولة مرة أخرى.';
 }

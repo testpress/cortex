@@ -3159,4 +3159,8 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get liveStreamStatusLive => 'ലൈവ്';
+
+  @override
+  String get liveStreamJoinFailed =>
+      'മീറ്റിംഗിൽ ചേരുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.';
 }

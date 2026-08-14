@@ -1187,5 +1187,6 @@
   "liveStreamScheduledDefault": "ഈ ഉള്ളടക്കം ഷെഡ്യൂൾ ചെയ്തിരിക്കുന്നു",
   "liveStreamSessionDetails": "സെഷൻ വിവരങ്ങൾ",
   "liveStreamStatus": "നില",
-  "liveStreamStatusLive": "ലൈവ്"
+  "liveStreamStatusLive": "ലൈവ്",
+  "liveStreamJoinFailed": "മീറ്റിംഗിൽ ചേരുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക."
 }

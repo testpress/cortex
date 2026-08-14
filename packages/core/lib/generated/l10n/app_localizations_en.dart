@@ -3105,4 +3105,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get liveStreamStatusLive => 'Live';
+
+  @override
+  String get liveStreamJoinFailed =>
+      'Failed to join the meeting. Please try again.';
 }

@@ -232,6 +232,40 @@ Future<void> updateAndroidGoogleConfig(
   }
 }
 
+Future<void> updateZoomDependency(String appDirPath, bool enabled) async {
+  final pubspecFile = File('$appDirPath/pubspec.yaml');
+  if (!pubspecFile.existsSync()) return;
+
+  var content = await pubspecFile.readAsString();
+
+  // Standardize cleanup (remove any existing zoom package lines)
+  content = content.replaceAll(
+    RegExp(r'\s*#?\s*zoom:\s*\n\s*#?\s*path:\s*\.\./packages/zoom\s*\n'),
+    '\n',
+  );
+
+  if (enabled) {
+    print('Enabling Zoom native SDK dependency in pubspec.yaml...');
+    content = content.replaceAll(
+      '  testpress:\n    path: ../packages/testpress',
+      '  testpress:\n    path: ../packages/testpress\n  zoom:\n    path: ../packages/zoom',
+    );
+  } else {
+    print('Zoom native SDK dependency is disabled.');
+  }
+
+  await pubspecFile.writeAsString(content);
+
+  print('Syncing dependencies with flutter pub get...');
+  final pubGetResult = await Process.run('flutter', [
+    'pub',
+    'get',
+  ], workingDirectory: appDirPath);
+  if (pubGetResult.exitCode != 0) {
+    print('⚠️ Warning: flutter pub get failed: ${pubGetResult.stderr}');
+  }
+}
+
 Future<void> restoreGitChanges() async {
   print('🧹 Cleaning up native configuration changes...');
   final checkoutResult = await Process.run('git', [
@@ -239,6 +273,8 @@ Future<void> restoreGitChanges() async {
     '--',
     'app/ios',
     'app/android',
+    'app/pubspec.yaml',
+    'app/pubspec.lock',
   ]);
   if (checkoutResult.exitCode != 0) {
     print('⚠️ Warning: git checkout failed: ${checkoutResult.stderr}');

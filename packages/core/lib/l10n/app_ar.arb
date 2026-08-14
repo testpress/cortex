@@ -1187,5 +1187,6 @@
   "liveStreamScheduledDefault": "تم جدولة هذا المحتوى",
   "liveStreamSessionDetails": "تفاصيل الجلسة",
   "liveStreamStatus": "الحالة",
-  "liveStreamStatusLive": "مباشر"
+  "liveStreamStatusLive": "مباشر",
+  "liveStreamJoinFailed": "فشل الانضمام إلى الاجتماع. يُرجى المحاولة مرة أخرى."
 }

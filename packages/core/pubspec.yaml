@@ -23,6 +23,7 @@ dependencies:
   cached_network_image: ^3.4.1
   # Foundation & Data (Unified Core)
   drift: ^2.21.0
+  sqlite3: "<3.0.0"
   sqlite3_flutter_libs: ^0.5.30
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
