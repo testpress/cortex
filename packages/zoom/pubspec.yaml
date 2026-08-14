@@ -13,7 +13,6 @@ dependencies:
   core:
     path: ../core
   plugin_platform_interface: ^2.1.8
-  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:

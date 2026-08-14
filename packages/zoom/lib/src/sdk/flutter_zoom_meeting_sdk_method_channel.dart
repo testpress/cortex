@@ -3,10 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:zoom/src/sdk/enums/event_type.dart';
 import 'package:zoom/src/sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:zoom/src/sdk/models/flutter_zoom_meeting_sdk_event_response.dart';
-import 'package:zoom/src/sdk/models/jwt_response.dart';
 import 'package:zoom/src/sdk/models/zoom_meeting_sdk_request.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'flutter_zoom_meeting_sdk_platform_interface.dart';
 
@@ -146,32 +143,6 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
       resultMap,
       JoinParamsResponse.fromMap,
     );
-  }
-
-  @override
-  Future<JwtResponse?> getJWTToken({
-    required String authEndpoint,
-    required String meetingNumber,
-    required int role,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse(authEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'meetingNumber': meetingNumber, 'role': role}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final signature = data['signature'] as String?;
-
-        return JwtResponse(token: signature);
-      } else {
-        return JwtResponse(error: "Failed to retrieve JWT signature.");
-      }
-    } catch (e) {
-      return JwtResponse(error: "Failed to retrieve JWT signature.");
-    }
   }
 
   @override

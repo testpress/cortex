@@ -1,6 +1,5 @@
 import 'package:zoom/src/sdk/models/flutter_zoom_meeting_sdk_action_response.dart';
 import 'package:zoom/src/sdk/models/flutter_zoom_meeting_sdk_event_response.dart';
-import 'package:zoom/src/sdk/models/jwt_response.dart';
 import 'package:zoom/src/sdk/models/zoom_meeting_sdk_request.dart';
 import 'flutter_zoom_meeting_sdk_platform_interface.dart';
 
@@ -76,18 +75,5 @@ class FlutterZoomMeetingSdk {
   /// Uninitialize the SDK
   Future<FlutterZoomMeetingSdkActionResponse> unInitZoom() {
     return FlutterZoomMeetingSdkPlatform.instance.unInitZoom();
-  }
-
-  /// Get a JWT token
-  Future<JwtResponse?> getJWTToken({
-    required String authEndpoint,
-    required String meetingNumber,
-    required int role,
-  }) {
-    return FlutterZoomMeetingSdkPlatform.instance.getJWTToken(
-      authEndpoint: authEndpoint,
-      meetingNumber: meetingNumber,
-      role: role,
-    );
   }
 }
