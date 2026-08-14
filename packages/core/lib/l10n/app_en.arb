@@ -1547,5 +1547,6 @@
   "liveStreamScheduledDefault": "This content is scheduled",
   "liveStreamSessionDetails": "Session Details",
   "liveStreamStatus": "Status",
-  "liveStreamStatusLive": "Live"
+  "liveStreamStatusLive": "Live",
+  "liveStreamJoinFailed": "Failed to join the meeting. Please try again."
 }

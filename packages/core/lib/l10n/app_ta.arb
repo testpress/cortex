@@ -1421,5 +1421,6 @@
   "liveStreamScheduledDefault": "இந்த உள்ளடக்கம் திட்டமிடப்பட்டுள்ளது",
   "liveStreamSessionDetails": "அமர்வு விவரங்கள்",
   "liveStreamStatus": "நிலை",
-  "liveStreamStatusLive": "நேரலை"
+  "liveStreamStatusLive": "நேரலை",
+  "liveStreamJoinFailed": "கூட்டத்தில் சேர முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 }

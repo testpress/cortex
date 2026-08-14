@@ -48,6 +48,15 @@ class VideoConferenceViewer extends ConsumerWidget {
           password: lesson.password ?? '',
           displayName: displayName,
         );
+      } catch (e, stack) {
+        ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+        if (context.mounted) {
+          AppToast.show(
+            context,
+            message: L10n.of(context).liveStreamJoinFailed,
+            isError: true,
+          );
+        }
       } finally {
         ref.read(_meetingJoiningProvider.notifier).state = false;
       }

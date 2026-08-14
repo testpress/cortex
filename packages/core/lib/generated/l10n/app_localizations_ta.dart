@@ -3154,4 +3154,8 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get liveStreamStatusLive => 'நேரலை';
+
+  @override
+  String get liveStreamJoinFailed =>
+      'கூட்டத்தில் சேர முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 }

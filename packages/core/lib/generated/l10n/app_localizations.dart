@@ -5614,6 +5614,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Live'**
   String get liveStreamStatusLive;
+
+  /// No description provided for @liveStreamJoinFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to join the meeting. Please try again.'**
+  String get liveStreamJoinFailed;
 }
 
 class _AppLocalizationsDelegate
