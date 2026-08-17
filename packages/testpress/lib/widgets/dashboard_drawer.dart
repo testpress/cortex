@@ -75,6 +75,16 @@ class DashboardDrawer extends ConsumerWidget {
                   ).push(AppRoute(page: const AnnouncementsListScreen()));
                 },
               ),
+
+            AppDrawerItem(
+              icon: LucideIcons.radio,
+              label: l10n.drawerLiveClasses,
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                context.push('/live-classes');
+              },
+            ),
+
             if (analyticsEnabled)
               AppDrawerItem(
                 icon: LucideIcons.pieChart,

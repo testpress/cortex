@@ -6,6 +6,7 @@ import 'package:courses/courses.dart';
 
 import '../../screens/bookmarks/bookmarks_screen.dart';
 import '../../screens/my_report_screen.dart';
+import '../../screens/live_streams/live_stream_list_screen.dart';
 
 class GlobalRoutes {
   static List<RouteBase> storeRoutes(
@@ -151,6 +152,11 @@ class GlobalRoutes {
       path: '/my-results',
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => const BPElearnMyResultsScreen(),
+    ),
+    GoRoute(
+      path: '/live-classes',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const LiveStreamListScreen(),
     ),
   ];
 }

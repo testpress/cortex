@@ -397,17 +397,41 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<_i2.LessonDto>);
 
   @override
-  _i3.Future<List<_i2.LiveClassDto>> getLiveClasses() =>
+  _i3.Future<_i2.PaginatedResponseDto<_i2.LiveClassDto>> getLiveClasses({
+    int? page = 1,
+    String? status,
+    String? ordering,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getLiveClasses, []),
-            returnValue: _i3.Future<List<_i2.LiveClassDto>>.value(
-              <_i2.LiveClassDto>[],
-            ),
-            returnValueForMissingStub: _i3.Future<List<_i2.LiveClassDto>>.value(
-              <_i2.LiveClassDto>[],
-            ),
+            Invocation.method(#getLiveClasses, [], {
+              #page: page,
+              #status: status,
+              #ordering: ordering,
+            }),
+            returnValue:
+                _i3.Future<_i2.PaginatedResponseDto<_i2.LiveClassDto>>.value(
+                  _FakePaginatedResponseDto_0<_i2.LiveClassDto>(
+                    this,
+                    Invocation.method(#getLiveClasses, [], {
+                      #page: page,
+                      #status: status,
+                      #ordering: ordering,
+                    }),
+                  ),
+                ),
+            returnValueForMissingStub:
+                _i3.Future<_i2.PaginatedResponseDto<_i2.LiveClassDto>>.value(
+                  _FakePaginatedResponseDto_0<_i2.LiveClassDto>(
+                    this,
+                    Invocation.method(#getLiveClasses, [], {
+                      #page: page,
+                      #status: status,
+                      #ordering: ordering,
+                    }),
+                  ),
+                ),
           )
-          as _i3.Future<List<_i2.LiveClassDto>>);
+          as _i3.Future<_i2.PaginatedResponseDto<_i2.LiveClassDto>>);
 
   @override
   _i3.Future<List<_i2.ForumCategoryDto>> getForumCategories() =>

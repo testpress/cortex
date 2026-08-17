@@ -66,5 +66,26 @@ final postsRepositoryProvider = FutureProvider<PostsRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PostsRepositoryRef = FutureProviderRef<PostsRepository>;
+String _$liveClassesRepositoryHash() =>
+    r'775c41f36abb2484323da91a6f97d1438cd9bab9';
+
+/// Provides the [LiveClassesRepository].
+///
+/// Copied from [liveClassesRepository].
+@ProviderFor(liveClassesRepository)
+final liveClassesRepositoryProvider =
+    FutureProvider<LiveClassesRepository>.internal(
+      liveClassesRepository,
+      name: r'liveClassesRepositoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$liveClassesRepositoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef LiveClassesRepositoryRef = FutureProviderRef<LiveClassesRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

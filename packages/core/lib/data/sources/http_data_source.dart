@@ -253,9 +253,23 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<LiveClassDto>> getLiveClasses() => throw UnimplementedError(
-    'HttpDataSource.getLiveClasses is not yet implemented.',
-  );
+  Future<PaginatedResponseDto<LiveClassDto>> getLiveClasses({
+    int page = 1,
+    String? status,
+    String? ordering,
+  }) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.liveClasses,
+        queryParameters: {
+          'page': page,
+          if (status != null && status.isNotEmpty) 'status': status,
+          if (ordering != null && ordering.isNotEmpty) 'ordering': ordering,
+        },
+      ),
+      fromJson: LiveClassDto.fromListResponse,
+    );
+  }
 
   @override
   Future<Map<String, dynamic>> createAiSession(int contentId) async {

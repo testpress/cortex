@@ -654,6 +654,49 @@ class AppLocalizationsTa extends AppLocalizations {
   String get drawerMyResults => 'எனது முடிவுகள்';
 
   @override
+  String get drawerLiveClasses => 'நேரடி வகுப்புகள்';
+
+  @override
+  String get liveClassesTitle => 'நேரடி வகுப்புகள்';
+
+  @override
+  String get liveClassesCalendarView => 'நாட்காட்டி காட்சி';
+
+  @override
+  String get liveClassesCalendarSubtitle =>
+      'தேதி வாரியாக வகுப்புகளைப் பார்க்க நாட்காட்டிக்கு மாறவும்';
+
+  @override
+  String get liveClassesToggleCalendarSemantics => 'நாட்காட்டி காட்சியை மாற்று';
+
+  @override
+  String get liveClassesNoClassesFound => 'வகுப்புகள் எதுவும் காணப்படவில்லை';
+
+  @override
+  String get liveClassesFilterAll => 'அனைத்தும்';
+
+  @override
+  String get liveClassesFilterLive => 'நேரலை';
+
+  @override
+  String get liveClassesFilterUpcoming => 'வரவிருப்பவை';
+
+  @override
+  String get liveClassesFilterCompleted => 'முடிந்தவை';
+
+  @override
+  String get liveClassesFilterCancelled => 'ரத்து செய்யப்பட்டவை';
+
+  @override
+  String get liveClassesNoClassesScheduledForDay =>
+      'இந்த நாளில் வகுப்புகள் எதுவும் திட்டமிடப்படவில்லை';
+
+  @override
+  String liveClassesDurationMins(Object minutes) {
+    return '$minutes நிமிடங்கள்';
+  }
+
+  @override
   String get noDownloadedExamAvailable =>
       'பதிவிறக்கம் செய்யப்பட்ட தேர்வு எதுவும் இல்லை';
 

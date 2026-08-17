@@ -26,6 +26,10 @@ dependencies:
   firebase_messaging: ^14.7.10
   flutter_local_notifications: ^17.2.1
   device_info_plus: ^12.1.0
+  intl: ^0.20.2
+  # syncfusion_flutter_calendar is used to render the monthly calendar schedule
+  # interface for browsing scheduled classes by date.
+  syncfusion_flutter_calendar: ^33.1.45
 
 
   flutter_riverpod: ^2.5.1
@@ -75,3 +79,7 @@ flutter:
   #
   # For details regarding fonts in packages, see
   # https://flutter.dev/to/font-from-package
+
+# Override timezone package dependency to resolve version conflicts with syncfusion
+dependency_overrides:
+  timezone: any

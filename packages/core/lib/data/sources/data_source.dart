@@ -56,8 +56,12 @@ abstract class DataSource {
   /// Fetch full metadata for a single lesson from `/api/v2.4/contents/{id}/`.
   Future<LessonDto> getLessonDetail(String lessonId);
 
-  /// Fetch today's live class schedule.
-  Future<List<LiveClassDto>> getLiveClasses();
+  /// Fetch live class schedule with pagination and query parameters.
+  Future<PaginatedResponseDto<LiveClassDto>> getLiveClasses({
+    int page = 1,
+    String? status,
+    String? ordering,
+  });
 
   /// Fetch all forum categories (global, not course-scoped).
   Future<List<ForumCategoryDto>> getForumCategories();

@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'user_progress_repository.dart';
 import 'bookmark_repository.dart';
 import 'posts_repository.dart';
+import 'live_classes_repository.dart';
 import '../db/database_provider.dart';
 import '../sources/data_source_provider.dart';
 
@@ -32,4 +33,14 @@ Future<PostsRepository> postsRepository(PostsRepositoryRef ref) async {
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
   return PostsRepository(db, source);
+}
+
+/// Provides the [LiveClassesRepository].
+@Riverpod(keepAlive: true)
+Future<LiveClassesRepository> liveClassesRepository(
+  LiveClassesRepositoryRef ref,
+) async {
+  final db = await ref.watch(appDatabaseProvider.future);
+  final source = ref.watch(dataSourceProvider);
+  return LiveClassesRepository(db, source);
 }

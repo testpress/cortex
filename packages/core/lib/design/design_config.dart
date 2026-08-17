@@ -927,20 +927,20 @@ class DesignStatusColors {
   factory DesignStatusColors.light() {
     return const DesignStatusColors(
       live: StatusColors(
-        background: Color(0xFFFEE2E2),
-        foreground: Color(0xFF991B1B),
+        background: Color(0xFFFFF3E0), // orange-tinted cream
+        foreground: Color(0xFFE65100), // deep orange
       ),
       completed: StatusColors(
-        background: Color(0xFFD1FAE5),
-        foreground: Color(0xFF065F46),
+        background: Color(0xFFE8F5E9), // light green
+        foreground: Color(0xFF2E7D32), // dark green
       ),
       locked: StatusColors(
-        background: Color(0xFFF3F4F6),
-        foreground: Color(0xFF6B7280),
+        background: Color(0xFFFFEBEE), // blush
+        foreground: Color(0xFFB71C1C), // dark red
       ),
       upcoming: StatusColors(
-        background: Color(0xFFDBEAFE),
-        foreground: Color(0xFF1E40AF),
+        background: Color(0xFFE1F5FE), // sky blue tint
+        foreground: Color(0xFF01579B), // dark sky blue
       ),
     );
   }
@@ -948,20 +948,20 @@ class DesignStatusColors {
   factory DesignStatusColors.dark() {
     return const DesignStatusColors(
       live: StatusColors(
-        background: Color(0xFF450A0A),
-        foreground: Color(0xFFFCA5A5),
+        background: Color(0xFF3E1A00), // dark orange
+        foreground: Color(0xFFFFB74D), // light orange
       ),
       completed: StatusColors(
         background: Color(0xFF052E16),
         foreground: Color(0xFF6EE7B7),
       ),
       locked: StatusColors(
-        background: Color(0xFF1F2937),
-        foreground: Color(0xFF9CA3AF),
+        background: Color(0xFF3B0000), // dark red
+        foreground: Color(0xFFEF9A9A), // light red
       ),
       upcoming: StatusColors(
-        background: Color(0xFF1E3A5F),
-        foreground: Color(0xFF93C5FD),
+        background: Color(0xFF01233A), // dark sky blue
+        foreground: Color(0xFF81D4FA), // light sky blue
       ),
     );
   }
