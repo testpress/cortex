@@ -43,6 +43,8 @@ void main(List<String> args) async {
       cliArgs.apiBaseUrl,
       serverClientId: serverClientId,
       primaryColor: remoteConfig['primary_color']?.toString(),
+      appVersion: remoteConfig['version']?.toString() ?? '0.1.0',
+      buildNumber: remoteConfig['version_code']?.toString(),
     );
   } catch (e) {
     print('❌ Error: $e');
@@ -63,6 +65,8 @@ Future<bool> _buildApk(
   String apiBaseUrl, {
   String? serverClientId,
   String? primaryColor,
+  String? appVersion,
+  String? buildNumber,
 }) async {
   print('🚀 Building the APK for $appName... (This may take a few minutes)');
   final buildArgs = ['build', 'apk', '--dart-define=API_BASE_URL=$apiBaseUrl'];
@@ -74,6 +78,12 @@ Future<bool> _buildApk(
   }
   if (primaryColor != null && primaryColor.isNotEmpty) {
     buildArgs.add('--dart-define=PRIMARY_COLOR=$primaryColor');
+  }
+  if (appVersion != null && appVersion.isNotEmpty) {
+    buildArgs.add('--build-name=$appVersion');
+  }
+  if (buildNumber != null && buildNumber.isNotEmpty) {
+    buildArgs.add('--build-number=$buildNumber');
   }
 
   final buildProcess = await Process.start(
