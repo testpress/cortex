@@ -68,37 +68,37 @@ class AppConfig {
 
   static const bool showTodaySchedule = bool.fromEnvironment(
     'SHOW_TODAY_SCHEDULE',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool showQuickAccess = bool.fromEnvironment(
     'SHOW_QUICK_ACCESS',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool showContextualHero = bool.fromEnvironment(
     'SHOW_CONTEXTUAL_HERO',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool showStudyCategoryButtons = bool.fromEnvironment(
     'SHOW_STUDY_CATEGORY_BUTTONS',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool showResumeSection = bool.fromEnvironment(
     'SHOW_RESUME_SECTION',
-    defaultValue: false,
+    defaultValue: true,
   );
 
   static const bool showWhatsNewSection = bool.fromEnvironment(
     'SHOW_WHATS_NEW_SECTION',
-    defaultValue: false,
+    defaultValue: true,
   );
 
   static const bool showRecentlyCompletedSection = bool.fromEnvironment(
     'SHOW_RECENTLY_COMPLETED_SECTION',
-    defaultValue: false,
+    defaultValue: true,
   );
 
   static const bool showExamTab = bool.fromEnvironment(
