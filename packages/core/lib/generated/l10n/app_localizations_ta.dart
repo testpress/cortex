@@ -3208,4 +3208,14 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get liveStreamJoinFailed =>
       'கூட்டத்தில் சேர முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get teamsPermissionRequired =>
+      'சேர, கேமரா மற்றும் மைக்ரோஃபோன் அணுகல் தேவை. அமைப்புகளில் அவற்றை இயக்கவும்.';
+
+  @override
+  String get teamsJoinMeetingLoading => 'கூட்டத்தில் சேர்கிறோம்...';
+
+  @override
+  String get teamsMissingJoinLink => 'சந்திப்பு இணைப்பு காணவில்லை';
 }

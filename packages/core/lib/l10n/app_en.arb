@@ -1563,5 +1563,8 @@
   "liveStreamSessionDetails": "Session Details",
   "liveStreamStatus": "Status",
   "liveStreamStatusLive": "Live",
-  "liveStreamJoinFailed": "Failed to join the meeting. Please try again."
+  "liveStreamJoinFailed": "Failed to join the meeting. Please try again.",
+  "teamsPermissionRequired": "Camera and microphone access is required. Enable them in Settings to join.",
+  "teamsJoinMeetingLoading": "Joining meeting...",
+  "teamsMissingJoinLink": "Meeting link is missing"
 }

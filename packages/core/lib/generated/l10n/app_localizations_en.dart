@@ -3158,4 +3158,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get liveStreamJoinFailed =>
       'Failed to join the meeting. Please try again.';
+
+  @override
+  String get teamsPermissionRequired =>
+      'Camera and microphone access is required. Enable them in Settings to join.';
+
+  @override
+  String get teamsJoinMeetingLoading => 'Joining meeting...';
+
+  @override
+  String get teamsMissingJoinLink => 'Meeting link is missing';
 }

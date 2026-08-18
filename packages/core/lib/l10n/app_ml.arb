@@ -1203,5 +1203,8 @@
   "liveStreamSessionDetails": "സെഷൻ വിവരങ്ങൾ",
   "liveStreamStatus": "നില",
   "liveStreamStatusLive": "ലൈവ്",
-  "liveStreamJoinFailed": "മീറ്റിംഗിൽ ചേരുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക."
+  "liveStreamJoinFailed": "മീറ്റിംഗിൽ ചേരുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.",
+  "teamsPermissionRequired": "ക്യാമറ, മൈക്രോഫോൺ ആക്സസ് ആവശ്യമാണ്. ചേരുന്നതിന് ക്രമീകരണങ്ങളിൽ അവ പ്രവർത്തനക്ഷമമാക്കുക.",
+  "teamsJoinMeetingLoading": "മീറ്റിംഗിൽ ചേരുന്നു...",
+  "teamsMissingJoinLink": "മീറ്റിംഗ് ലിങ്ക് ലഭ്യമല്ല"
 }

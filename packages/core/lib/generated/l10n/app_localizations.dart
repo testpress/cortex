@@ -5710,6 +5710,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to join the meeting. Please try again.'**
   String get liveStreamJoinFailed;
+
+  /// No description provided for @teamsPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and microphone access is required. Enable them in Settings to join.'**
+  String get teamsPermissionRequired;
+
+  /// No description provided for @teamsJoinMeetingLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining meeting...'**
+  String get teamsJoinMeetingLoading;
+
+  /// No description provided for @teamsMissingJoinLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting link is missing'**
+  String get teamsMissingJoinLink;
 }
 
 class _AppLocalizationsDelegate
