@@ -158,5 +158,33 @@ class GlobalRoutes {
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => const LiveStreamListScreen(),
     ),
+    GoRoute(
+      path: '/live-classes/:id',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return Consumer(
+          builder: (context, ref, child) {
+            final lessonAsync = ref.watch(liveClassDetailProvider(id));
+            return lessonAsync.when(
+              data: (lesson) {
+                if (lesson == null) {
+                  return Container(
+                    color: Design.of(context).colors.surface,
+                    child: const Center(child: AppLoadingIndicator()),
+                  );
+                }
+                return LessonDetailOrchestrator(lesson: lesson);
+              },
+              loading: () => Container(
+                color: Design.of(context).colors.surface,
+                child: const Center(child: AppLoadingIndicator()),
+              ),
+              error: (e, _) => AppErrorView(error: e),
+            );
+          },
+        );
+      },
+    ),
   ];
 }

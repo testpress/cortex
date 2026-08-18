@@ -31,6 +31,14 @@ We implement the standard 3-layer architecture:
 - **Touch Targets**: Interactive controls such as `_CustomSwitch` are sized at 48x48dp minimum to comply with WCAG 2.5.5.
 - **Badges**: Text in statuses uses `AppText` components with scale tokens rather than raw `Text` with inline sizes.
 
+### 4. Separate Live Class Detail Flow
+- To avoid parameter pollution in `lessonDetailProvider` and support retrieval of standalone live classes, we introduce a dedicated `liveClassDetailProvider` and a repository method `refreshLiveClass(id)` targeting `/api/v3/live-classes/contents/$id/`.
+- We register a distinct GoRouter sub-route `/live-classes/:id` to fetch the standalone live class detail and render the lobby via `LessonDetailOrchestrator`.
+
+### 5. Robust Flat JSON Parsing in LessonDto
+- The `/api/v3/live-classes/contents/$id/` API endpoint returns a flat JSON structure (e.g. `provider`, `meeting_id`, `status` at the root level).
+- We update `LessonDto.fromJson`'s type identification and parsing to dynamically detect flat live classes and map their root-level attributes as fallbacks (preventing fallback to `LessonType.unknown`).
+
 ## Risks / Trade-offs
 
 - **Risk**: Version mismatches on the timezone dependency.

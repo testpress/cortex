@@ -481,6 +481,21 @@ class LessonDto {
       return LessonType.test;
     }
 
+    final String providerVal = (json['provider'] ?? '')
+        .toString()
+        .toLowerCase();
+    final bool isFlatLiveClass =
+        json.containsKey('detail_url') ||
+        json.containsKey('is_chapter_content') ||
+        json.containsKey('meeting_id');
+
+    if (isFlatLiveClass) {
+      if (providerVal.contains('zoom')) {
+        return LessonType.videoConference;
+      }
+      return LessonType.liveStream;
+    }
+
     final String contentType =
         (json['content_type'] ?? json['type'] ?? json['kind'])
             ?.toString()
@@ -592,29 +607,33 @@ class LessonDto {
   static LessonDto _parseLiveStreamLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.liveStream);
     final liveStream = json['live_stream'] as Map<String, dynamic>?;
-    final provider = liveStream?['provider']?.toString();
+    final provider =
+        liveStream?['provider']?.toString() ?? json['provider']?.toString();
     final isFermion =
         provider != null && provider.toLowerCase().contains('fermion');
 
     // Fermion uses the embed URL directly; TpStreams/others source the TPStreams
     // asset id from the root `uuid` (captured in `_parseBase`), so `contentUrl`
     // stays a real URL (or null).
-    final String? fermionUrl = liveStream?['stream_url'] as String?;
+    final String? fermionUrl =
+        (liveStream?['stream_url'] ??
+                json['stream_url'] ??
+                json['content_url'] ??
+                json['url'])
+            as String?;
     final contentUrl = isFermion ? fermionUrl : null;
 
     // For Fermion, the raw duration value from the backend is in minutes (e.g., 60 = 60 minutes).
     // For other providers (like TpStreams), the raw value is parsed as seconds in _parseBase.
     String? duration;
-    if (isFermion) {
-      final String? rawDuration =
-          json['duration']?.toString() ?? liveStream?['duration']?.toString();
-      if (rawDuration != null && rawDuration.isNotEmpty) {
-        final doubleValue = double.tryParse(rawDuration);
-        if (doubleValue != null) {
-          duration = '${doubleValue.toInt()} min';
-        } else {
-          duration = TimeFormatter.formatDuration(rawDuration);
-        }
+    final String? rawDuration =
+        json['duration']?.toString() ?? liveStream?['duration']?.toString();
+    if (rawDuration != null && rawDuration.isNotEmpty) {
+      final doubleValue = double.tryParse(rawDuration);
+      if (doubleValue != null) {
+        duration = '${doubleValue.toInt()} min';
+      } else {
+        duration = TimeFormatter.formatDuration(rawDuration);
       }
     }
 
@@ -622,16 +641,25 @@ class LessonDto {
       liveStreamProvider: provider,
       contentUrl: contentUrl,
       duration: duration ?? base.duration,
-      chatEmbedUrl: liveStream?['chat_embed_url']?.toString(),
-      streamStatus: liveStream?['status']?.toString(),
-      showRecordedVideo: liveStream?['show_recorded_video'] as bool? ?? false,
+      chatEmbedUrl:
+          (liveStream?['chat_embed_url'] ??
+                  json['chat_embed_url'] ??
+                  json['chat_url'])
+              ?.toString(),
+      streamStatus: (liveStream?['status'] ?? json['status'])?.toString(),
+      showRecordedVideo:
+          (liveStream?['show_recorded_video'] ?? json['show_recorded_video'])
+              as bool? ??
+          false,
     );
   }
 
   static LessonDto _parseVideoConferenceLesson(Map<String, dynamic> json) {
     final base = _parseBase(json, LessonType.videoConference);
     final videoConference = json['video_conference'] as Map<String, dynamic>?;
-    final provider = videoConference?['provider']?.toString();
+    final provider =
+        videoConference?['provider']?.toString() ??
+        json['provider']?.toString();
 
     String? duration;
     final rawDuration =
@@ -649,14 +677,29 @@ class LessonDto {
     return base.copyWith(
       liveStreamProvider: provider,
       contentUrl:
-          videoConference?['join_url']?.toString() ?? json['url']?.toString(),
+          videoConference?['join_url']?.toString() ??
+          json['join_url']?.toString() ??
+          json['url']?.toString(),
       duration: duration ?? base.duration,
-      streamStatus: videoConference?['state']?.toString(),
+      streamStatus:
+          (videoConference?['state'] ??
+                  videoConference?['status'] ??
+                  json['state'] ??
+                  json['status'])
+              ?.toString(),
       showRecordedVideo:
-          videoConference?['show_recorded_video'] as bool? ?? false,
-      conferenceId: videoConference?['conference_id']?.toString(),
-      password: videoConference?['password']?.toString(),
-      accessToken: videoConference?['access_token']?.toString(),
+          (videoConference?['show_recorded_video'] ??
+                  json['show_recorded_video'])
+              as bool? ??
+          false,
+      conferenceId:
+          (videoConference?['conference_id'] ??
+                  json['meeting_id'] ??
+                  json['conference_id'])
+              ?.toString(),
+      password: (videoConference?['password'] ?? json['password'])?.toString(),
+      accessToken: (videoConference?['access_token'] ?? json['access_token'])
+          ?.toString(),
     );
   }
 

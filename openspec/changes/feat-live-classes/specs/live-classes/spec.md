@@ -38,3 +38,10 @@ The navigation drawer SHALL include a dedicated menu option to open the Live Cla
 #### Scenario: Launching Live Classes from drawer
 - **WHEN** the user opens the dashboard drawer and taps "Live Classes"
 - **THEN** the system SHALL push the Live Classes screen onto the route stack and close the drawer.
+
+### Requirement: Open Live Class Lobby View
+Clicking on a live class item in either the calendar agenda or the list view SHALL fetch the class details from `/api/v3/live-classes/contents/{id}/` and navigate to the session lobby view.
+
+#### Scenario: Navigating to live class lobby
+- **WHEN** the user taps on a live class card
+- **THEN** the system SHALL fetch the detailed live class metadata and open the lobby view (e.g., Fermion lobby or Zoom meeting lobby).

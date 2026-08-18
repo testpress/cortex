@@ -500,6 +500,20 @@ class MockDataSource implements DataSource {
     );
   }
 
+  @override
+  Future<LessonDto> getLiveClassDetail(String id) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return _thermodynamicsLessons().firstWhere(
+      (l) => l.id == id,
+      orElse: () => _thermodynamicsLessons().first.copyWith(
+        id: id,
+        type: LessonType.liveStream,
+        contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        uuid: 'mock-video-id',
+      ),
+    );
+  }
+
   List<LessonDto> _thermodynamicsLessons() => [
     const LessonDto(
       id: 'thermo-1',

@@ -96,8 +96,11 @@ class _LiveStreamCalendarViewState extends State<LiveStreamCalendarView> {
                 padding: EdgeInsets.zero,
                 itemCount: selectedItems.length,
                 separatorBuilder: (_, _) => SizedBox(height: design.spacing.md),
-                itemBuilder: (context, index) =>
-                    LiveStreamCard(item: selectedItems[index]),
+                itemBuilder: (context, index) => LiveStreamCard(
+                  item: selectedItems[index],
+                  onTap: () =>
+                      context.push('/live-classes/${selectedItems[index].id}'),
+                ),
               ),
             ),
         ],

@@ -52,6 +52,8 @@ class ApiEndpoints {
       '/api/v2.5/chapter_content_attempts/videos/update/';
   static const String dashboard = '/api/v3/dashboard/';
   static const String liveClasses = '/api/v3/live-classes/';
+  static String liveClassDetail(String id) =>
+      '/api/v3/live-classes/contents/$id/';
 
   // Posts / Announcements
   static const String posts = '/api/v3/posts/';

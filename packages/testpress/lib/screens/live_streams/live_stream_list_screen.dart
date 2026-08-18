@@ -122,8 +122,12 @@ class _LiveStreamListScreenState extends ConsumerState<LiveStreamListScreen> {
                                   itemCount: displayItems.length,
                                   separatorBuilder: (_, _) =>
                                       SizedBox(height: design.spacing.md),
-                                  itemBuilder: (context, index) =>
-                                      LiveStreamCard(item: displayItems[index]),
+                                  itemBuilder: (context, index) => LiveStreamCard(
+                                    item: displayItems[index],
+                                    onTap: () => context.push(
+                                      '/live-classes/${displayItems[index].id}',
+                                    ),
+                                  ),
                                 ),
                               )),
                 ),

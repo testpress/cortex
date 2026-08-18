@@ -253,6 +253,22 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<LessonDto> getLiveClassDetail(String id) async {
+    try {
+      return await performNetworkRequest(
+        _dio.get(ApiEndpoints.liveClassDetail(id)),
+        fromJson: LessonDto.fromJson,
+      );
+    } on ApiException catch (e) {
+      final data = e.data;
+      if (data is Map<String, dynamic> && data['error_code'] == 'scheduled') {
+        return LessonDto.fromJson(data);
+      }
+      rethrow;
+    }
+  }
+
+  @override
   Future<PaginatedResponseDto<LiveClassDto>> getLiveClasses({
     int page = 1,
     String? status,

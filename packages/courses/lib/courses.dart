@@ -27,6 +27,7 @@ export 'widgets/chapter_status_filter_bar.dart';
 export 'widgets/chapter_content_item.dart';
 export 'screens/lesson_detail_orchestrator.dart';
 export 'providers/lesson_detail_provider.dart';
+export 'providers/live_class_detail_provider.dart';
 export 'providers/course_list_provider.dart';
 export 'providers/lesson_providers.dart';
 export 'providers/recent_activity_provider.dart';
