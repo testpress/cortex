@@ -2,26 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:intl/intl.dart';
-
-enum LiveStreamStatus { live, upcoming, completed, cancelled }
-
-class LiveStreamItem {
-  const LiveStreamItem({
-    required this.id,
-    required this.title,
-    required this.courseName,
-    required this.start,
-    required this.status,
-    this.durationMinutes,
-  });
-
-  final String id;
-  final String title;
-  final String courseName;
-  final DateTime start;
-  final LiveStreamStatus status;
-  final int? durationMinutes;
-}
+import '../../../providers/live_stream_provider.dart';
 
 /// Card widget for a single live stream entry.
 class LiveStreamCard extends StatelessWidget {
@@ -188,23 +169,23 @@ class _StatusBadge extends StatelessWidget {
     final (label, bg, fg) = switch (status) {
       LiveStreamStatus.live => (
         l10n.liveClassesFilterLive.toUpperCase(),
-        design.statusColors.live.background,
-        design.statusColors.live.foreground,
+        design.statusColors.liveClassLive.background,
+        design.statusColors.liveClassLive.foreground,
       ),
       LiveStreamStatus.upcoming => (
         l10n.liveClassesFilterUpcoming.toUpperCase(),
-        design.statusColors.upcoming.background,
-        design.statusColors.upcoming.foreground,
+        design.statusColors.liveClassUpcoming.background,
+        design.statusColors.liveClassUpcoming.foreground,
       ),
       LiveStreamStatus.completed => (
         l10n.liveClassesFilterCompleted.toUpperCase(),
-        design.statusColors.completed.background,
-        design.statusColors.completed.foreground,
+        design.statusColors.liveClassCompleted.background,
+        design.statusColors.liveClassCompleted.foreground,
       ),
       LiveStreamStatus.cancelled => (
         l10n.liveClassesFilterCancelled.toUpperCase(),
-        design.statusColors.locked.background,
-        design.statusColors.locked.foreground,
+        design.statusColors.liveClassCancelled.background,
+        design.statusColors.liveClassCancelled.foreground,
       ),
     };
 

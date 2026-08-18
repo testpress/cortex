@@ -685,6 +685,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get liveClassesListSemanticsLabel => 'قائمة الفصول الحية';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel => 'جدول أعمال الفصول الحية';
+
+  @override
   String get noDownloadedExamAvailable => 'لا يتوفر امتحان تم تنزيله';
 
   @override

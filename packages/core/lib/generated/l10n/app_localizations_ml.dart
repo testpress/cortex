@@ -693,6 +693,12 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String get liveClassesListSemanticsLabel => 'ലൈവ് ക്ലാസുകളുടെ ലിസ്റ്റ്';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel => 'ലൈവ് ക്ലാസുകളുടെ അജണ്ട';
+
+  @override
   String get noDownloadedExamAvailable =>
       'ഡൗൺലോഡ് ചെയ്ത പരീക്ഷയൊന്നും ലഭ്യമല്ല';
 

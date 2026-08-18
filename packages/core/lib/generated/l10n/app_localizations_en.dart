@@ -686,6 +686,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get liveClassesListSemanticsLabel => 'Live classes list';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel => 'Live classes agenda';
+
+  @override
   String get noDownloadedExamAvailable => 'No downloaded exam available';
 
   @override

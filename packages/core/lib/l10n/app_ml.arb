@@ -235,6 +235,8 @@
   "liveClassesFilterCancelled": "റദ്ദാക്കിയവ",
   "liveClassesNoClassesScheduledForDay": "ഈ ദിവസത്തേക്ക് ക്ലാസുകൾ ഒന്നും നിശ്ചയിച്ചിട്ടില്ല",
   "liveClassesDurationMins": "{minutes} മിനിറ്റ്",
+  "liveClassesListSemanticsLabel": "ലൈവ് ക്ലാസുകളുടെ ലിസ്റ്റ്",
+  "liveClassesAgendaSemanticsLabel": "ലൈവ് ക്ലാസുകളുടെ അജണ്ട",
   "noDownloadedExamAvailable": "ഡൗൺലോഡ് ചെയ്ത പരീക്ഷയൊന്നും ലഭ്യമല്ല",
   "drawerReports": "നിങ്ങളുടെ റിപ്പോർട്ട്",
   "drawerMyReport": "എന്റെ റിപ്പോർട്ട്",

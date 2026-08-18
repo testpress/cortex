@@ -3,7 +3,7 @@ import 'assignment_dto.dart';
 
 enum DashboardTestType { mock, chapter, practice }
 
-enum ClassStatus { upcoming, live, completed }
+enum ClassStatus { upcoming, live, completed, cancelled }
 
 @immutable
 class ClassItem {

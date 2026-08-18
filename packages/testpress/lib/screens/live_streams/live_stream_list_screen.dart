@@ -113,7 +113,9 @@ class _LiveStreamListScreenState extends ConsumerState<LiveStreamListScreen> {
                                     )
                                   : _buildEmptyState(design))
                             : AppSemantics.scrollableList(
-                                label: 'Live classes list',
+                                label: L10n.of(
+                                  context,
+                                ).liveClassesListSemanticsLabel,
                                 itemCount: displayItems.length,
                                 child: ListView.separated(
                                   physics:

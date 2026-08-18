@@ -697,6 +697,13 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get liveClassesListSemanticsLabel => 'நேரலை வகுப்புகள் பட்டியல்';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel =>
+      'நேரலை வகுப்புகள் நிகழ்ச்சி நிரல்';
+
+  @override
   String get noDownloadedExamAvailable =>
       'பதிவிறக்கம் செய்யப்பட்ட தேர்வு எதுவும் இல்லை';
 

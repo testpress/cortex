@@ -1344,6 +1344,18 @@ abstract class AppLocalizations {
   /// **'{minutes} mins'**
   String liveClassesDurationMins(Object minutes);
 
+  /// No description provided for @liveClassesListSemanticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Live classes list'**
+  String get liveClassesListSemanticsLabel;
+
+  /// No description provided for @liveClassesAgendaSemanticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Live classes agenda'**
+  String get liveClassesAgendaSemanticsLabel;
+
   /// No description provided for @noDownloadedExamAvailable.
   ///
   /// In en, this message translates to:

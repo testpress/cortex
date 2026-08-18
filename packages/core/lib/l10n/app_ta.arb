@@ -312,6 +312,8 @@
   "liveClassesFilterCancelled": "ரத்து செய்யப்பட்டவை",
   "liveClassesNoClassesScheduledForDay": "இந்த நாளில் வகுப்புகள் எதுவும் திட்டமிடப்படவில்லை",
   "liveClassesDurationMins": "{minutes} நிமிடங்கள்",
+  "liveClassesListSemanticsLabel": "நேரலை வகுப்புகள் பட்டியல்",
+  "liveClassesAgendaSemanticsLabel": "நேரலை வகுப்புகள் நிகழ்ச்சி நிரல்",
   "noDownloadedExamAvailable": "பதிவிறக்கம் செய்யப்பட்ட தேர்வு எதுவும் இல்லை",
   "drawerReports": "அறிக்கைகள்",
   "drawerMyReport": "எனது அறிக்கை",

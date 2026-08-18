@@ -312,6 +312,8 @@
   "liveClassesFilterCancelled": "Cancelled",
   "liveClassesNoClassesScheduledForDay": "No classes scheduled for this day",
   "liveClassesDurationMins": "{minutes} mins",
+  "liveClassesListSemanticsLabel": "Live classes list",
+  "liveClassesAgendaSemanticsLabel": "Live classes agenda",
   "noDownloadedExamAvailable": "No downloaded exam available",
   "drawerReports": "Reports",
   "drawerMyReport": "My report",

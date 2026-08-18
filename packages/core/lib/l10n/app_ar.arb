@@ -235,6 +235,8 @@
   "liveClassesFilterCancelled": "ملغى",
   "liveClassesNoClassesScheduledForDay": "لا توجد حصص مجدولة لهذا اليوم",
   "liveClassesDurationMins": "{minutes} دقيقة",
+  "liveClassesListSemanticsLabel": "قائمة الفصول الحية",
+  "liveClassesAgendaSemanticsLabel": "جدول أعمال الفصول الحية",
   "noDownloadedExamAvailable": "لا يتوفر امتحان تم تنزيله",
   "drawerReports": "التقارير الخاصة بك",
   "drawerMyReport": "تقريري",

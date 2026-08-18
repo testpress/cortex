@@ -1,9 +1,28 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import '../screens/live_streams/widgets/live_stream_card.dart';
 
 part 'live_stream_provider.g.dart';
+
+enum LiveStreamStatus { live, upcoming, completed, cancelled }
+
+class LiveStreamItem {
+  const LiveStreamItem({
+    required this.id,
+    required this.title,
+    required this.courseName,
+    required this.start,
+    required this.status,
+    this.durationMinutes,
+  });
+
+  final String id;
+  final String title;
+  final String courseName;
+  final DateTime start;
+  final LiveStreamStatus status;
+  final int? durationMinutes;
+}
 
 /// Tracks if the initial page of live streams is currently syncing.
 @riverpod

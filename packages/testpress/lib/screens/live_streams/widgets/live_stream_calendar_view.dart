@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'live_stream_card.dart';
+import '../../../providers/live_stream_provider.dart';
 
 class LiveStreamCalendarView extends StatefulWidget {
   const LiveStreamCalendarView({super.key, required this.items});
@@ -87,7 +88,7 @@ class _LiveStreamCalendarViewState extends State<LiveStreamCalendarView> {
             )
           else
             AppSemantics.scrollableList(
-              label: 'Live classes agenda',
+              label: L10n.of(context).liveClassesAgendaSemanticsLabel,
               itemCount: selectedItems.length,
               child: ListView.separated(
                 shrinkWrap: true,
@@ -132,20 +133,20 @@ class _LiveStreamDataSource extends CalendarDataSource {
     appointments = source.map((item) {
       final (bg, fg) = switch (item.status) {
         LiveStreamStatus.live => (
-          design.statusColors.live.background,
-          design.statusColors.live.foreground,
+          design.statusColors.liveClassLive.background,
+          design.statusColors.liveClassLive.foreground,
         ),
         LiveStreamStatus.upcoming => (
-          design.statusColors.upcoming.background,
-          design.statusColors.upcoming.foreground,
+          design.statusColors.liveClassUpcoming.background,
+          design.statusColors.liveClassUpcoming.foreground,
         ),
         LiveStreamStatus.completed => (
-          design.statusColors.completed.background,
-          design.statusColors.completed.foreground,
+          design.statusColors.liveClassCompleted.background,
+          design.statusColors.liveClassCompleted.foreground,
         ),
         LiveStreamStatus.cancelled => (
-          design.statusColors.locked.background,
-          design.statusColors.locked.foreground,
+          design.statusColors.liveClassCancelled.background,
+          design.statusColors.liveClassCancelled.foreground,
         ),
       };
 
