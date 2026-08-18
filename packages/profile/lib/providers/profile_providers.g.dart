@@ -6,26 +6,6 @@ part of 'profile_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileRecentActivityHash() =>
-    r'e70b9a9072f04f1b120c0a1eb7c80ee239b04cc8';
-
-/// See also [profileRecentActivity].
-@ProviderFor(profileRecentActivity)
-final profileRecentActivityProvider =
-    AutoDisposeFutureProvider<List<RecentActivityDto>>.internal(
-      profileRecentActivity,
-      name: r'profileRecentActivityProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$profileRecentActivityHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ProfileRecentActivityRef =
-    AutoDisposeFutureProviderRef<List<RecentActivityDto>>;
 String _$profileEnrollmentHash() => r'2d0c71785bd69ea7867001d029c699fe9567e85c';
 
 /// Provides enrolled courses directly from the DB layer to avoid depending on the `courses` package.

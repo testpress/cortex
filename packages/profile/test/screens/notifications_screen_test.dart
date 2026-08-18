@@ -33,7 +33,6 @@ void main() {
         profileEnrollmentProvider.overrideWith(
           (ref) => Stream.value(<CourseDto>[]),
         ),
-        profileRecentActivityProvider.overrideWith((ref) async => const []),
       ],
       child: child,
     );

@@ -7,7 +7,7 @@ import '../providers/profile_providers.dart';
 import '../widgets/paid_active_profile_header.dart';
 import '../widgets/paid_active_profile_snapshot.dart';
 import '../widgets/paid_active_enrolled_courses_section.dart';
-import '../widgets/paid_active_recent_activity_section.dart';
+
 import '../widgets/paid_active_account_preferences_section.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -32,7 +32,6 @@ class ProfilePage extends ConsumerWidget {
     final userAsync = ref.watch(userProvider);
     final statsAsync = ref.watch(studyMomentumProvider);
     final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
-    final recentActivityAsync = ref.watch(profileRecentActivityProvider);
 
     final l10n = L10n.of(context);
     final isBrilliantPala = AppConfig.apiBaseUrl.contains('brilliant');
@@ -97,20 +96,6 @@ class ProfilePage extends ConsumerWidget {
                           error: err,
                           onRetry: () =>
                               ref.invalidate(profileEnrollmentProvider),
-                        ),
-                      ),
-
-                      SizedBox(height: design.spacing.xl),
-
-                      // Recent Activity
-                      recentActivityAsync.when(
-                        data: (activities) =>
-                            RecentActivitySection(activities: activities),
-                        loading: () => const SizedBox(height: 120),
-                        error: (err, _) => AppErrorView(
-                          error: err,
-                          onRetry: () =>
-                              ref.invalidate(profileRecentActivityProvider),
                         ),
                       ),
 
