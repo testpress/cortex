@@ -211,6 +211,10 @@ class TeamsAutoJoinHandler {
     }
   }
 
+  /// Test-only entry point to simulate a JavaScript channel message.
+  @visibleForTesting
+  void simulateJsMessage(String message) => _handleJavaScriptMessage(message);
+
   void dispose() {
     _isDisposed = true;
     _hasCompletedAutoJoin = false;

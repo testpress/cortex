@@ -3165,4 +3165,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get teamsJoinMeetingLoading => 'جارِ الانضمام إلى الاجتماع...';
+
+  @override
+  String get teamsMissingJoinLink => 'رابط الاجتماع مفقود';
 }

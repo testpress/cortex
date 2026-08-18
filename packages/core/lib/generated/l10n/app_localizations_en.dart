@@ -3165,4 +3165,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get teamsJoinMeetingLoading => 'Joining meeting...';
+
+  @override
+  String get teamsMissingJoinLink => 'Meeting link is missing';
 }

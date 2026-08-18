@@ -3219,4 +3219,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get teamsJoinMeetingLoading => 'മീറ്റിംഗിൽ ചേരുന്നു...';
+
+  @override
+  String get teamsMissingJoinLink => 'മീറ്റിംഗ് ലിങ്ക് ലഭ്യമല്ല';
 }

@@ -1205,5 +1205,6 @@
   "liveStreamStatusLive": "مباشر",
   "liveStreamJoinFailed": "فشل الانضمام إلى الاجتماع. يُرجى المحاولة مرة أخرى.",
   "teamsPermissionRequired": "يلزم الوصول إلى الكاميرا والميكروفون. قم بتمكينها في الإعدادات للانضمام.",
-  "teamsJoinMeetingLoading": "جارِ الانضمام إلى الاجتماع..."
+  "teamsJoinMeetingLoading": "جارِ الانضمام إلى الاجتماع...",
+  "teamsMissingJoinLink": "رابط الاجتماع مفقود"
 }

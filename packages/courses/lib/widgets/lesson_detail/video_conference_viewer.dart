@@ -243,7 +243,15 @@ class VideoConferenceLobbyView extends StatelessWidget {
                 title: L10n.of(context).liveStreamStartTime,
                 subtitle: formattedStart!,
               ),
-            if (_isLive) ...[
+            if (_isLive && lesson.isTeams && lesson.contentUrl == null) ...[
+              const ConferenceDivider(),
+              ConferenceInfoRow(
+                icon: LucideIcons.alertCircle,
+                iconColor: design.colors.warning,
+                title: L10n.of(context).liveStreamJoinFailed,
+                subtitle: L10n.of(context).teamsMissingJoinLink,
+              ),
+            ] else if (_isLive) ...[
               SizedBox(height: design.spacing.lg),
               AppSemantics.button(
                 label: L10n.of(context).liveStreamAttendClass,

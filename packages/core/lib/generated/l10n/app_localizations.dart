@@ -5722,6 +5722,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Joining meeting...'**
   String get teamsJoinMeetingLoading;
+
+  /// No description provided for @teamsMissingJoinLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting link is missing'**
+  String get teamsMissingJoinLink;
 }
 
 class _AppLocalizationsDelegate

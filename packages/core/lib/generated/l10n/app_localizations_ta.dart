@@ -3215,4 +3215,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get teamsJoinMeetingLoading => 'கூட்டத்தில் சேர்கிறோம்...';
+
+  @override
+  String get teamsMissingJoinLink => 'சந்திப்பு இணைப்பு காணவில்லை';
 }
