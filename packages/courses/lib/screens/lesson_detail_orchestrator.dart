@@ -331,7 +331,9 @@ class _LessonDetailOrchestratorState
       case LessonType.videoConference:
         final isEnded = lesson.streamStatus?.toLowerCase() == 'completed' ||
             lesson.streamStatus?.toLowerCase() == 'ended';
-        if (isEnded && lesson.isZoom && lesson.showRecordedVideo) {
+        if (isEnded &&
+            (lesson.isZoom || lesson.isTeams) &&
+            lesson.showRecordedVideo) {
           return VideoLessonViewer(
             lesson: lesson,
             onComplete: _markAsCompleted,

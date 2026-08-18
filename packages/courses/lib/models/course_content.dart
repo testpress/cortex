@@ -122,6 +122,10 @@ class Lesson {
   bool get isZoom =>
       liveStreamProvider?.toLowerCase().contains('zoom') ?? false;
 
+  /// Whether this live stream or conference uses MS Teams.
+  bool get isTeams =>
+      liveStreamProvider?.toLowerCase().contains('teams') ?? false;
+
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
     if (isDetailFetched) return true;

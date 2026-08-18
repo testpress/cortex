@@ -1437,5 +1437,7 @@
   "liveStreamSessionDetails": "அமர்வு விவரங்கள்",
   "liveStreamStatus": "நிலை",
   "liveStreamStatusLive": "நேரலை",
-  "liveStreamJoinFailed": "கூட்டத்தில் சேர முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
+  "liveStreamJoinFailed": "கூட்டத்தில் சேர முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "teamsPermissionRequired": "சேர, கேமரா மற்றும் மைக்ரோஃபோன் அணுகல் தேவை. அமைப்புகளில் அவற்றை இயக்கவும்.",
+  "teamsJoinMeetingLoading": "கூட்டத்தில் சேர்கிறோம்..."
 }

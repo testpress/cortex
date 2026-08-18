@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import '../../models/course_content.dart';
+import 'teams_web_view.dart';
 
 final _meetingJoiningProvider = StateProvider.autoDispose<bool>((ref) => false);
 
@@ -31,6 +32,18 @@ class VideoConferenceViewer extends ConsumerWidget {
         context,
         message: L10n.of(context).liveStreamWaitingForHost,
         isError: true,
+      );
+      return;
+    }
+
+    if (lesson.isTeams && lesson.contentUrl != null) {
+      Navigator.of(context).push(
+        AppRoute(
+          page: TeamsVideoConferenceScreen(
+            joinUrl: lesson.contentUrl!,
+            title: lesson.title,
+          ),
+        ),
       );
       return;
     }

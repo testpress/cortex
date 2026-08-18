@@ -3212,4 +3212,11 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get liveStreamJoinFailed =>
       'മീറ്റിംഗിൽ ചേരുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get teamsPermissionRequired =>
+      'ക്യാമറ, മൈക്രോഫോൺ ആക്സസ് ആവശ്യമാണ്. ചേരുന്നതിന് ക്രമീകരണങ്ങളിൽ അവ പ്രവർത്തനക്ഷമമാക്കുക.';
+
+  @override
+  String get teamsJoinMeetingLoading => 'മീറ്റിംഗിൽ ചേരുന്നു...';
 }
