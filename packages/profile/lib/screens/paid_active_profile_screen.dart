@@ -5,8 +5,8 @@ import 'package:core/data/data.dart';
 import '../providers/profile_providers.dart';
 
 import '../widgets/paid_active_profile_header.dart';
-import '../widgets/paid_active_profile_snapshot.dart';
-import '../widgets/paid_active_enrolled_courses_section.dart';
+// import '../widgets/paid_active_profile_snapshot.dart';
+// import '../widgets/paid_active_enrolled_courses_section.dart';
 
 import '../widgets/paid_active_account_preferences_section.dart';
 
@@ -30,11 +30,10 @@ class ProfilePage extends ConsumerWidget {
     if (!isLoggedIn) return const SizedBox.shrink();
 
     final userAsync = ref.watch(userProvider);
-    final statsAsync = ref.watch(studyMomentumProvider);
-    final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
+    // final statsAsync = ref.watch(studyMomentumProvider);
+    // final enrolledCoursesAsync = ref.watch(profileEnrollmentProvider);
 
     final l10n = L10n.of(context);
-    final isBrilliantPala = AppConfig.apiBaseUrl.contains('brilliant');
 
     return Container(
       color: design.colors.canvas,
@@ -67,40 +66,38 @@ class ProfilePage extends ConsumerWidget {
 
                     SizedBox(height: design.spacing.xl),
 
-                    if (!isBrilliantPala) ...[
-                      // Stats Snapshot
-                      statsAsync.when(
-                        data: (StudyMomentumDto stats) =>
-                            ProfileLearningSnapshot(
-                              lessonsFinished: stats.lessonsFinished,
-                              testsAttempted: stats.testsAttempted,
-                              assessmentsDone: stats.assessmentsDone,
-                              strongestIn: stats.strongestSubject,
-                              focusNeededIn: stats.weakSubject,
-                            ),
-                        loading: () => const SizedBox(height: 200),
-                        error: (err, _) => AppErrorView(
-                          error: err,
-                          onRetry: () => ref.invalidate(studyMomentumProvider),
-                        ),
-                      ),
+                    // Stats Snapshot
+                    // statsAsync.when(
+                    //   data: (StudyMomentumDto stats) =>
+                    //       ProfileLearningSnapshot(
+                    //         lessonsFinished: stats.lessonsFinished,
+                    //         testsAttempted: stats.testsAttempted,
+                    //         assessmentsDone: stats.assessmentsDone,
+                    //         strongestIn: stats.strongestSubject,
+                    //         focusNeededIn: stats.weakSubject,
+                    //       ),
+                    //   loading: () => const SizedBox(height: 200),
+                    //   error: (err, _) => AppErrorView(
+                    //     error: err,
+                    //     onRetry: () => ref.invalidate(studyMomentumProvider),
+                    //   ),
+                    // ),
 
-                      SizedBox(height: design.spacing.xl),
+                    // SizedBox(height: design.spacing.xl),
 
-                      // Enrolled Courses
-                      enrolledCoursesAsync.when(
-                        data: (courses) =>
-                            EnrolledCoursesSection(courses: courses),
-                        loading: () => const SizedBox(height: 150),
-                        error: (err, _) => AppErrorView(
-                          error: err,
-                          onRetry: () =>
-                              ref.invalidate(profileEnrollmentProvider),
-                        ),
-                      ),
+                    // // Enrolled Courses
+                    // enrolledCoursesAsync.when(
+                    //   data: (courses) =>
+                    //       EnrolledCoursesSection(courses: courses),
+                    //   loading: () => const SizedBox(height: 150),
+                    //   error: (err, _) => AppErrorView(
+                    //     error: err,
+                    //     onRetry: () =>
+                    //         ref.invalidate(profileEnrollmentProvider),
+                    //   ),
+                    // ),
 
-                      SizedBox(height: design.spacing.xl),
-                    ],
+                    // SizedBox(height: design.spacing.xl),
 
                     // Account & Preferences
                     AccountPreferencesSection(
