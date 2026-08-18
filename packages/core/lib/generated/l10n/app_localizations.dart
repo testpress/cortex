@@ -1266,6 +1266,96 @@ abstract class AppLocalizations {
   /// **'My Results'**
   String get drawerMyResults;
 
+  /// No description provided for @drawerLiveClasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Classes'**
+  String get drawerLiveClasses;
+
+  /// No description provided for @liveClassesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Classes'**
+  String get liveClassesTitle;
+
+  /// No description provided for @liveClassesCalendarView.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar view'**
+  String get liveClassesCalendarView;
+
+  /// No description provided for @liveClassesCalendarSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to calendar to see classes by date'**
+  String get liveClassesCalendarSubtitle;
+
+  /// No description provided for @liveClassesToggleCalendarSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Calendar View'**
+  String get liveClassesToggleCalendarSemantics;
+
+  /// No description provided for @liveClassesNoClassesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No classes found'**
+  String get liveClassesNoClassesFound;
+
+  /// No description provided for @liveClassesFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get liveClassesFilterAll;
+
+  /// No description provided for @liveClassesFilterLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get liveClassesFilterLive;
+
+  /// No description provided for @liveClassesFilterUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get liveClassesFilterUpcoming;
+
+  /// No description provided for @liveClassesFilterCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get liveClassesFilterCompleted;
+
+  /// No description provided for @liveClassesFilterCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get liveClassesFilterCancelled;
+
+  /// No description provided for @liveClassesNoClassesScheduledForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No classes scheduled for this day'**
+  String get liveClassesNoClassesScheduledForDay;
+
+  /// No description provided for @liveClassesDurationMins.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} mins'**
+  String liveClassesDurationMins(Object minutes);
+
+  /// No description provided for @liveClassesListSemanticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Live classes list'**
+  String get liveClassesListSemanticsLabel;
+
+  /// No description provided for @liveClassesAgendaSemanticsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Live classes agenda'**
+  String get liveClassesAgendaSemanticsLabel;
+
   /// No description provided for @noDownloadedExamAvailable.
   ///
   /// In en, this message translates to:

@@ -500,6 +500,20 @@ class MockDataSource implements DataSource {
     );
   }
 
+  @override
+  Future<LessonDto> getLiveClassDetail(String id) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return _thermodynamicsLessons().firstWhere(
+      (l) => l.id == id,
+      orElse: () => _thermodynamicsLessons().first.copyWith(
+        id: id,
+        type: LessonType.liveStream,
+        contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        uuid: 'mock-video-id',
+      ),
+    );
+  }
+
   List<LessonDto> _thermodynamicsLessons() => [
     const LessonDto(
       id: 'thermo-1',
@@ -832,40 +846,53 @@ class MockDataSource implements DataSource {
   // ─────────────────────────────────────────────────────────────────────────
 
   @override
-  Future<List<LiveClassDto>> getLiveClasses() async => const [
-    LiveClassDto(
-      id: 'lc-1',
-      subject: 'Physics — Thermodynamics',
-      topic: 'Laws of Thermodynamics & Heat Engines',
-      time: '10:00 AM – 12:00 PM',
-      faculty: 'Prof. Anita Sharma',
-      status: LiveClassStatus.completed,
-    ),
-    LiveClassDto(
-      id: 'lc-2',
-      subject: 'Chemistry — Organic Chemistry',
-      topic: 'Reaction Mechanisms',
-      time: '3:00 PM – 5:00 PM',
-      faculty: 'Dr. Rajesh Kumar',
-      status: LiveClassStatus.live,
-    ),
-    LiveClassDto(
-      id: 'lc-3',
-      subject: 'Mathematics — Calculus II',
-      topic: 'Integration Techniques',
-      time: '5:30 PM – 7:30 PM',
-      faculty: 'Dr. Vikram Singh',
-      status: LiveClassStatus.upcoming,
-    ),
-    LiveClassDto(
-      id: 'lc-4',
-      subject: 'English — Communication Skills',
-      topic: 'Essay Writing & Comprehension',
-      time: '8:00 PM – 9:00 PM',
-      faculty: 'Ms. Priya Verma',
-      status: LiveClassStatus.upcoming,
-    ),
-  ];
+  Future<PaginatedResponseDto<LiveClassDto>> getLiveClasses({
+    int page = 1,
+    String? status,
+    String? ordering,
+  }) async {
+    final list = const [
+      LiveClassDto(
+        id: 'lc-1',
+        subject: 'Physics — Thermodynamics',
+        topic: 'Laws of Thermodynamics & Heat Engines',
+        time: '2026-08-16T10:00:00.000Z',
+        faculty: 'Prof. Anita Sharma',
+        status: LiveClassStatus.completed,
+      ),
+      LiveClassDto(
+        id: 'lc-2',
+        subject: 'Chemistry — Organic Chemistry',
+        topic: 'Reaction Mechanisms',
+        time: '2026-08-17T15:00:00.000Z',
+        faculty: 'Dr. Rajesh Kumar',
+        status: LiveClassStatus.live,
+      ),
+      LiveClassDto(
+        id: 'lc-3',
+        subject: 'Mathematics — Calculus II',
+        topic: 'Integration Techniques',
+        time: '2026-08-18T17:30:00.000Z',
+        faculty: 'Dr. Vikram Singh',
+        status: LiveClassStatus.upcoming,
+      ),
+      LiveClassDto(
+        id: 'lc-4',
+        subject: 'English — Communication Skills',
+        topic: 'Essay Writing & Comprehension',
+        time: '2026-08-19T20:00:00.000Z',
+        faculty: 'Ms. Priya Verma',
+        status: LiveClassStatus.upcoming,
+      ),
+    ];
+
+    return PaginatedResponseDto<LiveClassDto>(
+      results: list,
+      count: list.length,
+      next: null,
+      previous: null,
+    );
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Forum Threads

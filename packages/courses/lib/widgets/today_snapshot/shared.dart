@@ -36,6 +36,11 @@ class ContentIcon extends StatelessWidget {
           size: 20,
           color: design.colors.warning,
         ),
+      ClassStatus.cancelled => Icon(
+          LucideIcons.xCircle,
+          size: 20,
+          color: design.colors.textSecondary,
+        ),
     };
   }
 }

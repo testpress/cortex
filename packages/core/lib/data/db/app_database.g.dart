@@ -4498,6 +4498,17 @@ class $LiveClassesTableTable extends LiveClassesTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _durationMinutesMeta = const VerificationMeta(
+    'durationMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> durationMinutes = GeneratedColumn<int>(
+    'duration_minutes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4506,6 +4517,7 @@ class $LiveClassesTableTable extends LiveClassesTable
     time,
     faculty,
     status,
+    durationMinutes,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4564,6 +4576,15 @@ class $LiveClassesTableTable extends LiveClassesTable
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
+    if (data.containsKey('duration_minutes')) {
+      context.handle(
+        _durationMinutesMeta,
+        durationMinutes.isAcceptableOrUnknown(
+          data['duration_minutes']!,
+          _durationMinutesMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -4597,6 +4618,10 @@ class $LiveClassesTableTable extends LiveClassesTable
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      durationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_minutes'],
+      ),
     );
   }
 
@@ -4616,6 +4641,7 @@ class LiveClassesTableData extends DataClass
 
   /// Stored as string: 'completed' | 'live' | 'upcoming'
   final String status;
+  final int? durationMinutes;
   const LiveClassesTableData({
     required this.id,
     required this.subject,
@@ -4623,6 +4649,7 @@ class LiveClassesTableData extends DataClass
     required this.time,
     required this.faculty,
     required this.status,
+    this.durationMinutes,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4633,6 +4660,9 @@ class LiveClassesTableData extends DataClass
     map['time'] = Variable<String>(time);
     map['faculty'] = Variable<String>(faculty);
     map['status'] = Variable<String>(status);
+    if (!nullToAbsent || durationMinutes != null) {
+      map['duration_minutes'] = Variable<int>(durationMinutes);
+    }
     return map;
   }
 
@@ -4644,6 +4674,9 @@ class LiveClassesTableData extends DataClass
       time: Value(time),
       faculty: Value(faculty),
       status: Value(status),
+      durationMinutes: durationMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationMinutes),
     );
   }
 
@@ -4659,6 +4692,7 @@ class LiveClassesTableData extends DataClass
       time: serializer.fromJson<String>(json['time']),
       faculty: serializer.fromJson<String>(json['faculty']),
       status: serializer.fromJson<String>(json['status']),
+      durationMinutes: serializer.fromJson<int?>(json['durationMinutes']),
     );
   }
   @override
@@ -4671,6 +4705,7 @@ class LiveClassesTableData extends DataClass
       'time': serializer.toJson<String>(time),
       'faculty': serializer.toJson<String>(faculty),
       'status': serializer.toJson<String>(status),
+      'durationMinutes': serializer.toJson<int?>(durationMinutes),
     };
   }
 
@@ -4681,6 +4716,7 @@ class LiveClassesTableData extends DataClass
     String? time,
     String? faculty,
     String? status,
+    Value<int?> durationMinutes = const Value.absent(),
   }) => LiveClassesTableData(
     id: id ?? this.id,
     subject: subject ?? this.subject,
@@ -4688,6 +4724,9 @@ class LiveClassesTableData extends DataClass
     time: time ?? this.time,
     faculty: faculty ?? this.faculty,
     status: status ?? this.status,
+    durationMinutes: durationMinutes.present
+        ? durationMinutes.value
+        : this.durationMinutes,
   );
   LiveClassesTableData copyWithCompanion(LiveClassesTableCompanion data) {
     return LiveClassesTableData(
@@ -4697,6 +4736,9 @@ class LiveClassesTableData extends DataClass
       time: data.time.present ? data.time.value : this.time,
       faculty: data.faculty.present ? data.faculty.value : this.faculty,
       status: data.status.present ? data.status.value : this.status,
+      durationMinutes: data.durationMinutes.present
+          ? data.durationMinutes.value
+          : this.durationMinutes,
     );
   }
 
@@ -4708,13 +4750,15 @@ class LiveClassesTableData extends DataClass
           ..write('topic: $topic, ')
           ..write('time: $time, ')
           ..write('faculty: $faculty, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('durationMinutes: $durationMinutes')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, subject, topic, time, faculty, status);
+  int get hashCode =>
+      Object.hash(id, subject, topic, time, faculty, status, durationMinutes);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4724,7 +4768,8 @@ class LiveClassesTableData extends DataClass
           other.topic == this.topic &&
           other.time == this.time &&
           other.faculty == this.faculty &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.durationMinutes == this.durationMinutes);
 }
 
 class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
@@ -4734,6 +4779,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
   final Value<String> time;
   final Value<String> faculty;
   final Value<String> status;
+  final Value<int?> durationMinutes;
   final Value<int> rowid;
   const LiveClassesTableCompanion({
     this.id = const Value.absent(),
@@ -4742,6 +4788,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     this.time = const Value.absent(),
     this.faculty = const Value.absent(),
     this.status = const Value.absent(),
+    this.durationMinutes = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LiveClassesTableCompanion.insert({
@@ -4751,6 +4798,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     required String time,
     required String faculty,
     required String status,
+    this.durationMinutes = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        subject = Value(subject),
@@ -4765,6 +4813,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     Expression<String>? time,
     Expression<String>? faculty,
     Expression<String>? status,
+    Expression<int>? durationMinutes,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4774,6 +4823,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
       if (time != null) 'time': time,
       if (faculty != null) 'faculty': faculty,
       if (status != null) 'status': status,
+      if (durationMinutes != null) 'duration_minutes': durationMinutes,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4785,6 +4835,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     Value<String>? time,
     Value<String>? faculty,
     Value<String>? status,
+    Value<int?>? durationMinutes,
     Value<int>? rowid,
   }) {
     return LiveClassesTableCompanion(
@@ -4794,6 +4845,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
       time: time ?? this.time,
       faculty: faculty ?? this.faculty,
       status: status ?? this.status,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4819,6 +4871,9 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (durationMinutes.present) {
+      map['duration_minutes'] = Variable<int>(durationMinutes.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4834,6 +4889,7 @@ class LiveClassesTableCompanion extends UpdateCompanion<LiveClassesTableData> {
           ..write('time: $time, ')
           ..write('faculty: $faculty, ')
           ..write('status: $status, ')
+          ..write('durationMinutes: $durationMinutes, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -19140,6 +19196,7 @@ typedef $$LiveClassesTableTableCreateCompanionBuilder =
       required String time,
       required String faculty,
       required String status,
+      Value<int?> durationMinutes,
       Value<int> rowid,
     });
 typedef $$LiveClassesTableTableUpdateCompanionBuilder =
@@ -19150,6 +19207,7 @@ typedef $$LiveClassesTableTableUpdateCompanionBuilder =
       Value<String> time,
       Value<String> faculty,
       Value<String> status,
+      Value<int?> durationMinutes,
       Value<int> rowid,
     });
 
@@ -19189,6 +19247,11 @@ class $$LiveClassesTableTableFilterComposer
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -19231,6 +19294,11 @@ class $$LiveClassesTableTableOrderingComposer
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LiveClassesTableTableAnnotationComposer
@@ -19259,6 +19327,11 @@ class $$LiveClassesTableTableAnnotationComposer
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => column,
+  );
 }
 
 class $$LiveClassesTableTableTableManager
@@ -19304,6 +19377,7 @@ class $$LiveClassesTableTableTableManager
                 Value<String> time = const Value.absent(),
                 Value<String> faculty = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<int?> durationMinutes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LiveClassesTableCompanion(
                 id: id,
@@ -19312,6 +19386,7 @@ class $$LiveClassesTableTableTableManager
                 time: time,
                 faculty: faculty,
                 status: status,
+                durationMinutes: durationMinutes,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -19322,6 +19397,7 @@ class $$LiveClassesTableTableTableManager
                 required String time,
                 required String faculty,
                 required String status,
+                Value<int?> durationMinutes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LiveClassesTableCompanion.insert(
                 id: id,
@@ -19330,6 +19406,7 @@ class $$LiveClassesTableTableTableManager
                 time: time,
                 faculty: faculty,
                 status: status,
+                durationMinutes: durationMinutes,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

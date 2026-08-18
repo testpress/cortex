@@ -31,6 +31,7 @@ class TodayScheduleSectionWidget extends ConsumerWidget {
                 dto.LiveClassStatus.live => ClassStatus.live,
                 dto.LiveClassStatus.upcoming => ClassStatus.upcoming,
                 dto.LiveClassStatus.completed => ClassStatus.completed,
+                dto.LiveClassStatus.cancelled => ClassStatus.cancelled,
               },
               topic: d.topic,
             ),

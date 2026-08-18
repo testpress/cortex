@@ -910,6 +910,10 @@ class DesignStatusColors {
     required this.completed,
     required this.locked,
     required this.upcoming,
+    required this.liveClassLive,
+    required this.liveClassCompleted,
+    required this.liveClassUpcoming,
+    required this.liveClassCancelled,
   });
 
   /// Active/live session — vivid, attention-drawing.
@@ -923,6 +927,11 @@ class DesignStatusColors {
 
   /// Scheduled but not yet available.
   final StatusColors upcoming;
+
+  final StatusColors liveClassLive;
+  final StatusColors liveClassCompleted;
+  final StatusColors liveClassUpcoming;
+  final StatusColors liveClassCancelled;
 
   factory DesignStatusColors.light() {
     return const DesignStatusColors(
@@ -941,6 +950,22 @@ class DesignStatusColors {
       upcoming: StatusColors(
         background: Color(0xFFDBEAFE),
         foreground: Color(0xFF1E40AF),
+      ),
+      liveClassLive: StatusColors(
+        background: Color(0xFFFFF3E0), // orange-tinted cream
+        foreground: Color(0xFFE65100), // deep orange
+      ),
+      liveClassCompleted: StatusColors(
+        background: Color(0xFFE8F5E9), // light green
+        foreground: Color(0xFF2E7D32), // dark green
+      ),
+      liveClassUpcoming: StatusColors(
+        background: Color(0xFFE1F5FE), // sky blue tint
+        foreground: Color(0xFF01579B), // dark sky blue
+      ),
+      liveClassCancelled: StatusColors(
+        background: Color(0xFFFFEBEE), // blush
+        foreground: Color(0xFFB71C1C), // dark red
       ),
     );
   }
@@ -963,6 +988,22 @@ class DesignStatusColors {
         background: Color(0xFF1E3A5F),
         foreground: Color(0xFF93C5FD),
       ),
+      liveClassLive: StatusColors(
+        background: Color(0xFF3E1A00), // dark orange
+        foreground: Color(0xFFFFB74D), // light orange
+      ),
+      liveClassCompleted: StatusColors(
+        background: Color(0xFF052E16),
+        foreground: Color(0xFF6EE7B7),
+      ),
+      liveClassUpcoming: StatusColors(
+        background: Color(0xFF1E3A5F),
+        foreground: Color(0xFF93C5FD),
+      ),
+      liveClassCancelled: StatusColors(
+        background: Color(0xFF3B0000), // dark red
+        foreground: Color(0xFFEF9A9A), // light red
+      ),
     );
   }
 
@@ -973,11 +1014,24 @@ class DesignStatusColors {
         other.live == live &&
         other.completed == completed &&
         other.locked == locked &&
-        other.upcoming == upcoming;
+        other.upcoming == upcoming &&
+        other.liveClassLive == liveClassLive &&
+        other.liveClassCompleted == liveClassCompleted &&
+        other.liveClassUpcoming == liveClassUpcoming &&
+        other.liveClassCancelled == liveClassCancelled;
   }
 
   @override
-  int get hashCode => Object.hash(live, completed, locked, upcoming);
+  int get hashCode => Object.hash(
+    live,
+    completed,
+    locked,
+    upcoming,
+    liveClassLive,
+    liveClassCompleted,
+    liveClassUpcoming,
+    liveClassCancelled,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

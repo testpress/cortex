@@ -11,6 +11,8 @@ class LiveClassesTable extends Table {
   /// Stored as string: 'completed' | 'live' | 'upcoming'
   TextColumn get status => text()();
 
+  IntColumn get durationMinutes => integer().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

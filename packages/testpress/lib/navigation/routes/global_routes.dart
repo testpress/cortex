@@ -6,6 +6,7 @@ import 'package:courses/courses.dart';
 
 import '../../screens/bookmarks/bookmarks_screen.dart';
 import '../../screens/my_report_screen.dart';
+import '../../screens/live_streams/live_stream_list_screen.dart';
 
 class GlobalRoutes {
   static List<RouteBase> storeRoutes(
@@ -151,6 +152,39 @@ class GlobalRoutes {
       path: '/my-results',
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => const BPElearnMyResultsScreen(),
+    ),
+    GoRoute(
+      path: '/live-classes',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const LiveStreamListScreen(),
+    ),
+    GoRoute(
+      path: '/live-classes/:id',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return Consumer(
+          builder: (context, ref, child) {
+            final lessonAsync = ref.watch(liveClassDetailProvider(id));
+            return lessonAsync.when(
+              data: (lesson) {
+                if (lesson == null) {
+                  return Container(
+                    color: Design.of(context).colors.surface,
+                    child: const Center(child: AppLoadingIndicator()),
+                  );
+                }
+                return LessonDetailOrchestrator(lesson: lesson);
+              },
+              loading: () => Container(
+                color: Design.of(context).colors.surface,
+                child: const Center(child: AppLoadingIndicator()),
+              ),
+              error: (e, _) => AppErrorView(error: e),
+            );
+          },
+        );
+      },
     ),
   ];
 }

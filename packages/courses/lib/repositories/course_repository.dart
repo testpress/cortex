@@ -995,6 +995,27 @@ class CourseRepository {
     return merged;
   }
 
+  /// Refetches a single live class's full metadata from the v3 API and persists it.
+  Future<LessonDto> refreshLiveClass(String id) async {
+    final dto = await _source.getLiveClassDetail(id);
+
+    // Pre-fill parent course and chapter rows if present
+    if (dto.courseId != null) {
+      _hydrateParentsBackground(dto.courseId!).ignore();
+    }
+
+    if (dto.chapterSlug?.isNotEmpty == true) {
+      _hydrateNestedChapterBackground(dto.chapterId, dto.chapterSlug!).ignore();
+    }
+
+    final existing = await getLesson(id);
+    final updated = dto.copyWith(isDetailFetched: true);
+    final merged = updated.mergeWith(existing);
+
+    await _db.upsertLessons([_lessonDtoToCompanion(merged)]);
+    return merged;
+  }
+
   /// Watch a single lesson by its ID.
   Stream<LessonsTableData?> watchLesson(String id) {
     return _db.watchLesson(id);

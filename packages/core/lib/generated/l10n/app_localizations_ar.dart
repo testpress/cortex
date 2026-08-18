@@ -642,6 +642,55 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerMyResults => 'نتائجي';
 
   @override
+  String get drawerLiveClasses => 'الحصص المباشرة';
+
+  @override
+  String get liveClassesTitle => 'الحصص المباشرة';
+
+  @override
+  String get liveClassesCalendarView => 'عرض التقويم';
+
+  @override
+  String get liveClassesCalendarSubtitle =>
+      'التبديل إلى التقويم لرؤية الحصص حسب التاريخ';
+
+  @override
+  String get liveClassesToggleCalendarSemantics => 'تبديل عرض التقويم';
+
+  @override
+  String get liveClassesNoClassesFound => 'لم يتم العثور على حصص';
+
+  @override
+  String get liveClassesFilterAll => 'الكل';
+
+  @override
+  String get liveClassesFilterLive => 'مباشر';
+
+  @override
+  String get liveClassesFilterUpcoming => 'قادم';
+
+  @override
+  String get liveClassesFilterCompleted => 'مكتمل';
+
+  @override
+  String get liveClassesFilterCancelled => 'ملغى';
+
+  @override
+  String get liveClassesNoClassesScheduledForDay =>
+      'لا توجد حصص مجدولة لهذا اليوم';
+
+  @override
+  String liveClassesDurationMins(Object minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String get liveClassesListSemanticsLabel => 'قائمة الفصول الحية';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel => 'جدول أعمال الفصول الحية';
+
+  @override
   String get noDownloadedExamAvailable => 'لا يتوفر امتحان تم تنزيله';
 
   @override

@@ -643,6 +643,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerMyResults => 'My Results';
 
   @override
+  String get drawerLiveClasses => 'Live Classes';
+
+  @override
+  String get liveClassesTitle => 'Live Classes';
+
+  @override
+  String get liveClassesCalendarView => 'Calendar view';
+
+  @override
+  String get liveClassesCalendarSubtitle =>
+      'Switch to calendar to see classes by date';
+
+  @override
+  String get liveClassesToggleCalendarSemantics => 'Toggle Calendar View';
+
+  @override
+  String get liveClassesNoClassesFound => 'No classes found';
+
+  @override
+  String get liveClassesFilterAll => 'All';
+
+  @override
+  String get liveClassesFilterLive => 'Live';
+
+  @override
+  String get liveClassesFilterUpcoming => 'Upcoming';
+
+  @override
+  String get liveClassesFilterCompleted => 'Completed';
+
+  @override
+  String get liveClassesFilterCancelled => 'Cancelled';
+
+  @override
+  String get liveClassesNoClassesScheduledForDay =>
+      'No classes scheduled for this day';
+
+  @override
+  String liveClassesDurationMins(Object minutes) {
+    return '$minutes mins';
+  }
+
+  @override
+  String get liveClassesListSemanticsLabel => 'Live classes list';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel => 'Live classes agenda';
+
+  @override
   String get noDownloadedExamAvailable => 'No downloaded exam available';
 
   @override

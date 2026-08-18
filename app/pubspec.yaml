@@ -29,3 +29,7 @@ flutter:
 
   assets:
     - assets/images/
+
+# Override timezone package dependency to resolve version conflicts with syncfusion
+dependency_overrides:
+  timezone: any

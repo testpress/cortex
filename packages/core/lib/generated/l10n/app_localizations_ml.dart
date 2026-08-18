@@ -650,6 +650,55 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerMyResults => 'എന്റെ ഫലങ്ങൾ';
 
   @override
+  String get drawerLiveClasses => 'ലൈവ് ക്ലാസുകൾ';
+
+  @override
+  String get liveClassesTitle => 'ലൈവ് ക്ലാസുകൾ';
+
+  @override
+  String get liveClassesCalendarView => 'കലണ്ടർ കാഴ്ച';
+
+  @override
+  String get liveClassesCalendarSubtitle =>
+      'തീയതി അടിസ്ഥാനത്തിൽ ക്ലാസുകൾ കാണാൻ കലണ്ടറിലേക്ക് മാറ്റുക';
+
+  @override
+  String get liveClassesToggleCalendarSemantics => 'കലണ്ടർ കാഴ്ച മാറ്റുക';
+
+  @override
+  String get liveClassesNoClassesFound => 'ക്ലാസുകൾ ഒന്നും കണ്ടെത്തിയില്ല';
+
+  @override
+  String get liveClassesFilterAll => 'എല്ലാം';
+
+  @override
+  String get liveClassesFilterLive => 'ലൈവ്';
+
+  @override
+  String get liveClassesFilterUpcoming => 'വരാനിരിക്കുന്നവ';
+
+  @override
+  String get liveClassesFilterCompleted => 'പൂർത്തിയായവ';
+
+  @override
+  String get liveClassesFilterCancelled => 'റദ്ദാക്കിയവ';
+
+  @override
+  String get liveClassesNoClassesScheduledForDay =>
+      'ഈ ദിവസത്തേക്ക് ക്ലാസുകൾ ഒന്നും നിശ്ചയിച്ചിട്ടില്ല';
+
+  @override
+  String liveClassesDurationMins(Object minutes) {
+    return '$minutes മിനിറ്റ്';
+  }
+
+  @override
+  String get liveClassesListSemanticsLabel => 'ലൈവ് ക്ലാസുകളുടെ ലിസ്റ്റ്';
+
+  @override
+  String get liveClassesAgendaSemanticsLabel => 'ലൈവ് ക്ലാസുകളുടെ അജണ്ട';
+
+  @override
   String get noDownloadedExamAvailable =>
       'ഡൗൺലോഡ് ചെയ്ത പരീക്ഷയൊന്നും ലഭ്യമല്ല';
 

@@ -72,6 +72,7 @@ export '../network/api_endpoints.dart';
 export 'repositories/user_progress_repository.dart';
 export 'repositories/bookmark_repository.dart';
 export 'repositories/doubt_repository.dart';
+export 'repositories/live_classes_repository.dart';
 export 'repositories/repository_providers.dart';
 export 'repositories/institute_settings_repository.dart';
 export 'providers/bookmark_provider.dart';
