@@ -59,6 +59,7 @@ class LiveStreamList extends _$LiveStreamList {
           courseName: dto.subject,
           start: startDt,
           status: statusVal,
+          durationMinutes: dto.durationMinutes,
         );
       }).toList();
     });

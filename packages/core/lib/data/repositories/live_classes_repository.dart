@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import '../db/app_database.dart';
 import '../models/paginated_response_dto.dart';
 import '../models/live_class_dto.dart';
@@ -27,6 +28,7 @@ class LiveClassesRepository {
           time: r.time,
           faculty: r.faculty,
           status: statusVal,
+          durationMinutes: r.durationMinutes,
         );
       }).toList(),
     );
@@ -58,6 +60,7 @@ class LiveClassesRepository {
         time: dto.time,
         faculty: dto.faculty,
         status: statusStr,
+        durationMinutes: Value(dto.durationMinutes),
       );
     }).toList();
 

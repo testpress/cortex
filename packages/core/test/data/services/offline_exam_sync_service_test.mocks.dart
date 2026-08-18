@@ -397,6 +397,25 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<_i2.LessonDto>);
 
   @override
+  _i3.Future<_i2.LessonDto> getLiveClassDetail(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLiveClassDetail, [id]),
+            returnValue: _i3.Future<_i2.LessonDto>.value(
+              _FakeLessonDto_4(
+                this,
+                Invocation.method(#getLiveClassDetail, [id]),
+              ),
+            ),
+            returnValueForMissingStub: _i3.Future<_i2.LessonDto>.value(
+              _FakeLessonDto_4(
+                this,
+                Invocation.method(#getLiveClassDetail, [id]),
+              ),
+            ),
+          )
+          as _i3.Future<_i2.LessonDto>);
+
+  @override
   _i3.Future<_i2.PaginatedResponseDto<_i2.LiveClassDto>> getLiveClasses({
     int? page = 1,
     String? status,

@@ -11,6 +11,7 @@ class LiveClassDto {
   final String time; // Start time ISO 8601 string
   final String faculty; // Provider / Faculty name
   final LiveClassStatus status;
+  final int? durationMinutes;
 
   const LiveClassDto({
     required this.id,
@@ -19,6 +20,7 @@ class LiveClassDto {
     required this.time,
     required this.faculty,
     required this.status,
+    this.durationMinutes,
   });
 
   factory LiveClassDto.fromJson(Map<String, dynamic> json, String courseName) {
@@ -47,6 +49,7 @@ class LiveClassDto {
       time: startTimeStr,
       faculty: facultyStr,
       status: statusVal,
+      durationMinutes: durationInt > 0 ? durationInt : null,
     );
   }
 
