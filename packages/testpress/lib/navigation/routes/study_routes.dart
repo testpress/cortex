@@ -108,9 +108,7 @@ class StudyRoutes {
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             final extra = state.extra;
-            final lesson = extra is LessonDto
-                ? extra
-                : (extra is Lesson ? extra.toDto() : null);
+            final lesson = extra is LessonDto ? extra : null;
             final isOffline = state.uri.queryParameters['isOffline'] == 'true';
             return ExamPrescreen(
               testId: id,
@@ -137,9 +135,7 @@ class StudyRoutes {
               builder: (context, state) {
                 final id = state.pathParameters['id']!;
                 final extra = state.extra;
-                final lesson = extra is LessonDto
-                    ? extra
-                    : (extra is Lesson ? extra.toDto() : null);
+                final lesson = extra is LessonDto ? extra : null;
                 final isQuizMode =
                     state.uri.queryParameters['isQuizMode'] == 'true';
                 final isPartial =
@@ -218,9 +214,7 @@ class StudyRoutes {
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             final extra = state.extra;
-            final lesson = extra is LessonDto
-                ? extra
-                : (extra is Lesson ? extra.toDto() : null);
+            final lesson = extra is LessonDto ? extra : null;
             return AssessmentDetailScreen(
               assessmentId: id,
               lesson: lesson,
@@ -235,7 +229,7 @@ class StudyRoutes {
 
 /// An internal widget to handle redirects for specific lesson types.
 class _LessonRedirector extends StatefulWidget {
-  final Lesson lesson;
+  final LessonDto lesson;
   final Widget child;
 
   const _LessonRedirector({required this.lesson, required this.child});

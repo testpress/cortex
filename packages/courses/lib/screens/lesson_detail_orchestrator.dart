@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../models/course_content.dart';
 import '../providers/course_list_provider.dart';
 import '../widgets/lesson_detail/pdf_viewer.dart';
 import '../widgets/lesson_detail/lesson_web_view.dart';
@@ -28,7 +27,7 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
   });
 
   /// The lesson to render.
-  final Lesson lesson;
+  final LessonDto lesson;
 
   /// Optional callback to navigate to the next lesson.
   final VoidCallback? onNext;
@@ -38,7 +37,7 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
 
   /// Optional builder to provide specialized viewers for specific lesson types
   /// (e.g. Tests and Assessments from the Exams package).
-  final Widget Function(BuildContext context, Lesson lesson)? customBuilder;
+  final Widget Function(BuildContext context, LessonDto lesson)? customBuilder;
 
   @override
   ConsumerState<LessonDetailOrchestrator> createState() =>
@@ -62,11 +61,11 @@ class _LessonDetailOrchestratorState
     super.dispose();
   }
 
-  Future<void> _handleDownload(Lesson lesson) async {
+  Future<void> _handleDownload(LessonDto lesson) async {
     _startDownload(lesson);
   }
 
-  Future<void> _startDownload(Lesson lesson) async {
+  Future<void> _startDownload(LessonDto lesson) async {
     if (!mounted) return;
 
     if (mounted) {
@@ -116,7 +115,7 @@ class _LessonDetailOrchestratorState
     }
   }
 
-  Future<void> _removeBookmark(Lesson lesson) async {
+  Future<void> _removeBookmark(LessonDto lesson) async {
     final bookmarkId = lesson.bookmarkId;
     if (bookmarkId == null) return;
 
@@ -382,7 +381,7 @@ class _CachedPdfLessonViewer extends ConsumerWidget {
     required this.onProgressChanged,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final ValueChanged<double> onProgressChanged;
 
   @override

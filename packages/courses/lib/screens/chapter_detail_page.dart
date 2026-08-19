@@ -1,9 +1,9 @@
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/chapter_detail_provider.dart';
-import '../models/course_content.dart';
 import '../widgets/chapter_status_filter_bar.dart';
 import '../widgets/chapter_content_item.dart';
 
@@ -23,7 +23,7 @@ class ChapterDetailPage extends ConsumerStatefulWidget {
   final String courseId;
   final String chapterId;
   final VoidCallback? onBack;
-  final ValueChanged<Lesson>? onLessonClick;
+  final ValueChanged<LessonDto>? onLessonClick;
   final bool showFilters;
 
   @override
@@ -62,10 +62,12 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
         // If we have data (even if it's currently refreshing in the background),
         // show the content immediately to avoid "loading flashes" between tabs.
         if (chapterAsync.hasValue) {
-          final chapter = chapterAsync.value;
-          if (chapter == null) {
+          final pair = chapterAsync.value;
+          if (pair == null) {
             return Center(child: AppText.body(l10n.chapterNotFound));
           }
+          final chapter = pair.$1;
+          final courseTitle = pair.$2;
 
           final filteredLessons = chapter.lessons.where((l) {
             switch (activeStatusFilter) {
@@ -94,7 +96,7 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeaderContents(context, design, chapter),
+                    _buildHeaderContents(context, design, chapter, courseTitle),
                     if (widget.showFilters) const ChapterStatusFilterBar(),
                   ],
                 ),
@@ -185,7 +187,8 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildHeaderContents(context, design, _skeletonChapter),
+                      _buildHeaderContents(context, design, _skeletonChapter,
+                          'Loading course title'),
                       if (widget.showFilters) const ChapterStatusFilterBar(),
                     ],
                   ),
@@ -221,12 +224,12 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
   Widget _buildHeaderContents(
     BuildContext context,
     DesignConfig design,
-    Chapter chapter,
+    ChapterDto chapter,
+    String? courseTitle,
   ) {
     final l10n = L10n.of(context);
-    final displayTitle = chapter.courseTitle != null
-        ? '${chapter.courseTitle} - ${chapter.title}'
-        : chapter.title;
+    final displayTitle =
+        courseTitle != null ? '$courseTitle - ${chapter.title}' : chapter.title;
 
     final safeArea = MediaQuery.of(context).padding;
 
@@ -287,7 +290,7 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
 
 final _skeletonLessons = List.generate(
   5,
-  (index) => Lesson(
+  (index) => LessonDto(
     id: 'skeleton-lesson-$index',
     chapterId: 'skeleton-chapter-0',
     title: 'Loading lesson title text content',
@@ -295,14 +298,16 @@ final _skeletonLessons = List.generate(
     progressStatus: LessonProgressStatus.notStarted,
     orderIndex: index,
     duration: '900', // 15 mins (in seconds)
+    isLocked: false,
   ),
 );
 
-final _skeletonChapter = Chapter(
+final _skeletonChapter = ChapterDto(
   id: 'skeleton-chapter',
+  courseId: 'skeleton-course',
   title: 'Loading course chapter title text',
   lessonCount: 4,
   assessmentCount: 2,
-  courseTitle: 'Loading course title',
+  orderIndex: 0,
   lessons: _skeletonLessons,
 );

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
-import '../../models/course_content.dart';
+import 'package:core/data/data.dart';
 import '../../providers/video_subtabs_provider.dart';
 
 class NotesTab extends ConsumerStatefulWidget {
-  final Lesson lesson;
+  final LessonDto lesson;
   final bool isSliver;
   final void Function(Duration)? onSeek;
 

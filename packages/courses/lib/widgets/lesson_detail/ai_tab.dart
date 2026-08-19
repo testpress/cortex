@@ -2,11 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../models/course_content.dart';
 import '../../providers/learnlens_provider.dart';
 
 class AITab extends ConsumerStatefulWidget {
-  final Lesson lesson;
+  final LessonDto lesson;
   final ValueChanged<Duration>? onSeek;
   final WidgetBuilder? footerBuilder;
 

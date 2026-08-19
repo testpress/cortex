@@ -182,7 +182,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
       }
 
       final lessonDetailAsync = ref.read(lessonDetailProvider(widget.testId));
-      final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
+      final fetchedLesson = lessonDetailAsync.valueOrNull;
       final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
 
       final attemptsUrl =
@@ -252,11 +252,11 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
     final l10n = L10n.of(context);
     final state = ref.watch(examAttemptProvider);
     final lessonDetailAsync = widget.isCustomTest
-        ? const AsyncValue<Lesson?>.data(null)
+        ? const AsyncValue<LessonDto?>.data(null)
         : ref.watch(lessonDetailProvider(widget.testId));
 
     if (!widget.isCustomTest) {
-      ref.listen<AsyncValue<Lesson?>>(lessonDetailProvider(widget.testId), (
+      ref.listen<AsyncValue<LessonDto?>>(lessonDetailProvider(widget.testId), (
         previous,
         next,
       ) {

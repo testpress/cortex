@@ -3,12 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
-import '../../models/course_content.dart';
+import 'package:core/data/data.dart';
 import '../../providers/video_subtabs_provider.dart';
 import '../../utils/vtt_parser.dart';
 
 class TranscriptsTab extends ConsumerStatefulWidget {
-  final Lesson lesson;
+  final LessonDto lesson;
   final void Function(Duration)? onSeek;
   final ValueNotifier<Duration>? videoPositionNotifier;
   final ValueNotifier<bool>? isAutoScrollEnabledNotifier;

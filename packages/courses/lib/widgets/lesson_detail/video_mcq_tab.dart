@@ -2,14 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../models/course_content.dart';
 import '../../providers/learnlens_provider.dart';
 import 'mcq/video_mcq_initial_card.dart';
 import 'mcq/video_mcq_stepper_card.dart';
 import 'mcq/video_mcq_summary_card.dart';
 
 class VideoMcqTab extends ConsumerStatefulWidget {
-  final Lesson lesson;
+  final LessonDto lesson;
   final ValueChanged<Duration>? onSeek;
   final VoidCallback? onOpenFilterSheet;
   final String difficulty;

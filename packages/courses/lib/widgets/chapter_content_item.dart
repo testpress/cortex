@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../models/course_content.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
 class ChapterContentItem extends StatelessWidget {
@@ -13,7 +13,7 @@ class ChapterContentItem extends StatelessWidget {
     this.isSkeleton = false,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final VoidCallback onTap;
   final bool isSkeleton;
 
