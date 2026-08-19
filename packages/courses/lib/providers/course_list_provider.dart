@@ -302,14 +302,14 @@ class CourseSearchState {
     String? query,
     List<CourseDto>? results,
     bool? isLoading,
-    Object? error,
+    Object? error = const Object(),
     PaginationState? pagination,
   }) {
     return CourseSearchState(
       query: query ?? this.query,
       results: results ?? this.results,
       isLoading: isLoading ?? this.isLoading,
-      error: error,
+      error: identical(error, const Object()) ? this.error : error,
       pagination: pagination ?? this.pagination,
     );
   }

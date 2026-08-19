@@ -41,4 +41,47 @@ void main() {
     // Verify metadata resets to null immediately on dependency change
     expect(container.read(courseSyncMetadataProvider), isNull);
   });
+
+  group('CourseSearchState copyWith', () {
+    test('preserves error when error parameter is not specified', () {
+      final originalError = Exception('original error');
+      final state = CourseSearchState(
+        query: 'flutter',
+        isLoading: true,
+        error: originalError,
+      );
+
+      final updated = state.copyWith(isLoading: false);
+
+      expect(updated.isLoading, isFalse);
+      expect(updated.query, equals('flutter'));
+      expect(updated.error, equals(originalError));
+    });
+
+    test('clears error when error parameter is explicitly set to null', () {
+      final state = CourseSearchState(
+        query: 'flutter',
+        isLoading: true,
+        error: Exception('original error'),
+      );
+
+      final updated = state.copyWith(error: null, isLoading: false);
+
+      expect(updated.isLoading, isFalse);
+      expect(updated.error, isNull);
+    });
+
+    test('updates error when new error is provided', () {
+      final state = CourseSearchState(
+        query: 'flutter',
+        isLoading: true,
+        error: Exception('original error'),
+      );
+
+      final newError = Exception('new error');
+      final updated = state.copyWith(error: newError);
+
+      expect(updated.error, equals(newError));
+    });
+  });
 }
