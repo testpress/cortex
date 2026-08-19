@@ -1,0 +1,81 @@
+name: Generate Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      subdomain:
+        description: 'The subdomain of the client (e.g., rays)'
+        required: true
+        type: string
+      config:
+        description: 'Path to the local JSON configuration file (optional)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Generate Android APK
+    runs-on: ubuntu-latest
+    env:
+      CONFIG_PATH: ${{ inputs.config }}
+      API_BASE_URL: https://${{ inputs.subdomain }}.testpress.in
+      SUBDOMAIN: ${{ inputs.subdomain }}
+    steps:
+      - name: Validate Inputs (Fail Fast)
+        run: |
+          if [[ ! "$SUBDOMAIN" =~ ^[a-zA-Z0-9-]+$ ]]; then
+            echo "::error::Subdomain must contain only alphanumeric characters and hyphens"
+            exit 1
+          fi
+          if [[ -n "$CONFIG_PATH" && "$CONFIG_PATH" != *.json ]]; then
+            echo "::error::Config path must end with .json"
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          cache: true
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Generate Android APK
+        env:
+          CLIENT_API_KEY: ${{ secrets.TESTPRESS_API_KEY }}
+        run: |
+          if [[ -n "$CONFIG_PATH" ]]; then
+            dart run app/scripts/generate_client_app.dart \
+              --config="$CONFIG_PATH" \
+              --api-base-url="$API_BASE_URL"
+          else
+            dart run app/scripts/generate_client_app.dart \
+              --api-base-url="$API_BASE_URL"
+          fi
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.SUBDOMAIN }}-APK
+          path: app/build/app/outputs/flutter-apk/*.apk
+          retention-days: 7
+          if-no-files-found: error
