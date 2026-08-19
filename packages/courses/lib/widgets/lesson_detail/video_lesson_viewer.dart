@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
-import '../../models/course_content.dart';
+import 'package:core/data/data.dart';
 import 'custom_video_player.dart';
 import 'video_tabs.dart';
 import 'video_mcq_tab.dart';
@@ -18,7 +18,7 @@ class VideoLessonViewer extends StatefulWidget {
     this.mcqQuestionCount = 10,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
   final VoidCallback? onOpenMcqFilterSheet;
@@ -42,7 +42,7 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     _videoPlayerKey.currentState?.seek(target);
   }
 
-  List<VideoLessonTab> _getTabsForLesson(Lesson lesson) {
+  List<VideoLessonTab> _getTabsForLesson(LessonDto lesson) {
     final tabs = <VideoLessonTab>[];
     if (lesson.isAiEnabled &&
         lesson.aiNotesUrl != null &&
@@ -330,3 +330,5 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     );
   }
 }
+
+enum VideoLessonTab { notes, transcript, askDoubt, aiSupport, aiMcq }

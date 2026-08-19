@@ -1,5 +1,5 @@
-export 'models/course.dart';
-export 'models/course_content.dart';
+export 'package:core/data/data.dart'
+    show LessonType, LessonProgressStatus, LessonDto, ExamDto, ChapterDto;
 export 'models/assignment_dto.dart';
 export 'models/quick_shortcut_dto.dart';
 // DashboardBannerDto is now exported from package:core/data/data.dart

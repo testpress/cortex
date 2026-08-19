@@ -6,7 +6,7 @@ part of 'lesson_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lessonDetailHash() => r'd895ff5ad4ef1049d94447c9f8eb23892f0615d2';
+String _$lessonDetailHash() => r'84acc19f959357d003904dfcb9fa97b359ebb41f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -48,7 +48,7 @@ const lessonDetailProvider = LessonDetailFamily();
 /// still providing fast re-entry for typical back-navigation patterns.
 ///
 /// Copied from [lessonDetail].
-class LessonDetailFamily extends Family<AsyncValue<Lesson?>> {
+class LessonDetailFamily extends Family<AsyncValue<LessonDto?>> {
   /// Provider that fetches a specific lesson domain model by its ID.
   ///
   /// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
@@ -107,7 +107,7 @@ class LessonDetailFamily extends Family<AsyncValue<Lesson?>> {
 /// still providing fast re-entry for typical back-navigation patterns.
 ///
 /// Copied from [lessonDetail].
-class LessonDetailProvider extends AutoDisposeStreamProvider<Lesson?> {
+class LessonDetailProvider extends AutoDisposeStreamProvider<LessonDto?> {
   /// Provider that fetches a specific lesson domain model by its ID.
   ///
   /// Uses a timed keep-alive: the provider stays cached for 5 minutes after its
@@ -149,7 +149,7 @@ class LessonDetailProvider extends AutoDisposeStreamProvider<Lesson?> {
 
   @override
   Override overrideWith(
-    Stream<Lesson?> Function(LessonDetailRef provider) create,
+    Stream<LessonDto?> Function(LessonDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -166,7 +166,7 @@ class LessonDetailProvider extends AutoDisposeStreamProvider<Lesson?> {
   }
 
   @override
-  AutoDisposeStreamProviderElement<Lesson?> createElement() {
+  AutoDisposeStreamProviderElement<LessonDto?> createElement() {
     return _LessonDetailProviderElement(this);
   }
 
@@ -186,13 +186,13 @@ class LessonDetailProvider extends AutoDisposeStreamProvider<Lesson?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin LessonDetailRef on AutoDisposeStreamProviderRef<Lesson?> {
+mixin LessonDetailRef on AutoDisposeStreamProviderRef<LessonDto?> {
   /// The parameter `lessonId` of this provider.
   String get lessonId;
 }
 
 class _LessonDetailProviderElement
-    extends AutoDisposeStreamProviderElement<Lesson?> with LessonDetailRef {
+    extends AutoDisposeStreamProviderElement<LessonDto?> with LessonDetailRef {
   _LessonDetailProviderElement(super.provider);
 
   @override

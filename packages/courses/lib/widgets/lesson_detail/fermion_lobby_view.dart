@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../models/course_content.dart';
 import '../../providers/lesson_detail_provider.dart';
 
 /// Lobby screen for Fermion live sessions.
@@ -16,7 +16,7 @@ class FermionLobbyView extends ConsumerWidget {
     this.footerBuilder,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final WidgetBuilder? footerBuilder;
 
   void _openWebView(BuildContext context, WidgetRef ref) async {

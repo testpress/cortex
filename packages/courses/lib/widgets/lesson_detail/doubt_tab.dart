@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../models/course_content.dart';
 import 'ask_doubt_fab.dart';
 
 class DoubtTab extends ConsumerWidget {
-  final Lesson lesson;
+  final LessonDto lesson;
   final WidgetBuilder? footerBuilder;
   final VoidCallback? onBeforeNavigate;
   final VoidCallback? onResumeVideo;

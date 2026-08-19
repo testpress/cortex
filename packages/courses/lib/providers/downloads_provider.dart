@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import '../models/course_content.dart';
 import 'course_list_provider.dart';
 
 part 'downloads_provider.g.dart';
@@ -36,7 +35,7 @@ class Downloads extends _$Downloads {
   }
 
   /// Starts a watermarked PDF lesson download.
-  Future<void> startPdfLessonDownload(Lesson lesson) async {
+  Future<void> startPdfLessonDownload(LessonDto lesson) async {
     final downloadsRepo = await ref.read(downloadsRepositoryProvider.future);
     final courseRepo = await ref.read(courseRepositoryProvider.future);
     final details = await courseRepo.getLessonDetails(lesson.id);

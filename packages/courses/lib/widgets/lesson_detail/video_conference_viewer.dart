@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
-import '../../models/course_content.dart';
+import 'package:core/data/data.dart';
 import 'teams_web_view.dart';
 
 final _meetingJoiningProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -15,7 +15,7 @@ class VideoConferenceViewer extends ConsumerWidget {
     this.onComplete,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final VoidCallback? onComplete;
 
   void _joinMeeting(BuildContext context, WidgetRef ref) async {
@@ -173,7 +173,7 @@ class VideoConferenceLobbyView extends StatelessWidget {
     this.isJoining = false,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final String? formattedDuration;
   final String? formattedStart;
   final VoidCallback onAttendTap;

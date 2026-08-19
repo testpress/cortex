@@ -30,7 +30,7 @@ void main() {
   }
 
   group('ChapterContentItem Expiry', () {
-    final expiredLesson = Lesson(
+    final expiredLesson = LessonDto(
       id: '1',
       chapterId: '1',
       title: 'Expired Lesson',
@@ -39,6 +39,8 @@ void main() {
       orderIndex: 1,
       hasEnded: true,
       end: '2023-12-31T23:59:59Z',
+      isLocked: false,
+      duration: '',
     );
 
     testWidgets('shows lock icon and blocks tap', (tester) async {

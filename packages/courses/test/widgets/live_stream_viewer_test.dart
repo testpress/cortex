@@ -30,7 +30,7 @@ void main() {
     );
   }
 
-  final testFermionRunningLesson = Lesson(
+  final testFermionRunningLesson = LessonDto(
     id: '1',
     chapterId: '10',
     title: 'Fermion Live Session',
@@ -45,7 +45,7 @@ void main() {
     start: '2026-08-10T11:38:00Z',
   );
 
-  final testFermionScheduledLesson = Lesson(
+  final testFermionScheduledLesson = LessonDto(
     id: '2',
     chapterId: '10',
     title: 'Scheduled Fermion Session',
@@ -60,7 +60,7 @@ void main() {
     scheduledMessage: 'This content will be unlocked soon.',
   );
 
-  final testTpStreamsRunningLesson = Lesson(
+  final testTpStreamsRunningLesson = LessonDto(
     id: '3',
     chapterId: '10',
     title: 'TpStreams Session',

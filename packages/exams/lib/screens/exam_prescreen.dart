@@ -64,7 +64,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     final l10n = L10n.of(context);
 
     final lessonDetailAsync = ref.watch(lessonDetailProvider(widget.testId));
-    final fetchedLesson = lessonDetailAsync.valueOrNull?.toDto();
+    final fetchedLesson = lessonDetailAsync.valueOrNull;
     final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
 
     final exam = lesson?.exam;

@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import '../../models/course_content.dart';
+import 'package:core/data/data.dart';
 import 'custom_video_player.dart';
 import 'fermion_lobby_view.dart';
 
 /// Viewer for live stream content.
 ///
-/// Branches on [Lesson.liveStreamProvider]:
+/// Branches on [LessonDto.liveStreamProvider]:
 /// - **Fermion**: renders a lobby screen ([FermionLobbyView]) with a
 ///   context-aware action button that opens the session embed URL in a
 ///   full-screen [AppWebView].
@@ -19,7 +19,7 @@ class LiveStreamViewer extends StatelessWidget {
     this.footerBuilder,
   });
 
-  final Lesson lesson;
+  final LessonDto lesson;
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
 

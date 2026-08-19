@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'792664f641887b43f078839b7da81df08e30184b';
+String _$chapterDetailHash() => r'c0726a6f59e65b33915e0ea7e9e5ed6e2f654927';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,25 +30,25 @@ class _SystemHash {
 }
 
 /// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// This provider maps the underlying DTOs to the [ChapterDto] domain model.
 ///
 /// Copied from [chapterDetail].
 @ProviderFor(chapterDetail)
 const chapterDetailProvider = ChapterDetailFamily();
 
 /// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// This provider maps the underlying DTOs to the [ChapterDto] domain model.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailFamily extends Family<AsyncValue<Chapter?>> {
+class ChapterDetailFamily extends Family<AsyncValue<(ChapterDto, String?)?>> {
   /// Provider that fetches a specific chapter with its lessons.
-  /// This provider maps the underlying DTOs to the [Chapter] domain model.
+  /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
   ///
   /// Copied from [chapterDetail].
   const ChapterDetailFamily();
 
   /// Provider that fetches a specific chapter with its lessons.
-  /// This provider maps the underlying DTOs to the [Chapter] domain model.
+  /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
   ///
   /// Copied from [chapterDetail].
   ChapterDetailProvider call(
@@ -87,12 +87,12 @@ class ChapterDetailFamily extends Family<AsyncValue<Chapter?>> {
 }
 
 /// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// This provider maps the underlying DTOs to the [ChapterDto] domain model.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailProvider extends StreamProvider<Chapter?> {
+class ChapterDetailProvider extends StreamProvider<(ChapterDto, String?)?> {
   /// Provider that fetches a specific chapter with its lessons.
-  /// This provider maps the underlying DTOs to the [Chapter] domain model.
+  /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
   ///
   /// Copied from [chapterDetail].
   ChapterDetailProvider(
@@ -133,7 +133,7 @@ class ChapterDetailProvider extends StreamProvider<Chapter?> {
 
   @override
   Override overrideWith(
-    Stream<Chapter?> Function(ChapterDetailRef provider) create,
+    Stream<(ChapterDto, String?)?> Function(ChapterDetailRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -151,7 +151,7 @@ class ChapterDetailProvider extends StreamProvider<Chapter?> {
   }
 
   @override
-  StreamProviderElement<Chapter?> createElement() {
+  StreamProviderElement<(ChapterDto, String?)?> createElement() {
     return _ChapterDetailProviderElement(this);
   }
 
@@ -174,7 +174,7 @@ class ChapterDetailProvider extends StreamProvider<Chapter?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterDetailRef on StreamProviderRef<Chapter?> {
+mixin ChapterDetailRef on StreamProviderRef<(ChapterDto, String?)?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -182,7 +182,8 @@ mixin ChapterDetailRef on StreamProviderRef<Chapter?> {
   String get chapterId;
 }
 
-class _ChapterDetailProviderElement extends StreamProviderElement<Chapter?>
+class _ChapterDetailProviderElement
+    extends StreamProviderElement<(ChapterDto, String?)?>
     with ChapterDetailRef {
   _ChapterDetailProviderElement(super.provider);
 

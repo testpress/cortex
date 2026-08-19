@@ -1,16 +1,15 @@
 import 'package:async/async.dart' show StreamGroup;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
-import '../models/course_content.dart';
 import 'course_list_provider.dart';
 import '../repositories/course_repository.dart';
 
 part 'chapter_detail_provider.g.dart';
 
 /// Provider that fetches a specific chapter with its lessons.
-/// This provider maps the underlying DTOs to the [Chapter] domain model.
+/// This provider maps the underlying DTOs to the [ChapterDto] domain model.
 @Riverpod(keepAlive: true)
-Stream<Chapter?> chapterDetail(
+Stream<(ChapterDto, String?)?> chapterDetail(
   ChapterDetailRef ref,
   String courseId,
   String chapterId,
@@ -33,8 +32,8 @@ Stream<Chapter?> chapterDetail(
   yield* _watchChapter(repo, courseId, chapterId);
 }
 
-/// Helper stream that maps database rows to the Chapter domain model.
-Stream<Chapter?> _watchChapter(
+/// Helper stream that maps database rows to the ChapterDto and course title.
+Stream<(ChapterDto, String?)?> _watchChapter(
   CourseRepository repo,
   String courseId,
   String chapterId,
@@ -51,54 +50,10 @@ Stream<Chapter?> _watchChapter(
     final courses = await repo.watchCourses().first;
     final course = courses.where((c) => c.id == courseId).firstOrNull;
 
-    return Chapter(
-      id: chapterData.id,
-      title: chapterData.title,
-      lessonCount: chapterData.lessonCount,
-      assessmentCount: chapterData.assessmentCount,
-      courseTitle: course?.title,
-      image: chapterData.image,
-      lessons: lessonsData
-          .map((l) => repo.rowToLessonDto(l))
-          .map(
-            (l) => Lesson(
-              id: l.id,
-              chapterId: l.chapterId,
-              title: l.title,
-              type: l.type,
-              progressStatus: l.progressStatus,
-              orderIndex: l.orderIndex,
-              duration: l.duration,
-              isLocked: l.isLocked,
-              subtitle: l.subtitle,
-              subjectName: l.subjectName,
-              subjectIndex: l.subjectIndex,
-              lessonNumber: l.lessonNumber,
-              totalLessons: l.totalLessons,
-              uuid: l.uuid,
-              contentUrl: l.contentUrl,
-              bookmarkId: l.bookmarkId,
-              isRunning: l.isRunning,
-              isUpcoming: l.isUpcoming,
-              hasAttempts: l.hasAttempts,
-              image: l.image,
-              start: l.start,
-              end: l.end,
-              hasEnded: l.hasEnded,
-              nextContentId: l.nextContentId,
-              previousContentId: l.previousContentId,
-              htmlContent: l.htmlContent,
-              attemptsUrl: l.attemptsUrl,
-              slug: l.slug,
-              allowDownload: l.allowDownload,
-              watermarkBeforeDownload: l.watermarkBeforeDownload,
-              conferenceId: l.conferenceId,
-              password: l.password,
-              accessToken: l.accessToken,
-            ),
-          )
-          .toList(),
-    );
+    final chapterDto = repo.rowToChapterDto(chapterData);
+    final lessonDtos = lessonsData.map(repo.rowToLessonDto).toList();
+
+    return (chapterDto.copyWith(lessons: lessonDtos), course?.title);
   });
 }
 

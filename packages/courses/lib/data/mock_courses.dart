@@ -1,49 +1,67 @@
-import '../models/course.dart';
+import 'package:core/data/data.dart';
 
 /// Mock course data for demonstration.
 ///
 /// In production, this would come from an API or local database.
 const mockCourses = [
-  Course(
+  CourseDto(
     id: '1',
     title: 'Flutter Fundamentals',
-    description:
-        'Master the basics of Flutter development with hands-on projects and real-world examples.',
-    progress: 0.65,
+    colorIndex: 0,
+    chapterCount: 5,
+    totalContents: 20,
+    completedLessons: 13,
+    totalLessons: 20,
+    progress: 65.0,
   ),
-  Course(
+  CourseDto(
     id: '2',
     title: 'Advanced State Management',
-    description:
-        'Deep dive into state management patterns including Provider, Riverpod, and Bloc.',
-    progress: 0.30,
+    colorIndex: 1,
+    chapterCount: 4,
+    totalContents: 15,
+    completedLessons: 5,
+    totalLessons: 15,
+    progress: 30.0,
   ),
-  Course(
+  CourseDto(
     id: '3',
     title: 'Custom Animations',
-    description:
-        'Create stunning animations and transitions using Flutter\'s animation framework.',
+    colorIndex: 2,
+    chapterCount: 3,
+    totalContents: 10,
+    completedLessons: 0,
+    totalLessons: 10,
     progress: 0.0,
   ),
-  Course(
+  CourseDto(
     id: '4',
     title: 'Firebase Integration',
-    description:
-        'Build production-ready apps with Firebase authentication, Firestore, and cloud functions.',
-    progress: 0.85,
+    colorIndex: 3,
+    chapterCount: 6,
+    totalContents: 25,
+    completedLessons: 21,
+    totalLessons: 25,
+    progress: 85.0,
   ),
-  Course(
+  CourseDto(
     id: '5',
     title: 'Testing Strategies',
-    description:
-        'Write comprehensive unit, widget, and integration tests for bulletproof Flutter apps.',
-    progress: 0.15,
+    colorIndex: 4,
+    chapterCount: 3,
+    totalContents: 12,
+    completedLessons: 2,
+    totalLessons: 12,
+    progress: 15.0,
   ),
-  Course(
+  CourseDto(
     id: '6',
     title: 'Performance Optimization',
-    description:
-        'Optimize your Flutter apps for smooth 60fps performance on all devices.',
+    colorIndex: 5,
+    chapterCount: 2,
+    totalContents: 8,
+    completedLessons: 0,
+    totalLessons: 8,
     progress: 0.0,
   ),
 ];

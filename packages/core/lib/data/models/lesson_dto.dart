@@ -89,6 +89,24 @@ class LessonDto {
   final String? password;
   final String? accessToken;
 
+  /// Whether this live stream or conference uses Zoom.
+  bool get isZoom =>
+      liveStreamProvider?.toLowerCase().contains('zoom') ?? false;
+
+  /// Whether this live stream or conference uses MS Teams.
+  bool get isTeams =>
+      liveStreamProvider?.toLowerCase().contains('teams') ?? false;
+
+  /// Whether this live stream uses Jitsi/Fermion.
+  bool get isFermion =>
+      liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
+
+  /// Whether this live stream is completed/ended.
+  bool get isStreamCompleted => streamStatus?.toLowerCase() == 'completed';
+
+  /// Whether this live stream is currently running.
+  bool get isStreamRunning => streamStatus?.toLowerCase() == 'running';
+
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
     if (isDetailFetched) return true;
@@ -98,8 +116,6 @@ class LessonDto {
       case LessonType.video:
         return uuid != null && uuid!.isNotEmpty;
       case LessonType.liveStream:
-        final isFermion =
-            liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
         if (isFermion) {
           return contentUrl != null && contentUrl!.isNotEmpty;
         }
