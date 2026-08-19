@@ -125,14 +125,15 @@ class CourseRepository {
         if (localStreamCache != null) {
           course = localStreamCache!;
         } else {
-          if (!_activeDetailSyncs.containsKey(courseId)) {
-            _activeDetailSyncs[courseId] =
+          final lockKey = 'detail_$courseId';
+          if (!_activeDetailSyncs.containsKey(lockKey)) {
+            _activeDetailSyncs[lockKey] =
                 _source.getCourseDetail(courseId).whenComplete(() {
-              _activeDetailSyncs.remove(courseId);
+              _activeDetailSyncs.remove(lockKey);
             });
           }
           try {
-            final fetchedCourse = await _activeDetailSyncs[courseId]!;
+            final fetchedCourse = await _activeDetailSyncs[lockKey]!;
             if (fetchedCourse == null) return null;
             course = fetchedCourse;
             localStreamCache = course; // Cache for the lifetime of this stream
