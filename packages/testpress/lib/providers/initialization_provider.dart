@@ -20,7 +20,7 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
   // Kick off settings load immediately — runs concurrently with Firebase & SDK init.
   // This way cached settings are ready by the time the home screen renders.
-  unawaited(ref.watch(settingsInitializationProvider.future));
+  unawaited(ref.read(settingsInitializationProvider.future));
 
   // Initialize Firebase Core & Push Notifications (fails silently if google-services.json was missing)
   try {

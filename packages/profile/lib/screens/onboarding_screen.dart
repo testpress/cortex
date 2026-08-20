@@ -15,11 +15,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final currentSettings = ref.watch(instituteSettingsProvider);
     ref.listen(instituteSettingsProvider, (_, settings) {
       if (settings != null) {
         context.go('/login');
       }
     });
+
+    if (currentSettings != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.go('/login');
+      });
+    }
 
     return Scaffold(
       backgroundColor: design.colors.primary,
