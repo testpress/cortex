@@ -12,16 +12,14 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) context.go('/login');
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+
+    ref.listen(instituteSettingsProvider, (_, settings) {
+      if (settings != null) {
+        context.go('/login');
+      }
+    });
 
     return Scaffold(
       backgroundColor: design.colors.primary,
