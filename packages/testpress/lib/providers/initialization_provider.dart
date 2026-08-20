@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:core/core.dart';
@@ -16,6 +17,10 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   final userProgressRepo = await ref.watch(
     userProgressRepositoryProvider.future,
   );
+
+  // Kick off settings load immediately — runs concurrently with Firebase & SDK init.
+  // This way cached settings are ready by the time the home screen renders.
+  unawaited(ref.read(settingsInitializationProvider.future));
 
   // Initialize Firebase Core & Push Notifications (fails silently if google-services.json was missing)
   try {
