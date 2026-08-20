@@ -11,6 +11,14 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+  bool _hasNavigated = false;
+
+  void _navigateToLogin() {
+    if (_hasNavigated || !mounted) return;
+    _hasNavigated = true;
+    context.go('/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -18,13 +26,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final currentSettings = ref.watch(instituteSettingsProvider);
     ref.listen(instituteSettingsProvider, (_, settings) {
       if (settings != null) {
-        context.go('/login');
+        _navigateToLogin();
       }
     });
 
     if (currentSettings != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) context.go('/login');
+        _navigateToLogin();
       });
     }
 
