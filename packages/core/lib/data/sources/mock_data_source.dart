@@ -85,8 +85,8 @@ class MockDataSource implements DataSource {
     if (page == 1) {
       return [
         const CourseDto(
-          id: 'physics-jee-main',
-          title: 'Physics JEE Main',
+          id: 'jee-main-2026',
+          title: 'JEE Main 2026',
           colorIndex: 0, // indigo
           chapterCount: 12,
           totalContents: 120,
