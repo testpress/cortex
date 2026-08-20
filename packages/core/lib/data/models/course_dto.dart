@@ -15,12 +15,9 @@ class CourseDto {
   final int colorIndex;
 
   final int chapterCount;
-  @Deprecated('Use totalContents instead')
-  final String? totalDuration;
   final int totalContents;
   final double progress; // 0.0–100.0
   final int completedLessons;
-  final int totalLessons;
   final String? image;
   final List<String> tags;
   final List<String> allowedDevices;
@@ -33,11 +30,9 @@ class CourseDto {
     required this.title,
     required this.colorIndex,
     required this.chapterCount,
-    this.totalDuration,
     required this.totalContents,
     required this.progress,
     required this.completedLessons,
-    required this.totalLessons,
     this.tags = const [],
     this.allowedDevices = const [],
     this.examsCount = 0,
@@ -64,11 +59,9 @@ class CourseDto {
     String? title,
     int? colorIndex,
     int? chapterCount,
-    String? totalDuration,
     int? totalContents,
     double? progress,
     int? completedLessons,
-    int? totalLessons,
     String? image,
     List<String>? tags,
     List<String>? allowedDevices,
@@ -82,11 +75,9 @@ class CourseDto {
       title: title ?? this.title,
       colorIndex: colorIndex ?? this.colorIndex,
       chapterCount: chapterCount ?? this.chapterCount,
-      totalDuration: totalDuration ?? this.totalDuration,
       totalContents: totalContents ?? this.totalContents,
       progress: progress ?? this.progress,
       completedLessons: completedLessons ?? this.completedLessons,
-      totalLessons: totalLessons ?? this.totalLessons,
       image: image ?? this.image,
       tags: tags ?? this.tags,
       allowedDevices: allowedDevices ?? this.allowedDevices,
@@ -103,11 +94,9 @@ class CourseDto {
       title: json['title'] as String? ?? 'Untitled Course',
       colorIndex: json['color_index'] as int? ?? 0,
       chapterCount: json['chapters_count'] as int? ?? 0,
-      totalDuration: json['total_duration'] as String?,
       totalContents: json['contents_count'] as int? ?? 0,
       progress: (json['progress'] as num? ?? 0.0).toDouble(),
       completedLessons: json['completed_lessons_count'] as int? ?? 0,
-      totalLessons: json['contents_count'] as int? ?? 0,
       image: json['image'] as String?,
       tags: _parseList(json['tags']),
       allowedDevices: _parseList(json['allowed_devices']),
@@ -177,11 +166,9 @@ class CourseDto {
       'title': title,
       'colorIndex': colorIndex,
       'chapterCount': chapterCount,
-      'totalDuration': totalDuration,
       'totalContents': totalContents,
       'progress': progress,
       'completedLessons': completedLessons,
-      'totalLessons': totalLessons,
       'image': image,
       'tags': tags,
       'allowed_devices': allowedDevices,

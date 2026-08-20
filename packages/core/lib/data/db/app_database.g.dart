@@ -49,17 +49,6 @@ class $CoursesTableTable extends CoursesTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _totalDurationMeta = const VerificationMeta(
-    'totalDuration',
-  );
-  @override
-  late final GeneratedColumn<String> totalDuration = GeneratedColumn<String>(
-    'total_duration',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
   static const VerificationMeta _totalContentsMeta = const VerificationMeta(
     'totalContents',
   );
@@ -95,17 +84,6 @@ class $CoursesTableTable extends CoursesTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _totalLessonsMeta = const VerificationMeta(
-    'totalLessons',
-  );
-  @override
-  late final GeneratedColumn<int> totalLessons = GeneratedColumn<int>(
-    'total_lessons',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
   );
   static const VerificationMeta _imageMeta = const VerificationMeta('image');
   @override
@@ -181,11 +159,9 @@ class $CoursesTableTable extends CoursesTable
     title,
     colorIndex,
     chapterCount,
-    totalDuration,
     totalContents,
     progress,
     completedLessons,
-    totalLessons,
     image,
     tags,
     allowedDevices,
@@ -237,15 +213,6 @@ class $CoursesTableTable extends CoursesTable
     } else if (isInserting) {
       context.missing(_chapterCountMeta);
     }
-    if (data.containsKey('total_duration')) {
-      context.handle(
-        _totalDurationMeta,
-        totalDuration.isAcceptableOrUnknown(
-          data['total_duration']!,
-          _totalDurationMeta,
-        ),
-      );
-    }
     if (data.containsKey('total_contents')) {
       context.handle(
         _totalContentsMeta,
@@ -269,17 +236,6 @@ class $CoursesTableTable extends CoursesTable
           _completedLessonsMeta,
         ),
       );
-    }
-    if (data.containsKey('total_lessons')) {
-      context.handle(
-        _totalLessonsMeta,
-        totalLessons.isAcceptableOrUnknown(
-          data['total_lessons']!,
-          _totalLessonsMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_totalLessonsMeta);
     }
     if (data.containsKey('image')) {
       context.handle(
@@ -348,10 +304,6 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.int,
         data['${effectivePrefix}chapter_count'],
       )!,
-      totalDuration: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}total_duration'],
-      ),
       totalContents: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}total_contents'],
@@ -363,10 +315,6 @@ class $CoursesTableTable extends CoursesTable
       completedLessons: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}completed_lessons'],
-      )!,
-      totalLessons: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}total_lessons'],
       )!,
       image: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -407,11 +355,9 @@ class CoursesTableData extends DataClass
   final String title;
   final int colorIndex;
   final int chapterCount;
-  final String? totalDuration;
   final int totalContents;
   final double progress;
   final int completedLessons;
-  final int totalLessons;
   final String? image;
   final String? tags;
   final String? allowedDevices;
@@ -423,11 +369,9 @@ class CoursesTableData extends DataClass
     required this.title,
     required this.colorIndex,
     required this.chapterCount,
-    this.totalDuration,
     required this.totalContents,
     required this.progress,
     required this.completedLessons,
-    required this.totalLessons,
     this.image,
     this.tags,
     this.allowedDevices,
@@ -442,13 +386,9 @@ class CoursesTableData extends DataClass
     map['title'] = Variable<String>(title);
     map['color_index'] = Variable<int>(colorIndex);
     map['chapter_count'] = Variable<int>(chapterCount);
-    if (!nullToAbsent || totalDuration != null) {
-      map['total_duration'] = Variable<String>(totalDuration);
-    }
     map['total_contents'] = Variable<int>(totalContents);
     map['progress'] = Variable<double>(progress);
     map['completed_lessons'] = Variable<int>(completedLessons);
-    map['total_lessons'] = Variable<int>(totalLessons);
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
@@ -470,13 +410,9 @@ class CoursesTableData extends DataClass
       title: Value(title),
       colorIndex: Value(colorIndex),
       chapterCount: Value(chapterCount),
-      totalDuration: totalDuration == null && nullToAbsent
-          ? const Value.absent()
-          : Value(totalDuration),
       totalContents: Value(totalContents),
       progress: Value(progress),
       completedLessons: Value(completedLessons),
-      totalLessons: Value(totalLessons),
       image: image == null && nullToAbsent
           ? const Value.absent()
           : Value(image),
@@ -500,11 +436,9 @@ class CoursesTableData extends DataClass
       title: serializer.fromJson<String>(json['title']),
       colorIndex: serializer.fromJson<int>(json['colorIndex']),
       chapterCount: serializer.fromJson<int>(json['chapterCount']),
-      totalDuration: serializer.fromJson<String?>(json['totalDuration']),
       totalContents: serializer.fromJson<int>(json['totalContents']),
       progress: serializer.fromJson<double>(json['progress']),
       completedLessons: serializer.fromJson<int>(json['completedLessons']),
-      totalLessons: serializer.fromJson<int>(json['totalLessons']),
       image: serializer.fromJson<String?>(json['image']),
       tags: serializer.fromJson<String?>(json['tags']),
       allowedDevices: serializer.fromJson<String?>(json['allowedDevices']),
@@ -521,11 +455,9 @@ class CoursesTableData extends DataClass
       'title': serializer.toJson<String>(title),
       'colorIndex': serializer.toJson<int>(colorIndex),
       'chapterCount': serializer.toJson<int>(chapterCount),
-      'totalDuration': serializer.toJson<String?>(totalDuration),
       'totalContents': serializer.toJson<int>(totalContents),
       'progress': serializer.toJson<double>(progress),
       'completedLessons': serializer.toJson<int>(completedLessons),
-      'totalLessons': serializer.toJson<int>(totalLessons),
       'image': serializer.toJson<String?>(image),
       'tags': serializer.toJson<String?>(tags),
       'allowedDevices': serializer.toJson<String?>(allowedDevices),
@@ -540,11 +472,9 @@ class CoursesTableData extends DataClass
     String? title,
     int? colorIndex,
     int? chapterCount,
-    Value<String?> totalDuration = const Value.absent(),
     int? totalContents,
     double? progress,
     int? completedLessons,
-    int? totalLessons,
     Value<String?> image = const Value.absent(),
     Value<String?> tags = const Value.absent(),
     Value<String?> allowedDevices = const Value.absent(),
@@ -556,13 +486,9 @@ class CoursesTableData extends DataClass
     title: title ?? this.title,
     colorIndex: colorIndex ?? this.colorIndex,
     chapterCount: chapterCount ?? this.chapterCount,
-    totalDuration: totalDuration.present
-        ? totalDuration.value
-        : this.totalDuration,
     totalContents: totalContents ?? this.totalContents,
     progress: progress ?? this.progress,
     completedLessons: completedLessons ?? this.completedLessons,
-    totalLessons: totalLessons ?? this.totalLessons,
     image: image.present ? image.value : this.image,
     tags: tags.present ? tags.value : this.tags,
     allowedDevices: allowedDevices.present
@@ -582,9 +508,6 @@ class CoursesTableData extends DataClass
       chapterCount: data.chapterCount.present
           ? data.chapterCount.value
           : this.chapterCount,
-      totalDuration: data.totalDuration.present
-          ? data.totalDuration.value
-          : this.totalDuration,
       totalContents: data.totalContents.present
           ? data.totalContents.value
           : this.totalContents,
@@ -592,9 +515,6 @@ class CoursesTableData extends DataClass
       completedLessons: data.completedLessons.present
           ? data.completedLessons.value
           : this.completedLessons,
-      totalLessons: data.totalLessons.present
-          ? data.totalLessons.value
-          : this.totalLessons,
       image: data.image.present ? data.image.value : this.image,
       tags: data.tags.present ? data.tags.value : this.tags,
       allowedDevices: data.allowedDevices.present
@@ -619,11 +539,9 @@ class CoursesTableData extends DataClass
           ..write('title: $title, ')
           ..write('colorIndex: $colorIndex, ')
           ..write('chapterCount: $chapterCount, ')
-          ..write('totalDuration: $totalDuration, ')
           ..write('totalContents: $totalContents, ')
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
-          ..write('totalLessons: $totalLessons, ')
           ..write('image: $image, ')
           ..write('tags: $tags, ')
           ..write('allowedDevices: $allowedDevices, ')
@@ -640,11 +558,9 @@ class CoursesTableData extends DataClass
     title,
     colorIndex,
     chapterCount,
-    totalDuration,
     totalContents,
     progress,
     completedLessons,
-    totalLessons,
     image,
     tags,
     allowedDevices,
@@ -660,11 +576,9 @@ class CoursesTableData extends DataClass
           other.title == this.title &&
           other.colorIndex == this.colorIndex &&
           other.chapterCount == this.chapterCount &&
-          other.totalDuration == this.totalDuration &&
           other.totalContents == this.totalContents &&
           other.progress == this.progress &&
           other.completedLessons == this.completedLessons &&
-          other.totalLessons == this.totalLessons &&
           other.image == this.image &&
           other.tags == this.tags &&
           other.allowedDevices == this.allowedDevices &&
@@ -678,11 +592,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<String> title;
   final Value<int> colorIndex;
   final Value<int> chapterCount;
-  final Value<String?> totalDuration;
   final Value<int> totalContents;
   final Value<double> progress;
   final Value<int> completedLessons;
-  final Value<int> totalLessons;
   final Value<String?> image;
   final Value<String?> tags;
   final Value<String?> allowedDevices;
@@ -695,11 +607,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.title = const Value.absent(),
     this.colorIndex = const Value.absent(),
     this.chapterCount = const Value.absent(),
-    this.totalDuration = const Value.absent(),
     this.totalContents = const Value.absent(),
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
-    this.totalLessons = const Value.absent(),
     this.image = const Value.absent(),
     this.tags = const Value.absent(),
     this.allowedDevices = const Value.absent(),
@@ -713,11 +623,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     required String title,
     required int colorIndex,
     required int chapterCount,
-    this.totalDuration = const Value.absent(),
     this.totalContents = const Value.absent(),
     this.progress = const Value.absent(),
     this.completedLessons = const Value.absent(),
-    required int totalLessons,
     this.image = const Value.absent(),
     this.tags = const Value.absent(),
     this.allowedDevices = const Value.absent(),
@@ -728,18 +636,15 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   }) : id = Value(id),
        title = Value(title),
        colorIndex = Value(colorIndex),
-       chapterCount = Value(chapterCount),
-       totalLessons = Value(totalLessons);
+       chapterCount = Value(chapterCount);
   static Insertable<CoursesTableData> custom({
     Expression<String>? id,
     Expression<String>? title,
     Expression<int>? colorIndex,
     Expression<int>? chapterCount,
-    Expression<String>? totalDuration,
     Expression<int>? totalContents,
     Expression<double>? progress,
     Expression<int>? completedLessons,
-    Expression<int>? totalLessons,
     Expression<String>? image,
     Expression<String>? tags,
     Expression<String>? allowedDevices,
@@ -753,11 +658,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (title != null) 'title': title,
       if (colorIndex != null) 'color_index': colorIndex,
       if (chapterCount != null) 'chapter_count': chapterCount,
-      if (totalDuration != null) 'total_duration': totalDuration,
       if (totalContents != null) 'total_contents': totalContents,
       if (progress != null) 'progress': progress,
       if (completedLessons != null) 'completed_lessons': completedLessons,
-      if (totalLessons != null) 'total_lessons': totalLessons,
       if (image != null) 'image': image,
       if (tags != null) 'tags': tags,
       if (allowedDevices != null) 'allowed_devices': allowedDevices,
@@ -773,11 +676,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<String>? title,
     Value<int>? colorIndex,
     Value<int>? chapterCount,
-    Value<String?>? totalDuration,
     Value<int>? totalContents,
     Value<double>? progress,
     Value<int>? completedLessons,
-    Value<int>? totalLessons,
     Value<String?>? image,
     Value<String?>? tags,
     Value<String?>? allowedDevices,
@@ -791,11 +692,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       title: title ?? this.title,
       colorIndex: colorIndex ?? this.colorIndex,
       chapterCount: chapterCount ?? this.chapterCount,
-      totalDuration: totalDuration ?? this.totalDuration,
       totalContents: totalContents ?? this.totalContents,
       progress: progress ?? this.progress,
       completedLessons: completedLessons ?? this.completedLessons,
-      totalLessons: totalLessons ?? this.totalLessons,
       image: image ?? this.image,
       tags: tags ?? this.tags,
       allowedDevices: allowedDevices ?? this.allowedDevices,
@@ -821,9 +720,6 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (chapterCount.present) {
       map['chapter_count'] = Variable<int>(chapterCount.value);
     }
-    if (totalDuration.present) {
-      map['total_duration'] = Variable<String>(totalDuration.value);
-    }
     if (totalContents.present) {
       map['total_contents'] = Variable<int>(totalContents.value);
     }
@@ -832,9 +728,6 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     }
     if (completedLessons.present) {
       map['completed_lessons'] = Variable<int>(completedLessons.value);
-    }
-    if (totalLessons.present) {
-      map['total_lessons'] = Variable<int>(totalLessons.value);
     }
     if (image.present) {
       map['image'] = Variable<String>(image.value);
@@ -867,11 +760,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('title: $title, ')
           ..write('colorIndex: $colorIndex, ')
           ..write('chapterCount: $chapterCount, ')
-          ..write('totalDuration: $totalDuration, ')
           ..write('totalContents: $totalContents, ')
           ..write('progress: $progress, ')
           ..write('completedLessons: $completedLessons, ')
-          ..write('totalLessons: $totalLessons, ')
           ..write('image: $image, ')
           ..write('tags: $tags, ')
           ..write('allowedDevices: $allowedDevices, ')
@@ -17291,11 +17182,9 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       required String title,
       required int colorIndex,
       required int chapterCount,
-      Value<String?> totalDuration,
       Value<int> totalContents,
       Value<double> progress,
       Value<int> completedLessons,
-      required int totalLessons,
       Value<String?> image,
       Value<String?> tags,
       Value<String?> allowedDevices,
@@ -17310,11 +17199,9 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<String> title,
       Value<int> colorIndex,
       Value<int> chapterCount,
-      Value<String?> totalDuration,
       Value<int> totalContents,
       Value<double> progress,
       Value<int> completedLessons,
-      Value<int> totalLessons,
       Value<String?> image,
       Value<String?> tags,
       Value<String?> allowedDevices,
@@ -17353,11 +17240,6 @@ class $$CoursesTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get totalDuration => $composableBuilder(
-    column: $table.totalDuration,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get totalContents => $composableBuilder(
     column: $table.totalContents,
     builder: (column) => ColumnFilters(column),
@@ -17370,11 +17252,6 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<int> get completedLessons => $composableBuilder(
     column: $table.completedLessons,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get totalLessons => $composableBuilder(
-    column: $table.totalLessons,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -17438,11 +17315,6 @@ class $$CoursesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get totalDuration => $composableBuilder(
-    column: $table.totalDuration,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get totalContents => $composableBuilder(
     column: $table.totalContents,
     builder: (column) => ColumnOrderings(column),
@@ -17455,11 +17327,6 @@ class $$CoursesTableTableOrderingComposer
 
   ColumnOrderings<int> get completedLessons => $composableBuilder(
     column: $table.completedLessons,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get totalLessons => $composableBuilder(
-    column: $table.totalLessons,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -17519,11 +17386,6 @@ class $$CoursesTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get totalDuration => $composableBuilder(
-    column: $table.totalDuration,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get totalContents => $composableBuilder(
     column: $table.totalContents,
     builder: (column) => column,
@@ -17534,11 +17396,6 @@ class $$CoursesTableTableAnnotationComposer
 
   GeneratedColumn<int> get completedLessons => $composableBuilder(
     column: $table.completedLessons,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get totalLessons => $composableBuilder(
-    column: $table.totalLessons,
     builder: (column) => column,
   );
 
@@ -17604,11 +17461,9 @@ class $$CoursesTableTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<int> colorIndex = const Value.absent(),
                 Value<int> chapterCount = const Value.absent(),
-                Value<String?> totalDuration = const Value.absent(),
                 Value<int> totalContents = const Value.absent(),
                 Value<double> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
-                Value<int> totalLessons = const Value.absent(),
                 Value<String?> image = const Value.absent(),
                 Value<String?> tags = const Value.absent(),
                 Value<String?> allowedDevices = const Value.absent(),
@@ -17621,11 +17476,9 @@ class $$CoursesTableTableTableManager
                 title: title,
                 colorIndex: colorIndex,
                 chapterCount: chapterCount,
-                totalDuration: totalDuration,
                 totalContents: totalContents,
                 progress: progress,
                 completedLessons: completedLessons,
-                totalLessons: totalLessons,
                 image: image,
                 tags: tags,
                 allowedDevices: allowedDevices,
@@ -17640,11 +17493,9 @@ class $$CoursesTableTableTableManager
                 required String title,
                 required int colorIndex,
                 required int chapterCount,
-                Value<String?> totalDuration = const Value.absent(),
                 Value<int> totalContents = const Value.absent(),
                 Value<double> progress = const Value.absent(),
                 Value<int> completedLessons = const Value.absent(),
-                required int totalLessons,
                 Value<String?> image = const Value.absent(),
                 Value<String?> tags = const Value.absent(),
                 Value<String?> allowedDevices = const Value.absent(),
@@ -17657,11 +17508,9 @@ class $$CoursesTableTableTableManager
                 title: title,
                 colorIndex: colorIndex,
                 chapterCount: chapterCount,
-                totalDuration: totalDuration,
                 totalContents: totalContents,
                 progress: progress,
                 completedLessons: completedLessons,
-                totalLessons: totalLessons,
                 image: image,
                 tags: tags,
                 allowedDevices: allowedDevices,

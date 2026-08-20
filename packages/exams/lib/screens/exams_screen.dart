@@ -228,7 +228,6 @@ final _skeletonCourses = List.generate(
     totalContents: 48,
     progress: 0,
     completedLessons: 0,
-    totalLessons: 48,
     image: '',
     examsCount: 0,
     order: index,

@@ -11,7 +11,6 @@ const mockCourses = [
     chapterCount: 5,
     totalContents: 20,
     completedLessons: 13,
-    totalLessons: 20,
     progress: 65.0,
   ),
   CourseDto(
@@ -21,7 +20,6 @@ const mockCourses = [
     chapterCount: 4,
     totalContents: 15,
     completedLessons: 5,
-    totalLessons: 15,
     progress: 30.0,
   ),
   CourseDto(
@@ -31,7 +29,6 @@ const mockCourses = [
     chapterCount: 3,
     totalContents: 10,
     completedLessons: 0,
-    totalLessons: 10,
     progress: 0.0,
   ),
   CourseDto(
@@ -41,7 +38,6 @@ const mockCourses = [
     chapterCount: 6,
     totalContents: 25,
     completedLessons: 21,
-    totalLessons: 25,
     progress: 85.0,
   ),
   CourseDto(
@@ -51,7 +47,6 @@ const mockCourses = [
     chapterCount: 3,
     totalContents: 12,
     completedLessons: 2,
-    totalLessons: 12,
     progress: 15.0,
   ),
   CourseDto(
@@ -61,7 +56,6 @@ const mockCourses = [
     chapterCount: 2,
     totalContents: 8,
     completedLessons: 0,
-    totalLessons: 8,
     progress: 0.0,
   ),
 ];

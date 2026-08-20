@@ -1142,7 +1142,6 @@ class CourseRepository {
         totalContents: row.totalContents,
         progress: row.progress,
         completedLessons: row.completedLessons,
-        totalLessons: row.totalLessons,
         image: row.image,
         tags: _safeDecodeList<String>(row.tags),
         allowedDevices: _safeDecodeList<String>(row.allowedDevices),
@@ -1169,7 +1168,6 @@ class CourseRepository {
         totalContents: Value(dto.totalContents),
         progress: Value(dto.progress),
         completedLessons: Value(dto.completedLessons),
-        totalLessons: Value(dto.totalLessons),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
         tags: dto.tags.isNotEmpty
             ? Value(jsonEncode(dto.tags))
@@ -1282,108 +1280,59 @@ class CourseRepository {
       LessonsTableCompanion(
         id: Value(dto.id),
         chapterId: Value(dto.chapterId),
-        courseId:
-            dto.courseId != null ? Value(dto.courseId) : const Value.absent(),
-        ancestorChapterIds: dto.ancestorChapterIds != null
-            ? Value(dto.ancestorChapterIds)
-            : const Value.absent(),
+        courseId: Value.absentIfNull(dto.courseId),
+        ancestorChapterIds: Value.absentIfNull(dto.ancestorChapterIds),
         title: Value(dto.title),
         type: Value(dto.type.name),
         duration: Value(dto.duration),
         progressStatus: Value(dto.progressStatus.name),
         isLocked: Value(dto.isLocked),
         orderIndex: Value(dto.orderIndex),
-        chapterTitle: dto.chapterTitle != null
-            ? Value(dto.chapterTitle)
-            : const Value.absent(),
-        uuid: dto.uuid != null ? Value(dto.uuid) : const Value.absent(),
-        contentUrl: dto.contentUrl != null
-            ? Value(dto.contentUrl)
-            : const Value.absent(),
-        subtitle:
-            dto.subtitle != null ? Value(dto.subtitle) : const Value.absent(),
-        subjectName: dto.subjectName != null
-            ? Value(dto.subjectName)
-            : const Value.absent(),
-        subjectIndex: dto.subjectIndex != null
-            ? Value(dto.subjectIndex)
-            : const Value.absent(),
-        lessonNumber: dto.lessonNumber != null
-            ? Value(dto.lessonNumber)
-            : const Value.absent(),
-        totalLessons: dto.totalLessons != null
-            ? Value(dto.totalLessons)
-            : const Value.absent(),
+        chapterTitle: Value.absentIfNull(dto.chapterTitle),
+        uuid: Value.absentIfNull(dto.uuid),
+        contentUrl: Value.absentIfNull(dto.contentUrl),
+        subtitle: Value.absentIfNull(dto.subtitle),
+        subjectName: Value.absentIfNull(dto.subjectName),
+        subjectIndex: Value.absentIfNull(dto.subjectIndex),
+        lessonNumber: Value.absentIfNull(dto.lessonNumber),
+        totalLessons: Value.absentIfNull(dto.totalLessons),
         bookmarkId: Value(dto.bookmarkId),
         isRunning: Value(dto.isRunning),
         isUpcoming: Value(dto.isUpcoming),
         hasAttempts: Value(dto.hasAttempts),
-        image: dto.image != null ? Value(dto.image) : const Value.absent(),
-        start: dto.start != null ? Value(dto.start) : const Value.absent(),
-        end: dto.end != null ? Value(dto.end) : const Value.absent(),
+        image: Value.absentIfNull(dto.image),
+        start: Value.absentIfNull(dto.start),
+        end: Value.absentIfNull(dto.end),
         hasEnded: Value(dto.hasEnded),
-        nextContentId: dto.nextContentId != null
-            ? Value(dto.nextContentId)
-            : const Value.absent(),
-        previousContentId: dto.previousContentId != null
-            ? Value(dto.previousContentId)
-            : const Value.absent(),
-        htmlContent: dto.htmlContent != null
-            ? Value(dto.htmlContent)
-            : const Value.absent(),
+        nextContentId: Value.absentIfNull(dto.nextContentId),
+        previousContentId: Value.absentIfNull(dto.previousContentId),
+        htmlContent: Value.absentIfNull(dto.htmlContent),
         isDetailFetched: Value(dto.isDetailFetched),
-        chatEmbedUrl: dto.chatEmbedUrl != null
-            ? Value(dto.chatEmbedUrl)
-            : const Value.absent(),
-        streamStatus: dto.streamStatus != null
-            ? Value(dto.streamStatus)
-            : const Value.absent(),
+        chatEmbedUrl: Value.absentIfNull(dto.chatEmbedUrl),
+        streamStatus: Value.absentIfNull(dto.streamStatus),
         showRecordedVideo: Value(dto.showRecordedVideo),
-        liveStreamProvider: dto.liveStreamProvider != null
-            ? Value(dto.liveStreamProvider)
-            : const Value.absent(),
-        conferenceId: dto.conferenceId != null
-            ? Value(dto.conferenceId)
-            : const Value.absent(),
-        password:
-            dto.password != null ? Value(dto.password) : const Value.absent(),
-        accessToken: dto.accessToken != null
-            ? Value(dto.accessToken)
-            : const Value.absent(),
+        liveStreamProvider: Value.absentIfNull(dto.liveStreamProvider),
+        conferenceId: Value.absentIfNull(dto.conferenceId),
+        password: Value.absentIfNull(dto.password),
+        accessToken: Value.absentIfNull(dto.accessToken),
         isScheduled: Value(dto.isScheduled),
-        scheduledMessage: dto.scheduledMessage != null
-            ? Value(dto.scheduledMessage)
-            : const Value.absent(),
-        attemptsUrl: dto.attemptsUrl != null
-            ? Value(dto.attemptsUrl)
-            : const Value.absent(),
-        slug: dto.slug != null ? Value(dto.slug) : const Value.absent(),
-        description: dto.description != null
-            ? Value(dto.description)
-            : const Value.absent(),
+        scheduledMessage: Value.absentIfNull(dto.scheduledMessage),
+        attemptsUrl: Value.absentIfNull(dto.attemptsUrl),
+        slug: Value.absentIfNull(dto.slug),
+        description: Value.absentIfNull(dto.description),
         enableTranscript: Value(dto.enableTranscript),
-        videoSubtitleUrl: dto.videoSubtitleUrl != null
-            ? Value(dto.videoSubtitleUrl)
-            : const Value.absent(),
+        videoSubtitleUrl: Value.absentIfNull(dto.videoSubtitleUrl),
         isAiEnabled: Value(dto.isAiEnabled),
         canEnableLearnlensAi: Value(dto.canEnableLearnlensAi),
-        learnlensAssetId: dto.learnlensAssetId != null
-            ? Value(dto.learnlensAssetId)
-            : const Value.absent(),
-        learnlensAssetStatus: dto.learnlensAssetStatus != null
-            ? Value(dto.learnlensAssetStatus)
-            : const Value.absent(),
-        aiNotesUrl: dto.aiNotesUrl != null
-            ? Value(dto.aiNotesUrl)
-            : const Value.absent(),
-        lastWatchedDuration: dto.lastWatchedDuration != null
-            ? Value(dto.lastWatchedDuration)
-            : const Value.absent(),
+        learnlensAssetId: Value.absentIfNull(dto.learnlensAssetId),
+        learnlensAssetStatus: Value.absentIfNull(dto.learnlensAssetStatus),
+        aiNotesUrl: Value.absentIfNull(dto.aiNotesUrl),
+        lastWatchedDuration: Value.absentIfNull(dto.lastWatchedDuration),
         allowDownload: Value(dto.allowDownload),
         watermarkBeforeDownload: Value(dto.watermarkBeforeDownload),
-        examMetadataJson: dto.exam != null
-            ? Value(jsonEncode(dto.exam!.toJson()))
-            : const Value.absent(),
+        examMetadataJson: Value.absentIfNull(
+          dto.exam == null ? null : jsonEncode(dto.exam!.toJson()),
+        ),
       );
 
   LessonType _parseType(String s) {

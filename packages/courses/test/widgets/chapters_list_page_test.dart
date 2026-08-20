@@ -11,11 +11,9 @@ void main() {
     title: 'Test Course',
     colorIndex: 0,
     chapterCount: 2,
-    totalDuration: '2h',
     totalContents: 10,
     progress: 0,
     completedLessons: 0,
-    totalLessons: 10,
   );
 
   final testChapters = [

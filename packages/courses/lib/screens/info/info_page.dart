@@ -391,7 +391,7 @@ class _InfoCourseCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           AppText.cardCaption(
-                            l10n.infoPageLessonsCount(course.totalLessons),
+                            l10n.infoPageLessonsCount(course.totalContents),
                             color: design.colors.textSecondary,
                           ),
                         ],
@@ -421,7 +421,6 @@ final _mockSkeletonCourses = List.generate(
     totalContents: 20,
     progress: 0,
     completedLessons: 0,
-    totalLessons: 12,
     examsCount: 0,
     tags: const ['Info'],
   ),

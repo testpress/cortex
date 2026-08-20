@@ -109,7 +109,7 @@ class CourseCard extends StatelessWidget {
                       children: [
                         _ProgressStat(
                           value:
-                              '${course.completedLessons}/${course.totalLessons}',
+                              '${course.completedLessons}/${course.totalContents}',
                           label: L10n.of(context).labelLessonsPlural,
                         ),
                         _ProgressStat(

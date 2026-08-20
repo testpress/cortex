@@ -33,11 +33,9 @@ void main() {
       title: 'Flutter Basics',
       colorIndex: 0,
       chapterCount: 5,
-      totalDuration: '10h',
       totalContents: 50,
       progress: 65,
       completedLessons: 65,
-      totalLessons: 100,
     );
 
     testWidgets('course title is accessible', (tester) async {
@@ -88,11 +86,9 @@ void main() {
         title: 'Advanced Flutter',
         colorIndex: 0,
         chapterCount: 3,
-        totalDuration: '6h',
         totalContents: 30,
         progress: 0,
         completedLessons: 0,
-        totalLessons: 50,
       );
 
       await tester.pumpWidget(wrap(CourseCard(course: notStartedCourse)));

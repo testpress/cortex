@@ -6,11 +6,9 @@ class CoursesTable extends Table {
   TextColumn get title => text()();
   IntColumn get colorIndex => integer()();
   IntColumn get chapterCount => integer()();
-  TextColumn get totalDuration => text().nullable()();
   IntColumn get totalContents => integer().withDefault(const Constant(0))();
   RealColumn get progress => real().withDefault(const Constant(0.0))();
   IntColumn get completedLessons => integer().withDefault(const Constant(0))();
-  IntColumn get totalLessons => integer()();
   TextColumn get image => text().nullable()();
   TextColumn get tags => text().nullable()();
   TextColumn get allowedDevices => text().nullable()();
