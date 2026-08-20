@@ -140,7 +140,6 @@ class _CustomExamCourseSelectionScreenState
                           totalContents: 0,
                           progress: 0,
                           completedLessons: 0,
-                          totalLessons: 10,
                         ),
                       );
                     } else if (coursesAsyncValue.hasError) {
@@ -279,7 +278,7 @@ class _CustomExamCourseSelectionScreenState
                                           ),
                                           const SizedBox(height: 2),
                                           AppText.bodySmall(
-                                            '${course.totalLessons} Lessons',
+                                            '${course.totalContents} Lessons',
                                             color: design.colors.textSecondary,
                                           ),
                                         ],

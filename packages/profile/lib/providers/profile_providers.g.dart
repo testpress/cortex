@@ -6,7 +6,7 @@ part of 'profile_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileEnrollmentHash() => r'2d0c71785bd69ea7867001d029c699fe9567e85c';
+String _$profileEnrollmentHash() => r'a60cd132485bf3a8841f292a07589d819860b009';
 
 /// Provides enrolled courses directly from the DB layer to avoid depending on the `courses` package.
 ///

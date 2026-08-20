@@ -89,55 +89,45 @@ class MockDataSource implements DataSource {
           title: 'JEE Main 2026',
           colorIndex: 0, // indigo
           chapterCount: 12,
-          totalDuration: '180 hrs',
           totalContents: 120,
           progress: 34.0,
           completedLessons: 28,
-          totalLessons: 84,
         ),
         const CourseDto(
           id: 'neet-2026',
           title: 'NEET 2026',
           colorIndex: 4, // rose
           chapterCount: 10,
-          totalDuration: '160 hrs',
           totalContents: 110,
           progress: 18.0,
           completedLessons: 14,
-          totalLessons: 76,
         ),
         const CourseDto(
           id: 'jee-advanced-2026',
           title: 'JEE Advanced 2026',
           colorIndex: 3, // violet
           chapterCount: 8,
-          totalDuration: '120 hrs',
           totalContents: 80,
           progress: 5.0,
           completedLessons: 3,
-          totalLessons: 60,
         ),
         const CourseDto(
           id: 'biology-neet-2026',
           title: 'NEET Biology Mastery',
           colorIndex: 2, // emerald
           chapterCount: 15,
-          totalDuration: '200 hrs',
           totalContents: 150,
           progress: 45.0,
           completedLessons: 45,
-          totalLessons: 100,
         ),
         const CourseDto(
           id: 'english-core-2026',
           title: 'CBSE English Core',
           colorIndex: 5, // pink
           chapterCount: 6,
-          totalDuration: '40 hrs',
           totalContents: 40,
           progress: 10.0,
           completedLessons: 2,
-          totalLessons: 20,
         ),
       ];
     } else if (page == 2) {
@@ -147,22 +137,18 @@ class MockDataSource implements DataSource {
           title: 'Maths Foundation 2025',
           colorIndex: 1,
           chapterCount: 15,
-          totalDuration: '100 hrs',
           totalContents: 90,
           progress: 0.0,
           completedLessons: 0,
-          totalLessons: 50,
         ),
         const CourseDto(
           id: 'physics-mastery',
           title: 'Physics Mastery 2025',
           colorIndex: 6,
           chapterCount: 20,
-          totalDuration: '150 hrs',
           totalContents: 130,
           progress: 12.0,
           completedLessons: 10,
-          totalLessons: 80,
         ),
       ];
     } else if (page == 3) {
@@ -172,11 +158,9 @@ class MockDataSource implements DataSource {
           title: 'Chemistry Quick Revision',
           colorIndex: 7,
           chapterCount: 5,
-          totalDuration: '20 hrs',
           totalContents: 25,
           progress: 100.0,
           completedLessons: 20,
-          totalLessons: 20,
         ),
       ];
     }
