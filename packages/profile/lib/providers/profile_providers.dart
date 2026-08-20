@@ -10,7 +10,7 @@ Stream<List<CourseDto>> profileEnrollment(Ref ref) async* {
   final db = await ref.watch(appDatabaseProvider.future);
   yield* db.watchAllCourses().map(
     (rows) => rows
-        .map<CourseDto>(
+        .map(
           (row) => CourseDto(
             id: row.id,
             title: row.title,
