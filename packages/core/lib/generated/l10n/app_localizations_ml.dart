@@ -2923,50 +2923,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?';
 
   @override
-  String get aiSupportTitle => 'AI പിന്തുണ';
-
-  @override
-  String aiSupportGreeting(String userName) {
-    return 'നമസ്കാരം $userName 👋';
-  }
-
-  @override
-  String get aiSupportQuickActions => 'പെട്ടെന്നുള്ള പ്രവർത്തനങ്ങൾ';
-
-  @override
-  String get aiSupportAskDoubtTitle => 'സംശയം ചോദിക്കുക';
-
-  @override
-  String get aiSupportAskDoubtSubtitle =>
-      'ചോദ്യം ഫോട്ടോ എടുക്കുകയോ അപ്‌ലോഡ് ചെയ്യുകയോ ടൈപ്പ് ചെയ്യുകയോ ചെയ്യുക';
-
-  @override
-  String get aiSupportAskNowButton => 'ഇപ്പോൾ ചോദിക്കുക';
-
-  @override
-  String get aiSupportAiExamTitle => 'AI പരീക്ഷ';
-
-  @override
-  String get aiSupportAiExamSubtitle =>
-      'ദുർബലമായ വിഷയങ്ങളെ അടിസ്ഥാനമാക്കി AI പരീക്ഷകൾ സൃഷ്ടിക്കുക';
-
-  @override
-  String get aiSupportCreateAiExamButton => 'AI പരീക്ഷ സൃഷ്ടിക്കുക';
-
-  @override
-  String get aiSupportRecentHelp => 'സമീപകാല സഹായം';
-
-  @override
-  String get aiSupportViewAll => 'എല്ലാം കാണുക';
-
-  @override
-  String get aiSupportNoRecentDoubts => 'സമീപകാല AI സംശയങ്ങളൊന്നുമില്ല.';
-
-  @override
-  String get aiSupportStatusAnswered => 'മറുപടി നൽകി';
-
-  @override
-  String get aiSupportStatusProcessing => 'പ്രോസസ്സ് ചെയ്യുന്നു';
+  String get aiSupportTitle => 'AI ചാറ്റ്';
 
   @override
   String get aiSupportAskingAi => 'AI-യോട് ചോദിക്കുന്നു';
@@ -3218,8 +3175,45 @@ class AppLocalizationsMl extends AppLocalizations {
       'ക്യാമറ, മൈക്രോഫോൺ ആക്സസ് ആവശ്യമാണ്. ചേരുന്നതിന് ക്രമീകരണങ്ങളിൽ അവ പ്രവർത്തനക്ഷമമാക്കുക.';
 
   @override
-  String get teamsJoinMeetingLoading => 'മീറ്റിംഗിൽ ചേരുന്നു...';
+  String get teamsJoinMeetingLoading => 'മീറ്റിംഗിൻ ചേരുന്നു...';
 
   @override
   String get teamsMissingJoinLink => 'മീറ്റിംഗ് ലിങ്ക് ലഭ്യമല്ല';
+
+  @override
+  String get aiStudyCompanionTitle => 'നിങ്ങളുടെ AI പഠന സഹായി';
+
+  @override
+  String get aiWelcomeSubtitle =>
+      'ചോദ്യങ്ങൾ ചോദിക്കുക, ആശയങ്ങൾ മനസ്സിലാക്കുക,\nകൂടുതൽ വേഗത്തിൽ പഠിക്കുക.';
+
+  @override
+  String get aiStartNewChat => 'പുതിയ ചാറ്റ് ആരംഭിക്കുക';
+
+  @override
+  String get aiRecentChatsHeader => 'സമീപകാല ചാറ്റുകൾ';
+
+  @override
+  String get aiViewAllRecentChats => 'എല്ലാം കാണുക';
+
+  @override
+  String get aiNewChatHeader => 'പുതിയ ചാറ്റ്';
+
+  @override
+  String get aiComposerGreeting => 'ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?';
+
+  @override
+  String get aiChatHistoryTitle => 'ചാറ്റ് ചരിത്രം';
+
+  @override
+  String get aiComposerPlaceholder => 'എന്തും ചോദിക്കൂ...';
+
+  @override
+  String get aiComposerAttachImage => 'ചിത്രം ചേർക്കുക';
+
+  @override
+  String get aiComposerTakePhoto => 'ഫോട്ടോ എടുക്കുക';
+
+  @override
+  String get aiComposerSendMessage => 'സന്ദേശം അയക്കുക';
 }

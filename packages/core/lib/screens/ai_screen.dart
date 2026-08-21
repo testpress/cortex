@@ -1,29 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core.dart';
-import '../data/data.dart';
+import '../data/ai_chat_mock_data.dart';
 
 class AiScreen extends ConsumerWidget {
-  final VoidCallback onAskAiPressed;
-  final VoidCallback onViewAllDoubtsPressed;
-  final void Function(String doubtId) onDoubtTapped;
-
-  const AiScreen({
-    super.key,
-    required this.onAskAiPressed,
-    required this.onViewAllDoubtsPressed,
-    required this.onDoubtTapped,
-  });
+  const AiScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final user = ref.watch(userProvider).valueOrNull;
-    final userName = user?.name;
 
     return Container(
-      color: design.colors.surface,
+      color: design.colors.card,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -31,16 +20,13 @@ class AiScreen extends ConsumerWidget {
           Expanded(
             child: AppScroll(
               padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.screenPadding,
+                horizontal: design.spacing.md,
                 vertical: design.spacing.lg,
               ),
               children: [
-                _buildGreeting(design, l10n, userName),
-                SizedBox(height: design.spacing.xl),
-                _buildQuickActions(context, design, l10n),
-                SizedBox(height: design.spacing.xl),
-                _buildRecentHelp(context, ref, design, l10n),
-                SizedBox(height: design.spacing.xl),
+                const _WelcomeSection(),
+                SizedBox(height: design.spacing.md),
+                const _RecentHelpSection(),
               ],
             ),
           ),
@@ -48,303 +34,187 @@ class AiScreen extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildGreeting(
-    DesignConfig design,
-    AppLocalizations l10n,
-    String? userName,
-  ) {
+class _WelcomeSection extends StatelessWidget {
+  const _WelcomeSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              LucideIcons.sparkles,
-              color: design.colors.accent1,
-              size: design.iconSize.md,
+        Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            height: 120.0,
+            child: OverflowBox(
+              maxHeight: 250.0,
+              minHeight: 250.0,
+              child: Image.asset(
+                'assets/images/ai_bot.png',
+                width: 250.0,
+                height: 250.0,
+              ),
             ),
-            SizedBox(width: design.spacing.sm),
-            AppText.headline(
-              l10n.aiSupportGreeting(userName ?? ''),
-              color: design.colors.textPrimary,
-            ),
-          ],
+          ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildQuickActions(
-    BuildContext context,
-    DesignConfig design,
-    AppLocalizations l10n,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppText.labelBold(
-          l10n.aiSupportQuickActions,
+        SizedBox(height: design.spacing.sm),
+        AppSemantics.header(
+          label: l10n.aiStudyCompanionTitle,
+          child: AppText.title(
+            l10n.aiStudyCompanionTitle,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: design.spacing.sm),
+        AppText.bodySmall(
+          l10n.aiWelcomeSubtitle,
+          textAlign: TextAlign.center,
           color: design.colors.textSecondary,
         ),
         SizedBox(height: design.spacing.md),
-
-        _buildQuickActionCard(
-          design: design,
-          accentColor: design.colors.accent4,
-          cardIcon: LucideIcons.messageCircle,
-          title: l10n.aiSupportAskDoubtTitle,
-          subtitle: l10n.aiSupportAskDoubtSubtitle,
-          buttonLabel: l10n.aiSupportAskNowButton,
-          buttonIcon: LucideIcons.send,
-          onPressed: onAskAiPressed,
+        AppButton.primary(
+          label: l10n.aiStartNewChat,
+          onPressed: () => context.push('/ai/chat'),
         ),
       ],
     );
   }
+}
 
-  Widget _buildQuickActionCard({
-    required DesignConfig design,
-    required Color accentColor,
-    required IconData cardIcon,
-    required String title,
-    required String subtitle,
-    required String buttonLabel,
-    required IconData buttonIcon,
-    VoidCallback? onPressed,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(design.spacing.lg),
-      decoration: BoxDecoration(
-        color: accentColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(design.radius.xl),
-        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(design.spacing.md),
-            decoration: BoxDecoration(
-              color: accentColor.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
+class _HistoryCard extends StatelessWidget {
+  const _HistoryCard({
+    required this.sessionId,
+    required this.title,
+    this.lastMessage,
+    required this.timestamp,
+  });
+
+  final String sessionId;
+  final String title;
+  final String? lastMessage;
+  final String timestamp;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    return AppSemantics.button(
+      label: l10n.openDetailedLesson(title),
+      onTap: () => context.push('/ai/chat?id=$sessionId'),
+      child: AppCard(
+        padding: EdgeInsets.all(design.spacing.md),
+        onTap: () => context.push('/ai/chat?id=$sessionId'),
+        child: Row(
+          children: [
+            SizedBox(width: design.spacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText.cardTitle(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: design.spacing.xs),
+                  if (lastMessage != null) ...[
+                    AppText.cardSubtitle(
+                      lastMessage!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: design.spacing.xs),
+                  ],
+                  AppText.cardCaption(timestamp),
+                ],
+              ),
             ),
-            child: Icon(cardIcon, color: accentColor, size: design.iconSize.lg),
-          ),
-          SizedBox(width: design.spacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppText.cardTitle(title),
-                SizedBox(height: design.spacing.xs),
-                AppText.cardSubtitle(subtitle),
-                SizedBox(height: design.spacing.md),
-                AppButton(
-                  label: buttonLabel,
-                  backgroundColor: accentColor,
-                  foregroundColor: design.colors.textInverse,
-                  leading: Icon(buttonIcon, size: design.iconSize.sm),
-                  onPressed: onPressed,
-                ),
-              ],
+            SizedBox(width: design.spacing.xs),
+            Icon(
+              LucideIcons.chevronRight,
+              color: design.colors.textTertiary,
+              size: 18.0,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildRecentHelp(
-    BuildContext context,
-    WidgetRef ref,
-    DesignConfig design,
-    AppLocalizations l10n,
-  ) {
-    final recentDoubtsAsync = ref.watch(recentAiDoubtsProvider);
+class _RecentHelpSection extends StatelessWidget {
+  const _RecentHelpSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppText.labelBold(
-              l10n.aiSupportRecentHelp,
-              color: design.colors.textSecondary,
+            AppSemantics.header(
+              label: l10n.aiRecentChatsHeader,
+              child: AppText.title(l10n.aiRecentChatsHeader),
             ),
             AppSemantics.button(
-              label: l10n.aiSupportViewAll,
-              onTap: onViewAllDoubtsPressed,
-              child: AppFocusable(
-                onTap: onViewAllDoubtsPressed,
-                child: AppText.labelSmall(
-                  l10n.aiSupportViewAll,
-                  color: design.colors.primary,
+              label: l10n.aiViewAllRecentChats,
+              onTap: () => context.push('/ai/history'),
+              child: GestureDetector(
+                onTap: () => context.push('/ai/history'),
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.sm,
+                    vertical: design.spacing.md,
+                  ),
+                  child: AppText.labelBold(
+                    l10n.aiViewAllRecentChats,
+                    color: design.colors.primary,
+                  ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: design.spacing.md),
-        recentDoubtsAsync.when(
-          data: (doubtsList) {
-            final doubts = doubtsList.take(3).toList();
-            if (doubts.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: design.spacing.xxxl),
-                child: Center(
-                  child: AppText.body(
-                    l10n.aiSupportNoRecentDoubts,
-                    color: design.colors.textSecondary,
+        SizedBox(height: design.spacing.sm),
+        AppSemantics.scrollableList(
+          itemCount: mockChatSessions.length,
+          label: l10n.aiRecentChatsHeader,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: mockChatSessions.map((session) {
+              final isLast = session == mockChatSessions.last;
+              final lastHumanMessage = session.messages
+                  .lastWhere((msg) => msg.role == MessageRole.user)
+                  .content;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _HistoryCard(
+                    sessionId: session.id,
+                    title: session.title,
+                    lastMessage: lastHumanMessage,
+                    timestamp: DateFormatter.formatTimeAgo(session.modifiedAt),
                   ),
-                ),
+                  if (!isLast) SizedBox(height: design.spacing.xs),
+                ],
               );
-            }
-
-            return Column(
-              children: doubts.map((doubt) {
-                IconData statusIcon;
-                Color statusColor;
-                Color statusBg;
-                String statusText;
-
-                switch (doubt.status) {
-                  case DoubtStatus.resolved:
-                  case DoubtStatus.closed:
-                    statusIcon = LucideIcons.checkCircle2;
-                    statusColor = design.statusColors.completed.foreground;
-                    statusBg = design.statusColors.completed.background;
-                    statusText = l10n.aiSupportStatusAnswered;
-                    break;
-                  case DoubtStatus.active:
-                  case DoubtStatus.pending:
-                    statusIcon = LucideIcons.loader;
-                    statusColor = design.statusColors.upcoming.foreground;
-                    statusBg = design.statusColors.upcoming.background;
-                    statusText = l10n.aiSupportStatusProcessing;
-                    break;
-                }
-
-                return Padding(
-                  padding: EdgeInsets.only(bottom: design.spacing.md),
-                  child: AppSemantics.button(
-                    label: doubt.title,
-                    onTap: () => onDoubtTapped(doubt.id),
-                    child: AppFocusable(
-                      onTap: () => onDoubtTapped(doubt.id),
-                      child: _buildHelpCard(
-                        design: design,
-                        icon: LucideIcons.messageCircleQuestionMark,
-                        iconColor: design.colors.accent2,
-                        title: doubt.title,
-                        timestamp: doubt.createdHumanized ?? '',
-                        statusText: statusText,
-                        statusColor: statusColor,
-                        statusBg: statusBg,
-                        statusIcon: statusIcon,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            );
-          },
-          loading: () => const Center(child: AppLoadingIndicator()),
-          error: (_, _) => const SizedBox(),
+            }).toList(),
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHelpCard({
-    required DesignConfig design,
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    required String timestamp,
-    required String statusText,
-    required Color statusColor,
-    required Color statusBg,
-    required IconData statusIcon,
-  }) {
-    return AppCard(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(design.spacing.sm),
-            decoration: BoxDecoration(
-              color: design.colors.surface,
-              borderRadius: BorderRadius.circular(design.radius.md),
-            ),
-            child: Icon(icon, color: iconColor, size: design.iconSize.md),
-          ),
-          SizedBox(width: design.spacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: AppText.body(
-                        title,
-                        color: design.colors.textPrimary,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    SizedBox(width: design.spacing.sm),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.sm,
-                        vertical: design.spacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: statusBg,
-                        borderRadius: BorderRadius.circular(design.radius.full),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            statusIcon,
-                            size: design.iconSize.xs,
-                            color: statusColor,
-                          ),
-                          SizedBox(width: 4),
-                          AppText.labelSmall(statusText, color: statusColor),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: design.spacing.sm),
-                Row(
-                  children: [
-                    Icon(
-                      LucideIcons.clock,
-                      size: design.iconSize.xs,
-                      color: design.colors.textTertiary,
-                    ),
-                    SizedBox(width: 4),
-                    AppText.caption(
-                      timestamp,
-                      color: design.colors.textTertiary,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

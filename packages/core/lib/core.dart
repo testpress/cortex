@@ -49,12 +49,15 @@ export 'widgets/bookmark_folders_sheet.dart';
 export 'widgets/app_toast.dart';
 export 'widgets/session_expired_dialog.dart';
 export 'widgets/app_confirmation_dialog.dart';
+export 'widgets/ai_composer.dart';
 
 // Shell
 export 'shell/app_shell.dart';
 
 // Screens
 export 'screens/ai_screen.dart';
+export 'screens/ai_chat_immersive_screen.dart';
+export 'screens/ai_chat_history_screen.dart';
 export 'screens/bp_elearn_my_results_screen.dart';
 
 // Navigation

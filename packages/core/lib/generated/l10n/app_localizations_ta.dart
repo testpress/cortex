@@ -2918,50 +2918,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?';
 
   @override
-  String get aiSupportTitle => 'AI ஆதரவு';
-
-  @override
-  String aiSupportGreeting(String userName) {
-    return 'வணக்கம் $userName 👋';
-  }
-
-  @override
-  String get aiSupportQuickActions => 'விரைவான செயல்கள்';
-
-  @override
-  String get aiSupportAskDoubtTitle => 'சந்தேகம் கேளுங்கள்';
-
-  @override
-  String get aiSupportAskDoubtSubtitle =>
-      'உங்கள் கேள்வியைப் படமெடுக்கவும், பதிவேற்றவும் அல்லது தட்டச்சு செய்யவும்';
-
-  @override
-  String get aiSupportAskNowButton => 'இப்போது கேளுங்கள்';
-
-  @override
-  String get aiSupportAiExamTitle => 'AI தேர்வு';
-
-  @override
-  String get aiSupportAiExamSubtitle =>
-      'பலவீனமான தலைப்புகள் அல்லது அத்தியாயங்களின் அடிப்படையில் AI பயிற்சி தேர்வுகளை உருவாக்கவும்';
-
-  @override
-  String get aiSupportCreateAiExamButton => 'AI தேர்வை உருவாக்கு';
-
-  @override
-  String get aiSupportRecentHelp => 'சமீபத்திய உதவி';
-
-  @override
-  String get aiSupportViewAll => 'அனைத்தையும் காண்க';
-
-  @override
-  String get aiSupportNoRecentDoubts => 'சமீபத்திய AI சந்தேகங்கள் இல்லை.';
-
-  @override
-  String get aiSupportStatusAnswered => 'பதிலளிக்கப்பட்டது';
-
-  @override
-  String get aiSupportStatusProcessing => 'செயலாக்கப்படுகிறது';
+  String get aiSupportTitle => 'AI அரட்டை';
 
   @override
   String get aiSupportAskingAi => 'AI-இடம் கேட்கிறது';
@@ -3218,4 +3175,42 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get teamsMissingJoinLink => 'சந்திப்பு இணைப்பு காணவில்லை';
+
+  @override
+  String get aiStudyCompanionTitle => 'உங்கள் AI கற்றல் துணை';
+
+  @override
+  String get aiWelcomeSubtitle =>
+      'கேள்விகள் கேளுங்கள், கருத்துக்களைப் புரிந்து கொள்ளுங்கள்,\nமேலும் வேகமாக கற்றுக்கொள்ளுங்கள்.';
+
+  @override
+  String get aiStartNewChat => 'புதிய அரட்டையைத் தொடங்கு';
+
+  @override
+  String get aiRecentChatsHeader => 'சமீபத்திய அரட்டைகள்';
+
+  @override
+  String get aiViewAllRecentChats => 'அனைத்தையும் காட்டு';
+
+  @override
+  String get aiNewChatHeader => 'புதிய அரட்டை';
+
+  @override
+  String get aiComposerGreeting =>
+      'இன்று நான் உங்களுக்கு எவ்வாறு உதவ முடியும்?';
+
+  @override
+  String get aiChatHistoryTitle => 'அரட்டை வரலாறு';
+
+  @override
+  String get aiComposerPlaceholder => 'எது வேண்டுமானாலும் கேளுங்கள்...';
+
+  @override
+  String get aiComposerAttachImage => 'படத்தை இணைக்கவும்';
+
+  @override
+  String get aiComposerTakePhoto => 'புகைப்படம் எடுக்கவும்';
+
+  @override
+  String get aiComposerSendMessage => 'செய்தி அனுப்பவும்';
 }

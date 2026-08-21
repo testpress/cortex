@@ -1092,27 +1092,7 @@
   "deleteExamTitle": "هل تريد حذف الامتحان؟",
   "deleteExamConfirmationMessage": "هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟",
 
-  "aiSupportTitle": "دعم الذكاء الاصطناعي",
-  "aiSupportGreeting": "مرحباً {userName} 👋",
-  "@aiSupportGreeting": {
-    "placeholders": {
-      "userName": {
-        "type": "String"
-      }
-    }
-  },
-  "aiSupportQuickActions": "إجراءات سريعة",
-  "aiSupportAskDoubtTitle": "اسأل شكاً",
-  "aiSupportAskDoubtSubtitle": "التقط أو حمّل أو اكتب سؤالك",
-  "aiSupportAskNowButton": "اسأل الآن",
-  "aiSupportAiExamTitle": "امتحان الذكاء الاصطناعي",
-  "aiSupportAiExamSubtitle": "قم بإنشاء امتحانات تدريبية بناءً على المواضيع الضعيفة",
-  "aiSupportCreateAiExamButton": "إنشاء امتحان",
-  "aiSupportRecentHelp": "المساعدة الأخيرة",
-  "aiSupportViewAll": "عرض الكل",
-  "aiSupportNoRecentDoubts": "لا توجد شكوك حديثة.",
-  "aiSupportStatusAnswered": "تم الرد",
-  "aiSupportStatusProcessing": "قيد المعالجة",
+  "aiSupportTitle": "دردشة الذكاء الاصطناعي",
   "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي",
 "contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
   "accessExpired": "انتهت صلاحية الوصول",
@@ -1206,5 +1186,17 @@
   "liveStreamJoinFailed": "فشل الانضمام إلى الاجتماع. يُرجى المحاولة مرة أخرى.",
   "teamsPermissionRequired": "يلزم الوصول إلى الكاميرا والميكروفون. قم بتمكينها في الإعدادات للانضمام.",
   "teamsJoinMeetingLoading": "جارِ الانضمام إلى الاجتماع...",
-  "teamsMissingJoinLink": "رابط الاجتماع مفقود"
+  "teamsMissingJoinLink": "رابط الاجتماع مفقود",
+  "aiStudyCompanionTitle": "رفيق الدراسة بالذكاء الاصطناعي الخاص بك",
+  "aiWelcomeSubtitle": "اسأل أسئلة، وافهم المفاهيم،\nوتعلم بشكل أسرع.",
+  "aiStartNewChat": "بدء محادثة جديدة",
+  "aiRecentChatsHeader": "المحادثات الأخيرة",
+  "aiViewAllRecentChats": "عرض الكل",
+  "aiNewChatHeader": "محادثة جديدة",
+  "aiComposerGreeting": "كيف يمكنني مساعدتك اليوم؟",
+  "aiChatHistoryTitle": "سجل المحادثات",
+  "aiComposerPlaceholder": "اسأل عن أي شيء...",
+  "aiComposerAttachImage": "إرفاق صورة",
+  "aiComposerTakePhoto": "التقاط صورة",
+  "aiComposerSendMessage": "إرسال رسالة"
 }
