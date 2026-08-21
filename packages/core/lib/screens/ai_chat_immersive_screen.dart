@@ -169,12 +169,22 @@ class _AiChatImmersiveScreenState extends ConsumerState<AiChatImmersiveScreen> {
             title: headerTitle,
             leading: AppBackButton(onTap: () => context.pop()),
             actions: [
-              AppIconButton(
-                icon: LucideIcons.history,
+              AppSemantics.button(
+                label: l10n.aiChatHistoryTitle,
                 onTap: () => context.push('/ai/history'),
-                accessibilityLabel: l10n.aiChatHistoryTitle,
-                size: design.iconSize.action,
-                color: design.colors.textSecondary,
+                child: AppFocusable(
+                  onTap: () => context.push('/ai/history'),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 6,
+                    ), // Optical alignment matching AppBackButton
+                    child: Icon(
+                      LucideIcons.history,
+                      color: design.colors.textSecondary,
+                      size: design.iconSize.action,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
