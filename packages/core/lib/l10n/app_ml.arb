@@ -306,6 +306,7 @@
   "navigationPrevious": "മുൻപത്തെ പാഠം",
   "navigationNext": "അടുത്ത പാഠം",
   "openDetailedLesson": "പാഠം തുറക്കുക: {title}",
+  "openChatSession": "ചാറ്റ് തുറക്കുക: {title}",
   "videoLessonTabNotes": "കുറിപ്പുകൾ",
   "videoLessonTabTranscript": "ട്രാൻസ്ക്രിപ്റ്റ്",
   "videoLessonSyncToVideo": "വീഡിയോയുമായി സമന്വയിപ്പിക്കുക",
@@ -1092,27 +1093,7 @@
   "deleteExamTitle": "പരീക്ഷ ഇല്ലാതാക്കണോ?",
   "deleteExamConfirmationMessage": "ഈ ഡൗൺലോഡ് ചെയ്ത പരീക്ഷ ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?",
 
-  "aiSupportTitle": "AI പിന്തുണ",
-  "aiSupportGreeting": "നമസ്കാരം {userName} 👋",
-  "@aiSupportGreeting": {
-    "placeholders": {
-      "userName": {
-        "type": "String"
-      }
-    }
-  },
-  "aiSupportQuickActions": "പെട്ടെന്നുള്ള പ്രവർത്തനങ്ങൾ",
-  "aiSupportAskDoubtTitle": "സംശയം ചോദിക്കുക",
-  "aiSupportAskDoubtSubtitle": "ചോദ്യം ഫോട്ടോ എടുക്കുകയോ അപ്‌ലോഡ് ചെയ്യുകയോ ടൈപ്പ് ചെയ്യുകയോ ചെയ്യുക",
-  "aiSupportAskNowButton": "ഇപ്പോൾ ചോദിക്കുക",
-  "aiSupportAiExamTitle": "AI പരീക്ഷ",
-  "aiSupportAiExamSubtitle": "ദുർബലമായ വിഷയങ്ങളെ അടിസ്ഥാനമാക്കി AI പരീക്ഷകൾ സൃഷ്ടിക്കുക",
-  "aiSupportCreateAiExamButton": "AI പരീക്ഷ സൃഷ്ടിക്കുക",
-  "aiSupportRecentHelp": "സമീപകാല സഹായം",
-  "aiSupportViewAll": "എല്ലാം കാണുക",
-  "aiSupportNoRecentDoubts": "സമീപകാല AI സംശയങ്ങളൊന്നുമില്ല.",
-  "aiSupportStatusAnswered": "മറുപടി നൽകി",
-  "aiSupportStatusProcessing": "പ്രോസസ്സ് ചെയ്യുന്നു",
+  "aiSupportTitle": "AI ചാറ്റ്",
   "aiSupportAskingAi": "AI-യോട് ചോദിക്കുന്നു",
 "contentAccessEnded": "ഈ ഉള്ളടക്കത്തിലേക്കുള്ള നിങ്ങളുടെ ആക്‌സസ് അവസാനിച്ചു!",
   "accessExpired": "ആക്‌സസ് കാലഹരണപ്പെട്ടു",
@@ -1205,6 +1186,18 @@
   "liveStreamStatusLive": "ലൈവ്",
   "liveStreamJoinFailed": "മീറ്റിംഗിൽ ചേരുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.",
   "teamsPermissionRequired": "ക്യാമറ, മൈക്രോഫോൺ ആക്സസ് ആവശ്യമാണ്. ചേരുന്നതിന് ക്രമീകരണങ്ങളിൽ അവ പ്രവർത്തനക്ഷമമാക്കുക.",
-  "teamsJoinMeetingLoading": "മീറ്റിംഗിൽ ചേരുന്നു...",
-  "teamsMissingJoinLink": "മീറ്റിംഗ് ലിങ്ക് ലഭ്യമല്ല"
+  "teamsJoinMeetingLoading": "മീറ്റിംഗിൻ ചേരുന്നു...",
+  "teamsMissingJoinLink": "മീറ്റിംഗ് ലിങ്ക് ലഭ്യമല്ല",
+  "aiStudyCompanionTitle": "നിങ്ങളുടെ AI പഠന സഹായി",
+  "aiWelcomeSubtitle": "ചോദ്യങ്ങൾ ചോദിക്കുക, ആശയങ്ങൾ മനസ്സിലാക്കുക,\nകൂടുതൽ വേഗത്തിൽ പഠിക്കുക.",
+  "aiStartNewChat": "പുതിയ ചാറ്റ് ആരംഭിക്കുക",
+  "aiRecentChatsHeader": "സമീപകാല ചാറ്റുകൾ",
+  "aiViewAllRecentChats": "എല്ലാം കാണുക",
+  "aiNewChatHeader": "പുതിയ ചാറ്റ്",
+  "aiComposerGreeting": "ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?",
+  "aiChatHistoryTitle": "ചാറ്റ് ചരിത്രം",
+  "aiComposerPlaceholder": "എന്തും ചോദിക്കൂ...",
+  "aiComposerAttachImage": "ചിത്രം ചേർക്കുക",
+  "aiComposerTakePhoto": "ഫോട്ടോ എടുക്കുക",
+  "aiComposerSendMessage": "സന്ദേശം അയക്കുക"
 }

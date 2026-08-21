@@ -937,6 +937,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String openChatSession(String title) {
+    return 'Open chat: $title';
+  }
+
+  @override
   String get videoLessonTabNotes => 'Notes';
 
   @override
@@ -2874,49 +2879,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this downloaded exam?';
 
   @override
-  String get aiSupportTitle => 'AI Support';
-
-  @override
-  String aiSupportGreeting(String userName) {
-    return 'Hi $userName 👋';
-  }
-
-  @override
-  String get aiSupportQuickActions => 'QUICK ACTIONS';
-
-  @override
-  String get aiSupportAskDoubtTitle => 'Ask a Doubt';
-
-  @override
-  String get aiSupportAskDoubtSubtitle => 'Snap, upload or type your question';
-
-  @override
-  String get aiSupportAskNowButton => 'Ask Now';
-
-  @override
-  String get aiSupportAiExamTitle => 'AI Exam';
-
-  @override
-  String get aiSupportAiExamSubtitle =>
-      'Create AI practice exams based on weak topics or chapters';
-
-  @override
-  String get aiSupportCreateAiExamButton => 'Create AI Exam';
-
-  @override
-  String get aiSupportRecentHelp => 'RECENT HELP';
-
-  @override
-  String get aiSupportViewAll => 'View All';
-
-  @override
-  String get aiSupportNoRecentDoubts => 'No recent AI doubts.';
-
-  @override
-  String get aiSupportStatusAnswered => 'Answered';
-
-  @override
-  String get aiSupportStatusProcessing => 'Processing';
+  String get aiSupportTitle => 'AI Chat';
 
   @override
   String get aiSupportAskingAi => 'ASKING AI';
@@ -3168,4 +3131,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get teamsMissingJoinLink => 'Meeting link is missing';
+
+  @override
+  String get aiStudyCompanionTitle => 'Your AI study companion';
+
+  @override
+  String get aiWelcomeSubtitle =>
+      'Ask questions, understand concepts,\nand learn faster.';
+
+  @override
+  String get aiStartNewChat => 'Start new chat';
+
+  @override
+  String get aiRecentChatsHeader => 'Recent chats';
+
+  @override
+  String get aiViewAllRecentChats => 'View All';
+
+  @override
+  String get aiNewChatHeader => 'New Chat';
+
+  @override
+  String get aiComposerGreeting => 'How can I help you today?';
+
+  @override
+  String get aiChatHistoryTitle => 'Chat History';
+
+  @override
+  String get aiComposerPlaceholder => 'Ask anything...';
+
+  @override
+  String get aiComposerAttachImage => 'Attach image';
+
+  @override
+  String get aiComposerTakePhoto => 'Take photo';
+
+  @override
+  String get aiComposerSendMessage => 'Send message';
 }

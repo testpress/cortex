@@ -454,6 +454,14 @@
       }
     }
   },
+  "openChatSession": "Open chat: {title}",
+  "@openChatSession": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoLessonTabNotes": "Notes",
   "videoLessonTabTranscript": "Transcript",
   "videoLessonSyncToVideo": "Sync to Video",
@@ -1429,27 +1437,7 @@
   "deleteExamTitle": "Delete Exam?",
   "deleteExamConfirmationMessage": "Are you sure you want to delete this downloaded exam?",
 
-  "aiSupportTitle": "AI Support",
-  "aiSupportGreeting": "Hi {userName} 👋",
-  "@aiSupportGreeting": {
-    "placeholders": {
-      "userName": {
-        "type": "String"
-      }
-    }
-  },
-  "aiSupportQuickActions": "QUICK ACTIONS",
-  "aiSupportAskDoubtTitle": "Ask a Doubt",
-  "aiSupportAskDoubtSubtitle": "Snap, upload or type your question",
-  "aiSupportAskNowButton": "Ask Now",
-  "aiSupportAiExamTitle": "AI Exam",
-  "aiSupportAiExamSubtitle": "Create AI practice exams based on weak topics or chapters",
-  "aiSupportCreateAiExamButton": "Create AI Exam",
-  "aiSupportRecentHelp": "RECENT HELP",
-  "aiSupportViewAll": "View All",
-  "aiSupportNoRecentDoubts": "No recent AI doubts.",
-  "aiSupportStatusAnswered": "Answered",
-  "aiSupportStatusProcessing": "Processing",
+  "aiSupportTitle": "AI Chat",
   "aiSupportAskingAi": "ASKING AI",
 "contentAccessEnded": "Your access to this content has ended!",
   "accessExpired": "Access expired",
@@ -1566,5 +1554,17 @@
   "liveStreamJoinFailed": "Failed to join the meeting. Please try again.",
   "teamsPermissionRequired": "Camera and microphone access is required. Enable them in Settings to join.",
   "teamsJoinMeetingLoading": "Joining meeting...",
-  "teamsMissingJoinLink": "Meeting link is missing"
+  "teamsMissingJoinLink": "Meeting link is missing",
+  "aiStudyCompanionTitle": "Your AI study companion",
+  "aiWelcomeSubtitle": "Ask questions, understand concepts,\nand learn faster.",
+  "aiStartNewChat": "Start new chat",
+  "aiRecentChatsHeader": "Recent chats",
+  "aiViewAllRecentChats": "View All",
+  "aiNewChatHeader": "New Chat",
+  "aiComposerGreeting": "How can I help you today?",
+  "aiChatHistoryTitle": "Chat History",
+  "aiComposerPlaceholder": "Ask anything...",
+  "aiComposerAttachImage": "Attach image",
+  "aiComposerTakePhoto": "Take photo",
+  "aiComposerSendMessage": "Send message"
 }

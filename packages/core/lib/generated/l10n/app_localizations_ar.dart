@@ -934,6 +934,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String openChatSession(String title) {
+    return 'افتح الدردشة: $title';
+  }
+
+  @override
   String get videoLessonTabNotes => 'ملاحظات';
 
   @override
@@ -2877,49 +2882,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'هل أنت متأكد أنك تريد حذف هذا الامتحان المنزل؟';
 
   @override
-  String get aiSupportTitle => 'دعم الذكاء الاصطناعي';
-
-  @override
-  String aiSupportGreeting(String userName) {
-    return 'مرحباً $userName 👋';
-  }
-
-  @override
-  String get aiSupportQuickActions => 'إجراءات سريعة';
-
-  @override
-  String get aiSupportAskDoubtTitle => 'اسأل شكاً';
-
-  @override
-  String get aiSupportAskDoubtSubtitle => 'التقط أو حمّل أو اكتب سؤالك';
-
-  @override
-  String get aiSupportAskNowButton => 'اسأل الآن';
-
-  @override
-  String get aiSupportAiExamTitle => 'امتحان الذكاء الاصطناعي';
-
-  @override
-  String get aiSupportAiExamSubtitle =>
-      'قم بإنشاء امتحانات تدريبية بناءً على المواضيع الضعيفة';
-
-  @override
-  String get aiSupportCreateAiExamButton => 'إنشاء امتحان';
-
-  @override
-  String get aiSupportRecentHelp => 'المساعدة الأخيرة';
-
-  @override
-  String get aiSupportViewAll => 'عرض الكل';
-
-  @override
-  String get aiSupportNoRecentDoubts => 'لا توجد شكوك حديثة.';
-
-  @override
-  String get aiSupportStatusAnswered => 'تم الرد';
-
-  @override
-  String get aiSupportStatusProcessing => 'قيد المعالجة';
+  String get aiSupportTitle => 'دردشة الذكاء الاصطناعي';
 
   @override
   String get aiSupportAskingAi => 'جاري سؤال الذكاء الاصطناعي';
@@ -3168,4 +3131,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get teamsMissingJoinLink => 'رابط الاجتماع مفقود';
+
+  @override
+  String get aiStudyCompanionTitle => 'رفيق الدراسة بالذكاء الاصطناعي الخاص بك';
+
+  @override
+  String get aiWelcomeSubtitle =>
+      'اسأل أسئلة، وافهم المفاهيم،\nوتعلم بشكل أسرع.';
+
+  @override
+  String get aiStartNewChat => 'بدء محادثة جديدة';
+
+  @override
+  String get aiRecentChatsHeader => 'المحادثات الأخيرة';
+
+  @override
+  String get aiViewAllRecentChats => 'عرض الكل';
+
+  @override
+  String get aiNewChatHeader => 'محادثة جديدة';
+
+  @override
+  String get aiComposerGreeting => 'كيف يمكنني مساعدتك اليوم؟';
+
+  @override
+  String get aiChatHistoryTitle => 'سجل المحادثات';
+
+  @override
+  String get aiComposerPlaceholder => 'اسأل عن أي شيء...';
+
+  @override
+  String get aiComposerAttachImage => 'إرفاق صورة';
+
+  @override
+  String get aiComposerTakePhoto => 'التقاط صورة';
+
+  @override
+  String get aiComposerSendMessage => 'إرسال رسالة';
 }

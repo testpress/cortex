@@ -161,6 +161,7 @@ class _AITabState extends ConsumerState<AITab>
 
   void _scrollToBottom(DesignConfig design) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -186,7 +187,7 @@ class _AITabState extends ConsumerState<AITab>
         Expanded(
           child: AppSemantics.scrollableList(
             itemCount: _messages.length,
-            label: 'AI Chat Messages',
+            label: l10n.aiSupportTitle,
             child: ListView.builder(
               controller: _scrollController,
               padding: EdgeInsets.all(design.spacing.md),

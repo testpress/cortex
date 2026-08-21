@@ -1775,6 +1775,12 @@ abstract class AppLocalizations {
   /// **'Open lesson: {title}'**
   String openDetailedLesson(String title);
 
+  /// No description provided for @openChatSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Open chat: {title}'**
+  String openChatSession(String title);
+
   /// No description provided for @videoLessonTabNotes.
   ///
   /// In en, this message translates to:
@@ -5186,86 +5192,8 @@ abstract class AppLocalizations {
   /// No description provided for @aiSupportTitle.
   ///
   /// In en, this message translates to:
-  /// **'AI Support'**
+  /// **'AI Chat'**
   String get aiSupportTitle;
-
-  /// No description provided for @aiSupportGreeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Hi {userName} 👋'**
-  String aiSupportGreeting(String userName);
-
-  /// No description provided for @aiSupportQuickActions.
-  ///
-  /// In en, this message translates to:
-  /// **'QUICK ACTIONS'**
-  String get aiSupportQuickActions;
-
-  /// No description provided for @aiSupportAskDoubtTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask a Doubt'**
-  String get aiSupportAskDoubtTitle;
-
-  /// No description provided for @aiSupportAskDoubtSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Snap, upload or type your question'**
-  String get aiSupportAskDoubtSubtitle;
-
-  /// No description provided for @aiSupportAskNowButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask Now'**
-  String get aiSupportAskNowButton;
-
-  /// No description provided for @aiSupportAiExamTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'AI Exam'**
-  String get aiSupportAiExamTitle;
-
-  /// No description provided for @aiSupportAiExamSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Create AI practice exams based on weak topics or chapters'**
-  String get aiSupportAiExamSubtitle;
-
-  /// No description provided for @aiSupportCreateAiExamButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Create AI Exam'**
-  String get aiSupportCreateAiExamButton;
-
-  /// No description provided for @aiSupportRecentHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'RECENT HELP'**
-  String get aiSupportRecentHelp;
-
-  /// No description provided for @aiSupportViewAll.
-  ///
-  /// In en, this message translates to:
-  /// **'View All'**
-  String get aiSupportViewAll;
-
-  /// No description provided for @aiSupportNoRecentDoubts.
-  ///
-  /// In en, this message translates to:
-  /// **'No recent AI doubts.'**
-  String get aiSupportNoRecentDoubts;
-
-  /// No description provided for @aiSupportStatusAnswered.
-  ///
-  /// In en, this message translates to:
-  /// **'Answered'**
-  String get aiSupportStatusAnswered;
-
-  /// No description provided for @aiSupportStatusProcessing.
-  ///
-  /// In en, this message translates to:
-  /// **'Processing'**
-  String get aiSupportStatusProcessing;
 
   /// No description provided for @aiSupportAskingAi.
   ///
@@ -5728,6 +5656,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Meeting link is missing'**
   String get teamsMissingJoinLink;
+
+  /// No description provided for @aiStudyCompanionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your AI study companion'**
+  String get aiStudyCompanionTitle;
+
+  /// No description provided for @aiWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask questions, understand concepts,\nand learn faster.'**
+  String get aiWelcomeSubtitle;
+
+  /// No description provided for @aiStartNewChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Start new chat'**
+  String get aiStartNewChat;
+
+  /// No description provided for @aiRecentChatsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent chats'**
+  String get aiRecentChatsHeader;
+
+  /// No description provided for @aiViewAllRecentChats.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get aiViewAllRecentChats;
+
+  /// No description provided for @aiNewChatHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'New Chat'**
+  String get aiNewChatHeader;
+
+  /// No description provided for @aiComposerGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I help you today?'**
+  String get aiComposerGreeting;
+
+  /// No description provided for @aiChatHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat History'**
+  String get aiChatHistoryTitle;
+
+  /// No description provided for @aiComposerPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything...'**
+  String get aiComposerPlaceholder;
+
+  /// No description provided for @aiComposerAttachImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach image'**
+  String get aiComposerAttachImage;
+
+  /// No description provided for @aiComposerTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get aiComposerTakePhoto;
+
+  /// No description provided for @aiComposerSendMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send message'**
+  String get aiComposerSendMessage;
 }
 
 class _AppLocalizationsDelegate

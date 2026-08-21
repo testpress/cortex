@@ -6,14 +6,21 @@ class AiRoutes {
     GoRoute(
       name: 'ai',
       path: '/ai',
-      builder: (context, state) => AiScreen(
-        onAskAiPressed: () =>
-            context.push('/home/discussions/doubts/ask?isAskAi=true'),
-        onViewAllDoubtsPressed: () =>
-            context.push('/home/discussions/doubts?filter=ai'),
-        onDoubtTapped: (doubtId) =>
-            context.push('/home/discussions/doubts/$doubtId'),
-      ),
+      builder: (context, state) => const AiScreen(),
+      routes: [
+        GoRoute(
+          name: 'ai_chat',
+          path: 'chat',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const AiChatImmersiveScreen(),
+        ),
+        GoRoute(
+          name: 'ai_history',
+          path: 'history',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const AiChatHistoryScreen(),
+        ),
+      ],
     ),
   ];
 }

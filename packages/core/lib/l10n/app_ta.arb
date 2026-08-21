@@ -447,6 +447,14 @@
       }
     }
   },
+  "openChatSession": "அரட்டையைத் திற: {title}",
+  "@openChatSession": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoLessonTabNotes": "குறிப்புகள்",
   "videoLessonTabTranscript": "டிரான்ஸ்கிரிப்ட்",
   "videoLessonSyncToVideo": "வீடியோவுடன் ஒத்திசை",
@@ -1326,27 +1334,7 @@
   "deleteExamTitle": "தேர்வை அழிக்க வேண்டுமா?",
   "deleteExamConfirmationMessage": "பதிவிறக்கம் செய்யப்பட்ட இந்த தேர்வை அழிக்க வேண்டுமா?",
 
-  "aiSupportTitle": "AI ஆதரவு",
-  "aiSupportGreeting": "வணக்கம் {userName} 👋",
-  "@aiSupportGreeting": {
-    "placeholders": {
-      "userName": {
-        "type": "String"
-      }
-    }
-  },
-  "aiSupportQuickActions": "விரைவான செயல்கள்",
-  "aiSupportAskDoubtTitle": "சந்தேகம் கேளுங்கள்",
-  "aiSupportAskDoubtSubtitle": "உங்கள் கேள்வியைப் படமெடுக்கவும், பதிவேற்றவும் அல்லது தட்டச்சு செய்யவும்",
-  "aiSupportAskNowButton": "இப்போது கேளுங்கள்",
-  "aiSupportAiExamTitle": "AI தேர்வு",
-  "aiSupportAiExamSubtitle": "பலவீனமான தலைப்புகள் அல்லது அத்தியாயங்களின் அடிப்படையில் AI பயிற்சி தேர்வுகளை உருவாக்கவும்",
-  "aiSupportCreateAiExamButton": "AI தேர்வை உருவாக்கு",
-  "aiSupportRecentHelp": "சமீபத்திய உதவி",
-  "aiSupportViewAll": "அனைத்தையும் காண்க",
-  "aiSupportNoRecentDoubts": "சமீபத்திய AI சந்தேகங்கள் இல்லை.",
-  "aiSupportStatusAnswered": "பதிலளிக்கப்பட்டது",
-  "aiSupportStatusProcessing": "செயலாக்கப்படுகிறது",
+  "aiSupportTitle": "AI அரட்டை",
   "aiSupportAskingAi": "AI-இடம் கேட்கிறது",
 "contentAccessEnded": "இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!",
   "accessExpired": "அணுகல் காலாவதியானது",
@@ -1440,5 +1428,17 @@
   "liveStreamJoinFailed": "கூட்டத்தில் சேர முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
   "teamsPermissionRequired": "சேர, கேமரா மற்றும் மைக்ரோஃபோன் அணுகல் தேவை. அமைப்புகளில் அவற்றை இயக்கவும்.",
   "teamsJoinMeetingLoading": "கூட்டத்தில் சேர்கிறோம்...",
-  "teamsMissingJoinLink": "சந்திப்பு இணைப்பு காணவில்லை"
+  "teamsMissingJoinLink": "சந்திப்பு இணைப்பு காணவில்லை",
+  "aiStudyCompanionTitle": "உங்கள் AI கற்றல் துணை",
+  "aiWelcomeSubtitle": "கேள்விகள் கேளுங்கள், கருத்துக்களைப் புரிந்து கொள்ளுங்கள்,\nமேலும் வேகமாக கற்றுக்கொள்ளுங்கள்.",
+  "aiStartNewChat": "புதிய அரட்டையைத் தொடங்கு",
+  "aiRecentChatsHeader": "சமீபத்திய அரட்டைகள்",
+  "aiViewAllRecentChats": "அனைத்தையும் காட்டு",
+  "aiNewChatHeader": "புதிய அரட்டை",
+  "aiComposerGreeting": "இன்று நான் உங்களுக்கு எவ்வாறு உதவ முடியும்?",
+  "aiChatHistoryTitle": "அரட்டை வரலாறு",
+  "aiComposerPlaceholder": "எது வேண்டுமானாலும் கேளுங்கள்...",
+  "aiComposerAttachImage": "படத்தை இணைக்கவும்",
+  "aiComposerTakePhoto": "புகைப்படம் எடுக்கவும்",
+  "aiComposerSendMessage": "செய்தி அனுப்பவும்"
 }

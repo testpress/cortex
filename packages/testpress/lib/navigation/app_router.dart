@@ -54,7 +54,7 @@ enum NavTab {
   home('/home', 'Home', LucideIcons.home),
   study('/study', 'Study', LucideIcons.bookOpen),
   exams('/exams', 'Exam', LucideIcons.fileText),
-  ai('/ai', 'AI', LucideIcons.sparkles),
+  ai('/ai', 'AI', LucideIcons.bot),
   store('/store', 'Store', LucideIcons.store),
   info('/info', 'Info', LucideIcons.squarePlay),
   profile('/profile', 'Profile', LucideIcons.user);
