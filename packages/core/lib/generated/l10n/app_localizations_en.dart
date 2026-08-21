@@ -937,6 +937,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String openChatSession(String title) {
+    return 'Open chat: $title';
+  }
+
+  @override
   String get videoLessonTabNotes => 'Notes';
 
   @override

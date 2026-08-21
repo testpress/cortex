@@ -306,6 +306,7 @@
   "navigationPrevious": "الدرس السابق",
   "navigationNext": "الدرس التالي",
   "openDetailedLesson": "افتح الدرس: {title}",
+  "openChatSession": "افتح الدردشة: {title}",
   "videoLessonTabNotes": "ملاحظات",
   "videoLessonTabTranscript": "النص",
   "videoLessonSyncToVideo": "مزامنة مع الفيديو",

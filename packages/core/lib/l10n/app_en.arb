@@ -454,6 +454,14 @@
       }
     }
   },
+  "openChatSession": "Open chat: {title}",
+  "@openChatSession": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoLessonTabNotes": "Notes",
   "videoLessonTabTranscript": "Transcript",
   "videoLessonSyncToVideo": "Sync to Video",

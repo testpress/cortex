@@ -306,6 +306,7 @@
   "navigationPrevious": "മുൻപത്തെ പാഠം",
   "navigationNext": "അടുത്ത പാഠം",
   "openDetailedLesson": "പാഠം തുറക്കുക: {title}",
+  "openChatSession": "ചാറ്റ് തുറക്കുക: {title}",
   "videoLessonTabNotes": "കുറിപ്പുകൾ",
   "videoLessonTabTranscript": "ട്രാൻസ്ക്രിപ്റ്റ്",
   "videoLessonSyncToVideo": "വീഡിയോയുമായി സമന്വയിപ്പിക്കുക",

@@ -34,6 +34,7 @@ class _AiChatImmersiveScreenState extends ConsumerState<AiChatImmersiveScreen> {
 
   void _scrollToBottom({bool animate = true}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       if (_scrollController.hasClients) {
         final design = Design.of(context);
         final shouldAnimate =
@@ -64,8 +65,30 @@ class _AiChatImmersiveScreenState extends ConsumerState<AiChatImmersiveScreen> {
     });
     _scrollToBottom();
 
+    final design = Design.of(context);
+    final shouldAnimate = MotionPreferences.shouldAnimate(context);
+
+    const reply =
+        "I am an **AI assistant** designed for:\n\n- 🙋‍♂️ **Answering doubts** in real-time\n- 🧠 **Clearing concepts** with examples\n- 🚀 **Learning faster** and more efficiently";
+
+    if (!shouldAnimate) {
+      setState(() {
+        _isTyping = false;
+        _messages.add(
+          AiChatMessage(
+            content: reply,
+            timestamp: DateTime.now(),
+            role: MessageRole.ai,
+          ),
+        );
+      });
+      _scrollToBottom();
+      return;
+    }
+
     // Show 3 dots bouncing for 1500ms
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    final delay = design.motion.verySlow * 2.5;
+    Future.delayed(delay, () {
       if (!mounted) return;
       setState(() {
         _isTyping = false;
@@ -79,13 +102,10 @@ class _AiChatImmersiveScreenState extends ConsumerState<AiChatImmersiveScreen> {
       });
       _scrollToBottom();
 
-      const reply =
-          "I am an **AI assistant** designed for:\n\n- 🙋‍♂️ **Answering doubts** in real-time\n- 🧠 **Clearing concepts** with examples\n- 🚀 **Learning faster** and more efficiently";
       final replyChars = reply.characters;
       int charIndex = 0;
-      _typewriterTimer = Timer.periodic(const Duration(milliseconds: 30), (
-        timer,
-      ) {
+      final interval = design.motion.fast ~/ 5; // 30ms character typing speed
+      _typewriterTimer = Timer.periodic(interval, (timer) {
         if (!mounted) {
           timer.cancel();
           return;
@@ -160,56 +180,64 @@ class _AiChatImmersiveScreenState extends ConsumerState<AiChatImmersiveScreen> {
           ),
           Expanded(
             child: hasMessages
-                ? AppScroll(
-                    controller: _scrollController,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.screenPadding,
-                      vertical: design.spacing.lg,
-                    ),
-                    children: [
-                      ..._messages.map((message) {
-                        final isUser = message.role == MessageRole.user;
-                        if (isUser) {
-                          return Align(
-                            alignment: Alignment.centerRight,
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Container(
-                                  margin: EdgeInsets.only(
-                                    bottom: design.spacing.md,
-                                  ),
-                                  constraints: BoxConstraints(
-                                    maxWidth: constraints.maxWidth * 0.75,
-                                  ),
-                                  padding: EdgeInsets.all(design.spacing.sm),
-                                  decoration: BoxDecoration(
-                                    color: design.colors.primary,
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                  child: AppText.bodySmall(
-                                    message.content,
-                                    color: design.colors.textInverse,
-                                  ),
-                                );
-                              },
+                ? AppSemantics.scrollableList(
+                    itemCount: _messages.length,
+                    label: l10n.aiSupportTitle,
+                    child: AppScroll(
+                      controller: _scrollController,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.screenPadding,
+                        vertical: design.spacing.lg,
+                      ),
+                      children: [
+                        ..._messages.map((message) {
+                          final isUser = message.role == MessageRole.user;
+                          if (isUser) {
+                            return Align(
+                              alignment: Alignment.centerRight,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return Container(
+                                    margin: EdgeInsets.only(
+                                      bottom: design.spacing.md,
+                                    ),
+                                    constraints: BoxConstraints(
+                                      maxWidth: constraints.maxWidth * 0.75,
+                                    ),
+                                    padding: EdgeInsets.all(design.spacing.sm),
+                                    decoration: BoxDecoration(
+                                      color: design.colors.primary,
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: AppText.bodySmall(
+                                      message.content,
+                                      color: design.colors.textInverse,
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              margin: EdgeInsets.only(
+                                bottom: design.spacing.lg,
+                              ),
+                              child: AppMarkdown(data: message.content),
+                            );
+                          }
+                        }),
+                        if (_isTyping)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                bottom: design.spacing.lg,
+                              ),
+                              child: const _TypingIndicator(),
                             ),
-                          );
-                        } else {
-                          return Container(
-                            margin: EdgeInsets.only(bottom: design.spacing.lg),
-                            child: AppMarkdown(data: message.content),
-                          );
-                        }
-                      }),
-                      if (_isTyping)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: design.spacing.lg),
-                            child: const _TypingIndicator(),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   )
                 : Center(
                     child: SingleChildScrollView(

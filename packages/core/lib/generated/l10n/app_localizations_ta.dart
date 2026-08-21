@@ -950,6 +950,11 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String openChatSession(String title) {
+    return 'அரட்டையைத் திற: $title';
+  }
+
+  @override
   String get videoLessonTabNotes => 'குறிப்புகள்';
 
   @override

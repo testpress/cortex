@@ -447,6 +447,14 @@
       }
     }
   },
+  "openChatSession": "அரட்டையைத் திற: {title}",
+  "@openChatSession": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoLessonTabNotes": "குறிப்புகள்",
   "videoLessonTabTranscript": "டிரான்ஸ்கிரிப்ட்",
   "videoLessonSyncToVideo": "வீடியோவுடன் ஒத்திசை",

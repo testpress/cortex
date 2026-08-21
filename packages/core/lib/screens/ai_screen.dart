@@ -105,7 +105,7 @@ class _HistoryCard extends StatelessWidget {
     final l10n = L10n.of(context);
 
     return AppSemantics.button(
-      label: l10n.openDetailedLesson(title),
+      label: l10n.openChatSession(title),
       onTap: () => context.push('/ai/chat?id=$sessionId'),
       child: AppCard(
         padding: EdgeInsets.all(design.spacing.md),

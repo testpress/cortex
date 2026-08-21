@@ -1775,6 +1775,12 @@ abstract class AppLocalizations {
   /// **'Open lesson: {title}'**
   String openDetailedLesson(String title);
 
+  /// No description provided for @openChatSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Open chat: {title}'**
+  String openChatSession(String title);
+
   /// No description provided for @videoLessonTabNotes.
   ///
   /// In en, this message translates to:
