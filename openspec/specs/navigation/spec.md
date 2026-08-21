@@ -15,3 +15,10 @@ Primary content screens acting as root tabs MUST provide access to the global dr
 - **WHEN** the user navigates to the Profile screen by pushing it onto the navigation stack
 - **THEN** the system displays a standard Back button in the top-left of the static header
 
+### Requirement: Subpage Back Button Navigation
+All nested screens pushed onto the root tab navigation stack SHALL show a back button in the header.
+
+#### Scenario: User navigates to immersive chat
+- **WHEN** the user is viewing the immersive chat screen
+- **THEN** the header displays a back button to return to the AI root screen
+
