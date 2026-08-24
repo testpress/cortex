@@ -1,40 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnboardingScreen extends ConsumerStatefulWidget {
+class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
-
-  @override
-  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  bool _hasNavigated = false;
-
-  void _navigateToLogin() {
-    if (_hasNavigated || !mounted) return;
-    _hasNavigated = true;
-    context.go('/login');
-  }
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-
-    final currentSettings = ref.watch(instituteSettingsProvider);
-    ref.listen(instituteSettingsProvider, (_, settings) {
-      if (settings != null) {
-        _navigateToLogin();
-      }
-    });
-
-    if (currentSettings != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _navigateToLogin();
-      });
-    }
 
     return Scaffold(
       backgroundColor: design.colors.primary,
