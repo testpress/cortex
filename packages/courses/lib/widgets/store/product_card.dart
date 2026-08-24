@@ -71,26 +71,30 @@ class ProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: design.spacing.xs),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        AppText.title(
-                          '₹${product.price}',
-                          style: const TextStyle(fontWeight: FontWeight.w700),
-                        ),
-                        if (product.strikeThroughPrice != null &&
-                            product.strikeThroughPrice!.isNotEmpty) ...[
-                          SizedBox(width: design.spacing.xs),
-                          AppText.sm(
-                            '₹${product.strikeThroughPrice}',
-                            style: TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              color: design.colors.textSecondary,
-                            ),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          AppText.title(
+                            '₹${product.price}',
+                            style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
+                          if (product.strikeThroughPrice != null &&
+                              product.strikeThroughPrice!.isNotEmpty) ...[
+                            SizedBox(width: design.spacing.xs),
+                            AppText.sm(
+                              '₹${product.strikeThroughPrice}',
+                              style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: design.colors.textSecondary,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ],
                 ),
