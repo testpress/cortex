@@ -9,9 +9,9 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return Scaffold(
-      backgroundColor: design.colors.primary,
-      body: AppConfig.splashScreenImage.isNotEmpty
+    return ColoredBox(
+      color: design.colors.primary,
+      child: AppConfig.splashScreenImage.isNotEmpty
           ? SizedBox.expand(
               child: Image.asset(
                 AppConfig.splashScreenImage,

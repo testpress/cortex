@@ -44,7 +44,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     ],
   );
 
-  ref.listen(bootstrapProvider, (_, next) {
+  ref.listen(bootstrapProvider, (_, _) {
     router.refresh();
   });
 
