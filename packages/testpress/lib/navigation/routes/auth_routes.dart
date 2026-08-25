@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:profile/profile.dart';
 import '../bootstrap_provider.dart';
+import '../page_transitions/slide_transition_page.dart';
 
 class AuthRoutes {
   static const _authPaths = {
@@ -51,21 +52,24 @@ class AuthRoutes {
     GoRoute(
       path: '/login',
       pageBuilder: (context, state) =>
-          _slideTransition(context, state.pageKey, const LoginScreen()),
+          slideTransitionPage(context, state.pageKey, const LoginScreen()),
     ),
     GoRoute(
       path: '/mobile-login',
-      pageBuilder: (context, state) =>
-          _slideTransition(context, state.pageKey, const MobileLoginScreen()),
+      pageBuilder: (context, state) => slideTransitionPage(
+        context,
+        state.pageKey,
+        const MobileLoginScreen(),
+      ),
     ),
     GoRoute(
       path: '/signup',
       pageBuilder: (context, state) =>
-          _slideTransition(context, state.pageKey, const SignupScreen()),
+          slideTransitionPage(context, state.pageKey, const SignupScreen()),
     ),
     GoRoute(
       path: '/forgot-password',
-      pageBuilder: (context, state) => _slideTransition(
+      pageBuilder: (context, state) => slideTransitionPage(
         context,
         state.pageKey,
         const ForgotPasswordScreen(),
@@ -75,7 +79,7 @@ class AuthRoutes {
       path: '/otp',
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>? ?? {};
-        return _slideTransition(
+        return slideTransitionPage(
           context,
           state.pageKey,
           OtpScreen(
@@ -89,7 +93,7 @@ class AuthRoutes {
       path: '/login-activity',
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
-        return _slideTransition(
+        return slideTransitionPage(
           context,
           state.pageKey,
           LoginActivityScreen(restrictionMessage: extra?['message'] as String?),
@@ -97,37 +101,4 @@ class AuthRoutes {
       },
     ),
   ];
-
-  static CustomTransitionPage<void> _slideTransition(
-    BuildContext context,
-    LocalKey key,
-    Widget child,
-  ) {
-    return CustomTransitionPage<void>(
-      key: key,
-      child: child,
-      transitionDuration: MotionPreferences.duration(
-        context,
-        Design.of(context).motion.normal,
-      ),
-      reverseTransitionDuration: MotionPreferences.duration(
-        context,
-        Design.of(context).motion.normal,
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        if (!MotionPreferences.shouldAnimate(context)) {
-          return child;
-        }
-        final curve = MotionPreferences.curve(
-          context,
-          Design.of(context).motion.easeInOut,
-        );
-        final tween = Tween(
-          begin: const Offset(1.0, 0.0),
-          end: Offset.zero,
-        ).chain(CurveTween(curve: curve));
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
-    );
-  }
 }
