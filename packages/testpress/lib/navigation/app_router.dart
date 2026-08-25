@@ -6,25 +6,20 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import '../widgets/dashboard_drawer.dart';
+import 'bootstrap_provider.dart';
 
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 /// Provider that exposes the application router.
 final goRouterProvider = Provider<GoRouter>((ref) {
-  // Only watch the boolean login status to prevent the router from rebuilding
-  // on every loading state change or refresh.
-  final isLoggedIn = ref.watch(
-    authProvider.select((state) => state.valueOrNull ?? false),
-  );
   const allTabs = NavTab.values;
 
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/onboarding',
     observers: [SentryService.createNavigatorObserver()],
-    redirect: (context, state) =>
-        AuthRoutes.redirect(context, state, isLoggedIn),
+    redirect: (context, state) => AuthRoutes.redirect(context, state),
     routes: [
       ...AuthRoutes.routes,
       StatefulShellRoute.indexedStack(
@@ -48,6 +43,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ...GlobalRoutes.immersiveRoutes(_rootNavigatorKey),
     ],
   );
+
+  ref.listen(bootstrapProvider, (_, _) {
+    router.refresh();
+  });
+
+  return router;
 });
 
 enum NavTab {
