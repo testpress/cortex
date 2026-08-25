@@ -65,8 +65,31 @@ class _StorePageState extends ConsumerState<StorePage> {
                 }
                 return false;
               },
-              child: const SingleChildScrollView(
-                child: ProductList(),
+              child: AppRefreshIndicator(
+                semanticsLabel: l10n.pullToRefresh,
+                onRefresh: () async {
+                  try {
+                    // Using ref.refresh instead of invalidate preserves the previous state
+                    // while re-fetching, avoiding layout jumps/bouncing caused by the
+                    // UI reverting to a loading skeleton without data.
+                    await Future.wait([
+                      ref.refresh(storeCategoriesProvider.future),
+                      ref.refresh(storeProductsProvider.future),
+                    ]);
+                  } catch (e, st) {
+                    ref
+                        .read(sentryServiceProvider)
+                        .captureException(e, stackTrace: st);
+                  }
+                },
+                child: const CustomScrollView(
+                  physics: AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  slivers: [
+                    SliverToBoxAdapter(child: ProductList()),
+                  ],
+                ),
               ),
             ),
           ),
