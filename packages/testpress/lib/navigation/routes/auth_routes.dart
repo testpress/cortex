@@ -29,7 +29,7 @@ class AuthRoutes {
     }
 
     if (bootstrapState == BootstrapState.authenticated) {
-      if (isAuthRoute || path == '/onboarding') return '/home';
+      if (isAuthRoute) return '/home';
       return null;
     }
 
@@ -48,34 +48,86 @@ class AuthRoutes {
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
     ),
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: '/login',
+      pageBuilder: (context, state) =>
+          _slideTransition(context, state.pageKey, const LoginScreen()),
+    ),
     GoRoute(
       path: '/mobile-login',
-      builder: (context, state) => const MobileLoginScreen(),
+      pageBuilder: (context, state) =>
+          _slideTransition(context, state.pageKey, const MobileLoginScreen()),
     ),
-    GoRoute(path: '/signup', builder: (context, state) => const SignupScreen()),
+    GoRoute(
+      path: '/signup',
+      pageBuilder: (context, state) =>
+          _slideTransition(context, state.pageKey, const SignupScreen()),
+    ),
     GoRoute(
       path: '/forgot-password',
-      builder: (context, state) => const ForgotPasswordScreen(),
+      pageBuilder: (context, state) => _slideTransition(
+        context,
+        state.pageKey,
+        const ForgotPasswordScreen(),
+      ),
     ),
     GoRoute(
       path: '/otp',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>? ?? {};
-        return OtpScreen(
-          phoneNumber: (extra['phoneNumber'] as String?) ?? '',
-          countryCode: (extra['countryCode'] as String?) ?? '',
+        return _slideTransition(
+          context,
+          state.pageKey,
+          OtpScreen(
+            phoneNumber: (extra['phoneNumber'] as String?) ?? '',
+            countryCode: (extra['countryCode'] as String?) ?? '',
+          ),
         );
       },
     ),
     GoRoute(
       path: '/login-activity',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
-        return LoginActivityScreen(
-          restrictionMessage: extra?['message'] as String?,
+        return _slideTransition(
+          context,
+          state.pageKey,
+          LoginActivityScreen(restrictionMessage: extra?['message'] as String?),
         );
       },
     ),
   ];
+
+  static CustomTransitionPage<void> _slideTransition(
+    BuildContext context,
+    LocalKey key,
+    Widget child,
+  ) {
+    return CustomTransitionPage<void>(
+      key: key,
+      child: child,
+      transitionDuration: MotionPreferences.duration(
+        context,
+        Design.of(context).motion.normal,
+      ),
+      reverseTransitionDuration: MotionPreferences.duration(
+        context,
+        Design.of(context).motion.normal,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        if (!MotionPreferences.shouldAnimate(context)) {
+          return child;
+        }
+        final curve = MotionPreferences.curve(
+          context,
+          Design.of(context).motion.easeInOut,
+        );
+        final tween = Tween(
+          begin: const Offset(1.0, 0.0),
+          end: Offset.zero,
+        ).chain(CurveTween(curve: curve));
+        return SlideTransition(position: animation.drive(tween), child: child);
+      },
+    );
+  }
 }

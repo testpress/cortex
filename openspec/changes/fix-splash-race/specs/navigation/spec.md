@@ -14,3 +14,11 @@ The router MUST redirect all navigation requests to the onboarding (splash) scre
 #### Scenario: Bootstrap completes for authenticated user
 - **WHEN** the bootstrap state transitions from `loading` to `authenticated`
 - **THEN** the router redirects the user to `/home` if they are currently on `/onboarding` or an auth route
+
+### Requirement: Animated Route Transitions
+The authentication entry screens (Login, Signup, OTP) MUST provide a slide transition using standard design motion preferences.
+
+#### Scenario: User navigates between entry screens 
+- **WHEN** the user navigates to a new route in this group
+- **THEN** a slide transition is applied respecting `MotionPreferences` and `Design.of(context).motion`
+

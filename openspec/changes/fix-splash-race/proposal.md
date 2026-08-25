@@ -7,6 +7,7 @@ Currently, the app relies on listening to both the `authProvider` and the `insti
 - Introduce a central `bootstrapProvider` to orchestrate app startup, awaiting `instituteSettingsProvider` and determining initial auth state.
 - Refactor the `GoRouter` redirect logic to depend entirely on the single `bootstrapProvider` state (`loading`, `unauthenticated`, `authenticated`).
 - Strip the `OnboardingScreen` of its stateful routing logic (removing `ConsumerStatefulWidget` and `_navigateToLogin` hooks), reducing it to a pure presentation `StatelessWidget`.
+- Add standard slide animations to all authentication routes using `CustomTransitionPage` to enhance the user experience.
 - **BREAKING**: Navigation redirects will now block until the bootstrap state explicitly transitions out of `loading`.
 
 ## Capabilities

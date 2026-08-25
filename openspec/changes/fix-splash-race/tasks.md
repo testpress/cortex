@@ -15,3 +15,9 @@
 - [x] 3.1 Convert `OnboardingScreen` in `packages/profile/lib/screens/onboarding_screen.dart` from a `ConsumerStatefulWidget` to a `StatelessWidget`
 - [x] 3.2 Remove all manual `_navigateToLogin` hooks, state properties, and provider listeners
 - [x] 3.3 Verify the screen solely renders the splash image without executing any navigation commands
+
+## 4. Auth Route Animations
+
+- [x] 4.1 Update `AuthRoutes` in `packages/testpress/lib/navigation/routes/auth_routes.dart` to use `pageBuilder` and `CustomTransitionPage` for auth screens 
+- [x] 4.2 Implement a `_slideTransition` helper that checks `MotionPreferences.shouldAnimate` and utilizes `Design.of(context).motion` tokens
+
