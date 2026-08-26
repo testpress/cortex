@@ -25,7 +25,11 @@ class ContextualHeroSectionWidget extends ConsumerWidget {
         );
 
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+          padding: EdgeInsets.only(
+            left: design.spacing.md,
+            right: design.spacing.md,
+            bottom: design.spacing.md,
+          ),
           child: ContextualHeroCard(
             action: HeroAction(
               type: liveOrUpcoming.status == dto.LiveClassStatus.live

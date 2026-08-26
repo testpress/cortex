@@ -54,7 +54,10 @@ class TodaySnapshot extends StatelessWidget {
     final hasTests = tests.isNotEmpty;
 
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: EdgeInsets.only(
+        top: design.spacing.lg,
+        bottom: design.spacing.lg,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

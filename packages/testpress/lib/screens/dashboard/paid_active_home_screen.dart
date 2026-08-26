@@ -64,13 +64,10 @@ class _HomeLayout extends ConsumerWidget {
                 children: [
                   const GreetingSectionWidget(),
                   const TopCarouselSectionWidget(),
-                  SizedBox(height: design.spacing.md),
                   if (dto.AppConfig.showContextualHero)
                     const ContextualHeroSectionWidget(),
-                  SizedBox(height: design.spacing.md),
                   if (dto.AppConfig.showTodaySchedule)
                     const TodayScheduleSectionWidget(),
-                  SizedBox(height: design.spacing.lg),
                   const LessonCardsSectionWrapper(),
                   const AnnouncementsSectionWidget(),
                   //  Backend doesn't have the support for this and can be enabled once the backend provides the support
