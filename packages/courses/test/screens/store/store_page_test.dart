@@ -3,11 +3,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../../lib/screens/store/store_page.dart';
-import '../../../lib/providers/store_providers.dart';
-import '../../../lib/repositories/store_repository.dart';
+import 'package:courses/screens/store/store_page.dart';
+import 'package:courses/providers/store_providers.dart';
+import 'package:courses/repositories/store_repository.dart';
 
-class FakeStoreRepository implements StoreRepository {
+class MockSentryService extends SentryService {
+  @override
+  Future<void> captureException(dynamic exception,
+      {Map<String, dynamic>? contexts,
+      AppErrorLevel? level,
+      dynamic stackTrace,
+      Map<String, String>? tags}) async {}
+}
+
+class FakeStoreRepository extends StoreRepository {
+  FakeStoreRepository()
+      : super(
+            source: const MockDataSource(), sentryService: MockSentryService());
+
   int fetchCategoriesCalls = 0;
   int fetchProductsCalls = 0;
 
@@ -31,9 +44,6 @@ class FakeStoreRepository implements StoreRepository {
       results: [],
     );
   }
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {
