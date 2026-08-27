@@ -78,7 +78,7 @@ class TodaySnapshot extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: design.spacing.md),
 
           if (hasNowAndNext) ...[
             SnapshotSection(
@@ -92,7 +92,7 @@ class TodaySnapshot extends StatelessWidget {
           ],
 
           if (hasDeadlines) ...[
-            const SizedBox(height: 24),
+            SizedBox(height: design.spacing.lg),
             SnapshotSection(
               title: l10n.deadlinesSection,
               items: deadlineItems.map((a) => AssignmentCard(item: a)).toList(),
@@ -101,7 +101,7 @@ class TodaySnapshot extends StatelessWidget {
           ],
 
           if (hasTests) ...[
-            const SizedBox(height: 24),
+            SizedBox(height: design.spacing.lg),
             SnapshotSection(
               title: l10n.upcomingTestsSection,
               items: tests.map((t) => TestCard(item: t)).toList(),
@@ -110,7 +110,7 @@ class TodaySnapshot extends StatelessWidget {
           ],
 
           if (hasLaterToday) ...[
-            const SizedBox(height: 24),
+            SizedBox(height: design.spacing.lg),
             SnapshotSection(
               title: l10n.laterTodaySection,
               items: [
