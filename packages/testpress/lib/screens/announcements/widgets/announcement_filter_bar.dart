@@ -55,7 +55,9 @@ class AnnouncementFilterBar extends StatelessWidget {
                       left: Radius.circular(design.radius.full),
                     ),
                     onTap: onOpenFilterSheet,
-                    child: Padding(
+                    child: Container(
+                      constraints: const BoxConstraints(minHeight: 38),
+                      alignment: Alignment.center,
                       padding: EdgeInsets.only(
                         left: design.spacing.md,
                         right: design.spacing.xs,
@@ -93,15 +95,18 @@ class AnnouncementFilterBar extends StatelessWidget {
                       right: Radius.circular(design.radius.full),
                     ),
                     onTap: onClear,
-                    child: Padding(
+                    child: Container(
+                      constraints: const BoxConstraints(
+                        minWidth: 36,
+                        minHeight: 38,
+                      ),
+                      alignment: Alignment.center,
                       padding: EdgeInsets.only(
                         left: design.spacing.xs * 0.5,
                         right: design.spacing.sm,
-                        top: design.spacing.xs * 1.2,
-                        bottom: design.spacing.xs * 1.2,
                       ),
                       child: Container(
-                        padding: const EdgeInsets.all(2),
+                        padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           color: design.colors.surfaceVariant,
                           shape: BoxShape.circle,

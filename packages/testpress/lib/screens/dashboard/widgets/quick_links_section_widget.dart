@@ -69,9 +69,11 @@ class QuickLinksSectionWidget extends ConsumerWidget {
                             );
                           },
                           child: Container(
+                            constraints: const BoxConstraints(minHeight: 38),
+                            alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(
                               horizontal: design.spacing.md,
-                              vertical: design.spacing.sm,
+                              vertical: design.spacing.xs * 1.5,
                             ),
                             decoration: BoxDecoration(
                               color: design.colors.card,
@@ -121,7 +123,7 @@ class QuickLinksSectionWidget extends ConsumerWidget {
                 padding: EdgeInsets.only(right: design.spacing.sm),
                 child: Container(
                   width: 100,
-                  height: 36,
+                  height: 38,
                   decoration: BoxDecoration(
                     color: design.colors.surfaceVariant,
                     borderRadius: design.radius.pill,

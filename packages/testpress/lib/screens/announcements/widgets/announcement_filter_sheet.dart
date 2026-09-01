@@ -65,18 +65,28 @@ class AnnouncementFilterSheet extends StatelessWidget {
               ),
 
               // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText.title(l10n.announcementsFilterByCategory),
-                  AppIconButton(
-                    icon: LucideIcons.x,
-                    onTap: onClose,
-                    accessibilityLabel: l10n.announcementsCloseFilter,
-                    size: design.iconSize.sm,
-                    color: design.colors.textSecondary,
-                  ),
-                ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AppText.title(l10n.announcementsFilterByCategory),
+                    AppSemantics.button(
+                      label: l10n.announcementsCloseFilter,
+                      onTap: onClose,
+                      child: AppFocusable(
+                        onTap: onClose,
+                        borderRadius: BorderRadius.circular(design.radius.full),
+                        child: Icon(
+                          LucideIcons.x,
+                          size: design.iconSize.md,
+                          color: design.colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: design.spacing.md),
 
@@ -168,7 +178,7 @@ class _SheetCategoryRow extends StatelessWidget {
                 ),
                 SizedBox(width: design.spacing.sm),
               ] else ...[
-                SizedBox(width: design.spacing.sm),
+                SizedBox(width: 10 + design.spacing.sm),
               ],
               Expanded(
                 child: AppText.body(
@@ -184,7 +194,7 @@ class _SheetCategoryRow extends StatelessWidget {
               if (isSelected)
                 Icon(
                   LucideIcons.check,
-                  size: design.iconSize.sm,
+                  size: design.iconSize.md,
                   color: design.colors.primary,
                 ),
             ],

@@ -134,7 +134,7 @@ class _AnnouncementsListScreenState
                       label: l10n.announcementsFilterAction,
                       onTap: () => setState(() => _isFilterSheetOpen = true),
                       child: AppFocusable(
-                        padding: const EdgeInsets.all(13),
+                        padding: const EdgeInsets.all(14),
                         onTap: () => setState(() => _isFilterSheetOpen = true),
                         child: Stack(
                           clipBehavior: Clip.none,
