@@ -65,19 +65,27 @@ class AnnouncementFilterSheet extends StatelessWidget {
               ),
 
               // Header
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    AppText.title(l10n.announcementsFilterByCategory),
-                    AppSemantics.button(
-                      label: l10n.announcementsCloseFilter,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: design.spacing.sm),
+                    child: AppText.title(l10n.announcementsFilterByCategory),
+                  ),
+                  AppSemantics.button(
+                    label: l10n.announcementsCloseFilter,
+                    onTap: onClose,
+                    child: AppFocusable(
                       onTap: onClose,
-                      child: AppFocusable(
-                        onTap: onClose,
-                        borderRadius: BorderRadius.circular(design.radius.full),
+                      borderRadius: BorderRadius.circular(design.radius.full),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 48,
+                          minHeight: 48,
+                        ),
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(right: design.spacing.sm),
                         child: Icon(
                           LucideIcons.x,
                           size: design.iconSize.md,
@@ -85,8 +93,8 @@ class AnnouncementFilterSheet extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               SizedBox(height: design.spacing.md),
 

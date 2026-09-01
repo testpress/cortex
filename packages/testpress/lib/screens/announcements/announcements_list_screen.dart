@@ -134,32 +134,39 @@ class _AnnouncementsListScreenState
                       label: l10n.announcementsFilterAction,
                       onTap: () => setState(() => _isFilterSheetOpen = true),
                       child: AppFocusable(
-                        padding: const EdgeInsets.all(14),
+                        borderRadius: BorderRadius.circular(design.radius.full),
                         onTap: () => setState(() => _isFilterSheetOpen = true),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Icon(
-                              LucideIcons.filter,
-                              color: _isFiltered
-                                  ? design.colors.primary
-                                  : design.colors.textPrimary,
-                              size: 20,
-                            ),
-                            if (_isFiltered)
-                              Positioned(
-                                top: -2,
-                                right: -2,
-                                child: Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    color: design.colors.primary,
-                                    shape: BoxShape.circle,
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                          ),
+                          alignment: Alignment.center,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Icon(
+                                LucideIcons.filter,
+                                color: _isFiltered
+                                    ? design.colors.primary
+                                    : design.colors.textPrimary,
+                                size: 20,
+                              ),
+                              if (_isFiltered)
+                                Positioned(
+                                  top: -2,
+                                  right: -2,
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: design.colors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
