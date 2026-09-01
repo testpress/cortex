@@ -1199,5 +1199,12 @@
   "aiComposerPlaceholder": "اسأل عن أي شيء...",
   "aiComposerAttachImage": "إرفاق صورة",
   "aiComposerTakePhoto": "التقاط صورة",
-  "aiComposerSendMessage": "إرسال رسالة"
+  "aiComposerSendMessage": "إرسال رسالة",
+  "announcementsQuickLinks": "روابط سريعة",
+  "announcementsFilterByCategory": "تصفية حسب الفئة",
+  "announcementsAllPosts": "جميع الإعلانات",
+  "announcementsCloseFilter": "إغلاق تصفية الفئات",
+  "announcementsFilterAction": "تصفية الفئات",
+  "announcementsClearCategoryFilter": "مسح تصفية {category}",
+  "announcementsSelectedFilter": "التصفية المحددة: {category}. انقر للتغيير"
 }

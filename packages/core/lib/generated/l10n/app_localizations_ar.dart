@@ -3168,4 +3168,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'إرسال رسالة';
+
+  @override
+  String get announcementsQuickLinks => 'روابط سريعة';
+
+  @override
+  String get announcementsFilterByCategory => 'تصفية حسب الفئة';
+
+  @override
+  String get announcementsAllPosts => 'جميع الإعلانات';
+
+  @override
+  String get announcementsCloseFilter => 'إغلاق تصفية الفئات';
+
+  @override
+  String get announcementsFilterAction => 'تصفية الفئات';
+
+  @override
+  String announcementsClearCategoryFilter(String category) {
+    return 'مسح تصفية $category';
+  }
+
+  @override
+  String announcementsSelectedFilter(String category) {
+    return 'التصفية المحددة: $category. انقر للتغيير';
+  }
 }

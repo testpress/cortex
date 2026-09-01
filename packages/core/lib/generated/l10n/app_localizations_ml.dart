@@ -3221,4 +3221,30 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'സന്ദേശം അയക്കുക';
+
+  @override
+  String get announcementsQuickLinks => 'ദ്രുത ലിങ്കുകൾ';
+
+  @override
+  String get announcementsFilterByCategory =>
+      'വിഭാഗം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക';
+
+  @override
+  String get announcementsAllPosts => 'എല്ലാ പോസ്റ്റുകളും';
+
+  @override
+  String get announcementsCloseFilter => 'വിഭാഗം ഫിൽട്ടർ അടയ്ക്കുക';
+
+  @override
+  String get announcementsFilterAction => 'വിഭാഗങ്ങൾ ഫിൽട്ടർ ചെയ്യുക';
+
+  @override
+  String announcementsClearCategoryFilter(String category) {
+    return '$category ഫിൽട്ടർ നീക്കം ചെയ്യുക';
+  }
+
+  @override
+  String announcementsSelectedFilter(String category) {
+    return 'തിരഞ്ഞെടുത്ത ഫിൽട്ടർ: $category. മാറ്റാൻ ടാപ്പ് ചെയ്യുക';
+  }
 }

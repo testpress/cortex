@@ -113,4 +113,15 @@ class PostsRepository {
     }
     return response;
   }
+
+  /// Fetch a paginated list of posts directly from the network without caching locally.
+  ///
+  /// Used for transient filtered queries (e.g. category-filtered posts) to avoid
+  /// modifying or overwriting the local database cache of all announcements.
+  Future<PaginatedResponseDto<PostDto>> fetchPostsOnlineOnly({
+    int page = 1,
+    String? categorySlug,
+  }) async {
+    return _source.getPosts(page: page, categorySlug: categorySlug);
+  }
 }

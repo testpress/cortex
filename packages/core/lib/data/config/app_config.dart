@@ -76,6 +76,11 @@ class AppConfig {
     defaultValue: false,
   );
 
+  static const bool showQuickLinks = bool.fromEnvironment(
+    'SHOW_QUICK_LINKS',
+    defaultValue: true,
+  );
+
   static const bool showContextualHero = bool.fromEnvironment(
     'SHOW_CONTEXTUAL_HERO',
     defaultValue: false,

@@ -656,9 +656,17 @@ class HttpDataSource implements DataSource {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.postCategories),
       fromJson: (data) {
-        final list = data as List<dynamic>? ?? [];
+        List<dynamic> list;
+        if (data is Map<String, dynamic> && data['results'] is List) {
+          list = data['results'] as List<dynamic>;
+        } else if (data is List<dynamic>) {
+          list = data;
+        } else {
+          list = [];
+        }
         return list
-            .map((e) => PostCategoryDto.fromJson(e as Map<String, dynamic>))
+            .whereType<Map<String, dynamic>>()
+            .map(PostCategoryDto.fromJson)
             .toList();
       },
     );

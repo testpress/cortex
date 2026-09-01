@@ -3218,4 +3218,29 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'செய்தி அனுப்பவும்';
+
+  @override
+  String get announcementsQuickLinks => 'விரைவு இணைப்புகள்';
+
+  @override
+  String get announcementsFilterByCategory => 'வகை வாரியாக வடிகட்டு';
+
+  @override
+  String get announcementsAllPosts => 'அனைத்து பதிவுகள்';
+
+  @override
+  String get announcementsCloseFilter => 'வகை வடிப்பானை மூடு';
+
+  @override
+  String get announcementsFilterAction => 'வகைகளை வடிகட்டு';
+
+  @override
+  String announcementsClearCategoryFilter(String category) {
+    return '$category வடிப்பானை நீக்கு';
+  }
+
+  @override
+  String announcementsSelectedFilter(String category) {
+    return 'தேர்ந்தெடுக்கப்பட்ட வடிப்பான்: $category. மாற்ற தட்டவும்';
+  }
 }

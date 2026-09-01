@@ -81,6 +81,7 @@ export 'network/file_downloader.dart';
 export 'network/network_utils.dart';
 
 // Utils
+export 'utils/color_utils.dart';
 export 'utils/date_formatter.dart';
 export 'utils/time_formatter.dart';
 export 'utils/lesson_type_icon_x.dart';

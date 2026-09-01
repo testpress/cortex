@@ -97,3 +97,79 @@ class AnnouncementsFetchingPage extends _$AnnouncementsFetchingPage {
 
   void setFetching(bool fetching) => state = fetching;
 }
+
+/// Fetches posts filtered by a specific category slug directly from the server.
+///
+/// This is intentionally NOT cached to the local DB — it's a fresh, server-side
+/// filtered view used when filtering announcements by category.
+@riverpod
+class CategoryPosts extends _$CategoryPosts {
+  PaginationState _paginationState = const PaginationState();
+  final _paginationService = const PaginationService();
+  Future<void>? _initialFetch;
+  late String _categorySlug;
+
+  @override
+  Future<List<PostDto>> build(String categorySlug) async {
+    _categorySlug = categorySlug;
+    _paginationState = const PaginationState();
+    final repository = await ref.watch(postsRepositoryProvider.future);
+    final response = await repository.fetchPostsOnlineOnly(
+      page: 1,
+      categorySlug: categorySlug,
+    );
+    _paginationState = _paginationService.calculateNextState(
+      response: response,
+      currentPage: 1,
+    );
+    _initialFetch = Future.value();
+    return response.results;
+  }
+
+  Future<void> loadMore() async {
+    await _initialFetch;
+    if (!_paginationState.hasMore) return;
+    if (ref.read(categoryPostsFetchingPageProvider)) return;
+
+    ref.read(categoryPostsFetchingPageProvider.notifier).setFetching(true);
+    try {
+      final repository = await ref.read(postsRepositoryProvider.future);
+      final response = await repository.fetchPostsOnlineOnly(
+        page: _paginationState.nextPage,
+        categorySlug: _categorySlug,
+      );
+      _paginationState = _paginationService.calculateNextState(
+        response: response,
+        currentPage: _paginationState.nextPage,
+      );
+      state = AsyncData([...state.requireValue, ...response.results]);
+    } catch (e, stack) {
+      Error.throwWithStackTrace(e, stack);
+    } finally {
+      ref.read(categoryPostsFetchingPageProvider.notifier).setFetching(false);
+    }
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    _paginationState = const PaginationState();
+    final repository = await ref.read(postsRepositoryProvider.future);
+    final response = await repository.fetchPostsOnlineOnly(
+      page: 1,
+      categorySlug: _categorySlug,
+    );
+    _paginationState = _paginationService.calculateNextState(
+      response: response,
+      currentPage: 1,
+    );
+    state = AsyncData(response.results);
+  }
+}
+
+@riverpod
+class CategoryPostsFetchingPage extends _$CategoryPostsFetchingPage {
+  @override
+  bool build() => false;
+
+  void setFetching(bool fetching) => state = fetching;
+}

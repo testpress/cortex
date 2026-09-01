@@ -3168,4 +3168,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'Send message';
+
+  @override
+  String get announcementsQuickLinks => 'Quick Links';
+
+  @override
+  String get announcementsFilterByCategory => 'Filter by Category';
+
+  @override
+  String get announcementsAllPosts => 'All Posts';
+
+  @override
+  String get announcementsCloseFilter => 'Close category filter';
+
+  @override
+  String get announcementsFilterAction => 'Filter categories';
+
+  @override
+  String announcementsClearCategoryFilter(String category) {
+    return 'Clear $category filter';
+  }
+
+  @override
+  String announcementsSelectedFilter(String category) {
+    return 'Selected filter: $category. Tap to change filter';
+  }
 }
