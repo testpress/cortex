@@ -1440,5 +1440,12 @@
   "aiComposerPlaceholder": "எது வேண்டுமானாலும் கேளுங்கள்...",
   "aiComposerAttachImage": "படத்தை இணைக்கவும்",
   "aiComposerTakePhoto": "புகைப்படம் எடுக்கவும்",
-  "aiComposerSendMessage": "செய்தி அனுப்பவும்"
+  "aiComposerSendMessage": "செய்தி அனுப்பவும்",
+  "announcementsQuickLinks": "விரைவு இணைப்புகள்",
+  "announcementsFilterByCategory": "வகை வாரியாக வடிகட்டு",
+  "announcementsAllPosts": "அனைத்து பதிவுகள்",
+  "announcementsCloseFilter": "வகை வடிப்பானை மூடு",
+  "announcementsFilterAction": "வகைகளை வடிகட்டு",
+  "announcementsClearCategoryFilter": "{category} வடிப்பானை நீக்கு",
+  "announcementsSelectedFilter": "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்: {category}. மாற்ற தட்டவும்"
 }

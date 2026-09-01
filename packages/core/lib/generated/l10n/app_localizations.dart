@@ -5728,6 +5728,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send message'**
   String get aiComposerSendMessage;
+
+  /// No description provided for @announcementsQuickLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Links'**
+  String get announcementsQuickLinks;
+
+  /// No description provided for @announcementsFilterByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Category'**
+  String get announcementsFilterByCategory;
+
+  /// No description provided for @announcementsAllPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'All Posts'**
+  String get announcementsAllPosts;
+
+  /// No description provided for @announcementsCloseFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Close category filter'**
+  String get announcementsCloseFilter;
+
+  /// No description provided for @announcementsFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter categories'**
+  String get announcementsFilterAction;
+
+  /// No description provided for @announcementsClearCategoryFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear {category} filter'**
+  String announcementsClearCategoryFilter(String category);
+
+  /// No description provided for @announcementsSelectedFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected filter: {category}. Tap to change filter'**
+  String announcementsSelectedFilter(String category);
 }
 
 class _AppLocalizationsDelegate

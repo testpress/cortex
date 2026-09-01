@@ -1566,5 +1566,26 @@
   "aiComposerPlaceholder": "Ask anything...",
   "aiComposerAttachImage": "Attach image",
   "aiComposerTakePhoto": "Take photo",
-  "aiComposerSendMessage": "Send message"
+  "aiComposerSendMessage": "Send message",
+  "announcementsQuickLinks": "Quick Links",
+  "announcementsFilterByCategory": "Filter by Category",
+  "announcementsAllPosts": "All Posts",
+  "announcementsCloseFilter": "Close category filter",
+  "announcementsFilterAction": "Filter categories",
+  "announcementsClearCategoryFilter": "Clear {category} filter",
+  "@announcementsClearCategoryFilter": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "announcementsSelectedFilter": "Selected filter: {category}. Tap to change filter",
+  "@announcementsSelectedFilter": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  }
 }

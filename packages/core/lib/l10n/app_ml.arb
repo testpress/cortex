@@ -1199,5 +1199,12 @@
   "aiComposerPlaceholder": "എന്തും ചോദിക്കൂ...",
   "aiComposerAttachImage": "ചിത്രം ചേർക്കുക",
   "aiComposerTakePhoto": "ഫോട്ടോ എടുക്കുക",
-  "aiComposerSendMessage": "സന്ദേശം അയക്കുക"
+  "aiComposerSendMessage": "സന്ദേശം അയക്കുക",
+  "announcementsQuickLinks": "ദ്രുത ലിങ്കുകൾ",
+  "announcementsFilterByCategory": "വിഭാഗം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക",
+  "announcementsAllPosts": "എല്ലാ പോസ്റ്റുകളും",
+  "announcementsCloseFilter": "വിഭാഗം ഫിൽട്ടർ അടയ്ക്കുക",
+  "announcementsFilterAction": "വിഭാഗങ്ങൾ ഫിൽട്ടർ ചെയ്യുക",
+  "announcementsClearCategoryFilter": "{category} ഫിൽട്ടർ നീക്കം ചെയ്യുക",
+  "announcementsSelectedFilter": "തിരഞ്ഞെടുത്ത ഫിൽട്ടർ: {category}. മാറ്റാൻ ടാപ്പ് ചെയ്യുക"
 }

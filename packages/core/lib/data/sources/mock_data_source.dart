@@ -2073,7 +2073,24 @@ class MockDataSource implements DataSource {
     String? categorySlug,
   }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return PaginatedResponseDto(results: mockPosts, count: 3, next: null);
+    var results = mockPosts;
+    if (categorySlug != null && categorySlug.isNotEmpty) {
+      final matchingCategory = mockPostCategories
+          .where((c) => c.slug == categorySlug)
+          .firstOrNull;
+      if (matchingCategory != null) {
+        results = results
+            .where((p) => p.categoryId == matchingCategory.id)
+            .toList();
+      } else {
+        results = [];
+      }
+    }
+    return PaginatedResponseDto(
+      results: results,
+      count: results.length,
+      next: null,
+    );
   }
 
   @override

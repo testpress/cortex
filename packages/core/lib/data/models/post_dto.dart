@@ -107,9 +107,7 @@ class PostDto {
 
   /// Parses the full list API response.
   ///
-  /// The `/api/v3/posts/` endpoint returns a nested `results` object containing
-  /// both `posts` and `categories`. This method extracts the posts array and maps
-  /// it to a standard `PaginatedResponseDto`.
+  /// Handles both v2.3 (results is a List) and v3 (results is a Map with posts & categories).
   static PaginatedResponseDto<PostDto> fromListResponse(
     Map<String, dynamic> response,
   ) {
@@ -117,26 +115,43 @@ class PostDto {
     final next = response['next'] as String?;
     final previous = response['previous'] as String?;
 
-    final resultsMap = response['results'] as Map<String, dynamic>?;
-    final postsJson = resultsMap?['posts'] as List? ?? [];
+    final rawResults = response['results'];
+    List<Map<String, dynamic>> postsJson;
 
-    // Extract side-loaded categories to map category names
-    final categoriesJson = resultsMap?['categories'] as List? ?? [];
-    final categoryMap = <int, String>{};
-    for (final c in categoriesJson) {
-      if (c is Map<String, dynamic> && c['id'] != null && c['name'] != null) {
-        categoryMap[(c['id'] as num).toInt()] = c['name'] as String;
+    if (rawResults is List) {
+      // v2.3 format: flat list of posts, category embedded in each post
+      postsJson = rawResults.whereType<Map<String, dynamic>>().map((item) {
+        final cat = item['category'];
+        if (cat is Map<String, dynamic>) {
+          item['category_id'] ??= cat['id'];
+          item['category_name'] ??= cat['name'];
+        }
+        return item;
+      }).toList();
+    } else if (rawResults is Map<String, dynamic>) {
+      // v3 format: nested map with side-loaded categories
+      final postsRaw = rawResults['posts'] as List? ?? [];
+      final categoriesJson = rawResults['categories'] as List? ?? [];
+
+      final categoryMap = <int, String>{};
+      for (final c in categoriesJson) {
+        if (c is Map<String, dynamic> && c['id'] != null && c['name'] != null) {
+          categoryMap[(c['id'] as num).toInt()] = c['name'] as String;
+        }
       }
+
+      postsJson = postsRaw.whereType<Map<String, dynamic>>().map((item) {
+        final catId = (item['category_id'] as num?)?.toInt();
+        if (catId != null && categoryMap.containsKey(catId)) {
+          item['category_name'] = categoryMap[catId];
+        }
+        return item;
+      }).toList();
+    } else {
+      postsJson = [];
     }
 
-    final results = postsJson.whereType<Map<String, dynamic>>().map((item) {
-      // Inject category name before parsing
-      final catId = (item['category_id'] as num?)?.toInt();
-      if (catId != null && categoryMap.containsKey(catId)) {
-        item['category_name'] = categoryMap[catId];
-      }
-      return PostDto.fromJson(item);
-    }).toList();
+    final results = postsJson.map(PostDto.fromJson).toList();
 
     return PaginatedResponseDto<PostDto>(
       count: count,

@@ -12,6 +12,7 @@ import 'widgets/lesson_cards_section_wrapper.dart';
 import 'widgets/announcements_section_widget.dart';
 import 'widgets/top_learners_section_widget.dart';
 import 'widgets/quick_access_section_widget.dart';
+import 'widgets/quick_links_section_widget.dart';
 // import 'widgets/study_momentum_section_widget.dart';
 
 class PaidActiveHomeScreen extends ConsumerWidget {
@@ -75,6 +76,8 @@ class _HomeLayout extends ConsumerWidget {
                   const TopLearnersSectionWidget(),
                   if (dto.AppConfig.showQuickAccess)
                     const QuickAccessSectionWidget(),
+                  if (dto.AppConfig.showQuickLinks)
+                    const QuickLinksSectionWidget(),
                 ],
               ),
             ),
