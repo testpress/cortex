@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'qotd/qotd_overview_screen.dart';
 import 'qotd/qotd_quiz_screen.dart';
+import 'qotd/widgets/qotd_overview_skeleton.dart';
 
 /// Entry point screen for QOTD. Routes between the overview and quiz views.
 class QotdScreen extends ConsumerStatefulWidget {
@@ -28,6 +29,8 @@ class _QotdScreenState extends ConsumerState<QotdScreen> {
           ? design.colors.canvas
           : design.colors.card,
       child: qotdAsync.when(
+        skipLoadingOnReload: false,
+        skipLoadingOnRefresh: false,
         data: (questions) {
           if (questions.isEmpty) {
             return Column(
@@ -127,7 +130,7 @@ class _QotdScreenState extends ConsumerState<QotdScreen> {
             }),
           );
         },
-        loading: () => const Center(child: AppLoadingIndicator()),
+        loading: () => const QotdOverviewSkeleton(),
         error: (error, stack) => Column(
           children: [
             AppSemantics.header(

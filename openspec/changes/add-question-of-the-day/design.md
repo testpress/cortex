@@ -12,6 +12,7 @@ The application introduces the "Question of the Day" (QOTD) feature to enhance s
 
 **Non-Goals:**
 - Using a WebView.
+- Offline persistence via Drift (QOTD is time-sensitive and daily-scoped, requiring live backend validation).
 
 ## Decisions
 
@@ -27,6 +28,10 @@ The application introduces the "Question of the Day" (QOTD) feature to enhance s
 **4. `AppHtmlV2` MathJax SVG Rendering**
 - **Rationale**: Decodes and renders custom MathJax SVGs natively within the HTML flow.
 
+**5. Direct Online-Only Repository (`QotdRepository`)**
+- **Rationale**: QOTD features are inherently time-sensitive and daily-scoped. Submissions and daily resets require live server validation, making local Drift cache synchronization unnecessary and intentionally omitted.
+
 ## Risks / Trade-offs
 
 - **Risk: Varying API Payload Structures** → Mitigation: Dynamic extractor in `QotdDto` ensures resilient parsing across different question serializers.
+- **Trade-off: No Offline Persistence** → Mitigation: Daily questions rely on real-time server evaluations; network loading states are gracefully covered by structured shimmer skeletons.

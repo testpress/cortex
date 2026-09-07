@@ -3261,12 +3261,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qotdMixed => 'مختلط';
 
   @override
+  String get qotdGeneral => 'عام';
+
+  @override
   String qotdQuestionProgress(int current, int total) {
     return 'السؤال $current من $total';
   }
-
-  @override
-  String get qotdClose => 'إغلاق';
 
   @override
   String get qotdPrevious => 'السابق';
@@ -3290,9 +3290,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qotdNoExplanation => 'لا يوجد شرح متاح';
 
   @override
-  String get qotdCloseQuestionView => 'إغلاق عرض السؤال';
-
-  @override
   String get qotdEmptyStateTitle => 'لا توجد أسئلة يومية متاحة';
 
   @override
@@ -3309,16 +3306,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qotdCheckAnswer => 'تحقق من الإجابة';
 
   @override
-  String get qotdSelectAllThatApply => 'حدد كل ما ينطبق';
-
-  @override
-  String get qotdSelectOneAnswer => 'حدد إجابة واحدة';
-
-  @override
   String get qotdOptionLabel => 'خيار';
 
   @override
-  String qotdQuestionLabel(int number) {
-    return 'السؤال $number';
-  }
+  String get qotdSingleCorrect => 'إجابة صحيحة واحدة';
+
+  @override
+  String get qotdMultipleCorrect => 'إجابات صحيحة متعددة';
+
+  @override
+  String get qotdErrorSubmitAnswer =>
+      'فشل إرسال الإجابة. يرجى المحاولة مرة أخرى.';
 }

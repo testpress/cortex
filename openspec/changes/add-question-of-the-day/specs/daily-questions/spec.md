@@ -17,3 +17,10 @@ The system SHALL provide dedicated native screens to display the Question of the
 - **WHEN** `QotdDto` parses question payloads from the API
 - **THEN** it MUST dynamically extract subject, difficulty, and question type without hardcoding defaults.
 - **AND** `InstituteSettings` MUST correctly parse the `qotd_enabled` boolean field.
+
+### Requirement: Online-Only Repository Operations
+The system SHALL query daily questions and submit answers directly against the network API without local Drift caching, ensuring daily reset states and answer evaluations are strictly governed by the backend.
+
+#### Scenario: Real-Time Network State
+- **WHEN** the user opens the overview or submits an answer
+- **THEN** `QotdRepository` MUST communicate directly with `DataSource` without persisting attempts to local database tables.

@@ -125,7 +125,7 @@ class QotdQuizController extends _$QotdQuizController {
       if (context.mounted) {
         AppToast.show(
           context,
-          message: 'Failed to submit answer: $e',
+          message: L10n.of(context).qotdErrorSubmitAnswer,
           isError: true,
         );
       }

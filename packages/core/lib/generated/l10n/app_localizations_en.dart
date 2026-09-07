@@ -3261,12 +3261,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qotdMixed => 'Mixed';
 
   @override
+  String get qotdGeneral => 'General';
+
+  @override
   String qotdQuestionProgress(int current, int total) {
     return 'Question $current of $total';
   }
-
-  @override
-  String get qotdClose => 'Close';
 
   @override
   String get qotdPrevious => 'Previous';
@@ -3290,9 +3290,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qotdNoExplanation => 'No explanation available';
 
   @override
-  String get qotdCloseQuestionView => 'Close question view';
-
-  @override
   String get qotdEmptyStateTitle => 'No Daily Questions Available';
 
   @override
@@ -3309,16 +3306,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qotdCheckAnswer => 'Check answer';
 
   @override
-  String get qotdSelectAllThatApply => 'Select all that apply';
-
-  @override
-  String get qotdSelectOneAnswer => 'Select one answer';
-
-  @override
   String get qotdOptionLabel => 'Option';
 
   @override
-  String qotdQuestionLabel(int number) {
-    return 'QUESTION $number';
-  }
+  String get qotdSingleCorrect => 'Single Correct';
+
+  @override
+  String get qotdMultipleCorrect => 'Multiple Correct';
+
+  @override
+  String get qotdErrorSubmitAnswer =>
+      'Failed to submit answer. Please try again.';
 }

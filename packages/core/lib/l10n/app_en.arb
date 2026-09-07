@@ -1625,6 +1625,7 @@
   "qotdResumeQuiz": "Resume Quiz",
   "qotdViewSolutions": "View Solutions",
   "qotdMixed": "Mixed",
+  "qotdGeneral": "General",
   "qotdQuestionProgress": "Question {current} of {total}",
   "@qotdQuestionProgress": {
     "placeholders": {
@@ -1636,7 +1637,6 @@
       }
     }
   },
-  "qotdClose": "Close",
   "qotdPrevious": "Previous",
   "qotdNext": "Next",
   "qotdCheck": "Check",
@@ -1644,21 +1644,13 @@
   "qotdProgressLabel": "COMPLETED",
   "qotdExplanationTitle": "Explanation",
   "qotdNoExplanation": "No explanation available",
-  "qotdCloseQuestionView": "Close question view",
   "qotdEmptyStateTitle": "No Daily Questions Available",
   "qotdEmptyStateBody": "There are no questions configured for your account today. Please check back later to continue learning!",
   "qotdBackToDashboard": "Back to Dashboard",
   "qotdNextQuestion": "Next question",
   "qotdCheckAnswer": "Check answer",
-  "qotdSelectAllThatApply": "Select all that apply",
-  "qotdSelectOneAnswer": "Select one answer",
   "qotdOptionLabel": "Option",
-  "qotdQuestionLabel": "QUESTION {number}",
-  "@qotdQuestionLabel": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  }
+  "qotdSingleCorrect": "Single Correct",
+  "qotdMultipleCorrect": "Multiple Correct",
+  "qotdErrorSubmitAnswer": "Failed to submit answer. Please try again."
 }

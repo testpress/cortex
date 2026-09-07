@@ -3311,12 +3311,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get qotdMixed => 'கலவை';
 
   @override
+  String get qotdGeneral => 'பொதுவானது';
+
+  @override
   String qotdQuestionProgress(int current, int total) {
     return 'கேள்வி $current / $total';
   }
-
-  @override
-  String get qotdClose => 'மூடு';
 
   @override
   String get qotdPrevious => 'முந்தையது';
@@ -3340,9 +3340,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get qotdNoExplanation => 'விளக்கம் எதுவும் கிடைக்கவில்லை';
 
   @override
-  String get qotdCloseQuestionView => 'கேள்வி பார்வையை மூடு';
-
-  @override
   String get qotdEmptyStateTitle => 'இன்று தினசரி கேள்விகள் இல்லை';
 
   @override
@@ -3359,17 +3356,15 @@ class AppLocalizationsTa extends AppLocalizations {
   String get qotdCheckAnswer => 'பதிலை சரிபார்';
 
   @override
-  String get qotdSelectAllThatApply =>
-      'பொருந்தும் அனைத்தையும் தேர்ந்தெடுக்கவும்';
-
-  @override
-  String get qotdSelectOneAnswer => 'ஒரு பதிலை தேர்ந்தெடுக்கவும்';
-
-  @override
   String get qotdOptionLabel => 'விருப்பம்';
 
   @override
-  String qotdQuestionLabel(int number) {
-    return 'கேள்வி $number';
-  }
+  String get qotdSingleCorrect => 'ஒரே சரியான விடை';
+
+  @override
+  String get qotdMultipleCorrect => 'பல சரியான விடைகள்';
+
+  @override
+  String get qotdErrorSubmitAnswer =>
+      'பதிலைச் சமர்ப்பிப்பதில் தோல்வி. மீண்டும் முயற்சிக்கவும்.';
 }

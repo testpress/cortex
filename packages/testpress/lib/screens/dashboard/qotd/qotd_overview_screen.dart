@@ -181,23 +181,29 @@ class QotdOverviewScreen extends StatelessWidget {
                             style: const TextStyle(height: 1.35, fontSize: 12),
                           ),
                           SizedBox(height: design.spacing.md),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(3),
-                            child: Container(
-                              height: 5,
-                              width: double.infinity,
-                              color: design.colors.success.withValues(
-                                alpha: 0.12,
-                              ),
-                              alignment: Alignment.centerLeft,
-                              child: FractionallySizedBox(
-                                widthFactor: total > 0
-                                    ? (attempted / total).clamp(0.0, 1.0)
-                                    : 0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: design.colors.success,
-                                    borderRadius: BorderRadius.circular(3),
+                          AppSemantics.progressValue(
+                            value: total > 0
+                                ? (attempted / total).clamp(0.0, 1.0)
+                                : 0.0,
+                            label: l10n.qotdAttemptedCount(attempted, total),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(3),
+                              child: Container(
+                                height: 5,
+                                width: double.infinity,
+                                color: design.colors.success.withValues(
+                                  alpha: 0.12,
+                                ),
+                                alignment: Alignment.centerLeft,
+                                child: FractionallySizedBox(
+                                  widthFactor: total > 0
+                                      ? (attempted / total).clamp(0.0, 1.0)
+                                      : 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: design.colors.success,
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
                                   ),
                                 ),
                               ),

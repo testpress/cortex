@@ -12,46 +12,50 @@ class QotdCompletionGauge extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    return SizedBox(
-      width: 92,
-      height: 92,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CustomPaint(
-            size: const Size(92, 92),
-            painter: _GaugePainter(
-              percentage: percentage,
-              progressColor: design.colors.success,
-              trackColor: design.colors.success.withValues(alpha: 0.12),
+    return AppSemantics.progressValue(
+      value: (percentage / 100).clamp(0.0, 1.0),
+      label: l10n.qotdProgressLabel,
+      child: SizedBox(
+        width: 92,
+        height: 92,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CustomPaint(
+              size: const Size(92, 92),
+              painter: _GaugePainter(
+                percentage: percentage,
+                progressColor: design.colors.success,
+                trackColor: design.colors.success.withValues(alpha: 0.12),
+              ),
             ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppText.headline(
-                '$percentage%',
-                color: design.colors.textPrimary,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 17,
-                  height: 1.1,
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText.headline(
+                  '$percentage%',
+                  color: design.colors.textPrimary,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 17,
+                    height: 1.1,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 3),
-              AppText.labelSmall(
-                l10n.qotdProgressLabel,
-                color: design.colors.textSecondary,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 9.0,
-                  letterSpacing: 0.3,
-                  height: 1.1,
+                const SizedBox(height: 3),
+                AppText.labelSmall(
+                  l10n.qotdProgressLabel,
+                  color: design.colors.textSecondary,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 9.0,
+                    letterSpacing: 0.3,
+                    height: 1.1,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

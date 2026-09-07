@@ -1,3 +1,27 @@
+/// Normalized question type — resolved once at parse time in [QotdDto.fromJson].
+enum QotdQuestionType {
+  singleCorrect,
+  multipleCorrect;
+
+  static QotdQuestionType from(String? raw) {
+    if (raw == null || raw.trim().isEmpty) return singleCorrect;
+    final upper = raw.trim().toUpperCase();
+    if (upper == 'C' ||
+        upper == 'M' ||
+        upper == 'MCA' ||
+        upper == 'MULTIPLE' ||
+        upper == 'MULTIPLE_TYPE' ||
+        upper == 'MULTIPLESELECT' ||
+        upper == 'MULTIPLE_CHOICE' ||
+        upper == 'MULTIPLE CHOICE' ||
+        upper == 'MULTIPLE CORRECT' ||
+        upper.contains('MULTIPLE')) {
+      return multipleCorrect;
+    }
+    return singleCorrect;
+  }
+}
+
 class QotdDto {
   final int id;
   final int questionId;
@@ -18,6 +42,9 @@ class QotdDto {
     this.options = const [],
     this.pastAttempt,
   });
+
+  /// Normalized question type — derived from [type] at parse time.
+  QotdQuestionType get questionType => QotdQuestionType.from(type);
 
   factory QotdDto.fromJson(Map<String, dynamic> json) {
     final Map<String, dynamic> data =

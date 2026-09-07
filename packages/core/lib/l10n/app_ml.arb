@@ -1227,8 +1227,8 @@
   "qotdResumeQuiz": "ക്വിസ് തുടരുക",
   "qotdViewSolutions": "പരിഹാരങ്ങൾ കാണുക",
   "qotdMixed": "മിശ്രിതം",
+  "qotdGeneral": "പൊതുവായത്",
   "qotdQuestionProgress": "ചോദ്യം {current} / {total}",
-  "qotdClose": "അടയ്ക്കുക",
   "qotdPrevious": "മുമ്പത്തേത്",
   "qotdNext": "അടുത്തത്",
   "qotdCheck": "പരിശോധിക്കുക",
@@ -1236,21 +1236,13 @@
   "qotdProgressLabel": "പൂർത്തിയായി",
   "qotdExplanationTitle": "വിശദീകരണം",
   "qotdNoExplanation": "വിശദീകരണമൊന്നും ലഭ്യമല്ല",
-  "qotdCloseQuestionView": "ചോദ്യ കാഴ്ച അടയ്ക്കുക",
   "qotdEmptyStateTitle": "ഇന്ന് ദൈനംദിന ചോദ്യങ്ങൾ ലഭ്യമല്ല",
   "qotdEmptyStateBody": "നിങ്ങളുടെ അക്കൗണ്ടിനായി ഇന്ന് ചോദ്യങ്ങൾ ക്രമീകരിച്ചിട്ടില്ല. പഠനം തുടരാൻ പിന്നീട് വരൂ!",
   "qotdBackToDashboard": "ഡാഷ്‌ബോർഡിലേക്ക് മടങ്ങുക",
   "qotdNextQuestion": "അടുത്ത ചോദ്യം",
   "qotdCheckAnswer": "ഉത്തരം പരിശോധിക്കുക",
-  "qotdSelectAllThatApply": "ബാധകമായതെല്ലാം തിരഞ്ഞെടുക്കുക",
-  "qotdSelectOneAnswer": "ഒരു ഉത്തരം തിരഞ്ഞെടുക്കുക",
   "qotdOptionLabel": "ഓപ്ഷൻ",
-  "qotdQuestionLabel": "ചോദ്യം {number}",
-  "@qotdQuestionLabel": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  }
+  "qotdSingleCorrect": "ഒറ്റ ശരിയുത്തരം",
+  "qotdMultipleCorrect": "ഒന്നിലധികം ശരിയുത്തരങ്ങൾ",
+  "qotdErrorSubmitAnswer": "ഉത്തരം സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
 }

@@ -44,7 +44,7 @@ final liveStreamSyncErrorProvider =
     );
 
 typedef _$LiveStreamSyncError = AutoDisposeNotifier<Object?>;
-String _$liveStreamListHash() => r'4013987ebf5a915fa14c95b007c0b78a3b4de5d1';
+String _$liveStreamListHash() => r'7dd739ee97bf671f8b8969b8c05baad35570fb48';
 
 /// See also [LiveStreamList].
 @ProviderFor(LiveStreamList)

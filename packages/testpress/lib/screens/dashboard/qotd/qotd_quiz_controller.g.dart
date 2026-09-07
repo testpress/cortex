@@ -7,7 +7,7 @@ part of 'qotd_quiz_controller.dart';
 // **************************************************************************
 
 String _$qotdQuizControllerHash() =>
-    r'1b36604e9e5226c093a377cb04c73192b058669d';
+    r'05ad8c00eba90bb0663ad9b119e772673ba526f8';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -48,42 +48,6 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
     }
   }
 
-  String _formatQuestionType(String? rawType) {
-    if (rawType == null || rawType.trim().isEmpty) return 'Single Correct';
-    final upper = rawType.trim().toUpperCase();
-
-    // Single Correct
-    if (upper == 'R' ||
-        upper == 'SCA' ||
-        upper == 'SINGLE' ||
-        upper == 'SINGLE_TYPE' ||
-        upper == 'SINGLESELECT' ||
-        upper == 'SINGLE_CHOICE' ||
-        upper == 'SINGLE CHOICE' ||
-        upper == 'SINGLE CORRECT' ||
-        upper == 'MCQ') {
-      return 'Single Correct';
-    }
-
-    // Multiple Correct
-    if (upper == 'C' ||
-        upper == 'M' ||
-        upper == 'MCA' ||
-        upper == 'MULTIPLE' ||
-        upper == 'MULTIPLE_TYPE' ||
-        upper == 'MULTIPLESELECT' ||
-        upper == 'MULTIPLE_CHOICE' ||
-        upper == 'MULTIPLE CHOICE' ||
-        upper == 'MULTIPLE CORRECT') {
-      return 'Multiple Correct';
-    }
-
-    if (upper.contains('SINGLE')) return 'Single Correct';
-    if (upper.contains('MULTIPLE')) return 'Multiple Correct';
-
-    return rawType.trim();
-  }
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -108,9 +72,11 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
         state.selectedOptionIds[currentIndex] ?? const <int>{};
     final submitResponse = state.submitResponses[currentIndex];
     final question = widget.questions[currentIndex];
-
-    final questionTypeLabel = _formatQuestionType(question.type);
-    final isMultipleChoice = questionTypeLabel == 'Multiple Correct';
+    final isMultipleChoice =
+        question.questionType == QotdQuestionType.multipleCorrect;
+    final questionTypeLabel = isMultipleChoice
+        ? l10n.qotdMultipleCorrect
+        : l10n.qotdSingleCorrect;
     final hasSelection = selectedOptions.isNotEmpty;
     final progress = totalQuestions > 0
         ? (currentIndex + 1) / totalQuestions
@@ -135,27 +101,31 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
           ),
 
           // Linear Question Progress Bar
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Container(
-                height: 3,
-                width: double.infinity,
-                color: design.colors.divider,
-                alignment: Alignment.centerLeft,
-                child: AnimatedContainer(
-                  duration: MotionPreferences.duration(
-                    context,
-                    design.motion.normal,
+          AppSemantics.progressValue(
+            value: progress,
+            label: l10n.qotdQuestionProgress(currentIndex + 1, totalQuestions),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Container(
+                  height: 3,
+                  width: double.infinity,
+                  color: design.colors.divider,
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedContainer(
+                    duration: MotionPreferences.duration(
+                      context,
+                      design.motion.normal,
+                    ),
+                    curve: MotionPreferences.curve(
+                      context,
+                      design.motion.easeOut,
+                    ),
+                    width: constraints.maxWidth * progress,
+                    color: design.colors.primary,
                   ),
-                  curve: MotionPreferences.curve(
-                    context,
-                    design.motion.easeOut,
-                  ),
-                  width: constraints.maxWidth * progress,
-                  color: design.colors.primary,
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
 
           // Scrollable Question Content
@@ -183,7 +153,7 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
                       ),
                       child: Text(
                         [
-                              question.subject,
+                              question.subject ?? l10n.qotdGeneral,
                               question.difficulty,
                               questionTypeLabel,
                             ].nonNulls
@@ -211,7 +181,9 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
                   SizedBox(height: design.spacing.lg),
 
                   // Option Cards
-                  ...question.options.map((option) {
+                  ...question.options.indexed.map((entry) {
+                    final index = entry.$1;
+                    final option = entry.$2;
                     final isSelected = selectedOptions.contains(option.id);
                     final isCorrectOption =
                         submitResponse?.correctAnswerIds.contains(option.id) ??
@@ -228,6 +200,7 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
                       child: _buildOptionCard(
                         design: design,
                         l10n: l10n,
+                        optionIndex: index,
                         option: option,
                         isSelected: isSelected,
                         isMultipleChoice: isMultipleChoice,
@@ -301,6 +274,7 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
   Widget _buildOptionCard({
     required DesignConfig design,
     required AppLocalizations l10n,
+    required int optionIndex,
     required QotdOptionDto option,
     required bool isSelected,
     required bool isMultipleChoice,
@@ -342,8 +316,11 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
         ? design.colors.onPrimary
         : design.colors.textPrimary;
 
+    final optionLetter = String.fromCharCode(65 + optionIndex);
+    final semanticLabel = '${l10n.qotdOptionLabel} $optionLetter';
+
     return AppSemantics.button(
-      label: l10n.qotdOptionLabel,
+      label: semanticLabel,
       enabled: onTap != null,
       onTap: onTap,
       child: GestureDetector(
@@ -541,6 +518,12 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
+          ),
+          SizedBox(height: design.spacing.sm),
+          Container(
+            height: 1,
+            width: double.infinity,
+            color: statusIconColor.withValues(alpha: 0.2),
           ),
           SizedBox(height: design.spacing.sm),
           AppText.labelBold(

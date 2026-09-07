@@ -1895,14 +1895,14 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
   @override
   _i3.Future<_i2.QotdSubmitResponseDto> submitQotdAttempt(
     int? questionId,
-    int? optionId,
+    List<int>? optionIds,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#submitQotdAttempt, [questionId, optionId]),
+            Invocation.method(#submitQotdAttempt, [questionId, optionIds]),
             returnValue: _i3.Future<_i2.QotdSubmitResponseDto>.value(
               _FakeQotdSubmitResponseDto_21(
                 this,
-                Invocation.method(#submitQotdAttempt, [questionId, optionId]),
+                Invocation.method(#submitQotdAttempt, [questionId, optionIds]),
               ),
             ),
             returnValueForMissingStub:
@@ -1911,7 +1911,7 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
                     this,
                     Invocation.method(#submitQotdAttempt, [
                       questionId,
-                      optionId,
+                      optionIds,
                     ]),
                   ),
                 ),

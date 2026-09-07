@@ -5891,17 +5891,17 @@ abstract class AppLocalizations {
   /// **'Mixed'**
   String get qotdMixed;
 
+  /// No description provided for @qotdGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get qotdGeneral;
+
   /// No description provided for @qotdQuestionProgress.
   ///
   /// In en, this message translates to:
   /// **'Question {current} of {total}'**
   String qotdQuestionProgress(int current, int total);
-
-  /// No description provided for @qotdClose.
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get qotdClose;
 
   /// No description provided for @qotdPrevious.
   ///
@@ -5945,12 +5945,6 @@ abstract class AppLocalizations {
   /// **'No explanation available'**
   String get qotdNoExplanation;
 
-  /// No description provided for @qotdCloseQuestionView.
-  ///
-  /// In en, this message translates to:
-  /// **'Close question view'**
-  String get qotdCloseQuestionView;
-
   /// No description provided for @qotdEmptyStateTitle.
   ///
   /// In en, this message translates to:
@@ -5981,29 +5975,29 @@ abstract class AppLocalizations {
   /// **'Check answer'**
   String get qotdCheckAnswer;
 
-  /// No description provided for @qotdSelectAllThatApply.
-  ///
-  /// In en, this message translates to:
-  /// **'Select all that apply'**
-  String get qotdSelectAllThatApply;
-
-  /// No description provided for @qotdSelectOneAnswer.
-  ///
-  /// In en, this message translates to:
-  /// **'Select one answer'**
-  String get qotdSelectOneAnswer;
-
   /// No description provided for @qotdOptionLabel.
   ///
   /// In en, this message translates to:
   /// **'Option'**
   String get qotdOptionLabel;
 
-  /// No description provided for @qotdQuestionLabel.
+  /// No description provided for @qotdSingleCorrect.
   ///
   /// In en, this message translates to:
-  /// **'QUESTION {number}'**
-  String qotdQuestionLabel(int number);
+  /// **'Single Correct'**
+  String get qotdSingleCorrect;
+
+  /// No description provided for @qotdMultipleCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple Correct'**
+  String get qotdMultipleCorrect;
+
+  /// No description provided for @qotdErrorSubmitAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit answer. Please try again.'**
+  String get qotdErrorSubmitAnswer;
 }
 
 class _AppLocalizationsDelegate

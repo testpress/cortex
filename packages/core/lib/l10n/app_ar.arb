@@ -1227,8 +1227,8 @@
   "qotdResumeQuiz": "استئناف الاختبار",
   "qotdViewSolutions": "عرض الحلول",
   "qotdMixed": "مختلط",
+  "qotdGeneral": "عام",
   "qotdQuestionProgress": "السؤال {current} من {total}",
-  "qotdClose": "إغلاق",
   "qotdPrevious": "السابق",
   "qotdNext": "التالي",
   "qotdCheck": "تحقق",
@@ -1236,21 +1236,13 @@
   "qotdProgressLabel": "مكتمل",
   "qotdExplanationTitle": "الشرح",
   "qotdNoExplanation": "لا يوجد شرح متاح",
-  "qotdCloseQuestionView": "إغلاق عرض السؤال",
   "qotdEmptyStateTitle": "لا توجد أسئلة يومية متاحة",
   "qotdEmptyStateBody": "لا توجد أسئلة مُعدّة لحسابك اليوم. يرجى العودة لاحقاً لمواصلة التعلم!",
   "qotdBackToDashboard": "العودة إلى لوحة التحكم",
   "qotdNextQuestion": "السؤال التالي",
   "qotdCheckAnswer": "تحقق من الإجابة",
-  "qotdSelectAllThatApply": "حدد كل ما ينطبق",
-  "qotdSelectOneAnswer": "حدد إجابة واحدة",
   "qotdOptionLabel": "خيار",
-  "qotdQuestionLabel": "السؤال {number}",
-  "@qotdQuestionLabel": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      }
-    }
-  }
+  "qotdSingleCorrect": "إجابة صحيحة واحدة",
+  "qotdMultipleCorrect": "إجابات صحيحة متعددة",
+  "qotdErrorSubmitAnswer": "فشل إرسال الإجابة. يرجى المحاولة مرة أخرى."
 }

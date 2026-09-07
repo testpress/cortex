@@ -3316,12 +3316,12 @@ class AppLocalizationsMl extends AppLocalizations {
   String get qotdMixed => 'മിശ്രിതം';
 
   @override
+  String get qotdGeneral => 'പൊതുവായത്';
+
+  @override
   String qotdQuestionProgress(int current, int total) {
     return 'ചോദ്യം $current / $total';
   }
-
-  @override
-  String get qotdClose => 'അടയ്ക്കുക';
 
   @override
   String get qotdPrevious => 'മുമ്പത്തേത്';
@@ -3345,9 +3345,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get qotdNoExplanation => 'വിശദീകരണമൊന്നും ലഭ്യമല്ല';
 
   @override
-  String get qotdCloseQuestionView => 'ചോദ്യ കാഴ്ച അടയ്ക്കുക';
-
-  @override
   String get qotdEmptyStateTitle => 'ഇന്ന് ദൈനംദിന ചോദ്യങ്ങൾ ലഭ്യമല്ല';
 
   @override
@@ -3364,16 +3361,15 @@ class AppLocalizationsMl extends AppLocalizations {
   String get qotdCheckAnswer => 'ഉത്തരം പരിശോധിക്കുക';
 
   @override
-  String get qotdSelectAllThatApply => 'ബാധകമായതെല്ലാം തിരഞ്ഞെടുക്കുക';
-
-  @override
-  String get qotdSelectOneAnswer => 'ഒരു ഉത്തരം തിരഞ്ഞെടുക്കുക';
-
-  @override
   String get qotdOptionLabel => 'ഓപ്ഷൻ';
 
   @override
-  String qotdQuestionLabel(int number) {
-    return 'ചോദ്യം $number';
-  }
+  String get qotdSingleCorrect => 'ഒറ്റ ശരിയുത്തരം';
+
+  @override
+  String get qotdMultipleCorrect => 'ഒന്നിലധികം ശരിയുത്തരങ്ങൾ';
+
+  @override
+  String get qotdErrorSubmitAnswer =>
+      'ഉത്തരം സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
 }
