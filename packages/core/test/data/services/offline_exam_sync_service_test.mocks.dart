@@ -138,6 +138,18 @@ class _FakeBookmarkDto_20 extends _i1.SmartFake implements _i2.BookmarkDto {
     : super(parent, parentInvocation);
 }
 
+class _FakeQotdSubmitResponseDto_21 extends _i1.SmartFake
+    implements _i2.QotdSubmitResponseDto {
+  _FakeQotdSubmitResponseDto_21(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeQotdSummaryDto_22 extends _i1.SmartFake
+    implements _i2.QotdSummaryDto {
+  _FakeQotdSummaryDto_22(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [DataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -1868,6 +1880,62 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<List<_i2.QotdDto>> getQotdQuestions() =>
+      (super.noSuchMethod(
+            Invocation.method(#getQotdQuestions, []),
+            returnValue: _i3.Future<List<_i2.QotdDto>>.value(<_i2.QotdDto>[]),
+            returnValueForMissingStub: _i3.Future<List<_i2.QotdDto>>.value(
+              <_i2.QotdDto>[],
+            ),
+          )
+          as _i3.Future<List<_i2.QotdDto>>);
+
+  @override
+  _i3.Future<_i2.QotdSubmitResponseDto> submitQotdAttempt(
+    int? questionId,
+    List<int>? optionIds,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#submitQotdAttempt, [questionId, optionIds]),
+            returnValue: _i3.Future<_i2.QotdSubmitResponseDto>.value(
+              _FakeQotdSubmitResponseDto_21(
+                this,
+                Invocation.method(#submitQotdAttempt, [questionId, optionIds]),
+              ),
+            ),
+            returnValueForMissingStub:
+                _i3.Future<_i2.QotdSubmitResponseDto>.value(
+                  _FakeQotdSubmitResponseDto_21(
+                    this,
+                    Invocation.method(#submitQotdAttempt, [
+                      questionId,
+                      optionIds,
+                    ]),
+                  ),
+                ),
+          )
+          as _i3.Future<_i2.QotdSubmitResponseDto>);
+
+  @override
+  _i3.Future<_i2.QotdSummaryDto> getQotdSummary() =>
+      (super.noSuchMethod(
+            Invocation.method(#getQotdSummary, []),
+            returnValue: _i3.Future<_i2.QotdSummaryDto>.value(
+              _FakeQotdSummaryDto_22(
+                this,
+                Invocation.method(#getQotdSummary, []),
+              ),
+            ),
+            returnValueForMissingStub: _i3.Future<_i2.QotdSummaryDto>.value(
+              _FakeQotdSummaryDto_22(
+                this,
+                Invocation.method(#getQotdSummary, []),
+              ),
+            ),
+          )
+          as _i3.Future<_i2.QotdSummaryDto>);
 }
 
 /// A class which mocks [SentryService].

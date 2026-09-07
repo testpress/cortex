@@ -37,6 +37,7 @@ export 'models/quiz_review_result_dto.dart';
 export 'models/custom_test_config_dto.dart';
 export 'models/custom_exam_generation_dto.dart';
 export 'models/learnlens_dto.dart';
+export 'models/qotd_dto.dart';
 
 // Database
 export 'db/tables/dashboard_tables.dart';
@@ -75,10 +76,12 @@ export 'repositories/doubt_repository.dart';
 export 'repositories/live_classes_repository.dart';
 export 'repositories/repository_providers.dart';
 export 'repositories/institute_settings_repository.dart';
+export 'repositories/qotd_repository.dart';
 export 'providers/bookmark_provider.dart';
 export 'providers/announcements_provider.dart';
 export 'providers/institute_settings_provider.dart';
 export 'providers/doubt_providers.dart';
+export 'providers/qotd_provider.dart';
 
 //service
 export 'services/downloads_service.dart';

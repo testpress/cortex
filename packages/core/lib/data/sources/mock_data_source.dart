@@ -2159,4 +2159,143 @@ class MockDataSource implements DataSource {
       state: 'Running',
     );
   }
+  // ── Question of the Day ──────────────────────────────────────────────────
+
+  static const List<QotdDto> mockQotdQuestions = [
+    QotdDto(
+      id: 1,
+      questionId: 101,
+      htmlContent: '<p>What is the capital of France?</p>',
+      subject: 'Geography',
+      difficulty: 'Easy',
+      type: 'SINGLE_CHOICE',
+      options: [
+        QotdOptionDto(id: 1001, htmlContent: 'Berlin'),
+        QotdOptionDto(id: 1002, htmlContent: 'Madrid'),
+        QotdOptionDto(id: 1003, htmlContent: 'Paris'),
+        QotdOptionDto(id: 1004, htmlContent: 'Rome'),
+      ],
+    ),
+    QotdDto(
+      id: 2,
+      questionId: 102,
+      htmlContent: '<p>Which of the following are programming languages?</p>',
+      subject: 'Computer Science',
+      difficulty: 'Medium',
+      type: 'MULTIPLE_CHOICE',
+      options: [
+        QotdOptionDto(id: 1005, htmlContent: 'Kotlin'),
+        QotdOptionDto(id: 1006, htmlContent: 'Python'),
+        QotdOptionDto(id: 1007, htmlContent: 'HTML'),
+        QotdOptionDto(id: 1008, htmlContent: 'Java'),
+      ],
+    ),
+    QotdDto(
+      id: 3,
+      questionId: 103,
+      htmlContent:
+          '<p>What is the primary function of RAM in a computer system?</p>',
+      subject: 'Hardware',
+      difficulty: 'Easy',
+      type: 'SINGLE_CHOICE',
+      options: [
+        QotdOptionDto(id: 1009, htmlContent: 'Long term storage'),
+        QotdOptionDto(id: 1010, htmlContent: 'Temporary working memory'),
+        QotdOptionDto(id: 1011, htmlContent: 'Processing graphics'),
+        QotdOptionDto(id: 1012, htmlContent: 'Cooling the CPU'),
+      ],
+    ),
+    QotdDto(
+      id: 4,
+      questionId: 104,
+      htmlContent:
+          '<p>Which of the following are mobile operating systems?</p>',
+      subject: 'Technology',
+      difficulty: 'Medium',
+      type: 'MULTIPLE_CHOICE',
+      options: [
+        QotdOptionDto(id: 1013, htmlContent: 'Android'),
+        QotdOptionDto(id: 1014, htmlContent: 'iOS'),
+        QotdOptionDto(id: 1015, htmlContent: 'Windows Server'),
+        QotdOptionDto(id: 1016, htmlContent: 'macOS'),
+      ],
+    ),
+    QotdDto(
+      id: 5,
+      questionId: 105,
+      htmlContent: '<p>What does CPU stand for?</p>',
+      subject: 'Computer Science',
+      difficulty: 'Easy',
+      type: 'SINGLE_CHOICE',
+      options: [
+        QotdOptionDto(id: 1017, htmlContent: 'Central Processing Unit'),
+        QotdOptionDto(id: 1018, htmlContent: 'Computer Personal Unit'),
+        QotdOptionDto(id: 1019, htmlContent: 'Control Program Utility'),
+        QotdOptionDto(id: 1020, htmlContent: 'Central Performance User'),
+      ],
+    ),
+  ];
+
+  @override
+  Future<List<QotdDto>> getQotdQuestions() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return mockQotdQuestions;
+  }
+
+  @override
+  Future<QotdSubmitResponseDto> submitQotdAttempt(
+    int questionId,
+    List<int> optionIds,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    final Map<int, (List<int>, String)> answers = {
+      1: ([1003], 'Paris is the capital and most populous city of France.'),
+      2: (
+        [1005, 1006, 1008],
+        'Kotlin, Python, and Java are programming languages. HTML is a markup language used for structuring web pages.',
+      ),
+      3: (
+        [1010],
+        'Random Access Memory (RAM) provides temporary storage for data that is currently being used by the CPU, allowing for quick read and write access.',
+      ),
+      4: (
+        [1013, 1014],
+        'Android and iOS are mobile operating systems designed for smartphones and tablets.',
+      ),
+      5: (
+        [1017],
+        'CPU stands for Central Processing Unit, which performs the basic arithmetical, logical, and input/output operations.',
+      ),
+    };
+
+    final answerInfo =
+        answers[questionId] ??
+        ([1003], 'Explanation provided for the question.');
+    final correctIds = answerInfo.$1;
+    final explanation = answerInfo.$2;
+
+    final isCorrect =
+        optionIds.length == correctIds.length &&
+        optionIds.every((id) => correctIds.contains(id));
+
+    return QotdSubmitResponseDto(
+      isCorrect: isCorrect,
+      explanation: explanation,
+      selectedAnswerIds: optionIds,
+      correctAnswerIds: correctIds,
+    );
+  }
+
+  @override
+  Future<QotdSummaryDto> getQotdSummary() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    return const QotdSummaryDto(
+      totalCount: 5,
+      attemptedCount: 0,
+      correctCount: 0,
+      incorrectCount: 0,
+      unansweredCount: 5,
+    );
+  }
 }

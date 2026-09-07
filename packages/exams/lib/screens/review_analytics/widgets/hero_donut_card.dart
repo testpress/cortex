@@ -1,7 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import '../../../models/analytics_overview.dart';
-import 'donut_chart.dart';
 import 'donut_legend.dart';
 
 class HeroDonutCard extends StatelessWidget {

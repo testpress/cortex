@@ -1,8 +1,9 @@
 import 'dart:math' as math;
 
-import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import '../design/design_provider.dart';
 
+/// A platform-neutral donut chart primitive for displaying categorical ratios.
 class DonutChart extends StatelessWidget {
   const DonutChart({
     super.key,

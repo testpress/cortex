@@ -77,6 +77,7 @@ class InstituteSettings {
   final String? learnlensOrgID;
 
   final bool disableStudentReport;
+  final bool qotdEnabled;
 
   const InstituteSettings({
     required this.domainUrl,
@@ -116,6 +117,7 @@ class InstituteSettings {
     required this.currentPaymentApp,
     required this.learnlensEnabled,
     required this.disableStudentReport,
+    required this.qotdEnabled,
     this.learnlensOrgID,
     this.videoWatermarkType,
     this.videoWatermarkPosition,
@@ -190,6 +192,7 @@ class InstituteSettings {
       learnlensEnabled: json['learnlens_enabled'] as bool? ?? false,
       learnlensOrgID: json['learnlens_organization_id'] as String?,
       disableStudentReport: json['disable_student_report'] as bool? ?? false,
+      qotdEnabled: json['qotd_enabled'] as bool? ?? false,
 
       videoWatermarkType: switch (watermarkType) {
         'dynamic' => VideoWatermarkType.dynamic,
@@ -256,6 +259,7 @@ class InstituteSettings {
       'learnlens_enabled': learnlensEnabled,
       'learnlens_organization_id': learnlensOrgID,
       'disable_student_report': disableStudentReport,
+      'qotd_enabled': qotdEnabled,
       'video_watermark_type': switch (videoWatermarkType) {
         VideoWatermarkType.dynamic => 'dynamic',
         VideoWatermarkType.static => 'static',

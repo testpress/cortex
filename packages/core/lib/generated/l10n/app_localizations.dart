@@ -5770,6 +5770,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected filter: {category}. Tap to change filter'**
   String announcementsSelectedFilter(String category);
+
+  /// No description provided for @qotdTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Questions'**
+  String get qotdTitle;
+
+  /// No description provided for @qotdEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions available today.'**
+  String get qotdEmptyState;
+
+  /// No description provided for @qotdErrorFailedToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load daily questions'**
+  String get qotdErrorFailedToLoad;
+
+  /// No description provided for @qotdRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get qotdRetry;
+
+  /// No description provided for @qotdAttemptedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{attempted} / {total} Attempted'**
+  String qotdAttemptedCount(int attempted, int total);
+
+  /// No description provided for @qotdSubtitleCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Fantastic job! You\'ve conquered today\'s challenge. Keep up the momentum!'**
+  String get qotdSubtitleCompleted;
+
+  /// No description provided for @qotdSubtitleInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re on track to finish your daily goal. Just {remaining} more questions to go!'**
+  String qotdSubtitleInProgress(int remaining);
+
+  /// No description provided for @qotdSubtitleNotStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Kickstart your learning journey today! Complete your daily goal to stay ahead.'**
+  String get qotdSubtitleNotStarted;
+
+  /// No description provided for @qotdStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'COMPLETED'**
+  String get qotdStatusCompleted;
+
+  /// No description provided for @qotdStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'IN PROGRESS'**
+  String get qotdStatusInProgress;
+
+  /// No description provided for @qotdStatusNotStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'NOT STARTED'**
+  String get qotdStatusNotStarted;
+
+  /// No description provided for @qotdDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'DIFFICULTY'**
+  String get qotdDifficulty;
+
+  /// No description provided for @qotdTargetedSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'TARGETED SUBJECTS'**
+  String get qotdTargetedSubjects;
+
+  /// No description provided for @qotdCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get qotdCorrect;
+
+  /// No description provided for @qotdIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect'**
+  String get qotdIncorrect;
+
+  /// No description provided for @qotdUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get qotdUnanswered;
+
+  /// No description provided for @qotdStartQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Quiz'**
+  String get qotdStartQuiz;
+
+  /// No description provided for @qotdResumeQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Quiz'**
+  String get qotdResumeQuiz;
+
+  /// No description provided for @qotdViewSolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'View Solutions'**
+  String get qotdViewSolutions;
+
+  /// No description provided for @qotdMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixed'**
+  String get qotdMixed;
+
+  /// No description provided for @qotdGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get qotdGeneral;
+
+  /// No description provided for @qotdQuestionProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {current} of {total}'**
+  String qotdQuestionProgress(int current, int total);
+
+  /// No description provided for @qotdPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get qotdPrevious;
+
+  /// No description provided for @qotdNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get qotdNext;
+
+  /// No description provided for @qotdCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get qotdCheck;
+
+  /// No description provided for @qotdFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get qotdFinish;
+
+  /// No description provided for @qotdProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'COMPLETED'**
+  String get qotdProgressLabel;
+
+  /// No description provided for @qotdExplanationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get qotdExplanationTitle;
+
+  /// No description provided for @qotdNoExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'No explanation available'**
+  String get qotdNoExplanation;
+
+  /// No description provided for @qotdEmptyStateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Daily Questions Available'**
+  String get qotdEmptyStateTitle;
+
+  /// No description provided for @qotdEmptyStateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no questions configured for your account today. Please check back later to continue learning!'**
+  String get qotdEmptyStateBody;
+
+  /// No description provided for @qotdBackToDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Dashboard'**
+  String get qotdBackToDashboard;
+
+  /// No description provided for @qotdNextQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Next question'**
+  String get qotdNextQuestion;
+
+  /// No description provided for @qotdCheckAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Check answer'**
+  String get qotdCheckAnswer;
+
+  /// No description provided for @qotdOptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Option'**
+  String get qotdOptionLabel;
+
+  /// No description provided for @qotdSingleCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Single Correct'**
+  String get qotdSingleCorrect;
+
+  /// No description provided for @qotdMultipleCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple Correct'**
+  String get qotdMultipleCorrect;
+
+  /// No description provided for @qotdErrorSubmitAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit answer. Please try again.'**
+  String get qotdErrorSubmitAnswer;
 }
 
 class _AppLocalizationsDelegate

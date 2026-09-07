@@ -648,7 +648,7 @@ class _DonutCard extends StatelessWidget {
             Row(
               children: [
                 // Donut Chart
-                DonutChart(
+                SubjectDonutChart(
                   correctPct: correctPct,
                   incorrectPct: incorrectPct,
                   unansweredPct: unansweredPct,

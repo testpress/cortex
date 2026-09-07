@@ -50,6 +50,7 @@ export 'widgets/app_toast.dart';
 export 'widgets/session_expired_dialog.dart';
 export 'widgets/app_confirmation_dialog.dart';
 export 'widgets/ai_composer.dart';
+export 'widgets/donut_chart.dart';
 
 // Shell
 export 'shell/app_shell.dart';

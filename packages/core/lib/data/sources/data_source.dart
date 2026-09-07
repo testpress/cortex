@@ -359,4 +359,18 @@ abstract class DataSource {
 
   /// Delete a bookmark by its server-side ID.
   Future<void> deleteBookmark(String bookmarkId);
+
+  // ── Question of the Day ──────────────────────────────────────────────────
+
+  /// Fetch the list of daily questions.
+  Future<List<QotdDto>> getQotdQuestions();
+
+  /// Submit an answer to a specific QOTD.
+  Future<QotdSubmitResponseDto> submitQotdAttempt(
+    int questionId,
+    List<int> optionIds,
+  );
+
+  /// Fetch overall QOTD statistics/summary.
+  Future<QotdSummaryDto> getQotdSummary();
 }
