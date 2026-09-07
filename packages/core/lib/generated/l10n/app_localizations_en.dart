@@ -3193,4 +3193,132 @@ class AppLocalizationsEn extends AppLocalizations {
   String announcementsSelectedFilter(String category) {
     return 'Selected filter: $category. Tap to change filter';
   }
+
+  @override
+  String get qotdTitle => 'Daily Questions';
+
+  @override
+  String get qotdEmptyState => 'No questions available today.';
+
+  @override
+  String get qotdErrorFailedToLoad => 'Failed to load daily questions';
+
+  @override
+  String get qotdRetry => 'Retry';
+
+  @override
+  String qotdAttemptedCount(int attempted, int total) {
+    return '$attempted / $total Attempted';
+  }
+
+  @override
+  String get qotdSubtitleCompleted =>
+      'Fantastic job! You\'ve conquered today\'s challenge. Keep up the momentum!';
+
+  @override
+  String qotdSubtitleInProgress(int remaining) {
+    return 'You\'re on track to finish your daily goal. Just $remaining more questions to go!';
+  }
+
+  @override
+  String get qotdSubtitleNotStarted =>
+      'Kickstart your learning journey today! Complete your daily goal to stay ahead.';
+
+  @override
+  String get qotdStatusCompleted => 'COMPLETED';
+
+  @override
+  String get qotdStatusInProgress => 'IN PROGRESS';
+
+  @override
+  String get qotdStatusNotStarted => 'NOT STARTED';
+
+  @override
+  String get qotdDifficulty => 'DIFFICULTY';
+
+  @override
+  String get qotdTargetedSubjects => 'TARGETED SUBJECTS';
+
+  @override
+  String get qotdCorrect => 'Correct';
+
+  @override
+  String get qotdIncorrect => 'Incorrect';
+
+  @override
+  String get qotdUnanswered => 'Unanswered';
+
+  @override
+  String get qotdStartQuiz => 'Start Quiz';
+
+  @override
+  String get qotdResumeQuiz => 'Resume Quiz';
+
+  @override
+  String get qotdViewSolutions => 'View Solutions';
+
+  @override
+  String get qotdMixed => 'Mixed';
+
+  @override
+  String qotdQuestionProgress(int current, int total) {
+    return 'Question $current of $total';
+  }
+
+  @override
+  String get qotdClose => 'Close';
+
+  @override
+  String get qotdPrevious => 'Previous';
+
+  @override
+  String get qotdNext => 'Next';
+
+  @override
+  String get qotdCheck => 'Check';
+
+  @override
+  String get qotdFinish => 'Finish';
+
+  @override
+  String get qotdProgressLabel => 'COMPLETED';
+
+  @override
+  String get qotdExplanationTitle => 'Explanation';
+
+  @override
+  String get qotdNoExplanation => 'No explanation available';
+
+  @override
+  String get qotdCloseQuestionView => 'Close question view';
+
+  @override
+  String get qotdEmptyStateTitle => 'No Daily Questions Available';
+
+  @override
+  String get qotdEmptyStateBody =>
+      'There are no questions configured for your account today. Please check back later to continue learning!';
+
+  @override
+  String get qotdBackToDashboard => 'Back to Dashboard';
+
+  @override
+  String get qotdNextQuestion => 'Next question';
+
+  @override
+  String get qotdCheckAnswer => 'Check answer';
+
+  @override
+  String get qotdSelectAllThatApply => 'Select all that apply';
+
+  @override
+  String get qotdSelectOneAnswer => 'Select one answer';
+
+  @override
+  String get qotdOptionLabel => 'Option';
+
+  @override
+  String qotdQuestionLabel(int number) {
+    return 'QUESTION $number';
+  }
 }

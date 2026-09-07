@@ -1587,5 +1587,78 @@
         "type": "String"
       }
     }
+  },
+  "qotdTitle": "Daily Questions",
+  "qotdEmptyState": "No questions available today.",
+  "qotdErrorFailedToLoad": "Failed to load daily questions",
+  "qotdRetry": "Retry",
+  "qotdAttemptedCount": "{attempted} / {total} Attempted",
+  "@qotdAttemptedCount": {
+    "placeholders": {
+      "attempted": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "qotdSubtitleCompleted": "Fantastic job! You've conquered today's challenge. Keep up the momentum!",
+  "qotdSubtitleInProgress": "You're on track to finish your daily goal. Just {remaining} more questions to go!",
+  "@qotdSubtitleInProgress": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "qotdSubtitleNotStarted": "Kickstart your learning journey today! Complete your daily goal to stay ahead.",
+  "qotdStatusCompleted": "COMPLETED",
+  "qotdStatusInProgress": "IN PROGRESS",
+  "qotdStatusNotStarted": "NOT STARTED",
+  "qotdDifficulty": "DIFFICULTY",
+  "qotdTargetedSubjects": "TARGETED SUBJECTS",
+  "qotdCorrect": "Correct",
+  "qotdIncorrect": "Incorrect",
+  "qotdUnanswered": "Unanswered",
+  "qotdStartQuiz": "Start Quiz",
+  "qotdResumeQuiz": "Resume Quiz",
+  "qotdViewSolutions": "View Solutions",
+  "qotdMixed": "Mixed",
+  "qotdQuestionProgress": "Question {current} of {total}",
+  "@qotdQuestionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "qotdClose": "Close",
+  "qotdPrevious": "Previous",
+  "qotdNext": "Next",
+  "qotdCheck": "Check",
+  "qotdFinish": "Finish",
+  "qotdProgressLabel": "COMPLETED",
+  "qotdExplanationTitle": "Explanation",
+  "qotdNoExplanation": "No explanation available",
+  "qotdCloseQuestionView": "Close question view",
+  "qotdEmptyStateTitle": "No Daily Questions Available",
+  "qotdEmptyStateBody": "There are no questions configured for your account today. Please check back later to continue learning!",
+  "qotdBackToDashboard": "Back to Dashboard",
+  "qotdNextQuestion": "Next question",
+  "qotdCheckAnswer": "Check answer",
+  "qotdSelectAllThatApply": "Select all that apply",
+  "qotdSelectOneAnswer": "Select one answer",
+  "qotdOptionLabel": "Option",
+  "qotdQuestionLabel": "QUESTION {number}",
+  "@qotdQuestionLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
   }
 }

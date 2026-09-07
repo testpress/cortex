@@ -3193,4 +3193,132 @@ class AppLocalizationsAr extends AppLocalizations {
   String announcementsSelectedFilter(String category) {
     return 'التصفية المحددة: $category. انقر للتغيير';
   }
+
+  @override
+  String get qotdTitle => 'الأسئلة اليومية';
+
+  @override
+  String get qotdEmptyState => 'لا توجد أسئلة متاحة اليوم.';
+
+  @override
+  String get qotdErrorFailedToLoad => 'فشل تحميل الأسئلة اليومية';
+
+  @override
+  String get qotdRetry => 'إعادة المحاولة';
+
+  @override
+  String qotdAttemptedCount(int attempted, int total) {
+    return 'تمت محاولة $attempted من أصل $total';
+  }
+
+  @override
+  String get qotdSubtitleCompleted =>
+      'عمل رائع! لقد تغلبت على تحدي اليوم. استمر في التقدم!';
+
+  @override
+  String qotdSubtitleInProgress(int remaining) {
+    return 'أنت على المسار الصحيح لإنهاء هدفك اليومي. تبقى $remaining أسئلة فقط!';
+  }
+
+  @override
+  String get qotdSubtitleNotStarted =>
+      'ابدأ رحلتك التعليمية اليوم! أكمل هدفك اليومي للبقاء في الصدارة.';
+
+  @override
+  String get qotdStatusCompleted => 'مكتمل';
+
+  @override
+  String get qotdStatusInProgress => 'قيد التقدم';
+
+  @override
+  String get qotdStatusNotStarted => 'لم يبدأ';
+
+  @override
+  String get qotdDifficulty => 'مستوى الصعوبة';
+
+  @override
+  String get qotdTargetedSubjects => 'المواضيع المستهدفة';
+
+  @override
+  String get qotdCorrect => 'صحيح';
+
+  @override
+  String get qotdIncorrect => 'غير صحيح';
+
+  @override
+  String get qotdUnanswered => 'لم تتم الإجابة';
+
+  @override
+  String get qotdStartQuiz => 'بدء الاختبار';
+
+  @override
+  String get qotdResumeQuiz => 'استئناف الاختبار';
+
+  @override
+  String get qotdViewSolutions => 'عرض الحلول';
+
+  @override
+  String get qotdMixed => 'مختلط';
+
+  @override
+  String qotdQuestionProgress(int current, int total) {
+    return 'السؤال $current من $total';
+  }
+
+  @override
+  String get qotdClose => 'إغلاق';
+
+  @override
+  String get qotdPrevious => 'السابق';
+
+  @override
+  String get qotdNext => 'التالي';
+
+  @override
+  String get qotdCheck => 'تحقق';
+
+  @override
+  String get qotdFinish => 'إنهاء';
+
+  @override
+  String get qotdProgressLabel => 'مكتمل';
+
+  @override
+  String get qotdExplanationTitle => 'الشرح';
+
+  @override
+  String get qotdNoExplanation => 'لا يوجد شرح متاح';
+
+  @override
+  String get qotdCloseQuestionView => 'إغلاق عرض السؤال';
+
+  @override
+  String get qotdEmptyStateTitle => 'لا توجد أسئلة يومية متاحة';
+
+  @override
+  String get qotdEmptyStateBody =>
+      'لا توجد أسئلة مُعدّة لحسابك اليوم. يرجى العودة لاحقاً لمواصلة التعلم!';
+
+  @override
+  String get qotdBackToDashboard => 'العودة إلى لوحة التحكم';
+
+  @override
+  String get qotdNextQuestion => 'السؤال التالي';
+
+  @override
+  String get qotdCheckAnswer => 'تحقق من الإجابة';
+
+  @override
+  String get qotdSelectAllThatApply => 'حدد كل ما ينطبق';
+
+  @override
+  String get qotdSelectOneAnswer => 'حدد إجابة واحدة';
+
+  @override
+  String get qotdOptionLabel => 'خيار';
+
+  @override
+  String qotdQuestionLabel(int number) {
+    return 'السؤال $number';
+  }
 }

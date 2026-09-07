@@ -26,6 +26,7 @@ class DashboardDrawer extends ConsumerWidget {
     final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
     final enableStudentReport = !(settings?.disableStudentReport ?? false);
     final analyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
+    final qotdEnabled = settings?.qotdEnabled ?? false;
 
     final bookmarksLabel = settings?.bookmarksLabel?.trim();
     final displayBookmarksLabel =
@@ -119,6 +120,15 @@ class DashboardDrawer extends ConsumerWidget {
                 action: () {
                   ref.read(isHomeDrawerOpenProvider.notifier).state = false;
                   context.push('/my-report');
+                },
+              ),
+            if (qotdEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.calendar,
+                label: l10n.qotdTitle,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/qotd');
                 },
               ),
             if (AppConfig.showExamResults)

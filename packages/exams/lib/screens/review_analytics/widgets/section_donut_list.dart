@@ -1,7 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import '../../../models/section_performance_overview.dart';
-import 'donut_chart.dart';
 
 class SectionDonutList extends StatelessWidget {
   const SectionDonutList({super.key, required this.sections});

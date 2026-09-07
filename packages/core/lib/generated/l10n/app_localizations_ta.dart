@@ -3243,4 +3243,133 @@ class AppLocalizationsTa extends AppLocalizations {
   String announcementsSelectedFilter(String category) {
     return 'தேர்ந்தெடுக்கப்பட்ட வடிப்பான்: $category. மாற்ற தட்டவும்';
   }
+
+  @override
+  String get qotdTitle => 'தினசரி கேள்விகள்';
+
+  @override
+  String get qotdEmptyState => 'இன்று கேள்விகள் எதுவும் கிடைக்கவில்லை.';
+
+  @override
+  String get qotdErrorFailedToLoad => 'தினசரி கேள்விகளை ஏற்றுவதில் தோல்வி';
+
+  @override
+  String get qotdRetry => 'மீண்டும் முயற்சி செய்';
+
+  @override
+  String qotdAttemptedCount(int attempted, int total) {
+    return '$attempted / $total முயற்சிக்கப்பட்டது';
+  }
+
+  @override
+  String get qotdSubtitleCompleted =>
+      'அருமையான வேலை! இன்றைய சவாலை நீங்கள் வென்றுவிட்டீர்கள். தொடர்ந்து முன்னேறுங்கள்!';
+
+  @override
+  String qotdSubtitleInProgress(int remaining) {
+    return 'உங்கள் தினசரி இலக்கை முடிக்க சரியான பாதையில் உள்ளீர்கள். இன்னும் $remaining கேள்விகள் மட்டுமே உள்ளன!';
+  }
+
+  @override
+  String get qotdSubtitleNotStarted =>
+      'இன்றே உங்கள் கற்றல் பயணத்தைத் தொடங்குங்கள்! முன்னிலையில் இருக்க உங்கள் தினசரி இலக்கை முடிக்கவும்.';
+
+  @override
+  String get qotdStatusCompleted => 'முடிந்தது';
+
+  @override
+  String get qotdStatusInProgress => 'செயல்பாட்டில் உள்ளது';
+
+  @override
+  String get qotdStatusNotStarted => 'தொடங்கப்படவில்லை';
+
+  @override
+  String get qotdDifficulty => 'கடினத்தன்மை';
+
+  @override
+  String get qotdTargetedSubjects => 'குறிப்பிடப்பட்ட பாடங்கள்';
+
+  @override
+  String get qotdCorrect => 'சரி';
+
+  @override
+  String get qotdIncorrect => 'தவறு';
+
+  @override
+  String get qotdUnanswered => 'பதிலளிக்கப்படவில்லை';
+
+  @override
+  String get qotdStartQuiz => 'வினாடி வினாவைத் தொடங்கு';
+
+  @override
+  String get qotdResumeQuiz => 'வினாடி வினாவைத் தொடரவும்';
+
+  @override
+  String get qotdViewSolutions => 'விடைகளைப் பார்க்கவும்';
+
+  @override
+  String get qotdMixed => 'கலவை';
+
+  @override
+  String qotdQuestionProgress(int current, int total) {
+    return 'கேள்வி $current / $total';
+  }
+
+  @override
+  String get qotdClose => 'மூடு';
+
+  @override
+  String get qotdPrevious => 'முந்தையது';
+
+  @override
+  String get qotdNext => 'அடுத்தது';
+
+  @override
+  String get qotdCheck => 'சரிபார்க்கவும்';
+
+  @override
+  String get qotdFinish => 'முடிக்கவும்';
+
+  @override
+  String get qotdProgressLabel => 'முடிந்தது';
+
+  @override
+  String get qotdExplanationTitle => 'விளக்கம்';
+
+  @override
+  String get qotdNoExplanation => 'விளக்கம் எதுவும் கிடைக்கவில்லை';
+
+  @override
+  String get qotdCloseQuestionView => 'கேள்வி பார்வையை மூடு';
+
+  @override
+  String get qotdEmptyStateTitle => 'இன்று தினசரி கேள்விகள் இல்லை';
+
+  @override
+  String get qotdEmptyStateBody =>
+      'உங்கள் கணக்கிற்காக இன்று கேள்விகள் அமைக்கப்படவில்லை. தொடர்ந்து கற்க பின்னர் வாருங்கள்!';
+
+  @override
+  String get qotdBackToDashboard => 'டாஷ்போர்டுக்கு திரும்பு';
+
+  @override
+  String get qotdNextQuestion => 'அடுத்த கேள்வி';
+
+  @override
+  String get qotdCheckAnswer => 'பதிலை சரிபார்';
+
+  @override
+  String get qotdSelectAllThatApply =>
+      'பொருந்தும் அனைத்தையும் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get qotdSelectOneAnswer => 'ஒரு பதிலை தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get qotdOptionLabel => 'விருப்பம்';
+
+  @override
+  String qotdQuestionLabel(int number) {
+    return 'கேள்வி $number';
+  }
 }

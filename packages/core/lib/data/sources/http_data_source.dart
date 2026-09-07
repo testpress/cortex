@@ -1277,6 +1277,67 @@ class HttpDataSource implements DataSource {
     );
   }
 
+  // ── Question of the Day ──────────────────────────────────────────────────
+
+  @override
+  Future<List<QotdDto>> getQotdQuestions() async {
+    return performNetworkRequest(
+      _dio.get('/api/v3/qotd/questions/'),
+      fromJson: (data) {
+        if (data == null || data is! Map) return <QotdDto>[];
+
+        final questions = data['questions'] as List<dynamic>? ?? [];
+        final attempts = data['attempts'] as List<dynamic>? ?? [];
+
+        if (questions.isEmpty) return <QotdDto>[];
+
+        return questions.map((q) {
+          final qMap = Map<String, dynamic>.from(q as Map);
+          final dqId = qMap['daily_question_id'] ?? qMap['id'];
+
+          final attempt = attempts.firstWhere(
+            (a) => (a as Map)['daily_question_id'] == dqId,
+            orElse: () => null,
+          );
+
+          if (attempt != null) {
+            qMap['attempt'] = attempt;
+          }
+
+          return QotdDto.fromJson(qMap);
+        }).toList();
+      },
+    );
+  }
+
+  @override
+  Future<QotdSubmitResponseDto> submitQotdAttempt(
+    int questionId,
+    List<int> optionIds,
+  ) async {
+    return performNetworkRequest(
+      _dio.post(
+        '/api/v3/qotd/attempts/',
+        data: {'daily_question_id': questionId, 'answer_ids': optionIds},
+      ),
+      fromJson: (data) =>
+          QotdSubmitResponseDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<QotdSummaryDto> getQotdSummary() async {
+    return performNetworkRequest(
+      _dio.get('/api/v3/qotd/summary/'),
+      fromJson: (data) {
+        if (data == null || data is! Map) {
+          return const QotdSummaryDto();
+        }
+        return QotdSummaryDto.fromJson(data as Map<String, dynamic>);
+      },
+    );
+  }
+
   // ── Custom Exams ────────────────────────────────────────────────────────
 
   @override

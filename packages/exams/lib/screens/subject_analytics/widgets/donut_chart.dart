@@ -2,8 +2,10 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
-class DonutChart extends StatelessWidget {
-  const DonutChart({
+// Local donut chart for subject-analytics. Uses percentage-based slices with
+// explicit colors — distinct API from core's count-based DonutChart.
+class SubjectDonutChart extends StatelessWidget {
+  const SubjectDonutChart({
     super.key,
     required this.correctPct,
     required this.incorrectPct,
@@ -35,7 +37,7 @@ class DonutChart extends StatelessWidget {
       width: resolvedSize,
       height: resolvedSize,
       child: CustomPaint(
-        painter: _DonutPainter(
+        painter: _SubjectDonutPainter(
           correctPct: correctPct,
           incorrectPct: incorrectPct,
           unansweredPct: unansweredPct,
@@ -50,8 +52,8 @@ class DonutChart extends StatelessWidget {
   }
 }
 
-class _DonutPainter extends CustomPainter {
-  const _DonutPainter({
+class _SubjectDonutPainter extends CustomPainter {
+  const _SubjectDonutPainter({
     required this.correctPct,
     required this.incorrectPct,
     required this.unansweredPct,
@@ -110,7 +112,7 @@ class _DonutPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _DonutPainter oldDelegate) {
+  bool shouldRepaint(covariant _SubjectDonutPainter oldDelegate) {
     return oldDelegate.correctPct != correctPct ||
         oldDelegate.incorrectPct != incorrectPct ||
         oldDelegate.unansweredPct != unansweredPct ||

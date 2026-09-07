@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
+import '../data/config/app_config.dart';
 import 'app_loading_indicator.dart';
 
 /// Native HTML + LaTeX renderer.
@@ -29,6 +32,7 @@ class AppHtmlV2 extends StatelessWidget {
     this.padding = EdgeInsets.zero,
     this.maxLines,
     this.disableImageZoom = false,
+    this.baseUrl,
   });
 
   final String data;
@@ -40,6 +44,11 @@ class AppHtmlV2 extends StatelessWidget {
   final EdgeInsets padding;
   final int? maxLines;
   final bool disableImageZoom;
+
+  /// Optional base URL used to resolve relative image/link paths in HTML.
+  /// Only pass this when the HTML content originates from a remote source
+  /// that uses relative URLs (e.g. QOTD questions from the API).
+  final Uri? baseUrl;
 
   String _sanitizeHtml(String html) {
     var res = html;
@@ -138,6 +147,7 @@ class AppHtmlV2 extends StatelessWidget {
       padding: padding,
       child: HtmlWidget(
         processedData,
+        baseUrl: baseUrl,
 
         onTapImage: disableImageZoom
             ? null
@@ -154,6 +164,19 @@ class AppHtmlV2 extends StatelessWidget {
           fontSize: fontSize,
           fontWeight: fontWeight,
           maxWidth: MediaQuery.of(context).size.width - 64,
+        ),
+
+        onErrorBuilder: (context, element, error) => Container(
+          padding: EdgeInsets.all(design.spacing.xs),
+          decoration: BoxDecoration(
+            color: design.colors.surfaceVariant,
+            borderRadius: BorderRadius.circular(design.radius.sm),
+          ),
+          child: Icon(
+            LucideIcons.imageOff,
+            size: 16,
+            color: design.colors.textTertiary,
+          ),
         ),
 
         onLoadingBuilder: (context, element, progress) {
@@ -438,6 +461,22 @@ class _MathWidgetFactory extends WidgetFactory {
 
   @override
   void parse(BuildTree meta) {
+    if (meta.element.localName == 'img') {
+      final src = meta.element.attributes['src'];
+      if (src != null &&
+          (src.toLowerCase().contains('.svg') ||
+              src.startsWith('data:image/svg+xml'))) {
+        meta.register(
+          BuildOp.inline(
+            onRenderInlineBlock: (tree, child) {
+              return _buildSvg(src);
+            },
+          ),
+        );
+        return;
+      }
+    }
+
     if (meta.element.localName == 'math-tex') {
       final isBlock = meta.element.attributes['block'] == 'true';
 
@@ -546,6 +585,46 @@ class _MathWidgetFactory extends WidgetFactory {
         ),
       ),
     );
+  }
+
+  Widget _buildSvg(String src) {
+    try {
+      if (src.startsWith('data:image/svg+xml;base64,')) {
+        final raw = src.substring('data:image/svg+xml;base64,'.length);
+        return SvgPicture.memory(
+          base64Decode(raw),
+          placeholderBuilder: (_) => const SizedBox.shrink(),
+        );
+      } else if (src.startsWith('data:image/svg+xml;utf8,') ||
+          src.startsWith('data:image/svg+xml,')) {
+        final prefix = src.startsWith('data:image/svg+xml;utf8,')
+            ? 'data:image/svg+xml;utf8,'
+            : 'data:image/svg+xml,';
+        final raw = Uri.decodeComponent(src.substring(prefix.length));
+        return SvgPicture.string(
+          raw,
+          placeholderBuilder: (_) => const SizedBox.shrink(),
+        );
+      } else {
+        String fullUrl = src;
+        if (!src.startsWith('http://') && !src.startsWith('https://')) {
+          final base = AppConfig.apiBaseUrl.endsWith('/')
+              ? AppConfig.apiBaseUrl.substring(
+                  0,
+                  AppConfig.apiBaseUrl.length - 1,
+                )
+              : AppConfig.apiBaseUrl;
+          final path = src.startsWith('/') ? src : '/$src';
+          fullUrl = '$base$path';
+        }
+        return SvgPicture.network(
+          fullUrl,
+          placeholderBuilder: (_) => const SizedBox.shrink(),
+        );
+      }
+    } catch (_) {
+      return const SizedBox.shrink();
+    }
   }
 }
 

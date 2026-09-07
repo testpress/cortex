@@ -1447,5 +1447,51 @@
   "announcementsCloseFilter": "வகை வடிப்பானை மூடு",
   "announcementsFilterAction": "வகைகளை வடிகட்டு",
   "announcementsClearCategoryFilter": "{category} வடிப்பானை நீக்கு",
-  "announcementsSelectedFilter": "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்: {category}. மாற்ற தட்டவும்"
+  "announcementsSelectedFilter": "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்: {category}. மாற்ற தட்டவும்",
+  "qotdTitle": "தினசரி கேள்விகள்",
+  "qotdEmptyState": "இன்று கேள்விகள் எதுவும் கிடைக்கவில்லை.",
+  "qotdErrorFailedToLoad": "தினசரி கேள்விகளை ஏற்றுவதில் தோல்வி",
+  "qotdRetry": "மீண்டும் முயற்சி செய்",
+  "qotdAttemptedCount": "{attempted} / {total} முயற்சிக்கப்பட்டது",
+  "qotdSubtitleCompleted": "அருமையான வேலை! இன்றைய சவாலை நீங்கள் வென்றுவிட்டீர்கள். தொடர்ந்து முன்னேறுங்கள்!",
+  "qotdSubtitleInProgress": "உங்கள் தினசரி இலக்கை முடிக்க சரியான பாதையில் உள்ளீர்கள். இன்னும் {remaining} கேள்விகள் மட்டுமே உள்ளன!",
+  "qotdSubtitleNotStarted": "இன்றே உங்கள் கற்றல் பயணத்தைத் தொடங்குங்கள்! முன்னிலையில் இருக்க உங்கள் தினசரி இலக்கை முடிக்கவும்.",
+  "qotdStatusCompleted": "முடிந்தது",
+  "qotdStatusInProgress": "செயல்பாட்டில் உள்ளது",
+  "qotdStatusNotStarted": "தொடங்கப்படவில்லை",
+  "qotdDifficulty": "கடினத்தன்மை",
+  "qotdTargetedSubjects": "குறிப்பிடப்பட்ட பாடங்கள்",
+  "qotdCorrect": "சரி",
+  "qotdIncorrect": "தவறு",
+  "qotdUnanswered": "பதிலளிக்கப்படவில்லை",
+  "qotdStartQuiz": "வினாடி வினாவைத் தொடங்கு",
+  "qotdResumeQuiz": "வினாடி வினாவைத் தொடரவும்",
+  "qotdViewSolutions": "விடைகளைப் பார்க்கவும்",
+  "qotdMixed": "கலவை",
+  "qotdQuestionProgress": "கேள்வி {current} / {total}",
+  "qotdClose": "மூடு",
+  "qotdPrevious": "முந்தையது",
+  "qotdNext": "அடுத்தது",
+  "qotdCheck": "சரிபார்க்கவும்",
+  "qotdFinish": "முடிக்கவும்",
+  "qotdProgressLabel": "முடிந்தது",
+  "qotdExplanationTitle": "விளக்கம்",
+  "qotdNoExplanation": "விளக்கம் எதுவும் கிடைக்கவில்லை",
+  "qotdCloseQuestionView": "கேள்வி பார்வையை மூடு",
+  "qotdEmptyStateTitle": "இன்று தினசரி கேள்விகள் இல்லை",
+  "qotdEmptyStateBody": "உங்கள் கணக்கிற்காக இன்று கேள்விகள் அமைக்கப்படவில்லை. தொடர்ந்து கற்க பின்னர் வாருங்கள்!",
+  "qotdBackToDashboard": "டாஷ்போர்டுக்கு திரும்பு",
+  "qotdNextQuestion": "அடுத்த கேள்வி",
+  "qotdCheckAnswer": "பதிலை சரிபார்",
+  "qotdSelectAllThatApply": "பொருந்தும் அனைத்தையும் தேர்ந்தெடுக்கவும்",
+  "qotdSelectOneAnswer": "ஒரு பதிலை தேர்ந்தெடுக்கவும்",
+  "qotdOptionLabel": "விருப்பம்",
+  "qotdQuestionLabel": "கேள்வி {number}",
+  "@qotdQuestionLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
 }
