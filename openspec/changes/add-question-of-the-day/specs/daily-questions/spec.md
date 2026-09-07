@@ -24,3 +24,7 @@ The system SHALL query daily questions and submit answers directly against the n
 #### Scenario: Real-Time Network State
 - **WHEN** the user opens the overview or submits an answer
 - **THEN** `QotdRepository` MUST communicate directly with `DataSource` without persisting attempts to local database tables.
+
+#### Scenario: Solution Review Navigation
+- **WHEN** the user closes the quiz after reviewing solutions without submitting new answers
+- **THEN** the system MUST return immediately to the overview without invalidating provider cache or making network calls.

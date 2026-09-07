@@ -114,9 +114,11 @@ class _QotdScreenState extends ConsumerState<QotdScreen> {
             return QotdQuizScreen(
               questions: questions,
               initialIndex: _initialQuizIndex,
-              onCloseQuiz: () {
-                ref.invalidate(qotdProvider);
-                ref.invalidate(qotdSummaryProvider);
+              onCloseQuiz: (hasSubmittedNew) {
+                if (hasSubmittedNew) {
+                  ref.invalidate(qotdProvider);
+                  ref.invalidate(qotdSummaryProvider);
+                }
                 setState(() => _isInQuizMode = false);
               },
             );

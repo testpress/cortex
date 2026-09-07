@@ -8,7 +8,7 @@ import 'qotd_quiz_controller.dart';
 class QotdQuizScreen extends ConsumerStatefulWidget {
   final List<QotdDto> questions;
   final int initialIndex;
-  final VoidCallback onCloseQuiz;
+  final ValueChanged<bool> onCloseQuiz;
 
   const QotdQuizScreen({
     super.key,
@@ -95,7 +95,9 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
             ),
             leading: Transform.translate(
               offset: const Offset(0, -12),
-              child: AppBackButton(onTap: widget.onCloseQuiz),
+              child: AppBackButton(
+                onTap: () => widget.onCloseQuiz(state.hasSubmittedNewAnswer),
+              ),
             ),
             showDivider: false,
           ),
@@ -258,7 +260,7 @@ class _QotdQuizScreenState extends ConsumerState<QotdQuizScreen> {
                 onSubmit: () => controller.submitCurrentAnswer(context),
                 onNext: () {
                   if (currentIndex == totalQuestions - 1) {
-                    widget.onCloseQuiz();
+                    widget.onCloseQuiz(state.hasSubmittedNewAnswer);
                   } else {
                     _goToNext(currentIndex, controller);
                   }

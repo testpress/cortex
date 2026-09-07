@@ -207,6 +207,9 @@ void main() {
         ),
       );
 
+      final initialState = container.read(provider);
+      expect(initialState.hasSubmittedNewAnswer, isFalse);
+
       final element = tester.element(find.byType(SizedBox));
       await notifier.submitCurrentAnswer(element);
       await tester.pumpAndSettle();
@@ -218,6 +221,7 @@ void main() {
       expect(finalState.isSubmittedMap[0], isTrue);
       expect(finalState.submitResponses[0]?.isCorrect, isTrue);
       expect(finalState.isSubmitting, isFalse);
+      expect(finalState.hasSubmittedNewAnswer, isTrue);
     });
   });
 }

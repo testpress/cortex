@@ -12,6 +12,7 @@ class QotdQuizState {
   final Map<int, bool> isSubmittedMap;
   final Map<int, QotdSubmitResponseDto> submitResponses;
   final bool isSubmitting;
+  final bool hasSubmittedNewAnswer;
 
   const QotdQuizState({
     this.currentIndex = 0,
@@ -19,6 +20,7 @@ class QotdQuizState {
     this.isSubmittedMap = const {},
     this.submitResponses = const {},
     this.isSubmitting = false,
+    this.hasSubmittedNewAnswer = false,
   });
 
   QotdQuizState copyWith({
@@ -27,6 +29,7 @@ class QotdQuizState {
     Map<int, bool>? isSubmittedMap,
     Map<int, QotdSubmitResponseDto>? submitResponses,
     bool? isSubmitting,
+    bool? hasSubmittedNewAnswer,
   }) {
     return QotdQuizState(
       currentIndex: currentIndex ?? this.currentIndex,
@@ -34,6 +37,8 @@ class QotdQuizState {
       isSubmittedMap: isSubmittedMap ?? this.isSubmittedMap,
       submitResponses: submitResponses ?? this.submitResponses,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      hasSubmittedNewAnswer:
+          hasSubmittedNewAnswer ?? this.hasSubmittedNewAnswer,
     );
   }
 }
@@ -119,6 +124,7 @@ class QotdQuizController extends _$QotdQuizController {
         submitResponses: {...state.submitResponses, index: result},
         isSubmittedMap: {...state.isSubmittedMap, index: true},
         isSubmitting: false,
+        hasSubmittedNewAnswer: true,
       );
     } catch (e) {
       state = state.copyWith(isSubmitting: false);

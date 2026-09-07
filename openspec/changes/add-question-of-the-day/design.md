@@ -31,6 +31,9 @@ The application introduces the "Question of the Day" (QOTD) feature to enhance s
 **5. Direct Online-Only Repository (`QotdRepository`)**
 - **Rationale**: QOTD features are inherently time-sensitive and daily-scoped. Submissions and daily resets require live server validation, making local Drift cache synchronization unnecessary and intentionally omitted.
 
+**6. Conditional Cache Invalidation on Quiz Exit**
+- **Rationale**: Tracking `hasSubmittedNewAnswer` avoids redundant network calls and loading states when users are simply viewing solutions or navigating without answering, ensuring zero-latency return transitions to the overview.
+
 ## Risks / Trade-offs
 
 - **Risk: Varying API Payload Structures** → Mitigation: Dynamic extractor in `QotdDto` ensures resilient parsing across different question serializers.
