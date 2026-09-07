@@ -132,6 +132,10 @@ class ApiEndpoints {
   // LearnLens
   static String learnLensChat(String orgUuid, String assetId) =>
       '/api/v2/$orgUuid/assets/$assetId/chat/';
+  static String learnLensChats(String orgUuid, String assetId) =>
+      '/api/v2/$orgUuid/assets/$assetId/chats/';
+  static String learnLensChatMessages(String orgUuid, String chatId) =>
+      '/api/v2/$orgUuid/chats/$chatId/messages/';
   static String learnLensQuiz(String orgUuid, String assetId) =>
       '/api/v2/$orgUuid/assets/$assetId/quiz/';
 

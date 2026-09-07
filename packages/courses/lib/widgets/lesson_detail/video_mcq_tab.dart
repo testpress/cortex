@@ -41,6 +41,19 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
   @override
   bool get wantKeepAlive => true;
 
+  @override
+  void didUpdateWidget(VideoMcqTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.lesson.id != oldWidget.lesson.id) {
+      setState(() {
+        _hasGenerated = false;
+        _questions = [];
+        _errorMessage = null;
+        _isLoading = false;
+      });
+    }
+  }
+
   Future<void> _loadQuiz() async {
     setState(() {
       _isLoading = true;
@@ -52,20 +65,10 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       _showHints.clear();
     });
 
-    final contentId = int.tryParse(widget.lesson.id) ?? 0;
-    final sessionMap =
-        await ref.read(learnlensSessionProvider(contentId).future);
+    final session = await resolveLearnLensSession(ref, widget.lesson);
+    if (!mounted) return;
 
-    final sessionToken = sessionMap?['session_token'] as String? ?? '';
-    final settings = ref.read(instituteSettingsProvider);
-    final orgUuid = (settings?.learnlensEnabled == true)
-        ? (settings?.learnlensOrgID ?? '')
-        : '';
-    final assetId = widget.lesson.learnlensAssetId ??
-        widget.lesson.uuid ??
-        widget.lesson.id;
-
-    if (sessionToken.isEmpty) {
+    if (session == null) {
       setState(() {
         _isLoading = false;
         _errorMessage = L10n.of(context).videoMcqSessionError;
@@ -76,20 +79,22 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     try {
       final repository = ref.read(learnLensRepositoryProvider);
       final quizResponse = await repository.fetchQuiz(
-        orgUuid: orgUuid,
-        assetId: assetId,
-        sessionToken: sessionToken,
+        orgUuid: session.orgUuid,
+        assetId: session.assetId,
+        sessionToken: session.sessionToken,
         difficulty: widget.difficulty,
         questionCount: widget.questionCount,
+        contentId: session.contentId,
       );
 
+      if (!mounted) return;
       setState(() {
         _questions = quizResponse.questions;
         _isLoading = false;
       });
     } catch (e, stack) {
-      debugPrint('Error loading quiz: $e\n$stack');
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
         _errorMessage = L10n.of(context).videoMcqFailedToLoad;
