@@ -88,6 +88,7 @@ class _StorePageState extends ConsumerState<StorePage> {
                   ),
                   slivers: [
                     SliverToBoxAdapter(child: ProductList()),
+                    SliverToBoxAdapter(child: SizedBox(height: 120)),
                   ],
                 ),
               ),
