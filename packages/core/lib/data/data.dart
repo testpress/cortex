@@ -52,6 +52,7 @@ export 'db/database_provider.dart';
 
 // Auth
 export 'auth/auth_provider.dart';
+export 'auth/auth_local_data_source.dart';
 export 'auth/types/auth_exception.dart';
 
 // Sources

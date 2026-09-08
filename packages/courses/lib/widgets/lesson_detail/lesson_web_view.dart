@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:core/core.dart';
-import 'package:core/data/auth/auth_local_data_source.dart';
 import 'package:core/data/data.dart';
 
 /// A WebView-based viewer for HTML and Embedded lesson content.

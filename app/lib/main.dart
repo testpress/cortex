@@ -4,19 +4,16 @@ import 'package:testpress/testpress.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.validate();
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  // Read the auth token before runApp() so the router can set initialLocation
-  // correctly on the very first frame — no OnboardingScreen flash for logged-in users.
-  // authProvider still performs full async verification after the app launches.
-  const secureStorage = FlutterSecureStorage();
-  final token = await secureStorage.read(key: 'auth_token');
-  final isLoggedIn = token != null && token.trim().isNotEmpty;
+  // Read auth state before runApp() via the encapsulated helper so the router
+  // can set initialLocation correctly on the first frame for authenticated
+  // users. Never throws — see AuthLocalDataSource.checkCachedLogin().
+  final isLoggedIn = await AuthLocalDataSource.checkCachedLogin();
 
   runApp(
     ProviderScope(

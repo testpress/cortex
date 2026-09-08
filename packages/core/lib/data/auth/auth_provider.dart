@@ -48,6 +48,16 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// Non-null = show the SessionExpiredDialog with this message.
 final sessionExpiredProvider = StateProvider<String?>((ref) => null);
 
+/// Cached pre-boot auth signal set in main() before runApp().
+///
+/// This is the synchronous routing hint used by [goRouterProvider] to set
+/// [initialLocation] correctly on cold start — read from [AuthLocalDataSource]
+/// before [runApp] via [AuthLocalDataSource.checkCachedLogin].
+///
+/// [authProvider] still performs full async verification after launch.
+/// Must be overridden in [ProviderScope] with the result of that pre-boot check.
+final cachedAuthFlagProvider = Provider<bool>((ref) => false);
+
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
