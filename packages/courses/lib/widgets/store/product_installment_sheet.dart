@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import '../../providers/store_providers.dart';
-import '../../providers/course_list_provider.dart';
 import 'package:core/data/data.dart';
 
 class ProductInstallmentSheet extends ConsumerStatefulWidget {
@@ -340,12 +339,8 @@ class _ProductInstallmentSheetState
 
                   if (!context.mounted) return;
                   if (result?.status == PaymentResultStatus.success) {
-                    ref.read(storeRepositoryProvider).clearAll();
-                    ref.invalidate(storeProductsProvider);
-                    ref.invalidate(storeCategoriesProvider);
-                    ref.invalidate(productDetailProvider(widget.product.slug));
-                    ref.invalidate(courseSyncMetadataProvider);
-                    ref.invalidate(courseListProvider);
+                    refreshStoreAfterPurchase(ref,
+                        productSlug: widget.product.slug);
 
                     final redirect = result?.redirectRoute;
                     if (redirect != null && context.mounted) {

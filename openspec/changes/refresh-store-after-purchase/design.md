@@ -5,9 +5,9 @@ When a user completes a course purchase from `ProductDetailScreen` or an install
 ## Goals / Non-Goals
 
 **Goals:**
-- Automatically clear `StoreRepository` in-memory caches and invalidate `storeProductsProvider` and `storeCategoriesProvider` upon successful purchase in both `ProductDetailScreen` and `ProductInstallmentSheet`.
-- Invalidate `courseListProvider` to ensure enrolled study courses are synchronized.
-- Ensure automated widget tests verify the cache clearing and provider invalidation on payment success.
+- Automatically clear `StoreRepository` in-memory caches and invalidate `storeProductsProvider`, `storeCategoriesProvider`, and `productDetailProvider` upon successful purchase in both `ProductDetailScreen` and `ProductInstallmentSheet`.
+- Explicitly refresh `courseListProvider` via `courseListProvider.notifier.refresh()` to ensure newly enrolled courses are synchronized from the network into local database and UI.
+- Ensure automated widget tests verify the store cache clearing and study course sync on payment success.
 
 **Non-Goals:**
 - Modifying backend endpoints or changing payment gateway integration logic.
@@ -15,9 +15,9 @@ When a user completes a course purchase from `ProductDetailScreen` or an install
 
 ## Decisions
 
-- **Direct Invalidation & Cache Eviction in Success Handlers**:
-  - *Rationale*: Calling `ref.read(storeRepositoryProvider).clearAll()`, `ref.invalidate(storeProductsProvider)`, and `ref.invalidate(storeCategoriesProvider)` directly inside the `PaymentResultStatus.success` block ensures immediate and deterministic cache clearing.
-  - *Alternatives considered*: Adding a global event bus or stream listener for payment events. Rejected as unnecessary indirection since payments are triggered explicitly in these two locations.
+- **Direct Invalidation & Cache Eviction in Success Handlers via `refreshStoreAfterPurchase`**:
+  - *Rationale*: Encapsulating `ref.read(storeRepositoryProvider).clearAll()`, `ref.invalidate(storeProductsProvider)`, `ref.invalidate(storeCategoriesProvider)`, `ref.invalidate(productDetailProvider(slug))`, and `ref.read(courseListProvider.notifier).refresh()` inside a shared helper `refreshStoreAfterPurchase(ref, productSlug: ...)` ensures immediate, deterministic cache clearing and keeps checkout call sites consistent.
+  - *Alternatives considered*: Calling `ref.invalidate(courseListProvider)`. Rejected because `CourseList.build()` only watches local SQLite without re-fetching from the network API.
 - **Payment Screen Navigation Decoupling**:
   - *Rationale*: Popping `PaymentProcessingScreen` with a `redirectRoute` in `PaymentResult` allows caller screens to execute eviction and invalidation before triggering top-level navigation (`context.go`).
 

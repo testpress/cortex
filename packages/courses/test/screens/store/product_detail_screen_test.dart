@@ -1,11 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:drift/native.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/screens/store/product_detail_screen.dart';
 import 'package:courses/providers/store_providers.dart';
+import 'package:courses/providers/course_list_provider.dart';
 import 'package:courses/repositories/store_repository.dart';
+import 'package:courses/repositories/course_repository.dart';
 
 class MockSentryService extends SentryService {
   @override
@@ -57,6 +60,28 @@ class FakeStoreRepository extends StoreRepository {
       status: 'Completed',
       total: '300.00',
       subtotal: '300.00',
+    );
+  }
+}
+
+class FakeCourseRepository extends CourseRepository {
+  FakeCourseRepository()
+      : super(AppDatabase(NativeDatabase.memory()), const MockDataSource(),
+            MockSentryService());
+
+  int refreshCoursesCalls = 0;
+
+  @override
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
+    int page = 1,
+    dynamic tags,
+  }) async {
+    refreshCoursesCalls++;
+    return PaginatedResponseDto(
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
     );
   }
 }
@@ -113,18 +138,21 @@ void main() {
 
   group('ProductDetailScreen Payment & Store Refresh', () {
     testWidgets(
-        'clears store repository cache and invalidates providers on successful purchase',
+        'clears store repository cache and refreshes study courses on successful purchase',
         (tester) async {
       final fakeRepo = FakeStoreRepository(
         source: const MockDataSource(),
         product: testProduct,
       );
+      final fakeCourseRepo = FakeCourseRepository();
 
       await tester.pumpWidget(
         wrapRouter(
           ProductDetailScreen(product: testProduct),
           overrides: [
             storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
             dataSourceProvider.overrideWithValue(const MockDataSource()),
           ],
         ),
@@ -134,6 +162,7 @@ void main() {
 
       expect(find.text('Test Course Product'), findsWidgets);
       expect(fakeRepo.clearAllCalled, isFalse);
+      expect(fakeCourseRepo.refreshCoursesCalls, 0);
 
       // Find and tap Buy Now button
       final buyNowFinder = find.byType(AppButton);
@@ -149,8 +178,9 @@ void main() {
       await tester.tap(startLearningButton);
       await tester.pumpAndSettle();
 
-      // Verify payment processing screen completed and triggered clearAll
+      // Verify payment processing screen completed and triggered both store cache clear and study course sync
       expect(fakeRepo.clearAllCalled, isTrue);
+      expect(fakeCourseRepo.refreshCoursesCalls, 1);
     });
   });
 }
