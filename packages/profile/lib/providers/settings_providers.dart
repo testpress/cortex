@@ -31,12 +31,6 @@ class AppearanceSettingsNotifier extends _$AppearanceSettingsNotifier {
   Future<void> updateMode(DesignMode mode) async {
     final prefs = ref.read(sharedPreferencesProvider);
     await prefs.setString(_prefKey, mode.name);
-
-    try {
-      final repository = await ref.read(settingsRepositoryProvider.future);
-      await repository.updateSettings(appearanceMode: mode.name);
-    } catch (_) {}
-
     state = AppearanceSettings(mode: mode);
   }
 }
