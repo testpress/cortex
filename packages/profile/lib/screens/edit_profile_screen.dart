@@ -19,6 +19,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _phoneController;
   String? _firstNameError;
   String? _lastNameError;
+  String? _phoneError;
   String? _selectedAvatarPath;
   Uint8List? _selectedAvatarBytes;
   bool _isSaving = false;
@@ -66,6 +67,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       _lastNameError = _lastNameController.text.trim().isEmpty
           ? l10n.editProfileErrorNameEmpty
           : null;
+      _phoneError = null;
+      _errorMessage = null;
     });
 
     if (_firstNameError == null && _lastNameError == null) {
@@ -87,8 +90,55 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
         if (mounted) context.pop(true);
       } catch (e, stack) {
-        ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
-        if (mounted) setState(() => _errorMessage = e.toString());
+        if (e is! ApiException) {
+          ref
+              .read(sentryServiceProvider)
+              .captureException(e, stackTrace: stack);
+        }
+
+        if (mounted) {
+          if (e is ApiException && e.data is Map) {
+            final data = (e.data as Map).cast<String, dynamic>();
+
+            String? getFieldError(String key) {
+              final value = data[key];
+              if (value is List && value.isNotEmpty) {
+                return value.first.toString();
+              }
+              if (value is String && value.isNotEmpty) return value;
+              return null;
+            }
+
+            final phoneErr = getFieldError('phone');
+            final firstErr = getFieldError('first_name');
+            final lastErr = getFieldError('last_name');
+            final generalErr =
+                getFieldError('non_field_errors') ??
+                getFieldError('detail') ??
+                getFieldError('message');
+
+            setState(() {
+              _phoneError = phoneErr;
+              _firstNameError = firstErr ?? _firstNameError;
+              _lastNameError = lastErr ?? _lastNameError;
+
+              if (generalErr != null) {
+                _errorMessage = generalErr;
+              } else if (phoneErr == null &&
+                  firstErr == null &&
+                  lastErr == null) {
+                _errorMessage = e.message;
+              } else {
+                _errorMessage = null;
+              }
+            });
+          } else {
+            setState(
+              () =>
+                  _errorMessage = e is ApiException ? e.message : e.toString(),
+            );
+          }
+        }
       } finally {
         if (mounted) setState(() => _isSaving = false);
       }
@@ -192,7 +242,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     label: l10n.editProfilePhoneLabel,
                     hintText: l10n.editProfilePhoneHint,
                     controller: _phoneController,
+                    errorText: _phoneError,
                     keyboardType: TextInputType.phone,
+                    onChanged: (_) {
+                      if (_phoneError != null) {
+                        setState(() => _phoneError = null);
+                      }
+                    },
                   ),
                 ],
               ),
