@@ -5,8 +5,8 @@ Courses configured with a price of ₹0 (zero-priced or free courses) currently 
 ## What Changes
 
 - Add localized `free` translation key in `packages/core` for supported languages (English, Tamil, Malayalam).
-- Update Store Product Card (`ProductCard`) to render the localized "Free" label when the product price evaluates to zero (`<= 0`).
-- Update Store Product Detail Screen (`ProductDetailScreen`) header pricing row to display "Free" when product price evaluates to zero (`<= 0`).
+- Update Store Product Card (`ProductCard`) to render the localized "FREE" label when the product price evaluates to zero (`== 0`).
+- Update Store Product Detail Screen (`ProductDetailScreen`) header pricing row to display "FREE" when product price evaluates to zero (`== 0`).
 - Suppress or hide strike-through price when the primary price is free.
 
 ## Capabilities

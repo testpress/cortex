@@ -22,7 +22,7 @@ On the mobile app, store products display prices as `'₹${product.price}'` unco
    - Use `L10n.of(context).free` in the UI widgets.
 
 2. **Price Formatting Helper or Extension on `ProductDto`:**
-   - Add a getter `bool get isFree => (double.tryParse(price) ?? 0) <= 0;` on `ProductDto` (or format helper) so widgets have a single source of truth for free vs paid evaluation.
+   - Add a getter `bool get isFree => double.tryParse(price.replaceAll(',', '')) == 0;` on `ProductDto` so widgets have a single source of truth for free vs paid evaluation.
 
 3. **Strikethrough Price Handling:**
    - In `ProductCard` and `ProductDetailScreen`, check `!product.isFree` before displaying `product.strikeThroughPrice`.
