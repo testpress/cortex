@@ -91,5 +91,44 @@ void main() {
       final FittedBox fittedBox = tester.widget(fittedBoxFinder.first);
       expect(fittedBox.fit, BoxFit.scaleDown);
     });
+
+    testWidgets(
+        'renders title with single-line ellipsis for clean grid alignment',
+        (tester) async {
+      await tester
+          .pumpWidget(wrap(ProductCard(product: testProductWithStrikethrough)));
+      await tester.pumpAndSettle();
+
+      final textFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Text &&
+            widget.data == 'BrahMos (All SSC Exams - 2027)' &&
+            widget.maxLines == 1 &&
+            widget.overflow == TextOverflow.ellipsis,
+      );
+      expect(textFinder, findsOneWidget);
+    });
+
+    testWidgets(
+        'price row container has fixed 24dp height to prevent vertical card collapse',
+        (tester) async {
+      await tester
+          .pumpWidget(wrap(ProductCard(product: testProductWithStrikethrough)));
+      await tester.pumpAndSettle();
+
+      final priceText = find.text('₹2500.00');
+      final fittedBoxFinder = find.ancestor(
+        of: priceText,
+        matching: find.byType(FittedBox),
+      );
+      final sizedBoxFinder = find.ancestor(
+        of: fittedBoxFinder,
+        matching: find.byType(SizedBox),
+      );
+
+      expect(sizedBoxFinder, findsWidgets);
+      final SizedBox priceSizedBox = tester.widget(sizedBoxFinder.first);
+      expect(priceSizedBox.height, 24);
+    });
   });
 }
