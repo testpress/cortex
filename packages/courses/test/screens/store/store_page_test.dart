@@ -107,5 +107,34 @@ void main() {
       expect(fakeRepo.fetchCategoriesCalls, 2);
       expect(fakeRepo.fetchProductsCalls, 2);
     });
+
+    testWidgets(
+        'renders trailing bottom spacer for bottom navigation bar clearance',
+        (tester) async {
+      final fakeRepo = FakeStoreRepository();
+
+      await tester.pumpWidget(
+        wrap(
+          const StorePage(),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      final customScrollViewFinder = find.byType(CustomScrollView);
+      expect(customScrollViewFinder, findsOneWidget);
+
+      final customScrollView =
+          tester.widget<CustomScrollView>(customScrollViewFinder);
+      expect(customScrollView.slivers.length, 2);
+
+      final trailingSliver =
+          customScrollView.slivers.last as SliverToBoxAdapter;
+      final sizedBox = trailingSliver.child as SizedBox;
+      expect(sizedBox.height, 120);
+    });
   });
 }
