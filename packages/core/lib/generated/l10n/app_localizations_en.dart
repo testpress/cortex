@@ -1027,6 +1027,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hello! I\'m your AI study assistant. Ask me anything about this lecture!';
 
   @override
+  String get videoTranscodingProcessing =>
+      'This video is currently being processed. Please check back shortly.';
+
+  @override
+  String get videoProcessingTitle => 'Video is Being Processed';
+
+  @override
+  String get videoProcessingRefresh => 'Check Status';
+
+  @override
   String get videoAiThinking => 'Thinking';
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'custom_video_player.dart';
+import 'video_processing_view.dart';
 import 'video_tabs.dart';
 import 'video_mcq_tab.dart';
 
@@ -321,6 +322,10 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
   }
 
   Widget _buildVideoSection(DesignConfig design) {
+    if (widget.lesson.isTranscodingProcessing) {
+      return VideoProcessingView(lessonId: widget.lesson.id);
+    }
+
     final isCompleted =
         widget.lesson.progressStatus == LessonProgressStatus.completed;
     final initialPos = isCompleted

@@ -1036,6 +1036,16 @@ class AppLocalizationsMl extends AppLocalizations {
       'നമസ്കാരം! ഞാൻ നിങ്ങളുടെ AI പഠന സഹായിയാണ്. ഈ ലെക്ചറിനെക്കുറിച്ച് എന്തും ചോദിക്കാം!';
 
   @override
+  String get videoTranscodingProcessing =>
+      'ഈ വീഡിയോ ഇപ്പോൾ പ്രോസസ്സ് ചെയ്തുകൊണ്ടിരിക്കുകയാണ്. ദയവായി കുറച്ചുസമയം കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get videoProcessingTitle => 'വീഡിയോ പ്രോസസ്സ് ചെയ്യുന്നു';
+
+  @override
+  String get videoProcessingRefresh => 'സ്റ്റാറ്റസ് പരിശോധിക്കുക';
+
+  @override
   String get videoAiThinking => 'ചിന്തിക്കുന്നു';
 
   @override

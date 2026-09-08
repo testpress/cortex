@@ -236,5 +236,34 @@ void main() {
       expect(dto.uuid, 'some-uuid');
       expect(dto.contentUrl, isNull);
     });
+
+    test(
+      'should parse transcoding_status correctly and identify processing state',
+      () {
+        final jsonCompleted = {
+          'id': '13',
+          'title': 'Transcoded Video',
+          'content_type': 'video',
+          'video': {'transcoding_status': 'Completed'},
+        };
+
+        final dtoCompleted = LessonDto.fromJson(jsonCompleted);
+        expect(dtoCompleted.transcodingStatus, 'Completed');
+        expect(dtoCompleted.isTranscodingCompleted, true);
+        expect(dtoCompleted.isTranscodingProcessing, false);
+
+        final jsonProcessing = {
+          'id': '14',
+          'title': 'Processing Video',
+          'content_type': 'video',
+          'video': {'transcoding_status': 'Processing'},
+        };
+
+        final dtoProcessing = LessonDto.fromJson(jsonProcessing);
+        expect(dtoProcessing.transcodingStatus, 'Processing');
+        expect(dtoProcessing.isTranscodingCompleted, false);
+        expect(dtoProcessing.isTranscodingProcessing, true);
+      },
+    );
   });
 }
