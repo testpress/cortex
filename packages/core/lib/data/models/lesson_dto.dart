@@ -88,6 +88,17 @@ class LessonDto {
   final String? conferenceId;
   final String? password;
   final String? accessToken;
+  final String? transcodingStatus;
+
+  /// Whether video transcoding is completed (or not set).
+  bool get isTranscodingCompleted =>
+      transcodingStatus == null ||
+      transcodingStatus!.isEmpty ||
+      transcodingStatus!.toLowerCase() == 'completed';
+
+  /// Whether video is currently processing / transcoding.
+  bool get isTranscodingProcessing =>
+      type == LessonType.video && !isTranscodingCompleted;
 
   /// Whether this live stream or conference uses Zoom.
   bool get isZoom =>
@@ -114,6 +125,7 @@ class LessonDto {
 
     switch (type) {
       case LessonType.video:
+        if (isTranscodingProcessing) return true;
         return uuid != null && uuid!.isNotEmpty;
       case LessonType.liveStream:
         if (isFermion) {
@@ -190,6 +202,7 @@ class LessonDto {
     this.conferenceId,
     this.password,
     this.accessToken,
+    this.transcodingStatus,
   });
 
   LessonDto copyWith({
@@ -251,6 +264,7 @@ class LessonDto {
     String? conferenceId,
     String? password,
     String? accessToken,
+    String? transcodingStatus,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -312,6 +326,7 @@ class LessonDto {
       conferenceId: conferenceId ?? this.conferenceId,
       password: password ?? this.password,
       accessToken: accessToken ?? this.accessToken,
+      transcodingStatus: transcodingStatus ?? this.transcodingStatus,
     );
   }
 
@@ -434,6 +449,9 @@ class LessonDto {
       accessToken: (accessToken?.isEmpty ?? true)
           ? other.accessToken
           : accessToken,
+      transcodingStatus: (transcodingStatus?.isEmpty ?? true)
+          ? other.transcodingStatus
+          : transcodingStatus,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
         // If they are different, prefer the more specific one if one is 'attachment' or 'video'
@@ -903,6 +921,11 @@ class LessonDto {
                   as Map<String, dynamic>?)?['watermark_before_download']
               as bool? ??
           false,
+      transcodingStatus:
+          (video?['transcoding_status'] ??
+                  json['transcoding_status'] ??
+                  json['transcodingStatus'])
+              ?.toString(),
     );
   }
 

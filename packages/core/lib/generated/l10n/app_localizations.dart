@@ -1937,6 +1937,18 @@ abstract class AppLocalizations {
   /// **'Hello! I\'m your AI study assistant. Ask me anything about this lecture!'**
   String get videoAiGreeting;
 
+  /// No description provided for @videoTranscodingProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'This video is currently being processed. Please check back shortly.'**
+  String get videoTranscodingProcessing;
+
+  /// No description provided for @videoProcessingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Video is Being Processed'**
+  String get videoProcessingTitle;
+
   /// No description provided for @videoAiThinking.
   ///
   /// In en, this message translates to:

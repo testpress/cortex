@@ -1026,6 +1026,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'مرحبًا! أنا مساعدك التعليمي بالذكاء الاصطناعي. لا تتردد في سؤالي عن أي شيء يخص هذه المحاضرة!';
 
   @override
+  String get videoTranscodingProcessing =>
+      'يجري معالجة الفيديو حاليًا. يرجى التحقق لاحقًا.';
+
+  @override
+  String get videoProcessingTitle => 'جاري معالجة الفيديو';
+
+  @override
   String get videoAiThinking => 'جاري التفكير...';
 
   @override

@@ -80,4 +80,33 @@ void main() {
       expect(find.text('Ask Doubt'), findsOneWidget);
     });
   });
+
+  group('VideoLessonViewer Transcoding Processing', () {
+    testWidgets(
+        'shows VideoProcessingView when isTranscodingProcessing is true',
+        (tester) async {
+      const processingLesson = LessonDto(
+        id: '102',
+        chapterId: '10',
+        title: 'Processing Video Lesson',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.notStarted,
+        orderIndex: 1,
+        duration: '10 min',
+        isLocked: false,
+        transcodingStatus: 'Processing',
+      );
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(const VideoLessonViewer(lesson: processingLesson)),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Video is Being Processed'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+    });
+  });
 }

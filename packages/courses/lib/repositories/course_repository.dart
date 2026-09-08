@@ -1261,6 +1261,7 @@ class CourseRepository {
         lastWatchedDuration: row.lastWatchedDuration,
         allowDownload: row.allowDownload,
         watermarkBeforeDownload: row.watermarkBeforeDownload,
+        transcodingStatus: row.transcodingStatus,
         exam: (() {
           final jsonStr = row.examMetadataJson;
           if (jsonStr == null || jsonStr.isEmpty) return null;
@@ -1330,6 +1331,7 @@ class CourseRepository {
         lastWatchedDuration: Value.absentIfNull(dto.lastWatchedDuration),
         allowDownload: Value(dto.allowDownload),
         watermarkBeforeDownload: Value(dto.watermarkBeforeDownload),
+        transcodingStatus: Value.absentIfNull(dto.transcodingStatus),
         examMetadataJson: Value.absentIfNull(
           dto.exam == null ? null : jsonEncode(dto.exam!.toJson()),
         ),

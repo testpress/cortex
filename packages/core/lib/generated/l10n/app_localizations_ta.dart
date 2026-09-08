@@ -1041,6 +1041,13 @@ class AppLocalizationsTa extends AppLocalizations {
       'வணக்கம்! நான் உங்கள் AI கற்றல் உதவியாளர். இந்த விரிவுரையைப் பற்றி எது வேண்டுமானாலும் கேட்கலாம்!';
 
   @override
+  String get videoTranscodingProcessing =>
+      'இந்த வீடியோ தற்போது செயலாக்கப்பட்டு வருகிறது. சிறிது நேரம் கழித்து மீண்டும் பார்க்கவும்.';
+
+  @override
+  String get videoProcessingTitle => 'வீடியோ செயலாக்கப்படுகிறது';
+
+  @override
   String get videoAiThinking => 'சிந்திக்கிறது';
 
   @override

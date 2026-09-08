@@ -84,6 +84,7 @@ class LessonsTable extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get watermarkBeforeDownload =>
       boolean().withDefault(const Constant(false))();
+  TextColumn get transcodingStatus => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

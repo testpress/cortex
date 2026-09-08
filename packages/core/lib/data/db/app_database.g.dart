@@ -2025,6 +2025,18 @@ class $LessonsTableTable extends LessonsTable
         ),
         defaultValue: const Constant(false),
       );
+  static const VerificationMeta _transcodingStatusMeta = const VerificationMeta(
+    'transcodingStatus',
+  );
+  @override
+  late final GeneratedColumn<String> transcodingStatus =
+      GeneratedColumn<String>(
+        'transcoding_status',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2080,6 +2092,7 @@ class $LessonsTableTable extends LessonsTable
     hasEnded,
     allowDownload,
     watermarkBeforeDownload,
+    transcodingStatus,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2519,6 +2532,15 @@ class $LessonsTableTable extends LessonsTable
         ),
       );
     }
+    if (data.containsKey('transcoding_status')) {
+      context.handle(
+        _transcodingStatusMeta,
+        transcodingStatus.isAcceptableOrUnknown(
+          data['transcoding_status']!,
+          _transcodingStatusMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2740,6 +2762,10 @@ class $LessonsTableTable extends LessonsTable
         DriftSqlType.bool,
         data['${effectivePrefix}watermark_before_download'],
       )!,
+      transcodingStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transcoding_status'],
+      ),
     );
   }
 
@@ -2808,6 +2834,7 @@ class LessonsTableData extends DataClass
   final bool hasEnded;
   final bool allowDownload;
   final bool watermarkBeforeDownload;
+  final String? transcodingStatus;
   const LessonsTableData({
     required this.id,
     required this.chapterId,
@@ -2862,6 +2889,7 @@ class LessonsTableData extends DataClass
     required this.hasEnded,
     required this.allowDownload,
     required this.watermarkBeforeDownload,
+    this.transcodingStatus,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2985,6 +3013,9 @@ class LessonsTableData extends DataClass
     map['has_ended'] = Variable<bool>(hasEnded);
     map['allow_download'] = Variable<bool>(allowDownload);
     map['watermark_before_download'] = Variable<bool>(watermarkBeforeDownload);
+    if (!nullToAbsent || transcodingStatus != null) {
+      map['transcoding_status'] = Variable<String>(transcodingStatus);
+    }
     return map;
   }
 
@@ -3103,6 +3134,9 @@ class LessonsTableData extends DataClass
       hasEnded: Value(hasEnded),
       allowDownload: Value(allowDownload),
       watermarkBeforeDownload: Value(watermarkBeforeDownload),
+      transcodingStatus: transcodingStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transcodingStatus),
     );
   }
 
@@ -3179,6 +3213,9 @@ class LessonsTableData extends DataClass
       watermarkBeforeDownload: serializer.fromJson<bool>(
         json['watermarkBeforeDownload'],
       ),
+      transcodingStatus: serializer.fromJson<String?>(
+        json['transcodingStatus'],
+      ),
     );
   }
   @override
@@ -3240,6 +3277,7 @@ class LessonsTableData extends DataClass
       'watermarkBeforeDownload': serializer.toJson<bool>(
         watermarkBeforeDownload,
       ),
+      'transcodingStatus': serializer.toJson<String?>(transcodingStatus),
     };
   }
 
@@ -3297,6 +3335,7 @@ class LessonsTableData extends DataClass
     bool? hasEnded,
     bool? allowDownload,
     bool? watermarkBeforeDownload,
+    Value<String?> transcodingStatus = const Value.absent(),
   }) => LessonsTableData(
     id: id ?? this.id,
     chapterId: chapterId ?? this.chapterId,
@@ -3372,6 +3411,9 @@ class LessonsTableData extends DataClass
     allowDownload: allowDownload ?? this.allowDownload,
     watermarkBeforeDownload:
         watermarkBeforeDownload ?? this.watermarkBeforeDownload,
+    transcodingStatus: transcodingStatus.present
+        ? transcodingStatus.value
+        : this.transcodingStatus,
   );
   LessonsTableData copyWithCompanion(LessonsTableCompanion data) {
     return LessonsTableData(
@@ -3502,6 +3544,9 @@ class LessonsTableData extends DataClass
       watermarkBeforeDownload: data.watermarkBeforeDownload.present
           ? data.watermarkBeforeDownload.value
           : this.watermarkBeforeDownload,
+      transcodingStatus: data.transcodingStatus.present
+          ? data.transcodingStatus.value
+          : this.transcodingStatus,
     );
   }
 
@@ -3560,7 +3605,8 @@ class LessonsTableData extends DataClass
           ..write('end: $end, ')
           ..write('hasEnded: $hasEnded, ')
           ..write('allowDownload: $allowDownload, ')
-          ..write('watermarkBeforeDownload: $watermarkBeforeDownload')
+          ..write('watermarkBeforeDownload: $watermarkBeforeDownload, ')
+          ..write('transcodingStatus: $transcodingStatus')
           ..write(')'))
         .toString();
   }
@@ -3620,6 +3666,7 @@ class LessonsTableData extends DataClass
     hasEnded,
     allowDownload,
     watermarkBeforeDownload,
+    transcodingStatus,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -3677,7 +3724,8 @@ class LessonsTableData extends DataClass
           other.end == this.end &&
           other.hasEnded == this.hasEnded &&
           other.allowDownload == this.allowDownload &&
-          other.watermarkBeforeDownload == this.watermarkBeforeDownload);
+          other.watermarkBeforeDownload == this.watermarkBeforeDownload &&
+          other.transcodingStatus == this.transcodingStatus);
 }
 
 class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
@@ -3734,6 +3782,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
   final Value<bool> hasEnded;
   final Value<bool> allowDownload;
   final Value<bool> watermarkBeforeDownload;
+  final Value<String?> transcodingStatus;
   final Value<int> rowid;
   const LessonsTableCompanion({
     this.id = const Value.absent(),
@@ -3789,6 +3838,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.hasEnded = const Value.absent(),
     this.allowDownload = const Value.absent(),
     this.watermarkBeforeDownload = const Value.absent(),
+    this.transcodingStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LessonsTableCompanion.insert({
@@ -3845,6 +3895,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     this.hasEnded = const Value.absent(),
     this.allowDownload = const Value.absent(),
     this.watermarkBeforeDownload = const Value.absent(),
+    this.transcodingStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        chapterId = Value(chapterId),
@@ -3906,6 +3957,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Expression<bool>? hasEnded,
     Expression<bool>? allowDownload,
     Expression<bool>? watermarkBeforeDownload,
+    Expression<String>? transcodingStatus,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3968,6 +4020,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       if (allowDownload != null) 'allow_download': allowDownload,
       if (watermarkBeforeDownload != null)
         'watermark_before_download': watermarkBeforeDownload,
+      if (transcodingStatus != null) 'transcoding_status': transcodingStatus,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4026,6 +4079,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
     Value<bool>? hasEnded,
     Value<bool>? allowDownload,
     Value<bool>? watermarkBeforeDownload,
+    Value<String?>? transcodingStatus,
     Value<int>? rowid,
   }) {
     return LessonsTableCompanion(
@@ -4083,6 +4137,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
       allowDownload: allowDownload ?? this.allowDownload,
       watermarkBeforeDownload:
           watermarkBeforeDownload ?? this.watermarkBeforeDownload,
+      transcodingStatus: transcodingStatus ?? this.transcodingStatus,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4257,6 +4312,9 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
         watermarkBeforeDownload.value,
       );
     }
+    if (transcodingStatus.present) {
+      map['transcoding_status'] = Variable<String>(transcodingStatus.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4319,6 +4377,7 @@ class LessonsTableCompanion extends UpdateCompanion<LessonsTableData> {
           ..write('hasEnded: $hasEnded, ')
           ..write('allowDownload: $allowDownload, ')
           ..write('watermarkBeforeDownload: $watermarkBeforeDownload, ')
+          ..write('transcodingStatus: $transcodingStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17906,6 +17965,7 @@ typedef $$LessonsTableTableCreateCompanionBuilder =
       Value<bool> hasEnded,
       Value<bool> allowDownload,
       Value<bool> watermarkBeforeDownload,
+      Value<String?> transcodingStatus,
       Value<int> rowid,
     });
 typedef $$LessonsTableTableUpdateCompanionBuilder =
@@ -17963,6 +18023,7 @@ typedef $$LessonsTableTableUpdateCompanionBuilder =
       Value<bool> hasEnded,
       Value<bool> allowDownload,
       Value<bool> watermarkBeforeDownload,
+      Value<String?> transcodingStatus,
       Value<int> rowid,
     });
 
@@ -18237,6 +18298,11 @@ class $$LessonsTableTableFilterComposer
 
   ColumnFilters<bool> get watermarkBeforeDownload => $composableBuilder(
     column: $table.watermarkBeforeDownload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get transcodingStatus => $composableBuilder(
+    column: $table.transcodingStatus,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -18514,6 +18580,11 @@ class $$LessonsTableTableOrderingComposer
     column: $table.watermarkBeforeDownload,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get transcodingStatus => $composableBuilder(
+    column: $table.transcodingStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LessonsTableTableAnnotationComposer
@@ -18757,6 +18828,11 @@ class $$LessonsTableTableAnnotationComposer
     column: $table.watermarkBeforeDownload,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get transcodingStatus => $composableBuilder(
+    column: $table.transcodingStatus,
+    builder: (column) => column,
+  );
 }
 
 class $$LessonsTableTableTableManager
@@ -18843,6 +18919,7 @@ class $$LessonsTableTableTableManager
                 Value<bool> hasEnded = const Value.absent(),
                 Value<bool> allowDownload = const Value.absent(),
                 Value<bool> watermarkBeforeDownload = const Value.absent(),
+                Value<String?> transcodingStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion(
                 id: id,
@@ -18898,6 +18975,7 @@ class $$LessonsTableTableTableManager
                 hasEnded: hasEnded,
                 allowDownload: allowDownload,
                 watermarkBeforeDownload: watermarkBeforeDownload,
+                transcodingStatus: transcodingStatus,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -18955,6 +19033,7 @@ class $$LessonsTableTableTableManager
                 Value<bool> hasEnded = const Value.absent(),
                 Value<bool> allowDownload = const Value.absent(),
                 Value<bool> watermarkBeforeDownload = const Value.absent(),
+                Value<String?> transcodingStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LessonsTableCompanion.insert(
                 id: id,
@@ -19010,6 +19089,7 @@ class $$LessonsTableTableTableManager
                 hasEnded: hasEnded,
                 allowDownload: allowDownload,
                 watermarkBeforeDownload: watermarkBeforeDownload,
+                transcodingStatus: transcodingStatus,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
