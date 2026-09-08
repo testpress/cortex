@@ -1043,9 +1043,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get videoProcessingTitle => 'വീഡിയോ പ്രോസസ്സ് ചെയ്യുന്നു';
 
   @override
-  String get videoProcessingRefresh => 'സ്റ്റാറ്റസ് പരിശോധിക്കുക';
-
-  @override
   String get videoAiThinking => 'ചിന്തിക്കുന്നു';
 
   @override

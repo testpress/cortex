@@ -1048,9 +1048,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get videoProcessingTitle => 'வீடியோ செயலாக்கப்படுகிறது';
 
   @override
-  String get videoProcessingRefresh => 'நிலையைச் சரிபார்க்கவும்';
-
-  @override
   String get videoAiThinking => 'சிந்திக்கிறது';
 
   @override

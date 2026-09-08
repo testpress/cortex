@@ -1033,9 +1033,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get videoProcessingTitle => 'جاري معالجة الفيديو';
 
   @override
-  String get videoProcessingRefresh => 'التحقق من الحالة';
-
-  @override
   String get videoAiThinking => 'جاري التفكير...';
 
   @override

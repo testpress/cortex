@@ -32,6 +32,15 @@ class _VideoProcessingViewState extends ConsumerState<VideoProcessingView> {
         final repo = await ref.read(courseRepositoryProvider.future);
         await repo.refreshLesson(widget.lessonId);
       }
+    } catch (e, st) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      if (mounted) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).errorGenericMessage,
+          isError: true,
+        );
+      }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

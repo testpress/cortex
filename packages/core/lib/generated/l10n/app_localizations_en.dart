@@ -1034,9 +1034,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoProcessingTitle => 'Video is Being Processed';
 
   @override
-  String get videoProcessingRefresh => 'Check Status';
-
-  @override
   String get videoAiThinking => 'Thinking';
 
   @override

@@ -1949,12 +1949,6 @@ abstract class AppLocalizations {
   /// **'Video is Being Processed'**
   String get videoProcessingTitle;
 
-  /// No description provided for @videoProcessingRefresh.
-  ///
-  /// In en, this message translates to:
-  /// **'Check Status'**
-  String get videoProcessingRefresh;
-
   /// No description provided for @videoAiThinking.
   ///
   /// In en, this message translates to:
