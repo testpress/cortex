@@ -190,13 +190,29 @@ class _PaymentProcessingScreenState
           AppButton(
             label: L10n.of(context).paymentStartLearning,
             fullWidth: true,
-            onPressed: () => context.go('/study'),
+            onPressed: () {
+              Navigator.of(context).pop(
+                PaymentResult(
+                  status: PaymentResultStatus.success,
+                  message: _result?.message,
+                  redirectRoute: '/study',
+                ),
+              );
+            },
           ),
           SizedBox(height: design.spacing.md),
           AppButton.secondary(
             label: L10n.of(context).paymentBackToHome,
             fullWidth: true,
-            onPressed: () => context.go('/home'),
+            onPressed: () {
+              Navigator.of(context).pop(
+                PaymentResult(
+                  status: PaymentResultStatus.success,
+                  message: _result?.message,
+                  redirectRoute: '/home',
+                ),
+              );
+            },
           ),
         ] else ...[
           AppButton(

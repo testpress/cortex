@@ -6,6 +6,7 @@ import '../../widgets/store/product_discount_sheet.dart';
 import '../../widgets/store/product_installment_sheet.dart';
 import '../../widgets/store/product_expandable_course_card.dart';
 import '../../providers/store_providers.dart';
+import '../../providers/course_list_provider.dart';
 import 'package:core/data/data.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
@@ -362,7 +363,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
                           if (!context.mounted) return;
                           if (result?.status == PaymentResultStatus.success) {
+                            ref.read(storeRepositoryProvider).clearAll();
+                            ref.invalidate(storeProductsProvider);
+                            ref.invalidate(storeCategoriesProvider);
                             ref.invalidate(productDetailProvider(product.slug));
+                            ref.invalidate(courseSyncMetadataProvider);
+                            ref.invalidate(courseListProvider);
+
+                            final redirect = result?.redirectRoute;
+                            if (redirect != null && context.mounted) {
+                              context.go(redirect);
+                            }
                           }
                         },
                       ),
