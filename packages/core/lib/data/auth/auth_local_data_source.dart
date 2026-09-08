@@ -3,6 +3,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'types/auth_exception.dart';
 
 class AuthLocalDataSource {
+  /// Pre-boot helper: called in main() before runApp() to obtain a fast
+  /// synchronous-equivalent auth signal without duplicating storage logic.
+  ///
+  /// Never throws — a bad Android Keystore (e.g. after an OS/backup restore)
+  /// returns false so the app starts in a graceful unauthenticated state
+  /// instead of crashing before runApp().
+  static Future<bool> checkCachedLogin() async {
+    try {
+      return await AuthLocalDataSource().isUserLoggedIn();
+    } catch (_) {
+      return false;
+    }
+  }
+
   static const _authTokenKey = 'auth_token';
 
   final FlutterSecureStorage _storage;

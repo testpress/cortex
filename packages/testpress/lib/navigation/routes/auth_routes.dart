@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import '../bootstrap_provider.dart';
 import '../page_transitions/slide_transition_page.dart';
@@ -17,15 +18,22 @@ class AuthRoutes {
   };
 
   static String? redirect(BuildContext context, GoRouterState state) {
-    final bootstrapState = ProviderScope.containerOf(
-      context,
-      listen: false,
-    ).read(bootstrapProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
+    final bootstrapState = container.read(bootstrapProvider);
     final path = state.uri.path;
     final isAuthRoute = _authPaths.contains(path);
 
     if (bootstrapState == BootstrapState.loading) {
       if (path == '/onboarding') return null;
+
+      // Respect the pre-boot cached auth signal so the loading gate doesn't
+      // immediately bounce initialLocation='/home' back to /onboarding before
+      // authProvider has a chance to resolve. authProvider still performs full
+      // async verification in the background; once bootstrapProvider transitions
+      // out of loading, router.refresh() fires and the correct redirect applies.
+      final cachedIsLoggedIn = container.read(cachedAuthFlagProvider);
+      if (cachedIsLoggedIn && !isAuthRoute) return null;
+
       return '/onboarding';
     }
 

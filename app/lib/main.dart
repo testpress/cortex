@@ -9,10 +9,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.validate();
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  // Read auth state before runApp() via the encapsulated helper so the router
+  // can set initialLocation correctly on the first frame for authenticated
+  // users. Never throws — see AuthLocalDataSource.checkCachedLogin().
+  final isLoggedIn = await AuthLocalDataSource.checkCachedLogin();
+
   runApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+        cachedAuthFlagProvider.overrideWithValue(isLoggedIn),
       ],
       child: const CortexAppRoot(),
     ),
