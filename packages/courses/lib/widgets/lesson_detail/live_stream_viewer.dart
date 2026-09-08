@@ -11,7 +11,6 @@ import '../../providers/course_list_provider.dart';
 ///
 /// Branches on [LessonDto.liveStreamProvider]:
 /// - **Scheduled**: renders [ScheduledMessageView] with a 5-second polling timer.
-/// - **Completed without recording**: renders [LiveStreamEndedMessageView].
 /// - **Fermion**: renders a lobby screen ([FermionLobbyView]).
 /// - **TpStreams / null**: renders the existing inline [CustomVideoPlayer].
 class LiveStreamViewer extends ConsumerStatefulWidget {

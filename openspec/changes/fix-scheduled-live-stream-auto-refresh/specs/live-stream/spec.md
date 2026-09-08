@@ -1,6 +1,6 @@
 ## Purpose
 
-Enables automatic background status polling, accurate local cache synchronization, and clear stream lifecycle status notices (scheduled, live, and concluded/recording processing) for live stream sessions.
+Enables automatic background status polling and accurate local cache synchronization for live stream sessions.
 
 ## ADDED Requirements
 
@@ -20,10 +20,3 @@ The system SHALL run a periodic 5-second refresh timer while a live stream is in
 - **THEN** the system SHALL poll the lesson detail endpoint every 5 seconds
 - **AND** when the API returns an active status (`isScheduled == false`), the UI SHALL automatically rebuild and render the video player or session lobby
 - **AND** the periodic refresh timer SHALL be cancelled
-
-### Requirement: Live Stream Concluded Notice
-The system SHALL display an informative notice when a live stream has ended by the host and the recording is not yet ready (`showRecordedVideo == false`).
-
-#### Scenario: Live stream ended without recording ready
-- **WHEN** a live stream has status `completed` or `ended` and `showRecordedVideo` is `false`
-- **THEN** the system SHALL display a message stating "This live stream has been ended by host" and "The recording of the same will be available here once it is ready"
