@@ -92,3 +92,4 @@ export 'services/sentry_service.dart';
 export 'sources/mock_data.dart';
 export 'providers/offline_exams_provider.dart';
 export 'providers/playback_settings_provider.dart';
+export 'providers/shared_preferences_provider.dart';

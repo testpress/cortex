@@ -45,15 +45,12 @@ final appTextScaleMultiplierProvider = Provider<double>.internal(
 // ignore: unused_element
 typedef AppTextScaleMultiplierRef = ProviderRef<double>;
 String _$appearanceSettingsNotifierHash() =>
-    r'6811e8e3bb037d59a699bba5962c2b39259923de';
+    r'44f7fead7d439d715819e641eb866549c85c9afa';
 
 /// See also [AppearanceSettingsNotifier].
 @ProviderFor(AppearanceSettingsNotifier)
 final appearanceSettingsNotifierProvider =
-    AsyncNotifierProvider<
-      AppearanceSettingsNotifier,
-      AppearanceSettings
-    >.internal(
+    NotifierProvider<AppearanceSettingsNotifier, AppearanceSettings>.internal(
       AppearanceSettingsNotifier.new,
       name: r'appearanceSettingsNotifierProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -63,7 +60,7 @@ final appearanceSettingsNotifierProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$AppearanceSettingsNotifier = AsyncNotifier<AppearanceSettings>;
+typedef _$AppearanceSettingsNotifier = Notifier<AppearanceSettings>;
 String _$accessibilitySettingsNotifierHash() =>
     r'194f21a9edf8a50feb6eeea72b6f10f81eae531e';
 

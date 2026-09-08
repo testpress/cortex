@@ -6,9 +6,5 @@ import 'settings_providers.dart';
 /// This is now a proxy to the persistent [appearanceSettingsNotifierProvider].
 final designModeProvider = Provider<DesignMode>((ref) {
   final settings = ref.watch(appearanceSettingsNotifierProvider);
-  return settings.when(
-    data: (s) => s.mode,
-    loading: () => DesignMode.system,
-    error: (_, _) => DesignMode.system,
-  );
+  return settings.mode;
 });
