@@ -1616,10 +1616,10 @@ packages:
     dependency: transitive
     description:
       name: tpstreams_player_sdk
-      sha256: f2c36e123b7a787443a91bd634bbdc5b900c7c94bc35ee5d6463a689495f7acf
+      sha256: c0247a48b14121d24525a820d696ea712be1eb025a3a4cb83b9f0ec622ea7d93
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.26"
+    version: "2.2.35"
   tuple:
     dependency: transitive
     description:
