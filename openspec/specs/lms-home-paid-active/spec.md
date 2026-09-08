@@ -116,19 +116,13 @@ The system SHALL organize data models and UI state following an offline-first re
 - **AND** it MUST reflect real lesson metadata (Title, Chapter Name, Content Type) instead of hardcoded mock data.
 
 ### Requirement: Pixel-Perfect Component Spacing and Backgrounds
-The system SHALL replicate the exact padding, margin, and layer backgrounds defined in the Figma Design reference.
+The system SHALL replicate exact component spacing without leaving empty gaps when section widgets are empty.
 
-#### Scenario: Canvas and Header layers separation
-- **WHEN** the `PaidActiveHomeScreen` is rendered
-- **THEN** its base `Scaffold` background MUST be `#F8FAFC` (`slate-50`) in light mode
-- **AND** the `DashboardHeader` MUST use the `card` color (`#FFFFFF`) with a 1px solid bottom `border`, matching Figma's `border-b` instead of an elevation shadow.
-
-#### Scenario: Native component margins
-- **WHEN** rendering section components (`PromotionalBanners`, `QuickAccessGrid`, `StudyMomentumGrid`, `TopLearnersSection`)
-- **THEN** they MUST contain their own top/bottom `Padding` values directly derived from Figma's `mt-*` classes (e.g., `EdgeInsets.only(top: 32)` for `mt-8`).
-- **AND** external `SizedBox` spacing between section roots MUST NOT be used to prevent double-padding layouts.
-
----
+#### Scenario: Native self-contained component margins without external spacers
+- **WHEN** section components (`TopCarouselSectionWidget`, `ContextualHeroSectionWidget`, `TodayScheduleSectionWidget`) are rendered
+- **THEN** they MUST contain their own bottom margin/padding internally when content is present
+- **AND** external `SizedBox` height widgets MUST NOT be placed between section roots in `_HomeLayout`
+- **AND** when a section component contains no data (e.g. no banners or live classes), it MUST evaluate to `SizedBox.shrink()` with `0px` vertical margin/height.
 
 ### Requirement: Granular Iconography and Visuals
 The system SHALL match exact iconography and visual masking definitions.
