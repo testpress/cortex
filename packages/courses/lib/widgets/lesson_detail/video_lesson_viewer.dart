@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'custom_video_player.dart';
@@ -7,7 +8,7 @@ import 'video_mcq_tab.dart';
 
 /// A rich video viewer component that includes the player, title, and tabs.
 /// Designed to be used within [LessonDetailOrchestrator].
-class VideoLessonViewer extends StatefulWidget {
+class VideoLessonViewer extends ConsumerStatefulWidget {
   const VideoLessonViewer({
     super.key,
     required this.lesson,
@@ -26,10 +27,10 @@ class VideoLessonViewer extends StatefulWidget {
   final int mcqQuestionCount;
 
   @override
-  State<VideoLessonViewer> createState() => _VideoLessonViewerState();
+  ConsumerState<VideoLessonViewer> createState() => _VideoLessonViewerState();
 }
 
-class _VideoLessonViewerState extends State<VideoLessonViewer>
+class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
     with TickerProviderStateMixin {
   late TabController _tabController;
   late List<VideoLessonTab> _activeTabs;
@@ -42,7 +43,10 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     _videoPlayerKey.currentState?.seek(target);
   }
 
-  List<VideoLessonTab> _getTabsForLesson(LessonDto lesson) {
+  List<VideoLessonTab> _getTabsForLesson(
+    LessonDto lesson, {
+    required bool helpdeskEnabled,
+  }) {
     final tabs = <VideoLessonTab>[];
     if (lesson.isAiEnabled &&
         lesson.aiNotesUrl != null &&
@@ -52,8 +56,9 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     if (lesson.enableTranscript) {
       tabs.add(VideoLessonTab.transcript);
     }
-    // Doubt is always enabled
-    tabs.add(VideoLessonTab.askDoubt);
+    if (helpdeskEnabled) {
+      tabs.add(VideoLessonTab.askDoubt);
+    }
 
     final bool isAiAvailable = lesson.isAiEnabled &&
         lesson.canEnableLearnlensAi &&
@@ -66,18 +71,54 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     return tabs;
   }
 
-  void _initTabController() {
-    _activeTabs = _getTabsForLesson(widget.lesson);
-    _tabController = TabController(
-      length: _activeTabs.length,
-      vsync: this,
-      animationDuration: Duration.zero,
-    );
-    _currentTabIndex = _tabController.index;
-    _tabController.addListener(_handleTabSelection);
+  bool _areTabsEqual(List<VideoLessonTab> a, List<VideoLessonTab> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  void _syncTabs(bool helpdeskEnabled) {
+    final newTabs =
+        _getTabsForLesson(widget.lesson, helpdeskEnabled: helpdeskEnabled);
+    if (!_areTabsEqual(_activeTabs, newTabs)) {
+      if (_activeTabs.isNotEmpty) {
+        _tabController.removeListener(_handleTabSelection);
+        _tabController.dispose();
+      }
+      _activeTabs = newTabs;
+      if (_activeTabs.isNotEmpty) {
+        _tabController = TabController(
+          length: _activeTabs.length,
+          vsync: this,
+          animationDuration: Duration.zero,
+        );
+        _currentTabIndex =
+            _currentTabIndex < _activeTabs.length ? _currentTabIndex : 0;
+        _tabController.addListener(_handleTabSelection);
+      } else {
+        _currentTabIndex = 0;
+      }
+    }
+  }
+
+  void _initTabController(bool helpdeskEnabled) {
+    _activeTabs =
+        _getTabsForLesson(widget.lesson, helpdeskEnabled: helpdeskEnabled);
+    if (_activeTabs.isNotEmpty) {
+      _tabController = TabController(
+        length: _activeTabs.length,
+        vsync: this,
+        animationDuration: Duration.zero,
+      );
+      _currentTabIndex = _tabController.index;
+      _tabController.addListener(_handleTabSelection);
+    }
   }
 
   void _handleTabSelection() {
+    if (_activeTabs.isEmpty) return;
     if (_tabController.index != _currentTabIndex) {
       _currentTabIndex = _tabController.index;
       final isTranscriptTab =
@@ -92,42 +133,25 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
   @override
   void initState() {
     super.initState();
-    _initTabController();
+    final helpdeskEnabled =
+        ref.read(instituteSettingsProvider)?.helpdeskEnabled ?? false;
+    _initTabController(helpdeskEnabled);
   }
 
   @override
   void didUpdateWidget(VideoLessonViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final newTabs = _getTabsForLesson(widget.lesson);
-    final oldTabs = _getTabsForLesson(oldWidget.lesson);
-
-    bool tabsChanged = newTabs.length != oldTabs.length;
-    if (!tabsChanged) {
-      for (int i = 0; i < newTabs.length; i++) {
-        if (newTabs[i] != oldTabs[i]) {
-          tabsChanged = true;
-          break;
-        }
-      }
-    }
-
-    if (tabsChanged) {
-      _tabController.removeListener(_handleTabSelection);
-      _tabController.dispose();
-      _activeTabs = newTabs;
-      _tabController = TabController(
-        length: _activeTabs.length,
-        vsync: this,
-        animationDuration: Duration.zero,
-      );
-      _tabController.addListener(_handleTabSelection);
-    }
+    final helpdeskEnabled =
+        ref.read(instituteSettingsProvider)?.helpdeskEnabled ?? false;
+    _syncTabs(helpdeskEnabled);
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_handleTabSelection);
-    _tabController.dispose();
+    if (_activeTabs.isNotEmpty) {
+      _tabController.removeListener(_handleTabSelection);
+      _tabController.dispose();
+    }
     _videoPositionNotifier.dispose();
     _isAutoScrollEnabledNotifier.dispose();
     super.dispose();
@@ -138,6 +162,26 @@ class _VideoLessonViewerState extends State<VideoLessonViewer>
     final design = Design.of(context);
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final settings = ref.watch(instituteSettingsProvider);
+    final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
+    _syncTabs(helpdeskEnabled);
+
+    if (_activeTabs.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Offstage(
+            offstage: isLandscape,
+            child: _buildVideoSection(design),
+          ),
+          Expanded(
+            child: ColoredBox(color: design.colors.surface),
+          ),
+          if (widget.footerBuilder != null) widget.footerBuilder!(context),
+        ],
+      );
+    }
 
     return Stack(
       children: [
