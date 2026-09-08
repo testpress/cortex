@@ -1,17 +1,19 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'custom_video_player.dart';
 import 'fermion_lobby_view.dart';
+import '../../providers/course_list_provider.dart';
 
 /// Viewer for live stream content.
 ///
 /// Branches on [LessonDto.liveStreamProvider]:
-/// - **Fermion**: renders a lobby screen ([FermionLobbyView]) with a
-///   context-aware action button that opens the session embed URL in a
-///   full-screen [AppWebView].
+/// - **Scheduled**: renders [ScheduledMessageView] with a 5-second polling timer.
+/// - **Fermion**: renders a lobby screen ([FermionLobbyView]).
 /// - **TpStreams / null**: renders the existing inline [CustomVideoPlayer].
-class LiveStreamViewer extends StatelessWidget {
+class LiveStreamViewer extends ConsumerStatefulWidget {
   const LiveStreamViewer({
     super.key,
     required this.lesson,
@@ -23,10 +25,59 @@ class LiveStreamViewer extends StatelessWidget {
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
 
-  bool get _isFermion => lesson.isFermion;
+  @override
+  ConsumerState<LiveStreamViewer> createState() => _LiveStreamViewerState();
+}
+
+class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
+  Timer? _refreshTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAndScheduleRefresh();
+  }
+
+  @override
+  void didUpdateWidget(covariant LiveStreamViewer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.lesson.isScheduled != widget.lesson.isScheduled ||
+        oldWidget.lesson.id != widget.lesson.id) {
+      _checkAndScheduleRefresh();
+    }
+  }
+
+  void _checkAndScheduleRefresh() {
+    _refreshTimer?.cancel();
+    if (widget.lesson.isScheduled) {
+      _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+        _triggerRefresh();
+      });
+    }
+  }
+
+  Future<void> _triggerRefresh() async {
+    try {
+      final repository = await ref.read(courseRepositoryProvider.future);
+      await repository.refreshLesson(widget.lesson.id);
+    } catch (_) {
+      // Ignore network errors during background status polling
+    }
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  bool get _isFermion => widget.lesson.isFermion;
 
   @override
   Widget build(BuildContext context) {
+    final lesson = widget.lesson;
+    final footerBuilder = widget.footerBuilder;
+
     if (lesson.isScheduled) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +86,7 @@ class LiveStreamViewer extends StatelessWidget {
             aspectRatio: 16 / 9,
             child: ScheduledMessageView(message: lesson.scheduledMessage),
           ),
-          if (footerBuilder != null) footerBuilder!(context),
+          if (footerBuilder != null) footerBuilder(context),
         ],
       );
     }
@@ -47,7 +98,7 @@ class LiveStreamViewer extends StatelessWidget {
       );
     }
 
-    // TpStreams / null provider — existing inline video player
+    // TpStreams / null provider — inline video player
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,7 +111,7 @@ class LiveStreamViewer extends StatelessWidget {
         const Expanded(
           child: ColoredBox(color: Color(0xFF000000)),
         ),
-        if (footerBuilder != null) footerBuilder!(context),
+        if (footerBuilder != null) footerBuilder(context),
       ],
     );
   }

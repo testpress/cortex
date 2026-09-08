@@ -148,6 +148,32 @@ void main() {
         expect(merged.progressStatus, LessonProgressStatus.notStarted);
       },
     );
+
+    test(
+      'mergeWith clears isScheduled when fresh detail has isDetailFetched: true and isScheduled: false',
+      () {
+        final cachedScheduled = LessonDto.fromJson({
+          'error_code': 'scheduled',
+          'message': 'Scheduled for 10 AM',
+        }).copyWith(id: '1', isDetailFetched: true);
+
+        expect(cachedScheduled.isScheduled, true);
+
+        final freshActive = LessonDto.fromJson({
+          'id': '1',
+          'title': 'Active Stream',
+          'content_type': 'Live Stream',
+          'uuid': 'stream-uuid',
+          'live_stream': {'status': 'running'},
+        }).copyWith(isDetailFetched: true);
+
+        expect(freshActive.isScheduled, false);
+
+        final merged = freshActive.mergeWith(cachedScheduled);
+        expect(merged.isScheduled, false);
+        expect(merged.scheduledMessage, isNull);
+      },
+    );
   });
 
   group('LessonDto.fromJson — liveStream parsing', () {

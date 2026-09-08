@@ -415,10 +415,14 @@ class LessonDto {
       liveStreamProvider: (liveStreamProvider?.isEmpty ?? true)
           ? other.liveStreamProvider
           : liveStreamProvider,
-      isScheduled: isScheduled || other.isScheduled,
-      scheduledMessage: (scheduledMessage?.isEmpty ?? true)
-          ? other.scheduledMessage
-          : scheduledMessage,
+      isScheduled: isDetailFetched
+          ? isScheduled
+          : (isScheduled || other.isScheduled),
+      scheduledMessage: isDetailFetched
+          ? scheduledMessage
+          : ((scheduledMessage?.isEmpty ?? true)
+                ? other.scheduledMessage
+                : scheduledMessage),
       allowDownload: allowDownload || other.allowDownload,
       watermarkBeforeDownload:
           watermarkBeforeDownload || other.watermarkBeforeDownload,
