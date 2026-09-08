@@ -277,26 +277,58 @@ class DashboardRepository {
 
   /// Watch the "Resume Learning" feed.
   Stream<List<DashboardContentDto>> watchResumeLearningFeed() async* {
-    yield* _db.watchDashboardSection(DashboardSectionType.resumeLearning).map((
-      rows,
-    ) {
-      return rows
-          .map(
-            (data) => DashboardContentDto(
+    yield* _db
+        .watchDashboardSectionWithLessons(DashboardSectionType.resumeLearning)
+        .map((items) {
+          return items.map((item) {
+            final data = item.content;
+            final lesson = item.lesson;
+
+            double? progress = data.progress;
+            String? remainingDuration = data.remainingDuration;
+
+            if (data.lessonType == DashboardContentType.video &&
+                lesson != null) {
+              final lastWatchedStr = lesson.lastWatchedDuration;
+              if (lastWatchedStr != null && lastWatchedStr.isNotEmpty) {
+                final lastWatchedMs = TimeFormatter.parseDuration(
+                  lastWatchedStr,
+                ).inMilliseconds;
+                final totalDurationStr = lesson.duration.isNotEmpty
+                    ? lesson.duration
+                    : (data.totalDuration ?? '0');
+                final totalDurationMs = TimeFormatter.parseDuration(
+                  totalDurationStr,
+                ).inMilliseconds;
+
+                if (totalDurationMs > 0 && lastWatchedMs > 0) {
+                  final lastWatchedSecs = lastWatchedMs / 1000.0;
+                  final totalDurationSecs = totalDurationMs / 1000.0;
+                  progress = ((lastWatchedSecs / totalDurationSecs) * 100.0)
+                      .clamp(0.0, 100.0);
+                  final remainingSecs = (totalDurationSecs - lastWatchedSecs)
+                      .clamp(0.0, totalDurationSecs);
+                  remainingDuration = TimeFormatter.formatDuration(
+                    remainingSecs.toString(),
+                  );
+                }
+              }
+            }
+
+            return DashboardContentDto(
               id: data.lessonId,
               title: data.title,
               chapterId: data.chapterId,
               chapterTitle: data.chapterTitle,
               contentType: data.lessonType,
               totalDuration: data.totalDuration,
-              remainingDuration: data.remainingDuration,
+              remainingDuration: remainingDuration,
               coverImage: data.coverImage,
-              progress: data.progress,
+              progress: progress,
               sectionType: data.sectionType,
-            ),
-          )
-          .toList();
-    });
+            );
+          }).toList();
+        });
   }
 
   /// Watch the "Recently Completed" feed (renamed to Completed Learning).

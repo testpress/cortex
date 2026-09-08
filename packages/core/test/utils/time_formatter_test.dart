@@ -55,6 +55,27 @@ void main() {
         const Duration(seconds: 2, milliseconds: 123),
       );
     });
+
+    test(
+      'should parse raw decimal seconds string correctly (e.g. 1552.6650)',
+      () {
+        expect(
+          TimeFormatter.parseDuration('1552.6650'),
+          const Duration(seconds: 1552, milliseconds: 665),
+        );
+      },
+    );
+
+    test('should parse human readable duration strings correctly', () {
+      expect(
+        TimeFormatter.parseDuration('25 min'),
+        const Duration(minutes: 25),
+      );
+      expect(
+        TimeFormatter.parseDuration('1h 30m'),
+        const Duration(hours: 1, minutes: 30),
+      );
+    });
   });
 
   group('TimeFormatter.formatDurationToMinutes', () {

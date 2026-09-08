@@ -34,13 +34,15 @@ class CustomVideoPlayer extends ConsumerStatefulWidget {
   ConsumerState<CustomVideoPlayer> createState() => CustomVideoPlayerState();
 }
 
-class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
+class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
+    with WidgetsBindingObserver {
   TestpressPlayerController? _controller;
   bool _isFetchingMetadata = true;
   String _courseName = '';
   String _chapterName = '';
   bool _isPlayerDestroyed = false;
   Timer? _seekDebounceTimer;
+  Timer? _flushTimer;
 
   // Track the playback intervals
   double _currentIntervalStart = 0.0;
@@ -62,6 +64,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _startFlushTimer();
     _fetchMetadata();
 
     if (widget.lessonId != null) {
@@ -72,15 +76,46 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      _finalizeCurrentInterval();
+      if (_contentId != null && _videoAttemptNotifier != null) {
+        _videoAttemptNotifier!.forceSync();
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _seekDebounceTimer?.cancel();
     _speedToastTimer?.cancel();
+    _flushTimer?.cancel();
     _finalizeCurrentInterval();
     if (_contentId != null && _videoAttemptNotifier != null) {
       // Force a final sync before leaving using the safe notifier reference
       _videoAttemptNotifier!.forceSync();
     }
     super.dispose();
+  }
+
+  void _startFlushTimer() {
+    _flushTimer?.cancel();
+    _flushTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      _periodicFlushWatchedRanges();
+    });
+  }
+
+  void _periodicFlushWatchedRanges() {
+    if (_controller == null || !_isPlayingTracker) return;
+
+    final currentPos = _controller!.value.position.inMilliseconds / 1000.0;
+    if (currentPos > _currentIntervalStart) {
+      _watchedTimeRanges.add([_currentIntervalStart, currentPos]);
+      _currentIntervalStart = currentPos;
+    }
+    _syncVideoAttempt(currentPos);
   }
 
   void _finalizeCurrentInterval() {

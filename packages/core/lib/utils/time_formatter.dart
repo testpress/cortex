@@ -101,11 +101,33 @@ class TimeFormatter {
     }
   }
 
-  /// Parses a timestamp string like "1:23" or "01:23:45" into a [Duration].
+  /// Parses a timestamp string like "1:23", "01:23:45", "1552.6650", or "25 min" into a [Duration].
   static Duration parseDuration(String timeStr) {
     if (timeStr.isEmpty) return Duration.zero;
 
     try {
+      // Check for human-readable formats (e.g. "1h 25m 10s" or "25 min" or "25m")
+      if (timeStr.contains(RegExp(r'[mhs]'))) {
+        int hours = 0;
+        int minutes = 0;
+        int seconds = 0;
+
+        final hourMatch = RegExp(r'(\d+)\s*h').firstMatch(timeStr);
+        if (hourMatch != null) {
+          hours = int.tryParse(hourMatch.group(1)!) ?? 0;
+        }
+        final minMatch = RegExp(r'(\d+)\s*(?:m|min)').firstMatch(timeStr);
+        if (minMatch != null) {
+          minutes = int.tryParse(minMatch.group(1)!) ?? 0;
+        }
+        final secMatch = RegExp(r'(\d+)\s*(?:s|sec)').firstMatch(timeStr);
+        if (secMatch != null) {
+          seconds = int.tryParse(secMatch.group(1)!) ?? 0;
+        }
+
+        return Duration(hours: hours, minutes: minutes, seconds: seconds);
+      }
+
       final parts = timeStr.split('.');
       final timePart = parts[0];
       final msPart = parts.length > 1 ? parts[1] : '0';

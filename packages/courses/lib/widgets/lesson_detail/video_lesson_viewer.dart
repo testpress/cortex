@@ -328,9 +328,10 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
 
     final isCompleted =
         widget.lesson.progressStatus == LessonProgressStatus.completed;
-    final initialPos = isCompleted
+    final durationStr = widget.lesson.lastWatchedDuration;
+    final initialPos = isCompleted || durationStr == null || durationStr.isEmpty
         ? 0.0
-        : (double.tryParse(widget.lesson.lastWatchedDuration ?? '0') ?? 0.0);
+        : (TimeFormatter.parseDuration(durationStr).inMilliseconds / 1000.0);
 
     return CustomVideoPlayer(
       key: _videoPlayerKey,

@@ -434,6 +434,29 @@ class AppDatabase extends _$AppDatabase {
     return query.watch();
   }
 
+  /// Watch a dashboard section joined with local LessonsTable for real-time progress updates.
+  Stream<List<({DashboardContentData content, LessonsTableData? lesson})>>
+  watchDashboardSectionWithLessons(DashboardSectionType sectionType) {
+    final query =
+        select(dashboardContentsTable).join([
+            leftOuterJoin(
+              lessonsTable,
+              lessonsTable.id.equalsExp(dashboardContentsTable.lessonId),
+            ),
+          ])
+          ..where(dashboardContentsTable.sectionType.equalsValue(sectionType))
+          ..orderBy([OrderingTerm.asc(dashboardContentsTable.displayOrder)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        return (
+          content: row.readTable(dashboardContentsTable),
+          lesson: row.readTableOrNull(lessonsTable),
+        );
+      }).toList();
+    });
+  }
+
   /// Wipe and refresh a specific dashboard section.
   Future<void> wipeAndInsertDashboardSection(
     DashboardSectionType sectionType,
