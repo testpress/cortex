@@ -362,7 +362,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
                           if (!context.mounted) return;
                           if (result?.status == PaymentResultStatus.success) {
-                            ref.invalidate(productDetailProvider(product.slug));
+                            refreshStoreAfterPurchase(ref,
+                                productSlug: product.slug);
+
+                            final redirect = result?.redirectRoute;
+                            if (redirect != null && context.mounted) {
+                              context.go(redirect);
+                            }
                           }
                         },
                       ),

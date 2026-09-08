@@ -339,7 +339,13 @@ class _ProductInstallmentSheetState
 
                   if (!context.mounted) return;
                   if (result?.status == PaymentResultStatus.success) {
-                    ref.invalidate(productDetailProvider(widget.product.slug));
+                    refreshStoreAfterPurchase(ref,
+                        productSlug: widget.product.slug);
+
+                    final redirect = result?.redirectRoute;
+                    if (redirect != null && context.mounted) {
+                      context.go(redirect);
+                    }
                   }
                 },
               ),

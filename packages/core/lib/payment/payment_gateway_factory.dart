@@ -12,8 +12,9 @@ enum PaymentResultStatus { success, failed, pending, cancelled }
 class PaymentResult {
   final PaymentResultStatus status;
   final String? message;
+  final String? redirectRoute;
 
-  PaymentResult({required this.status, this.message});
+  PaymentResult({required this.status, this.message, this.redirectRoute});
 }
 
 class PaymentGatewayFactory {

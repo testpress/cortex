@@ -1,6 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import '../repositories/store_repository.dart';
+import 'course_list_provider.dart';
 
 part 'store_providers.g.dart';
 
@@ -147,4 +149,17 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
       }
     }
   }
+}
+
+/// Clears StoreRepository in-memory cache, invalidates store products and categories,
+/// invalidates the specific product detail (if [productSlug] is provided),
+/// and triggers a study courses refresh.
+void refreshStoreAfterPurchase(WidgetRef ref, {String? productSlug}) {
+  ref.read(storeRepositoryProvider).clearAll();
+  ref.invalidate(storeProductsProvider);
+  ref.invalidate(storeCategoriesProvider);
+  if (productSlug != null) {
+    ref.invalidate(productDetailProvider(productSlug));
+  }
+  ref.read(courseListProvider.notifier).refresh();
 }
