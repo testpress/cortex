@@ -14,22 +14,30 @@ Future<SettingsRepository> settingsRepository(Ref ref) async {
 
 @Riverpod(keepAlive: true)
 class AppearanceSettingsNotifier extends _$AppearanceSettingsNotifier {
+  static const _prefKey = 'appearance_mode';
+
   @override
-  Future<AppearanceSettings> build() async {
-    final repository = await ref.watch(settingsRepositoryProvider.future);
-    final settings = await repository.getSettings();
+  AppearanceSettings build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final savedModeStr = prefs.getString(_prefKey);
 
     final mode = DesignMode.values.firstWhere(
-      (e) => e.name == settings.appearanceMode,
+      (e) => e.name == savedModeStr,
       orElse: () => DesignMode.system,
     );
     return AppearanceSettings(mode: mode);
   }
 
   Future<void> updateMode(DesignMode mode) async {
-    final repository = await ref.read(settingsRepositoryProvider.future);
-    await repository.updateSettings(appearanceMode: mode.name);
-    state = AsyncValue.data(AppearanceSettings(mode: mode));
+    final prefs = ref.read(sharedPreferencesProvider);
+    await prefs.setString(_prefKey, mode.name);
+
+    try {
+      final repository = await ref.read(settingsRepositoryProvider.future);
+      await repository.updateSettings(appearanceMode: mode.name);
+    } catch (_) {}
+
+    state = AppearanceSettings(mode: mode);
   }
 }
 

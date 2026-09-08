@@ -53,62 +53,58 @@ class _AppearanceSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final settingsAsync = ref.watch(appearanceSettingsNotifierProvider);
+    final settings = ref.watch(appearanceSettingsNotifierProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeader(title: l10n.settingsAppearanceTitle),
         SizedBox(height: design.spacing.md),
-        settingsAsync.when(
-          data: (settings) => AppCard(
-            showShadow: true,
-            padding: EdgeInsets.zero,
-            child: Column(
-              children: [
-                _buildOption(
-                  context: context,
-                  ref: ref,
-                  icon: LucideIcons.sun,
-                  iconColor: design.colors.rank1, // amber
-                  title: l10n.settingsThemeLightMode,
-                  value: DesignMode.light,
-                  groupValue: settings.mode,
-                  onChanged: (val) => ref
-                      .read(appearanceSettingsNotifierProvider.notifier)
-                      .updateMode(DesignMode.light),
-                ),
-                _Divider(),
-                _buildOption(
-                  context: context,
-                  ref: ref,
-                  icon: LucideIcons.moon,
-                  iconColor: design.colors.primary,
-                  title: l10n.settingsThemeDarkMode,
-                  value: DesignMode.dark,
-                  groupValue: settings.mode,
-                  onChanged: (val) => ref
-                      .read(appearanceSettingsNotifierProvider.notifier)
-                      .updateMode(DesignMode.dark),
-                ),
-                _Divider(),
-                _buildOption(
-                  context: context,
-                  ref: ref,
-                  icon: LucideIcons.monitor,
-                  iconColor: design.colors.textTertiary, // slate
-                  title: l10n.settingsThemeSystemDefault,
-                  value: DesignMode.system,
-                  groupValue: settings.mode,
-                  onChanged: (val) => ref
-                      .read(appearanceSettingsNotifierProvider.notifier)
-                      .updateMode(DesignMode.system),
-                ),
-              ],
-            ),
+        AppCard(
+          showShadow: true,
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              _buildOption(
+                context: context,
+                ref: ref,
+                icon: LucideIcons.sun,
+                iconColor: design.colors.rank1, // amber
+                title: l10n.settingsThemeLightMode,
+                value: DesignMode.light,
+                groupValue: settings.mode,
+                onChanged: (val) => ref
+                    .read(appearanceSettingsNotifierProvider.notifier)
+                    .updateMode(DesignMode.light),
+              ),
+              _Divider(),
+              _buildOption(
+                context: context,
+                ref: ref,
+                icon: LucideIcons.moon,
+                iconColor: design.colors.primary,
+                title: l10n.settingsThemeDarkMode,
+                value: DesignMode.dark,
+                groupValue: settings.mode,
+                onChanged: (val) => ref
+                    .read(appearanceSettingsNotifierProvider.notifier)
+                    .updateMode(DesignMode.dark),
+              ),
+              _Divider(),
+              _buildOption(
+                context: context,
+                ref: ref,
+                icon: LucideIcons.monitor,
+                iconColor: design.colors.textTertiary, // slate
+                title: l10n.settingsThemeSystemDefault,
+                value: DesignMode.system,
+                groupValue: settings.mode,
+                onChanged: (val) => ref
+                    .read(appearanceSettingsNotifierProvider.notifier)
+                    .updateMode(DesignMode.system),
+              ),
+            ],
           ),
-          loading: () => const Center(child: AppLoadingIndicator()),
-          error: (err, _) => AppErrorView(error: err),
         ),
       ],
     );
