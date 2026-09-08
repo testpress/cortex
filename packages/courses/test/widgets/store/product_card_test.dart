@@ -46,6 +46,28 @@ void main() {
       image: '',
     );
 
+    final testProductFree = ProductDto(
+      id: 3,
+      title: 'Free Introductory Course',
+      slug: 'free-intro-course',
+      price: '0.00',
+      strikeThroughPrice: '500.00',
+      courses: [],
+      image: '',
+    );
+
+    testWidgets(
+        'renders Free label and omits strikethrough for zero-priced product',
+        (tester) async {
+      await tester.pumpWidget(wrap(ProductCard(product: testProductFree)));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Free Introductory Course'), findsOneWidget);
+      expect(find.text('FREE'), findsOneWidget);
+      expect(find.text('₹0.00'), findsNothing);
+      expect(find.text('₹500.00'), findsNothing);
+    });
+
     testWidgets('renders product title and normal price correctly',
         (tester) async {
       await tester.pumpWidget(

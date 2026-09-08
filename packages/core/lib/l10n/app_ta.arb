@@ -1487,5 +1487,6 @@
   "qotdOptionLabel": "விருப்பம்",
   "qotdSingleCorrect": "ஒரே சரியான விடை",
   "qotdMultipleCorrect": "பல சரியான விடைகள்",
-  "qotdErrorSubmitAnswer": "பதிலைச் சமர்ப்பிப்பதில் தோல்வி. மீண்டும் முயற்சிக்கவும்."
+  "qotdErrorSubmitAnswer": "பதிலைச் சமர்ப்பிப்பதில் தோல்வி. மீண்டும் முயற்சிக்கவும்.",
+  "free": "இலவசம்"
 }

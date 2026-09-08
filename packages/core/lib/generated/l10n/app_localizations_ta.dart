@@ -3374,4 +3374,7 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get qotdErrorSubmitAnswer =>
       'பதிலைச் சமர்ப்பிப்பதில் தோல்வி. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get free => 'இலவசம்';
 }

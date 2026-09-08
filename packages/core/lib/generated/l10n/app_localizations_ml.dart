@@ -3379,4 +3379,7 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get qotdErrorSubmitAnswer =>
       'ഉത്തരം സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get free => 'സൗജന്യം';
 }

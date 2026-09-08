@@ -1246,5 +1246,6 @@
   "qotdOptionLabel": "خيار",
   "qotdSingleCorrect": "إجابة صحيحة واحدة",
   "qotdMultipleCorrect": "إجابات صحيحة متعددة",
-  "qotdErrorSubmitAnswer": "فشل إرسال الإجابة. يرجى المحاولة مرة أخرى."
+  "qotdErrorSubmitAnswer": "فشل إرسال الإجابة. يرجى المحاولة مرة أخرى.",
+  "free": "مجاني"
 }

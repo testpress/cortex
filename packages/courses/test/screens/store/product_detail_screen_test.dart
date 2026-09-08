@@ -182,5 +182,44 @@ void main() {
       expect(fakeRepo.clearAllCalled, isTrue);
       expect(fakeCourseRepo.refreshCoursesCalls, 1);
     });
+
+    testWidgets(
+        'renders Free label and omits strikethrough for zero-priced product',
+        (tester) async {
+      final freeProduct = ProductDto(
+        id: 525,
+        title: 'Free Introductory Course',
+        slug: 'free-intro-course',
+        price: '0.00',
+        strikeThroughPrice: '1000.00',
+        courses: const [373],
+        hasCoupons: false,
+      );
+
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: freeProduct,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: freeProduct),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Free Introductory Course'), findsWidgets);
+      expect(find.text('FREE'), findsOneWidget);
+      expect(find.text('₹0.00'), findsNothing);
+      expect(find.text('₹1000.00'), findsNothing);
+    });
   });
 }

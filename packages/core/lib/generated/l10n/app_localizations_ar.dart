@@ -3324,4 +3324,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get qotdErrorSubmitAnswer =>
       'فشل إرسال الإجابة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get free => 'مجاني';
 }

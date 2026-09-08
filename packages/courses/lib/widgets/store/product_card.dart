@@ -81,11 +81,14 @@ class ProductCard extends StatelessWidget {
                           textBaseline: TextBaseline.alphabetic,
                           children: [
                             AppText.title(
-                              '₹${product.price}',
+                              product.isFree
+                                  ? L10n.of(context).free
+                                  : '₹${product.price}',
                               style:
                                   const TextStyle(fontWeight: FontWeight.w700),
                             ),
-                            if (product.strikeThroughPrice != null &&
+                            if (!product.isFree &&
+                                product.strikeThroughPrice != null &&
                                 product.strikeThroughPrice!.isNotEmpty) ...[
                               SizedBox(width: design.spacing.xs),
                               AppText.sm(

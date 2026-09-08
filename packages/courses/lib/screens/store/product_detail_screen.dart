@@ -179,10 +179,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     textBaseline: TextBaseline.alphabetic,
                                     children: [
                                       AppText.title(
-                                        '₹${product.price}',
+                                        product.isFree
+                                            ? L10n.of(context).free
+                                            : '₹${product.price}',
                                         color: design.colors.textPrimary,
                                       ),
-                                      if (product.strikeThroughPrice != null &&
+                                      if (!product.isFree &&
+                                          product.strikeThroughPrice != null &&
                                           product.strikeThroughPrice!
                                               .isNotEmpty) ...[
                                         SizedBox(width: design.spacing.sm),
