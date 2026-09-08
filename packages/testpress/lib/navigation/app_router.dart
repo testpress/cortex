@@ -15,9 +15,16 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final goRouterProvider = Provider<GoRouter>((ref) {
   const allTabs = NavTab.values;
 
+  // Use the pre-boot token check (read in main() before runApp()) to set
+  // initialLocation on the first frame. For authenticated users this means
+  // the router starts directly at /home — OnboardingScreen is never mounted.
+  // authProvider still performs full async verification after launch.
+  final isLoggedIn = ref.read(cachedAuthFlagProvider);
+  final initialLocation = isLoggedIn ? '/home' : '/onboarding';
+
   final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/onboarding',
+    initialLocation: initialLocation,
     observers: [SentryService.createNavigatorObserver()],
     redirect: (context, state) => AuthRoutes.redirect(context, state),
     routes: [
