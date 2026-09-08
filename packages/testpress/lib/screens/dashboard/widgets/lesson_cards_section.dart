@@ -110,12 +110,12 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF000000).withValues(alpha: 0.7),
+                          color: design.colors.surface.withValues(alpha: 0.85),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: AppText.labelSmall(
                           '${lesson.progress!.toInt()}%',
-                          color: design.colors.textInverse,
+                          color: design.colors.textPrimary,
                         ),
                       ),
                     ),
