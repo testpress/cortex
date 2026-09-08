@@ -9,7 +9,7 @@ Additionally, course titles previously allowed variable lines, and the price row
 **Goals:**
 - Add trailing bottom clearance sliver to `StorePage`'s `CustomScrollView` so that bottom-most products are fully visible when scrolled to the end.
 - Standardize `ProductCard` title to use single-line ellipsis (`maxLines: 1, overflow: TextOverflow.ellipsis`), ensuring uniform title vertical space without artificial gaps.
-- Constrain the price row `FittedBox` in a fixed 24dp vertical box (`SizedBox(height: 24)`), guaranteeing that all cards in the grid have identical dimensions regardless of price string length.
+- Constrain the price row `FittedBox` in a fixed 24dp vertical box (`SizedBox(height: design.spacing.lg)`), guaranteeing that all cards in the grid have identical dimensions regardless of price string length.
 
 **Non-Goals:**
 - Altering the global `AppShell` bottom navigation bar styling or architecture.
@@ -20,9 +20,9 @@ Additionally, course titles previously allowed variable lines, and the price row
 ### Decision 1: Add trailing `SliverToBoxAdapter(child: SizedBox(height: 120))` in `StorePage`
 - **Rationale**: Aligns directly with established patterns in `StudyScreen`, `ExamsScreen`, and `InfoPage`. 120dp provides ample clearance for the floating navigation pill (~64dp height + safe area bottom inset + margins).
 
-### Decision 2: Single-line ellipsis (`maxLines: 1`) + Fixed 24dp Price Row in `ProductCard`
-- **Rationale**: Single-line ellipsis ensures title heights are uniform without awkward middle gaps on short titles. Enclosing the price `FittedBox` in `SizedBox(height: 24)` ensures that when long prices (e.g. `₹15000.00 ₹100000.00`) scale down horizontally to prevent overflow, they do not collapse the vertical height of the card.
+### Decision 2: Single-line ellipsis (`maxLines: 1`) + Fixed 24dp Price Row (`design.spacing.lg`) in `ProductCard`
+- **Rationale**: Single-line ellipsis ensures title heights are uniform without awkward middle gaps on short titles. Enclosing the price `FittedBox` in `SizedBox(height: design.spacing.lg)` (24dp) ensures that when long prices (e.g. `₹15000.00 ₹100000.00`) scale down horizontally to prevent overflow, they do not collapse the vertical height of the card.
 
 ## Risks / Trade-offs
 
-- **[Risk] Long prices appear in smaller font size** → **Mitigation**: `FittedBox(fit: BoxFit.scaleDown)` gracefully prevents `RenderFlex` overflow while `SizedBox(height: 24)` maintains card grid uniformity.
+- **[Risk] Long prices appear in smaller font size** → **Mitigation**: `FittedBox(fit: BoxFit.scaleDown)` gracefully prevents `RenderFlex` overflow while `SizedBox(height: design.spacing.lg)` maintains card grid uniformity.

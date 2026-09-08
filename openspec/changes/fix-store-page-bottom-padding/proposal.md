@@ -8,7 +8,7 @@ On the Store screen:
 
 - Add trailing bottom clearance sliver (`SizedBox(height: 120)`) to `CustomScrollView` in `StorePage`, matching the clearance pattern in other tab screens.
 - Standardize `ProductCard` title to use single-line ellipsis (`maxLines: 1, overflow: TextOverflow.ellipsis`), consistent with other monorepo card patterns.
-- Enforce fixed 24dp vertical height (`SizedBox(height: 24)`) around the price `FittedBox` in `ProductCard`, preventing vertical card height collapse when long prices scale down horizontally.
+- Enforce fixed 24dp vertical height (`SizedBox(height: design.spacing.lg)`) around the price `FittedBox` in `ProductCard`, preventing vertical card height collapse when long prices scale down horizontally.
 
 ## Capabilities
 

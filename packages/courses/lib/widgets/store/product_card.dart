@@ -72,7 +72,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     SizedBox(height: design.spacing.xs),
                     SizedBox(
-                      height: 24,
+                      height: design.spacing.lg,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
