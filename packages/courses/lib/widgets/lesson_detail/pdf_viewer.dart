@@ -202,11 +202,20 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           _viewportHeight = constraints.maxHeight;
           _viewportWidth = constraints.maxWidth;
 
-          return SfPdfViewerTheme(
-            data: SfPdfViewerThemeData(
-              backgroundColor: design.colors.surface,
+          return ClipRect(
+            child: OverflowBox(
+              minHeight: constraints.minHeight,
+              maxHeight: constraints.maxHeight.isFinite
+                  ? constraints.maxHeight + 2.0
+                  : double.infinity,
+              alignment: Alignment.topCenter,
+              child: SfPdfViewerTheme(
+                data: SfPdfViewerThemeData(
+                  backgroundColor: design.colors.surface,
+                ),
+                child: _buildViewer(),
+              ),
             ),
-            child: _buildViewer(),
           );
         },
       ),
