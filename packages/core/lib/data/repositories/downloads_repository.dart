@@ -166,6 +166,16 @@ class DownloadsRepository {
       // 1. Persist the initial "downloading" state immediately
       await upsertDownload(item);
 
+      // Download thumbnail in parallel if remote URL is provided
+      String? localThumbnailPath;
+      if (item.thumbnailUrl != null &&
+          (item.thumbnailUrl!.startsWith('http://') ||
+              item.thumbnailUrl!.startsWith('https://'))) {
+        localThumbnailPath = await _service.downloadThumbnail(
+          item.thumbnailUrl!,
+        );
+      }
+
       // 2. Delegate the actual HTTP download to the service worker
       final result = await _service.downloadAttachment(
         url,
@@ -183,6 +193,7 @@ class DownloadsRepository {
             progress: 100,
             sizeInBytes: result.$1,
             filePath: result.$2,
+            thumbnailUrl: localThumbnailPath ?? item.thumbnailUrl,
           ),
         );
       } else {
@@ -205,6 +216,16 @@ class DownloadsRepository {
   }) async {
     try {
       await upsertDownload(item);
+
+      // Download thumbnail in parallel if remote URL is provided
+      String? localThumbnailPath;
+      if (item.thumbnailUrl != null &&
+          (item.thumbnailUrl!.startsWith('http://') ||
+              item.thumbnailUrl!.startsWith('https://'))) {
+        localThumbnailPath = await _service.downloadThumbnail(
+          item.thumbnailUrl!,
+        );
+      }
 
       String? watermarkText;
       if (applyWatermark) {
@@ -232,6 +253,7 @@ class DownloadsRepository {
           sizeInBytes: result.$1,
           filePath: result.$2,
           isWatermarked: applyWatermark,
+          thumbnailUrl: localThumbnailPath ?? item.thumbnailUrl,
         ),
       );
     } catch (e, stackTrace) {

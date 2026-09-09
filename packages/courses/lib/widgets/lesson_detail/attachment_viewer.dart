@@ -59,6 +59,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             .last
             .toUpperCase(),
         contentUrl: widget.url,
+        thumbnailUrl: details?.image,
       );
 
       await ref

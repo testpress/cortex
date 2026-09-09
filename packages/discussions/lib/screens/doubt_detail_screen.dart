@@ -462,7 +462,14 @@ class _LessonContextBadge extends ConsumerStatefulWidget {
 }
 
 class _LessonContextBadgeState extends ConsumerState<_LessonContextBadge> {
-  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>?
+  Future<
+    ({
+      String lessonTitle,
+      String chapterTitle,
+      String courseTitle,
+      String? image,
+    })?
+  >?
   _detailsFuture;
 
   @override

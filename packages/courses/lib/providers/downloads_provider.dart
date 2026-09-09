@@ -15,10 +15,7 @@ class Downloads extends _$Downloads {
   @override
   Stream<List<DownloadItem>> build() async* {
     final repo = await ref.watch(downloadsRepositoryProvider.future);
-    yield* repo.watchAllDownloads().map(
-          (items) =>
-              items.where((item) => item.fileType != 'lesson_pdf').toList(),
-        );
+    yield* repo.watchAllDownloads();
   }
 
   /// Synchronizes the local database with active SDK state.
@@ -50,8 +47,9 @@ class Downloads extends _$Downloads {
       status: DownloadStatus.downloading,
       progress: 0,
       downloadedDate: DateTime.now().toIso8601String(),
-      fileType: 'lesson_pdf',
+      fileType: 'PDF',
       contentUrl: lesson.contentUrl!,
+      thumbnailUrl: details?.image ?? lesson.image,
     );
 
     await downloadsRepo.startWatermarkedPdfDownload(

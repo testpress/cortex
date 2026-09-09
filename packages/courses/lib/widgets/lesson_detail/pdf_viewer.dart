@@ -13,14 +13,29 @@ import 'lesson_detail_skeleton.dart';
 import 'watermark_overlay.dart';
 
 class AppPdfViewer extends ConsumerStatefulWidget {
-  final File file;
+  final String? url;
+  final File? file;
   final ValueChanged<double>? onProgressChanged;
 
   const AppPdfViewer({
     super.key,
-    required this.file,
+    this.url,
+    this.file,
     this.onProgressChanged,
-  });
+  }) : assert(
+            url != null || file != null, 'Either url or file must be provided');
+
+  const AppPdfViewer.network({
+    super.key,
+    required String this.url,
+    this.onProgressChanged,
+  }) : file = null;
+
+  const AppPdfViewer.file({
+    super.key,
+    required File this.file,
+    this.onProgressChanged,
+  }) : url = null;
 
   @override
   ConsumerState<AppPdfViewer> createState() => _AppPdfViewerState();
@@ -34,7 +49,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   bool _isLoading = true;
   bool _isVisible = false;
   String _watermarkText = '';
-  Widget? _cachedViewer;
+  Widget? _pdfViewerWidget;
 
   int _requestId = 0;
 
@@ -60,11 +75,27 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     _controller.addListener(_trackProgress);
   }
 
+  bool _isSameResource(AppPdfViewer oldW, AppPdfViewer newW) {
+    if (oldW.file?.path != newW.file?.path) return false;
+    if (oldW.url == newW.url) return true;
+    if (oldW.url == null || newW.url == null) return false;
+
+    // Compare URLs ignoring query params (which change on refreshed pre-signed CloudFront tokens)
+    final uriOld = Uri.tryParse(oldW.url!);
+    final uriNew = Uri.tryParse(newW.url!);
+    if (uriOld != null && uriNew != null) {
+      return uriOld.scheme == uriNew.scheme &&
+          uriOld.host == uriNew.host &&
+          uriOld.path == uriNew.path;
+    }
+    return false;
+  }
+
   @override
   void didUpdateWidget(covariant AppPdfViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.file.path != widget.file.path) {
+    if (!_isSameResource(oldWidget, widget)) {
       _resetViewer();
       _load();
     }
@@ -88,13 +119,30 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     try {
       unawaited(_fetchWatermark(id));
 
-      final path = await _resolveSource();
+      if (widget.url != null && widget.url!.isNotEmpty) {
+        final isConnected = await hasInternetConnection();
+        if (!isConnected) {
+          throw const ApiException('No Internet Connection',
+              type: ApiErrorType.noInternet);
+        }
+      } else if (widget.file != null) {
+        final file = widget.file!;
+        final exists = await file.exists();
+        final len = exists ? await file.length() : 0;
+        if (!exists || len == 0) {
+          throw FileSystemException('PDF file is missing or empty', file.path);
+        }
+      }
 
-      if (!_isValidRequest(id)) return;
+      if (!_isValidRequest(id)) {
+        return;
+      }
 
-      _handleSuccess(path);
+      _setupViewer();
     } catch (e, st) {
-      sentry.captureException(e, stackTrace: st);
+      if (e is! ApiException) {
+        sentry.captureException(e, stackTrace: st);
+      }
       if (!_isValidRequest(id)) return;
 
       _handleError(e);
@@ -115,41 +163,55 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     }
   }
 
+  bool _isOffline = false;
+
   void _prepareState() {
     setState(() {
       _isLoading = true;
       _error = null;
+      _isOffline = false;
       _isVisible = false;
       _watermarkText = '';
       _totalHeight = 0;
       _lastProgress = -1;
-      _cachedViewer = null;
+      _pdfViewerWidget = null;
     });
   }
 
-  Future<String> _resolveSource() async {
-    if (await widget.file.exists() && await widget.file.length() > 0) {
-      return widget.file.path;
-    }
-
-    throw FileSystemException('Cached PDF file is missing', widget.file.path);
-  }
-
-  void _handleSuccess(String path) {
+  void _setupViewer() {
     setState(() {
-      _isLoading = false;
-      _cachedViewer = SfPdfViewer.file(
-        File(path),
-        controller: _controller,
-        onDocumentLoaded: _onDocumentLoaded,
-      );
+      if (widget.url != null && widget.url!.isNotEmpty) {
+        _pdfViewerWidget = SfPdfViewer.network(
+          widget.url!,
+          controller: _controller,
+          onDocumentLoaded: _onDocumentLoaded,
+          onDocumentLoadFailed: (details) {
+            _handleError(details.description);
+          },
+        );
+      } else if (widget.file != null) {
+        _pdfViewerWidget = SfPdfViewer.file(
+          widget.file!,
+          controller: _controller,
+          onDocumentLoaded: _onDocumentLoaded,
+          onDocumentLoadFailed: (details) {
+            _handleError(details.description);
+          },
+        );
+      }
     });
   }
 
-  void _handleError(Object error) {
+  Future<void> _handleError(Object error) async {
+    final isConnected = await hasInternetConnection();
+    if (!mounted) return;
+
     setState(() {
+      _isOffline = !isConnected ||
+          (error is ApiException && error.type == ApiErrorType.noInternet);
       _error = error.toString();
       _isLoading = false;
+      _pdfViewerWidget = null;
     });
   }
 
@@ -158,7 +220,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   }
 
   Widget _buildViewer() {
-    final viewer = _cachedViewer ?? const SizedBox.shrink();
+    final viewer = _pdfViewerWidget ?? const SizedBox.shrink();
     final design = Design.of(context);
 
     return Stack(
@@ -178,7 +240,19 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     );
   }
 
-  Widget _buildError() => Center(child: AppText(_error!));
+  Widget _buildError() {
+    final l10n = L10n.of(context);
+    return Center(
+      child: AppErrorView(
+        title: _isOffline ? l10n.errorNoInternetTitle : l10n.errorGenericTitle,
+        message: l10n.errorGenericMessage,
+        onRetry: () {
+          _resetViewer();
+          _load();
+        },
+      ),
+    );
+  }
 
   // ---------------- BUILD ----------------
 
@@ -188,7 +262,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
     final design = Design.of(context);
 
-    if (_isLoading) {
+    if (_isLoading && _pdfViewerWidget == null) {
       return LessonDetailSkeleton(lessonType: LessonType.pdf);
     }
     if (_error != null) {
@@ -227,11 +301,12 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   void _onDocumentLoaded(PdfDocumentLoadedDetails details) {
     _totalHeight = _calculateTotalHeight(details);
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        setState(() => _isVisible = true);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        _isVisible = true;
+        _isLoading = false;
+      });
+    }
   }
 
   double _calculateTotalHeight(PdfDocumentLoadedDetails details) {
