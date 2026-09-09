@@ -161,8 +161,14 @@ class _AppShellBuilder extends ConsumerWidget {
                 child: SessionExpiredDialog(
                   message: sessionExpiredMessage,
                   onSignIn: () {
-                    ref.read(sessionExpiredProvider.notifier).state = null;
+                    // Flip auth state first — router begins the transition to
+                    // Login immediately. Clear the session message after the
+                    // next frame so the dialog dismounts with the outgoing
+                    // route, not before it, avoiding any overlap flash.
                     ref.read(authProvider.notifier).logout();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ref.read(sessionExpiredProvider.notifier).state = null;
+                    });
                   },
                 ),
               ),

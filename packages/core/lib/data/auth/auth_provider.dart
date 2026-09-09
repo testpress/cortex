@@ -62,6 +62,10 @@ final cachedAuthFlagProvider = Provider<bool>((ref) => false);
 class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
 
+  /// Tracks the in-flight logout cleanup so login methods can wait for it
+  /// before writing new session data to the DB.
+  Future<void> _cleanupFuture = Future.value();
+
   @override
   FutureOr<bool> build() async {
     return await _repository.isUserLoggedIn();
@@ -71,12 +75,16 @@ class Auth extends _$Auth {
     required String username,
     required String password,
   }) async {
+    // Wait for any in-flight logout cleanup to finish before writing
+    // new session data — prevents stale cleanup from wiping a fresh login.
+    await _cleanupFuture;
     await _repository.loginWithPassword(username: username, password: password);
 
     state = const AsyncData(true);
   }
 
   Future<void> loginWithGoogle() async {
+    await _cleanupFuture;
     await _repository.loginWithGoogle();
 
     state = const AsyncData(true);
@@ -89,6 +97,7 @@ class Auth extends _$Auth {
     String? phone,
     String? countryCode,
   }) async {
+    await _cleanupFuture;
     await _repository.register(
       username: username,
       email: email,
@@ -117,6 +126,7 @@ class Auth extends _$Auth {
     required String phoneNumber,
     String? email,
   }) async {
+    await _cleanupFuture;
     await _repository.verifyOtp(
       otp: otp,
       phoneNumber: phoneNumber,
@@ -127,7 +137,13 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
+    // Flip auth state immediately — router redirects to Login on this frame.
+    // Store the cleanup work in _cleanupFuture so login methods can gate on it.
     state = const AsyncData(false);
+    _cleanupFuture = _runCleanup();
+  }
+
+  Future<void> _runCleanup() async {
     try {
       // Safety net: explicitly clear the user row to guarantee no stale data leaks if the full purge fails
       final userRepo = await ref.read(userRepositoryProvider.future);
@@ -145,8 +161,6 @@ class Auth extends _$Auth {
             stackTrace: stackTrace,
             level: AppErrorLevel.error,
           );
-      state = const AsyncData(false);
-      rethrow;
     }
   }
 
