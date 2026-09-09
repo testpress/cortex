@@ -170,5 +170,73 @@ void main() {
         expect(find.byType(HeroBannerCarousel), findsNothing);
       },
     );
+
+    testWidgets(
+      'does not show top learners skeleton on app reopen when lessons are cached even if bootstrap is running',
+      (tester) async {
+        final overrides = [
+          instituteSettingsProvider.overrideWith(
+            (ref) =>
+                InstituteSettings.fromJson(const {'leaderboard_enabled': true}),
+          ),
+          dashboardBootstrapProvider.overrideWith(
+            (ref) => Completer<void>().future,
+          ),
+          heroBannersProvider.overrideWith(
+            (ref) => Stream.value(<DashboardBannerDto>[]),
+          ),
+          learnersProvider(
+            timeline: LeaderboardTimeline.allTime,
+            limit: 10,
+          ).overrideWith((ref) => Stream.value(<LearnerDto>[])),
+          resumeLearningFeedProvider.overrideWith(
+            (ref) => Stream.value([
+              const DashboardContentDto(
+                id: '1',
+                title: 'Current Electricity',
+                contentType: DashboardContentType.video,
+              ),
+            ]),
+          ),
+          todayClassesProvider.overrideWith((ref) => <LiveClassDto>[]),
+          pendingAssignmentsProvider.overrideWith((ref) => <AssignmentDto>[]),
+          upcomingTestsProvider.overrideWith((ref) => <ScheduledTest>[]),
+        ];
+
+        await tester.pumpWidget(
+          wrap(const PaidActiveHomeScreen(), overrides: overrides),
+        );
+        await tester.pump();
+
+        // TopLearnersSection should not show skeleton because dashboard has cached data
+        expect(find.byType(TopLearnersSection), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'collapses skeletons and does not stay stuck when bootstrap fails on cold start',
+      (tester) async {
+        final overrides = [
+          // Failed bootstrap (AsyncError)
+          dashboardBootstrapProvider.overrideWith(
+            (ref) => Future<void>.error(Exception('Network failure')),
+          ),
+          heroBannersProvider.overrideWith(
+            (ref) => Stream.value(<DashboardBannerDto>[]),
+          ),
+          todayClassesProvider.overrideWith((ref) => <LiveClassDto>[]),
+          pendingAssignmentsProvider.overrideWith((ref) => <AssignmentDto>[]),
+          upcomingTestsProvider.overrideWith((ref) => <ScheduledTest>[]),
+        ];
+
+        await tester.pumpWidget(
+          wrap(const PaidActiveHomeScreen(), overrides: overrides),
+        );
+        await tester.pump();
+
+        // On error completion (isLoading == false), skeleton collapses to SizedBox.shrink()
+        expect(find.byType(HeroBannerCarousel), findsNothing);
+      },
+    );
   });
 }
