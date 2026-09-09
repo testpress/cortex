@@ -22,8 +22,9 @@ class LoginActivityItem extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final date = DateFormat.yMMMd().format(activity.lastUsed);
-    final time = DateFormat.jm().format(activity.lastUsed);
+    final localLastUsed = activity.lastUsed.toLocal();
+    final date = DateFormat.yMMMd().format(localLastUsed);
+    final time = DateFormat.jm().format(localLastUsed);
     final formattedDate = '$date, $time';
 
     return Container(

@@ -36,7 +36,7 @@ class LoginActivityDto {
       browser: json['browser'] as String? ?? '',
       os: json['os'] as String? ?? '',
       lastUsed:
-          DateTime.tryParse(json['last_used'] as String? ?? '') ??
+          DateTime.tryParse(json['last_used'] as String? ?? '')?.toLocal() ??
           DateTime.now(),
       location: json['location'] as String? ?? '',
       currentDevice: json['current_device'] as bool? ?? false,
