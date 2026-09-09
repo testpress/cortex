@@ -413,18 +413,14 @@ class _ThumbnailImage extends StatelessWidget {
     }
 
     final file = File(thumbnailUrl);
-    if (file.existsSync()) {
-      return ClipRRect(
-        borderRadius: borderRadius,
-        child: Image.file(
-          file,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => placeholder,
-        ),
-      );
-    }
-
-    return placeholder;
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: Image.file(
+        file,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => placeholder,
+      ),
+    );
   }
 }
 

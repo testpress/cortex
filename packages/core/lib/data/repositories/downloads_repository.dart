@@ -166,24 +166,21 @@ class DownloadsRepository {
       // 1. Persist the initial "downloading" state immediately
       await upsertDownload(item);
 
-      // Download thumbnail in parallel if remote URL is provided
-      String? localThumbnailPath;
-      if (item.thumbnailUrl != null &&
-          (item.thumbnailUrl!.startsWith('http://') ||
-              item.thumbnailUrl!.startsWith('https://'))) {
-        localThumbnailPath = await _service.downloadThumbnail(
-          item.thumbnailUrl!,
-        );
-      }
+      // Start thumbnail download concurrently with attachment download
+      final thumbnailFuture = _downloadThumbnailSafely(item.thumbnailUrl);
 
       // 2. Delegate the actual HTTP download to the service worker
-      final result = await _service.downloadAttachment(
+      final downloadFuture = _service.downloadAttachment(
         url,
         onProgress: (progressPercent) {
           // 3. Persist progress updates as they arrive
           upsertDownload(item.copyWith(progress: progressPercent));
         },
       );
+
+      final results = await Future.wait([downloadFuture, thumbnailFuture]);
+      final result = results[0] as (int, String)?;
+      final localThumbnailPath = results[1] as String?;
 
       // 4. Persist the final "completed" state with actual file size
       if (result != null) {
@@ -217,15 +214,8 @@ class DownloadsRepository {
     try {
       await upsertDownload(item);
 
-      // Download thumbnail in parallel if remote URL is provided
-      String? localThumbnailPath;
-      if (item.thumbnailUrl != null &&
-          (item.thumbnailUrl!.startsWith('http://') ||
-              item.thumbnailUrl!.startsWith('https://'))) {
-        localThumbnailPath = await _service.downloadThumbnail(
-          item.thumbnailUrl!,
-        );
-      }
+      // Start thumbnail download concurrently with PDF download
+      final thumbnailFuture = _downloadThumbnailSafely(item.thumbnailUrl);
 
       String? watermarkText;
       if (applyWatermark) {
@@ -236,7 +226,7 @@ class DownloadsRepository {
         }
       }
 
-      final result = await _service.downloadWatermarkedPdf(
+      final downloadFuture = _service.downloadWatermarkedPdf(
         url: url,
         title: item.title,
         applyWatermark: applyWatermark,
@@ -245,6 +235,10 @@ class DownloadsRepository {
           upsertDownload(item.copyWith(progress: progressPercent));
         },
       );
+
+      final results = await Future.wait([downloadFuture, thumbnailFuture]);
+      final result = results[0] as (int, String);
+      final localThumbnailPath = results[1] as String?;
 
       await upsertDownload(
         item.copyWith(
@@ -266,6 +260,26 @@ class DownloadsRepository {
           'downloadItem': {'id': item.id, 'title': item.title},
         },
       );
+    }
+  }
+
+  Future<String?> _downloadThumbnailSafely(String? url) async {
+    if (url == null ||
+        (!url.startsWith('http://') && !url.startsWith('https://'))) {
+      return null;
+    }
+    try {
+      return await _service.downloadThumbnail(url);
+    } catch (e, stackTrace) {
+      _sentryService.captureException(
+        e,
+        stackTrace: stackTrace,
+        contexts: {
+          'action': {'name': '_downloadThumbnailSafely'},
+          'url': {'url': url},
+        },
+      );
+      return null;
     }
   }
 

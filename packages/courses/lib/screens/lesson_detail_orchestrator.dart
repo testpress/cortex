@@ -162,10 +162,8 @@ class _LessonDetailOrchestratorState
 
     final downloadItem =
         ref.watch(watchDownloadItemProvider(lesson.id)).valueOrNull;
-    final filePath = downloadItem?.filePath;
-    final fileExists = filePath != null && File(filePath).existsSync();
-    final isDownloaded =
-        downloadItem?.status == DownloadStatus.completed && fileExists;
+    final isDownloaded = downloadItem?.status == DownloadStatus.completed &&
+        downloadItem?.filePath != null;
     final showDownloadButton = !isDownloaded &&
         lesson.type == LessonType.pdf &&
         lesson.allowDownload &&
@@ -394,9 +392,8 @@ class _PdfLessonViewer extends ConsumerWidget {
 
     final downloadItem = downloadItemAsync.valueOrNull;
     final filePath = downloadItem?.filePath;
-    final fileExists = filePath != null && File(filePath).existsSync();
     final isDownloaded =
-        downloadItem?.status == DownloadStatus.completed && fileExists;
+        downloadItem?.status == DownloadStatus.completed && filePath != null;
 
     if (!downloadItemAsync.hasValue) {
       return LessonDetailSkeleton(lessonType: LessonType.pdf);
