@@ -246,18 +246,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                       _obscurePassword = !_obscurePassword;
                                     });
                                   },
-                                  child: SizedBox(
-                                    width: 48,
-                                    height: 48,
-                                    child: Center(
-                                      child: Icon(
-                                        _obscurePassword
-                                            ? LucideIcons.eye
-                                            : LucideIcons.eyeOff,
-                                        color: design.colors.textSecondary,
-                                        size: 18,
-                                      ),
-                                    ),
+                                  child: Icon(
+                                    _obscurePassword
+                                        ? LucideIcons.eye
+                                        : LucideIcons.eyeOff,
+                                    color: design.colors.textSecondary,
+                                    size: design.iconSize.md,
                                   ),
                                 ),
                               ),

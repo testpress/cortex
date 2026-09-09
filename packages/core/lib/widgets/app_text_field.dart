@@ -59,6 +59,7 @@ class AppTextField extends StatelessWidget {
           SizedBox(height: design.spacing.xs),
         ],
         Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             color: readOnly ? design.colors.surface : design.colors.card,
             borderRadius: BorderRadius.circular(design.radius.lg),
@@ -99,11 +100,15 @@ class AppTextField extends StatelessWidget {
                         child: Icon(
                           prefixIcon,
                           color: design.colors.textSecondary,
-                          size: 20,
+                          size: design.iconSize.md,
                         ),
                       )
                     : null,
                 prefixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
+                ),
+                suffixIconConstraints: const BoxConstraints(
                   minWidth: 0,
                   minHeight: 0,
                 ),
