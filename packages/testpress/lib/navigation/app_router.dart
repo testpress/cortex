@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'routes.dart';
 import 'package:core/core.dart';
@@ -117,7 +116,6 @@ class _AppShellBuilder extends ConsumerWidget {
     final items = activeTabs.map((tab) => tab.toTabItem(settings)).toList();
     final isLogoutSheetOpen = ref.watch(isLogoutSheetOpenProvider);
     final activeTabId = allTabs[navigationShell.currentIndex].id;
-    final sessionExpiredMessage = ref.watch(sessionExpiredProvider);
 
     void closeSheet() =>
         ref.read(isLogoutSheetOpenProvider.notifier).state = false;
@@ -155,23 +153,6 @@ class _AppShellBuilder extends ConsumerWidget {
               ),
               child: navigationShell,
             ),
-            // Session expired overlay — shown above all content when a 401 fires
-            if (sessionExpiredMessage != null)
-              Positioned.fill(
-                child: SessionExpiredDialog(
-                  message: sessionExpiredMessage,
-                  onSignIn: () {
-                    // Flip auth state first — router begins the transition to
-                    // Login immediately. Clear the session message after the
-                    // next frame so the dialog dismounts with the outgoing
-                    // route, not before it, avoiding any overlap flash.
-                    ref.read(authProvider.notifier).logout();
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ref.read(sessionExpiredProvider.notifier).state = null;
-                    });
-                  },
-                ),
-              ),
           ],
         );
       },
