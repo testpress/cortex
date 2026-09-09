@@ -148,6 +148,8 @@ class ProductDto {
     this.hasCoupons = false,
   });
 
+  bool get isFree => double.tryParse(price.replaceAll(',', '')) == 0;
+
   factory ProductDto.fromJson(
     Map<String, dynamic> json, {
     List<PriceDto> parsedPrices = const [],

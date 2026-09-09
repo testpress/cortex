@@ -6010,6 +6010,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to submit answer. Please try again.'**
   String get qotdErrorSubmitAnswer;
+
+  /// No description provided for @free.
+  ///
+  /// In en, this message translates to:
+  /// **'FREE'**
+  String get free;
 }
 
 class _AppLocalizationsDelegate

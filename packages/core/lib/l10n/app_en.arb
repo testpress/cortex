@@ -1654,5 +1654,6 @@
   "qotdOptionLabel": "Option",
   "qotdSingleCorrect": "Single Correct",
   "qotdMultipleCorrect": "Multiple Correct",
-  "qotdErrorSubmitAnswer": "Failed to submit answer. Please try again."
+  "qotdErrorSubmitAnswer": "Failed to submit answer. Please try again.",
+  "free": "FREE"
 }

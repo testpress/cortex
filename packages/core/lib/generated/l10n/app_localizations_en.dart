@@ -3324,4 +3324,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get qotdErrorSubmitAnswer =>
       'Failed to submit answer. Please try again.';
+
+  @override
+  String get free => 'FREE';
 }
