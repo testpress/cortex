@@ -18,16 +18,13 @@ class TopLearnersSectionWidget extends ConsumerWidget {
     );
     final bootstrapState = ref.watch(dashboardBootstrapProvider);
 
-    final isBootstrapping =
-        bootstrapState.isLoading &&
-        (learnersState.valueOrNull == null ||
-            learnersState.valueOrNull!.isEmpty);
+    final isInitialLoading = !bootstrapState.hasValue;
     final learners = learnersState.valueOrNull ?? const <LearnerDto>[];
 
     return TopLearnersSection(
       topLearners: learners.take(3).toList(),
       otherLearners: learners.skip(3).toList(),
-      isLoading: isBootstrapping,
+      isLoading: isInitialLoading,
     );
   }
 }

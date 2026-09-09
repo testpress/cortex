@@ -360,7 +360,7 @@ final courseListProvider =
 );
 
 typedef _$CourseList = AutoDisposeStreamNotifier<List<CourseDto>>;
-String _$courseSearchHash() => r'390cf82b8c17adf4b01d07b1a00dfc00ba4d3e16';
+String _$courseSearchHash() => r'1a75f21a0c543c8da7bb6677497c74ca03b6584f';
 
 /// See also [CourseSearch].
 @ProviderFor(CourseSearch)

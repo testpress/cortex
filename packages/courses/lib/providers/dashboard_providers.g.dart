@@ -7,11 +7,11 @@ part of 'dashboard_providers.dart';
 // **************************************************************************
 
 String _$dashboardBootstrapHash() =>
-    r'23bf682b48a0143fc85467561f87efa0483d0a6d';
+    r'01914957d676bb5afc97bd98d3e23935111faeee';
 
 /// See also [dashboardBootstrap].
 @ProviderFor(dashboardBootstrap)
-final dashboardBootstrapProvider = AutoDisposeFutureProvider<void>.internal(
+final dashboardBootstrapProvider = FutureProvider<void>.internal(
   dashboardBootstrap,
   name: r'dashboardBootstrapProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -23,7 +23,7 @@ final dashboardBootstrapProvider = AutoDisposeFutureProvider<void>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef DashboardBootstrapRef = AutoDisposeFutureProviderRef<void>;
+typedef DashboardBootstrapRef = FutureProviderRef<void>;
 String _$appVersionHash() => r'e8bdf0eb01e50b65eb7931eadc45c32b561fce64';
 
 /// See also [appVersion].

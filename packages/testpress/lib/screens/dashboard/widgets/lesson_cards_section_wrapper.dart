@@ -17,17 +17,17 @@ class LessonCardsSectionWrapper extends ConsumerWidget {
     final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
     final recentlyCompletedLessons = recentlyCompletedAsync.valueOrNull ?? [];
 
-    final hasLessonsData =
+    final hasLessons =
         whatsNewLessons.isNotEmpty ||
         resumeLessons.isNotEmpty ||
         recentlyCompletedLessons.isNotEmpty;
-    final isBootstrapping = bootstrapState.isLoading && !hasLessonsData;
+    final isInitialLoading = !bootstrapState.hasValue && !hasLessons;
 
     return LessonCardsSectionWidget(
       resumeLessons: resumeLessons,
       whatsNewLessons: whatsNewLessons,
       recentlyCompletedLessons: recentlyCompletedLessons,
-      isLoading: isBootstrapping,
+      isLoading: isInitialLoading,
     );
   }
 }
