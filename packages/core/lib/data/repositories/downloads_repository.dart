@@ -48,9 +48,14 @@ class DownloadsRepository {
           final existing = _lastKnownState[item.id];
           if (existing == null ||
               existing.progress != item.progress ||
-              existing.status != item.status) {
+              existing.status != item.status ||
+              existing.sizeInBytes != item.sizeInBytes ||
+              existing.thumbnailUrl != item.thumbnailUrl) {
             final itemToSave = existing != null
-                ? item.copyWith(downloadedDate: existing.downloadedDate)
+                ? item.copyWith(
+                    downloadedDate: existing.downloadedDate,
+                    thumbnailUrl: item.thumbnailUrl ?? existing.thumbnailUrl,
+                  )
                 : item;
 
             _lastKnownState[item.id] = itemToSave;

@@ -175,9 +175,8 @@ class DownloadsService {
       title: asset.title ?? 'Untitled Video',
       course: asset.metadata?['course'] ?? '',
       chapter: asset.metadata?['chapter'] ?? '',
-      thumbnailUrl: asset.metadata?['thumbnail_url'],
-      sizeInBytes:
-          0, // TPStreams does not currently expose total size easily here, we just use 0
+      thumbnailUrl: asset.thumbnailUrl ?? asset.metadata?['thumbnail_url'],
+      sizeInBytes: asset.totalSize > 0 ? asset.totalSize : asset.downloadedSize,
       downloadedDate: DateTime.now()
           .toIso8601String(), // Mocked or handled if needed
       type: DownloadType.video,
