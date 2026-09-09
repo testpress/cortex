@@ -16,18 +16,17 @@ class TopLearnersSectionWidget extends ConsumerWidget {
     final learnersState = ref.watch(
       learnersProvider(timeline: LeaderboardTimeline.allTime, limit: 10),
     );
-    final bootstrapState = ref.watch(dashboardBootstrapProvider);
-
-    final isBootstrapping =
-        bootstrapState.isLoading &&
-        (learnersState.valueOrNull == null ||
-            learnersState.valueOrNull!.isEmpty);
+    final isInitialLoading = ref.watch(isDashboardInitialLoadingProvider);
     final learners = learnersState.valueOrNull ?? const <LearnerDto>[];
+
+    if (learners.isEmpty && !isInitialLoading) {
+      return const SizedBox.shrink();
+    }
 
     return TopLearnersSection(
       topLearners: learners.take(3).toList(),
       otherLearners: learners.skip(3).toList(),
-      isLoading: isBootstrapping,
+      isLoading: isInitialLoading,
     );
   }
 }

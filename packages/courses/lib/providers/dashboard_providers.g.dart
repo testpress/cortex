@@ -357,5 +357,41 @@ final recentlyCompletedFeedProvider =
 // ignore: unused_element
 typedef RecentlyCompletedFeedRef
     = AutoDisposeStreamProviderRef<List<DashboardContentDto>>;
+String _$hasCachedDashboardHash() =>
+    r'bfb8abe339befa7cd8487ee58420bbb6cedd58b3';
+
+/// See also [hasCachedDashboard].
+@ProviderFor(hasCachedDashboard)
+final hasCachedDashboardProvider = AutoDisposeProvider<bool>.internal(
+  hasCachedDashboard,
+  name: r'hasCachedDashboardProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$hasCachedDashboardHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef HasCachedDashboardRef = AutoDisposeProviderRef<bool>;
+String _$isDashboardInitialLoadingHash() =>
+    r'0a4729e666e324c83e468ca446296c2e221dce4d';
+
+/// See also [isDashboardInitialLoading].
+@ProviderFor(isDashboardInitialLoading)
+final isDashboardInitialLoadingProvider = AutoDisposeProvider<bool>.internal(
+  isDashboardInitialLoading,
+  name: r'isDashboardInitialLoadingProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$isDashboardInitialLoadingHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef IsDashboardInitialLoadingRef = AutoDisposeProviderRef<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -11,23 +11,16 @@ class LessonCardsSectionWrapper extends ConsumerWidget {
     final whatsNewAsync = ref.watch(whatsNewFeedProvider);
     final resumeLearningAsync = ref.watch(resumeLearningFeedProvider);
     final recentlyCompletedAsync = ref.watch(recentlyCompletedFeedProvider);
-    final bootstrapState = ref.watch(dashboardBootstrapProvider);
-
+    final isInitialLoading = ref.watch(isDashboardInitialLoadingProvider);
     final whatsNewLessons = whatsNewAsync.valueOrNull ?? [];
     final resumeLessons = resumeLearningAsync.valueOrNull ?? [];
     final recentlyCompletedLessons = recentlyCompletedAsync.valueOrNull ?? [];
-
-    final hasLessonsData =
-        whatsNewLessons.isNotEmpty ||
-        resumeLessons.isNotEmpty ||
-        recentlyCompletedLessons.isNotEmpty;
-    final isBootstrapping = bootstrapState.isLoading && !hasLessonsData;
 
     return LessonCardsSectionWidget(
       resumeLessons: resumeLessons,
       whatsNewLessons: whatsNewLessons,
       recentlyCompletedLessons: recentlyCompletedLessons,
-      isLoading: isBootstrapping,
+      isLoading: isInitialLoading,
     );
   }
 }

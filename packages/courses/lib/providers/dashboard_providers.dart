@@ -80,4 +80,24 @@ Stream<List<DashboardContentDto>> recentlyCompletedFeed(Ref ref) async* {
   yield* repository.watchRecentlyCompletedFeed();
 }
 
+@riverpod
+bool hasCachedDashboard(Ref ref) {
+  final whatsNew = ref.watch(whatsNewFeedProvider).valueOrNull ?? [];
+  final resume = ref.watch(resumeLearningFeedProvider).valueOrNull ?? [];
+  final completed = ref.watch(recentlyCompletedFeedProvider).valueOrNull ?? [];
+  final banners = ref.watch(heroBannersProvider).valueOrNull ?? [];
+
+  return whatsNew.isNotEmpty ||
+      resume.isNotEmpty ||
+      completed.isNotEmpty ||
+      banners.isNotEmpty;
+}
+
+@riverpod
+bool isDashboardInitialLoading(Ref ref) {
+  final bootstrapState = ref.watch(dashboardBootstrapProvider);
+  final hasCache = ref.watch(hasCachedDashboardProvider);
+  return bootstrapState.isLoading && !hasCache;
+}
+
 final isHomeDrawerOpenProvider = StateProvider<bool>((ref) => false);

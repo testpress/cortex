@@ -10,12 +10,7 @@ class TopCarouselSectionWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final heroBanners = ref.watch(heroBannersProvider);
-    final bootstrapState = ref.watch(dashboardBootstrapProvider);
-
-    final showHeroSkeleton =
-        bootstrapState.isLoading &&
-        (heroBanners.valueOrNull == null || heroBanners.valueOrNull!.isEmpty);
-
+    final showHeroSkeleton = ref.watch(isDashboardInitialLoadingProvider);
     final banners = heroBanners.valueOrNull ?? [];
 
     if (banners.isEmpty && !showHeroSkeleton) {
