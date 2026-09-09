@@ -17,14 +17,6 @@ class AppPdfViewer extends ConsumerStatefulWidget {
   final File? file;
   final ValueChanged<double>? onProgressChanged;
 
-  const AppPdfViewer({
-    super.key,
-    this.url,
-    this.file,
-    this.onProgressChanged,
-  }) : assert(
-            url != null || file != null, 'Either url or file must be provided');
-
   const AppPdfViewer.network({
     super.key,
     required String this.url,
@@ -36,6 +28,23 @@ class AppPdfViewer extends ConsumerStatefulWidget {
     required File this.file,
     this.onProgressChanged,
   }) : url = null;
+
+  @visibleForTesting
+  static bool isSameResource(AppPdfViewer oldW, AppPdfViewer newW) {
+    if (oldW.file?.path != newW.file?.path) return false;
+    if (oldW.url == newW.url) return true;
+    if (oldW.url == null || newW.url == null) return false;
+
+    // Compare URLs ignoring query params (which change on refreshed pre-signed CloudFront tokens)
+    final uriOld = Uri.tryParse(oldW.url!);
+    final uriNew = Uri.tryParse(newW.url!);
+    if (uriOld != null && uriNew != null) {
+      return uriOld.scheme == uriNew.scheme &&
+          uriOld.host == uriNew.host &&
+          uriOld.path == uriNew.path;
+    }
+    return false;
+  }
 
   @override
   ConsumerState<AppPdfViewer> createState() => _AppPdfViewerState();
@@ -75,27 +84,11 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     _controller.addListener(_trackProgress);
   }
 
-  bool _isSameResource(AppPdfViewer oldW, AppPdfViewer newW) {
-    if (oldW.file?.path != newW.file?.path) return false;
-    if (oldW.url == newW.url) return true;
-    if (oldW.url == null || newW.url == null) return false;
-
-    // Compare URLs ignoring query params (which change on refreshed pre-signed CloudFront tokens)
-    final uriOld = Uri.tryParse(oldW.url!);
-    final uriNew = Uri.tryParse(newW.url!);
-    if (uriOld != null && uriNew != null) {
-      return uriOld.scheme == uriNew.scheme &&
-          uriOld.host == uriNew.host &&
-          uriOld.path == uriNew.path;
-    }
-    return false;
-  }
-
   @override
   void didUpdateWidget(covariant AppPdfViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (!_isSameResource(oldWidget, widget)) {
+    if (!AppPdfViewer.isSameResource(oldWidget, widget)) {
       _resetViewer();
       _load();
     }
@@ -138,14 +131,14 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
         return;
       }
 
-      _setupViewer();
+      _setupViewer(id);
     } catch (e, st) {
       if (e is! ApiException) {
         sentry.captureException(e, stackTrace: st);
       }
       if (!_isValidRequest(id)) return;
 
-      _handleError(e);
+      _handleError(id, e);
     }
   }
 
@@ -178,33 +171,33 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     });
   }
 
-  void _setupViewer() {
+  void _setupViewer(int id) {
     setState(() {
       if (widget.url != null && widget.url!.isNotEmpty) {
         _pdfViewerWidget = SfPdfViewer.network(
           widget.url!,
           controller: _controller,
-          onDocumentLoaded: _onDocumentLoaded,
+          onDocumentLoaded: (details) => _onDocumentLoaded(id, details),
           onDocumentLoadFailed: (details) {
-            _handleError(details.description);
+            _handleError(id, details.description);
           },
         );
       } else if (widget.file != null) {
         _pdfViewerWidget = SfPdfViewer.file(
           widget.file!,
           controller: _controller,
-          onDocumentLoaded: _onDocumentLoaded,
+          onDocumentLoaded: (details) => _onDocumentLoaded(id, details),
           onDocumentLoadFailed: (details) {
-            _handleError(details.description);
+            _handleError(id, details.description);
           },
         );
       }
     });
   }
 
-  Future<void> _handleError(Object error) async {
+  Future<void> _handleError(int id, Object error) async {
     final isConnected = await hasInternetConnection();
-    if (!mounted) return;
+    if (!_isValidRequest(id)) return;
 
     setState(() {
       _isOffline = !isConnected ||
@@ -298,7 +291,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   // ---------------- EVENTS ----------------
 
-  void _onDocumentLoaded(PdfDocumentLoadedDetails details) {
+  void _onDocumentLoaded(int id, PdfDocumentLoadedDetails details) {
+    if (!_isValidRequest(id)) return;
     _totalHeight = _calculateTotalHeight(details);
 
     if (mounted) {
