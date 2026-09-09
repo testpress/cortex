@@ -14,7 +14,7 @@ The system SHALL support rendering PDF lessons directly from a remote URL via `S
 - **AND** the lesson detail provider updates with refreshed pre-signed URL query parameters (expiration or signature) for the same file path
 - **THEN** the PDF viewer SHALL continue playback without restarting the document or flickering.
 
-#### Scenario: Rendering download action based on permission and content type
+#### Scenario: Rendering download action based on permission
 - **WHEN** the `LessonDetailOrchestrator` is initialized for a PDF lesson
 - **AND** the lesson metadata indicates `allow_download` is true and the item is not yet downloaded
 - **THEN** the system SHALL display a download button in the header.
