@@ -65,6 +65,7 @@ class CortexApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final languageAsync = ref.watch(appLanguageSettingsNotifierProvider);
+    final sessionExpiredMessage = ref.watch(sessionExpiredProvider);
 
     final locale = languageAsync.maybeWhen(
       data: (settings) => settings.languageCode == 'system'
@@ -112,7 +113,7 @@ class CortexApp extends ConsumerWidget {
       builder: (context, child) {
         final originalData = MediaQuery.of(context);
         final systemScale = originalData.textScaler.scale(1.0);
-        return MediaQuery(
+        final scaled = MediaQuery(
           data: originalData.copyWith(
             textScaler: TextScaler.linear(systemScale * scaleMultiplier),
           ),
@@ -124,6 +125,28 @@ class CortexApp extends ConsumerWidget {
             child: child ?? const SizedBox.shrink(),
           ),
         );
+
+        // Session expired overlay is placed here — above the Navigator —
+        // so it is never part of any route transition and cannot overlap
+        // the incoming Login screen.
+        if (sessionExpiredMessage != null) {
+          return Stack(
+            children: [
+              scaled,
+              Positioned.fill(
+                child: SessionExpiredDialog(
+                  message: sessionExpiredMessage,
+                  onSignIn: () {
+                    ref.read(sessionExpiredProvider.notifier).state = null;
+                    ref.read(authProvider.notifier).logout();
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+
+        return scaled;
       },
     );
   }
