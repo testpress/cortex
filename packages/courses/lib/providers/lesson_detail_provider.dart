@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:core/data/data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'course_list_provider.dart';
-import '../utils/pdf_cache_service.dart';
 import 'package:async/async.dart';
 
 part 'lesson_detail_provider.g.dart';
@@ -43,8 +42,7 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
   if (initial == null) {
     // First time load: Await fetch so the UI starts in a loading state
     try {
-      final refreshed = await repository.refreshLesson(lessonId);
-      _prefetchPdfLesson(ref, refreshed);
+      await repository.refreshLesson(lessonId);
     } catch (e, st) {
       sentryService.captureException(e, stackTrace: st);
       rethrow;
@@ -57,9 +55,6 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       dbStream,
       repository
           .refreshLesson(lessonId)
-          .then((lesson) {
-            _prefetchPdfLesson(ref, lesson);
-          })
           .asStream()
           .handleError((e) {
             throw e;
@@ -69,25 +64,9 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
     ]);
   } else {
     // Already have complete data: Safe to refresh in the background silently
-    _prefetchPdfLesson(ref, initial);
-    repository.refreshLesson(lessonId).then((lesson) {
-      _prefetchPdfLesson(ref, lesson);
-    }).ignore();
+    repository.refreshLesson(lessonId).ignore();
     yield* dbStream;
   }
-}
-
-void _prefetchPdfLesson(LessonDetailRef ref, LessonDto lesson) {
-  final url = lesson.contentUrl;
-  if (lesson.type != LessonType.pdf || url == null || url.isEmpty) return;
-
-  ref
-      .read(pdfCacheServiceProvider)
-      .prefetchPdf(
-        lessonId: lesson.id,
-        url: url,
-      )
-      .ignore();
 }
 
 /// Provider that watches and manages the bookmark status of a specific lesson.

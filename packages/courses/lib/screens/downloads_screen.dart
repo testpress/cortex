@@ -298,8 +298,7 @@ class _DownloadsList extends ConsumerWidget {
 
                     try {
                       await ref.read(downloadsProvider.notifier).delete(item);
-                    } catch (e, st) {
-                      debugPrint('Delete Error: $e\n$st');
+                    } catch (e) {
                       if (context.mounted) {
                         AppToast.show(
                           context,
@@ -387,6 +386,44 @@ class _DownloadThumbnail extends StatelessWidget {
   }
 }
 
+class _ThumbnailImage extends StatelessWidget {
+  final String thumbnailUrl;
+  final Widget placeholder;
+  final BorderRadius borderRadius;
+
+  const _ThumbnailImage({
+    required this.thumbnailUrl,
+    required this.placeholder,
+    required this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (thumbnailUrl.startsWith('http://') ||
+        thumbnailUrl.startsWith('https://')) {
+      return ClipRRect(
+        borderRadius: borderRadius,
+        child: CachedNetworkImage(
+          imageUrl: thumbnailUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => placeholder,
+          errorWidget: (context, url, error) => placeholder,
+        ),
+      );
+    }
+
+    final file = File(thumbnailUrl);
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: Image.file(
+        file,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => placeholder,
+      ),
+    );
+  }
+}
+
 class _VideoThumbnail extends StatelessWidget {
   final DownloadItem item;
 
@@ -410,14 +447,10 @@ class _VideoThumbnail extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         if (item.thumbnailUrl != null && item.thumbnailUrl!.isNotEmpty)
-          ClipRRect(
+          _ThumbnailImage(
+            thumbnailUrl: item.thumbnailUrl!,
+            placeholder: placeholder,
             borderRadius: BorderRadius.circular(design.radius.md),
-            child: CachedNetworkImage(
-              imageUrl: item.thumbnailUrl!,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => placeholder,
-              errorWidget: (context, url, error) => placeholder,
-            ),
           )
         else
           placeholder,
@@ -463,7 +496,7 @@ class _AttachmentThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return Column(
+    final placeholder = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
@@ -472,12 +505,26 @@ class _AttachmentThumbnail extends StatelessWidget {
           color: design.colors.textSecondary,
         ),
         if (item.fileType != null) ...[
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           AppText.labelSmall(
             item.fileType!,
             color: design.colors.textSecondary,
           ),
         ],
+      ],
+    );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (item.thumbnailUrl != null && item.thumbnailUrl!.isNotEmpty)
+          _ThumbnailImage(
+            thumbnailUrl: item.thumbnailUrl!,
+            placeholder: placeholder,
+            borderRadius: BorderRadius.circular(design.radius.md),
+          )
+        else
+          placeholder,
       ],
     );
   }

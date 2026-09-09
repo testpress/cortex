@@ -112,6 +112,27 @@ class DownloadsService {
     }
   }
 
+  /// Downloads a thumbnail image to internal app cache so it is accessible offline.
+  Future<String?> downloadThumbnail(String url) async {
+    try {
+      return await _fileDownloader.download(
+        url: url,
+        type: StorageType.internalCache,
+        requireAuth: false,
+      );
+    } catch (e, stackTrace) {
+      _sentryService.captureException(
+        e,
+        stackTrace: stackTrace,
+        level: AppErrorLevel.warning,
+        contexts: {
+          'Thumbnail Download Error': {'url': url},
+        },
+      );
+      return null;
+    }
+  }
+
   /// Checks if the attachment exists and returns its size in bytes.
   /// Triggers MediaScanner if it does. Returns null if missing.
   Future<int?> getExistingAttachmentSize(String url) async {

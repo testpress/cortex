@@ -79,7 +79,14 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   bool _isSubmitSheetOpen = false;
   bool _isSubmitting = false;
 
-  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>?
+  Future<
+    ({
+      String lessonTitle,
+      String chapterTitle,
+      String courseTitle,
+      String? image,
+    })?
+  >?
   _lessonDetailsFuture;
 
   @override
@@ -233,7 +240,12 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
     if (widget.chapterContentId != null && _lessonDetailsFuture != null) {
       return FutureBuilder<
-        ({String lessonTitle, String chapterTitle, String courseTitle})?
+        ({
+          String lessonTitle,
+          String chapterTitle,
+          String courseTitle,
+          String? image,
+        })?
       >(
         future: _lessonDetailsFuture,
         builder: (context, snapshot) {

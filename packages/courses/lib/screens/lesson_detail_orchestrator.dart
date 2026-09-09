@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -9,7 +10,6 @@ import '../widgets/lesson_detail/video_lesson_viewer.dart';
 import '../widgets/lesson_detail/live_stream_viewer.dart';
 import '../widgets/lesson_detail/attachment_viewer.dart';
 import '../widgets/lesson_detail/video_conference_viewer.dart';
-import '../utils/pdf_cache_service.dart';
 import '../widgets/lesson_detail/ask_doubt_fab.dart';
 import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
 import '../widgets/lesson_detail/video_mcq_filter_sheet.dart';
@@ -160,6 +160,15 @@ class _LessonDetailOrchestratorState
       LessonType.attachment,
     ].contains(lesson.type);
 
+    final downloadItem =
+        ref.watch(watchDownloadItemProvider(lesson.id)).valueOrNull;
+    final isDownloaded = downloadItem?.status == DownloadStatus.completed &&
+        downloadItem?.filePath != null;
+    final showDownloadButton = !isDownloaded &&
+        lesson.type == LessonType.pdf &&
+        lesson.allowDownload &&
+        lesson.contentUrl != null;
+
     final isCompleted = _alreadyMarkedComplete ||
         lesson.progressStatus == LessonProgressStatus.completed;
 
@@ -181,9 +190,7 @@ class _LessonDetailOrchestratorState
                 }
               : null,
           onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
-          onDownload: lesson.allowDownload && lesson.contentUrl != null
-              ? () => _handleDownload(lesson)
-              : null,
+          onDownload: showDownloadButton ? () => _handleDownload(lesson) : null,
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
           stickyFooter: lesson.type != LessonType.video &&
@@ -299,15 +306,10 @@ class _LessonDetailOrchestratorState
           mcqQuestionCount: _mcqQuestionCount,
         );
       case LessonType.pdf:
-        if (lesson.contentUrl != null) {
-          return _CachedPdfLessonViewer(
-            lesson: lesson,
-            onProgressChanged: (progress) {
-              _readingProgress.value = progress;
-            },
-          );
-        }
-        break;
+        return _PdfLessonViewer(
+          lesson: lesson,
+          onProgressChanged: (progress) => _readingProgress.value = progress,
+        );
       case LessonType.notes:
       case LessonType.embedContent:
         if (lesson.htmlContent != null) {
@@ -375,42 +377,44 @@ class _LessonDetailOrchestratorState
   }
 }
 
-class _CachedPdfLessonViewer extends ConsumerWidget {
-  const _CachedPdfLessonViewer({
-    required this.lesson,
-    required this.onProgressChanged,
-  });
-
+class _PdfLessonViewer extends ConsumerWidget {
   final LessonDto lesson;
-  final ValueChanged<double> onProgressChanged;
+  final ValueChanged<double>? onProgressChanged;
+
+  const _PdfLessonViewer({
+    required this.lesson,
+    this.onProgressChanged,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final url = lesson.contentUrl;
-    if (url == null || url.isEmpty) {
+    final downloadItemAsync = ref.watch(watchDownloadItemProvider(lesson.id));
+
+    final downloadItem = downloadItemAsync.valueOrNull;
+    final filePath = downloadItem?.filePath;
+    final isDownloaded =
+        downloadItem?.status == DownloadStatus.completed && filePath != null;
+
+    if (!downloadItemAsync.hasValue) {
       return LessonDetailSkeleton(lessonType: LessonType.pdf);
     }
 
-    final pdfFile = ref.watch(
-      pdfFileProvider(PdfCacheRequest(
-        lessonId: lesson.id,
-        url: url,
-      )),
-    );
-
-    return pdfFile.when(
-      skipLoadingOnReload: true,
-      data: (file) => AppPdfViewer(
-        file: file,
+    if (isDownloaded) {
+      return AppPdfViewer.file(
+        key: ValueKey('pdf_file_${lesson.id}'),
+        file: File(filePath),
         onProgressChanged: onProgressChanged,
-      ),
-      loading: () => LessonDetailSkeleton(lessonType: LessonType.pdf),
-      error: (error, _) => Center(
-        child: AppText.body(
-          error.toString(),
-          color: Design.of(context).colors.error,
-        ),
-      ),
-    );
+      );
+    }
+
+    if (lesson.contentUrl != null) {
+      return AppPdfViewer.network(
+        key: ValueKey('pdf_network_${lesson.id}'),
+        url: lesson.contentUrl!,
+        onProgressChanged: onProgressChanged,
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

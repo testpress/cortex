@@ -1114,8 +1114,13 @@ class CourseRepository {
   }
 
   /// Efficiently fetches lesson and parent titles by lesson ID.
-  Future<({String lessonTitle, String chapterTitle, String courseTitle})?>
-      getLessonDetails(String lessonId) async {
+  Future<
+      ({
+        String lessonTitle,
+        String chapterTitle,
+        String courseTitle,
+        String? image,
+      })?> getLessonDetails(String lessonId) async {
     final result = await _db.getLessonDetails(lessonId);
     if (result == null) return null;
 
@@ -1127,6 +1132,7 @@ class CourseRepository {
       lessonTitle: lesson.title,
       chapterTitle: chapter.title,
       courseTitle: course.title,
+      image: lesson.image,
     );
   }
 
