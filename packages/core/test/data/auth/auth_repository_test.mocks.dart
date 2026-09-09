@@ -6,12 +6,11 @@
 import 'dart:async' as _i6;
 
 import 'package:core/data/auth/auth_api_service.dart' as _i2;
-import 'package:core/data/auth/auth_local_data_source.dart' as _i7;
 import 'package:core/data/data.dart' as _i4;
 import 'package:drift/drift.dart' as _i3;
 import 'package:drift/src/runtime/executor/stream_queries.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:mockito/src/dummies.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -492,7 +491,7 @@ class MockAuthApiService extends _i1.Mock implements _i2.AuthApiService {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAuthLocalDataSource extends _i1.Mock
-    implements _i7.AuthLocalDataSource {
+    implements _i4.AuthLocalDataSource {
   @override
   _i6.Future<bool> isUserLoggedIn() =>
       (super.noSuchMethod(
@@ -1132,11 +1131,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   _i3.SqlTypes get typeMapping =>
       (super.noSuchMethod(
             Invocation.getter(#typeMapping),
-            returnValue: _i8.dummyValue<_i3.SqlTypes>(
+            returnValue: _i7.dummyValue<_i3.SqlTypes>(
               this,
               Invocation.getter(#typeMapping),
             ),
-            returnValueForMissingStub: _i8.dummyValue<_i3.SqlTypes>(
+            returnValueForMissingStub: _i7.dummyValue<_i3.SqlTypes>(
               this,
               Invocation.getter(#typeMapping),
             ),
@@ -1665,6 +1664,38 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
           as _i6.Stream<List<_i4.DashboardContentData>>);
 
   @override
+  _i6.Stream<
+    List<({_i4.DashboardContentData content, _i4.LessonsTableData? lesson})>
+  >
+  watchDashboardSectionWithLessons(_i4.DashboardSectionType? sectionType) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDashboardSectionWithLessons, [sectionType]),
+            returnValue:
+                _i6.Stream<
+                  List<
+                    ({
+                      _i4.DashboardContentData content,
+                      _i4.LessonsTableData? lesson,
+                    })
+                  >
+                >.empty(),
+            returnValueForMissingStub:
+                _i6.Stream<
+                  List<
+                    ({
+                      _i4.DashboardContentData content,
+                      _i4.LessonsTableData? lesson,
+                    })
+                  >
+                >.empty(),
+          )
+          as _i6.Stream<
+            List<
+              ({_i4.DashboardContentData content, _i4.LessonsTableData? lesson})
+            >
+          >);
+
+  @override
   _i6.Future<void> wipeAndInsertDashboardSection(
     _i4.DashboardSectionType? sectionType,
     List<_i4.DashboardContentsTableCompanion>? rows,
@@ -1941,11 +1972,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   T alias<T, D>(_i3.ResultSetImplementation<T, D>? table, String? alias) =>
       (super.noSuchMethod(
             Invocation.method(#alias, [table, alias]),
-            returnValue: _i8.dummyValue<T>(
+            returnValue: _i7.dummyValue<T>(
               this,
               Invocation.method(#alias, [table, alias]),
             ),
-            returnValueForMissingStub: _i8.dummyValue<T>(
+            returnValueForMissingStub: _i7.dummyValue<T>(
               this,
               Invocation.method(#alias, [table, alias]),
             ),
@@ -1983,8 +2014,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
       (super.noSuchMethod(
             Invocation.method(#doWhenOpened, [fn]),
             returnValue:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(#doWhenOpened, [fn]),
                   ),
@@ -1992,8 +2023,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                 ) ??
                 _FakeFuture_38<T>(this, Invocation.method(#doWhenOpened, [fn])),
             returnValueForMissingStub:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(#doWhenOpened, [fn]),
                   ),
@@ -2254,8 +2285,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
               {#requireNew: requireNew},
             ),
             returnValue:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(
                       #transaction,
@@ -2274,8 +2305,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                 ),
             returnValueForMissingStub:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(
                       #transaction,
@@ -2301,8 +2332,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
       (super.noSuchMethod(
             Invocation.method(#exclusively, [action]),
             returnValue:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(#exclusively, [action]),
                   ),
@@ -2313,8 +2344,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   Invocation.method(#exclusively, [action]),
                 ),
             returnValueForMissingStub:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(#exclusively, [action]),
                   ),
@@ -2348,8 +2379,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
               {#interceptor: interceptor},
             ),
             returnValue:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(
                       #runWithInterceptor,
@@ -2368,8 +2399,8 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
                   ),
                 ),
             returnValueForMissingStub:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i7.ifNotNull(
+                  _i7.dummyValueOrNull<T>(
                     this,
                     Invocation.method(
                       #runWithInterceptor,
@@ -2462,11 +2493,11 @@ class MockAppDatabase extends _i1.Mock implements _i4.AppDatabase {
   String $expandVar(int? start, int? amount) =>
       (super.noSuchMethod(
             Invocation.method(#$expandVar, [start, amount]),
-            returnValue: _i8.dummyValue<String>(
+            returnValue: _i7.dummyValue<String>(
               this,
               Invocation.method(#$expandVar, [start, amount]),
             ),
-            returnValueForMissingStub: _i8.dummyValue<String>(
+            returnValueForMissingStub: _i7.dummyValue<String>(
               this,
               Invocation.method(#$expandVar, [start, amount]),
             ),

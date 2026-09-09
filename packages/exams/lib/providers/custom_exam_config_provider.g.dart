@@ -189,7 +189,7 @@ class _CustomExamConfigProviderElement
 }
 
 String _$generateCustomExamHash() =>
-    r'0526d6ae2fcee39b2164d00d5c7561dc8bd28a27';
+    r'8aadf9c21833b54b46b43e8fda21667a4221198e';
 
 /// Manages the API call to generate a custom exam from the built blocks.
 ///

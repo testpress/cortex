@@ -6,7 +6,7 @@ part of 'exam_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$examRepositoryHash() => r'02b16aece7d1da9b5a73c9f2f28e490e7c2fe06f';
+String _$examRepositoryHash() => r'cdab22c65e3e9bc890d35caf1d4f19ff1bb8ee65';
 
 /// Repository provider for exam-specific operations.
 /// Repository provider for exam-specific operations.
@@ -27,7 +27,7 @@ final examRepositoryProvider = Provider<ExamRepository>.internal(
 // ignore: unused_element
 typedef ExamRepositoryRef = ProviderRef<ExamRepository>;
 String _$offlineExamRepositoryFactoryHash() =>
-    r'db45db2873fa5dad13b78b0dddce5af92f760bb9';
+    r'7b944c436c596a49ad8f95abc4b4faea83abe9d3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -355,7 +355,7 @@ final examSyncMetadataProvider =
     );
 
 typedef _$ExamSyncMetadata = Notifier<DateTime?>;
-String _$examListHash() => r'2cd7560739d0bfca4496265e50c11a22e2c148ac';
+String _$examListHash() => r'821ffab00a4f8511321118b3c972cde890594f5e';
 
 /// Notifier that manages the exam-specific course list and its independent sync state.
 ///

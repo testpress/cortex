@@ -48,7 +48,7 @@ final userProvider = AutoDisposeStreamProvider<UsersTableData?>.internal(
 // ignore: unused_element
 typedef UserRef = AutoDisposeStreamProviderRef<UsersTableData?>;
 String _$userActionsControllerHash() =>
-    r'90f7705db4d8f6af4fea95f3a3a22c3af652f53b';
+    r'b64248c5682b22e42ff8c808543ec6c0409bfbee';
 
 /// Controller used to trigger profile-related actions like updates.
 ///

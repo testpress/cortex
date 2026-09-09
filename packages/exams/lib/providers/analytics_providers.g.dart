@@ -7,7 +7,7 @@ part of 'analytics_providers.dart';
 // **************************************************************************
 
 String _$subjectAnalyticsRepositoryHash() =>
-    r'f5cae0d3f40def3d518ce428f495325584125df9';
+    r'909c39cf517a1af10b3a84f782bf057841484bf0';
 
 /// See also [subjectAnalyticsRepository].
 @ProviderFor(subjectAnalyticsRepository)
@@ -297,7 +297,7 @@ class _SubjectAnalyticsByIdProviderElement
 }
 
 String _$subjectAnalyticsPaginationHash() =>
-    r'55e805c0613d9463fe4fce706531264ea1ac4684';
+    r'8bf7febf7af6b47c7047d2e9e7a164ee14cd7e8b';
 
 abstract class _$SubjectAnalyticsPagination
     extends

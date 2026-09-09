@@ -45,7 +45,7 @@ final appTextScaleMultiplierProvider = Provider<double>.internal(
 // ignore: unused_element
 typedef AppTextScaleMultiplierRef = ProviderRef<double>;
 String _$appearanceSettingsNotifierHash() =>
-    r'44f7fead7d439d715819e641eb866549c85c9afa';
+    r'10d71da5a92fbe46bffcbf13ac1f47ee262c17b1';
 
 /// See also [AppearanceSettingsNotifier].
 @ProviderFor(AppearanceSettingsNotifier)
