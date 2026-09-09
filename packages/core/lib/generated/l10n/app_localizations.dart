@@ -2975,6 +2975,30 @@ abstract class AppLocalizations {
   /// **'Change photo'**
   String get editProfileChangePhoto;
 
+  /// No description provided for @editProfileAvatarSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Profile Picture'**
+  String get editProfileAvatarSheetTitle;
+
+  /// No description provided for @editProfileCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get editProfileCamera;
+
+  /// No description provided for @editProfileGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get editProfileGallery;
+
+  /// No description provided for @editProfileRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get editProfileRemovePhoto;
+
   /// No description provided for @storeTabTitle.
   ///
   /// In en, this message translates to:

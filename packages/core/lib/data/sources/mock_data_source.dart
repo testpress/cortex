@@ -1492,11 +1492,19 @@ class MockDataSource implements DataSource {
   @override
   Future<UserDto> updateProfile(Map<String, dynamic> data) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    final updated = mockCurrentUser.copyWith(
+    final updated = UserDto(
+      id: mockCurrentUser.id,
       name: data['display_name'] as String? ?? mockCurrentUser.name,
       firstName: data['first_name'] as String? ?? mockCurrentUser.firstName,
       lastName: data['last_name'] as String? ?? mockCurrentUser.lastName,
       phone: data['phone'] as String? ?? mockCurrentUser.phone,
+      avatar: data.containsKey('photo')
+          ? data['photo'] as String?
+          : mockCurrentUser.avatar,
+      email: mockCurrentUser.email,
+      username: mockCurrentUser.username,
+      isPro: mockCurrentUser.isPro,
+      joinedDate: mockCurrentUser.joinedDate,
     );
     mockCurrentUser = updated;
     return updated;

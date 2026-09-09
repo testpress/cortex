@@ -1598,6 +1598,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editProfileChangePhoto => 'تغيير الصورة';
 
   @override
+  String get editProfileAvatarSheetTitle => 'تغيير الصورة الرمزية للملف الشخصي';
+
+  @override
+  String get editProfileCamera => 'الكاميرا';
+
+  @override
+  String get editProfileGallery => 'المعرض';
+
+  @override
+  String get editProfileRemovePhoto => 'إزالة الصورة';
+
+  @override
   String get storeTabTitle => 'المتجر';
 
   @override
