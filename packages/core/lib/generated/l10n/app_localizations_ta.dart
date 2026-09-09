@@ -1625,6 +1625,18 @@ class AppLocalizationsTa extends AppLocalizations {
   String get editProfileChangePhoto => 'புகைப்படத்தை மாற்று';
 
   @override
+  String get editProfileAvatarSheetTitle => 'சுயவிவரப் படத்தை மாற்றவும்';
+
+  @override
+  String get editProfileCamera => 'கேமரா';
+
+  @override
+  String get editProfileGallery => 'கேலரி';
+
+  @override
+  String get editProfileRemovePhoto => 'புகைப்படத்தை அகற்று';
+
+  @override
   String get storeTabTitle => 'ஸ்டோர்';
 
   @override

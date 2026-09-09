@@ -1613,6 +1613,18 @@ class AppLocalizationsMl extends AppLocalizations {
   String get editProfileChangePhoto => 'ഫോട്ടോ മാറ്റുക';
 
   @override
+  String get editProfileAvatarSheetTitle => 'പ്രൊഫൈൽ ചിത്രം മാറ്റുക';
+
+  @override
+  String get editProfileCamera => 'ക്യാമറ';
+
+  @override
+  String get editProfileGallery => 'ഗാലറി';
+
+  @override
+  String get editProfileRemovePhoto => 'ഫോട്ടോ നീക്കം ചെയ്യുക';
+
+  @override
   String get storeTabTitle => 'സ്റ്റോർ';
 
   @override

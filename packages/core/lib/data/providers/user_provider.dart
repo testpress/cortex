@@ -37,14 +37,22 @@ class UserActionsController extends _$UserActionsController {
     String? lastName,
     String? phone,
     String? photo,
+    bool removePhoto = false,
   }) async {
     final userRepository = await ref.read(userRepositoryProvider.future);
 
-    await userRepository.updateProfile({
+    final data = <String, dynamic>{
       'first_name': ?firstName,
       'last_name': ?lastName,
       'phone': ?phone,
-      'photo': ?photo,
-    });
+    };
+
+    if (removePhoto) {
+      data['photo'] = null;
+    } else if (photo != null) {
+      data['photo'] = photo;
+    }
+
+    await userRepository.updateProfile(data);
   }
 }
