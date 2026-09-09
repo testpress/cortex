@@ -127,6 +127,7 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
+    state = const AsyncData(false);
     try {
       // Safety net: explicitly clear the user row to guarantee no stale data leaks if the full purge fails
       final userRepo = await ref.read(userRepositoryProvider.future);
@@ -136,8 +137,6 @@ class Auth extends _$Auth {
       await resetUseCase.execute();
 
       await _repository.logout();
-
-      state = const AsyncData(false);
     } catch (e, stackTrace) {
       ref
           .read(sentryServiceProvider)

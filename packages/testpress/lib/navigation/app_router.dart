@@ -160,9 +160,9 @@ class _AppShellBuilder extends ConsumerWidget {
               Positioned.fill(
                 child: SessionExpiredDialog(
                   message: sessionExpiredMessage,
-                  onSignIn: () async {
-                    await ref.read(authProvider.notifier).logout();
+                  onSignIn: () {
                     ref.read(sessionExpiredProvider.notifier).state = null;
+                    ref.read(authProvider.notifier).logout();
                   },
                 ),
               ),

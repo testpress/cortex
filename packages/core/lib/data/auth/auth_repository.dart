@@ -117,12 +117,13 @@ class AuthRepository {
 
   Future<void> logout() async {
     final token = await _localDataSource.getToken();
+    await _clearToken();
     try {
-      await _apiService.logout(authToken: token);
+      if (token != null && token.isNotEmpty) {
+        await _apiService.logout(authToken: token);
+      }
     } catch (_) {
       // Still logout locally if API fails
-    } finally {
-      await _clearToken();
     }
   }
 
