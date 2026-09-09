@@ -239,21 +239,39 @@ void main() {
 
         final l10n = L10n.of(tester.element(find.byType(EditProfileScreen)));
 
-        // Pencil icon should be rendered
+        // Pencil icon and semantic button should be rendered
         expect(find.byIcon(LucideIcons.pencil), findsOneWidget);
+        expect(
+          find.bySemanticsLabel(l10n.editProfileChangePhoto),
+          findsOneWidget,
+        );
 
-        // Dedicated change photo button should NOT exist
+        // Dedicated change photo text button should NOT exist
         expect(find.text(l10n.editProfileChangePhoto), findsNothing);
 
         // Tap the avatar
         await tester.tap(find.byIcon(LucideIcons.pencil));
         await tester.pumpAndSettle();
 
-        // Bottom sheet should be visible with options
+        // Bottom sheet should be visible with options and semantics
         expect(find.text(l10n.editProfileAvatarSheetTitle), findsOneWidget);
         expect(find.text(l10n.editProfileCamera), findsOneWidget);
         expect(find.text(l10n.editProfileGallery), findsOneWidget);
         expect(find.text(l10n.editProfileRemovePhoto), findsOneWidget);
+
+        bool hasButtonSemantics(String label) => find
+            .byWidgetPredicate(
+              (w) =>
+                  w is Semantics &&
+                  w.properties.button == true &&
+                  w.properties.label == label,
+            )
+            .evaluate()
+            .isNotEmpty;
+
+        expect(hasButtonSemantics(l10n.editProfileCamera), isTrue);
+        expect(hasButtonSemantics(l10n.editProfileGallery), isTrue);
+        expect(hasButtonSemantics(l10n.editProfileRemovePhoto), isTrue);
 
         // Tap Remove Photo
         await tester.tap(find.text(l10n.editProfileRemovePhoto));
@@ -358,6 +376,92 @@ void main() {
         expect(find.text(l10n.editProfileCamera), findsOneWidget);
         expect(find.text(l10n.editProfileGallery), findsOneWidget);
         expect(find.text(l10n.editProfileRemovePhoto), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'does not repopulate intentionally blank fields on subsequent userProvider emissions',
+      (tester) async {
+        final userStreamController =
+            StreamController<UsersTableData?>.broadcast();
+        addTearDown(userStreamController.close);
+
+        const initialUser = UsersTableData(
+          id: '1',
+          name: 'John Doe',
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+          phone: '1234567890',
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              authProvider.overrideWith(MockAuth.new),
+              userProvider.overrideWith((ref) => userStreamController.stream),
+              userActionsControllerProvider.overrideWith(
+                () => mockUserActionsController,
+              ),
+            ],
+            child: DesignProvider(
+              config: DesignConfig.defaults(),
+              child: LocalizationProvider(
+                child: Builder(
+                  builder: (context) {
+                    final locale = LocalizationProvider.of(context).locale;
+                    return MaterialApp(
+                      locale: locale,
+                      localizationsDelegates: LocalizationProvider.delegates,
+                      supportedLocales: LocalizationProvider.supportedLocales,
+                      home: const EditProfileScreen(),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+
+        // Emit initial user data
+        userStreamController.add(initialUser);
+        await tester.pumpAndSettle();
+
+        final l10n = L10n.of(tester.element(find.byType(EditProfileScreen)));
+
+        final firstNameField = find.widgetWithText(
+          AppTextField,
+          l10n.editProfileFirstNameLabel,
+        );
+        final lastNameField = find.widgetWithText(
+          AppTextField,
+          l10n.editProfileLastNameLabel,
+        );
+
+        // Initial text should be populated from initialUser
+        expect(
+          tester.widget<AppTextField>(firstNameField).controller?.text,
+          'John',
+        );
+        expect(
+          tester.widget<AppTextField>(lastNameField).controller?.text,
+          'Doe',
+        );
+
+        // Clear both fields intentionally
+        await tester.enterText(firstNameField, '');
+        await tester.enterText(lastNameField, '');
+        await tester.pumpAndSettle();
+
+        // Emit another user update from userProvider
+        userStreamController.add(initialUser);
+        await tester.pumpAndSettle();
+
+        // Fields should remain empty and not get clobbered
+        final firstTextField = tester.widget<AppTextField>(firstNameField);
+        final lastTextField = tester.widget<AppTextField>(lastNameField);
+        expect(firstTextField.controller?.text, '');
+        expect(lastTextField.controller?.text, '');
       },
     );
   });

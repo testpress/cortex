@@ -22,6 +22,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   String? _phoneError;
   String? _selectedAvatarPath;
   Uint8List? _selectedAvatarBytes;
+  bool _hasInitializedFields = false;
   bool _isAvatarRemoved = false;
   bool _isAvatarSheetOpen = false;
   bool _isSaving = false;
@@ -31,6 +32,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void initState() {
     super.initState();
     final user = ref.read(userProvider).value;
+    if (user != null) {
+      _hasInitializedFields = true;
+    }
 
     _firstNameController = TextEditingController(text: user?.firstName ?? '');
     _lastNameController = TextEditingController(text: user?.lastName ?? '');
@@ -151,9 +155,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget build(BuildContext context) {
     ref.listen(userProvider, (previous, next) {
       final user = next.value;
-      if (user != null &&
-          _firstNameController.text.isEmpty &&
-          _lastNameController.text.isEmpty) {
+      if (user != null && !_hasInitializedFields) {
+        _hasInitializedFields = true;
         _firstNameController.text = user.firstName ?? '';
         _lastNameController.text = user.lastName ?? '';
         _emailController.text = user.email ?? '';
@@ -321,57 +324,61 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         AppText.label(l10n.editProfilePhotoLabel),
         SizedBox(height: design.spacing.md),
         Center(
-          child: GestureDetector(
+          child: AppSemantics.button(
+            label: l10n.editProfileChangePhoto,
             onTap: () => setState(() => _isAvatarSheetOpen = true),
-            child: Stack(
-              children: [
-                Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: design.colors.primary,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: _selectedAvatarBytes != null && !_isAvatarRemoved
-                      ? Image.memory(_selectedAvatarBytes!, fit: BoxFit.cover)
-                      : (hasNetworkAvatar
-                            ? Image.network(
-                                user.avatar!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    _buildInitialsAvatar(displayName, design),
-                              )
-                            : _buildInitialsAvatar(displayName, design)),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 32,
-                    height: 32,
+            child: GestureDetector(
+              onTap: () => setState(() => _isAvatarSheetOpen = true),
+              child: Stack(
+                children: [
+                  Container(
+                    width: 96,
+                    height: 96,
                     decoration: BoxDecoration(
-                      color: design.colors.primary,
                       shape: BoxShape.circle,
-                      border: Border.all(color: design.colors.card, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: design.colors.shadow,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      color: design.colors.primary,
                     ),
-                    child: Center(
-                      child: Icon(
-                        LucideIcons.pencil,
-                        size: 16,
-                        color: design.colors.onPrimary,
+                    clipBehavior: Clip.antiAlias,
+                    child: _selectedAvatarBytes != null && !_isAvatarRemoved
+                        ? Image.memory(_selectedAvatarBytes!, fit: BoxFit.cover)
+                        : (hasNetworkAvatar
+                              ? Image.network(
+                                  user.avatar!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      _buildInitialsAvatar(displayName, design),
+                                )
+                              : _buildInitialsAvatar(displayName, design)),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: design.colors.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: design.colors.card, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: design.colors.shadow,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          LucideIcons.pencil,
+                          size: 16,
+                          color: design.colors.onPrimary,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -486,20 +493,24 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final color = isDestructive
         ? design.colors.error
         : design.colors.textPrimary;
-    return AppFocusable(
+    return AppSemantics.button(
+      label: label,
       onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: color),
-            SizedBox(width: design.spacing.md),
-            AppText.bodySmall(
-              label,
-              color: color,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ],
+      child: AppFocusable(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+          child: Row(
+            children: [
+              Icon(icon, size: 20, color: color),
+              SizedBox(width: design.spacing.md),
+              AppText.bodySmall(
+                label,
+                color: color,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
         ),
       ),
     );
