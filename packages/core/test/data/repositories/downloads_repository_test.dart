@@ -11,6 +11,7 @@ class FakeDownloadsService extends Fake implements DownloadsService {
 
   final List<String> pausedTaskIds = [];
   final List<String> resumedTaskIds = [];
+  final List<String> watermarkedPdfCalls = [];
   Set<String> activeTaskIds = {};
 
   @override
@@ -30,6 +31,9 @@ class FakeDownloadsService extends Fake implements DownloadsService {
   Future<bool> verifyAttachmentExists(String url) async => false;
 
   @override
+  Future<void> requestNotificationPermission() async {}
+
+  @override
   Future<void> pauseAttachmentDownload(String taskId) async {
     pausedTaskIds.add(taskId);
   }
@@ -37,6 +41,19 @@ class FakeDownloadsService extends Fake implements DownloadsService {
   @override
   Future<void> resumeAttachmentDownload(String taskId, String url) async {
     resumedTaskIds.add(taskId);
+  }
+
+  @override
+  Future<(String, int, String)> downloadWatermarkedPdf({
+    required String url,
+    required String title,
+    required bool applyWatermark,
+    String? taskId,
+    String? watermarkText,
+    void Function(int progressPercent)? onProgress,
+  }) async {
+    watermarkedPdfCalls.add(taskId ?? url);
+    return (taskId ?? 'task_pdf', 1024, '/path/to/watermarked.pdf');
   }
 }
 
@@ -52,7 +69,10 @@ class FakeSentryService extends Fake implements SentryService {
   }) async {}
 }
 
-class FakeUserRepository extends Fake implements UserRepository {}
+class FakeUserRepository extends Fake implements UserRepository {
+  @override
+  Future<UsersTableData?> getCurrentProfile() async => null;
+}
 
 void main() {
   late AppDatabase db;
@@ -181,6 +201,32 @@ void main() {
 
         final itemAfterSync = await repository.getDownload('att_active');
         expect(itemAfterSync?.status, DownloadStatus.downloading);
+      },
+    );
+
+    test(
+      'resumeDownload for watermarked PDF re-triggers watermark pipeline',
+      () async {
+        final item = DownloadItem(
+          id: 'pdf_resumed',
+          title: 'Watermarked Doc',
+          course: 'Test Course',
+          chapter: 'Chapter 1',
+          sizeInBytes: 1024,
+          downloadedDate: '2026-09-10',
+          type: DownloadType.attachment,
+          status: DownloadStatus.paused,
+          progress: 40,
+          taskId: 'task_pdf_resume',
+          contentUrl: 'https://example.com/pdf.pdf',
+          isWatermarked: true,
+        );
+
+        await repository.upsertDownload(item);
+
+        await repository.resumeDownload('pdf_resumed');
+
+        expect(service.watermarkedPdfCalls, contains('task_pdf_resume'));
       },
     );
   });

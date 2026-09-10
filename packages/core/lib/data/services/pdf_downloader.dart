@@ -35,10 +35,12 @@ class PdfDownloader {
     void Function(int progressPercent)? onProgress,
   }) async {
     // 1. Download raw file via background_downloader to a temp path
-    final filename = 'temp_${DateTime.now().millisecondsSinceEpoch}.pdf';
+    final resolvedTaskId =
+        taskId ?? 'pdf_temp_${DateTime.now().millisecondsSinceEpoch}';
+    final filename = '${safeTitle(title)}_temp_$resolvedTaskId.pdf';
 
     final task = bg.DownloadTask(
-      taskId: taskId ?? 'pdf_temp_${DateTime.now().millisecondsSinceEpoch}',
+      taskId: resolvedTaskId,
       url: url,
       filename: filename,
       baseDirectory: bg.BaseDirectory.temporary,

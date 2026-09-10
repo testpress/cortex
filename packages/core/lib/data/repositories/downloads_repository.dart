@@ -123,6 +123,7 @@ class DownloadsRepository {
             newStatus = DownloadStatus.paused;
             break;
           case bg.TaskStatus.complete:
+            if (row.isWatermarked) break;
             newStatus = DownloadStatus.completed;
             finalProgress = 100;
             try {
@@ -157,6 +158,9 @@ class DownloadsRepository {
           )..where((t) => t.id.equals(row.id))).write(
             DownloadsTableCompanion(
               statusIndex: Value(newStatus.index),
+              taskId: newStatus == DownloadStatus.completed
+                  ? const Value(null)
+                  : const Value.absent(),
               progress: finalProgress != null
                   ? Value(finalProgress)
                   : const Value.absent(),
@@ -379,16 +383,16 @@ class DownloadsRepository {
       final results = await Future.wait([downloadFuture, thumbnailFuture]);
       final result = results[0] as (String, int, String);
       final localThumbnailPath = results[1] as String?;
-
       await upsertDownload(
         itemWithTaskId.copyWith(
           status: DownloadStatus.completed,
           progress: 100,
           sizeInBytes: result.$2,
           filePath: result.$3,
-          taskId: result.$1,
+          taskId: null,
           isWatermarked: applyWatermark,
           thumbnailUrl: localThumbnailPath ?? item.thumbnailUrl,
+          downloadedDate: DateTime.now().toIso8601String(),
         ),
       );
     } catch (e, stackTrace) {
@@ -519,6 +523,7 @@ class DownloadsRepository {
             fileType: Value(item.fileType),
             contentUrl: Value(item.contentUrl),
             filePath: Value(item.filePath),
+            isWatermarked: Value(item.isWatermarked),
             taskId: Value(item.taskId),
           ),
         );
@@ -549,6 +554,13 @@ class DownloadsRepository {
 
     if (item.type == DownloadType.video) {
       await _service.resumeVideoDownload(id);
+    } else if (item.isWatermarked && item.contentUrl != null) {
+      await startWatermarkedPdfDownload(
+        item,
+        item.contentUrl!,
+        applyWatermark: true,
+      );
+      return;
     } else if (item.taskId != null && item.contentUrl != null) {
       await _service.resumeAttachmentDownload(item.taskId!, item.contentUrl!);
     }

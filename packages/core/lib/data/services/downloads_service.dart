@@ -61,7 +61,16 @@ class DownloadsService {
         if (!status.isGranted) {
           await Permission.notification.request();
         }
-      } catch (_) {}
+      } catch (e, st) {
+        _sentryService.captureException(
+          e,
+          stackTrace: st,
+          level: AppErrorLevel.warning,
+          contexts: {
+            'DownloadsService': {'action': 'requestNotificationPermission'},
+          },
+        );
+      }
     }
   }
 
@@ -323,11 +332,7 @@ class DownloadsService {
       // Cancel any in-flight background_downloader task for this item
       if (item.taskId != null) {
         try {
-          final tasks = await bg.FileDownloader().allTasks();
-          final task = tasks.where((t) => t.taskId == item.taskId).firstOrNull;
-          if (task != null) {
-            await bg.FileDownloader().cancelTaskWithId(item.taskId!);
-          }
+          await bg.FileDownloader().cancelTaskWithId(item.taskId!);
         } catch (_) {}
       }
     } else {
