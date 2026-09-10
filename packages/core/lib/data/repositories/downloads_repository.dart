@@ -123,9 +123,8 @@ class DownloadsRepository {
             newStatus = DownloadStatus.paused;
             break;
           case bg.TaskStatus.complete:
-            final isPdf =
-                row.fileType?.toUpperCase() == 'PDF' || row.isWatermarked;
-            if (isPdf) break;
+            final isWatermarkPipeline = taskId.startsWith('pdf_');
+            if (isWatermarkPipeline) break;
             newStatus = DownloadStatus.completed;
             finalProgress = 100;
             try {
@@ -558,10 +557,10 @@ class DownloadsRepository {
     final item = await getDownload(id);
     if (item == null) return;
 
-    final isPdf = item.fileType?.toUpperCase() == 'PDF' || item.isWatermarked;
+    final isWatermarkPipeline = item.taskId?.startsWith('pdf_') ?? false;
     if (item.type == DownloadType.video) {
       await _service.resumeVideoDownload(id);
-    } else if (isPdf && item.contentUrl != null) {
+    } else if (isWatermarkPipeline && item.contentUrl != null) {
       await startWatermarkedPdfDownload(
         item,
         item.contentUrl!,

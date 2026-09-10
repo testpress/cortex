@@ -234,7 +234,7 @@ void main() {
     );
 
     test(
-      'resumeDownload for paused PDF re-triggers watermark pipeline with preserved watermark intent',
+      'resumeDownload for paused PDF lesson re-triggers watermark pipeline with preserved watermark intent',
       () async {
         final pausedPdf = DownloadItem(
           id: 'pdf_resumed',
@@ -247,7 +247,7 @@ void main() {
           status: DownloadStatus.paused,
           progress: 40,
           fileType: 'PDF',
-          taskId: 'task_pdf_resume',
+          taskId: 'pdf_resumed',
           contentUrl: 'https://example.com/pdf.pdf',
           isWatermarked: true,
         );
@@ -256,7 +256,111 @@ void main() {
 
         await repository.resumeDownload('pdf_resumed');
 
-        expect(service.watermarkedPdfCalls, contains('task_pdf_resume'));
+        expect(service.watermarkedPdfCalls, contains('pdf_resumed'));
+        expect(service.resumedTaskIds, isEmpty);
+      },
+    );
+
+    test(
+      'resumeDownload for plain PDF attachment routes to resumeAttachmentDownload instead of watermark pipeline',
+      () async {
+        final plainPdf = DownloadItem(
+          id: 'att_pdf_doc',
+          title: 'Plain PDF Attachment',
+          course: 'Test Course',
+          chapter: 'Chapter 1',
+          sizeInBytes: 1024,
+          downloadedDate: '2026-09-10',
+          type: DownloadType.attachment,
+          status: DownloadStatus.paused,
+          progress: 35,
+          fileType: 'PDF',
+          taskId: 'att_pdf_doc',
+          contentUrl: 'https://example.com/plain.pdf',
+          isWatermarked: false,
+        );
+
+        await repository.upsertDownload(plainPdf);
+
+        await repository.resumeDownload('att_pdf_doc');
+
+        expect(service.resumedTaskIds, contains('att_pdf_doc'));
+        expect(service.watermarkedPdfCalls, isEmpty);
+      },
+    );
+
+    test(
+      'attachmentUpdates TaskStatus.complete completes plain PDF attachment (taskId starts with att_)',
+      () async {
+        final plainPdf = DownloadItem(
+          id: 'att_plain_pdf',
+          title: 'Plain PDF Attachment',
+          course: 'Test Course',
+          chapter: 'Chapter 1',
+          sizeInBytes: 0,
+          downloadedDate: '2026-09-10',
+          type: DownloadType.attachment,
+          status: DownloadStatus.downloading,
+          progress: 50,
+          fileType: 'PDF',
+          taskId: 'att_plain_pdf',
+          contentUrl: 'https://example.com/plain.pdf',
+        );
+
+        await repository.upsertDownload(plainPdf);
+
+        final task = bg.DownloadTask(
+          taskId: 'att_plain_pdf',
+          url: 'https://example.com/plain.pdf',
+        );
+
+        service.attachmentUpdatesController.add(
+          bg.TaskStatusUpdate(task, bg.TaskStatus.complete),
+        );
+
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+
+        final completed = await repository.getDownload('att_plain_pdf');
+        expect(completed?.status, DownloadStatus.completed);
+        expect(completed?.progress, 100);
+      },
+    );
+
+    test(
+      'attachmentUpdates TaskStatus.complete skips watermark pipeline tasks (taskId starts with pdf_)',
+      () async {
+        final watermarkPdf = DownloadItem(
+          id: 'pdf_lesson_doc',
+          title: 'Watermarked PDF Lesson',
+          course: 'Test Course',
+          chapter: 'Chapter 1',
+          sizeInBytes: 0,
+          downloadedDate: '2026-09-10',
+          type: DownloadType.attachment,
+          status: DownloadStatus.downloading,
+          progress: 50,
+          fileType: 'PDF',
+          taskId: 'pdf_lesson_doc',
+          contentUrl: 'https://example.com/lesson.pdf',
+          isWatermarked: true,
+        );
+
+        await repository.upsertDownload(watermarkPdf);
+
+        final task = bg.DownloadTask(
+          taskId: 'pdf_lesson_doc',
+          url: 'https://example.com/lesson.pdf',
+        );
+
+        service.attachmentUpdatesController.add(
+          bg.TaskStatusUpdate(task, bg.TaskStatus.complete),
+        );
+
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+
+        final unchanged = await repository.getDownload('pdf_lesson_doc');
+        // Status remains downloading because watermark pipeline handles its own completion
+        expect(unchanged?.status, DownloadStatus.downloading);
       },
     );
   });
