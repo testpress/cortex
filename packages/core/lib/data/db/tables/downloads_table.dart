@@ -50,6 +50,10 @@ class DownloadsTable extends Table {
   BoolColumn get isWatermarked =>
       boolean().withDefault(const Constant(false))();
 
+  /// background_downloader task ID — used to pause/resume attachment downloads.
+  /// Null for video downloads (managed by TPStreams SDK).
+  TextColumn get taskId => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

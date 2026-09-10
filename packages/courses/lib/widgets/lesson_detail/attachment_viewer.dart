@@ -78,9 +78,14 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
   }
 
   Future<void> _openFile(DownloadItem item) async {
-    final downloader = ref.read(fileDownloaderProvider);
-    final path = item.filePath ??
-        await downloader.getLocalPath(widget.url, StorageType.publicDownload);
+    String path = item.filePath ?? '';
+    if (path.isEmpty) {
+      final downloader = ref.read(fileDownloaderProvider);
+      path = await downloader.getLocalPath(
+        widget.url,
+        StorageType.publicDownload,
+      );
+    }
 
     // Check if the user manually deleted the file via File Explorer
     final fileExists = await File(path).exists();
@@ -118,10 +123,12 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final downloadItemAsync = ref.watch(watchDownloadItemProvider(widget.id));
 
     final item = downloadItemAsync.valueOrNull;
     final isDownloading = item?.status == DownloadStatus.downloading;
+    final isPaused = item?.status == DownloadStatus.paused;
     final isCompleted = item?.status == DownloadStatus.completed;
     final isError = item?.status == DownloadStatus.error;
     final progress = item?.progress ?? 0;
@@ -145,7 +152,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             _getMetadataString(),
           ),
           const SizedBox(height: 24),
-          if (isDownloading) ...[
+          if (isDownloading || isPaused) ...[
             Container(
               height: 4,
               width: 200,
@@ -158,23 +165,46 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
                 widthFactor: progress > 0 ? progress / 100.0 : 0.0,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: design.colors.primary,
+                    color: isPaused
+                        ? design.colors.textTertiary
+                        : design.colors.primary,
                     borderRadius: BorderRadius.circular(design.radius.sm),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             AppText.bodySmall(
-              progress > 0 ? '$progress%' : 'Downloading...',
+              isPaused
+                  ? (progress > 0
+                      ? '${l10n.labelPaused} • $progress%'
+                      : l10n.labelPaused)
+                  : (progress > 0 ? '$progress%' : l10n.downloadingFile),
             ),
+            const SizedBox(height: 16),
+            if (isDownloading)
+              AppButton(
+                onPressed: () =>
+                    ref.read(downloadsProvider.notifier).pause(widget.id),
+                label: l10n.labelPause,
+                variant: AppButtonVariant.secondary,
+                leading: const Icon(LucideIcons.pause, size: 16),
+              )
+            else if (isPaused)
+              AppButton(
+                onPressed: () =>
+                    ref.read(downloadsProvider.notifier).resume(widget.id),
+                label: l10n.labelResumeDownload,
+                leading: const Icon(LucideIcons.download, size: 16),
+              ),
           ] else
             AppButton(
               onPressed: isCompleted && item != null
                   ? () => _openFile(item)
                   : _startDownload,
-              label:
-                  isCompleted ? 'View Downloaded File' : 'Download Attachment',
+              label: isCompleted
+                  ? l10n.labelViewDownloadedFile
+                  : l10n.labelDownloadAttachment,
               backgroundColor: isCompleted ? design.colors.success : null,
               foregroundColor: isCompleted ? design.colors.onSuccess : null,
             ),

@@ -19,6 +19,8 @@ class LessonDetailShell extends StatelessWidget {
     this.subtitle,
     required this.child,
     this.isBookmarked = false,
+    this.isDownloaded = false,
+    this.isDownloading = false,
     this.onBookmarkToggle,
     this.onMarkAsCompleted,
     this.onBack,
@@ -44,6 +46,12 @@ class LessonDetailShell extends StatelessWidget {
 
   /// Whether the current lesson is bookmarked.
   final bool isBookmarked;
+
+  /// Whether the current lesson content is already downloaded.
+  final bool isDownloaded;
+
+  /// Whether the lesson content is currently being downloaded.
+  final bool isDownloading;
 
   /// Whether the current lesson is marked as completed.
   final bool isCompleted;
@@ -373,7 +381,23 @@ class LessonDetailShell extends StatelessWidget {
                     onTap: onBookmarkToggle!,
                     iconColor: isBookmarked ? design.colors.primary : null,
                   ),
-                if (onDownload != null)
+                if (isDownloaded)
+                  _HeaderButton(
+                    icon: LucideIcons.circleCheck,
+                    label: l10n.downloadedStatus,
+                    onTap: null,
+                    iconColor: design.colors.success,
+                  )
+                else if (isDownloading)
+                  _HeaderButton(
+                    icon: LucideIcons.download,
+                    label: l10n.labelDownloading,
+                    onTap: null,
+                    iconColor: design.colors.textPrimary.withValues(
+                      alpha: 0.35,
+                    ),
+                  )
+                else if (onDownload != null)
                   _HeaderButton(
                     icon: LucideIcons.download,
                     label: 'Download content',

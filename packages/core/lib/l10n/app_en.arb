@@ -140,6 +140,30 @@
   "@labelResume": {
     "description": "Label for the resume button on cards"
   },
+  "labelPause": "Pause",
+  "@labelPause": {
+    "description": "Label for pause button"
+  },
+  "labelPaused": "Paused",
+  "@labelPaused": {
+    "description": "Status text when a download is paused"
+  },
+  "labelResumeDownload": "Resume Download",
+  "@labelResumeDownload": {
+    "description": "Button label to resume a download"
+  },
+  "labelDownloading": "Downloading",
+  "@labelDownloading": {
+    "description": "Label for downloading status without ellipsis"
+  },
+  "labelDownloadAttachment": "Download Attachment",
+  "@labelDownloadAttachment": {
+    "description": "Button label to download attachment"
+  },
+  "labelViewDownloadedFile": "View Downloaded File",
+  "@labelViewDownloadedFile": {
+    "description": "Button label to view downloaded attachment file"
+  },
   "labelCourseProgress": "Course progress",
   "labelPageLoadProgress": "Page load progress",
   "homeHeaderTitle": "BrightMinds Academy",

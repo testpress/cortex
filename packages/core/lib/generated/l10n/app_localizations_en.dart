@@ -334,6 +334,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelResume => 'Resume';
 
   @override
+  String get labelPause => 'Pause';
+
+  @override
+  String get labelPaused => 'Paused';
+
+  @override
+  String get labelResumeDownload => 'Resume Download';
+
+  @override
+  String get labelDownloading => 'Downloading';
+
+  @override
+  String get labelDownloadAttachment => 'Download Attachment';
+
+  @override
+  String get labelViewDownloadedFile => 'View Downloaded File';
+
+  @override
   String get labelCourseProgress => 'Course progress';
 
   @override

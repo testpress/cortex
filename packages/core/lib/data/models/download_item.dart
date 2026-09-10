@@ -19,6 +19,10 @@ class DownloadItem {
   final String? filePath;
   final bool isWatermarked;
 
+  /// background_downloader task ID for attachment downloads.
+  /// Null for video downloads (managed by TPStreams SDK).
+  final String? taskId;
+
   const DownloadItem({
     required this.id,
     required this.title,
@@ -35,6 +39,7 @@ class DownloadItem {
     this.contentUrl,
     this.filePath,
     this.isWatermarked = false,
+    this.taskId,
   });
 
   DownloadItem copyWith({
@@ -53,6 +58,7 @@ class DownloadItem {
     String? contentUrl,
     String? filePath,
     bool? isWatermarked,
+    String? taskId,
   }) {
     return DownloadItem(
       id: id ?? this.id,
@@ -70,6 +76,7 @@ class DownloadItem {
       contentUrl: contentUrl ?? this.contentUrl,
       filePath: filePath ?? this.filePath,
       isWatermarked: isWatermarked ?? this.isWatermarked,
+      taskId: taskId ?? this.taskId,
     );
   }
 }

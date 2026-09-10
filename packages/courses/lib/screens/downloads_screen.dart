@@ -124,15 +124,11 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
   Future<void> _handleAction(DownloadItem item) async {
     switch (item.status) {
       case DownloadStatus.downloading:
-        if (item.type == DownloadType.video) {
-          ref.read(downloadsProvider.notifier).pause(item.id);
-        }
+        ref.read(downloadsProvider.notifier).pause(item.id);
         break;
 
       case DownloadStatus.paused:
-        if (item.type == DownloadType.video) {
-          ref.read(downloadsProvider.notifier).resume(item.id);
-        }
+        ref.read(downloadsProvider.notifier).resume(item.id);
         break;
 
       case DownloadStatus.error:
@@ -878,19 +874,15 @@ String _formatBytes(int bytes) {
 
 extension DownloadItemX on DownloadItem {
   String get progressText {
-    final size = _formatBytes(sizeInBytes);
     if (status != DownloadStatus.completed) {
-      if (type == DownloadType.video) {
-        return '$progress%';
-      }
-      return '$progress% of $size';
+      return '$progress%';
     }
 
     if (type == DownloadType.video && sizeInBytes == 0) {
       return 'Video';
     }
 
-    return size;
+    return _formatBytes(sizeInBytes);
   }
 
   String get metaText {
@@ -911,10 +903,10 @@ extension DownloadStatusX on DownloadStatus {
   IconData? actionIcon(DownloadType type) {
     switch (this) {
       case DownloadStatus.downloading:
-        return type == DownloadType.video ? LucideIcons.pause : null;
+        return LucideIcons.pause;
 
       case DownloadStatus.paused:
-        return type == DownloadType.video ? LucideIcons.download : null;
+        return LucideIcons.download;
 
       case DownloadStatus.error:
         return LucideIcons.refreshCw;

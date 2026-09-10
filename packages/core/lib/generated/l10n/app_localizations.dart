@@ -702,6 +702,42 @@ abstract class AppLocalizations {
   /// **'Resume'**
   String get labelResume;
 
+  /// Label for pause button
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get labelPause;
+
+  /// Status text when a download is paused
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get labelPaused;
+
+  /// Button label to resume a download
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Download'**
+  String get labelResumeDownload;
+
+  /// Label for downloading status without ellipsis
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get labelDownloading;
+
+  /// Button label to download attachment
+  ///
+  /// In en, this message translates to:
+  /// **'Download Attachment'**
+  String get labelDownloadAttachment;
+
+  /// Button label to view downloaded attachment file
+  ///
+  /// In en, this message translates to:
+  /// **'View Downloaded File'**
+  String get labelViewDownloadedFile;
+
   /// No description provided for @labelCourseProgress.
   ///
   /// In en, this message translates to:

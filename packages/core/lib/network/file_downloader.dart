@@ -19,8 +19,8 @@ enum StorageType {
   /// Files are not visible to users or other apps.
   internalCache,
 
-  /// Public user-accessible storage (Downloads directory).
-  /// Files are visible in the system Downloads folder.
+  /// App-private documents storage (ApplicationDocumentsDirectory).
+  /// Files are persisted across sessions in the app's sandboxed document storage.
   publicDownload,
 }
 
@@ -39,37 +39,17 @@ class FileDownloader {
     if (type == StorageType.internalCache) {
       return await getApplicationSupportDirectory();
     } else {
-      Directory? dir;
-      if (Platform.isAndroid) {
-        // We attempt to use the standard public Downloads folder for user visibility.
-        // path_provider's getDownloadsDirectory() often returns app-scoped paths on Android.
-        final publicDownloadDir = Directory('/storage/emulated/0/Download');
-        if (await publicDownloadDir.exists()) {
-          dir = publicDownloadDir;
-        } else {
-          try {
-            await publicDownloadDir.create(recursive: true);
-            dir = publicDownloadDir;
-          } catch (_) {
-            // Fallback to path_provider if public directory is restricted
-            dir = await getDownloadsDirectory();
-          }
-        }
-      } else {
-        dir = await getDownloadsDirectory();
-      }
-
-      final finalDir = dir ?? await getApplicationDocumentsDirectory();
+      final dir = await getApplicationDocumentsDirectory();
 
       // Ensure directory exists
-      if (!await finalDir.exists()) {
+      if (!await dir.exists()) {
         try {
-          await finalDir.create(recursive: true);
+          await dir.create(recursive: true);
         } catch (_) {
           // If we can't create it, it might already exist or we lack permissions.
         }
       }
-      return finalDir;
+      return dir;
     }
   }
 

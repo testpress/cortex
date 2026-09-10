@@ -334,6 +334,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get labelResume => 'استئناف';
 
   @override
+  String get labelPause => 'إيقاف مؤقت';
+
+  @override
+  String get labelPaused => 'متوقف مؤقتاً';
+
+  @override
+  String get labelResumeDownload => 'استئناف التنزيل';
+
+  @override
+  String get labelDownloading => 'جارٍ التنزيل';
+
+  @override
+  String get labelDownloadAttachment => 'تنزيل المرفق';
+
+  @override
+  String get labelViewDownloadedFile => 'عرض الملف المنزّل';
+
+  @override
   String get labelCourseProgress => 'تقدم الدورة';
 
   @override
