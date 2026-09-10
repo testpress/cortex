@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:background_downloader/background_downloader.dart' as bg;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:media_scanner/media_scanner.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
 import '../models/download_item.dart';
 import '../../network/file_downloader.dart';
@@ -161,10 +160,28 @@ class DownloadsService {
     }
   }
 
+  /// Returns the set of active task IDs currently tracked by background_downloader.
+  Future<Set<String>> getActiveAttachmentTaskIds() async {
+    try {
+      final tasks = await bg.FileDownloader().allTasks();
+      return tasks.map((t) => t.taskId).toSet();
+    } catch (e, st) {
+      _sentryService.captureException(
+        e,
+        stackTrace: st,
+        level: AppErrorLevel.warning,
+        contexts: {
+          'DownloadsService': {'action': 'getActiveAttachmentTaskIds'},
+        },
+      );
+      return {};
+    }
+  }
+
   // ── PDF downloads ─────────────────────────────────────────────────────────
 
   /// Delegates PDF downloading and watermarking to the PdfDownloader service.
-  /// Also triggers MediaScanner so the file shows up in the public Downloads directory.
+  /// Saves the watermarked PDF in app documents storage.
   Future<(String, int, String)> downloadWatermarkedPdf({
     required String url,
     required String title,
@@ -173,7 +190,7 @@ class DownloadsService {
     String? watermarkText,
     void Function(int progressPercent)? onProgress,
   }) async {
-    final result = await _pdfDownloader.downloadAndWatermark(
+    return await _pdfDownloader.downloadAndWatermark(
       url: url,
       title: title,
       applyWatermark: applyWatermark,
@@ -181,11 +198,6 @@ class DownloadsService {
       watermarkText: watermarkText,
       onProgress: onProgress,
     );
-
-    // Scan it so it shows in the Android File Manager immediately
-    await scanMediaIfAndroid(result.$3);
-
-    return result;
   }
 
   // ── Video downloads (TPStreams SDK) ───────────────────────────────────────
@@ -285,7 +297,6 @@ class DownloadsService {
           final file = File(item.filePath!);
           if (await file.exists()) {
             await file.delete();
-            await scanMediaIfAndroid(item.filePath!);
           }
         } catch (e, st) {
           _sentryService.captureException(
@@ -305,7 +316,6 @@ class DownloadsService {
         if (existingPath != null) {
           try {
             await File(existingPath).delete();
-            await scanMediaIfAndroid(existingPath);
           } catch (_) {}
         }
       }
@@ -349,11 +359,10 @@ class DownloadsService {
   }
 
   /// Checks if the attachment exists and returns its size in bytes.
-  /// Triggers MediaScanner if it does. Returns null if missing.
+  /// Returns null if missing.
   Future<int?> getExistingAttachmentSize(String url) async {
     final path = await getExistingAttachmentPath(url);
     if (path != null) {
-      await scanMediaIfAndroid(path);
       return await File(path).length();
     }
     return null;
@@ -375,24 +384,6 @@ class DownloadsService {
   /// Verifies if an attachment file physically exists on the device.
   Future<bool> verifyAttachmentExists(String url) async {
     return (await getExistingAttachmentPath(url)) != null;
-  }
-
-  /// Scans a file with the Android MediaScanner so it appears in public galleries/downloads.
-  Future<void> scanMediaIfAndroid(String path) async {
-    if (!Platform.isAndroid) return;
-
-    try {
-      await MediaScanner.loadMedia(path: path);
-    } catch (e, stackTrace) {
-      _sentryService.captureException(
-        e,
-        stackTrace: stackTrace,
-        level: AppErrorLevel.warning,
-        contexts: {
-          'MediaScanner Error': {'savePath': path},
-        },
-      );
-    }
   }
 }
 

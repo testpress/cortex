@@ -132,8 +132,16 @@ class DownloadsRepository {
                 finalSize = BigInt.from(await file.length());
                 finalFilePath = savePath;
               }
-              await _service.scanMediaIfAndroid(savePath);
-            } catch (_) {}
+            } catch (e, stackTrace) {
+              _sentryService.captureException(
+                e,
+                stackTrace: stackTrace,
+                contexts: {
+                  'action': {'name': 'attachmentUpdates.complete'},
+                  'task': {'taskId': taskId, 'rowId': row.id},
+                },
+              );
+            }
             break;
           case bg.TaskStatus.failed:
           case bg.TaskStatus.notFound:
@@ -300,7 +308,15 @@ class DownloadsRepository {
           );
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _sentryService.captureException(
+        e,
+        stackTrace: stackTrace,
+        contexts: {
+          'action': {'name': 'startAttachmentDownload'},
+          'item': {'id': item.id, 'title': item.title},
+        },
+      );
       final currentRow = await (_db.select(
         _db.downloadsTable,
       )..where((t) => t.id.equals(item.id))).getSingleOrNull();
@@ -412,6 +428,7 @@ class DownloadsRepository {
   Future<void> synchronize() async {
     final activeVideoDownloads = await _service.getActiveVideoDownloads();
     final activeVideoIds = activeVideoDownloads.map((e) => e.id).toList();
+    final activeTaskIds = await _service.getActiveAttachmentTaskIds();
 
     // Verify attachment and PDF files exist on disk
     final dbFiles = await (_db.select(
@@ -420,9 +437,7 @@ class DownloadsRepository {
 
     final activeFileIds = <String>[];
     for (final file in dbFiles) {
-      if (file.statusIndex != DownloadStatus.completed.index) {
-        activeFileIds.add(file.id);
-      } else {
+      if (file.statusIndex == DownloadStatus.completed.index) {
         bool exists = false;
         if (file.filePath != null) {
           exists = await File(file.filePath!).exists();
@@ -432,6 +447,21 @@ class DownloadsRepository {
         }
         if (exists) {
           activeFileIds.add(file.id);
+        }
+      } else {
+        activeFileIds.add(file.id);
+
+        // If the row was left in downloading state but the background task is no longer
+        // running in the OS, reconcile it to paused so the user can tap Resume.
+        if (file.statusIndex == DownloadStatus.downloading.index &&
+            (file.taskId == null || !activeTaskIds.contains(file.taskId))) {
+          await (_db.update(
+            _db.downloadsTable,
+          )..where((t) => t.id.equals(file.id))).write(
+            DownloadsTableCompanion(
+              statusIndex: Value(DownloadStatus.paused.index),
+            ),
+          );
         }
       }
     }

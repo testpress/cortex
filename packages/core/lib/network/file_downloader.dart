@@ -19,8 +19,8 @@ enum StorageType {
   /// Files are not visible to users or other apps.
   internalCache,
 
-  /// Public user-accessible storage (Downloads directory).
-  /// Files are visible in the system Downloads folder.
+  /// App-private documents storage (ApplicationDocumentsDirectory).
+  /// Files are persisted across sessions in the app's sandboxed document storage.
   publicDownload,
 }
 

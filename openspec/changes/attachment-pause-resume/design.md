@@ -78,6 +78,10 @@ Concretely: `PdfDownloader.downloadAndWatermark()` replaces `_fileDownloader.dow
 
 Adding `taskId` to the model keeps it the single source of truth for a download's full state. It is nullable and defaults to `null` for video items, which have no need for it.
 
+### Decision 6 — Store downloaded attachments and PDFs in app-private documents storage
+
+Downloads are stored in `getApplicationDocumentsDirectory()` (`BaseDirectory.applicationDocuments`). This resolves Android Scoped Storage (`EACCES`) permission denials across Android 10+ (API 29+), guarantees offline availability inside the app sandbox, ensures clean cleanup when items are deleted or purged, and achieves platform consistency with iOS. Public media scanning (`MediaScanner`) expectations are removed.
+
 ---
 
 ## Risks / Trade-offs
