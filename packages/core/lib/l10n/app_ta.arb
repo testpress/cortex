@@ -140,6 +140,12 @@
   "@labelResume": {
     "description": "Label for the resume button on cards"
   },
+  "labelPause": "இடைநிறுத்து",
+  "labelPaused": "இடைநிறுத்தப்பட்டது",
+  "labelResumeDownload": "பதிவிறக்கத்தை மீண்டும் தொடங்கு",
+  "labelDownloading": "பதிவிறக்குகிறது",
+  "labelDownloadAttachment": "இணைப்பைப் பதிவிறக்கு",
+  "labelViewDownloadedFile": "பதிவிறக்கப்பட்ட கோப்பைக் காண்க",
   "labelCourseProgress": "பாட முன்னேற்றம்",
   "labelPageLoadProgress": "பக்க ஏற்றத்தின் முன்னேற்றம்",
   "homeHeaderTitle": "BrightMinds Academy",

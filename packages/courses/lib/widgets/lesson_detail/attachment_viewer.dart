@@ -123,6 +123,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final downloadItemAsync = ref.watch(watchDownloadItemProvider(widget.id));
 
     final item = downloadItemAsync.valueOrNull;
@@ -175,15 +176,17 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
             const SizedBox(height: 12),
             AppText.bodySmall(
               isPaused
-                  ? (progress > 0 ? 'Paused • $progress%' : 'Paused')
-                  : (progress > 0 ? '$progress%' : 'Downloading...'),
+                  ? (progress > 0
+                      ? '${l10n.labelPaused} • $progress%'
+                      : l10n.labelPaused)
+                  : (progress > 0 ? '$progress%' : l10n.downloadingFile),
             ),
             const SizedBox(height: 16),
             if (isDownloading)
               AppButton(
                 onPressed: () =>
                     ref.read(downloadsProvider.notifier).pause(widget.id),
-                label: 'Pause',
+                label: l10n.labelPause,
                 variant: AppButtonVariant.secondary,
                 leading: const Icon(LucideIcons.pause, size: 16),
               )
@@ -191,7 +194,7 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
               AppButton(
                 onPressed: () =>
                     ref.read(downloadsProvider.notifier).resume(widget.id),
-                label: 'Resume Download',
+                label: l10n.labelResumeDownload,
                 leading: const Icon(LucideIcons.download, size: 16),
               ),
           ] else
@@ -199,8 +202,9 @@ class _AttachmentViewerState extends ConsumerState<AttachmentViewer> {
               onPressed: isCompleted && item != null
                   ? () => _openFile(item)
                   : _startDownload,
-              label:
-                  isCompleted ? 'View Downloaded File' : 'Download Attachment',
+              label: isCompleted
+                  ? l10n.labelViewDownloadedFile
+                  : l10n.labelDownloadAttachment,
               backgroundColor: isCompleted ? design.colors.success : null,
               foregroundColor: isCompleted ? design.colors.onSuccess : null,
             ),

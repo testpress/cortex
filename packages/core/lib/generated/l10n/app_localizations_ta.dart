@@ -340,6 +340,24 @@ class AppLocalizationsTa extends AppLocalizations {
   String get labelResume => 'மீண்டும் தொடங்கு';
 
   @override
+  String get labelPause => 'இடைநிறுத்து';
+
+  @override
+  String get labelPaused => 'இடைநிறுத்தப்பட்டது';
+
+  @override
+  String get labelResumeDownload => 'பதிவிறக்கத்தை மீண்டும் தொடங்கு';
+
+  @override
+  String get labelDownloading => 'பதிவிறக்குகிறது';
+
+  @override
+  String get labelDownloadAttachment => 'இணைப்பைப் பதிவிறக்கு';
+
+  @override
+  String get labelViewDownloadedFile => 'பதிவிறக்கப்பட்ட கோப்பைக் காண்க';
+
+  @override
   String get labelCourseProgress => 'பாட முன்னேற்றம்';
 
   @override

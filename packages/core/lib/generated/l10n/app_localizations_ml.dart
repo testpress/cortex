@@ -336,6 +336,24 @@ class AppLocalizationsMl extends AppLocalizations {
   String get labelResume => 'തുടരുക';
 
   @override
+  String get labelPause => 'താൽക്കാലികമായി നിർത്തുക';
+
+  @override
+  String get labelPaused => 'താൽക്കാലികമായി നിർത്തി';
+
+  @override
+  String get labelResumeDownload => 'ഡൗൺലോഡ് പുനരാരംഭിക്കുക';
+
+  @override
+  String get labelDownloading => 'ഡൗൺലോഡ് ചെയ്യുന്നു';
+
+  @override
+  String get labelDownloadAttachment => 'അറ്റാച്ച്മെന്റ് ഡൗൺലോഡ് ചെയ്യുക';
+
+  @override
+  String get labelViewDownloadedFile => 'ഡൗൺലോഡ് ചെയ്ത ഫയൽ കാണുക';
+
+  @override
   String get labelCourseProgress => 'കോഴ്സിന്റെ പുരോഗതി';
 
   @override

@@ -384,14 +384,14 @@ class LessonDetailShell extends StatelessWidget {
                 if (isDownloaded)
                   _HeaderButton(
                     icon: LucideIcons.circleCheck,
-                    label: 'Downloaded',
+                    label: l10n.downloadedStatus,
                     onTap: null,
                     iconColor: design.colors.success,
                   )
                 else if (isDownloading)
                   _HeaderButton(
                     icon: LucideIcons.download,
-                    label: 'Downloading',
+                    label: l10n.labelDownloading,
                     onTap: null,
                     iconColor: design.colors.textPrimary.withValues(
                       alpha: 0.35,
