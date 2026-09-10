@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'package:background_downloader/background_downloader.dart' as bg;
 import 'package:flutter/foundation.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../network/file_downloader.dart';
@@ -7,8 +9,9 @@ import '../../utils/watermark_params.dart';
 
 class PdfDownloader {
   final FileDownloader _fileDownloader;
+  final Stream<bg.TaskUpdate> _attachmentUpdates;
 
-  PdfDownloader(this._fileDownloader);
+  PdfDownloader(this._fileDownloader, this._attachmentUpdates);
 
   /// Sanitizes a lesson title into a safe filename by stripping characters
   /// that are illegal on common filesystems. Falls back to 'lesson' if the
@@ -19,37 +22,71 @@ class PdfDownloader {
   }
 
   /// Downloads the PDF, applies the watermark (if enabled), and saves it to public storage.
-  /// Returns the final file size in bytes, and the final file path.
-  Future<(int, String)> downloadAndWatermark({
+  /// Returns the background_downloader task ID, final file size in bytes, and final file path.
+  ///
+  /// The fetch step uses background_downloader for pause/resume support.
+  /// The watermark step (Syncfusion, in memory) runs after a complete fetch.
+  Future<(String, int, String)> downloadAndWatermark({
     required String url,
     required String title,
     required bool applyWatermark,
+    String? taskId,
     String? watermarkText,
     void Function(int progressPercent)? onProgress,
   }) async {
-    // 1. Download raw file to a temporary directory with a unique path to prevent concurrent collisions
-    int lastProgress = 0;
-    final tempDir = await Directory.systemTemp.createTemp('pdf_download_');
-    final tempPath =
-        '${tempDir.path}/temp_${DateTime.now().millisecondsSinceEpoch}.pdf';
+    // 1. Download raw file via background_downloader to a temp path
+    final filename = 'temp_${DateTime.now().millisecondsSinceEpoch}.pdf';
 
-    await _fileDownloader.downloadToPath(
+    final task = bg.DownloadTask(
+      taskId: taskId ?? 'pdf_temp_${DateTime.now().millisecondsSinceEpoch}',
       url: url,
-      savePath: tempPath,
-      onReceiveProgress: (count, total) {
-        if (total > 0 && onProgress != null) {
-          final percent = ((count / total) * 90)
-              .toInt(); // First 90% is download
-          if (percent != lastProgress) {
-            onProgress(percent);
-            lastProgress = percent;
-          }
-        }
-      },
+      filename: filename,
+      baseDirectory: bg.BaseDirectory.temporary,
+      updates: bg.Updates.statusAndProgress,
+      allowPause: true,
+      retries: 0,
     );
 
+    int lastProgress = 0;
+    final completer = Completer<void>();
+
+    final subscription = _attachmentUpdates.listen((update) {
+      if (update.task.taskId != task.taskId) return;
+      if (update is bg.TaskProgressUpdate && onProgress != null) {
+        if (update.progress < 0 || update.progress.isNaN) return;
+        final percent = ((update.progress * 90)).toInt().clamp(0, 90);
+        if (percent > lastProgress) {
+          onProgress(percent);
+          lastProgress = percent;
+        }
+      } else if (update is bg.TaskStatusUpdate) {
+        if (update.status == bg.TaskStatus.complete) {
+          if (!completer.isCompleted) completer.complete();
+        } else if (update.status == bg.TaskStatus.failed ||
+            update.status == bg.TaskStatus.notFound ||
+            update.status == bg.TaskStatus.canceled) {
+          if (!completer.isCompleted) {
+            completer.completeError(
+              Exception('PDF fetch failed: ${update.status}'),
+            );
+          }
+        }
+      }
+    });
+
+    try {
+      await bg.FileDownloader().enqueue(task);
+      await completer.future;
+    } finally {
+      await subscription.cancel();
+    }
+
+    final tempPath = await task.filePath();
     final tempFile = File(tempPath);
     List<int> bytes = await tempFile.readAsBytes();
+    try {
+      await tempFile.delete();
+    } catch (_) {}
 
     // 2 & 3. Apply watermark in memory if enabled
     if (applyWatermark && watermarkText != null && watermarkText.isNotEmpty) {
@@ -87,19 +124,12 @@ class PdfDownloader {
     final outFile = File(savePath);
     await outFile.writeAsBytes(bytes);
 
-    // 5. Delete temp file and directory
-    try {
-      await tempDir.delete(recursive: true);
-    } catch (_) {
-      // Ignore if temp directory deletion fails
-    }
-
-    // 6. Return size and path
+    // 5. Return size and path
     final size = await outFile.length();
     if (onProgress != null) {
       onProgress(100);
     }
-    return (size, savePath);
+    return (task.taskId, size, savePath);
   }
 }
 

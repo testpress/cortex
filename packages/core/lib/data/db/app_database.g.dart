@@ -10585,6 +10585,15 @@ class $DownloadsTableTable extends DownloadsTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+    'task_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -10602,6 +10611,7 @@ class $DownloadsTableTable extends DownloadsTable
     fileType,
     contentUrl,
     isWatermarked,
+    taskId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -10733,6 +10743,12 @@ class $DownloadsTableTable extends DownloadsTable
         ),
       );
     }
+    if (data.containsKey('task_id')) {
+      context.handle(
+        _taskIdMeta,
+        taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta),
+      );
+    }
     return context;
   }
 
@@ -10802,6 +10818,10 @@ class $DownloadsTableTable extends DownloadsTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_watermarked'],
       )!,
+      taskId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_id'],
+      ),
     );
   }
 
@@ -10859,6 +10879,10 @@ class DownloadsTableData extends DataClass
 
   /// Whether a watermark was applied to this download.
   final bool isWatermarked;
+
+  /// background_downloader task ID — used to pause/resume attachment downloads.
+  /// Null for video downloads (managed by TPStreams SDK).
+  final String? taskId;
   const DownloadsTableData({
     required this.id,
     required this.title,
@@ -10875,6 +10899,7 @@ class DownloadsTableData extends DataClass
     this.fileType,
     this.contentUrl,
     required this.isWatermarked,
+    this.taskId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -10904,6 +10929,9 @@ class DownloadsTableData extends DataClass
       map['content_url'] = Variable<String>(contentUrl);
     }
     map['is_watermarked'] = Variable<bool>(isWatermarked);
+    if (!nullToAbsent || taskId != null) {
+      map['task_id'] = Variable<String>(taskId);
+    }
     return map;
   }
 
@@ -10934,6 +10962,9 @@ class DownloadsTableData extends DataClass
           ? const Value.absent()
           : Value(contentUrl),
       isWatermarked: Value(isWatermarked),
+      taskId: taskId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(taskId),
     );
   }
 
@@ -10958,6 +10989,7 @@ class DownloadsTableData extends DataClass
       fileType: serializer.fromJson<String?>(json['fileType']),
       contentUrl: serializer.fromJson<String?>(json['contentUrl']),
       isWatermarked: serializer.fromJson<bool>(json['isWatermarked']),
+      taskId: serializer.fromJson<String?>(json['taskId']),
     );
   }
   @override
@@ -10979,6 +11011,7 @@ class DownloadsTableData extends DataClass
       'fileType': serializer.toJson<String?>(fileType),
       'contentUrl': serializer.toJson<String?>(contentUrl),
       'isWatermarked': serializer.toJson<bool>(isWatermarked),
+      'taskId': serializer.toJson<String?>(taskId),
     };
   }
 
@@ -10998,6 +11031,7 @@ class DownloadsTableData extends DataClass
     Value<String?> fileType = const Value.absent(),
     Value<String?> contentUrl = const Value.absent(),
     bool? isWatermarked,
+    Value<String?> taskId = const Value.absent(),
   }) => DownloadsTableData(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -11014,6 +11048,7 @@ class DownloadsTableData extends DataClass
     fileType: fileType.present ? fileType.value : this.fileType,
     contentUrl: contentUrl.present ? contentUrl.value : this.contentUrl,
     isWatermarked: isWatermarked ?? this.isWatermarked,
+    taskId: taskId.present ? taskId.value : this.taskId,
   );
   DownloadsTableData copyWithCompanion(DownloadsTableCompanion data) {
     return DownloadsTableData(
@@ -11044,6 +11079,7 @@ class DownloadsTableData extends DataClass
       isWatermarked: data.isWatermarked.present
           ? data.isWatermarked.value
           : this.isWatermarked,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
     );
   }
 
@@ -11064,7 +11100,8 @@ class DownloadsTableData extends DataClass
           ..write('duration: $duration, ')
           ..write('fileType: $fileType, ')
           ..write('contentUrl: $contentUrl, ')
-          ..write('isWatermarked: $isWatermarked')
+          ..write('isWatermarked: $isWatermarked, ')
+          ..write('taskId: $taskId')
           ..write(')'))
         .toString();
   }
@@ -11086,6 +11123,7 @@ class DownloadsTableData extends DataClass
     fileType,
     contentUrl,
     isWatermarked,
+    taskId,
   );
   @override
   bool operator ==(Object other) =>
@@ -11105,7 +11143,8 @@ class DownloadsTableData extends DataClass
           other.duration == this.duration &&
           other.fileType == this.fileType &&
           other.contentUrl == this.contentUrl &&
-          other.isWatermarked == this.isWatermarked);
+          other.isWatermarked == this.isWatermarked &&
+          other.taskId == this.taskId);
 }
 
 class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
@@ -11124,6 +11163,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
   final Value<String?> fileType;
   final Value<String?> contentUrl;
   final Value<bool> isWatermarked;
+  final Value<String?> taskId;
   final Value<int> rowid;
   const DownloadsTableCompanion({
     this.id = const Value.absent(),
@@ -11141,6 +11181,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.fileType = const Value.absent(),
     this.contentUrl = const Value.absent(),
     this.isWatermarked = const Value.absent(),
+    this.taskId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DownloadsTableCompanion.insert({
@@ -11159,6 +11200,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     this.fileType = const Value.absent(),
     this.contentUrl = const Value.absent(),
     this.isWatermarked = const Value.absent(),
+    this.taskId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -11184,6 +11226,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Expression<String>? fileType,
     Expression<String>? contentUrl,
     Expression<bool>? isWatermarked,
+    Expression<String>? taskId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -11202,6 +11245,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       if (fileType != null) 'file_type': fileType,
       if (contentUrl != null) 'content_url': contentUrl,
       if (isWatermarked != null) 'is_watermarked': isWatermarked,
+      if (taskId != null) 'task_id': taskId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -11222,6 +11266,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     Value<String?>? fileType,
     Value<String?>? contentUrl,
     Value<bool>? isWatermarked,
+    Value<String?>? taskId,
     Value<int>? rowid,
   }) {
     return DownloadsTableCompanion(
@@ -11240,6 +11285,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
       fileType: fileType ?? this.fileType,
       contentUrl: contentUrl ?? this.contentUrl,
       isWatermarked: isWatermarked ?? this.isWatermarked,
+      taskId: taskId ?? this.taskId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -11292,6 +11338,9 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
     if (isWatermarked.present) {
       map['is_watermarked'] = Variable<bool>(isWatermarked.value);
     }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -11316,6 +11365,7 @@ class DownloadsTableCompanion extends UpdateCompanion<DownloadsTableData> {
           ..write('fileType: $fileType, ')
           ..write('contentUrl: $contentUrl, ')
           ..write('isWatermarked: $isWatermarked, ')
+          ..write('taskId: $taskId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -22295,6 +22345,7 @@ typedef $$DownloadsTableTableCreateCompanionBuilder =
       Value<String?> fileType,
       Value<String?> contentUrl,
       Value<bool> isWatermarked,
+      Value<String?> taskId,
       Value<int> rowid,
     });
 typedef $$DownloadsTableTableUpdateCompanionBuilder =
@@ -22314,6 +22365,7 @@ typedef $$DownloadsTableTableUpdateCompanionBuilder =
       Value<String?> fileType,
       Value<String?> contentUrl,
       Value<bool> isWatermarked,
+      Value<String?> taskId,
       Value<int> rowid,
     });
 
@@ -22398,6 +22450,11 @@ class $$DownloadsTableTableFilterComposer
 
   ColumnFilters<bool> get isWatermarked => $composableBuilder(
     column: $table.isWatermarked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taskId => $composableBuilder(
+    column: $table.taskId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -22485,6 +22542,11 @@ class $$DownloadsTableTableOrderingComposer
     column: $table.isWatermarked,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get taskId => $composableBuilder(
+    column: $table.taskId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DownloadsTableTableAnnotationComposer
@@ -22552,6 +22614,9 @@ class $$DownloadsTableTableAnnotationComposer
     column: $table.isWatermarked,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
 }
 
 class $$DownloadsTableTableTableManager
@@ -22606,6 +22671,7 @@ class $$DownloadsTableTableTableManager
                 Value<String?> fileType = const Value.absent(),
                 Value<String?> contentUrl = const Value.absent(),
                 Value<bool> isWatermarked = const Value.absent(),
+                Value<String?> taskId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DownloadsTableCompanion(
                 id: id,
@@ -22623,6 +22689,7 @@ class $$DownloadsTableTableTableManager
                 fileType: fileType,
                 contentUrl: contentUrl,
                 isWatermarked: isWatermarked,
+                taskId: taskId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -22642,6 +22709,7 @@ class $$DownloadsTableTableTableManager
                 Value<String?> fileType = const Value.absent(),
                 Value<String?> contentUrl = const Value.absent(),
                 Value<bool> isWatermarked = const Value.absent(),
+                Value<String?> taskId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DownloadsTableCompanion.insert(
                 id: id,
@@ -22659,6 +22727,7 @@ class $$DownloadsTableTableTableManager
                 fileType: fileType,
                 contentUrl: contentUrl,
                 isWatermarked: isWatermarked,
+                taskId: taskId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

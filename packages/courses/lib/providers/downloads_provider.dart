@@ -59,13 +59,13 @@ class Downloads extends _$Downloads {
     );
   }
 
-  /// Pauses an active download (video only — Android).
+  /// Pauses an active download.
   Future<void> pause(String id) async {
     final repo = await ref.read(downloadsRepositoryProvider.future);
     await repo.pauseDownload(id);
   }
 
-  /// Resumes a paused download (video only — Android).
+  /// Resumes a paused download.
   Future<void> resume(String id) async {
     final repo = await ref.read(downloadsRepositoryProvider.future);
     await repo.resumeDownload(id);

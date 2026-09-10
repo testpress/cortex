@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:background_downloader/background_downloader.dart' as bg;
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../db/app_database.dart';
@@ -22,6 +23,7 @@ class DownloadsRepository {
   final Map<String, DownloadItem> _lastKnownState = {};
   final Set<String> _deletedIds = {};
   StreamSubscription<List<DownloadItem>>? _subscription;
+  StreamSubscription<bg.TaskUpdate>? _attachmentSubscription;
 
   DownloadsRepository(
     this._db,
@@ -34,9 +36,11 @@ class DownloadsRepository {
 
   void dispose() {
     _subscription?.cancel();
+    _attachmentSubscription?.cancel();
   }
 
   void _initStream() {
+    // 1. Video downloads stream from TPStreams SDK
     _subscription = _service.downloadsStream.listen(
       (items) {
         final currentIds = items.map((e) => e.id).toSet();
@@ -69,6 +73,96 @@ class DownloadsRepository {
         // Handle underlying stream errors safely
       },
     );
+
+    // 2. Attachment & PDF background_downloader updates stream
+    _attachmentSubscription = _service.attachmentUpdates.listen((update) async {
+      final taskId = update.task.taskId;
+      final row = await (_db.select(
+        _db.downloadsTable,
+      )..where((t) => t.taskId.equals(taskId))).getSingleOrNull();
+      if (row == null) return;
+      if (_deletedIds.contains(row.id)) return;
+
+      if (update is bg.TaskProgressUpdate) {
+        if (update.progress < 0 || update.progress.isNaN) return;
+
+        final currentStatus = DownloadStatus.values[row.statusIndex];
+        // If user paused the download, do NOT overwrite the paused state
+        if (currentStatus == DownloadStatus.paused) return;
+
+        final percent = (update.progress * 100).toInt().clamp(0, 99);
+        if (percent < row.progress) return;
+
+        final expectedSize = update.expectedFileSize > 0
+            ? BigInt.from(update.expectedFileSize)
+            : row.sizeInBytes;
+
+        await (_db.update(
+          _db.downloadsTable,
+        )..where((t) => t.id.equals(row.id))).write(
+          DownloadsTableCompanion(
+            progress: Value(percent),
+            sizeInBytes: Value(expectedSize),
+          ),
+        );
+      } else if (update is bg.TaskStatusUpdate) {
+        DownloadStatus? newStatus;
+        int? finalProgress;
+        BigInt? finalSize;
+        String? finalFilePath;
+
+        switch (update.status) {
+          case bg.TaskStatus.running:
+          case bg.TaskStatus.enqueued:
+            final currentStatus = DownloadStatus.values[row.statusIndex];
+            if (currentStatus != DownloadStatus.paused) {
+              newStatus = DownloadStatus.downloading;
+            }
+            break;
+          case bg.TaskStatus.paused:
+            newStatus = DownloadStatus.paused;
+            break;
+          case bg.TaskStatus.complete:
+            newStatus = DownloadStatus.completed;
+            finalProgress = 100;
+            try {
+              final savePath = await update.task.filePath();
+              final file = File(savePath);
+              if (await file.exists()) {
+                finalSize = BigInt.from(await file.length());
+                finalFilePath = savePath;
+              }
+              await _service.scanMediaIfAndroid(savePath);
+            } catch (_) {}
+            break;
+          case bg.TaskStatus.failed:
+          case bg.TaskStatus.notFound:
+            newStatus = DownloadStatus.error;
+            break;
+          default:
+            break;
+        }
+
+        if (newStatus != null) {
+          await (_db.update(
+            _db.downloadsTable,
+          )..where((t) => t.id.equals(row.id))).write(
+            DownloadsTableCompanion(
+              statusIndex: Value(newStatus.index),
+              progress: finalProgress != null
+                  ? Value(finalProgress)
+                  : const Value.absent(),
+              sizeInBytes: finalSize != null
+                  ? Value(finalSize)
+                  : const Value.absent(),
+              filePath: finalFilePath != null
+                  ? Value(finalFilePath)
+                  : const Value.absent(),
+            ),
+          );
+        }
+      }
+    });
   }
 
   /// Watch all persistent downloads from the DB, mapped to domain models.
@@ -92,6 +186,7 @@ class DownloadsRepository {
               contentUrl: row.contentUrl,
               filePath: row.filePath,
               isWatermarked: row.isWatermarked,
+              taskId: row.taskId,
             ),
           )
           .toList();
@@ -120,6 +215,7 @@ class DownloadsRepository {
       contentUrl: row.contentUrl,
       filePath: row.filePath,
       isWatermarked: row.isWatermarked,
+      taskId: row.taskId,
     );
   }
 
@@ -145,6 +241,7 @@ class DownloadsRepository {
         contentUrl: row.contentUrl,
         filePath: row.filePath,
         isWatermarked: row.isWatermarked,
+        taskId: row.taskId,
       );
     });
   }
@@ -153,9 +250,9 @@ class DownloadsRepository {
   /// insert "downloading" → receive progress updates → write "completed" or "error".
   Future<void> startAttachmentDownload(DownloadItem item, String url) async {
     try {
+      await _service.requestNotificationPermission();
+
       // 0. Check if the file already exists physically on the device.
-      // If it does (e.g. downloaded before DB clear), adopt it instead of overwriting.
-      // This prevents Android 14 Scoped Storage Permission Denied errors.
       final existingSize = await _service.getExistingAttachmentSize(url);
       if (existingSize != null) {
         await upsertDownload(
@@ -168,45 +265,51 @@ class DownloadsRepository {
         return;
       }
 
-      // 1. Persist the initial "downloading" state immediately
-      await upsertDownload(item);
+      // 1. Assign taskId upfront and persist the initial "downloading" state immediately
+      final taskId = item.taskId ?? 'att_${item.id}';
+      final itemWithTaskId = item.copyWith(
+        taskId: taskId,
+        status: DownloadStatus.downloading,
+        progress: 0,
+      );
+      await upsertDownload(itemWithTaskId);
 
       // Start thumbnail download concurrently with attachment download
       final thumbnailFuture = _downloadThumbnailSafely(item.thumbnailUrl);
 
-      // 2. Delegate the actual HTTP download to the service worker
-      final downloadFuture = _service.downloadAttachment(
-        url,
-        onProgress: (progressPercent) {
-          // 3. Persist progress updates as they arrive
-          upsertDownload(item.copyWith(progress: progressPercent));
-        },
-      );
+      // 2. Delegate download to background_downloader via service
+      final enqueued = await _service.downloadAttachment(url, taskId: taskId);
 
-      final results = await Future.wait([downloadFuture, thumbnailFuture]);
-      final result = results[0] as (int, String)?;
-      final localThumbnailPath = results[1] as String?;
-
-      // 4. Persist the final "completed" state with actual file size
-      if (result != null) {
-        await upsertDownload(
-          item.copyWith(
-            status: DownloadStatus.completed,
-            progress: 100,
-            sizeInBytes: result.$1,
-            filePath: result.$2,
-            thumbnailUrl: localThumbnailPath ?? item.thumbnailUrl,
-          ),
+      final localThumbnailPath = await thumbnailFuture;
+      if (localThumbnailPath != null) {
+        await (_db.update(
+          _db.downloadsTable,
+        )..where((t) => t.id.equals(item.id))).write(
+          DownloadsTableCompanion(thumbnailUrl: Value(localThumbnailPath)),
         );
-      } else {
+      }
+
+      if (!enqueued) {
+        final currentRow = await (_db.select(
+          _db.downloadsTable,
+        )..where((t) => t.id.equals(item.id))).getSingleOrNull();
+        if (currentRow != null &&
+            currentRow.statusIndex != DownloadStatus.paused.index) {
+          await upsertDownload(
+            item.copyWith(status: DownloadStatus.error, progress: 0),
+          );
+        }
+      }
+    } catch (e) {
+      final currentRow = await (_db.select(
+        _db.downloadsTable,
+      )..where((t) => t.id.equals(item.id))).getSingleOrNull();
+      if (currentRow != null &&
+          currentRow.statusIndex != DownloadStatus.paused.index) {
         await upsertDownload(
           item.copyWith(status: DownloadStatus.error, progress: 0),
         );
       }
-    } catch (e) {
-      await upsertDownload(
-        item.copyWith(status: DownloadStatus.error, progress: 0),
-      );
     }
   }
 
@@ -217,7 +320,11 @@ class DownloadsRepository {
     required bool applyWatermark,
   }) async {
     try {
-      await upsertDownload(item);
+      await _service.requestNotificationPermission();
+
+      final taskId = item.taskId ?? 'pdf_${item.id}';
+      final itemWithTaskId = item.copyWith(taskId: taskId);
+      await upsertDownload(itemWithTaskId);
 
       // Start thumbnail download concurrently with PDF download
       final thumbnailFuture = _downloadThumbnailSafely(item.thumbnailUrl);
@@ -235,22 +342,35 @@ class DownloadsRepository {
         url: url,
         title: item.title,
         applyWatermark: applyWatermark,
+        taskId: taskId,
         watermarkText: watermarkText,
-        onProgress: (progressPercent) {
-          upsertDownload(item.copyWith(progress: progressPercent));
+        onProgress: (progressPercent) async {
+          final currentRow = await (_db.select(
+            _db.downloadsTable,
+          )..where((t) => t.id.equals(item.id))).getSingleOrNull();
+          if (currentRow != null &&
+              currentRow.statusIndex != DownloadStatus.paused.index &&
+              progressPercent >= currentRow.progress) {
+            await (_db.update(
+              _db.downloadsTable,
+            )..where((t) => t.id.equals(item.id))).write(
+              DownloadsTableCompanion(progress: Value(progressPercent)),
+            );
+          }
         },
       );
 
       final results = await Future.wait([downloadFuture, thumbnailFuture]);
-      final result = results[0] as (int, String);
+      final result = results[0] as (String, int, String);
       final localThumbnailPath = results[1] as String?;
 
       await upsertDownload(
-        item.copyWith(
+        itemWithTaskId.copyWith(
           status: DownloadStatus.completed,
           progress: 100,
-          sizeInBytes: result.$1,
-          filePath: result.$2,
+          sizeInBytes: result.$2,
+          filePath: result.$3,
+          taskId: result.$1,
           isWatermarked: applyWatermark,
           thumbnailUrl: localThumbnailPath ?? item.thumbnailUrl,
         ),
@@ -369,6 +489,7 @@ class DownloadsRepository {
             fileType: Value(item.fileType),
             contentUrl: Value(item.contentUrl),
             filePath: Value(item.filePath),
+            taskId: Value(item.taskId),
           ),
         );
   }
@@ -376,7 +497,15 @@ class DownloadsRepository {
   // --- Actions delegated to the service worker then persisted ---
 
   Future<void> pauseDownload(String id) async {
-    await _service.pauseVideoDownload(id);
+    final item = await getDownload(id);
+    if (item == null) return;
+
+    if (item.type == DownloadType.video) {
+      await _service.pauseVideoDownload(id);
+    } else if (item.taskId != null) {
+      await _service.pauseAttachmentDownload(item.taskId!);
+    }
+
     await (_db.update(
       _db.downloadsTable,
     )..where((tbl) => tbl.id.equals(id))).write(
@@ -385,7 +514,15 @@ class DownloadsRepository {
   }
 
   Future<void> resumeDownload(String id) async {
-    await _service.resumeVideoDownload(id);
+    final item = await getDownload(id);
+    if (item == null) return;
+
+    if (item.type == DownloadType.video) {
+      await _service.resumeVideoDownload(id);
+    } else if (item.taskId != null && item.contentUrl != null) {
+      await _service.resumeAttachmentDownload(item.taskId!, item.contentUrl!);
+    }
+
     await (_db.update(
       _db.downloadsTable,
     )..where((tbl) => tbl.id.equals(id))).write(

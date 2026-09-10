@@ -68,6 +68,15 @@ class _LessonDetailOrchestratorState
   Future<void> _startDownload(LessonDto lesson) async {
     if (!mounted) return;
 
+    final currentDownload =
+        ref.read(watchDownloadItemProvider(lesson.id)).valueOrNull;
+    if (currentDownload?.status == DownloadStatus.downloading ||
+        currentDownload?.status == DownloadStatus.paused ||
+        (currentDownload?.status == DownloadStatus.completed &&
+            currentDownload?.filePath != null)) {
+      return;
+    }
+
     if (mounted) {
       AppToast.show(context, message: L10n.of(context).downloadStarted);
     }
@@ -164,8 +173,9 @@ class _LessonDetailOrchestratorState
         ref.watch(watchDownloadItemProvider(lesson.id)).valueOrNull;
     final isDownloaded = downloadItem?.status == DownloadStatus.completed &&
         downloadItem?.filePath != null;
-    final showDownloadButton = !isDownloaded &&
-        lesson.type == LessonType.pdf &&
+    final isDownloading = downloadItem?.status == DownloadStatus.downloading ||
+        downloadItem?.status == DownloadStatus.paused;
+    final canDownload = lesson.type == LessonType.pdf &&
         lesson.allowDownload &&
         lesson.contentUrl != null;
 
@@ -179,6 +189,8 @@ class _LessonDetailOrchestratorState
           subtitle: lesson.subtitle,
           isBookmarked: isBookmarked,
           isCompleted: isCompleted,
+          isDownloaded: canDownload && isDownloaded,
+          isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
           onBookmarkToggle: bookmarksEnabled
               ? () {
@@ -190,7 +202,9 @@ class _LessonDetailOrchestratorState
                 }
               : null,
           onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
-          onDownload: showDownloadButton ? () => _handleDownload(lesson) : null,
+          onDownload: (canDownload && !isDownloaded && !isDownloading)
+              ? () => _handleDownload(lesson)
+              : null,
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
           stickyFooter: lesson.type != LessonType.video &&
