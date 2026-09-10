@@ -205,9 +205,38 @@ void main() {
     );
 
     test(
-      'resumeDownload for watermarked PDF re-triggers watermark pipeline',
+      'startWatermarkedPdfDownload persists isWatermarked immediately on initial insert',
       () async {
         final item = DownloadItem(
+          id: 'pdf_init',
+          title: 'Initial PDF',
+          course: 'Course',
+          chapter: 'Chapter',
+          sizeInBytes: 0,
+          downloadedDate: '2026-09-10',
+          type: DownloadType.attachment,
+          status: DownloadStatus.downloading,
+          progress: 0,
+          fileType: 'PDF',
+          contentUrl: 'https://example.com/init.pdf',
+        );
+
+        await repository.startWatermarkedPdfDownload(
+          item,
+          'https://example.com/init.pdf',
+          applyWatermark: true,
+        );
+
+        final inserted = await repository.getDownload('pdf_init');
+        expect(inserted?.isWatermarked, isTrue);
+        expect(inserted?.fileType, 'PDF');
+      },
+    );
+
+    test(
+      'resumeDownload for paused PDF re-triggers watermark pipeline with preserved watermark intent',
+      () async {
+        final pausedPdf = DownloadItem(
           id: 'pdf_resumed',
           title: 'Watermarked Doc',
           course: 'Test Course',
@@ -217,12 +246,13 @@ void main() {
           type: DownloadType.attachment,
           status: DownloadStatus.paused,
           progress: 40,
+          fileType: 'PDF',
           taskId: 'task_pdf_resume',
           contentUrl: 'https://example.com/pdf.pdf',
           isWatermarked: true,
         );
 
-        await repository.upsertDownload(item);
+        await repository.upsertDownload(pausedPdf);
 
         await repository.resumeDownload('pdf_resumed');
 

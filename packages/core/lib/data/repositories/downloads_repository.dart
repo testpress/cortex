@@ -123,7 +123,9 @@ class DownloadsRepository {
             newStatus = DownloadStatus.paused;
             break;
           case bg.TaskStatus.complete:
-            if (row.isWatermarked) break;
+            final isPdf =
+                row.fileType?.toUpperCase() == 'PDF' || row.isWatermarked;
+            if (isPdf) break;
             newStatus = DownloadStatus.completed;
             finalProgress = 100;
             try {
@@ -343,7 +345,11 @@ class DownloadsRepository {
       await _service.requestNotificationPermission();
 
       final taskId = item.taskId ?? 'pdf_${item.id}';
-      final itemWithTaskId = item.copyWith(taskId: taskId);
+      final itemWithTaskId = item.copyWith(
+        taskId: taskId,
+        isWatermarked: applyWatermark,
+        fileType: item.fileType ?? 'PDF',
+      );
       await upsertDownload(itemWithTaskId);
 
       // Start thumbnail download concurrently with PDF download
@@ -552,13 +558,14 @@ class DownloadsRepository {
     final item = await getDownload(id);
     if (item == null) return;
 
+    final isPdf = item.fileType?.toUpperCase() == 'PDF' || item.isWatermarked;
     if (item.type == DownloadType.video) {
       await _service.resumeVideoDownload(id);
-    } else if (item.isWatermarked && item.contentUrl != null) {
+    } else if (isPdf && item.contentUrl != null) {
       await startWatermarkedPdfDownload(
         item,
         item.contentUrl!,
-        applyWatermark: true,
+        applyWatermark: item.isWatermarked,
       );
       return;
     } else if (item.taskId != null && item.contentUrl != null) {
