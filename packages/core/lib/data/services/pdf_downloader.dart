@@ -77,7 +77,10 @@ class PdfDownloader {
     });
 
     try {
-      await bg.FileDownloader().enqueue(task);
+      final resumed = await bg.FileDownloader().resume(task);
+      if (!resumed) {
+        await bg.FileDownloader().enqueue(task);
+      }
       await completer.future;
     } finally {
       await subscription.cancel();

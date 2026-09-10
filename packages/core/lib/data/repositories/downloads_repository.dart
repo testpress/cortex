@@ -22,6 +22,7 @@ class DownloadsRepository {
   final SentryService _sentryService;
   final Map<String, DownloadItem> _lastKnownState = {};
   final Set<String> _deletedIds = {};
+  final Set<String> _activePdfTasks = {};
   StreamSubscription<List<DownloadItem>>? _subscription;
   StreamSubscription<bg.TaskUpdate>? _attachmentSubscription;
 
@@ -340,6 +341,7 @@ class DownloadsRepository {
     String url, {
     required bool applyWatermark,
   }) async {
+    _activePdfTasks.add(item.id);
     try {
       await _service.requestNotificationPermission();
 
@@ -410,6 +412,8 @@ class DownloadsRepository {
           'downloadItem': {'id': item.id, 'title': item.title},
         },
       );
+    } finally {
+      _activePdfTasks.remove(item.id);
     }
   }
 
@@ -561,12 +565,18 @@ class DownloadsRepository {
     if (item.type == DownloadType.video) {
       await _service.resumeVideoDownload(id);
     } else if (isWatermarkPipeline && item.contentUrl != null) {
-      await startWatermarkedPdfDownload(
-        item,
-        item.contentUrl!,
-        applyWatermark: item.isWatermarked,
-      );
-      return;
+      if (_activePdfTasks.contains(item.id)) {
+        // Pipeline is active and awaiting completion in memory; simply resume the task
+        await _service.resumeAttachmentDownload(item.taskId!, item.contentUrl!);
+      } else {
+        // Pipeline is not in memory (e.g. app restarted); restart watermarked pipeline
+        await startWatermarkedPdfDownload(
+          item,
+          item.contentUrl!,
+          applyWatermark: item.isWatermarked,
+        );
+        return;
+      }
     } else if (item.taskId != null && item.contentUrl != null) {
       await _service.resumeAttachmentDownload(item.taskId!, item.contentUrl!);
     }
@@ -583,6 +593,7 @@ class DownloadsRepository {
   Future<void> deleteDownload(DownloadItem item) async {
     _deletedIds.add(item.id);
     _lastKnownState.remove(item.id);
+    _activePdfTasks.remove(item.id);
     await _service.deleteDownloadItem(item);
     await (_db.delete(
       _db.downloadsTable,

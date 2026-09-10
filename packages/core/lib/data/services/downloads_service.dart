@@ -140,7 +140,10 @@ class DownloadsService {
 
     try {
       if (existingTask != null) {
-        await bg.FileDownloader().resume(existingTask);
+        final resumed = await bg.FileDownloader().resume(existingTask);
+        if (!resumed) {
+          await bg.FileDownloader().enqueue(existingTask);
+        }
       } else {
         final savePath = await _fileDownloader.getLocalPath(
           url,
@@ -157,7 +160,10 @@ class DownloadsService {
           allowPause: true,
           retries: 0,
         );
-        await bg.FileDownloader().resume(task);
+        final resumed = await bg.FileDownloader().resume(task);
+        if (!resumed) {
+          await bg.FileDownloader().enqueue(task);
+        }
       }
     } catch (e, st) {
       _sentryService.captureException(
