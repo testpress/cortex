@@ -8,7 +8,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   no_screenshot
   sentry_flutter
   sqlite3_flutter_libs
-  syncfusion_pdfviewer_linux
   url_launcher_linux
 )
 

@@ -55,6 +55,11 @@ class _LessonDetailOrchestratorState
   int _mcqQuestionCount = 5;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _readingProgress.dispose();
     _isMcqFilterSheetOpen.dispose();

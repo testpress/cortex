@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:pdfrx/pdfrx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:no_screenshot/secure_widget.dart';
 import 'package:no_screenshot/overlay_mode.dart';
@@ -61,11 +59,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   Widget? _pdfViewerWidget;
 
   int _requestId = 0;
-
-  double _totalHeight = 0;
-  double _viewportHeight = 0;
-  double _viewportWidth = 0;
   double _lastProgress = -1;
+  int _pageCount = 1;
 
   @override
   bool get wantKeepAlive => true;
@@ -97,7 +92,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   @override
   void dispose() {
     _controller.removeListener(_trackProgress);
-    _controller.dispose();
     super.dispose();
   }
 
@@ -105,20 +99,13 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   Future<void> _load() async {
     final id = ++_requestId;
-
     _prepareState();
 
     final sentry = ref.read(sentryServiceProvider);
     try {
       unawaited(_fetchWatermark(id));
 
-      if (widget.url != null && widget.url!.isNotEmpty) {
-        final isConnected = await hasInternetConnection();
-        if (!isConnected) {
-          throw const ApiException('No Internet Connection',
-              type: ApiErrorType.noInternet);
-        }
-      } else if (widget.file != null) {
+      if (widget.file != null) {
         final file = widget.file!;
         final exists = await file.exists();
         final len = exists ? await file.length() : 0;
@@ -127,9 +114,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
         }
       }
 
-      if (!_isValidRequest(id)) {
-        return;
-      }
+      if (!_isValidRequest(id)) return;
 
       _setupViewer(id);
     } catch (e, st) {
@@ -165,31 +150,86 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       _isOffline = false;
       _isVisible = false;
       _watermarkText = '';
-      _totalHeight = 0;
       _lastProgress = -1;
+      _pageCount = 1;
       _pdfViewerWidget = null;
     });
   }
 
   void _setupViewer(int id) {
+    final design = Design.of(context);
+    final params = PdfViewerParams(
+      backgroundColor: design.colors.surface,
+      limitRenderingCache: false,
+      verticalCacheExtent: 3.0,
+      maxImageBytesCachedOnMemory: 256 * 1024 * 1024,
+      onViewerReady: (document, controller) {
+        _onViewerReady(id, document);
+      },
+      viewerOverlayBuilder: (context, size, handleLinkTap) => [
+        PdfViewerScrollThumb(
+          controller: _controller,
+          orientation: ScrollbarOrientation.right,
+          thumbSize: const Size(64, 28),
+          margin: 12,
+          thumbBuilder: (context, thumbSize, pageNumber, controller) {
+            if (pageNumber == null) return const SizedBox.shrink();
+            final count =
+                controller.isReady ? controller.pageCount : _pageCount;
+            return Container(
+              decoration: BoxDecoration(
+                color: design.colors.surfaceVariant.withValues(alpha: 0.92),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: design.colors.border),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Center(
+                child: Text(
+                  '$pageNumber / $count',
+                  style: design.typography.caption.copyWith(
+                    color: design.colors.onSurface,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+      pageOverlaysBuilder: (context, pageRect, page) {
+        if (_watermarkText.isEmpty) return const [];
+        return [
+          Positioned.fill(
+            child: WatermarkOverlay(
+              text: _watermarkText,
+              color: design.colors.onSurface.withValues(alpha: 0.15),
+            ),
+          ),
+        ];
+      },
+    );
+
     setState(() {
       if (widget.url != null && widget.url!.isNotEmpty) {
-        _pdfViewerWidget = SfPdfViewer.network(
-          widget.url!,
+        _pdfViewerWidget = PdfViewer.uri(
+          Uri.parse(widget.url!),
+          preferRangeAccess: true,
           controller: _controller,
-          onDocumentLoaded: (details) => _onDocumentLoaded(id, details),
-          onDocumentLoadFailed: (details) {
-            _handleError(id, details.description);
-          },
+          params: params,
         );
       } else if (widget.file != null) {
-        _pdfViewerWidget = SfPdfViewer.file(
-          widget.file!,
+        _pdfViewerWidget = PdfViewer.file(
+          widget.file!.path,
           controller: _controller,
-          onDocumentLoaded: (details) => _onDocumentLoaded(id, details),
-          onDocumentLoadFailed: (details) {
-            _handleError(id, details.description);
-          },
+          params: params,
         );
       }
     });
@@ -214,20 +254,15 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   Widget _buildViewer() {
     final viewer = _pdfViewerWidget ?? const SizedBox.shrink();
-    final design = Design.of(context);
 
     return Stack(
       children: [
         AnimatedOpacity(
           opacity: _isVisible ? 1 : 0,
-          duration: MotionPreferences.duration(context, design.motion.normal),
+          duration: MotionPreferences.duration(
+              context, Design.of(context).motion.normal),
           child: viewer,
         ),
-        if (_isVisible)
-          WatermarkOverlay(
-            text: _watermarkText,
-            color: design.colors.onSurface.withValues(alpha: 0.15),
-          ),
         if (!_isVisible) LessonDetailSkeleton(lessonType: LessonType.pdf),
       ],
     );
@@ -253,8 +288,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final design = Design.of(context);
-
     if (_isLoading && _pdfViewerWidget == null) {
       return LessonDetailSkeleton(lessonType: LessonType.pdf);
     }
@@ -264,36 +297,15 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
     return SecureWidget(
       mode: OverlayMode.secure,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          _viewportHeight = constraints.maxHeight;
-          _viewportWidth = constraints.maxWidth;
-
-          return ClipRect(
-            child: OverflowBox(
-              minHeight: constraints.minHeight,
-              maxHeight: constraints.maxHeight.isFinite
-                  ? constraints.maxHeight + 2.0
-                  : double.infinity,
-              alignment: Alignment.topCenter,
-              child: SfPdfViewerTheme(
-                data: SfPdfViewerThemeData(
-                  backgroundColor: design.colors.surface,
-                ),
-                child: _buildViewer(),
-              ),
-            ),
-          );
-        },
-      ),
+      child: _buildViewer(),
     );
   }
 
   // ---------------- EVENTS ----------------
 
-  void _onDocumentLoaded(int id, PdfDocumentLoadedDetails details) {
+  void _onViewerReady(int id, PdfDocument document) {
     if (!_isValidRequest(id)) return;
-    _totalHeight = _calculateTotalHeight(details);
+    _pageCount = document.pages.length;
 
     if (mounted) {
       setState(() {
@@ -301,32 +313,15 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
         _isLoading = false;
       });
     }
-  }
 
-  double _calculateTotalHeight(PdfDocumentLoadedDetails details) {
-    if (_viewportWidth <= 0) return 0;
-
-    double height = 0;
-
-    for (int i = 0; i < details.document.pages.count; i++) {
-      final page = details.document.pages[i];
-      // Accurately scale height to match actual screen rendering (fit to width)
-      final scale = _viewportWidth / page.size.width;
-      height += (page.size.height * scale);
-    }
-
-    // Add standard page spacing (4px by default in SfPdfViewer)
-    height += (details.document.pages.count - 1) * 4.0;
-
-    return height;
+    // Progressively stream and decode subsequent pages in background so scrolling is instant without white flashes
+    unawaited(document.loadPagesProgressively());
   }
 
   void _trackProgress() {
-    if (_totalHeight > 0 && _viewportHeight > 0) {
-      final offset = _controller.scrollOffset.dy;
-      final max = _totalHeight - _viewportHeight;
-
-      final progress = max > 0 ? (offset / max).clamp(0.0, 1.0) : 1.0;
+    if (_pageCount > 0 && _controller.isReady) {
+      final pageNumber = _controller.pageNumber ?? 1;
+      final progress = (pageNumber / _pageCount).clamp(0.0, 1.0);
 
       if ((progress - _lastProgress).abs() > 0.001) {
         _lastProgress = progress;
@@ -339,7 +334,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   void _resetViewer() {
     _controller.removeListener(_trackProgress);
-    _controller.dispose();
     _initController();
   }
 }
