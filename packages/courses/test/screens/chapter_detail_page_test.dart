@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:courses/courses.dart';
 import 'package:courses/providers/chapter_detail_provider.dart';
-import 'package:courses/widgets/chapter_status_filter_bar.dart';
 
 void main() {
   final testLessons = [
