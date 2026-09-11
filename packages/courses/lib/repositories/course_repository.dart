@@ -892,6 +892,18 @@ class CourseRepository {
     }
   }
 
+  @visibleForTesting
+  List<LessonsTableCompanion> applyContentStatusesForTest(
+    List<LessonDto> lessons,
+    ({
+      CourseCurriculumDto all,
+      CourseCurriculumDto running,
+      CourseCurriculumDto upcoming,
+      CourseCurriculumDto attempts,
+    }) remote,
+  ) =>
+      _applyContentStatuses(lessons, remote);
+
   List<LessonsTableCompanion> _applyContentStatuses(
     List<LessonDto> lessons,
     ({
@@ -912,15 +924,13 @@ class CourseRepository {
       bool hasAttempts = dto.hasAttempts;
       LessonProgressStatus progressStatus = dto.progressStatus;
 
-      if (!isVideoOrStream) {
-        final remoteLesson = attemptsById[dto.id];
-        if (remoteLesson != null) {
-          hasAttempts = remoteLesson.hasAttempts;
-          progressStatus = remoteLesson.progressStatus;
-        } else {
-          hasAttempts = false;
-          progressStatus = LessonProgressStatus.notStarted;
-        }
+      final remoteLesson = attemptsById[dto.id];
+      if (remoteLesson != null) {
+        hasAttempts = remoteLesson.hasAttempts;
+        progressStatus = remoteLesson.progressStatus;
+      } else if (!isVideoOrStream) {
+        hasAttempts = false;
+        progressStatus = LessonProgressStatus.notStarted;
       }
 
       return _lessonDtoToCompanion(dto).copyWith(

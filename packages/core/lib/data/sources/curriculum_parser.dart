@@ -20,12 +20,14 @@ class CurriculumParser {
         // Filter lessons to only those with actual attempts if this is an attempts sync payload
         if (results.containsKey('content_attempts')) {
           final attempts = results['content_attempts'] as List?;
+          final Map<String, bool> attemptedMap = {};
           final Map<String, bool> completedAttempts = {};
           if (attempts != null) {
             for (var a in attempts) {
               if (a is Map) {
                 final contentId = a['chapter_content_id']?.toString();
                 if (contentId != null) {
+                  attemptedMap[contentId] = true;
                   final attemptData =
                       a['assessment'] as Map? ?? a['attempt'] as Map? ?? a;
                   final stateVal = attemptData['state'];
@@ -41,12 +43,15 @@ class CurriculumParser {
           }
 
           lessons = lessons.map((l) {
+            final hasAttempt = attemptedMap[l.id] ?? false;
             final isCompleted = completedAttempts[l.id] ?? false;
             return l.copyWith(
-              hasAttempts: isCompleted,
+              hasAttempts: hasAttempt,
               progressStatus: isCompleted
                   ? LessonProgressStatus.completed
-                  : LessonProgressStatus.notStarted,
+                  : (hasAttempt
+                        ? LessonProgressStatus.inProgress
+                        : LessonProgressStatus.notStarted),
             );
           }).toList();
         }

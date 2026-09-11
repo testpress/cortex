@@ -129,5 +129,103 @@ void main() {
       sub.cancel();
       controller.dispose();
     });
+
+    test(
+        'enrichContentStatuses correctly applies attempts to video, stream, and non-video lessons',
+        () {
+      final List<LessonDto> localLessons = [
+        const LessonDto(
+          id: 'vid-1',
+          title: 'Video 1',
+          chapterId: 'c1',
+          type: LessonType.video,
+          orderIndex: 1,
+          duration: '10 min',
+          isLocked: false,
+          hasAttempts: false,
+          progressStatus: LessonProgressStatus.notStarted,
+        ),
+        const LessonDto(
+          id: 'exam-1',
+          title: 'Exam 1',
+          chapterId: 'c1',
+          type: LessonType.test,
+          orderIndex: 2,
+          duration: '60 min',
+          isLocked: false,
+          hasAttempts: false,
+          progressStatus: LessonProgressStatus.notStarted,
+        ),
+        const LessonDto(
+          id: 'attach-1',
+          title: 'PDF 1',
+          chapterId: 'c1',
+          type: LessonType.attachment,
+          orderIndex: 3,
+          duration: '',
+          isLocked: false,
+          hasAttempts: true,
+          progressStatus: LessonProgressStatus.completed,
+        ),
+      ];
+
+      final remoteAttempts = CourseCurriculumDto(
+        lessons: [
+          const LessonDto(
+            id: 'vid-1',
+            title: 'Video 1',
+            chapterId: 'c1',
+            type: LessonType.video,
+            orderIndex: 1,
+            duration: '10 min',
+            isLocked: false,
+            hasAttempts: true,
+            progressStatus: LessonProgressStatus.inProgress,
+          ),
+          const LessonDto(
+            id: 'exam-1',
+            title: 'Exam 1',
+            chapterId: 'c1',
+            type: LessonType.test,
+            orderIndex: 2,
+            duration: '60 min',
+            isLocked: false,
+            hasAttempts: true,
+            progressStatus: LessonProgressStatus.completed,
+          ),
+        ],
+        chapters: const [],
+      );
+
+      final emptyCurriculum =
+          const CourseCurriculumDto(lessons: [], chapters: []);
+
+      final enriched = repo.applyContentStatusesForTest(
+        localLessons,
+        (
+          all: emptyCurriculum,
+          running: emptyCurriculum,
+          upcoming: emptyCurriculum,
+          attempts: remoteAttempts,
+        ),
+      );
+
+      expect(enriched.length, 3);
+
+      // Video 1 should have attempts synced from remoteAttempts
+      final vid = enriched.firstWhere((c) => c.id.value == 'vid-1');
+      expect(vid.hasAttempts.value, true);
+      expect(vid.progressStatus.value, 'inProgress');
+
+      // Exam 1 should have attempts synced from remoteAttempts
+      final exam = enriched.firstWhere((c) => c.id.value == 'exam-1');
+      expect(exam.hasAttempts.value, true);
+      expect(exam.progressStatus.value, 'completed');
+
+      // PDF 1 is NOT in remoteAttempts, so non-video gets reset to notStarted
+      final pdf = enriched.firstWhere((c) => c.id.value == 'attach-1');
+      expect(pdf.hasAttempts.value, false);
+      expect(pdf.progressStatus.value, 'notStarted');
+    });
   });
 }
