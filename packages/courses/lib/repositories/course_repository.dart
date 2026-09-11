@@ -912,15 +912,13 @@ class CourseRepository {
       bool hasAttempts = dto.hasAttempts;
       LessonProgressStatus progressStatus = dto.progressStatus;
 
-      if (!isVideoOrStream) {
-        final remoteLesson = attemptsById[dto.id];
-        if (remoteLesson != null) {
-          hasAttempts = remoteLesson.hasAttempts;
-          progressStatus = remoteLesson.progressStatus;
-        } else {
-          hasAttempts = false;
-          progressStatus = LessonProgressStatus.notStarted;
-        }
+      final remoteLesson = attemptsById[dto.id];
+      if (remoteLesson != null) {
+        hasAttempts = remoteLesson.hasAttempts;
+        progressStatus = remoteLesson.progressStatus;
+      } else if (!isVideoOrStream) {
+        hasAttempts = false;
+        progressStatus = LessonProgressStatus.notStarted;
       }
 
       return _lessonDtoToCompanion(dto).copyWith(

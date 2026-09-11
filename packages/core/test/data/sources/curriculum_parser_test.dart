@@ -64,7 +64,7 @@ void main() {
     );
 
     test(
-      'filters out in-progress attempts and only counts completed attempts',
+      'handles in-progress attempts with hasAttempts=true and progressStatus=inProgress, while completed attempts have progressStatus=completed',
       () {
         final rawPayload = {
           'results': {
@@ -105,7 +105,7 @@ void main() {
 
         final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
 
-        // Both lessons are returned, but only lesson-2 is completed
+        // Both lessons are returned with hasAttempts=true, but progressStatus differs
         expect(curriculum.lessons.length, 2);
 
         final lesson1 = curriculum.lessons.firstWhere(
@@ -113,13 +113,14 @@ void main() {
         );
         expect(
           lesson1.hasAttempts,
-          false,
-        ); // in-progress attempt is treated as not completed
-        expect(lesson1.progressStatus, LessonProgressStatus.notStarted);
+          true,
+        ); // in-progress attempt is tracked in attempts / history
+        expect(lesson1.progressStatus, LessonProgressStatus.inProgress);
 
         final lesson2 = curriculum.lessons.firstWhere(
           (l) => l.id == 'lesson-2',
         );
+        expect(lesson2.id, 'lesson-2');
         expect(lesson2.hasAttempts, true);
         expect(lesson2.progressStatus, LessonProgressStatus.completed);
       },
