@@ -167,8 +167,14 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     final params = PdfViewerParams(
       backgroundColor: design.colors.surface,
       limitRenderingCache: false,
-      verticalCacheExtent: 3.0,
+      verticalCacheExtent: 4.0,
       maxImageBytesCachedOnMemory: 256 * 1024 * 1024,
+      onePassRenderingSizeThreshold: 3500,
+      behaviorControlParams: const PdfViewerBehaviorControlParams(
+        trailingPageLoadingDelay: Duration.zero,
+        pageImageCachingDelay: Duration.zero,
+        partialImageLoadingDelay: Duration.zero,
+      ),
       onViewerReady: (document, controller) {
         _onViewerReady(id, document);
       },
