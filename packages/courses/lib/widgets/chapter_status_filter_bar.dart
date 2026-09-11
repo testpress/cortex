@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum ChapterStatusFilter { all, running, upcoming, history }
 
 /// State provider for the active chapter status filter.
-final chapterStatusFilterProvider = StateProvider<ChapterStatusFilter>(
+final chapterStatusFilterProvider =
+    StateProvider.autoDispose<ChapterStatusFilter>(
   (ref) => ChapterStatusFilter.all,
 );
 

@@ -128,7 +128,7 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
                       vertical: design.spacing.md,
                     ),
                     children: [
-                      if (isSyncing && filteredLessons.isEmpty)
+                      if (isSyncing && chapter.lessons.isEmpty)
                         ..._skeletonLessons.map(
                           (lesson) => ChapterContentItem(
                             lesson: lesson,
