@@ -58,5 +58,57 @@ void main() {
 
       expect(tapped, isFalse);
     });
+
+    testWidgets(
+        'does not render completed badge for in-progress test with hasAttempts=true',
+        (tester) async {
+      final inProgressTest = LessonDto(
+        id: '2',
+        chapterId: '1',
+        title: 'Midterm Exam',
+        type: LessonType.test,
+        progressStatus: LessonProgressStatus.inProgress,
+        orderIndex: 2,
+        hasEnded: false,
+        isLocked: false,
+        duration: '60 min',
+        hasAttempts: true,
+      );
+
+      await tester.pumpWidget(wrap(ChapterContentItem(
+        lesson: inProgressTest,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      // Checkmark / completed semantics should NOT be present
+      expect(find.byIcon(LucideIcons.check), findsNothing);
+    });
+
+    testWidgets(
+        'renders completed badge for completed test with progressStatus=completed',
+        (tester) async {
+      final completedTest = LessonDto(
+        id: '3',
+        chapterId: '1',
+        title: 'Final Exam',
+        type: LessonType.test,
+        progressStatus: LessonProgressStatus.completed,
+        orderIndex: 3,
+        hasEnded: false,
+        isLocked: false,
+        duration: '60 min',
+        hasAttempts: true,
+      );
+
+      await tester.pumpWidget(wrap(ChapterContentItem(
+        lesson: completedTest,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      // Checkmark icon should be rendered for completed test
+      expect(find.byIcon(LucideIcons.check), findsOneWidget);
+    });
   });
 }

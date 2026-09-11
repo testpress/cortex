@@ -66,5 +66,37 @@ void main() {
 
       expect(tapped, isFalse);
     });
+
+    testWidgets(
+        'does not show completed badge for in-progress test with hasAttempts=true',
+        (tester) async {
+      final inProgressExam = LessonDto(
+        id: '2',
+        chapterId: '1',
+        title: 'Midterm Exam',
+        type: LessonType.test,
+        progressStatus: LessonProgressStatus.inProgress,
+        duration: '60 min',
+        orderIndex: 2,
+        hasEnded: false,
+        isLocked: false,
+        pausedAttemptsCount: 0,
+        disableAttemptResume: false,
+        allowRetake: false,
+        maxRetakes: 0,
+        hasAttempts: true,
+        isRunning: false,
+        isUpcoming: false,
+        isDetailFetched: false,
+      );
+
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: inProgressExam,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(LucideIcons.check), findsNothing);
+    });
   });
 }

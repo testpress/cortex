@@ -892,6 +892,18 @@ class CourseRepository {
     }
   }
 
+  @visibleForTesting
+  List<LessonsTableCompanion> applyContentStatusesForTest(
+    List<LessonDto> lessons,
+    ({
+      CourseCurriculumDto all,
+      CourseCurriculumDto running,
+      CourseCurriculumDto upcoming,
+      CourseCurriculumDto attempts,
+    }) remote,
+  ) =>
+      _applyContentStatuses(lessons, remote);
+
   List<LessonsTableCompanion> _applyContentStatuses(
     List<LessonDto> lessons,
     ({

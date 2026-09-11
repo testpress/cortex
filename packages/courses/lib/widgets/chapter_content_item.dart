@@ -21,11 +21,7 @@ class ChapterContentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final icon = _getIconForType(lesson.type);
-    final isCompleted =
-        lesson.progressStatus == LessonProgressStatus.completed ||
-            (lesson.hasAttempts &&
-                (lesson.type == LessonType.test ||
-                    lesson.type == LessonType.assessment));
+    final isCompleted = lesson.progressStatus == LessonProgressStatus.completed;
     final activeOnTap = isSkeleton
         ? null
         : () {
