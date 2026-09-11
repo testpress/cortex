@@ -1,6 +1,4 @@
-# Spec: Chapter Tab Filtering
-
-## Requirements
+## ADDED Requirements
 
 ### Requirement: Instant Tab Filtering on Available Curriculum
 The system SHALL filter chapter lessons immediately in memory when switching between `All`, `Running`, `Upcoming`, and `History` tabs.
@@ -13,3 +11,8 @@ The system SHALL filter chapter lessons immediately in memory when switching bet
 
 ### Requirement: Filter State Scope
 The system SHALL reset the chapter status filter to `All` when leaving or entering a chapter detail screen.
+
+#### Scenario: Reset filter on navigation
+- **GIVEN** a selected status filter other than `All`
+- **WHEN** the user navigates away from the chapter detail screen and returns or navigates to another chapter
+- **THEN** the active status filter SHALL reset to `All`.
