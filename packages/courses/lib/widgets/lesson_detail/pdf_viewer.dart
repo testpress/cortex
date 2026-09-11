@@ -105,7 +105,13 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     try {
       unawaited(_fetchWatermark(id));
 
-      if (widget.file != null) {
+      if (widget.url != null && widget.url!.isNotEmpty) {
+        final isConnected = await hasInternetConnection();
+        if (!isConnected) {
+          throw const ApiException('No Internet Connection',
+              type: ApiErrorType.noInternet);
+        }
+      } else if (widget.file != null) {
         final file = widget.file!;
         final exists = await file.exists();
         final len = exists ? await file.length() : 0;
@@ -166,37 +172,49 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       onViewerReady: (document, controller) {
         _onViewerReady(id, document);
       },
+      onDocumentLoadFinished: (documentRef, loadSucceeded) {
+        if (!loadSucceeded && _isValidRequest(id)) {
+          _handleError(id, const ApiException('Failed to load PDF document'));
+        }
+      },
+      errorBannerBuilder: (context, error, stackTrace, documentRef) {
+        if (_isValidRequest(id)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _handleError(id, error);
+          });
+        }
+        return const SizedBox.shrink();
+      },
       viewerOverlayBuilder: (context, size, handleLinkTap) => [
         PdfViewerScrollThumb(
           controller: _controller,
           orientation: ScrollbarOrientation.right,
-          thumbSize: const Size(64, 28),
-          margin: 12,
+          thumbSize: const Size(68, 48),
+          margin: 8,
           thumbBuilder: (context, thumbSize, pageNumber, controller) {
             if (pageNumber == null) return const SizedBox.shrink();
             final count =
                 controller.isReady ? controller.pageCount : _pageCount;
-            return Container(
-              decoration: BoxDecoration(
-                color: design.colors.surfaceVariant.withValues(alpha: 0.92),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: design.colors.border),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 6),
+            return Semantics(
+              label: 'Page $pageNumber of $count',
+              value: '$pageNumber of $count',
+              slider: true,
               child: Center(
-                child: Text(
-                  '$pageNumber / $count',
-                  style: design.typography.caption.copyWith(
-                    color: design.colors.onSurface,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 11,
+                child: Container(
+                  height: 28,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: design.colors.surfaceVariant.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: design.colors.border),
+                    boxShadow: design.shadows.floating,
+                  ),
+                  child: Center(
+                    child: AppText.caption(
+                      '$pageNumber / $count',
+                      color: design.colors.onSurface,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
               ),

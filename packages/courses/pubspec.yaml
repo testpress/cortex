@@ -21,7 +21,6 @@ dependencies:
   cached_network_image: ^3.4.1
   tpstreams_player_sdk: 2.2.35
   package_info_plus: ^8.2.1
-  syncfusion_flutter_pdf: ^33.1.45
   webview_flutter: ^4.10.0
   no_screenshot: ^2.0.1
   open_filex: ^4.5.0
