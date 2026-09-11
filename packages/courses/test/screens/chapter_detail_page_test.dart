@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:courses/courses.dart';
 import 'package:courses/providers/chapter_detail_provider.dart';
+import 'package:courses/widgets/chapter_status_filter_bar.dart';
 
 void main() {
   final testLessons = [
@@ -122,9 +123,74 @@ void main() {
       expect(find.text('No content available'), findsOneWidget);
     });
 
+    testWidgets(
+        'leaving and re-entering ChapterDetailPage resets filter to All',
+        (tester) async {
+      final host = ValueNotifier<String?>('chapter-1');
+
+      await tester.pumpWidget(
+        wrap(
+          ValueListenableBuilder<String?>(
+            valueListenable: host,
+            builder: (context, chapterId, _) {
+              if (chapterId == null) {
+                return const SizedBox.shrink();
+              }
+              return ChapterDetailPage(
+                key: ValueKey(chapterId),
+                courseId: 'course-1',
+                chapterId: chapterId,
+              );
+            },
+          ),
+          overrides: [
+            chapterDetailProvider('course-1', 'chapter-1').overrideWith(
+                (ref) => Stream.value((testChapter, 'Test Course'))),
+            chapterDetailProvider('course-1', 'chapter-2')
+                .overrideWith((ref) => Stream.value((
+                      testChapter.copyWith(
+                        id: 'chapter-2',
+                        title: 'Chapter 2 Title',
+                      ),
+                      'Test Course',
+                    ))),
+            chapterDetailControllerProvider
+                .overrideWith(() => _MockSyncingController()),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Initial state shows both lessons
+      expect(find.text('Running Lesson'), findsOneWidget);
+      expect(find.text('Upcoming Lesson'), findsOneWidget);
+
+      // Select 'Upcoming' tab
+      await tester.tap(find.text('Upcoming'));
+      await tester.pumpAndSettle();
+
+      // Only upcoming lesson is shown
+      expect(find.text('Upcoming Lesson'), findsOneWidget);
+      expect(find.text('Running Lesson'), findsNothing);
+
+      // Navigate away (unmount ChapterDetailPage)
+      host.value = null;
+      await tester.pumpAndSettle();
+
+      // Navigate to Chapter 2
+      host.value = 'chapter-2';
+      await tester.pumpAndSettle();
+
+      // On Chapter 2, autoDispose reset filter to 'All', showing both lessons
+      expect(find.textContaining('Chapter 2 Title'), findsOneWidget);
+      expect(find.text('Running Lesson'), findsOneWidget);
+      expect(find.text('Upcoming Lesson'), findsOneWidget);
+    });
+
     test(
-        'chapterStatusFilterProvider resets to default when container disposed',
-        () {
+        'chapterStatusFilterProvider auto-disposes and resets on the same container',
+        () async {
       final container = ProviderContainer();
       final sub = container.listen(chapterStatusFilterProvider, (_, __) {});
 
@@ -137,12 +203,13 @@ void main() {
           ChapterStatusFilter.upcoming);
 
       sub.close();
-      container.dispose();
+      // Allow the autoDispose microtask scheduled by Riverpod to execute
+      await Future(() {});
 
-      final freshContainer = ProviderContainer();
-      expect(freshContainer.read(chapterStatusFilterProvider),
-          ChapterStatusFilter.all);
-      freshContainer.dispose();
+      // Reading again on the same container must return the initial state 'all'
+      expect(
+          container.read(chapterStatusFilterProvider), ChapterStatusFilter.all);
+      container.dispose();
     });
   });
 }
