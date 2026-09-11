@@ -174,6 +174,160 @@ void main() {
         expect(merged.scheduledMessage, isNull);
       },
     );
+
+    test(
+      'mergeWith preserves fresh exam over cached exam (end-date freshness)',
+      () {
+        // Simulates refreshLesson: updated.mergeWith(existing)
+        // updated = fresh network detail with a real end_date
+        final freshExam = ExamDto(
+          id: 'exam-1',
+          title: 'Final Exam',
+          duration: '01:00:00',
+          questionCount: 50,
+          attemptsUrl: 'https://example.com/attempts',
+          startDate: '2026-09-10T10:00:00Z',
+          endDate: '2026-09-12T10:00:00Z',
+        );
+        final fresh = LessonDto.fromJson({
+          'id': '1',
+          'content_type': 'exam',
+          'active': true,
+        }).copyWith(exam: freshExam, isDetailFetched: true);
+
+        // existing = stale DB cache — exam stored before end_date was set
+        final staleExam = ExamDto(
+          id: 'exam-1',
+          title: 'Final Exam',
+          duration: '01:00:00',
+          questionCount: 50,
+          attemptsUrl: 'https://example.com/attempts',
+          startDate: '2026-09-10T10:00:00Z',
+          endDate: null,
+        );
+        final existing = LessonDto.fromJson({
+          'id': '1',
+          'content_type': 'exam',
+          'active': true,
+        }).copyWith(exam: staleExam);
+
+        final merged = fresh.mergeWith(existing);
+
+        expect(merged.exam?.endDate, '2026-09-12T10:00:00Z');
+        expect(merged.exam?.id, 'exam-1');
+      },
+    );
+
+    test('mergeWith falls back to cached exam when fresh exam is null', () {
+      // List-endpoint lesson has no exam object; cached detail does.
+      // Fresh null must not clobber a valid cached exam.
+      final cachedExam = ExamDto(
+        id: 'exam-2',
+        title: 'Mock Test',
+        duration: '00:30:00',
+        questionCount: 25,
+        attemptsUrl: 'https://example.com/attempts2',
+        endDate: '2026-09-15T18:00:00Z',
+      );
+      final fresh = LessonDto.fromJson({
+        'id': '2',
+        'content_type': 'exam',
+        'active': true,
+      });
+
+      final existing = LessonDto.fromJson({
+        'id': '2',
+        'content_type': 'exam',
+        'active': true,
+      }).copyWith(exam: cachedExam, isDetailFetched: true);
+
+      final merged = fresh.mergeWith(existing);
+
+      expect(merged.exam?.endDate, '2026-09-15T18:00:00Z');
+      expect(merged.exam?.id, 'exam-2');
+    });
+
+    // ExamPrescreen call site: fetchedLesson.mergeWith(widget.lesson)
+    // `this` = fresh v2.4 detail, `other` = stale v2.5 list snapshot.
+
+    test('mergeWith at ExamPrescreen call site: fresh fetchedLesson exam wins '
+        'over stale widget.lesson exam', () {
+      // Simulates fetchedLesson.mergeWith(widget.lesson)
+      // fetchedLesson (this) = fresh v2.4 detail with a real end_date
+      final freshExam = ExamDto(
+        id: 'exam-3',
+        title: 'Physics Mock',
+        duration: '02:00:00',
+        questionCount: 100,
+        attemptsUrl: 'https://example.com/attempts3',
+        startDate: '2026-09-11T09:00:00Z',
+        endDate: '2026-09-14T18:00:00Z', // correct fresh end date
+      );
+      final fetchedLesson = LessonDto.fromJson({
+        'id': '3',
+        'content_type': 'exam',
+        'active': true,
+      }).copyWith(exam: freshExam, isDetailFetched: true);
+
+      // widget.lesson (other) = stale v2.5 list snapshot — end_date not yet
+      // set on the server when the list was fetched
+      final staleExam = ExamDto(
+        id: 'exam-3',
+        title: 'Physics Mock',
+        duration: '02:00:00',
+        questionCount: 100,
+        attemptsUrl: 'https://example.com/attempts3',
+        startDate: '2026-09-11T09:00:00Z',
+        endDate: null, // stale — no end date in the list snapshot
+      );
+      final widgetLesson = LessonDto.fromJson({
+        'id': '3',
+        'content_type': 'exam',
+        'active': true,
+      }).copyWith(exam: staleExam);
+
+      final merged = fetchedLesson.mergeWith(widgetLesson);
+
+      // Fresh exam must win: the correct end_date is preserved.
+      expect(merged.exam?.endDate, '2026-09-14T18:00:00Z');
+      expect(merged.exam?.id, 'exam-3');
+    });
+
+    test(
+      'mergeWith at ExamPrescreen call site: falls back to widget.lesson exam '
+      'when fetchedLesson has no exam object',
+      () {
+        // Simulates fetchedLesson.mergeWith(widget.lesson)
+        // fetchedLesson (this) = v2.4 response with no exam field
+        final fetchedLesson = LessonDto.fromJson({
+          'id': '4',
+          'content_type': 'exam',
+          'active': true,
+        }).copyWith(isDetailFetched: true); // exam is null
+
+        // widget.lesson (other) = v2.5 list had the exam with its end_date
+        final widgetExam = ExamDto(
+          id: 'exam-4',
+          title: 'Chemistry Test',
+          duration: '01:30:00',
+          questionCount: 60,
+          attemptsUrl: 'https://example.com/attempts4',
+          startDate: '2026-09-11T10:00:00Z',
+          endDate: '2026-09-20T10:00:00Z',
+        );
+        final widgetLesson = LessonDto.fromJson({
+          'id': '4',
+          'content_type': 'exam',
+          'active': true,
+        }).copyWith(exam: widgetExam);
+
+        final merged = fetchedLesson.mergeWith(widgetLesson);
+
+        // Fallback to widget.lesson exam — must not lose the end_date.
+        expect(merged.exam?.endDate, '2026-09-20T10:00:00Z');
+        expect(merged.exam?.id, 'exam-4');
+      },
+    );
   });
 
   group('LessonDto.fromJson — liveStream parsing', () {
