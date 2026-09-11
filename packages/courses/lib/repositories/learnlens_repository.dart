@@ -21,7 +21,9 @@ class LearnLensRepository {
     required String assetId,
     required String sessionToken,
     required String query,
-    required String conversationId,
+    String? conversationId,
+    String? chatId,
+    int? contentId,
   }) async {
     return _networkClient.submitChat(
       orgUuid: orgUuid,
@@ -29,7 +31,90 @@ class LearnLensRepository {
       sessionToken: sessionToken,
       query: query,
       conversationId: conversationId,
+      chatId: chatId,
+      contentId: contentId,
     );
+  }
+
+  /// Lists past chat sessions for the given asset.
+  Future<List<LearnLensChatSessionDto>> fetchChats({
+    required String orgUuid,
+    required String assetId,
+    required String sessionToken,
+    int? contentId,
+    int? limit,
+    String? cursor,
+    String? before,
+  }) async {
+    return _networkClient.listChats(
+      orgUuid: orgUuid,
+      assetId: assetId,
+      sessionToken: sessionToken,
+      contentId: contentId,
+      limit: limit,
+      cursor: cursor,
+      before: before,
+    );
+  }
+
+  /// Fetches historical messages for a specific chat.
+  Future<List<LearnLensMessageDto>> fetchChatMessages({
+    required String orgUuid,
+    required String chatId,
+    required String sessionToken,
+    int? contentId,
+    int? limit,
+    String? cursor,
+    String? before,
+  }) async {
+    return _networkClient.getChatMessages(
+      orgUuid: orgUuid,
+      chatId: chatId,
+      sessionToken: sessionToken,
+      contentId: contentId,
+      limit: limit,
+      cursor: cursor,
+      before: before,
+    );
+  }
+
+  /// Fetches the latest chat session and its historical messages for the asset.
+  /// If no past session exists, returns an empty list and empty chatId.
+  Future<({String chatId, List<LearnLensMessageDto> messages})>
+      fetchLatestChatHistory({
+    required String orgUuid,
+    required String assetId,
+    required String sessionToken,
+    int? contentId,
+  }) async {
+    final chats = await fetchChats(
+      orgUuid: orgUuid,
+      assetId: assetId,
+      sessionToken: sessionToken,
+      contentId: contentId,
+    );
+
+    if (chats.isEmpty) {
+      return (chatId: '', messages: const <LearnLensMessageDto>[]);
+    }
+
+    final sortedChats = List<LearnLensChatSessionDto>.from(chats)
+      ..sort((a, b) =>
+          (b.updatedAt ?? DateTime(0)).compareTo(a.updatedAt ?? DateTime(0)));
+    final activeChatId = sortedChats.first.id;
+
+    if (activeChatId.isEmpty) {
+      return (chatId: '', messages: const <LearnLensMessageDto>[]);
+    }
+
+    final messages = await fetchChatMessages(
+      orgUuid: orgUuid,
+      chatId: activeChatId,
+      sessionToken: sessionToken,
+      contentId: contentId,
+    );
+
+    return (chatId: activeChatId, messages: messages);
   }
 
   /// Generates multiple-choice questions for the video asset.
@@ -39,6 +124,7 @@ class LearnLensRepository {
     required String sessionToken,
     String difficulty = 'medium',
     int questionCount = 5,
+    int? contentId,
   }) async {
     return _networkClient.fetchQuiz(
       orgUuid: orgUuid,
@@ -46,6 +132,7 @@ class LearnLensRepository {
       sessionToken: sessionToken,
       difficulty: difficulty,
       questionCount: questionCount,
+      contentId: contentId,
     );
   }
 }

@@ -24,11 +24,15 @@ class _ChatMessage {
   final String text;
   final bool isAi;
   final bool isLoading;
+  final String messageType;
+  final List<dynamic>? citations;
 
   const _ChatMessage({
     required this.text,
     required this.isAi,
     this.isLoading = false,
+    this.messageType = 'text',
+    this.citations,
   });
 }
 
@@ -36,25 +40,108 @@ class _AITabState extends ConsumerState<AITab>
     with AutomaticKeepAliveClientMixin {
   final _controller = TextEditingController();
   final List<_ChatMessage> _messages = [];
-  String _conversationId = '';
+  String _chatId = '';
   bool _isSubmitting = false;
+  bool _isLoadingHistory = true;
+  String? _historyError;
+  bool _hasStartedHydration = false;
 
   @override
   bool get wantKeepAlive => true;
 
-  bool _hasAddedGreeting = false;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_hasAddedGreeting) {
-      _hasAddedGreeting = true;
-      _messages.add(
-        _ChatMessage(
-          text: L10n.of(context).videoAiGreeting,
-          isAi: true,
-        ),
+    if (!_hasStartedHydration) {
+      _hasStartedHydration = true;
+      _hydrateChatHistory();
+    }
+  }
+
+  @override
+  void didUpdateWidget(AITab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.lesson.id != oldWidget.lesson.id) {
+      _controller.clear();
+      _chatId = '';
+      _messages.clear();
+      _hydrateChatHistory();
+    }
+  }
+
+  Future<void> _hydrateChatHistory({bool forceRefresh = false}) async {
+    final requestedLessonId = widget.lesson.id;
+    setState(() {
+      _isLoadingHistory = true;
+      _historyError = null;
+    });
+
+    try {
+      final session = await resolveLearnLensSession(
+        ref,
+        widget.lesson,
+        forceRefresh: forceRefresh,
       );
+
+      if (!mounted || widget.lesson.id != requestedLessonId) {
+        return;
+      }
+
+      if (session == null) {
+        setState(() {
+          _isLoadingHistory = false;
+          _historyError = L10n.of(context).videoAiSessionError;
+        });
+        return;
+      }
+
+      final repository = ref.read(learnLensRepositoryProvider);
+      final chatHistory = await repository.fetchLatestChatHistory(
+        orgUuid: session.orgUuid,
+        assetId: session.assetId,
+        sessionToken: session.sessionToken,
+        contentId: session.contentId,
+      );
+
+      if (!mounted || widget.lesson.id != requestedLessonId) {
+        return;
+      }
+
+      _chatId = chatHistory.chatId;
+      List<_ChatMessage> loaded = chatHistory.messages
+          .map((m) => _ChatMessage(
+                text: m.content,
+                isAi: m.isAi,
+                messageType: m.messageType,
+                citations: m.citations,
+              ))
+          .toList();
+
+      if (loaded.isEmpty) {
+        loaded = [
+          _ChatMessage(
+            text: L10n.of(context).videoAiGreeting,
+            isAi: true,
+          ),
+        ];
+      }
+
+      setState(() {
+        _messages
+          ..clear()
+          ..addAll(loaded);
+        _isLoadingHistory = false;
+      });
+
+      final design = Design.of(context);
+      _scrollToBottom(design);
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      if (!mounted || widget.lesson.id != requestedLessonId) return;
+      setState(() {
+        _isLoadingHistory = false;
+        _historyError = L10n.of(context).videoAiError;
+      });
     }
   }
 
@@ -75,9 +162,16 @@ class _AITabState extends ConsumerState<AITab>
     return processed;
   }
 
+  void _removeLoadingMessage() {
+    if (_messages.isNotEmpty && _messages.last.isLoading) {
+      _messages.removeLast();
+    }
+  }
+
   Future<void> _sendMessage() async {
     final query = _controller.text.trim();
-    if (query.isEmpty || _isSubmitting) return;
+    if (query.isEmpty || _isSubmitting || _isLoadingHistory) return;
+    final currentLessonId = widget.lesson.id;
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
@@ -91,24 +185,14 @@ class _AITabState extends ConsumerState<AITab>
     });
     _scrollToBottom(design);
 
-    final contentId = int.tryParse(widget.lesson.id) ?? 0;
-    final sessionMap =
-        await ref.read(learnlensSessionProvider(contentId).future);
+    final session = await resolveLearnLensSession(ref, widget.lesson);
+    if (!mounted || widget.lesson.id != currentLessonId) {
+      return;
+    }
 
-    final sessionToken = sessionMap?['session_token'] as String? ?? '';
-    final settings = ref.read(instituteSettingsProvider);
-    final orgUuid = (settings?.learnlensEnabled == true)
-        ? (settings?.learnlensOrgID ?? '')
-        : '';
-    final assetId = widget.lesson.learnlensAssetId ??
-        widget.lesson.uuid ??
-        widget.lesson.id;
-
-    if (sessionToken.isEmpty) {
+    if (session == null) {
       setState(() {
-        if (_messages.isNotEmpty && _messages.last.isLoading) {
-          _messages.removeLast();
-        }
+        _removeLoadingMessage();
         _messages.add(
           _ChatMessage(
             text: l10n.videoAiSessionError,
@@ -123,29 +207,35 @@ class _AITabState extends ConsumerState<AITab>
     try {
       final repository = ref.read(learnLensRepositoryProvider);
       final chatResponse = await repository.submitChat(
-        orgUuid: orgUuid,
-        assetId: assetId,
-        sessionToken: sessionToken,
+        orgUuid: session.orgUuid,
+        assetId: session.assetId,
+        sessionToken: session.sessionToken,
         query: query,
-        conversationId: _conversationId,
+        chatId: _chatId,
+        contentId: session.contentId,
       );
 
+      if (!mounted || widget.lesson.id != currentLessonId) {
+        return;
+      }
+
       setState(() {
-        _conversationId = chatResponse.conversationId;
-        if (_messages.isNotEmpty && _messages.last.isLoading) {
-          _messages.removeLast();
-        }
-        _messages.add(_ChatMessage(text: chatResponse.answer, isAi: true));
+        _chatId = chatResponse.chatId;
+        _removeLoadingMessage();
+        _messages.add(_ChatMessage(
+          text: chatResponse.answer,
+          isAi: true,
+          messageType: chatResponse.messageType,
+          citations: chatResponse.citations,
+        ));
         _isSubmitting = false;
       });
       _scrollToBottom(design);
     } catch (e, stack) {
-      debugPrint('Error sending AI chat message: $e\n$stack');
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      if (!mounted || widget.lesson.id != currentLessonId) return;
       setState(() {
-        if (_messages.isNotEmpty && _messages.last.isLoading) {
-          _messages.removeLast();
-        }
+        _removeLoadingMessage();
         _messages.add(
           _ChatMessage(
             text: l10n.videoAiError,
@@ -163,9 +253,13 @@ class _AITabState extends ConsumerState<AITab>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_scrollController.hasClients) {
+        final duration = MotionPreferences.duration(
+          context,
+          design.motion.normal,
+        );
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: design.motion.normal,
+          duration: duration,
           curve: design.motion.easeOut,
         );
       }
@@ -185,18 +279,29 @@ class _AITabState extends ConsumerState<AITab>
       children: [
         // Scrollable messages area
         Expanded(
-          child: AppSemantics.scrollableList(
-            itemCount: _messages.length,
-            label: l10n.aiSupportTitle,
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(design.spacing.md),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildChatBubble(_messages[index], design);
-              },
-            ),
-          ),
+          child: _isLoadingHistory
+              ? Center(
+                  child: AppLoadingIndicator(
+                    color: design.colors.accent2,
+                  ),
+                )
+              : _historyError != null
+                  ? AppErrorView(
+                      message: _historyError,
+                      onRetry: () => _hydrateChatHistory(forceRefresh: true),
+                    )
+                  : AppSemantics.scrollableList(
+                      itemCount: _messages.length,
+                      label: l10n.aiSupportTitle,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: EdgeInsets.all(design.spacing.md),
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          return _buildChatBubble(_messages[index], design);
+                        },
+                      ),
+                    ),
         ),
         // Pinned composer at bottom
         Container(
@@ -326,7 +431,6 @@ class _AITabState extends ConsumerState<AITab>
                       : AppText.body(
                           message.text,
                           color: design.colors.textInverse,
-                          style: const TextStyle(fontSize: 13, height: 1.4),
                         ),
             ),
           ),

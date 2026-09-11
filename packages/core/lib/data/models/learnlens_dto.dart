@@ -1,16 +1,84 @@
 class LearnLensChatResponseDto {
   final String answer;
   final String conversationId;
+  final String chatId;
+  final String messageType;
+  final List<dynamic>? citations;
 
   LearnLensChatResponseDto({
     required this.answer,
-    required this.conversationId,
-  });
+    String? conversationId,
+    String? chatId,
+    this.messageType = 'text',
+    this.citations,
+  }) : chatId = (chatId != null && chatId.isNotEmpty)
+           ? chatId
+           : (conversationId ?? ''),
+       conversationId = (conversationId != null && conversationId.isNotEmpty)
+           ? conversationId
+           : (chatId ?? '');
 
   factory LearnLensChatResponseDto.fromJson(Map<String, dynamic> json) {
+    final rawConvId = json['conversation_id'] as String?;
+    final rawChatId = json['chat_id'] as String?;
+    final effectiveId = rawChatId ?? rawConvId ?? '';
     return LearnLensChatResponseDto(
       answer: json['answer'] as String? ?? '',
-      conversationId: json['conversation_id'] as String? ?? '',
+      conversationId: rawConvId ?? effectiveId,
+      chatId: rawChatId ?? effectiveId,
+      messageType: json['message_type'] as String? ?? 'text',
+      citations: json['citations'] as List<dynamic>?,
+    );
+  }
+}
+
+class LearnLensChatSessionDto {
+  final String id;
+  final String title;
+  final DateTime? updatedAt;
+
+  const LearnLensChatSessionDto({
+    required this.id,
+    this.title = '',
+    this.updatedAt,
+  });
+
+  factory LearnLensChatSessionDto.fromJson(Map<String, dynamic> json) {
+    return LearnLensChatSessionDto(
+      id: json['chat_id']?.toString() ?? json['id']?.toString() ?? '',
+      title: json['title'] as String? ?? '',
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'].toString())?.toUtc()
+          : null,
+    );
+  }
+}
+
+class LearnLensMessageDto {
+  final String id;
+  final String role;
+  final String content;
+  final String messageType;
+  final List<dynamic>? citations;
+
+  const LearnLensMessageDto({
+    required this.id,
+    required this.role,
+    required this.content,
+    this.messageType = 'text',
+    this.citations,
+  });
+
+  bool get isUser => role.toLowerCase() == 'user';
+  bool get isAi => !isUser;
+
+  factory LearnLensMessageDto.fromJson(Map<String, dynamic> json) {
+    return LearnLensMessageDto(
+      id: json['message_id']?.toString() ?? json['id']?.toString() ?? '',
+      role: json['role'] as String? ?? 'assistant',
+      content: json['content'] as String? ?? '',
+      messageType: json['message_type'] as String? ?? 'text',
+      citations: json['citations'] as List<dynamic>?,
     );
   }
 }
