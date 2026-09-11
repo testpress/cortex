@@ -183,7 +183,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
 
       final lessonDetailAsync = ref.read(lessonDetailProvider(widget.testId));
       final fetchedLesson = lessonDetailAsync.valueOrNull;
-      final lesson = widget.lesson?.mergeWith(fetchedLesson) ?? fetchedLesson;
+      final lesson = fetchedLesson?.mergeWith(widget.lesson) ?? widget.lesson;
 
       final attemptsUrl =
           widget.lesson?.attemptsUrl ?? fetchedLesson?.attemptsUrl;

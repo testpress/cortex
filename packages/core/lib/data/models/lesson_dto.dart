@@ -441,7 +441,7 @@ class LessonDto {
       allowDownload: allowDownload || other.allowDownload,
       watermarkBeforeDownload:
           watermarkBeforeDownload || other.watermarkBeforeDownload,
-      exam: other.exam ?? exam,
+      exam: exam ?? other.exam,
       conferenceId: (conferenceId?.isEmpty ?? true)
           ? other.conferenceId
           : conferenceId,
