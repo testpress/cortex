@@ -953,10 +953,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String get lessonDownload => 'ഡൗൺലോഡ് ചെയ്യുക';
 
   @override
-  String get navigationPrevious => 'മുൻപത്തെ പാഠം';
+  String get navigationPrevious => 'മുൻപത്തേത്';
 
   @override
-  String get navigationNext => 'അടുത്ത പാഠം';
+  String get navigationNext => 'അടുത്തത്';
 
   @override
   String openDetailedLesson(String title) {

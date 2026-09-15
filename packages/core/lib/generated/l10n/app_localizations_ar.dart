@@ -941,10 +941,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get lessonDownload => 'تحميل الدرس';
 
   @override
-  String get navigationPrevious => 'الدرس السابق';
+  String get navigationPrevious => 'السابق';
 
   @override
-  String get navigationNext => 'الدرس التالي';
+  String get navigationNext => 'التالي';
 
   @override
   String openDetailedLesson(String title) {
