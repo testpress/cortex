@@ -750,10 +750,7 @@ class LessonDto {
 
     return base.copyWith(
       attemptsUrl:
-          json['attempts_url'] as String? ??
-          exam?['attempts_url'] as String? ??
-          json['start_url'] as String? ??
-          exam?['start_url'] as String?,
+          json['attempts_url'] as String? ?? json['start_url'] as String?,
       slug:
           json['slug'] as String? ??
           exam?['slug'] as String? ??

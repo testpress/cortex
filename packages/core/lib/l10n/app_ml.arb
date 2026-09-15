@@ -863,6 +863,7 @@
   "startExamOnline": "പരീക്ഷ ഓൺലൈനില്‍ ആരംഭിക്കുക",
   "retakeExamOnline": "പരീക്ഷ വീണ്ടും എഴുതുക",
   "retakeIncorrectExamOnline": "തെറ്റായവ വീണ്ടും ചെയ്യുക",
+  "examMaxAttemptsReached": "ഈ പരീക്ഷയ്ക്കുള്ള പരമാവധി ശ്രമങ്ങൾ നിങ്ങൾ പൂർത്തിയാക്കി കഴിഞ്ഞു.",
   "examPreviousAttempts": "മുൻ ശ്രമങ്ങൾ",
   "labelDate": "തേഴ്വ്",
   "examsTabTitle": "പരീക്ഷകൾ",

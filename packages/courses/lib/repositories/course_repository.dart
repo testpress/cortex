@@ -984,9 +984,9 @@ class CourseRepository {
       _hydrateNestedChapterBackground(dto.chapterId, dto.chapterSlug!).ignore();
     }
 
-    // Attempts call here, before anything else
+    // Attempts call only for Video lessons to retrieve last watched playback position
     LessonDto dtoWithAttempts = dto;
-    if (dto.attemptsUrl != null) {
+    if (dto.type == LessonType.video && dto.attemptsUrl != null) {
       try {
         final lastWatched =
             await _source.getLastWatchedPosition(dto.attemptsUrl!);

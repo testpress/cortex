@@ -1,39 +1,57 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../utils/exam_prescreen_formatter.dart';
 import 'exam_prescreen_vertical_stat.dart';
 import 'exam_prescreen_timeline.dart';
 import 'exam_prescreen_mark_card.dart';
 
 class ExamPrescreenMetadata extends StatelessWidget {
+  final ExamDto? exam;
+  final LessonDto? lesson;
   final bool isMetadataLoading;
   final String? title;
-  final String startDateStr;
-  final String endDateStr;
-  final String questionCountStr;
-  final String durationVal;
-  final String? durationSuffix;
-  final String totalMarksVal;
-  final String correctMarks;
-  final String wrongMarks;
 
   const ExamPrescreenMetadata({
     super.key,
+    required this.exam,
+    required this.lesson,
     required this.isMetadataLoading,
     this.title,
-    required this.startDateStr,
-    required this.endDateStr,
-    required this.questionCountStr,
-    required this.durationVal,
-    this.durationSuffix,
-    required this.totalMarksVal,
-    required this.correctMarks,
-    required this.wrongMarks,
   });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+
+    final duration = ExamPrescreenFormatter.formatDuration(
+      exam: exam,
+      lesson: lesson,
+      isMetadataLoading: isMetadataLoading,
+    );
+    final totalMarks = ExamPrescreenFormatter.calculateTotalMarks(
+      exam: exam,
+      isMetadataLoading: isMetadataLoading,
+    );
+    final markingScheme = ExamPrescreenFormatter.formatMarkingScheme(
+      exam: exam,
+      isMetadataLoading: isMetadataLoading,
+    );
+    final dates = ExamPrescreenFormatter.formatDateRange(
+      exam: exam,
+      lesson: lesson,
+      isMetadataLoading: isMetadataLoading,
+    );
+
+    final startDateStr = dates.startDate;
+    final endDateStr = dates.endDate;
+    final questionCountStr = '${exam?.questionCount ?? '--'}';
+    final durationVal = duration.value;
+    final durationSuffix = duration.suffix;
+    final totalMarksVal = totalMarks;
+    final correctMarks = markingScheme.correctMarks;
+    final wrongMarks = markingScheme.wrongMarks;
 
     return Skeletonizer(
       enabled: isMetadataLoading,

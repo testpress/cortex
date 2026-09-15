@@ -4289,6 +4289,12 @@ abstract class AppLocalizations {
   /// **'Retake Incorrect'**
   String get retakeIncorrectExamOnline;
 
+  /// No description provided for @examMaxAttemptsReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached the maximum attempts for this exam.'**
+  String get examMaxAttemptsReached;
+
   /// No description provided for @examPreviousAttempts.
   ///
   /// In en, this message translates to:

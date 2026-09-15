@@ -1108,6 +1108,7 @@
   "startExamOnline": "தேர்வை ஆன்லைனில் தொடங்கவும்",
   "retakeExamOnline": "மீண்டும் எழுதுக",
   "retakeIncorrectExamOnline": "தவறானவற்றை மீண்டும் செய்",
+  "examMaxAttemptsReached": "இந்தத் தேர்வுக்கான அதிகபட்ச முயற்சிகளை நீங்கள் அடைந்துவிட்டீர்கள்.",
   "examPreviousAttempts": "முந்தைய முயற்சிகள்",
   "labelDate": "தேதி",
   "examsTabTitle": "தேர்வுகள்",

@@ -2380,6 +2380,10 @@ class AppLocalizationsMl extends AppLocalizations {
   String get retakeIncorrectExamOnline => 'തെറ്റായവ വീണ്ടും ചെയ്യുക';
 
   @override
+  String get examMaxAttemptsReached =>
+      'ഈ പരീക്ഷയ്ക്കുള്ള പരമാവധി ശ്രമങ്ങൾ നിങ്ങൾ പൂർത്തിയാക്കി കഴിഞ്ഞു.';
+
+  @override
   String get examPreviousAttempts => 'മുൻ ശ്രമങ്ങൾ';
 
   @override

@@ -2335,6 +2335,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retakeIncorrectExamOnline => 'Retake Incorrect';
 
   @override
+  String get examMaxAttemptsReached =>
+      'You have reached the maximum attempts for this exam.';
+
+  @override
   String get examPreviousAttempts => 'Previous Attempts';
 
   @override

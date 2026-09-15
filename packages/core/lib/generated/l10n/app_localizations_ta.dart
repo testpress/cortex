@@ -2376,6 +2376,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get retakeIncorrectExamOnline => 'தவறானவற்றை மீண்டும் செய்';
 
   @override
+  String get examMaxAttemptsReached =>
+      'இந்தத் தேர்வுக்கான அதிகபட்ச முயற்சிகளை நீங்கள் அடைந்துவிட்டீர்கள்.';
+
+  @override
   String get examPreviousAttempts => 'முந்தைய முயற்சிகள்';
 
   @override

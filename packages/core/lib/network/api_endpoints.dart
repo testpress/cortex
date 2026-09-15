@@ -46,6 +46,7 @@ class ApiEndpoints {
       '/api/v2.5/chapters/$id/contents/';
   static String chapterDetail(String slug) => '/api/v2.4/chapters/$slug/';
   static String lessonDetail(String id) => '/api/v2.4/contents/$id/';
+  static String lessonAttempts(String id) => '/api/v2.3/contents/$id/attempts/';
   static String markCompleted(String id) =>
       '/api/v2.5/chapter_contents/$id/attempts/';
   static const String updateVideoAttempt =

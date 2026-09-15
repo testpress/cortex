@@ -16,21 +16,23 @@ class ExamPrescreenTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showStart = startDateStr.isNotEmpty;
+    final finalEndDateStr = (endDateStr.isEmpty || endDateStr == 'N/A')
+        ? L10n.of(context).examForever
+        : endDateStr;
+
+    final isSkeleton = Skeletonizer.maybeOf(context)?.enabled ?? false;
+
     if (startDateStr.isEmpty && endDateStr.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    final isSkeleton = Skeletonizer.maybeOf(context)?.enabled ?? false;
     final successColor = isSkeleton
         ? design.colors.textSecondary
         : design.colors.success;
     final errorColor = isSkeleton
         ? design.colors.textSecondary
         : design.colors.error;
-    final showStart = startDateStr.isNotEmpty;
-    final finalEndDateStr = (endDateStr.isEmpty || endDateStr == 'N/A')
-        ? L10n.of(context).examForever
-        : endDateStr;
 
     return AppSemantics.container(
       label: L10n.of(context).semanticExamTimeline,

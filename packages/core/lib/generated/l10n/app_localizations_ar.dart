@@ -2344,6 +2344,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retakeIncorrectExamOnline => 'إعادة تقديم غير الصحيح';
 
   @override
+  String get examMaxAttemptsReached =>
+      'لقد وصلت إلى الحد الأقصى للمحاولات لهذا الاختبار.';
+
+  @override
   String get examPreviousAttempts => 'المحاولات السابقة';
 
   @override

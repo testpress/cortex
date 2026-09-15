@@ -862,6 +862,7 @@
   "startExamOnline": "بدء الامتحان عبر الإنترنت",
   "retakeExamOnline": "إعادة التقديم",
   "retakeIncorrectExamOnline": "إعادة تقديم غير الصحيح",
+  "examMaxAttemptsReached": "لقد وصلت إلى الحد الأقصى للمحاولات لهذا الاختبار.",
   "examPreviousAttempts": "المحاولات السابقة",
   "labelDate": "التاريخ",
   "examsTabTitle": "الامتحانات",
