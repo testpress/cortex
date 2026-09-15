@@ -140,7 +140,7 @@ abstract class DataSource {
   );
 
   /// Refresh order status after payment completion
-  Future<OrderDto> refreshOrderStatus(int orderId);
+  Future<OrderDto> refreshOrderStatus(String orderId);
 
   /// Generate PayU hash from the backend
   Future<String> generatePayUHash(String hashString);

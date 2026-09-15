@@ -857,7 +857,7 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<_i2.OrderDto>);
 
   @override
-  _i3.Future<_i2.OrderDto> refreshOrderStatus(int? orderId) =>
+  _i3.Future<_i2.OrderDto> refreshOrderStatus(String? orderId) =>
       (super.noSuchMethod(
             Invocation.method(#refreshOrderStatus, [orderId]),
             returnValue: _i3.Future<_i2.OrderDto>.value(

@@ -1161,7 +1161,7 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<OrderDto> refreshOrderStatus(int orderId) async {
+  Future<OrderDto> refreshOrderStatus(String orderId) async {
     return const OrderDto(
       id: 101,
       status: 'Completed',

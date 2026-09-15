@@ -22,11 +22,11 @@ The system MUST NEVER store secret salts on the client for PayU integrations.
 - **THEN** it formats the transaction data and calls the backend `/api/v2.5/payu/dynamic_hash/` to retrieve the secure hash
 
 ### Requirement: Server-Side Payment Verification
-The system MUST verify payment success directly with the backend server before granting access to purchased items.
+The system MUST verify payment success directly with the backend server using the third-party gateway order identifier before granting access to purchased items.
 
 #### Scenario: SDK returns success
 - **WHEN** the third-party payment SDK (Razorpay or PayU) returns a success callback
-- **THEN** the system calls the backend `/api/v2.5/orders/{order_id}/refresh/` endpoint
+- **THEN** the system calls the backend `/api/v2.5/orders/{order_id}/refresh/` endpoint using the gateway string order ID (`orderId` or fallback stringified `id`)
 
 #### Scenario: Verification succeeds
 - **WHEN** the refresh endpoint returns `{"status": "Completed"}`

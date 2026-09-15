@@ -101,7 +101,10 @@ class PaymentGatewayFactory {
     // Verify the payment status with our backend if the SDK reported success
     if (result.status == PaymentResultStatus.success) {
       try {
-        final refreshedOrder = await dataSource.refreshOrderStatus(order.id);
+        final orderIdentifier = order.orderId ?? order.id.toString();
+        final refreshedOrder = await dataSource.refreshOrderStatus(
+          orderIdentifier,
+        );
         if (refreshedOrder.status == 'Completed') {
           return PaymentResult(
             status: PaymentResultStatus.success,
