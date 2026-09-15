@@ -1130,6 +1130,7 @@
   "startExamOnline": "Start Exam Online",
   "retakeExamOnline": "Retake",
   "retakeIncorrectExamOnline": "Retake Incorrect",
+  "examMaxAttemptsReached": "You have reached the maximum attempts for this exam.",
   "examPreviousAttempts": "Previous Attempts",
   "labelDate": "Date",
   "analyticsInvalidTopicId": "Invalid Topic ID",

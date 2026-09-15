@@ -38,6 +38,7 @@ class StudyRoutes {
                     context,
                     id: lesson.id,
                     type: lesson.type,
+                    extra: lesson,
                   ),
                 );
               },
