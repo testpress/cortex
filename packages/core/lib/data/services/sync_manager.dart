@@ -1,11 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../workers/offline_exam_sync_worker.dart';
-import 'offline_exam_sync_service.dart';
-import 'sentry_service.dart';
-import '../../network/network_utils.dart';
 
 part 'sync_manager.g.dart';
 
@@ -20,26 +15,12 @@ class SyncManager {
     _initListener();
   }
 
+  Connectivity get connectivity => _connectivity;
+  SyncManagerRef get ref => _ref;
+
   void _initListener() {
-    _subscription = _connectivity.onConnectivityChanged.listen((results) async {
-      if (hasConnection(results)) {
-        // Immediate foreground sync attempt
-        try {
-          final syncService = await _ref.read(
-            offlineExamSyncServiceProvider.future,
-          );
-          await syncService.syncPendingExams();
-        } catch (e, stackTrace) {
-          debugPrint("Foreground sync attempt failed: $e");
-          _ref
-              .read(sentryServiceProvider)
-              .captureException(e, stackTrace: stackTrace);
-          // If foreground sync fails, schedule a background task.
-          // Workmanager handles ensuring this runs even if the app closes shortly after.
-          OfflineExamSyncWorker.scheduleSync();
-        }
-      }
-    });
+    // Automatic background/connectivity syncing is disabled to give users
+    // full awareness via explicit manual sync on the Offline Exams screen.
   }
 
   void dispose() {

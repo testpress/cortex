@@ -325,15 +325,25 @@ class _ExamCardStats extends StatelessWidget {
   }
 }
 
-class _ExamCardActions extends ConsumerWidget {
+class _ExamCardActions extends ConsumerStatefulWidget {
   final OfflineExamDownloadsTableData exam;
 
   const _ExamCardActions({required this.exam});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_ExamCardActions> createState() => _ExamCardActionsState();
+}
+
+class _ExamCardActionsState extends ConsumerState<_ExamCardActions> {
+  bool _isSyncing = false;
+
+  @override
+  Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final exam = widget.exam;
+    final status = exam.status;
+    final isSyncing = _isSyncing || status == 'SYNCING';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -369,23 +379,65 @@ class _ExamCardActions extends ConsumerWidget {
             }
           },
         ),
-        SizedBox(width: design.spacing.sm),
-        AppButton(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.md,
-            vertical: design.spacing.xs,
+        if (status == 'PENDING_SYNC' || status == 'SYNCING') ...[
+          SizedBox(width: design.spacing.sm),
+          AppButton(
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacing.md,
+              vertical: design.spacing.xs,
+            ),
+            label: l10n.syncExamAction,
+            variant: AppButtonVariant.primary,
+            loading: isSyncing,
+            leading: isSyncing
+                ? null
+                : Icon(
+                    LucideIcons.refreshCw,
+                    size: 18,
+                    color: design.colors.onPrimary,
+                  ),
+            onPressed: isSyncing
+                ? null
+                : () async {
+                    setState(() {
+                      _isSyncing = true;
+                    });
+                    final success = await ref
+                        .read(offlineExamsProvider.notifier)
+                        .syncExam(exam.id);
+                    if (!context.mounted) return;
+                    setState(() {
+                      _isSyncing = false;
+                    });
+                    if (success) {
+                      AppToast.show(
+                        context,
+                        message: l10n.examSyncSuccessToast,
+                      );
+                    } else {
+                      AppToast.show(context, message: l10n.examSyncFailedToast);
+                    }
+                  },
           ),
-          label: l10n.openExamAction,
-          variant: AppButtonVariant.primary,
-          leading: Icon(
-            LucideIcons.externalLink,
-            size: 18,
-            color: design.colors.onPrimary,
+        ] else if (status != 'SYNCED') ...[
+          SizedBox(width: design.spacing.sm),
+          AppButton(
+            padding: EdgeInsets.symmetric(
+              horizontal: design.spacing.md,
+              vertical: design.spacing.xs,
+            ),
+            label: l10n.openExamAction,
+            variant: AppButtonVariant.primary,
+            leading: Icon(
+              LucideIcons.externalLink,
+              size: 18,
+              color: design.colors.onPrimary,
+            ),
+            onPressed: () {
+              context.push('/exams/test/${exam.contentId}?isOffline=true');
+            },
           ),
-          onPressed: () {
-            context.push('/exams/test/${exam.contentId}?isOffline=true');
-          },
-        ),
+        ],
       ],
     );
   }

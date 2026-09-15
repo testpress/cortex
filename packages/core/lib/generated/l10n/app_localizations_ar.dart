@@ -2637,6 +2637,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get submittedStatus => 'تم الإرسال';
 
   @override
+  String get syncExamAction => 'مزامنة';
+
+  @override
+  String get examSyncSuccessToast => 'تمت مزامنة الاختبار بنجاح.';
+
+  @override
+  String get examSyncFailedToast =>
+      'فشلت مزامنة الاختبار. يرجى التحقق من اتصالك بالإنترنت.';
+
+  @override
   String get noAnswerGiven => '(لم يتم تقديم إجابة)';
 
   @override

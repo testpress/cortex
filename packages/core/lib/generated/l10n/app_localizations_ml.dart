@@ -2677,6 +2677,16 @@ class AppLocalizationsMl extends AppLocalizations {
   String get submittedStatus => 'സമർപ്പിക്കപ്പെട്ടു';
 
   @override
+  String get syncExamAction => 'സിങ്ക് ചെയ്യുക';
+
+  @override
+  String get examSyncSuccessToast => 'പരീക്ഷ വിജയകരമായി സിങ്ക് ചെയ്തു.';
+
+  @override
+  String get examSyncFailedToast =>
+      'പരീക്ഷ സിങ്ക് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.';
+
+  @override
   String get noAnswerGiven => '(ഉത്തരം നൽകിയിട്ടില്ല)';
 
   @override

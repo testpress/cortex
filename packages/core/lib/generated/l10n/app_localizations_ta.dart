@@ -2674,6 +2674,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get submittedStatus => 'சமர்ப்பிக்கப்பட்டது';
 
   @override
+  String get syncExamAction => 'ஒத்திசை';
+
+  @override
+  String get examSyncSuccessToast => 'தேர்வு வெற்றிகரமாக ஒத்திசைக்கப்பட்டது.';
+
+  @override
+  String get examSyncFailedToast =>
+      'தேர்வை ஒத்திசைக்க முடியவில்லை. உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.';
+
+  @override
   String get noAnswerGiven => '(பதில் அளிக்கப்படவில்லை)';
 
   @override
