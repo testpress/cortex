@@ -1,6 +1,5 @@
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import 'package:courses/courses.dart';
 
 /// Formatting and calculation helpers for ExamPrescreen.
 class ExamPrescreenFormatter {
@@ -105,14 +104,19 @@ class ExamPrescreenFormatter {
     String endDateStr = '';
 
     if (rawStart != null || rawEnd != null) {
-      try {
-        startDateStr = rawStart != null
-            ? DateFormatter.formatDateTime(DateTime.parse(rawStart).toLocal())
-            : 'N/A';
-        endDateStr = rawEnd != null
-            ? DateFormatter.formatDateTime(DateTime.parse(rawEnd).toLocal())
-            : 'N/A';
-      } catch (_) {}
+      final parsedStart = rawStart != null
+          ? DateTime.tryParse(rawStart)?.toLocal()
+          : null;
+      final parsedEnd = rawEnd != null
+          ? DateTime.tryParse(rawEnd)?.toLocal()
+          : null;
+
+      startDateStr = parsedStart != null
+          ? DateFormatter.formatDateTime(parsedStart)
+          : (rawStart != null ? 'N/A' : 'N/A');
+      endDateStr = parsedEnd != null
+          ? DateFormatter.formatDateTime(parsedEnd)
+          : (rawEnd != null ? 'N/A' : 'N/A');
     }
 
     return (startDate: startDateStr, endDate: endDateStr);

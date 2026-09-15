@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import 'package:courses/courses.dart';
 import 'exam_prescreen_action_button.dart';
 import 'offline_exam_action_button.dart';
 
@@ -10,7 +9,7 @@ class ExamPrescreenBottomBar extends StatelessWidget {
   final String testId;
   final ExamDto? exam;
   final LessonDto? lesson;
-  final String? attemptsUrl;
+  final String attemptsUrl;
   final bool isOfflineOnly;
   final bool isMetadataLoading;
   final bool isAttemptsLoading;
@@ -87,11 +86,11 @@ class ExamPrescreenBottomBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (exam != null && attemptsUrl != null)
+          if (exam != null)
             OfflineExamActionButton(
               examId: testId,
               examData: exam!,
-              attemptsUrl: attemptsUrl!,
+              attemptsUrl: attemptsUrl,
               onStartOfflineAttempt: onStartOffline,
             ),
           if (!isOfflineOnly)
