@@ -113,10 +113,10 @@ class ExamPrescreenFormatter {
 
       startDateStr = parsedStart != null
           ? DateFormatter.formatDateTime(parsedStart)
-          : (rawStart != null ? 'N/A' : 'N/A');
+          : 'N/A';
       endDateStr = parsedEnd != null
           ? DateFormatter.formatDateTime(parsedEnd)
-          : (rawEnd != null ? 'N/A' : 'N/A');
+          : 'N/A';
     }
 
     return (startDate: startDateStr, endDate: endDateStr);
