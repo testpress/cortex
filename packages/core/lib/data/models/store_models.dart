@@ -273,7 +273,7 @@ class OrderDto {
 
   factory OrderDto.fromJson(Map<String, dynamic> json) {
     return OrderDto(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       status: json['status'] as String? ?? '',
       total: (json['amount'] ?? json['total'])?.toString() ?? '0.00',
       subtotal: json['subtotal'] as String? ?? '0.00',

@@ -520,7 +520,7 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<OrderDto> refreshOrderStatus(int orderId) async {
+  Future<OrderDto> refreshOrderStatus(String orderId) async {
     return performNetworkRequest(
       _dio.post(ApiEndpoints.refreshOrder(orderId)),
       fromJson: (data) => OrderDto.fromJson(data),

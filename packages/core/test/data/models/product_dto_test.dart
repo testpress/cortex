@@ -34,4 +34,38 @@ void main() {
       expect(createProductWithPrice('-5').isFree, isFalse);
     });
   });
+
+  group('OrderDto.fromJson', () {
+    test('parses full payload successfully', () {
+      final json = {
+        'id': 2851,
+        'status': 'Completed',
+        'amount': '1.00',
+        'subtotal': '1.00',
+        'order_id': 'order_TcGbg41840aK0X',
+        'apikey': 'rzp_live_TakS5vVbuY6Zbt',
+        'product_info': 'test purchase',
+        'name': 'Testuser',
+        'email': 'test@example.com',
+        'phone': '9999999999',
+        'pg_url': 'https://api.razorpay.com/v1/checkout/embedded',
+      };
+
+      final order = OrderDto.fromJson(json);
+      expect(order.id, 2851);
+      expect(order.status, 'Completed');
+      expect(order.total, '1.00');
+      expect(order.orderId, 'order_TcGbg41840aK0X');
+    });
+
+    test('parses minimal refresh status payload without id', () {
+      final json = {'status': 'Completed'};
+
+      final order = OrderDto.fromJson(json);
+      expect(order.id, 0);
+      expect(order.status, 'Completed');
+      expect(order.total, '0.00');
+      expect(order.orderId, isNull);
+    });
+  });
 }
