@@ -443,8 +443,8 @@
   "lessonBookmarkAdd": "பாடத்தை புக்மார்க் செய்",
   "lessonBookmarkRemove": "புக்மார்க்கை அகற்று",
   "lessonDownload": "பாடத்தைப் பதிவிறக்கு",
-  "navigationPrevious": "முந்தைய பாடம்",
-  "navigationNext": "அடுத்த பாடம்",
+  "navigationPrevious": "முந்தையது",
+  "navigationNext": "அடுத்தது",
   "openDetailedLesson": "பாடத்தைத் திற: {title}",
   "@openDetailedLesson": {
     "placeholders": {

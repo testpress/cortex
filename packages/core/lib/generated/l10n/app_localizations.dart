@@ -1796,13 +1796,13 @@ abstract class AppLocalizations {
   /// No description provided for @navigationPrevious.
   ///
   /// In en, this message translates to:
-  /// **'Previous Lesson'**
+  /// **'Previous'**
   String get navigationPrevious;
 
   /// No description provided for @navigationNext.
   ///
   /// In en, this message translates to:
-  /// **'Next Lesson'**
+  /// **'Next'**
   String get navigationNext;
 
   /// No description provided for @openDetailedLesson.

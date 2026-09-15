@@ -468,8 +468,8 @@
   "lessonBookmarkAdd": "Bookmark lesson",
   "lessonBookmarkRemove": "Remove bookmark",
   "lessonDownload": "Download lesson",
-  "navigationPrevious": "Previous Lesson",
-  "navigationNext": "Next Lesson",
+  "navigationPrevious": "Previous",
+  "navigationNext": "Next",
   "openDetailedLesson": "Open lesson: {title}",
   "@openDetailedLesson": {
     "placeholders": {

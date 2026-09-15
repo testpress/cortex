@@ -944,10 +944,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lessonDownload => 'Download lesson';
 
   @override
-  String get navigationPrevious => 'Previous Lesson';
+  String get navigationPrevious => 'Previous';
 
   @override
-  String get navigationNext => 'Next Lesson';
+  String get navigationNext => 'Next';
 
   @override
   String openDetailedLesson(String title) {

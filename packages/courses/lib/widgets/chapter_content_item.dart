@@ -20,6 +20,20 @@ class ChapterContentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final typeTheme = switch (lesson.type) {
+      LessonType.video ||
+      LessonType.liveStream ||
+      LessonType.videoConference ||
+      LessonType.embedContent =>
+        design.study.video,
+      LessonType.pdf ||
+      LessonType.notes ||
+      LessonType.attachment =>
+        design.study.pdf,
+      LessonType.assessment => design.study.assessment,
+      LessonType.test => design.study.test,
+      LessonType.unknown => design.study.video,
+    };
     final icon = _getIconForType(lesson.type);
     final isCompleted = lesson.progressStatus == LessonProgressStatus.completed;
     final activeOnTap = isSkeleton
@@ -37,7 +51,7 @@ class ChapterContentItem extends StatelessWidget {
           };
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: design.spacing.sm),
       child: Container(
         decoration: BoxDecoration(
           color: design.colors.card,
@@ -61,96 +75,98 @@ class ChapterContentItem extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(design.radius.md),
-                            bottomLeft: Radius.circular(design.radius.md),
-                          ),
-                          child: Skeleton.replace(
-                            width: 140,
-                            height: 80,
-                            replacement: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: design.colors.skeleton,
-                              ),
+                    SizedBox(
+                      width: 140,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        clipBehavior: Clip.none,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(design.radius.md),
+                              bottomLeft: Radius.circular(design.radius.md),
                             ),
-                            child: Container(
+                            child: Skeleton.replace(
                               width: 140,
                               height: 80,
-                              decoration: BoxDecoration(
-                                color: lesson.image?.isNotEmpty == true
-                                    ? null
-                                    : _getColorForType(context, lesson.type)
-                                        .withValues(alpha: 0.1),
+                              replacement: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: design.colors.skeleton,
+                                ),
                               ),
-                              child: lesson.image?.isNotEmpty == true
-                                  ? CachedNetworkImage(
-                                      imageUrl: lesson.image!,
-                                      width: 140,
-                                      height: 80,
-                                      memCacheWidth: 280,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => Container(
-                                        color: design.colors.skeleton,
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          Center(
+                              child: Container(
+                                width: 140,
+                                decoration: BoxDecoration(
+                                  color: lesson.image?.isNotEmpty == true
+                                      ? null
+                                      : typeTheme.background,
+                                ),
+                                child: lesson.image?.isNotEmpty == true
+                                    ? CachedNetworkImage(
+                                        imageUrl: lesson.image!,
+                                        width: 140,
+                                        memCacheWidth: 280,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            Container(
+                                          color: design.colors.skeleton,
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Center(
+                                          child: Icon(
+                                            icon,
+                                            size: design.iconSize.display,
+                                            color: typeTheme.foreground,
+                                          ),
+                                        ),
+                                      )
+                                    : Center(
                                         child: Icon(
                                           icon,
-                                          size: 24,
-                                          color: _getColorForType(
-                                              context, lesson.type),
+                                          size: design.iconSize.display,
+                                          color: typeTheme.foreground,
                                         ),
                                       ),
-                                    )
-                                  : Center(
-                                      child: Icon(
-                                        icon,
-                                        size: 24,
-                                        color: _getColorForType(
-                                            context, lesson.type),
-                                      ),
-                                    ),
+                              ),
                             ),
                           ),
-                        ),
-                        if (isCompleted)
-                          Positioned(
-                            top: -6,
-                            right: -6,
-                            child: AppSemantics.progressValue(
-                              value: 1.0,
-                              label: L10n.of(context).examCompletedLabel,
-                              child: Container(
-                                width: design.iconSize.md,
-                                height: design.iconSize.md,
-                                decoration: BoxDecoration(
-                                  color: design.colors.accent4,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: design.colors.card,
-                                    width: 1.5,
+                          if (isCompleted)
+                            Positioned(
+                              top: -6,
+                              right: -6,
+                              child: AppSemantics.progressValue(
+                                value: 1.0,
+                                label: L10n.of(context).examCompletedLabel,
+                                child: Container(
+                                  width: design.iconSize.md,
+                                  height: design.iconSize.md,
+                                  decoration: BoxDecoration(
+                                    color: design.colors.accent4,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: design.colors.card,
+                                      width: 1.5,
+                                    ),
                                   ),
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    LucideIcons.check,
-                                    size: 11,
-                                    color: design.colors.onSuccess,
+                                  child: Center(
+                                    child: Icon(
+                                      LucideIcons.check,
+                                      size: design.iconSize.xs,
+                                      color: design.colors.onSuccess,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: design.spacing.md,
+                          vertical: 14,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -158,8 +174,10 @@ class ChapterContentItem extends StatelessWidget {
                             AppText.cardTitle(
                               lesson.title,
                               color: design.colors.textPrimary,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: design.spacing.xs),
                             AppText.cardSubtitle(
                               _buildSubtitle(context),
                               color: design.colors.textSecondary,
@@ -169,13 +187,13 @@ class ChapterContentItem extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 16),
+                      padding: EdgeInsets.only(right: design.spacing.md),
                       child: Center(
                         child: Icon(
                           lesson.hasEnded
                               ? LucideIcons.lock
                               : LucideIcons.chevronRight,
-                          size: 20,
+                          size: design.iconSize.action,
                           color: design.colors.textSecondary
                               .withValues(alpha: 0.5),
                         ),
@@ -235,25 +253,6 @@ class ChapterContentItem extends StatelessWidget {
         return LucideIcons.award;
       case LessonType.unknown:
         return LucideIcons.helpCircle;
-    }
-  }
-
-  Color _getColorForType(BuildContext context, LessonType type) {
-    final design = Design.of(context);
-    switch (type) {
-      case LessonType.video ||
-            LessonType.liveStream ||
-            LessonType.videoConference ||
-            LessonType.embedContent:
-        return design.colors.accent1; // Purple
-      case LessonType.pdf || LessonType.notes || LessonType.attachment:
-        return design.colors.accent2; // Blue
-      case LessonType.assessment:
-        return design.colors.accent4; // Green
-      case LessonType.test:
-        return design.colors.accent3; // Orange
-      case LessonType.unknown:
-        return design.colors.textSecondary;
     }
   }
 

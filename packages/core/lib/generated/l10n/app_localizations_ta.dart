@@ -957,10 +957,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get lessonDownload => 'பாடத்தைப் பதிவிறக்கு';
 
   @override
-  String get navigationPrevious => 'முந்தைய பாடம்';
+  String get navigationPrevious => 'முந்தையது';
 
   @override
-  String get navigationNext => 'அடுத்த பாடம்';
+  String get navigationNext => 'அடுத்தது';
 
   @override
   String openDetailedLesson(String title) {
