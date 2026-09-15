@@ -227,5 +227,122 @@ void main() {
       expect(pdf.hasAttempts.value, false);
       expect(pdf.progressStatus.value, 'notStarted');
     });
+
+    test('refreshCourseDetail preserves existing progress and completedLessons',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // Seed database with a course having 60% progress and 6 completed lessons
+      await db.upsertCourses([
+        const CoursesTableCompanion(
+          id: Value('course-101'),
+          title: Value('Flutter Mastery'),
+          colorIndex: Value(1),
+          chapterCount: Value(5),
+          totalContents: Value(10),
+          progress: Value(60.0),
+          completedLessons: Value(6),
+        ),
+      ]);
+
+      // Server returns course detail WITHOUT progress (0.0 / 0)
+      fakeSource.detailToReturn = const CourseDto(
+        id: 'course-101',
+        title: 'Flutter Mastery Updated Title',
+        colorIndex: 1,
+        chapterCount: 5,
+        totalContents: 10,
+        progress: 0.0,
+        completedLessons: 0,
+      );
+
+      final result = await repository.refreshCourseDetail('course-101');
+
+      expect(result?.title, 'Flutter Mastery Updated Title');
+      expect(result?.progress, 60.0);
+      expect(result?.completedLessons, 6);
+
+      // Verify the database row retained the progress
+      final updatedCourse = await repository.getCourse('course-101');
+      expect(updatedCourse?.progress, 60.0);
+      expect(updatedCourse?.completedLessons, 6);
+      expect(updatedCourse?.title, 'Flutter Mastery Updated Title');
+    });
+
+    test(
+        'refreshLesson skips parent hydration if course and chapters already synced',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // Seed database with course (isChaptersSynced: true)
+      await db.upsertCourses([
+        const CoursesTableCompanion(
+          id: Value('course-101'),
+          title: Value('Flutter Mastery'),
+          colorIndex: Value(1),
+          chapterCount: Value(5),
+          totalContents: Value(10),
+          isChaptersSynced: Value(true),
+        ),
+      ]);
+
+      fakeSource.lessonToReturn = const LessonDto(
+        id: 'lesson-1',
+        title: 'Intro Lesson',
+        chapterId: 'chap-1',
+        courseId: 'course-101',
+        type: LessonType.notes,
+        orderIndex: 1,
+        duration: '10 min',
+        isLocked: false,
+        progressStatus: LessonProgressStatus.notStarted,
+      );
+
+      await repository.refreshLesson('lesson-1');
+      await pumpEventQueue();
+
+      // Should have fetched the lesson, but NOT course detail or chapters
+      expect(fakeSource.getLessonDetailCallCount, 1);
+      expect(fakeSource.getCourseDetailCallCount, 0);
+      expect(fakeSource.getChaptersCallCount, 0);
+    });
   });
+}
+
+class FakeProgressDataSource extends MockDataSource {
+  CourseDto? detailToReturn;
+  LessonDto? lessonToReturn;
+
+  int getCourseDetailCallCount = 0;
+  int getChaptersCallCount = 0;
+  int getLessonDetailCallCount = 0;
+
+  @override
+  Future<CourseDto> getCourseDetail(String courseId) async {
+    getCourseDetailCallCount++;
+    if (detailToReturn != null) {
+      return detailToReturn!;
+    }
+    return super.getCourseDetail(courseId);
+  }
+
+  @override
+  Future<List<ChapterDto>> getChapters(String courseId,
+      {String? parentId}) async {
+    getChaptersCallCount++;
+    return super.getChapters(courseId, parentId: parentId);
+  }
+
+  @override
+  Future<LessonDto> getLessonDetail(String lessonId) async {
+    getLessonDetailCallCount++;
+    if (lessonToReturn != null) {
+      return lessonToReturn!;
+    }
+    return super.getLessonDetail(lessonId);
+  }
 }

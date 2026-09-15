@@ -54,6 +54,24 @@ class CourseDto {
     return '${progress.toStringAsFixed(2)}%';
   }
 
+  CourseDto mergeWith(CourseDto? other) {
+    if (other == null) return this;
+    return copyWith(
+      progress: progress != 0.0 ? progress : other.progress,
+      completedLessons: completedLessons != 0
+          ? completedLessons
+          : other.completedLessons,
+      isChaptersSynced: isChaptersSynced || other.isChaptersSynced,
+      tags: tags.isNotEmpty ? tags : other.tags,
+      allowedDevices: allowedDevices.isNotEmpty
+          ? allowedDevices
+          : other.allowedDevices,
+      examsCount: examsCount != 0 ? examsCount : other.examsCount,
+      order: order != 0 ? order : other.order,
+      image: (image != null && image!.isNotEmpty) ? image : other.image,
+    );
+  }
+
   CourseDto copyWith({
     String? id,
     String? title,

@@ -250,8 +250,14 @@ class CourseRepository {
     final syncFuture = () async {
       try {
         final dto = await _source.getCourseDetail(courseId);
-        await _db.upsertCourses([_courseDtoToCompanion(dto)]);
-        return dto;
+        final existingRow = await (_db.select(_db.coursesTable)
+              ..where((t) => t.id.equals(courseId)))
+            .getSingleOrNull();
+        final existing =
+            existingRow != null ? rowToCourseDto(existingRow) : null;
+        final merged = dto.mergeWith(existing);
+        await _db.upsertCourses([_courseDtoToCompanion(merged)]);
+        return merged;
       } finally {
         _activeDetailSyncs.remove(lockKey);
       }
@@ -950,8 +956,18 @@ class CourseRepository {
 
   Future<void> _hydrateParentsBackground(String courseId) async {
     try {
-      await refreshCourseDetail(courseId);
-      await refreshChapters(courseId);
+      final existingCourse = await (_db.select(_db.coursesTable)
+            ..where((t) => t.id.equals(courseId)))
+          .getSingleOrNull();
+
+      if (existingCourse == null) {
+        await refreshCourseDetail(courseId);
+      }
+
+      final areChaptersSynced = await isChaptersSynced(courseId);
+      if (!areChaptersSynced) {
+        await refreshChapters(courseId);
+      }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
     }
