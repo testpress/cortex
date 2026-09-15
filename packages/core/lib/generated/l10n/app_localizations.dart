@@ -4823,6 +4823,24 @@ abstract class AppLocalizations {
   /// **'Submitted'**
   String get submittedStatus;
 
+  /// No description provided for @syncExamAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get syncExamAction;
+
+  /// No description provided for @examSyncSuccessToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam synced successfully.'**
+  String get examSyncSuccessToast;
+
+  /// No description provided for @examSyncFailedToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sync exam. Please check your internet connection.'**
+  String get examSyncFailedToast;
+
   /// No description provided for @noAnswerGiven.
   ///
   /// In en, this message translates to:

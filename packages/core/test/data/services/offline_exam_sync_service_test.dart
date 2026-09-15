@@ -127,5 +127,82 @@ void main() {
         expect(allDownloads, isEmpty);
       },
     );
+
+    group('syncExam(int downloadId) tests', () {
+      test('returns false when download id is not found', () async {
+        final result = await service.syncExam(999);
+        expect(result, isFalse);
+        verifyNever(mockApi.submitOfflineExamAnswers(any, any));
+      });
+
+      test(
+        'success path: syncs specific exam, marks SYNCED and returns true',
+        () async {
+          await db.upsertDownload(testDownload);
+
+          when(
+            mockApi.submitOfflineExamAnswers(any, any),
+          ).thenAnswer((_) async => {});
+
+          final result = await service.syncExam(1);
+          expect(result, isTrue);
+
+          verify(mockApi.submitOfflineExamAnswers('exam_123', any)).called(1);
+
+          final allDownloads = await db.watchAllOfflineExams().first;
+          expect(allDownloads.length, 1);
+          expect(allDownloads.first.status, 'SYNCED');
+          expect(allDownloads.first.syncedAt, isNotNull);
+        },
+      );
+
+      test(
+        'transient failure: reverts to PENDING_SYNC and returns false',
+        () async {
+          await db.upsertDownload(testDownload);
+
+          when(mockApi.submitOfflineExamAnswers(any, any)).thenThrow(
+            DioException(
+              requestOptions: RequestOptions(path: ''),
+              response: Response(
+                requestOptions: RequestOptions(path: ''),
+                statusCode: 503,
+              ),
+            ),
+          );
+
+          final result = await service.syncExam(1);
+          expect(result, isFalse);
+
+          final allDownloads = await db.watchAllOfflineExams().first;
+          expect(allDownloads.length, 1);
+          expect(allDownloads.first.status, 'PENDING_SYNC');
+          expect(allDownloads.first.syncedAt, isNull);
+        },
+      );
+
+      test(
+        'permanent failure: deletes download and returns false on 400',
+        () async {
+          await db.upsertDownload(testDownload);
+
+          when(mockApi.submitOfflineExamAnswers(any, any)).thenThrow(
+            DioException(
+              requestOptions: RequestOptions(path: ''),
+              response: Response(
+                requestOptions: RequestOptions(path: ''),
+                statusCode: 400,
+              ),
+            ),
+          );
+
+          final result = await service.syncExam(1);
+          expect(result, isFalse);
+
+          final allDownloads = await db.watchAllOfflineExams().first;
+          expect(allDownloads, isEmpty);
+        },
+      );
+    });
   });
 }

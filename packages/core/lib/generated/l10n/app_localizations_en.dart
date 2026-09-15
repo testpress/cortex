@@ -2631,6 +2631,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get submittedStatus => 'Submitted';
 
   @override
+  String get syncExamAction => 'Sync';
+
+  @override
+  String get examSyncSuccessToast => 'Exam synced successfully.';
+
+  @override
+  String get examSyncFailedToast =>
+      'Failed to sync exam. Please check your internet connection.';
+
+  @override
   String get noAnswerGiven => '(No answer given)';
 
   @override
