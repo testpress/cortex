@@ -121,12 +121,12 @@ class _ActiveCourseCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ProgressBar(
-                    progress: course.progress / 100.0,
+                    progress: (course.progress ?? 0.0) / 100.0,
                     color: design.colors.success,
                   ),
                 ),
                 SizedBox(width: design.spacing.md),
-                AppText.label('${course.progress}%'),
+                AppText.label(course.formattedProgress),
               ],
             ),
           ],

@@ -16,8 +16,8 @@ class CourseDto {
 
   final int chapterCount;
   final int totalContents;
-  final double progress; // 0.0–100.0
-  final int completedLessons;
+  final double? progress; // 0.0–100.0, null if absent in API response
+  final int? completedLessons;
   final String? image;
   final List<String> tags;
   final List<String> allowedDevices;
@@ -31,8 +31,8 @@ class CourseDto {
     required this.colorIndex,
     required this.chapterCount,
     required this.totalContents,
-    required this.progress,
-    required this.completedLessons,
+    this.progress,
+    this.completedLessons,
     this.tags = const [],
     this.allowedDevices = const [],
     this.examsCount = 0,
@@ -45,13 +45,25 @@ class CourseDto {
   final bool isChaptersSynced;
 
   String get formattedProgress {
-    if (!progress.isFinite) {
+    final p = progress ?? 0.0;
+    if (!p.isFinite) {
       return '0%';
     }
-    if (progress % 1 == 0) {
-      return '${progress.toInt()}%';
+    if (p % 1 == 0) {
+      return '${p.toInt()}%';
     }
-    return '${progress.toStringAsFixed(2)}%';
+    return '${p.toStringAsFixed(2)}%';
+  }
+
+  /// Merges this DTO with another (typically locally cached) DTO to preserve
+  /// user progress and sync state when refreshing from detail endpoints.
+  CourseDto mergeWith(CourseDto? other) {
+    if (other == null) return this;
+    return copyWith(
+      progress: progress ?? other.progress,
+      completedLessons: completedLessons ?? other.completedLessons,
+      isChaptersSynced: isChaptersSynced || other.isChaptersSynced,
+    );
   }
 
   CourseDto copyWith({
@@ -95,8 +107,8 @@ class CourseDto {
       colorIndex: json['color_index'] as int? ?? 0,
       chapterCount: json['chapters_count'] as int? ?? 0,
       totalContents: json['contents_count'] as int? ?? 0,
-      progress: (json['progress'] as num? ?? 0.0).toDouble(),
-      completedLessons: json['completed_lessons_count'] as int? ?? 0,
+      progress: (json['progress'] as num?)?.toDouble(),
+      completedLessons: json['completed_lessons_count'] as int?,
       image: json['image'] as String?,
       tags: _parseList(json['tags']),
       allowedDevices: _parseList(json['allowed_devices']),
@@ -130,13 +142,22 @@ class CourseDto {
 
     final enrichedResults = response.results.map((dto) {
       final credit = creditsMap[dto.id];
-      if (credit == null) return dto;
+      if (credit == null) {
+        return dto.copyWith(
+          progress: dto.progress ?? 0.0,
+          completedLessons: dto.completedLessons ?? 0,
+        );
+      }
       return dto.copyWith(
         progress:
-            (credit['course_completion_percentage'] as num? ?? dto.progress)
+            (credit['course_completion_percentage'] as num? ??
+                    dto.progress ??
+                    0.0)
                 .toDouble(),
         completedLessons:
-            (credit['total_unique_attempts'] as num? ?? dto.completedLessons)
+            (credit['total_unique_attempts'] as num? ??
+                    dto.completedLessons ??
+                    0)
                 .toInt(),
       );
     }).toList();

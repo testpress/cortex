@@ -109,7 +109,7 @@ class CourseCard extends StatelessWidget {
                       children: [
                         _ProgressStat(
                           value:
-                              '${course.completedLessons}/${course.totalContents}',
+                              '${course.completedLessons ?? 0}/${course.totalContents}',
                           label: L10n.of(context).labelLessonsPlural,
                         ),
                         _ProgressStat(
@@ -123,7 +123,8 @@ class CourseCard extends StatelessWidget {
                       label: 'Course progress',
                       value: course.formattedProgress,
                       child: _ProgressBar(
-                        progress: (course.progress / 100.0).clamp(0.0, 1.0),
+                        progress:
+                            ((course.progress ?? 0.0) / 100.0).clamp(0.0, 1.0),
                         color: design.colors.success,
                       ),
                     ),

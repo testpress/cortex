@@ -250,8 +250,16 @@ class CourseRepository {
     final syncFuture = () async {
       try {
         final dto = await _source.getCourseDetail(courseId);
-        await _db.upsertCourses([_courseDtoToCompanion(dto)]);
-        return dto;
+        return await _db.transaction(() async {
+          final existingRow = await (_db.select(_db.coursesTable)
+                ..where((t) => t.id.equals(courseId)))
+              .getSingleOrNull();
+          final existing =
+              existingRow != null ? rowToCourseDto(existingRow) : null;
+          final merged = dto.mergeWith(existing);
+          await _db.upsertCourses([_courseDtoToCompanion(merged)]);
+          return merged;
+        });
       } finally {
         _activeDetailSyncs.remove(lockKey);
       }
@@ -950,8 +958,18 @@ class CourseRepository {
 
   Future<void> _hydrateParentsBackground(String courseId) async {
     try {
-      await refreshCourseDetail(courseId);
-      await refreshChapters(courseId);
+      final existingCourse = await (_db.select(_db.coursesTable)
+            ..where((t) => t.id.equals(courseId)))
+          .getSingleOrNull();
+
+      if (existingCourse == null) {
+        await refreshCourseDetail(courseId);
+      }
+
+      final areChaptersSynced = await isChaptersSynced(courseId);
+      if (!areChaptersSynced) {
+        await refreshChapters(courseId);
+      }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
     }
@@ -1182,8 +1200,8 @@ class CourseRepository {
         colorIndex: Value(dto.colorIndex),
         chapterCount: Value(dto.chapterCount),
         totalContents: Value(dto.totalContents),
-        progress: Value(dto.progress),
-        completedLessons: Value(dto.completedLessons),
+        progress: Value.absentIfNull(dto.progress),
+        completedLessons: Value.absentIfNull(dto.completedLessons),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
         tags: dto.tags.isNotEmpty
             ? Value(jsonEncode(dto.tags))
