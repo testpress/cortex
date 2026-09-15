@@ -247,15 +247,15 @@ void main() {
         ),
       ]);
 
-      // Server returns course detail WITHOUT progress (0.0 / 0)
+      // 1. Server returns course detail WITHOUT progress (null)
       fakeSource.detailToReturn = const CourseDto(
         id: 'course-101',
         title: 'Flutter Mastery Updated Title',
         colorIndex: 1,
         chapterCount: 5,
         totalContents: 10,
-        progress: 0.0,
-        completedLessons: 0,
+        progress: null,
+        completedLessons: null,
       );
 
       final result = await repository.refreshCourseDetail('course-101');
@@ -269,6 +269,44 @@ void main() {
       expect(updatedCourse?.progress, 60.0);
       expect(updatedCourse?.completedLessons, 6);
       expect(updatedCourse?.title, 'Flutter Mastery Updated Title');
+
+      // 2. Server genuinely returns progress: 0.0 (e.g. course reset)
+      fakeSource.detailToReturn = const CourseDto(
+        id: 'course-101',
+        title: 'Flutter Mastery Reset',
+        colorIndex: 1,
+        chapterCount: 5,
+        totalContents: 10,
+        progress: 0.0,
+        completedLessons: 0,
+      );
+
+      final resetResult = await repository.refreshCourseDetail('course-101');
+      expect(resetResult?.progress, 0.0);
+      expect(resetResult?.completedLessons, 0);
+
+      final resetDbCourse = await repository.getCourse('course-101');
+      expect(resetDbCourse?.progress, 0.0);
+      expect(resetDbCourse?.completedLessons, 0);
+
+      // 3. Server updates metadata (e.g. order set to 0, tags cleared)
+      fakeSource.detailToReturn = const CourseDto(
+        id: 'course-101',
+        title: 'Flutter Mastery Top Order',
+        colorIndex: 2,
+        chapterCount: 5,
+        totalContents: 10,
+        order: 0,
+        tags: [],
+        progress: null,
+        completedLessons: null,
+      );
+
+      final metadataResult = await repository.refreshCourseDetail('course-101');
+      expect(metadataResult?.title, 'Flutter Mastery Top Order');
+      expect(metadataResult?.colorIndex, 2);
+      expect(metadataResult?.order, 0);
+      expect(metadataResult?.tags, isEmpty);
     });
 
     test(

@@ -250,14 +250,16 @@ class CourseRepository {
     final syncFuture = () async {
       try {
         final dto = await _source.getCourseDetail(courseId);
-        final existingRow = await (_db.select(_db.coursesTable)
-              ..where((t) => t.id.equals(courseId)))
-            .getSingleOrNull();
-        final existing =
-            existingRow != null ? rowToCourseDto(existingRow) : null;
-        final merged = dto.mergeWith(existing);
-        await _db.upsertCourses([_courseDtoToCompanion(merged)]);
-        return merged;
+        return await _db.transaction(() async {
+          final existingRow = await (_db.select(_db.coursesTable)
+                ..where((t) => t.id.equals(courseId)))
+              .getSingleOrNull();
+          final existing =
+              existingRow != null ? rowToCourseDto(existingRow) : null;
+          final merged = dto.mergeWith(existing);
+          await _db.upsertCourses([_courseDtoToCompanion(merged)]);
+          return merged;
+        });
       } finally {
         _activeDetailSyncs.remove(lockKey);
       }
@@ -1198,8 +1200,8 @@ class CourseRepository {
         colorIndex: Value(dto.colorIndex),
         chapterCount: Value(dto.chapterCount),
         totalContents: Value(dto.totalContents),
-        progress: Value(dto.progress),
-        completedLessons: Value(dto.completedLessons),
+        progress: Value.absentIfNull(dto.progress),
+        completedLessons: Value.absentIfNull(dto.completedLessons),
         image: dto.image != null ? Value(dto.image) : const Value.absent(),
         tags: dto.tags.isNotEmpty
             ? Value(jsonEncode(dto.tags))
