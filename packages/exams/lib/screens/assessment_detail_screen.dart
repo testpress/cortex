@@ -114,6 +114,13 @@ class _AssessmentDetailScreenState
       setState(() => _currentQuestionIndex++);
     } else {
       setState(() => _assessmentComplete = true);
+      final lessonId = widget.lesson?.id ?? widget.assessmentId;
+      ref
+          .read(appDatabaseProvider.future)
+          .then((db) {
+            db.updateLessonProgress(lessonId, LessonProgressStatus.completed);
+          })
+          .catchError((_) {});
     }
   }
 

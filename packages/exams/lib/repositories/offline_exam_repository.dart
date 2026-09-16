@@ -440,6 +440,19 @@ class OfflineExamRepository implements ExamRepository {
           ),
     );
 
+    try {
+      await _db.updateLessonProgress(
+        _contentId,
+        LessonProgressStatus.completed,
+      );
+    } catch (e, st) {
+      _sentryService.captureException(
+        e,
+        stackTrace: st,
+        level: AppErrorLevel.warning,
+      );
+    }
+
     _emit(_currentState.copyWith(status: ExamAttemptStatus.completed));
   }
 

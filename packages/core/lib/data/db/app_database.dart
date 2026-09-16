@@ -258,7 +258,12 @@ class AppDatabase extends _$AppDatabase {
     LessonProgressStatus status,
   ) async {
     await (update(lessonsTable)..where((t) => t.id.equals(id))).write(
-      LessonsTableCompanion(progressStatus: Value(status.name)),
+      LessonsTableCompanion(
+        progressStatus: Value(status.name),
+        hasAttempts: status == LessonProgressStatus.completed
+            ? const Value(true)
+            : const Value.absent(),
+      ),
     );
   }
 

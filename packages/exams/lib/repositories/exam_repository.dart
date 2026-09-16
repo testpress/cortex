@@ -1199,6 +1199,24 @@ class OnlineExamRepository implements ExamRepository {
       );
       stopHeartbeat();
       stopCountdown();
+
+      try {
+        final db = await _dbFuture;
+        final contentId = _currentState.exam?.id;
+        if (contentId != null) {
+          await db.updateLessonProgress(
+            contentId,
+            LessonProgressStatus.completed,
+          );
+        }
+      } catch (e, st) {
+        _sentryService.captureException(
+          e,
+          stackTrace: st,
+          level: AppErrorLevel.warning,
+        );
+      }
+
       _emit(
         _currentState.copyWith(
           status: ExamAttemptStatus.completed,
