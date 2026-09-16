@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
+import '../../screens/connection_error_screen.dart';
 import '../bootstrap_provider.dart';
 import '../page_transitions/slide_transition_page.dart';
 
@@ -15,6 +16,7 @@ class AuthRoutes {
     '/otp',
     '/onboarding',
     '/login-activity',
+    '/connection-error',
   };
 
   static String? redirect(BuildContext context, GoRouterState state) {
@@ -22,6 +24,11 @@ class AuthRoutes {
     final bootstrapState = container.read(bootstrapProvider);
     final path = state.uri.path;
     final isAuthRoute = _authPaths.contains(path);
+
+    if (bootstrapState == BootstrapState.error) {
+      if (path == '/connection-error') return null;
+      return '/connection-error';
+    }
 
     if (bootstrapState == BootstrapState.loading) {
       if (path == '/onboarding') return null;
@@ -45,14 +52,18 @@ class AuthRoutes {
     // Unauthenticated
     if (!isAuthRoute) return '/login';
 
-    // /onboarding is in _authPaths so !isAuthRoute won't catch it —
+    // /onboarding and /connection-error are in _authPaths so !isAuthRoute won't catch it —
     // an unauthenticated user landing here must go to login.
-    if (path == '/onboarding') return '/login';
+    if (path == '/onboarding' || path == '/connection-error') return '/login';
 
     return null;
   }
 
   static List<RouteBase> get routes => [
+    GoRoute(
+      path: '/connection-error',
+      builder: (context, state) => const ConnectionErrorScreen(),
+    ),
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),

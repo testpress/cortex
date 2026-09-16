@@ -1,11 +1,13 @@
 import 'dart:async';
-
+import 'package:flutter/material.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testpress/navigation/app_router.dart';
 import 'package:testpress/navigation/bootstrap_provider.dart';
+import 'package:testpress/providers/initialization_provider.dart';
+import 'package:testpress/screens/connection_error_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Minimal Auth mocks (same pattern as bootstrap_provider_test.dart)
@@ -62,6 +64,9 @@ void main() {
           cachedAuthFlagProvider.overrideWithValue(true),
           authProvider.overrideWith(_AuthLoading.new),
           instituteSettingsProvider.overrideWith((ref) => null),
+          settingsInitializationProvider.overrideWith(
+            (ref) => Completer<void>().future,
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -76,6 +81,9 @@ void main() {
           cachedAuthFlagProvider.overrideWithValue(false),
           authProvider.overrideWith(_AuthLoading.new),
           instituteSettingsProvider.overrideWith((ref) => null),
+          settingsInitializationProvider.overrideWith(
+            (ref) => Completer<void>().future,
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -96,6 +104,9 @@ void main() {
           cachedAuthFlagProvider.overrideWithValue(true),
           authProvider.overrideWith(_AuthLoading.new),
           instituteSettingsProvider.overrideWith((ref) => null),
+          settingsInitializationProvider.overrideWith(
+            (ref) => Completer<void>().future,
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -120,12 +131,57 @@ void main() {
             cachedAuthFlagProvider.overrideWithValue(false),
             authProvider.overrideWith(_AuthLoading.new),
             instituteSettingsProvider.overrideWith((ref) => null),
+            settingsInitializationProvider.overrideWith(
+              (ref) => Completer<void>().future,
+            ),
           ],
         );
         addTearDown(container.dispose);
 
         final router = container.read(goRouterProvider);
         expect(router.routeInformationProvider.value.uri.path, '/onboarding');
+      },
+    );
+
+    testWidgets(
+      'redirects to /connection-error and displays ConnectionErrorScreen when bootstrapState=error',
+      (tester) async {
+        final container = ProviderContainer(
+          overrides: [
+            cachedAuthFlagProvider.overrideWithValue(false),
+            settingsInitializationProvider.overrideWith(
+              (ref) => Future.error(Exception('Connection error')),
+            ),
+            instituteSettingsProvider.overrideWith((ref) => null),
+            authProvider.overrideWith(_AuthLoading.new),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        try {
+          await container.read(settingsInitializationProvider.future);
+        } catch (_) {}
+
+        final bootstrap = container.read(bootstrapProvider);
+        expect(bootstrap, BootstrapState.error);
+
+        final router = container.read(goRouterProvider);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: DesignProvider(
+              config: DesignConfig.light(),
+              child: MaterialApp.router(
+                routerConfig: router,
+                localizationsDelegates: LocalizationProvider.delegates,
+                supportedLocales: LocalizationProvider.supportedLocales,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ConnectionErrorScreen), findsOneWidget);
       },
     );
   });

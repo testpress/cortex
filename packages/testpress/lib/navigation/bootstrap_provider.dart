@@ -1,22 +1,29 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
+import '../providers/initialization_provider.dart';
 
 part 'bootstrap_provider.g.dart';
 
-enum BootstrapState { loading, authenticated, unauthenticated }
+enum BootstrapState { loading, authenticated, unauthenticated, error }
 
 @riverpod
 BootstrapState bootstrap(BootstrapRef ref) {
   final settings = ref.watch(instituteSettingsProvider);
   final authState = ref.watch(authProvider);
-
-  if (settings == null || authState.isLoading) {
-    return BootstrapState.loading;
+  if (settings != null) {
+    if (authState.isLoading) {
+      return BootstrapState.loading;
+    }
+    if (authState.valueOrNull == true) {
+      return BootstrapState.authenticated;
+    }
+    return BootstrapState.unauthenticated;
   }
 
-  if (authState.valueOrNull == true) {
-    return BootstrapState.authenticated;
+  final settingsInit = ref.watch(settingsInitializationProvider);
+  if (settingsInit.hasError) {
+    return BootstrapState.error;
   }
 
-  return BootstrapState.unauthenticated;
+  return BootstrapState.loading;
 }

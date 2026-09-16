@@ -27,7 +27,7 @@ final appInitializationProvider = FutureProvider<void>.internal(
 // ignore: unused_element
 typedef AppInitializationRef = FutureProviderRef<void>;
 String _$settingsInitializationHash() =>
-    r'b3e2890299fd3b27b4383271e3ae9aeac33f4290';
+    r'd23f22f456fbf02369c4fc9271b3554f44b347a7';
 
 /// See also [settingsInitialization].
 @ProviderFor(settingsInitialization)
