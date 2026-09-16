@@ -10,6 +10,5 @@
   "SHOW_INFO_TAB": true,
   "SHOW_PROFILE_TAB": false,
   "SHOW_AI_TAB": true,
-  "SHOW_CERTIFICATE": false,
-  "INSTITUTE_LOGO_URL": "assets/images/brilliant_pala_logo.png"
+  "SHOW_CERTIFICATE": false
 }

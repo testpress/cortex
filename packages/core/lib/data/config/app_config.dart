@@ -135,9 +135,21 @@ class AppConfig {
     return apiBaseUrl.contains('brilliantpalalms.testpress.in');
   }
 
-  static const String instituteLogoUrl = String.fromEnvironment(
-    'INSTITUTE_LOGO_URL',
+  static const String _instituteLogoPathFromEnv = String.fromEnvironment(
+    'INSTITUTE_LOGO_PATH',
     defaultValue: '',
+  );
+
+  static String get instituteLogoPath {
+    if (apiBaseUrl.contains('brilliantpalalms.testpress.in')) {
+      return 'assets/images/brilliant_pala_logo.png';
+    }
+    return _instituteLogoPathFromEnv;
+  }
+
+  static const String instituteName = String.fromEnvironment(
+    'INSTITUTE_NAME',
+    defaultValue: 'LMS',
   );
 
   static const String loginScreenImageLocalPath =

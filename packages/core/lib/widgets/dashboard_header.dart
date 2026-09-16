@@ -5,7 +5,7 @@ class DashboardHeader extends StatelessWidget {
   const DashboardHeader({
     super.key,
     required this.title,
-    this.logoUrl,
+    this.logoPath,
     this.isLandscape = false,
     this.titleTextStyle,
     this.backgroundColor,
@@ -15,10 +15,9 @@ class DashboardHeader extends StatelessWidget {
 
   final String title;
 
-  /// Optional logo URL. When provided, renders the logo image instead of
-  /// the text title. Supports both asset paths (starting with 'assets/')
-  /// and remote network URLs.
-  final String? logoUrl;
+  /// Optional logo asset path. When provided, renders the local bundled logo
+  /// image instead of the text title.
+  final String? logoPath;
 
   final bool isLandscape;
   final TextStyle? titleTextStyle;
@@ -36,27 +35,10 @@ class DashboardHeader extends StatelessWidget {
     final topPadding = padding.top + design.spacing.md;
     final bottomPadding = design.spacing.md;
 
-    final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
-    final isLocal = hasLogo && logoUrl!.startsWith('assets/');
+    final hasLogo = logoPath != null && logoPath!.isNotEmpty;
 
-    Widget titleContent;
-    if (hasLogo) {
-      final logoImage = isLocal
-          ? Image.asset(
-              logoUrl!,
-              height: 36,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => const SizedBox.shrink(),
-            )
-          : Image.network(
-              logoUrl!,
-              height: 36,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => const SizedBox.shrink(),
-            );
-      titleContent = Align(alignment: Alignment.centerLeft, child: logoImage);
-    } else {
-      titleContent = Column(
+    Widget buildTextTitle() {
+      return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -68,6 +50,18 @@ class DashboardHeader extends StatelessWidget {
         ],
       );
     }
+
+    final Widget titleContent = hasLogo
+        ? Align(
+            alignment: Alignment.centerLeft,
+            child: Image.asset(
+              logoPath!,
+              height: 36,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => buildTextTitle(),
+            ),
+          )
+        : buildTextTitle();
 
     return Container(
       padding: EdgeInsets.fromLTRB(
