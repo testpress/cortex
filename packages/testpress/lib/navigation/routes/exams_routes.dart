@@ -336,13 +336,16 @@ class _ExamLessonRedirectorState extends State<_ExamLessonRedirector> {
     if (widget.lesson.type == LessonType.test) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          context.go('/exams/test/${widget.lesson.id}', extra: widget.lesson);
+          context.pushReplacement(
+            '/exams/test/${widget.lesson.id}',
+            extra: widget.lesson,
+          );
         }
       });
     } else if (widget.lesson.type == LessonType.assessment) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          context.go(
+          context.pushReplacement(
             '/exams/assessment/${widget.lesson.id}',
             extra: widget.lesson,
           );

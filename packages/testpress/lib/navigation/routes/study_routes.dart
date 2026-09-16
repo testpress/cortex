@@ -259,13 +259,16 @@ class _LessonRedirectorState extends State<_LessonRedirector> {
     if (widget.lesson.type == LessonType.test) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          context.go('/study/test/${widget.lesson.id}', extra: widget.lesson);
+          context.pushReplacement(
+            '/study/test/${widget.lesson.id}',
+            extra: widget.lesson,
+          );
         }
       });
     } else if (widget.lesson.type == LessonType.assessment) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          context.go(
+          context.pushReplacement(
             '/study/assessment/${widget.lesson.id}',
             extra: widget.lesson,
           );
