@@ -25,6 +25,7 @@ class ExamPrescreenMarkCard extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: EdgeInsets.all(design.spacing.sm),
@@ -34,23 +35,32 @@ class ExamPrescreenMarkCard extends StatelessWidget {
           ),
           child: Icon(icon, size: 20, color: effectiveColor),
         ),
-        SizedBox(width: design.spacing.md),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.caption(
-              label,
-              color: design.colors.textSecondary,
-              style: design.typography.caption,
-            ),
-            AppText.body(
-              value,
-              color: effectiveColor,
-              style: design.typography.body.copyWith(
-                fontWeight: FontWeight.bold,
+        SizedBox(width: design.spacing.sm),
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText.caption(
+                label,
+                color: design.colors.textSecondary,
+                style: design.typography.caption,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: AppText.body(
+                  value,
+                  color: effectiveColor,
+                  style: design.typography.body.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

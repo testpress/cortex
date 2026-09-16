@@ -89,10 +89,10 @@ class ExamPrescreenTimeline extends StatelessWidget {
           ],
         ),
         SizedBox(height: design.spacing.xs),
-        AppText.body(
+        AppText.label(
           value,
           color: design.colors.textPrimary,
-          style: design.typography.body.copyWith(fontWeight: FontWeight.bold),
+          style: design.typography.label.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

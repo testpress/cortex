@@ -38,33 +38,45 @@ class ExamPrescreenVerticalStat extends StatelessWidget {
           child: Icon(icon, size: 24, color: effectiveColor),
         ),
         SizedBox(height: design.spacing.sm),
-        AppText.caption(
-          label,
-          color: design.colors.textSecondary,
-          textAlign: TextAlign.center,
-          maxLines: 1,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: AppText.caption(
+              label,
+              color: design.colors.textSecondary,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+            ),
+          ),
         ),
         SizedBox(height: design.spacing.xs),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            AppText.body(
-              value,
-              color: design.colors.textPrimary,
-              style: design.typography.body.copyWith(
-                fontWeight: FontWeight.bold,
-                height: 1.2,
-              ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                AppText.body(
+                  value,
+                  color: design.colors.textPrimary,
+                  style: design.typography.body.copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
+                  ),
+                ),
+                if (suffix != null)
+                  AppText.body(
+                    ' $suffix',
+                    color: design.colors.textSecondary,
+                    style: design.typography.caption,
+                  ),
+              ],
             ),
-            if (suffix != null)
-              AppText.body(
-                ' $suffix',
-                color: design.colors.textSecondary,
-                style: design.typography.caption,
-              ),
-          ],
+          ),
         ),
       ],
     );

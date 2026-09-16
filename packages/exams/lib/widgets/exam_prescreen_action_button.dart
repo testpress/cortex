@@ -42,28 +42,54 @@ class ExamPrescreenActionButton extends StatelessWidget {
       );
     }
 
-    // Retaking scenario: Split horizontally into two buttons
+    // Retaking scenario: Adaptive layout based on available width
     return Skeleton.ignore(
-      child: Row(
-        children: [
-          Expanded(
-            child: AppButton.secondary(
-              label: l10n.retakeExamOnline,
-              onPressed: isButtonEnabled ? onTap : null,
-              borderColor: design.colors.primary,
-              foregroundColor: design.colors.primary,
-              fullWidth: true,
-            ),
-          ),
-          SizedBox(width: design.spacing.md),
-          Expanded(
-            child: AppButton.primary(
-              label: l10n.retakeIncorrectExamOnline,
-              onPressed: isButtonEnabled ? onRetakeIncorrectTap : null,
-              fullWidth: true,
-            ),
-          ),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isCompact = constraints.maxWidth < 360;
+          if (isCompact) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppButton.primary(
+                  label: l10n.retakeIncorrectExamOnline,
+                  onPressed: isButtonEnabled ? onRetakeIncorrectTap : null,
+                  fullWidth: true,
+                ),
+                SizedBox(height: design.spacing.sm),
+                AppButton.secondary(
+                  label: l10n.retakeExamOnline,
+                  onPressed: isButtonEnabled ? onTap : null,
+                  borderColor: design.colors.primary,
+                  foregroundColor: design.colors.primary,
+                  fullWidth: true,
+                ),
+              ],
+            );
+          }
+
+          return Row(
+            children: [
+              Expanded(
+                child: AppButton.secondary(
+                  label: l10n.retakeExamOnline,
+                  onPressed: isButtonEnabled ? onTap : null,
+                  borderColor: design.colors.primary,
+                  foregroundColor: design.colors.primary,
+                  fullWidth: true,
+                ),
+              ),
+              SizedBox(width: design.spacing.md),
+              Expanded(
+                child: AppButton.primary(
+                  label: l10n.retakeIncorrectExamOnline,
+                  onPressed: isButtonEnabled ? onRetakeIncorrectTap : null,
+                  fullWidth: true,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
