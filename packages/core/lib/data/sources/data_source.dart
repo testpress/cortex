@@ -7,7 +7,7 @@ abstract class DataSource {
   /// Fetch all courses available to the current user.
   Future<PaginatedResponseDto<CourseDto>> getCourses({
     int page = 1,
-    int pageSize = 10,
+    int? pageSize,
     String? search,
     dynamic tags,
     bool? allowCustomTest,

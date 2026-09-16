@@ -16,7 +16,7 @@ class HttpDataSource implements DataSource {
   @override
   Future<PaginatedResponseDto<CourseDto>> getCourses({
     int page = 1,
-    int pageSize = 10,
+    int? pageSize,
     String? search,
     dynamic tags,
     bool? allowCustomTest,
@@ -27,7 +27,7 @@ class HttpDataSource implements DataSource {
           ApiEndpoints.courseList,
           queryParameters: {
             'page': page,
-            'page_size': pageSize,
+            'page_size': ?pageSize,
             if (search != null && search.isNotEmpty) 'q': search,
             'tags': tags,
             if (allowCustomTest != null)

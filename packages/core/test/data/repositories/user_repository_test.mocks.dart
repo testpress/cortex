@@ -157,7 +157,7 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
   @override
   _i3.Future<_i2.PaginatedResponseDto<_i2.CourseDto>> getCourses({
     int? page = 1,
-    int? pageSize = 10,
+    int? pageSize,
     String? search,
     dynamic tags,
     bool? allowCustomTest,

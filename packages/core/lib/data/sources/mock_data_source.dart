@@ -45,7 +45,7 @@ class MockDataSource implements DataSource {
   @override
   Future<PaginatedResponseDto<CourseDto>> getCourses({
     int page = 1,
-    int pageSize = 10,
+    int? pageSize,
     String? search,
     dynamic tags,
     bool? allowCustomTest,
