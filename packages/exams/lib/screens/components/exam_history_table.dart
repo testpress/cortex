@@ -105,26 +105,48 @@ class ExamHistoryTable extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(flex: 3, child: AppText.cardSubtitle(l10n.labelDate)),
           Expanded(
-            flex: 2,
-            child: AppText.cardSubtitle(
-              l10n.analyticsCorrect,
-              textAlign: TextAlign.center,
+            flex: 3,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: AppText.cardSubtitle(l10n.labelDate, maxLines: 1),
             ),
           ),
           Expanded(
             flex: 2,
-            child: AppText.cardSubtitle(
-              l10n.analyticsIncorrect,
-              textAlign: TextAlign.center,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: AppText.cardSubtitle(
+                l10n.analyticsCorrect,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
             ),
           ),
           Expanded(
             flex: 2,
-            child: AppText.cardSubtitle(
-              l10n.labelScore,
-              textAlign: TextAlign.center,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: AppText.cardSubtitle(
+                l10n.analyticsIncorrect,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: AppText.cardSubtitle(
+                l10n.labelScore,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
             ),
           ),
           // Review column — same Expanded as data row to guarantee alignment
@@ -156,33 +178,54 @@ class ExamHistoryTable extends StatelessWidget {
       child: Row(
         children: [
           // Date
-          Expanded(flex: 3, child: AppText.cardTitle(dateStr)),
+          Expanded(
+            flex: 3,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: AppText.cardTitle(dateStr, maxLines: 1),
+            ),
+          ),
           // Correct
           Expanded(
             flex: 2,
-            child: AppText.cardTitle(
-              '${attempt.correctCount ?? 0}',
-              style: design.typography.cardTitle.copyWith(color: correctColor),
-              textAlign: TextAlign.center,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: AppText.cardTitle(
+                '${attempt.correctCount ?? 0}',
+                style: design.typography.cardTitle.copyWith(
+                  color: correctColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           // Incorrect
           Expanded(
             flex: 2,
-            child: AppText.cardTitle(
-              '${attempt.incorrectCount ?? 0}',
-              style: design.typography.cardTitle.copyWith(
-                color: incorrectColor,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: AppText.cardTitle(
+                '${attempt.incorrectCount ?? 0}',
+                style: design.typography.cardTitle.copyWith(
+                  color: incorrectColor,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
           // Score
           Expanded(
             flex: 2,
-            child: AppText.cardTitle(
-              attempt.score ?? '0.00',
-              textAlign: TextAlign.center,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: AppText.cardTitle(
+                attempt.score ?? '0.00',
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           // Review button — Expanded(flex:2) matches header placeholder
