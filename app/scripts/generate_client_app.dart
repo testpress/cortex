@@ -4,87 +4,30 @@ import 'dart:io';
 import 'client_utils.dart';
 
 void main(List<String> args) async {
-  final List<File> downloadedFiles = [];
-  bool brandingUpdated = false;
-  try {
-    final cliArgs = parseArgs(args, 'generate_client_app.dart');
-    final remoteConfig = await fetchRemoteConfig(
-      cliArgs.apiBaseUrl,
-      cliArgs.apiKey,
-    );
+  final cliArgs = parseArgs(args, 'generate_client_app.dart');
 
-    final appName = remoteConfig['app_name'];
-    final bundleId = remoteConfig['package_name'];
+  await runClientWorkflow(cliArgs, (client, appDirPath) async {
+    final buildArgs = [
+      'build',
+      'apk',
+      ...client.toDartDefines(
+        configPath: cliArgs.configPath,
+        appDirPath: appDirPath,
+      ),
+      if (client.appVersion.isNotEmpty) '--build-name=${client.appVersion}',
+      if (client.buildNumber.isNotEmpty) '--build-number=${client.buildNumber}',
+    ];
 
-    String? serverClientId = remoteConfig['server_client_id'] as String?;
-
-    final appDir = Directory('app');
-
-    print('Applying configuration for: $appName');
-
-    downloadedFiles.addAll(await downloadAssets(remoteConfig, appDir.path));
-    await updateBranding(appName, bundleId, appDir.path);
-    await updateIosGoogleConfig(appDir.path, remoteConfig);
-    await updateAndroidGoogleConfig(appDir.path, remoteConfig);
-    brandingUpdated = true;
-
-    final zoomEnabled = remoteConfig['zoom_enabled'] as bool? ?? false;
-    await updateZoomDependency(appDir.path, zoomEnabled);
-
-    final iconConfig = await generateNativeIcons(appDir.path);
-    if (iconConfig != null) {
-      downloadedFiles.add(iconConfig);
-    }
-
-    await _buildApk(
-      appDir.path,
-      appName,
-      cliArgs.configPath,
-      cliArgs.apiBaseUrl,
-      serverClientId: serverClientId,
-      primaryColor: remoteConfig['primary_color']?.toString(),
-      appVersion: remoteConfig['version']?.toString() ?? '0.1.0',
-      buildNumber: remoteConfig['version_code']?.toString(),
-    );
-  } catch (e) {
-    print('❌ Error: $e');
-  } finally {
-    if (downloadedFiles.isNotEmpty) {
-      await cleanupTempFiles(downloadedFiles);
-    }
-    if (brandingUpdated) {
-      await restoreGitChanges();
-    }
-  }
+    await _buildAndRenameApk(appDirPath, client.appName, buildArgs);
+  });
 }
 
-Future<bool> _buildApk(
+Future<bool> _buildAndRenameApk(
   String workingDir,
   String appName,
-  String? configPath,
-  String apiBaseUrl, {
-  String? serverClientId,
-  String? primaryColor,
-  String? appVersion,
-  String? buildNumber,
-}) async {
+  List<String> buildArgs,
+) async {
   print('🚀 Building the APK for $appName... (This may take a few minutes)');
-  final buildArgs = ['build', 'apk', '--dart-define=API_BASE_URL=$apiBaseUrl'];
-  if (configPath != null) {
-    buildArgs.add('--dart-define-from-file=../$configPath');
-  }
-  if (serverClientId != null) {
-    buildArgs.add('--dart-define=GOOGLE_SERVER_CLIENT_ID=$serverClientId');
-  }
-  if (primaryColor != null && primaryColor.isNotEmpty) {
-    buildArgs.add('--dart-define=PRIMARY_COLOR=$primaryColor');
-  }
-  if (appVersion != null && appVersion.isNotEmpty) {
-    buildArgs.add('--build-name=$appVersion');
-  }
-  if (buildNumber != null && buildNumber.isNotEmpty) {
-    buildArgs.add('--build-number=$buildNumber');
-  }
 
   final buildProcess = await Process.start(
     'flutter',
@@ -96,28 +39,26 @@ Future<bool> _buildApk(
   await stderr.addStream(buildProcess.stderr);
 
   final exitCode = await buildProcess.exitCode;
-  if (exitCode == 0) {
-    File apkFile = File(
-      '$workingDir/build/app/outputs/flutter-apk/app-release.apk',
-    );
-    if (!apkFile.existsSync()) {
-      apkFile = File(
-        '$workingDir/build/app/outputs/apk/release/app-release.apk',
-      );
-    }
-
-    if (apkFile.existsSync()) {
-      final safeAppName = appName.replaceAll(' ', '_');
-      final newApkPath = '${apkFile.parent.path}/$safeAppName.apk';
-      await apkFile.rename(newApkPath);
-      print('🎉 SUCCESS! Your APK is ready here:');
-      print('👉 $newApkPath');
-    } else {
-      print('🎉 SUCCESS! But could not locate the APK to rename it.');
-    }
-    return true;
-  } else {
+  if (exitCode != 0) {
     print('❌ Build failed with exit code $exitCode');
     return false;
   }
+
+  var apkFile = File(
+    '$workingDir/build/app/outputs/flutter-apk/app-release.apk',
+  );
+  if (!apkFile.existsSync()) {
+    apkFile = File('$workingDir/build/app/outputs/apk/release/app-release.apk');
+  }
+
+  if (apkFile.existsSync()) {
+    final safeAppName = appName.replaceAll(' ', '_');
+    final newApkPath = '${apkFile.parent.path}/$safeAppName.apk';
+    await apkFile.rename(newApkPath);
+    print('🎉 SUCCESS! Your APK is ready here:');
+    print('👉 $newApkPath');
+  } else {
+    print('🎉 SUCCESS! But could not locate the APK to rename it.');
+  }
+  return true;
 }

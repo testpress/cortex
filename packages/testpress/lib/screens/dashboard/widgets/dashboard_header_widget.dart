@@ -11,19 +11,15 @@ class DashboardHeaderWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
-    final settings = ref.watch(instituteSettingsProvider);
-    final overrideLogoUrl = AppConfig.instituteLogoUrl;
-    final apiLogoUrl = settings?.photo;
-    final logoUrl = overrideLogoUrl.isNotEmpty
-        ? overrideLogoUrl
-        : (apiLogoUrl ?? '');
-    final instituteName = settings?.name ?? '';
+    final instituteName = AppConfig.instituteName;
 
     return DashboardHeader(
       title: instituteName.isNotEmpty
           ? instituteName
           : L10n.of(context).homeHeaderTitle,
-      logoUrl: logoUrl.isNotEmpty ? logoUrl : null,
+      logoUrl: AppConfig.instituteLogoPath.isNotEmpty
+          ? AppConfig.instituteLogoPath
+          : null,
       isLandscape: isLandscape,
       backgroundColor: design.colors.card,
       trailing: !AppConfig.showProfileTab

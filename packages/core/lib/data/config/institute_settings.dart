@@ -18,8 +18,6 @@ class InstituteSettings {
   final String domainUrl;
 
   // APP Specific
-  final String name;
-  final String photo;
   final String timezone;
 
   //UI
@@ -81,8 +79,6 @@ class InstituteSettings {
 
   const InstituteSettings({
     required this.domainUrl,
-    required this.name,
-    required this.photo,
     required this.timezone,
     required this.dashboardEnabled,
     required this.leaderboardEnabled,
@@ -133,8 +129,6 @@ class InstituteSettings {
 
     return InstituteSettings(
       domainUrl: json['domain_url'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      photo: json['photo'] as String? ?? '',
       timezone: json['timezone'] as String? ?? '',
 
       dashboardEnabled: json['dashboard_enabled'] as bool? ?? false,
@@ -213,8 +207,6 @@ class InstituteSettings {
   Map<String, dynamic> toJson() {
     return {
       'domain_url': domainUrl,
-      'name': name,
-      'photo': photo,
       'timezone': timezone,
       'dashboard_enabled': dashboardEnabled,
       'leaderboard_enabled': leaderboardEnabled,

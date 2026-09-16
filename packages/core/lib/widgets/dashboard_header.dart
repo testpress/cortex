@@ -37,26 +37,9 @@ class DashboardHeader extends StatelessWidget {
     final bottomPadding = design.spacing.md;
 
     final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
-    final isLocal = hasLogo && logoUrl!.startsWith('assets/');
 
-    Widget titleContent;
-    if (hasLogo) {
-      final logoImage = isLocal
-          ? Image.asset(
-              logoUrl!,
-              height: 36,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => const SizedBox.shrink(),
-            )
-          : Image.network(
-              logoUrl!,
-              height: 36,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => const SizedBox.shrink(),
-            );
-      titleContent = Align(alignment: Alignment.centerLeft, child: logoImage);
-    } else {
-      titleContent = Column(
+    Widget buildTextTitle() {
+      return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -68,6 +51,18 @@ class DashboardHeader extends StatelessWidget {
         ],
       );
     }
+
+    final Widget titleContent = hasLogo
+        ? Align(
+            alignment: Alignment.centerLeft,
+            child: Image.asset(
+              logoUrl!,
+              height: 36,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => buildTextTitle(),
+            ),
+          )
+        : buildTextTitle();
 
     return Container(
       padding: EdgeInsets.fromLTRB(
