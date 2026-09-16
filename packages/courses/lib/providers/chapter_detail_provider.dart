@@ -8,7 +8,7 @@ part 'chapter_detail_provider.g.dart';
 
 /// Provider that fetches a specific chapter with its lessons.
 /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<(ChapterDto, String?)?> chapterDetail(
   ChapterDetailRef ref,
   String courseId,

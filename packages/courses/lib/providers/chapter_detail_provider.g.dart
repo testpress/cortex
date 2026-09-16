@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'c0726a6f59e65b33915e0ea7e9e5ed6e2f654927';
+String _$chapterDetailHash() => r'ec4efb9bf733947d9605c663ebbf2edea1ff72a7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -90,7 +90,8 @@ class ChapterDetailFamily extends Family<AsyncValue<(ChapterDto, String?)?>> {
 /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
 ///
 /// Copied from [chapterDetail].
-class ChapterDetailProvider extends StreamProvider<(ChapterDto, String?)?> {
+class ChapterDetailProvider
+    extends AutoDisposeStreamProvider<(ChapterDto, String?)?> {
   /// Provider that fetches a specific chapter with its lessons.
   /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
   ///
@@ -151,7 +152,7 @@ class ChapterDetailProvider extends StreamProvider<(ChapterDto, String?)?> {
   }
 
   @override
-  StreamProviderElement<(ChapterDto, String?)?> createElement() {
+  AutoDisposeStreamProviderElement<(ChapterDto, String?)?> createElement() {
     return _ChapterDetailProviderElement(this);
   }
 
@@ -174,7 +175,7 @@ class ChapterDetailProvider extends StreamProvider<(ChapterDto, String?)?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterDetailRef on StreamProviderRef<(ChapterDto, String?)?> {
+mixin ChapterDetailRef on AutoDisposeStreamProviderRef<(ChapterDto, String?)?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -183,7 +184,7 @@ mixin ChapterDetailRef on StreamProviderRef<(ChapterDto, String?)?> {
 }
 
 class _ChapterDetailProviderElement
-    extends StreamProviderElement<(ChapterDto, String?)?>
+    extends AutoDisposeStreamProviderElement<(ChapterDto, String?)?>
     with ChapterDetailRef {
   _ChapterDetailProviderElement(super.provider);
 

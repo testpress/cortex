@@ -8,6 +8,7 @@ part 'course_list_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 Future<CourseRepository> courseRepository(Ref ref) async {
+  ref.watch(authProvider);
   final db = await ref.watch(appDatabaseProvider.future);
   final source = ref.watch(dataSourceProvider);
   final sentryService = ref.watch(sentryServiceProvider);

@@ -45,6 +45,14 @@ class CourseRepository {
 
   CourseRepository(this._db, this._source, this._sentryService);
 
+  void clearCaches() {
+    _activeStructuralSyncs.clear();
+    _activeChapterSyncs.clear();
+    _activeDetailSyncs.clear();
+    _activeContentSyncs.clear();
+    _activeSyncIds.clear();
+  }
+
   void dispose() {
     _syncStatusController.close();
   }

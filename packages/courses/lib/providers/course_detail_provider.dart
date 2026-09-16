@@ -5,7 +5,7 @@ import 'course_list_provider.dart';
 part 'course_detail_provider.g.dart';
 
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
 
@@ -17,7 +17,7 @@ Stream<CourseDto?> courseDetail(CourseDetailRef ref, String courseId) async* {
 
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<List<ChapterDto>> subChapters(
   SubChaptersRef ref,
   String courseId,
@@ -69,7 +69,7 @@ Stream<List<ChapterDto>> subChapters(
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<List<LessonDto>> chapterLessons(
   ChapterLessonsRef ref,
   String courseId,
@@ -83,7 +83,7 @@ Stream<List<LessonDto>> chapterLessons(
 }
 
 /// Provider that tracks if a specific course is currently undergoing a structural sync.
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<bool> courseSyncStatus(CourseSyncStatusRef ref, String courseId) async* {
   final repo = await ref.watch(courseRepositoryProvider.future);
   yield repo.isSyncing(courseId);

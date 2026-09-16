@@ -56,29 +56,44 @@ class _HomeLayout extends ConsumerWidget {
           children: [
             DashboardHeaderWidget(isLandscape: isLandscape),
             Expanded(
-              child: AppScroll(
-                padding: EdgeInsets.only(
-                  top: design.spacing.md,
-                  bottom:
-                      design.spacing.md + MediaQuery.paddingOf(context).bottom,
+              child: AppRefreshIndicator(
+                semanticsLabel: L10n.of(context).pullToRefresh,
+                onRefresh: () async {
+                  try {
+                    final repo = await ref.read(
+                      dto.dashboardRepositoryProvider.future,
+                    );
+                    await repo.refreshDashboard();
+                  } catch (_) {}
+                },
+                child: AppScroll(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.only(
+                    top: design.spacing.md,
+                    bottom:
+                        design.spacing.md +
+                        MediaQuery.paddingOf(context).bottom,
+                  ),
+                  children: [
+                    const GreetingSectionWidget(),
+                    const TopCarouselSectionWidget(),
+                    if (dto.AppConfig.showContextualHero)
+                      const ContextualHeroSectionWidget(),
+                    if (dto.AppConfig.showTodaySchedule)
+                      const TodayScheduleSectionWidget(),
+                    const LessonCardsSectionWrapper(),
+                    const AnnouncementsSectionWidget(),
+                    //  Backend doesn't have the support for this and can be enabled once the backend provides the support
+                    // const StudyMomentumSectionWidget(),
+                    const TopLearnersSectionWidget(),
+                    if (dto.AppConfig.showQuickAccess)
+                      const QuickAccessSectionWidget(),
+                    if (dto.AppConfig.showQuickLinks)
+                      const QuickLinksSectionWidget(),
+                  ],
                 ),
-                children: [
-                  const GreetingSectionWidget(),
-                  const TopCarouselSectionWidget(),
-                  if (dto.AppConfig.showContextualHero)
-                    const ContextualHeroSectionWidget(),
-                  if (dto.AppConfig.showTodaySchedule)
-                    const TodayScheduleSectionWidget(),
-                  const LessonCardsSectionWrapper(),
-                  const AnnouncementsSectionWidget(),
-                  //  Backend doesn't have the support for this and can be enabled once the backend provides the support
-                  // const StudyMomentumSectionWidget(),
-                  const TopLearnersSectionWidget(),
-                  if (dto.AppConfig.showQuickAccess)
-                    const QuickAccessSectionWidget(),
-                  if (dto.AppConfig.showQuickLinks)
-                    const QuickLinksSectionWidget(),
-                ],
               ),
             ),
           ],

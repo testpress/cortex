@@ -6,7 +6,7 @@ part of 'course_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$courseDetailHash() => r'3ac000bde610ea984625c81f3916fba09b2acb25';
+String _$courseDetailHash() => r'ae0ed8ab1b9a4876547c757de265d7326f15a750';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -82,7 +82,7 @@ class CourseDetailFamily extends Family<AsyncValue<CourseDto?>> {
 /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
 ///
 /// Copied from [courseDetail].
-class CourseDetailProvider extends StreamProvider<CourseDto?> {
+class CourseDetailProvider extends AutoDisposeStreamProvider<CourseDto?> {
   /// Provider that fetches a specific course with its full curriculum (chapters and lessons).
   ///
   /// Copied from [courseDetail].
@@ -136,7 +136,7 @@ class CourseDetailProvider extends StreamProvider<CourseDto?> {
   }
 
   @override
-  StreamProviderElement<CourseDto?> createElement() {
+  AutoDisposeStreamProviderElement<CourseDto?> createElement() {
     return _CourseDetailProviderElement(this);
   }
 
@@ -156,20 +156,20 @@ class CourseDetailProvider extends StreamProvider<CourseDto?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseDetailRef on StreamProviderRef<CourseDto?> {
+mixin CourseDetailRef on AutoDisposeStreamProviderRef<CourseDto?> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
-class _CourseDetailProviderElement extends StreamProviderElement<CourseDto?>
-    with CourseDetailRef {
+class _CourseDetailProviderElement
+    extends AutoDisposeStreamProviderElement<CourseDto?> with CourseDetailRef {
   _CourseDetailProviderElement(super.provider);
 
   @override
   String get courseId => (origin as CourseDetailProvider).courseId;
 }
 
-String _$subChaptersHash() => r'8b858ac8bd6aec64a6f98b53cb5650f8d63fe460';
+String _$subChaptersHash() => r'05f814d57a67ad9a675aad415d879bef742a1523';
 
 /// A provider that watches chapters for a specific parent (folder).
 /// Triggers a refresh if the folder has not been synced yet.
@@ -232,7 +232,7 @@ class SubChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
 /// Triggers a refresh if the folder has not been synced yet.
 ///
 /// Copied from [subChapters].
-class SubChaptersProvider extends StreamProvider<List<ChapterDto>> {
+class SubChaptersProvider extends AutoDisposeStreamProvider<List<ChapterDto>> {
   /// A provider that watches chapters for a specific parent (folder).
   /// Triggers a refresh if the folder has not been synced yet.
   ///
@@ -293,7 +293,7 @@ class SubChaptersProvider extends StreamProvider<List<ChapterDto>> {
   }
 
   @override
-  StreamProviderElement<List<ChapterDto>> createElement() {
+  AutoDisposeStreamProviderElement<List<ChapterDto>> createElement() {
     return _SubChaptersProviderElement(this);
   }
 
@@ -316,7 +316,7 @@ class SubChaptersProvider extends StreamProvider<List<ChapterDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SubChaptersRef on StreamProviderRef<List<ChapterDto>> {
+mixin SubChaptersRef on AutoDisposeStreamProviderRef<List<ChapterDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -325,7 +325,8 @@ mixin SubChaptersRef on StreamProviderRef<List<ChapterDto>> {
 }
 
 class _SubChaptersProviderElement
-    extends StreamProviderElement<List<ChapterDto>> with SubChaptersRef {
+    extends AutoDisposeStreamProviderElement<List<ChapterDto>>
+    with SubChaptersRef {
   _SubChaptersProviderElement(super.provider);
 
   @override
@@ -334,7 +335,7 @@ class _SubChaptersProviderElement
   String? get parentId => (origin as SubChaptersProvider).parentId;
 }
 
-String _$chapterLessonsHash() => r'9e5732ff9d1eb0f5200bdaffe50bebfed25bd4f1';
+String _$chapterLessonsHash() => r'11f7b1e83425c2a037deed3b71e0df618711c2ff';
 
 /// See also [chapterLessons].
 @ProviderFor(chapterLessons)
@@ -382,7 +383,8 @@ class ChapterLessonsFamily extends Family<AsyncValue<List<LessonDto>>> {
 }
 
 /// See also [chapterLessons].
-class ChapterLessonsProvider extends StreamProvider<List<LessonDto>> {
+class ChapterLessonsProvider
+    extends AutoDisposeStreamProvider<List<LessonDto>> {
   /// See also [chapterLessons].
   ChapterLessonsProvider(
     String courseId,
@@ -440,7 +442,7 @@ class ChapterLessonsProvider extends StreamProvider<List<LessonDto>> {
   }
 
   @override
-  StreamProviderElement<List<LessonDto>> createElement() {
+  AutoDisposeStreamProviderElement<List<LessonDto>> createElement() {
     return _ChapterLessonsProviderElement(this);
   }
 
@@ -463,7 +465,7 @@ class ChapterLessonsProvider extends StreamProvider<List<LessonDto>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChapterLessonsRef on StreamProviderRef<List<LessonDto>> {
+mixin ChapterLessonsRef on AutoDisposeStreamProviderRef<List<LessonDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -472,7 +474,8 @@ mixin ChapterLessonsRef on StreamProviderRef<List<LessonDto>> {
 }
 
 class _ChapterLessonsProviderElement
-    extends StreamProviderElement<List<LessonDto>> with ChapterLessonsRef {
+    extends AutoDisposeStreamProviderElement<List<LessonDto>>
+    with ChapterLessonsRef {
   _ChapterLessonsProviderElement(super.provider);
 
   @override
@@ -481,7 +484,7 @@ class _ChapterLessonsProviderElement
   String get chapterId => (origin as ChapterLessonsProvider).chapterId;
 }
 
-String _$courseSyncStatusHash() => r'4d2341bacc55705011f56b5cd001365dcbb262fb';
+String _$courseSyncStatusHash() => r'de209bc05b6f747c9e5a6604fd4cc5c386559ecb';
 
 /// Provider that tracks if a specific course is currently undergoing a structural sync.
 ///
@@ -536,7 +539,7 @@ class CourseSyncStatusFamily extends Family<AsyncValue<bool>> {
 /// Provider that tracks if a specific course is currently undergoing a structural sync.
 ///
 /// Copied from [courseSyncStatus].
-class CourseSyncStatusProvider extends StreamProvider<bool> {
+class CourseSyncStatusProvider extends AutoDisposeStreamProvider<bool> {
   /// Provider that tracks if a specific course is currently undergoing a structural sync.
   ///
   /// Copied from [courseSyncStatus].
@@ -590,7 +593,7 @@ class CourseSyncStatusProvider extends StreamProvider<bool> {
   }
 
   @override
-  StreamProviderElement<bool> createElement() {
+  AutoDisposeStreamProviderElement<bool> createElement() {
     return _CourseSyncStatusProviderElement(this);
   }
 
@@ -610,13 +613,13 @@ class CourseSyncStatusProvider extends StreamProvider<bool> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CourseSyncStatusRef on StreamProviderRef<bool> {
+mixin CourseSyncStatusRef on AutoDisposeStreamProviderRef<bool> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 }
 
-class _CourseSyncStatusProviderElement extends StreamProviderElement<bool>
-    with CourseSyncStatusRef {
+class _CourseSyncStatusProviderElement
+    extends AutoDisposeStreamProviderElement<bool> with CourseSyncStatusRef {
   _CourseSyncStatusProviderElement(super.provider);
 
   @override

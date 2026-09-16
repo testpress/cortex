@@ -33,7 +33,7 @@ class FilteredLessonsState {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class FilteredLessons extends _$FilteredLessons {
   LessonPaginationController? _controller;
 

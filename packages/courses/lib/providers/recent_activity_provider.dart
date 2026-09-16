@@ -23,7 +23,7 @@ class RecentActivityVo {
 }
 
 /// Provider for the most recently accessed lesson (for the Resume card).
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
   final userProgressRepo =
       await ref.watch(userProgressRepositoryProvider.future);

@@ -6,7 +6,7 @@ part of 'filtered_lessons_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filteredLessonsHash() => r'7adea304c2073ac8fa2522762475e1c1d5450444';
+String _$filteredLessonsHash() => r'4485f43a91f3ba739b17915d5ea997408121c470';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,7 +30,7 @@ class _SystemHash {
 }
 
 abstract class _$FilteredLessons
-    extends BuildlessNotifier<FilteredLessonsState> {
+    extends BuildlessAutoDisposeNotifier<FilteredLessonsState> {
   late final String courseId;
   late final String? chapterId;
   late final String? type;
@@ -91,8 +91,8 @@ class FilteredLessonsFamily extends Family<FilteredLessonsState> {
 }
 
 /// See also [FilteredLessons].
-class FilteredLessonsProvider
-    extends NotifierProviderImpl<FilteredLessons, FilteredLessonsState> {
+class FilteredLessonsProvider extends AutoDisposeNotifierProviderImpl<
+    FilteredLessons, FilteredLessonsState> {
   /// See also [FilteredLessons].
   FilteredLessonsProvider(
     String courseId, {
@@ -166,7 +166,7 @@ class FilteredLessonsProvider
   }
 
   @override
-  NotifierProviderElement<FilteredLessons, FilteredLessonsState>
+  AutoDisposeNotifierProviderElement<FilteredLessons, FilteredLessonsState>
       createElement() {
     return _FilteredLessonsProviderElement(this);
   }
@@ -192,7 +192,8 @@ class FilteredLessonsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin FilteredLessonsRef on NotifierProviderRef<FilteredLessonsState> {
+mixin FilteredLessonsRef
+    on AutoDisposeNotifierProviderRef<FilteredLessonsState> {
   /// The parameter `courseId` of this provider.
   String get courseId;
 
@@ -204,8 +205,8 @@ mixin FilteredLessonsRef on NotifierProviderRef<FilteredLessonsState> {
 }
 
 class _FilteredLessonsProviderElement
-    extends NotifierProviderElement<FilteredLessons, FilteredLessonsState>
-    with FilteredLessonsRef {
+    extends AutoDisposeNotifierProviderElement<FilteredLessons,
+        FilteredLessonsState> with FilteredLessonsRef {
   _FilteredLessonsProviderElement(super.provider);
 
   @override
