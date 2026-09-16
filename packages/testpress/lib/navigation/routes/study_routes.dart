@@ -210,6 +210,7 @@ class StudyRoutes {
           ],
         ),
         GoRoute(
+          name: AppRouteNames.assessmentDetail,
           path: 'assessment/:id',
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
