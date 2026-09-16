@@ -37,7 +37,6 @@ class CustomVideoPlayer extends ConsumerStatefulWidget {
 class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     with WidgetsBindingObserver {
   TestpressPlayerController? _controller;
-  bool _isFetchingMetadata = true;
   String _courseName = '';
   String _chapterName = '';
   bool _isPlayerDestroyed = false;
@@ -132,11 +131,6 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
 
   Future<void> _fetchMetadata() async {
     if (widget.lessonId == null) {
-      if (mounted) {
-        setState(() {
-          _isFetchingMetadata = false;
-        });
-      }
       return;
     }
 
@@ -148,16 +142,10 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
         setState(() {
           _courseName = details?.courseTitle ?? '';
           _chapterName = details?.chapterTitle ?? '';
-          _isFetchingMetadata = false;
         });
       }
     } catch (e, st) {
       sentry.captureException(e, stackTrace: st);
-      if (mounted) {
-        setState(() {
-          _isFetchingMetadata = false;
-        });
-      }
     }
   }
 
@@ -207,21 +195,10 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     }
 
     if (widget.assetId != null && widget.assetId!.isNotEmpty) {
-      if (_isFetchingMetadata) {
-        return const SizedBox
-            .shrink(); // Wait for local DB to provide metadata (extremely fast)
-      }
+      final downloadItem =
+          ref.watch(watchDownloadItemProvider(widget.assetId!)).valueOrNull;
 
-      final downloadItemAsync =
-          ref.watch(watchDownloadItemProvider(widget.assetId!));
-
-      if (!downloadItemAsync.hasValue) {
-        return const SizedBox
-            .shrink(); // Wait for database to emit initial status to avoid online player flicker
-      }
-
-      final isCompleted =
-          downloadItemAsync.value?.status == DownloadStatus.completed;
+      final isCompleted = downloadItem?.status == DownloadStatus.completed;
 
       final player = isCompleted
           ? TestpressPlayer.offline(
@@ -234,8 +211,8 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
               autoPlay: true,
               showDownloadOption: settings?.isVideoDownloadEnabled ?? false,
               metadata: {
-                'course': _courseName,
-                'chapter': _chapterName,
+                if (_courseName.isNotEmpty) 'course': _courseName,
+                if (_chapterName.isNotEmpty) 'chapter': _chapterName,
               },
               onPlayerCreated: _onPlayerCreated,
             );
@@ -282,17 +259,17 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
       final currentPos = controller.value.position.inMilliseconds / 1000.0;
       final duration = controller.value.duration.inMilliseconds / 1000.0;
 
-      // Ensure we only seek once the video is loaded (duration > 0)
+      // Ensure we seek once the video duration / media item is ready in native player
       if (!_hasSeekedToInitial) {
         if (controller.value.duration != Duration.zero) {
           final targetSeek = _pendingSeekPosition ?? widget.initialPosition;
           if (targetSeek > 0) {
             controller
-                .seek(Duration(milliseconds: (targetSeek * 1000).toInt()));
+                .seek(Duration(milliseconds: (targetSeek * 1000).toInt()))
+                .catchError((_) {});
             _lastPosition = targetSeek;
             _currentIntervalStart = targetSeek;
             _initialSeekPos = targetSeek;
-            // Guard: If the initial position is close to the end, ignore the completion trigger
             final nearEndThreshold = duration > 2.0 ? 2.0 : (duration * 0.5);
             if (targetSeek >= duration - nearEndThreshold) {
               _shouldIgnoreInitialCompletion = true;

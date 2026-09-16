@@ -990,7 +990,24 @@ class CourseRepository {
 
   /// Refetches a single lesson's full metadata from the v2.4 API and persists it.
   Future<LessonDto> refreshLesson(String id) async {
-    final dto = await _source.getLessonDetail(id);
+    final existing = await getLesson(id);
+    final isKnownNonVideo =
+        existing != null && existing.type != LessonType.video;
+
+    final detailFuture = _source.getLessonDetail(id);
+
+    final attemptsFuture = isKnownNonVideo
+        ? Future<String?>.value(null)
+        : _source
+            .getLastWatchedPosition(ApiEndpoints.lessonAttempts(id))
+            .catchError((e, st) {
+            _sentryService.captureException(e, stackTrace: st);
+            return null;
+          });
+
+    final results = await Future.wait<dynamic>([detailFuture, attemptsFuture]);
+    final dto = results[0] as LessonDto;
+    final lastWatched = results[1] as String?;
 
     // Pre-fill parent course and chapter rows so getLessonDetails JOIN has data to return
     if (dto.courseId != null) {
@@ -1002,21 +1019,13 @@ class CourseRepository {
       _hydrateNestedChapterBackground(dto.chapterId, dto.chapterSlug!).ignore();
     }
 
-    // Attempts call only for Video lessons to retrieve last watched playback position
     LessonDto dtoWithAttempts = dto;
-    if (dto.type == LessonType.video && dto.attemptsUrl != null) {
-      try {
-        final lastWatched =
-            await _source.getLastWatchedPosition(dto.attemptsUrl!);
-        dtoWithAttempts = dto.copyWith(
-          lastWatchedDuration: lastWatched,
-        );
-      } catch (e, st) {
-        _sentryService.captureException(e, stackTrace: st);
-      }
+    if (dto.type == LessonType.video && lastWatched != null) {
+      dtoWithAttempts = dto.copyWith(
+        lastWatchedDuration: lastWatched,
+      );
     }
 
-    final existing = await getLesson(id);
     final updated = dtoWithAttempts.copyWith(isDetailFetched: true);
     final merged = updated.mergeWith(existing);
 

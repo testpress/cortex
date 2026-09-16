@@ -51,9 +51,33 @@ class StudyRoutes {
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
             final id = state.pathParameters['id']!;
+            final extraLesson = state.extra is LessonDto
+                ? state.extra as LessonDto
+                : null;
             return Consumer(
               builder: (context, ref, child) {
                 final lessonAsync = ref.watch(lessonDetailProvider(id));
+                final activeLesson = lessonAsync.valueOrNull ?? extraLesson;
+
+                if (activeLesson != null) {
+                  return _LessonRedirector(
+                    lesson: activeLesson,
+                    child: LessonDetailOrchestrator(
+                      lesson: activeLesson,
+                      onNext: activeLesson.nextContentId != null
+                          ? () => context.pushReplacement(
+                              '/study/lesson/${activeLesson.nextContentId}',
+                            )
+                          : null,
+                      onPrevious: activeLesson.previousContentId != null
+                          ? () => context.pushReplacement(
+                              '/study/lesson/${activeLesson.previousContentId}',
+                            )
+                          : null,
+                    ),
+                  );
+                }
+
                 return lessonAsync.when(
                   data: (lesson) {
                     if (lesson == null) {
@@ -64,22 +88,7 @@ class StudyRoutes {
                         ),
                       );
                     }
-                    return _LessonRedirector(
-                      lesson: lesson,
-                      child: LessonDetailOrchestrator(
-                        lesson: lesson,
-                        onNext: lesson.nextContentId != null
-                            ? () => context.pushReplacement(
-                                '/study/lesson/${lesson.nextContentId}',
-                              )
-                            : null,
-                        onPrevious: lesson.previousContentId != null
-                            ? () => context.pushReplacement(
-                                '/study/lesson/${lesson.previousContentId}',
-                              )
-                            : null,
-                      ),
-                    );
+                    return const SizedBox.shrink();
                   },
                   loading: () => Container(
                     color: Design.of(context).colors.surface,
