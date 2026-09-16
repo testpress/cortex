@@ -17,7 +17,7 @@ class DashboardHeaderWidget extends ConsumerWidget {
       title: instituteName.isNotEmpty
           ? instituteName
           : L10n.of(context).homeHeaderTitle,
-      logoUrl: AppConfig.instituteLogoPath.isNotEmpty
+      logoPath: AppConfig.instituteLogoPath.isNotEmpty
           ? AppConfig.instituteLogoPath
           : null,
       isLandscape: isLandscape,

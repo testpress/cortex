@@ -329,7 +329,7 @@ Future<void> cleanupTempFiles(List<File> files) async {
 /// Restores git working tree to a clean state.
 Future<void> restoreGitChanges() async {
   print('🧹 Cleaning up native configuration changes...');
-  await Process.run('git', [
+  final checkoutResult = await Process.run('git', [
     'checkout',
     '--',
     'app/ios',
@@ -337,8 +337,23 @@ Future<void> restoreGitChanges() async {
     'app/pubspec.yaml',
     'app/pubspec.lock',
   ]);
-  await Process.run('git', ['clean', '-fd', 'app/ios', 'app/android']);
-  print('✨ Repository restored to original state.');
+  if (checkoutResult.exitCode != 0) {
+    print('⚠️ Warning: git checkout failed: ${checkoutResult.stderr}');
+  }
+
+  final cleanResult = await Process.run('git', [
+    'clean',
+    '-fd',
+    'app/ios',
+    'app/android',
+  ]);
+  if (cleanResult.exitCode != 0) {
+    print('⚠️ Warning: git clean failed: ${cleanResult.stderr}');
+  }
+
+  if (checkoutResult.exitCode == 0 && cleanResult.exitCode == 0) {
+    print('✨ Repository restored to original state.');
+  }
 }
 
 /// Strongly typed container for remote client configuration.
