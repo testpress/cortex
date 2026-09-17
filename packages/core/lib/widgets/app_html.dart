@@ -254,7 +254,7 @@ class _AppHtmlState extends State<AppHtml> {
                   return;
                 }
                 const text = el.textContent.replace(/\u00a0/g, ' ').trim();
-                if (text === '' && !el.querySelector('img, iframe, math, svg, table, input, textarea')) {
+                if (text === '' && !el.querySelector('img, iframe, video, audio, embed, math, svg, table, input, textarea')) {
                   el.remove();
                 }
               });
@@ -263,7 +263,7 @@ class _AppHtmlState extends State<AppHtml> {
             function cleanTrailingEmptyNodes(container) {
               if (!container) return;
               let last = container.lastElementChild;
-              while (last && last.textContent.trim() === '' && !last.querySelector('img, iframe, math, svg, input, textarea')) {
+              while (last && last.textContent.trim() === '' && !last.querySelector('img, iframe, video, audio, embed, math, svg, input, textarea')) {
                 last.remove();
                 last = container.lastElementChild;
               }

@@ -1,15 +1,15 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../models/assessment_model.dart';
-import '../data/mock_assessments.dart';
+import '../providers/assessment_controller.dart';
+import '../repositories/exam_repository.dart';
 import '../widgets/assessment_detail/assessment_header.dart';
-import '../widgets/assessment_detail/assessment_palette.dart';
+import '../widgets/assessment_detail/assessment_option_card.dart';
 import '../widgets/test_detail/nav_button.dart';
-import '../widgets/test_detail/option_card.dart';
-import '../widgets/test_detail/test_palette_trigger.dart';
+import '../widgets/test_detail/pause_confirmation_dialog.dart';
 
 class AssessmentDetailScreen extends ConsumerStatefulWidget {
   final String assessmentId;
@@ -30,187 +30,198 @@ class AssessmentDetailScreen extends ConsumerStatefulWidget {
 
 class _AssessmentDetailScreenState
     extends ConsumerState<AssessmentDetailScreen> {
-  int _currentQuestionIndex = 0;
-  final Map<String, AssessmentAttemptState> _attemptStates = {};
-  bool _showPalette = false;
-  bool _assessmentComplete = false;
+  bool _showPauseConfirmation = false;
 
-  late final Assessment _assessment;
-  late final List<AssessmentQuestion> _questions;
-
-  @override
-  void initState() {
-    super.initState();
-    _assessment = MockAssessmentFactory.createMockAssessment();
-    _questions = MockAssessmentFactory.createMockQuestions();
-  }
-
-  // ─── State helpers ──────────────────────────────────────────────────────────
-
-  AssessmentAttemptState _stateFor(String questionId) =>
-      _attemptStates[questionId] ??
-      AssessmentAttemptState(questionId: questionId, selectedOptions: []);
-
-  bool _isOptionCorrect(AssessmentQuestion q, String optionId) =>
-      q.correctOptionIds.contains(optionId);
-
-  bool _isAnswerCorrect(AssessmentQuestion q) {
-    final state = _stateFor(q.id);
-    final selected = List<String>.from(state.selectedOptions)..sort();
-    final correct = List<String>.from(q.correctOptionIds)..sort();
-    return listEquals(selected, correct);
-  }
-
-  int get _answeredCount =>
-      _attemptStates.values.where((s) => s.isAnswered).length;
-
-  int get _checkedCount =>
-      _attemptStates.values.where((s) => s.isChecked).length;
-
-  int get _correctCount {
-    int count = 0;
-    for (final q in _questions) {
-      final state = _stateFor(q.id);
-      if (state.isChecked && _isAnswerCorrect(q)) count++;
-    }
-    return count;
-  }
-
-  // ─── Event handlers ─────────────────────────────────────────────────────────
-
-  void _handleOptionSelect(AssessmentQuestion q, String optionId) {
-    final state = _stateFor(q.id);
-    if (state.isChecked) return;
-    setState(() {
-      List<String> newSelections;
-      if (q.type == AssessmentQuestionType.multipleSelect) {
-        newSelections = List.from(state.selectedOptions);
-        if (newSelections.contains(optionId)) {
-          newSelections.remove(optionId);
-        } else {
-          newSelections.add(optionId);
-        }
-      } else {
-        newSelections = [optionId];
-      }
-      _attemptStates[q.id] = state.copyWith(selectedOptions: newSelections);
-    });
-  }
-
-  void _handleCheckAnswer() {
-    final q = _questions[_currentQuestionIndex];
-    setState(() {
-      _attemptStates[q.id] = _stateFor(q.id).copyWith(isChecked: true);
-    });
-  }
-
-  void _handleTryAgain() {
-    final q = _questions[_currentQuestionIndex];
-    setState(() => _attemptStates.remove(q.id));
-  }
-
-  void _handleNext() {
-    if (_currentQuestionIndex < _questions.length - 1) {
-      setState(() => _currentQuestionIndex++);
+  void _handleExit(AssessmentState state) {
+    if (state.status == ExamAttemptStatus.inProgress &&
+        !state.isCompleted &&
+        state.questions.isNotEmpty) {
+      setState(() => _showPauseConfirmation = true);
     } else {
-      setState(() => _assessmentComplete = true);
-      final lessonId = widget.lesson?.id ?? widget.assessmentId;
-      ref
-          .read(appDatabaseProvider.future)
-          .then((db) {
-            db.updateLessonProgress(lessonId, LessonProgressStatus.completed);
-          })
-          .catchError((_) {});
+      if (state.isCompleted) {
+        final lessonId = widget.lesson?.id ?? widget.assessmentId;
+        ref
+            .read(appDatabaseProvider.future)
+            .then((db) {
+              db.updateLessonProgress(lessonId, LessonProgressStatus.completed);
+            })
+            .catchError((_) {});
+      }
+      widget.onClose();
     }
   }
-
-  void _handlePrevious() {
-    if (_currentQuestionIndex > 0) {
-      setState(() => _currentQuestionIndex--);
-    }
-  }
-
-  void _handleRetake() {
-    setState(() {
-      _attemptStates.clear();
-      _currentQuestionIndex = 0;
-      _assessmentComplete = false;
-    });
-  }
-
-  void _navigateToQuestion(int index) {
-    setState(() {
-      _currentQuestionIndex = index;
-      _showPalette = false;
-    });
-  }
-
-  // ─── Build ───────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    if (_assessmentComplete) return _buildResultView(design, context);
 
-    if (_questions.isEmpty) {
-      return AppErrorView(message: l10n.noQuestionsFound);
+    final param = AssessmentParam(
+      assessmentId: widget.assessmentId,
+      lesson: widget.lesson,
+    );
+    final state = ref.watch(assessmentControllerProvider(param));
+    final controller = ref.read(assessmentControllerProvider(param).notifier);
+
+    if (state.isCompleted || state.status == ExamAttemptStatus.completed) {
+      return _buildResultView(design, context, state, controller);
     }
 
-    final q = _questions[_currentQuestionIndex];
-    final state = _stateFor(q.id);
+    if (state.status == ExamAttemptStatus.loading) {
+      return Container(
+        color: design.colors.surface,
+        child: Column(
+          children: [
+            AssessmentHeader(
+              assessment: state.asAssessment,
+              answeredCount: 0,
+              onExit: () => _handleExit(state),
+            ),
+            const Expanded(child: Center(child: AppLoadingIndicator())),
+          ],
+        ),
+      );
+    }
 
-    return Container(
-      color: design.colors.surface,
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              AssessmentHeader(
-                assessment: _assessment,
-                answeredCount: _answeredCount,
-                onExit: widget.onClose,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildProgressSection(design, l10n),
-                      _buildQuestionCard(design, l10n, q, state),
-                      if (state.isChecked)
-                        _buildFeedbackBlock(design, context, q),
-                      SizedBox(height: design.spacing.md),
-                      _buildActions(design, context, q, state),
-                      SizedBox(height: design.spacing.md),
-                      TestPaletteTrigger(
-                        answeredCount: _checkedCount,
-                        totalQuestions: _questions.length,
-                        onTap: () => setState(() => _showPalette = true),
-                      ),
-                      SizedBox(height: design.spacing.xl),
-                    ],
-                  ),
+    if (state.status == ExamAttemptStatus.error) {
+      return Container(
+        color: design.colors.surface,
+        child: Column(
+          children: [
+            AssessmentHeader(
+              assessment: state.asAssessment,
+              answeredCount: 0,
+              onExit: () => _handleExit(state),
+            ),
+            Expanded(
+              child: Center(
+                child: AppErrorView(
+                  error: state.errorMessage,
+                  message: state.errorMessage ?? l10n.errorGenericMessage,
+                  onRetry: controller.retry,
                 ),
               ),
-            ],
-          ),
-          if (_showPalette)
-            AssessmentPalette(
-              questions: _questions,
-              states: _attemptStates,
-              currentIndex: _currentQuestionIndex,
-              onClose: () => setState(() => _showPalette = false),
-              onQuestionSelected: _navigateToQuestion,
-              isCorrectFn: _isAnswerCorrect,
             ),
-        ],
+          ],
+        ),
+      );
+    }
+
+    if (state.questions.isEmpty) {
+      return Container(
+        color: design.colors.surface,
+        child: Column(
+          children: [
+            AssessmentHeader(
+              assessment: state.asAssessment,
+              answeredCount: 0,
+              onExit: () => _handleExit(state),
+            ),
+            Expanded(
+              child: Center(
+                child: AppErrorView(
+                  message: l10n.noQuestionsFound,
+                  onRetry: controller.retry,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final q = state.currentQuestion!;
+    final questionState = state.stateFor(q.id);
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleExit(state);
+      },
+      child: Container(
+        color: design.colors.surface,
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                AssessmentHeader(
+                  assessment: state.asAssessment,
+                  answeredCount: state.answeredCount,
+                  onExit: () => _handleExit(state),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildProgressSection(design, l10n, state),
+                        _buildQuestionCard(
+                          design,
+                          l10n,
+                          q,
+                          questionState,
+                          state,
+                          controller,
+                        ),
+                        if (questionState.isChecked)
+                          _buildFeedbackBlock(
+                            design,
+                            context,
+                            q,
+                            state,
+                            controller,
+                          ),
+                        SizedBox(height: design.spacing.md),
+                        _buildActions(
+                          design,
+                          context,
+                          q,
+                          questionState,
+                          state,
+                          controller,
+                        ),
+                        SizedBox(height: design.spacing.xl),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (_showPauseConfirmation)
+              PauseConfirmationDialog(
+                disablePause:
+                    widget.lesson?.disableAttemptResume ??
+                    state.disableAttemptResume,
+                onCancel: () => setState(() => _showPauseConfirmation = false),
+                onPause: () async {
+                  setState(() => _showPauseConfirmation = false);
+                  await controller.pauseExam();
+                  widget.onClose();
+                },
+                onEnd: () async {
+                  setState(() => _showPauseConfirmation = false);
+                  await controller.endExam();
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
 
   // ─── Progress section ────────────────────────────────────────────────────────
 
-  Widget _buildProgressSection(DesignConfig design, AppLocalizations l10n) {
+  Widget _buildProgressSection(
+    DesignConfig design,
+    AppLocalizations l10n,
+    AssessmentState state,
+  ) {
+    final currentIndex = state.currentIndex;
+    final totalQuestions = state.questions.length;
+    final progress = totalQuestions > 0
+        ? (currentIndex + 1) / totalQuestions
+        : 0.0;
+
     return Container(
       padding: EdgeInsets.fromLTRB(
         design.spacing.md,
@@ -222,7 +233,7 @@ class _AssessmentDetailScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText.body(
-            l10n.testQuestionXofY(_currentQuestionIndex + 1, _questions.length),
+            l10n.testQuestionXofY(currentIndex + 1, totalQuestions),
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: design.typographyScale.base.fontSize,
@@ -230,15 +241,19 @@ class _AssessmentDetailScreenState
             ),
           ),
           SizedBox(height: design.spacing.sm),
-          Container(
-            height: 4,
-            width: double.infinity,
-            decoration: BoxDecoration(color: design.colors.divider),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor: (_currentQuestionIndex + 1) / _questions.length,
-              child: Container(
-                decoration: BoxDecoration(color: design.colors.success),
+          AppSemantics.progressValue(
+            value: progress,
+            label: l10n.testQuestionXofY(currentIndex + 1, totalQuestions),
+            child: Container(
+              height: 4,
+              width: double.infinity,
+              decoration: BoxDecoration(color: design.colors.divider),
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: progress,
+                child: Container(
+                  decoration: BoxDecoration(color: design.colors.success),
+                ),
               ),
             ),
           ),
@@ -253,7 +268,9 @@ class _AssessmentDetailScreenState
     DesignConfig design,
     AppLocalizations l10n,
     AssessmentQuestion q,
-    AssessmentAttemptState state,
+    AssessmentAttemptState questionState,
+    AssessmentState state,
+    AssessmentController controller,
   ) {
     return Container(
       width: double.infinity,
@@ -267,14 +284,10 @@ class _AssessmentDetailScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText.body(
-            q.text,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              height: 1.5,
-              color: design.colors.textPrimary,
-            ),
+          AppHtml(
+            data: q.text,
+            fontSize: 17,
+            textColor: design.colors.textPrimary,
           ),
           if (q.type == AssessmentQuestionType.multipleSelect)
             Padding(
@@ -287,20 +300,23 @@ class _AssessmentDetailScreenState
             ),
           SizedBox(height: design.spacing.xl),
           ...q.options.map((option) {
-            final isSelected = state.selectedOptions.contains(option.id);
-            final isCorrect = _isOptionCorrect(q, option.id);
-            final isIncorrect = state.isChecked && isSelected && !isCorrect;
-            return OptionCard(
+            final isSelected = questionState.selectedOptions.contains(
+              option.id,
+            );
+            final isCorrect = state.isOptionCorrect(q, option.id);
+            final isIncorrect =
+                questionState.isChecked && isSelected && !isCorrect;
+            return AssessmentOptionCard(
               option: QuestionOptionDto(id: option.id, text: option.text),
-              isSelected: isSelected || (state.isChecked && isCorrect),
+              isSelected: isSelected || (questionState.isChecked && isCorrect),
               type: q.type == AssessmentQuestionType.multipleSelect
                   ? 'multipleSelect'
                   : 'singleSelect',
-              onTap: state.isChecked
+              onTap: questionState.isChecked
                   ? null
-                  : () => _handleOptionSelect(q, option.id),
-              showFeedback: state.isChecked,
-              isCorrect: state.isChecked && isCorrect,
+                  : () => controller.selectOption(q.id, option.id),
+              showFeedback: questionState.isChecked,
+              isCorrect: questionState.isChecked && isCorrect,
               isIncorrect: isIncorrect,
             );
           }),
@@ -315,12 +331,12 @@ class _AssessmentDetailScreenState
     DesignConfig design,
     BuildContext context,
     AssessmentQuestion q,
+    AssessmentState state,
+    AssessmentController controller,
   ) {
     final l10n = L10n.of(context);
-    final isCorrect = _isAnswerCorrect(q);
+    final isCorrect = state.isAnswerCorrect(q);
 
-    // We use the amber subject palette (index 6) which perfectly matches
-    // the "slight yellow/amber" look in the design system.
     final amber = design.subjectPalette.atIndex(6);
 
     final iconColor = isCorrect ? design.colors.success : amber.accent;
@@ -364,7 +380,7 @@ class _AssessmentDetailScreenState
               ),
             ],
           ),
-          if (q.explanation != null) ...[
+          if (q.explanation != null && q.explanation!.trim().isNotEmpty) ...[
             SizedBox(height: design.spacing.md),
             Container(height: 1, color: borderColor),
             SizedBox(height: design.spacing.md),
@@ -378,10 +394,10 @@ class _AssessmentDetailScreenState
                 ),
                 SizedBox(width: design.spacing.sm),
                 Expanded(
-                  child: AppText.body(
-                    q.explanation!,
-                    color: design.colors.textPrimary,
-                    style: const TextStyle(height: 1.55, fontSize: 14),
+                  child: AppHtml(
+                    data: q.explanation!,
+                    fontSize: 14,
+                    textColor: design.colors.textPrimary,
                   ),
                 ),
               ],
@@ -390,32 +406,36 @@ class _AssessmentDetailScreenState
           // "Try Again" button
           if (!isCorrect) ...[
             SizedBox(height: design.spacing.md),
-            GestureDetector(
-              onTap: _handleTryAgain,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.md,
-                  vertical: design.spacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: borderColor),
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                  color: design.colors.card,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(LucideIcons.refreshCw, color: textColor, size: 16),
-                    SizedBox(width: design.spacing.xs),
-                    AppText.body(
-                      l10n.assessmentTryAgain,
-                      color: textColor,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
+            AppSemantics.button(
+              label: l10n.assessmentTryAgain,
+              onTap: () => controller.tryAgain(q.id),
+              child: GestureDetector(
+                onTap: () => controller.tryAgain(q.id),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: borderColor),
+                    borderRadius: BorderRadius.circular(design.radius.md),
+                    color: design.colors.card,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(LucideIcons.refreshCw, color: textColor, size: 16),
+                      SizedBox(width: design.spacing.xs),
+                      AppText.body(
+                        l10n.assessmentTryAgain,
+                        color: textColor,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -431,57 +451,40 @@ class _AssessmentDetailScreenState
     DesignConfig design,
     BuildContext context,
     AssessmentQuestion q,
-    AssessmentAttemptState state,
+    AssessmentAttemptState questionState,
+    AssessmentState state,
+    AssessmentController controller,
   ) {
     final l10n = L10n.of(context);
-    final isLast = _currentQuestionIndex == _questions.length - 1;
-    final canGoPrev = _currentQuestionIndex > 0;
+    final isLast = state.isLastQuestion;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // State 2: answer selected but not yet checked — show ONLY Check Answer
-          if (state.isAnswered && !state.isChecked)
-            GestureDetector(
-              onTap: _handleCheckAnswer,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-                decoration: BoxDecoration(
-                  color: design.colors.success,
-                  borderRadius: BorderRadius.circular(design.radius.md),
-                ),
-                child: Center(
-                  child: AppText.body(
-                    l10n.assessmentCheckAnswer,
-                    color: design.colors.textInverse,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-              ),
+          // For multiple-select questions when selections exist but not yet checked
+          if (q.type == AssessmentQuestionType.multipleSelect &&
+              questionState.isAnswered &&
+              !questionState.isChecked)
+            AppButton.primary(
+              label: l10n.assessmentCheckAnswer,
+              onPressed: () => controller.checkAnswer(q.id),
+              fullWidth: true,
+              backgroundColor: design.colors.success,
+              foregroundColor: design.colors.textInverse,
             )
-          // States 1 & 3: nothing selected OR already checked → show Prev/Next
+          // Forward-only navigation: only show Next / Finish button
           else
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                NavButton(
-                  label: l10n.testPrevious,
-                  icon: LucideIcons.chevronLeft,
-                  onTap: canGoPrev ? _handlePrevious : null,
-                  isBack: true,
-                ),
                 NavButton(
                   label: isLast ? l10n.testFinish : l10n.assessmentNext,
                   icon: isLast
                       ? LucideIcons.checkCircle2
                       : LucideIcons.chevronRight,
-                  onTap: _handleNext,
+                  onTap: questionState.isChecked ? controller.next : null,
                 ),
               ],
             ),
@@ -492,11 +495,16 @@ class _AssessmentDetailScreenState
 
   // ─── Result view ─────────────────────────────────────────────────────────────
 
-  Widget _buildResultView(DesignConfig design, BuildContext context) {
+  Widget _buildResultView(
+    DesignConfig design,
+    BuildContext context,
+    AssessmentState state,
+    AssessmentController controller,
+  ) {
     final l10n = L10n.of(context);
-    final scorePercent = _questions.isEmpty
-        ? 0
-        : (_correctCount / _questions.length * 100).round();
+    final correctCount = state.correctCount;
+    final totalQuestions = state.questions.length;
+    final scorePercent = state.scorePercent;
     final accentColor = design.colors.success;
 
     return Container(
@@ -567,17 +575,17 @@ class _AssessmentDetailScreenState
                         ),
                       ),
                       AppText.body(
-                        l10n.testScoreSummary(_correctCount, _questions.length),
+                        l10n.testScoreSummary(correctCount, totalQuestions),
                         color: design.colors.textSecondary,
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: design.spacing.xl),
-                if (widget.lesson?.allowRetake != false) ...[
+                if (state.allowRetake) ...[
                   AppButton.primary(
                     label: l10n.testRetake,
-                    onPressed: _handleRetake,
+                    onPressed: controller.retake,
                     fullWidth: true,
                     backgroundColor: design.colors.textPrimary,
                     foregroundColor: design.colors.textInverse,

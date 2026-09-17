@@ -515,10 +515,6 @@ class LessonDto {
       return LessonType.liveStream;
     }
 
-    if (json['exam'] != null) {
-      return LessonType.test;
-    }
-
     final String providerVal = (json['provider'] ?? '')
         .toString()
         .toLowerCase();
@@ -574,11 +570,13 @@ class LessonDto {
     }
 
     // Exams / Assessments
-    if (contentType.contains('exam') || contentType.contains('test')) {
-      return LessonType.test;
-    }
     if (contentType.contains('quiz') || contentType.contains('assessment')) {
       return LessonType.assessment;
+    }
+    if (contentType.contains('exam') ||
+        contentType.contains('test') ||
+        json['exam'] != null) {
+      return LessonType.test;
     }
 
     return LessonType.unknown; // Fallback
