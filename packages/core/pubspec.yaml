@@ -34,7 +34,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.3.0
   dio_web_adapter: ^2.1.2
-  tpstreams_player_sdk: 2.2.35
+  tpstreams_player_sdk: 2.2.36
   smooth_page_indicator: ^1.1.0
   permission_handler: ^12.0.1
   skeletonizer: ^2.1.3
@@ -46,7 +46,6 @@ dependencies:
   flutter_math_fork: ^0.7.4
   flutter_svg: ^2.0.17
   background_downloader: ^9.5.9
-  workmanager: ^0.9.0
   connectivity_plus: ^6.1.0
   google_sign_in: ^6.2.1
   payu_checkoutpro_flutter: ^1.4.5

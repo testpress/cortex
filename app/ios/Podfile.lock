@@ -1,71 +1,286 @@
 PODS:
   - Alamofire (5.9.1)
+  - AppAuth (1.7.6):
+    - AppAuth/Core (= 1.7.6)
+    - AppAuth/ExternalUserAgent (= 1.7.6)
+  - AppAuth/Core (1.7.6)
+  - AppAuth/ExternalUserAgent (1.7.6):
+    - AppAuth/Core
+  - AppCheckCore (11.3.2):
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/UserDefaults (~> 8.0)
+    - PromisesObjC (~> 2.4)
+    - PromisesSwift (~> 2.4)
+    - RecaptchaInterop (~> 101.0)
+  - background_downloader (0.0.1):
+    - Flutter
+  - connectivity_plus (0.0.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
+  - DKImagePickerController/Core (4.3.9):
+    - DKImagePickerController/ImageDataManager
+    - DKImagePickerController/Resource
+  - DKImagePickerController/ImageDataManager (4.3.9)
+  - DKImagePickerController/PhotoGallery (4.3.9):
+    - DKImagePickerController/Core
+    - DKPhotoGallery
+  - DKImagePickerController/Resource (4.3.9)
+  - DKPhotoGallery (0.0.19):
+    - DKPhotoGallery/Core (= 0.0.19)
+    - DKPhotoGallery/Model (= 0.0.19)
+    - DKPhotoGallery/Preview (= 0.0.19)
+    - DKPhotoGallery/Resource (= 0.0.19)
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Core (0.0.19):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Preview
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Model (0.0.19):
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Preview (0.0.19):
+    - DKPhotoGallery/Model
+    - DKPhotoGallery/Resource
+    - SDWebImage
+    - SwiftyGif
+  - DKPhotoGallery/Resource (0.0.19):
+    - SDWebImage
+    - SwiftyGif
+  - DSFRegex (3.4.0)
+  - file_picker (0.0.1):
+    - DKImagePickerController/PhotoGallery
+    - Flutter
+  - Firebase/CoreOnly (11.15.0):
+    - FirebaseCore (~> 11.15.0)
+  - Firebase/Messaging (11.15.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 11.15.0)
+  - firebase_core (3.15.2):
+    - Firebase/CoreOnly (= 11.15.0)
+    - Flutter
+  - firebase_messaging (15.2.10):
+    - Firebase/Messaging (= 11.15.0)
+    - firebase_core
+    - Flutter
+  - FirebaseCore (11.15.0):
+    - FirebaseCoreInternal (~> 11.15.0)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/Logger (~> 8.1)
+  - FirebaseCoreInternal (11.15.0):
+    - "GoogleUtilities/NSData+zlib (~> 8.1)"
+  - FirebaseInstallations (11.15.0):
+    - FirebaseCore (~> 11.15.0)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/UserDefaults (~> 8.1)
+    - PromisesObjC (~> 2.4)
+  - FirebaseMessaging (11.15.0):
+    - FirebaseCore (~> 11.15.0)
+    - FirebaseInstallations (~> 11.0)
+    - GoogleDataTransport (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.1)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/Reachability (~> 8.1)
+    - GoogleUtilities/UserDefaults (~> 8.1)
+    - nanopb (~> 3.30910.0)
   - Flutter (1.0.0)
   - flutter_keyboard_visibility_temp_fork (0.0.1):
     - Flutter
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+  - google_sign_in_ios (0.0.1):
+    - AppAuth (>= 1.7.4)
+    - Flutter
+    - FlutterMacOS
+    - GoogleSignIn (~> 8.0)
+    - GTMSessionFetcher (>= 3.4.0)
+  - GoogleDataTransport (10.1.1):
+    - nanopb (~> 3.30910.0)
+    - PromisesObjC (~> 2.4)
+  - GoogleSignIn (8.0.0):
+    - AppAuth (< 2.0, >= 1.7.3)
+    - AppCheckCore (~> 11.0)
+    - GTMAppAuth (< 5.0, >= 4.1.1)
+    - GTMSessionFetcher/Core (~> 3.3)
+  - GoogleUtilities/AppDelegateSwizzler (8.1.3):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Environment (8.1.3):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Logger (8.1.3):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Network (8.1.3):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Privacy
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (8.1.3)":
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Privacy (8.1.3)
+  - GoogleUtilities/Reachability (8.1.3):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/UserDefaults (8.1.3):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
+  - GTMAppAuth (4.1.1):
+    - AppAuth/Core (~> 1.7)
+    - GTMSessionFetcher/Core (< 4.0, >= 3.3)
+  - GTMSessionFetcher (3.5.0):
+    - GTMSessionFetcher/Full (= 3.5.0)
+  - GTMSessionFetcher/Core (3.5.0)
+  - GTMSessionFetcher/Full (3.5.0):
+    - GTMSessionFetcher/Core
   - image_picker_ios (0.0.1):
     - Flutter
   - M3U8Kit (1.2.0)
+  - nanopb (3.30910.0):
+    - nanopb/decode (= 3.30910.0)
+    - nanopb/encode (= 3.30910.0)
+  - nanopb/decode (3.30910.0)
+  - nanopb/encode (3.30910.0)
+  - no_screenshot (2.0.1):
+    - Flutter
   - open_filex (0.0.2):
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
-  - permission_handler_apple (9.3.0):
+  - payu_checkoutpro_flutter (1.2.0):
     - Flutter
+    - PayUIndia-CheckoutPro (~> 9.4)
+  - PayUIndia-Analytics (4.1.0):
+    - PayUIndia-NetworkReachability (~> 2.1)
+  - PayUIndia-AssetLibrary (4.0.1)
+  - PayUIndia-CardScanner (2.1.0)
+  - PayUIndia-CheckoutPro (9.4.0):
+    - PayUIndia-AssetLibrary (~> 4.0)
+    - PayUIndia-CardScanner (~> 2.1)
+    - PayUIndia-CheckoutProBase (~> 9.4)
+    - PayUIndia-CommonUI (~> 2.4)
+    - PayUIndia-CrashReporter (~> 4.0)
+    - PayUIndia-Custom-Browser (~> 11.3)
+    - PayUIndia-NativeOtpAssist (~> 5.0)
+    - PayUIndia-NetworkReachability (~> 2.0)
+    - PayUIndia-PayUParams (~> 7.3)
+    - PayUIndia-PG-SDK (~> 12.3)
+    - PayUIndia-UPICore (~> 11.3)
+  - PayUIndia-CheckoutProBase (9.4.0):
+    - PayUIndia-PayUParams (~> 7.3)
+    - PayUIndia-PG-SDK (~> 12.3)
+  - PayUIndia-CommonUI (2.4.0):
+    - PayUIndia-Analytics (~> 4.0)
+    - PayUIndia-CrashReporter (~> 4.0)
+  - PayUIndia-CrashReporter (4.0.3)
+  - PayUIndia-Custom-Browser (11.3.0):
+    - PayUIndia-CommonUI (~> 2.3)
+  - PayUIndia-Logger (5.0.1)
+  - PayUIndia-NativeOtpAssist (5.0.2):
+    - PayUIndia-Analytics (~> 4.1)
+    - PayUIndia-CommonUI (~> 2.4)
+    - PayUIndia-CrashReporter (~> 4.0)
+    - PayUIndia-NetworkReachability (~> 2.1)
+    - PayUIndia-PayUParams (~> 7.4)
+  - PayUIndia-Networking (5.0.1):
+    - PayUIndia-Logger (~> 5.0)
+  - PayUIndia-NetworkReachability (2.1.1)
+  - PayUIndia-PayUParams (7.4.0)
+  - PayUIndia-PG-SDK (12.3.0):
+    - PayUIndia-CrashReporter (~> 4.0)
+    - PayUIndia-NetworkReachability (~> 2.1)
+    - PayUIndia-PayUParams (~> 7.3)
+  - PayUIndia-UPICore (11.3.1):
+    - PayUIndia-CommonUI (~> 2.4)
+    - PayUIndia-Networking (~> 5.0)
+    - PayUIndia-PayUParams (~> 7.4)
+  - pdfium_flutter (0.1.5):
+    - Flutter
+    - FlutterMacOS
+  - permission_handler_apple (9.4.8):
+    - Flutter
+  - PromisesObjC (2.4.1)
+  - PromisesSwift (2.4.1):
+    - PromisesObjC (= 2.4.1)
   - quill_native_bridge_ios (0.0.1):
     - Flutter
+  - razorpay-core-pod (1.0.9)
+  - razorpay-pod (1.5.8):
+    - razorpay-core-pod (= 1.0.9)
+  - razorpay_flutter (1.1.10):
+    - Flutter
+    - razorpay-pod
   - ReachabilitySwift (5.2.4)
-  - Realm (10.54.6):
-    - Realm/Headers (= 10.54.6)
-  - Realm/Headers (10.54.6)
-  - RealmSwift (10.54.6):
-    - Realm (= 10.54.6)
-  - Sentry (8.50.2):
-    - Sentry/Core (= 8.50.2)
-  - Sentry/Core (8.50.2)
+  - Realm (20.0.4):
+    - Realm/Headers (= 20.0.4)
+  - Realm/Headers (20.0.4)
+  - RealmSwift (20.0.4):
+    - Realm (= 20.0.4)
+  - RecaptchaInterop (101.0.0)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
+  - Sentry (8.58.4):
+    - Sentry/Core (= 8.58.4)
+  - Sentry/Core (8.58.4)
+  - Sentry/HybridSDK (8.58.3)
+  - sentry_flutter (9.24.0):
+    - Flutter
+    - FlutterMacOS
+    - Sentry/HybridSDK (= 8.58.3)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.51.1):
-    - sqlite3/common (= 3.51.1)
-  - sqlite3/common (3.51.1)
-  - sqlite3/dbstatvtab (3.51.1):
+  - sqlite3 (3.52.0):
+    - sqlite3/common (= 3.52.0)
+  - sqlite3/common (3.52.0)
+  - sqlite3/dbstatvtab (3.52.0):
     - sqlite3/common
-  - sqlite3/fts5 (3.51.1):
+  - sqlite3/fts5 (3.52.0):
     - sqlite3/common
-  - sqlite3/math (3.51.1):
+  - sqlite3/math (3.52.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.51.1):
+  - sqlite3/perf-threadsafe (3.52.0):
     - sqlite3/common
-  - sqlite3/rtree (3.51.1):
+  - sqlite3/rtree (3.52.0):
     - sqlite3/common
-  - sqlite3/session (3.51.1):
+  - sqlite3/session (3.52.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
     - FlutterMacOS
-    - sqlite3 (~> 3.51.1)
+    - sqlite3 (~> 3.52.0)
     - sqlite3/dbstatvtab
     - sqlite3/fts5
     - sqlite3/math
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
     - sqlite3/session
-  - syncfusion_flutter_pdfviewer (0.0.1):
-    - Flutter
+  - SwiftSubtitles (1.8.1):
+    - DSFRegex (~> 3.4.0)
+    - TinyCSV (~> 1.0.0)
+  - SwiftyGif (5.4.5)
+  - TinyCSV (1.0.1)
   - tpstreams_player_sdk (0.0.2):
     - Flutter
-    - TPStreamsSDK (= 1.2.29)
-  - TPStreamsSDK (1.2.29):
+    - TPStreamsSDK (= 1.2.42)
+  - TPStreamsSDK (1.2.42):
     - Alamofire (~> 5.9.0)
     - M3U8Kit (~> 1.2.0)
     - ReachabilitySwift (~> 5.2.2)
-    - RealmSwift (~> 10.54.2)
-    - Sentry (~> 8.50.0)
+    - RealmSwift (~> 20.0.4)
+    - Sentry (< 10, >= 8.50)
+    - SwiftSubtitles (= 1.8.1)
   - url_launcher_ios (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
@@ -73,18 +288,31 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - background_downloader (from `.symlinks/plugins/background_downloader/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - file_picker (from `.symlinks/plugins/file_picker/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility_temp_fork (from `.symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - no_screenshot (from `.symlinks/plugins/no_screenshot/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - payu_checkoutpro_flutter (from `.symlinks/plugins/payu_checkoutpro_flutter/ios`)
+  - pdfium_flutter (from `.symlinks/plugins/pdfium_flutter/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - quill_native_bridge_ios (from `.symlinks/plugins/quill_native_bridge_ios/ios`)
+  - razorpay_flutter (from `.symlinks/plugins/razorpay_flutter/ios`)
+  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
-  - syncfusion_flutter_pdfviewer (from `.symlinks/plugins/syncfusion_flutter_pdfviewer/ios`)
   - tpstreams_player_sdk (from `.symlinks/plugins/tpstreams_player_sdk/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
@@ -92,39 +320,105 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - AppAuth
+    - AppCheckCore
+    - DKImagePickerController
+    - DKPhotoGallery
+    - DSFRegex
+    - Firebase
+    - FirebaseCore
+    - FirebaseCoreInternal
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - GoogleDataTransport
+    - GoogleSignIn
+    - GoogleUtilities
+    - GTMAppAuth
+    - GTMSessionFetcher
     - M3U8Kit
+    - nanopb
+    - PayUIndia-Analytics
+    - PayUIndia-AssetLibrary
+    - PayUIndia-CardScanner
+    - PayUIndia-CheckoutPro
+    - PayUIndia-CheckoutProBase
+    - PayUIndia-CommonUI
+    - PayUIndia-CrashReporter
+    - PayUIndia-Custom-Browser
+    - PayUIndia-Logger
+    - PayUIndia-NativeOtpAssist
+    - PayUIndia-Networking
+    - PayUIndia-NetworkReachability
+    - PayUIndia-PayUParams
+    - PayUIndia-PG-SDK
+    - PayUIndia-UPICore
+    - PromisesObjC
+    - PromisesSwift
+    - razorpay-core-pod
+    - razorpay-pod
     - ReachabilitySwift
     - Realm
     - RealmSwift
+    - RecaptchaInterop
+    - SDWebImage
     - Sentry
     - sqlite3
+    - SwiftSubtitles
+    - SwiftyGif
+    - TinyCSV
     - TPStreamsSDK
 
 EXTERNAL SOURCES:
+  background_downloader:
+    :path: ".symlinks/plugins/background_downloader/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
+  file_picker:
+    :path: ".symlinks/plugins/file_picker/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_messaging:
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
   flutter_keyboard_visibility_temp_fork:
     :path: ".symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
+  google_sign_in_ios:
+    :path: ".symlinks/plugins/google_sign_in_ios/darwin"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
+  no_screenshot:
+    :path: ".symlinks/plugins/no_screenshot/ios"
   open_filex:
     :path: ".symlinks/plugins/open_filex/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
+  payu_checkoutpro_flutter:
+    :path: ".symlinks/plugins/payu_checkoutpro_flutter/ios"
+  pdfium_flutter:
+    :path: ".symlinks/plugins/pdfium_flutter/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   quill_native_bridge_ios:
     :path: ".symlinks/plugins/quill_native_bridge_ios/ios"
+  razorpay_flutter:
+    :path: ".symlinks/plugins/razorpay_flutter/ios"
+  sentry_flutter:
+    :path: ".symlinks/plugins/sentry_flutter/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/darwin"
-  syncfusion_flutter_pdfviewer:
-    :path: ".symlinks/plugins/syncfusion_flutter_pdfviewer/ios"
   tpstreams_player_sdk:
     :path: ".symlinks/plugins/tpstreams_player_sdk/ios"
   url_launcher_ios:
@@ -134,29 +428,82 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
+  AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
+  AppCheckCore: be8fce5469f68d7f6a29aa94b25f097409ff7fdc
+  background_downloader: 50e91d979067b82081aba359d7d916b3ba5fadad
+  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
+  DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
+  DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
+  DSFRegex: d32f541b5106c52710b6525b3ac73b63f867ca49
+  file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
+  Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
+  firebase_core: 995454a784ff288be5689b796deb9e9fa3601818
+  firebase_messaging: f4a41dd102ac18b840eba3f39d67e77922d3f707
+  FirebaseCore: efb3893e5b94f32b86e331e3bd6dadf18b66568e
+  FirebaseCoreInternal: 9afa45b1159304c963da48addb78275ef701c6b4
+  FirebaseInstallations: 317270fec08a5d418fdbc8429282238cab3ac843
+  FirebaseMessaging: 3b26e2cee503815e01c3701236b020aa9b576f09
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_keyboard_visibility_temp_fork: 95b2d534bacf6ac62e7fcbe5c2a9e2c2a17ce06f
+  flutter_local_notifications: ad39620c743ea4c15127860f4b5641649a988100
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  fluttertoast: fe6790210fdba20801685be946e3a2124b72eef5
+  google_sign_in_ios: b48bb9af78576358a168361173155596c845f0b9
+  GoogleDataTransport: a24e58982ab3ba2f64d79613e027fe7f57e88539
+  GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
+  GoogleUtilities: 4e0c2ad9fa0d0d18b5c4df8bf57b461cba35b0bb
+  GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
+  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   M3U8Kit: 5a0adeab31b42d24ec76c0620971eac130903984
+  nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
+  no_screenshot: b0da13a6e7fb92706ab1082f6d6662cf300aa889
   open_filex: 432f3cd11432da3e39f47fcc0df2b1603854eff1
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
+  payu_checkoutpro_flutter: 29c0581cdf414fa42418dbb3e82c57d4267c1c44
+  PayUIndia-Analytics: 0cec0e6783db70080f7ca2721ae024bc26af7fb4
+  PayUIndia-AssetLibrary: e40d7697c37aea55f184e29564e2f8b63a63b472
+  PayUIndia-CardScanner: d6d024645e7fab58326e0d00b22ed42ca0ad5dc1
+  PayUIndia-CheckoutPro: 3807ac71387743022d03175bfda297433ed43eb1
+  PayUIndia-CheckoutProBase: 9baa5a5a727b05a6afffb86837e152ad7d4f34a8
+  PayUIndia-CommonUI: 5e50ef5a9b33522194ace051ff5c6835e1039200
+  PayUIndia-CrashReporter: f3dc6fe34a4f26d31107e508c4a9b17902c36b83
+  PayUIndia-Custom-Browser: cea86601cfea2f1878e2896d37c8ab31215adb45
+  PayUIndia-Logger: 50866e18a275b0726ed59afaea67b6529ab42774
+  PayUIndia-NativeOtpAssist: 1cb3b38cc7171af02150d2b3ed2c793b5e327a87
+  PayUIndia-Networking: 0709588fd96b6b42c1398d07471cf87ef2c0db71
+  PayUIndia-NetworkReachability: 581c04b9ea3a8aaa78faef179ad819759942f381
+  PayUIndia-PayUParams: 6310b2608d0ac91bbe157423a591542f9db43c29
+  PayUIndia-PG-SDK: 37a47ba93f2123fba997447d8f9a9ec6cafb8172
+  PayUIndia-UPICore: 7bb274956b9d1d55b999cec7795abba478312486
+  pdfium_flutter: e5a6e881af0b182d5b0465ebad23a8a20caa28d4
+  permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
+  PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
+  PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
   quill_native_bridge_ios: f47af4b14e7757968486641656c5d23250cee521
+  razorpay-core-pod: 7ecea8ed3c47751e6a958f6c88126ea068f8c8fc
+  razorpay-pod: 3fc296eacb28a059c55144286ea7c04d33d894f5
+  razorpay_flutter: 0e98e4fcaae27ad50e011d85f66d85e0a008754a
   ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
-  Realm: b1b3bc68162fa242132eb7eefbf91d7c40f36a85
-  RealmSwift: 456cfd82a4f23dff8e3456980999331ab69bbf3e
-  Sentry: d95f5f3b32d01324b3e27d3c52747005302cc026
+  Realm: 1fca83c42ac1d5c7767974882c8de5a7abca4d89
+  RealmSwift: 84f36320f6133dea78d05c55bb46bba4387d6828
+  RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
+  Sentry: 108fdbb76299c4189af12246bf0308c09c278922
+  sentry_flutter: 8528594bf73819ef3f40c2e218e93554fc2719e6
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  sqlite3: 8d708bc63e9f4ce48f0ad9d6269e478c5ced1d9b
-  sqlite3_flutter_libs: d13b8b3003f18f596e542bcb9482d105577eff41
-  syncfusion_flutter_pdfviewer: 90dc48305d2e33d4aa20681d1e98ddeda891bc14
-  tpstreams_player_sdk: a7f3a8df6a403ad12182493cd642124c114b0481
-  TPStreamsSDK: bb601953c3fe120e5f7b80c90b3857e483b6f633
+  sqlite3: a51c07cf16e023d6c48abd5e5791a61a47354921
+  sqlite3_flutter_libs: b3e120efe9a82017e5552a620f696589ed4f62ab
+  SwiftSubtitles: db6159ae70a180a1cfa22dd4eb845e25c000b271
+  SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
+  TinyCSV: f6124d52f5cdc61cdda211b7578884185206e80e
+  tpstreams_player_sdk: 9544e6c4a5416f1acd4e505dcc04f3de45b4a208
+  TPStreamsSDK: ce2c8c98efd7f3c3c3014c110ddac98b91899a9f
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
-PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865
 
 COCOAPODS: 1.16.2

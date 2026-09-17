@@ -22,8 +22,8 @@ dependencies:
     path: ../profile
   discussions:
     path: ../discussions
-  firebase_core: ^2.27.0
-  firebase_messaging: ^14.7.10
+  firebase_core: ^3.1.0
+  firebase_messaging: ^15.0.0
   flutter_local_notifications: ^17.2.1
   device_info_plus: ^12.1.0
   intl: ^0.20.2
