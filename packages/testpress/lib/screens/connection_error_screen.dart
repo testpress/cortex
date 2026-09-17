@@ -10,6 +10,7 @@ class ConnectionErrorScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return AppShell(
       backgroundColor: design.colors.canvas,
@@ -24,7 +25,7 @@ class ConnectionErrorScreen extends ConsumerWidget {
                 const _NoInternetIllustration(),
                 SizedBox(height: design.spacing.xl),
                 AppText.headline(
-                  'No internet connection',
+                  l10n.errorNoInternetTitle,
                   color: design.colors.textPrimary,
                   textAlign: TextAlign.center,
                 ),
@@ -32,7 +33,7 @@ class ConnectionErrorScreen extends ConsumerWidget {
                 SizedBox(
                   width: 300,
                   child: AppText.subtitle(
-                    'Connect to the internet to set up the app and try again.',
+                    l10n.errorSetupConnectionMessage,
                     color: design.colors.textSecondary,
                     textAlign: TextAlign.center,
                   ),
@@ -56,32 +57,14 @@ class _RetryButton extends ConsumerStatefulWidget {
   ConsumerState<_RetryButton> createState() => _RetryButtonState();
 }
 
-class _RetryButtonState extends ConsumerState<_RetryButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _rotationController;
+class _RetryButtonState extends ConsumerState<_RetryButton> {
   bool _isRetrying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 900),
-      vsync: this,
-    );
-  }
-
-  @override
-  void dispose() {
-    _rotationController.dispose();
-    super.dispose();
-  }
 
   Future<void> _handleRetry() async {
     if (_isRetrying) return;
     setState(() {
       _isRetrying = true;
     });
-    _rotationController.repeat();
 
     // Trigger settings retry and wait for network/cache to resolve
     ref.invalidate(settingsInitializationProvider);
@@ -91,12 +74,10 @@ class _RetryButtonState extends ConsumerState<_RetryButton>
         Future.delayed(const Duration(milliseconds: 600)),
       ]);
     } catch (_) {
-      // Allow the rotation animation to be visible for at least 600ms on fast network errors
+      // Allow loading feedback to be visible even on immediate network error
       await Future.delayed(const Duration(milliseconds: 400));
     } finally {
       if (mounted) {
-        _rotationController.stop();
-        _rotationController.reset();
         setState(() {
           _isRetrying = false;
         });
@@ -106,46 +87,12 @@ class _RetryButtonState extends ConsumerState<_RetryButton>
 
   @override
   Widget build(BuildContext context) {
-    final design = Design.of(context);
+    final l10n = L10n.of(context);
 
-    return GestureDetector(
-      onTap: _isRetrying ? null : _handleRetry,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 14),
-        decoration: BoxDecoration(
-          color: design.colors.primary,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: design.colors.primary.withValues(alpha: 0.25),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RotationTransition(
-              turns: _rotationController,
-              child: Icon(
-                LucideIcons.rotateCcw,
-                size: 18,
-                color: design.colors.onPrimary,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Retry',
-              style: TextStyle(
-                color: design.colors.onPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return AppButton.primary(
+      label: l10n.labelRetry,
+      loading: _isRetrying,
+      onPressed: _handleRetry,
     );
   }
 }
@@ -156,13 +103,12 @@ class _NoInternetIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final isDark = design.isDark;
 
     return Container(
       width: 210,
       height: 210,
       decoration: BoxDecoration(
-        color: isDark ? design.colors.surface : const Color(0xFFF1F3FB),
+        color: design.colors.surface,
         shape: BoxShape.circle,
       ),
       padding: const EdgeInsets.all(28),

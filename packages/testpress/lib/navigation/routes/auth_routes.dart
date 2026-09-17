@@ -31,7 +31,7 @@ class AuthRoutes {
     }
 
     if (bootstrapState == BootstrapState.loading) {
-      if (path == '/onboarding') return null;
+      if (path == '/onboarding' || path == '/connection-error') return null;
 
       // Respect the pre-boot cached auth signal so the loading gate doesn't
       // immediately bounce initialLocation='/home' back to /onboarding before

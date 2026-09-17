@@ -184,5 +184,68 @@ void main() {
         expect(find.byType(ConnectionErrorScreen), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'remains on /connection-error during retry while bootstrapState is loading',
+      (tester) async {
+        var completer = Completer<void>();
+        final container = ProviderContainer(
+          overrides: [
+            cachedAuthFlagProvider.overrideWithValue(false),
+            settingsInitializationProvider.overrideWith(
+              (ref) => completer.future,
+            ),
+            instituteSettingsProvider.overrideWith((ref) => null),
+            authProvider.overrideWith(_AuthLoading.new),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        // 1. Trigger initial error
+        completer.completeError(Exception('Initial failure'));
+        try {
+          await container.read(settingsInitializationProvider.future);
+        } catch (_) {}
+
+        expect(container.read(bootstrapProvider), BootstrapState.error);
+
+        final router = container.read(goRouterProvider);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: DesignProvider(
+              config: DesignConfig.light(),
+              child: MaterialApp.router(
+                routerConfig: router,
+                localizationsDelegates: LocalizationProvider.delegates,
+                supportedLocales: LocalizationProvider.supportedLocales,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ConnectionErrorScreen), findsOneWidget);
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          '/connection-error',
+        );
+
+        // 2. Simulate user tapping retry (invalidating provider -> switches to loading)
+        completer = Completer<void>();
+        container.invalidate(settingsInitializationProvider);
+
+        expect(container.read(bootstrapProvider), BootstrapState.loading);
+        router.refresh();
+        await tester.pump();
+
+        // 3. Must still be on /connection-error and NOT bounced to /onboarding
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          '/connection-error',
+        );
+        expect(find.byType(ConnectionErrorScreen), findsOneWidget);
+      },
+    );
   });
 }

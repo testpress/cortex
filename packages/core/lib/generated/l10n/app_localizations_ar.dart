@@ -2987,7 +2987,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.';
 
   @override
-  String get errorNoInternetTitle => 'خطأ في الاتصال';
+  String get errorNoInternetTitle => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'اتصل بالإنترنت لإعداد التطبيق وحاول مرة أخرى.';
 
   @override
   String get errorTimeoutTitle => 'انتهاء مهلة الطلب';

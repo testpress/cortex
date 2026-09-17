@@ -3030,7 +3030,11 @@ class AppLocalizationsTa extends AppLocalizations {
       'உங்கள் அமர்வு காலாவதியாகிவிட்டது. தயவுசெய்து மீண்டும் உள்நுழையவும்.';
 
   @override
-  String get errorNoInternetTitle => 'இணைப்பு பிழை';
+  String get errorNoInternetTitle => 'இணைய இணைப்பு இல்லை';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'பயன்பாட்டை அமைக்க இணையத்துடன் இணைத்து மீண்டும் முயற்சிக்கவும்.';
 
   @override
   String get errorTimeoutTitle => 'கோரிக்கை நேரம் முடிந்தது';

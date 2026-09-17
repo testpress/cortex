@@ -21,6 +21,9 @@ BootstrapState bootstrap(BootstrapRef ref) {
   }
 
   final settingsInit = ref.watch(settingsInitializationProvider);
+  if (settingsInit.isLoading) {
+    return BootstrapState.loading;
+  }
   if (settingsInit.hasError) {
     return BootstrapState.error;
   }

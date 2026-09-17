@@ -2984,7 +2984,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your session has expired. Please sign in again.';
 
   @override
-  String get errorNoInternetTitle => 'Connection Error';
+  String get errorNoInternetTitle => 'No internet';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'Connect to the internet to set up the app and try again.';
 
   @override
   String get errorTimeoutTitle => 'Request Timeout';

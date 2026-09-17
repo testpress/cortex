@@ -5390,8 +5390,14 @@ abstract class AppLocalizations {
   /// No description provided for @errorNoInternetTitle.
   ///
   /// In en, this message translates to:
-  /// **'Connection Error'**
+  /// **'No internet'**
   String get errorNoInternetTitle;
+
+  /// No description provided for @errorSetupConnectionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to set up the app and try again.'**
+  String get errorSetupConnectionMessage;
 
   /// No description provided for @errorTimeoutTitle.
   ///
