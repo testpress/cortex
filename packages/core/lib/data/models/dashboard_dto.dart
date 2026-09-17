@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../db/tables/dashboard_tables.dart';
+import 'lesson_dto.dart';
 
 /// Lightweight DTO for a single item in the dashboard feed.
 class DashboardContentDto {
@@ -7,7 +8,7 @@ class DashboardContentDto {
   final String title;
   final String? chapterId;
   final String? chapterTitle;
-  final DashboardContentType contentType;
+  final LessonType contentType;
   final DashboardSectionType? sectionType;
   final String? totalDuration;
   final String? remainingDuration;
@@ -26,6 +27,20 @@ class DashboardContentDto {
     this.coverImage,
     this.progress,
   });
+
+  LessonDto toLessonDto() => LessonDto(
+    id: id,
+    title: title,
+    type: contentType,
+    chapterId: chapterId ?? '',
+    chapterTitle: chapterTitle,
+    duration: totalDuration ?? '',
+    progressStatus: progress != null && progress! >= 100.0
+        ? LessonProgressStatus.completed
+        : LessonProgressStatus.inProgress,
+    isLocked: false,
+    orderIndex: 0,
+  );
 
   factory DashboardContentDto.fromJson(
     Map<String, dynamic> json, {
@@ -50,24 +65,24 @@ class DashboardContentDto {
     );
   }
 
-  static DashboardContentType mapContentType(String type) {
+  static LessonType mapContentType(String type) {
     final t = type.toLowerCase();
-    if (t.contains('video')) return DashboardContentType.video;
-    if (t.contains('pdf')) return DashboardContentType.pdf;
+    if (t.contains('video')) return LessonType.video;
+    if (t.contains('pdf')) return LessonType.pdf;
     if (t.contains('notes') || t.contains('html')) {
-      return DashboardContentType.notes;
+      return LessonType.notes;
     }
     if (t.contains('test') || t.contains('exam')) {
-      return DashboardContentType.test;
+      return LessonType.test;
     }
     if (t.contains('assessment') || t.contains('quiz')) {
-      return DashboardContentType.assessment;
+      return LessonType.assessment;
     }
-    if (t.contains('live')) return DashboardContentType.liveStream;
-    if (t.contains('attachment')) return DashboardContentType.attachment;
-    if (t.contains('embed')) return DashboardContentType.embedContent;
+    if (t.contains('live')) return LessonType.liveStream;
+    if (t.contains('attachment')) return LessonType.attachment;
+    if (t.contains('embed')) return LessonType.embedContent;
 
-    return DashboardContentType.unknown;
+    return LessonType.unknown;
   }
 }
 

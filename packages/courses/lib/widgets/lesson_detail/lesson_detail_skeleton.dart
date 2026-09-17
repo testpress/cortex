@@ -100,15 +100,18 @@ class LessonDetailSkeleton extends StatelessWidget {
       );
     }
 
-    return SkeletonizerConfig(
-      data: SkeletonizerConfigData(
-        effect: ShimmerEffect(
-          baseColor: design.colors.skeleton,
-          highlightColor: design.colors.onSkeleton,
+    return Container(
+      color: design.colors.surface,
+      child: SkeletonizerConfig(
+        data: SkeletonizerConfigData(
+          effect: ShimmerEffect(
+            baseColor: design.colors.skeleton,
+            highlightColor: design.colors.onSkeleton,
+          ),
         ),
-      ),
-      child: Skeletonizer(
-        child: skeletonContent,
+        child: Skeletonizer(
+          child: skeletonContent,
+        ),
       ),
     );
   }
