@@ -35,7 +35,9 @@ class DashboardContentDto {
     chapterId: chapterId ?? '',
     chapterTitle: chapterTitle,
     duration: totalDuration ?? '',
-    progressStatus: progress != null && progress! >= 100.0
+    progressStatus: progress == null || progress! <= 0.0
+        ? LessonProgressStatus.notStarted
+        : progress! >= 100.0
         ? LessonProgressStatus.completed
         : LessonProgressStatus.inProgress,
     isLocked: false,
