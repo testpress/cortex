@@ -49,9 +49,11 @@ class _LessonWebViewState extends State<LessonWebView> {
           },
           onWebResourceError: (error) {},
           onNavigationRequest: (request) {
-            // Block all subsequent navigations to ensure users stay
-            // locked within the current lesson content.
-            return NavigationDecision.prevent;
+            final uri = Uri.tryParse(request.url);
+            if (uri != null && !['http', 'https'].contains(uri.scheme)) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
           },
         ),
       );

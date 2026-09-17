@@ -2,28 +2,35 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../data/auth/auth_provider.dart';
 import '../widgets/app_error_view.dart';
+import '../widgets/app_header.dart';
+import '../widgets/app_back_button.dart';
 import '../accessibility/app_semantics.dart';
 import '../localization/l10n_helper.dart';
 
 /// A platform-neutral web page viewer.
 ///
-/// Displays a single web page with loading progress and error handling.
-/// Navigation away from the loaded page is disabled.
+/// Displays a web page with loading progress and error handling.
 class AppWebView extends ConsumerStatefulWidget {
   const AppWebView({
     super.key,
     required this.url,
+    this.title,
     this.permissions,
     this.mediaMode = false,
+    this.showHeader = false,
   });
 
   final String url;
+  final String? title;
   final List<Permission>? permissions;
   final bool mediaMode;
+  final bool showHeader;
 
   /// Helper to construct headers with auth token for secure requests.
   @visibleForTesting
@@ -93,31 +100,23 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
   }
 
   void _setupController() {
+    late final PlatformWebViewControllerCreationParams params;
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+    } else if (WebViewPlatform.instance is AndroidWebViewPlatform) {
+      params = AndroidWebViewControllerCreationParams();
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
+    }
+
     _controller =
-        WebViewController(
+        WebViewController.fromPlatformCreationParams(
+            params,
             onPermissionRequest: (request) {
-              if (!widget.mediaMode) {
-                request.deny();
-                return;
-              }
-
-              if (widget.permissions == null) {
-                request.grant();
-                return;
-              }
-
-              final allowedTypes = <WebViewPermissionResourceType>[];
-              if (widget.permissions!.contains(Permission.camera)) {
-                allowedTypes.add(WebViewPermissionResourceType.camera);
-              }
-              if (widget.permissions!.contains(Permission.microphone)) {
-                allowedTypes.add(WebViewPermissionResourceType.microphone);
-              }
-
-              final requestedAllowed = request.types.every(
-                (type) => allowedTypes.contains(type),
-              );
-              if (requestedAllowed) {
+              if (widget.mediaMode) {
                 request.grant();
               } else {
                 request.deny();
@@ -138,22 +137,26 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
                 if (widget.mediaMode) {
                   try {
                     await _controller.runJavaScript('''
-                  document.documentElement.style.margin = '0';
-                  document.documentElement.style.padding = '0';
-                  document.body.style.margin = '0';
-                  document.body.style.padding = '0';
-                ''');
+              document.documentElement.style.margin = '0';
+              document.documentElement.style.padding = '0';
+              document.body.style.margin = '0';
+              document.body.style.padding = '0';
+            ''');
                   } catch (_) {}
                 }
               },
               onWebResourceError: (error) {
-                // Ignore minor errors or subresource failures
-                if (error.isForMainFrame == true) {
+                // Ignore subresource failures or cancelled loads due to redirects/navigation
+                if (error.isForMainFrame == true && error.errorCode != -999) {
                   _hasError.value = true;
                 }
               },
-              onNavigationRequest: (_) {
-                return NavigationDecision.prevent;
+              onNavigationRequest: (request) {
+                final uri = Uri.tryParse(request.url);
+                if (uri != null && !['http', 'https'].contains(uri.scheme)) {
+                  return NavigationDecision.prevent;
+                }
+                return NavigationDecision.navigate;
               },
             ),
           );
@@ -258,6 +261,13 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
       child: SafeArea(
         child: Column(
           children: [
+            if (widget.showHeader)
+              AppHeader(
+                title: widget.title ?? '',
+                leading: AppBackButton(
+                  onTap: () => Navigator.of(context).maybePop(),
+                ),
+              ),
             _buildProgressBar(design),
             Expanded(child: _buildWebViewStack()),
           ],

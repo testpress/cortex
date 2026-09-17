@@ -26,6 +26,8 @@ class FermionLobbyView extends ConsumerWidget {
       AppRoute(
         page: AppWebView(
           url: url,
+          title: lesson.title,
+          showHeader: true,
           permissions: const [Permission.camera, Permission.microphone],
           mediaMode: true,
         ),
