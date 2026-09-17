@@ -3035,7 +3035,10 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങളുടെ സെഷൻ കാലഹരണപ്പെട്ടു. ദയവായി വീണ്ടും ലോഗിൻ ചെയ്യുക.';
 
   @override
-  String get errorNoInternetTitle => 'ഇന്റർനെറ്റ് കണക്ഷൻ ഇല്ല';
+  String get errorNoInternetTitle => 'കണക്ഷൻ പിശക്';
+
+  @override
+  String get errorSetupConnectionTitle => 'ഇന്റർനെറ്റ് കണക്ഷൻ ഇല്ല';
 
   @override
   String get errorSetupConnectionMessage =>

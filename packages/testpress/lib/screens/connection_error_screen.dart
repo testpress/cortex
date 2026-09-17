@@ -25,7 +25,7 @@ class ConnectionErrorScreen extends ConsumerWidget {
                 const _NoInternetIllustration(),
                 SizedBox(height: design.spacing.xl),
                 AppText.headline(
-                  l10n.errorNoInternetTitle,
+                  l10n.errorSetupConnectionTitle,
                   color: design.colors.textPrimary,
                   textAlign: TextAlign.center,
                 ),

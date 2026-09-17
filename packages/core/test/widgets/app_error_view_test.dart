@@ -54,8 +54,8 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        // Should pick up the 'No internet' title from app_en.arb
-        expect(find.text('No internet'), findsOneWidget);
+        // Should pick up the 'Connection Error' title from app_en.arb
+        expect(find.text('Connection Error'), findsOneWidget);
         expect(find.text('No connection'), findsOneWidget);
       },
     );
