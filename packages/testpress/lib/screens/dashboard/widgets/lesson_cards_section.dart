@@ -281,6 +281,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
                             context,
                             id: lesson.id,
                             type: lesson.contentType,
+                            extra: lesson.toLessonDto(),
                           );
                         }
                       },

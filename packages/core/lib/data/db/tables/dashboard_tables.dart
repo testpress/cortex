@@ -1,18 +1,9 @@
 import 'package:drift/drift.dart';
+import '../../models/lesson_dto.dart';
 
 enum DashboardSectionType { whatsNew, resumeLearning, completedLearning }
 
-enum DashboardContentType {
-  video,
-  pdf,
-  notes,
-  test,
-  assessment,
-  liveStream,
-  attachment,
-  embedContent,
-  unknown,
-}
+typedef DashboardContentType = LessonType;
 
 @DataClassName('DashboardContentData')
 class DashboardContentsTable extends Table {
