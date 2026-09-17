@@ -28,6 +28,10 @@ class DashboardContentDto {
     this.progress,
   });
 
+  /// Converts this dashboard item to a lightweight [LessonDto] placeholder payload.
+  /// Note: Fields like [chapterId], [isLocked], and [orderIndex] use intentional
+  /// approximate defaults for immediate skeleton rendering during navigation,
+  /// and are superseded once [lessonDetailProvider] resolves the full lesson.
   LessonDto toLessonDto() => LessonDto(
     id: id,
     title: title,
