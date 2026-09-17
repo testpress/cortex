@@ -3038,6 +3038,13 @@ class AppLocalizationsMl extends AppLocalizations {
   String get errorNoInternetTitle => 'കണക്ഷൻ പിശക്';
 
   @override
+  String get errorSetupConnectionTitle => 'ഇന്റർനെറ്റ് കണക്ഷൻ ഇല്ല';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'ആപ്പ് സജ്ജീകരിക്കാൻ ഇന്റർനെറ്റുമായി കണക്റ്റുചെയ്‌ത് വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
   String get errorTimeoutTitle => 'അഭ്യർത്ഥന സമയം കഴിഞ്ഞു';
 
   @override

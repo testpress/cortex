@@ -1496,6 +1496,8 @@
   "sessionExpiredLoginButton": "Login Again",
   "sessionExpiredFallbackMessage": "Your session has expired. Please sign in again.",
   "errorNoInternetTitle": "Connection Error",
+  "errorSetupConnectionTitle": "No internet",
+  "errorSetupConnectionMessage": "Connect to the internet to set up the app and try again.",
   "errorTimeoutTitle": "Request Timeout",
   "errorSessionExpiredTitle": "Session Expired",
   "errorAccessDeniedTitle": "Access Denied",

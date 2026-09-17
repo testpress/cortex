@@ -2990,6 +2990,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorNoInternetTitle => 'خطأ في الاتصال';
 
   @override
+  String get errorSetupConnectionTitle => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'اتصل بالإنترنت لإعداد التطبيق وحاول مرة أخرى.';
+
+  @override
   String get errorTimeoutTitle => 'انتهاء مهلة الطلب';
 
   @override

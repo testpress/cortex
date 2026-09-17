@@ -38,7 +38,11 @@ Future<void> appInitialization(AppInitializationRef ref) async {
   await ref.watch(sdkInitializationProvider.future);
 
   // Initialize Institute Settings before launching UI (runs exactly once)
-  await ref.watch(settingsInitializationProvider.future);
+  try {
+    await ref.watch(settingsInitializationProvider.future);
+  } catch (_) {
+    // Settings error on cold start without cache is handled reactively by bootstrapProvider & ConnectionErrorScreen
+  }
 
   final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
   if (!isLoggedIn) return;
@@ -65,31 +69,25 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
 @Riverpod(keepAlive: true)
 Future<void> settingsInitialization(SettingsInitializationRef ref) async {
-  try {
-    final settingsRepo = ref.read(instituteSettingsRepositoryProvider);
-    final cached = await settingsRepo.loadSettings();
-    if (cached != null) {
-      ref.read(instituteSettingsProvider.notifier).state = cached;
-      settingsRepo
-          .refreshSettings()
-          .then((fresh) {
-            ref.read(instituteSettingsProvider.notifier).state = fresh;
-          })
-          .catchError((_) {});
-    } else {
+  final settingsRepo = ref.read(instituteSettingsRepositoryProvider);
+  final cached = await settingsRepo.loadSettings();
+  if (cached != null) {
+    ref.read(instituteSettingsProvider.notifier).state = cached;
+    settingsRepo
+        .refreshSettings()
+        .then((fresh) {
+          ref.read(instituteSettingsProvider.notifier).state = fresh;
+        })
+        .catchError((_) {});
+  } else {
+    try {
       final fresh = await settingsRepo.refreshSettings();
       ref.read(instituteSettingsProvider.notifier).state = fresh;
-    }
-  } catch (e, stack) {
-    // Fail silently if unable to fetch settings, the app will use defaults
-    // BUT rethrow if we don't even have cached settings (first launch offline)
-    dev.log('Settings initialization failed', error: e, stackTrace: stack);
-    ref
-        .read(sentryServiceProvider)
-        .captureException(e, stackTrace: stack, level: AppErrorLevel.warning);
-    final settingsRepo = ref.read(instituteSettingsRepositoryProvider);
-    final cached = await settingsRepo.loadSettings();
-    if (cached == null) {
+    } catch (e, stack) {
+      dev.log('Settings initialization failed', error: e, stackTrace: stack);
+      ref
+          .read(sentryServiceProvider)
+          .captureException(e, stackTrace: stack, level: AppErrorLevel.warning);
       rethrow;
     }
   }

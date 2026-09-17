@@ -2987,6 +2987,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorNoInternetTitle => 'Connection Error';
 
   @override
+  String get errorSetupConnectionTitle => 'No internet';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'Connect to the internet to set up the app and try again.';
+
+  @override
   String get errorTimeoutTitle => 'Request Timeout';
 
   @override

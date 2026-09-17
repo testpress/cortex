@@ -3033,6 +3033,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get errorNoInternetTitle => 'இணைப்பு பிழை';
 
   @override
+  String get errorSetupConnectionTitle => 'இணைய இணைப்பு இல்லை';
+
+  @override
+  String get errorSetupConnectionMessage =>
+      'பயன்பாட்டை அமைக்க இணையத்துடன் இணைத்து மீண்டும் முயற்சிக்கவும்.';
+
+  @override
   String get errorTimeoutTitle => 'கோரிக்கை நேரம் முடிந்தது';
 
   @override

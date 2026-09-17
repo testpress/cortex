@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/data/data.dart';
 import 'package:testpress/navigation/bootstrap_provider.dart';
+import 'package:testpress/providers/initialization_provider.dart';
 
 class MockAuthLoading extends Auth {
   @override
@@ -29,9 +30,13 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         instituteSettingsProvider.overrideWith((ref) => null),
+        settingsInitializationProvider.overrideWith(
+          (ref) => Completer<void>().future,
+        ),
         authProvider.overrideWith(MockAuthAuthenticated.new),
       ],
     );
+    addTearDown(container.dispose);
 
     final state = container.read(bootstrapProvider);
     expect(state, BootstrapState.loading);
@@ -44,6 +49,7 @@ void main() {
         authProvider.overrideWith(MockAuthLoading.new),
       ],
     );
+    addTearDown(container.dispose);
 
     final state = container.read(bootstrapProvider);
     expect(state, BootstrapState.loading);
@@ -58,6 +64,7 @@ void main() {
           authProvider.overrideWith(MockAuthAuthenticated.new),
         ],
       );
+      addTearDown(container.dispose);
 
       // Wait for the FutureProvider/AsyncNotifier to settle
       await container.read(authProvider.future);
@@ -76,12 +83,36 @@ void main() {
           authProvider.overrideWith(MockAuthUnauthenticated.new),
         ],
       );
+      addTearDown(container.dispose);
 
       // Wait for the FutureProvider/AsyncNotifier to settle
       await container.read(authProvider.future);
 
       final state = container.read(bootstrapProvider);
       expect(state, BootstrapState.unauthenticated);
+    },
+  );
+
+  test(
+    'yields error when settings are null and settingsInitialization fails',
+    () async {
+      final container = ProviderContainer(
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => null),
+          settingsInitializationProvider.overrideWith(
+            (ref) => Future.error(Exception('Connection failed')),
+          ),
+          authProvider.overrideWith(MockAuthUnauthenticated.new),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      try {
+        await container.read(settingsInitializationProvider.future);
+      } catch (_) {}
+
+      final state = container.read(bootstrapProvider);
+      expect(state, BootstrapState.error);
     },
   );
 }

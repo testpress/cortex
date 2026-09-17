@@ -1134,6 +1134,8 @@
   "sessionExpiredLoginButton": "تسجيل الدخول مرة أخرى",
   "sessionExpiredFallbackMessage": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
   "errorNoInternetTitle": "خطأ في الاتصال",
+  "errorSetupConnectionTitle": "لا يوجد اتصال بالإنترنت",
+  "errorSetupConnectionMessage": "اتصل بالإنترنت لإعداد التطبيق وحاول مرة أخرى.",
   "errorTimeoutTitle": "انتهاء مهلة الطلب",
   "errorSessionExpiredTitle": "انتهت الجلسة",
   "errorAccessDeniedTitle": "تم رفض الوصول",
