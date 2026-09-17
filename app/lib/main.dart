@@ -113,6 +113,11 @@ class CortexApp extends ConsumerWidget {
       builder: (context, child) {
         final originalData = MediaQuery.of(context);
         final systemScale = originalData.textScaler.scale(1.0);
+        final unFocusChild = GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: child ?? const SizedBox.shrink(),
+        );
         final scaled = MediaQuery(
           data: originalData.copyWith(
             textScaler: TextScaler.linear(systemScale * scaleMultiplier),
@@ -122,7 +127,7 @@ class CortexApp extends ConsumerWidget {
               color: design.colors.textPrimary,
               decoration: TextDecoration.none,
             ),
-            child: child ?? const SizedBox.shrink(),
+            child: unFocusChild,
           ),
         );
 

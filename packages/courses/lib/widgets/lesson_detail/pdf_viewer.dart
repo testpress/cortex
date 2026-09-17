@@ -231,11 +231,9 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       pageOverlaysBuilder: (context, pageRect, page) {
         if (_watermarkText.isEmpty) return const [];
         return [
-          Positioned.fill(
-            child: WatermarkOverlay(
-              text: _watermarkText,
-              color: design.colors.onSurface.withValues(alpha: 0.15),
-            ),
+          WatermarkOverlay(
+            text: _watermarkText,
+            color: design.colors.onSurface.withValues(alpha: 0.15),
           ),
         ];
       },

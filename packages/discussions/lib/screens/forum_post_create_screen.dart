@@ -171,7 +171,6 @@ class _ForumPostCreateScreenState extends ConsumerState<ForumPostCreateScreen> {
                           label: '', // Empty because we manual label above
                           hintText: l10n.forumPostTitleHint,
                           controller: _titleController,
-                          autofocus: true,
                           textStyle: design.typography.bodySmall,
                         ),
                         SizedBox(height: design.spacing.lg),

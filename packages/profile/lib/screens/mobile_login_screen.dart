@@ -118,7 +118,6 @@ class _MobileLoginScreenState extends ConsumerState<MobileLoginScreen> {
                                     hintText: l10n.loginPhoneNumberHint,
                                     controller: _phoneController,
                                     keyboardType: TextInputType.phone,
-                                    autofocus: true,
                                     textStyle: design.typography.labelBold,
                                     textInputAction: TextInputAction.done,
                                     onSubmitted: (_) => _handleContinueToOtp(),

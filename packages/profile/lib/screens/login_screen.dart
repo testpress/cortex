@@ -131,7 +131,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           label: '',
                           hintText: displayLoginIdHint,
                           controller: _usernameController,
-                          autofocus: true,
                           textStyle: design.typography.labelBold,
                           textInputAction: TextInputAction.next,
                           autofillHints: const [AutofillHints.username],

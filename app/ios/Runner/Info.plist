@@ -90,6 +90,10 @@
 	<string>This app requires camera access to allow you to participate in live classroom sessions.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires microphone access to allow you to speak during live classroom sessions.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your photo library to attach images and documents to your doubts and discussions.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires permission to save downloaded images and documents to your photo library.</string>
 	<!-- Required by background_downloader for URLSession background transfers -->
 	<key>UIBackgroundModes</key>
 	<array>

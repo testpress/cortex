@@ -152,7 +152,6 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                             label: '',
                             hintText: l10n.doubtsFormTitleHint,
                             controller: _titleController,
-                            autofocus: true,
                             textStyle: design.typography.bodySmall,
                           ),
                           const SizedBox(height: 24),

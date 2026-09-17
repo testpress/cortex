@@ -84,7 +84,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               keyboardType: TextInputType.emailAddress,
                               textStyle: design.typography.labelBold,
                               textInputAction: TextInputAction.done,
-                              autofocus: true,
                             ),
                             if (_errorMessage != null) ...[
                               SizedBox(height: design.spacing.md),
