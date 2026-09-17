@@ -72,7 +72,7 @@ void main() {
       expect(find.byType(ExamPrescreen), findsOneWidget);
     });
 
-    testWidgets('redirects LessonType.assessment to AssessmentDetailScreen', (
+    testWidgets('redirects LessonType.assessment to ExamPrescreen', (
       tester,
     ) async {
       final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -110,7 +110,73 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.byType(AssessmentDetailScreen), findsOneWidget);
+      expect(find.byType(ExamPrescreen), findsOneWidget);
     });
+
+    testWidgets(
+      'renders AssessmentDetailScreen for /study/assessment/:id/player route',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/study/assessment/456/player',
+          routes: StudyRoutes.routes(rootNavigatorKey),
+        );
+
+        await tester.pumpWidget(
+          createTestApp(
+            router: router,
+            overrides: [
+              lessonDetailProvider(
+                '456',
+              ).overrideWith((ref) => Stream.value(null)),
+            ],
+          ),
+        );
+
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        expect(find.byType(AssessmentDetailScreen), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'renders ReviewAnalyticsScreen for /study/assessment/:id/review-analytics route',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/study/assessment/456/review-analytics',
+          routes: StudyRoutes.routes(rootNavigatorKey),
+        );
+
+        await tester.pumpWidget(createTestApp(router: router, overrides: []));
+
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        expect(find.byType(ReviewAnalyticsScreen), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'renders ReviewAnswerDetailScreen for /study/assessment/:id/review-answers route',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/study/assessment/456/review-answers',
+          routes: StudyRoutes.routes(rootNavigatorKey),
+        );
+
+        await tester.pumpWidget(createTestApp(router: router, overrides: []));
+
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        expect(find.byType(ReviewAnswerDetailScreen), findsOneWidget);
+      },
+    );
   });
 }

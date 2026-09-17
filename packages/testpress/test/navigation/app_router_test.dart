@@ -248,4 +248,27 @@ void main() {
       },
     );
   });
+
+  // -------------------------------------------------------------------------
+  // Named Route resolution
+  // -------------------------------------------------------------------------
+  group('Study named routes', () {
+    test('resolves assessment-detail route correctly', () {
+      final container = ProviderContainer(
+        overrides: [
+          cachedAuthFlagProvider.overrideWithValue(true),
+          authProvider.overrideWith(_AuthLoading.new),
+          instituteSettingsProvider.overrideWith((ref) => null),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = container.read(goRouterProvider);
+      final location = router.namedLocation(
+        AppRouteNames.assessmentDetail,
+        pathParameters: {'id': '123'},
+      );
+      expect(location, '/study/assessment/123');
+    });
+  });
 }

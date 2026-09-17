@@ -117,19 +117,24 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     final bool isMetadataLoading =
         !(lesson?.isDetailFetched ?? false) && !lessonDetailAsync.hasError;
 
+    final bool canResumePaused =
+        ((exam?.pausedAttemptsCount ?? 0) > 0) &&
+        !(exam?.disableAttemptResume ?? false);
+
     final bool isResuming =
-        ((exam?.pausedAttemptsCount ?? 0) > 0 &&
-            !(exam?.disableAttemptResume ?? false)) ||
-        hasRunningAttempt;
+        hasRunningAttempt || (!attemptsAsync.hasValue && canResumePaused);
 
     final bool isRetaking = hasCompletedAttempts && !isResuming;
+
+    final bool isAssessment = lesson?.type == LessonType.assessment;
 
     final bool showModeSelection =
         !isMetadataLoading &&
         exam != null &&
         exam.enableQuizMode == true &&
         !isResuming &&
-        !widget.isOfflineOnly;
+        !widget.isOfflineOnly &&
+        !isAssessment;
 
     final bool isButtonEnabled =
         !isMetadataLoading && (!showModeSelection || !_isModeSheetOpen);

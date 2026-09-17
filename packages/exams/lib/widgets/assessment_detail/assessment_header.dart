@@ -32,22 +32,26 @@ class AssessmentHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              GestureDetector(
+              AppSemantics.button(
+                label: l10n.assessmentExit,
                 onTap: onExit,
-                child: Row(
-                  children: [
-                    Icon(
-                      LucideIcons.chevronLeft,
-                      color: design.colors.textPrimary,
-                      size: 20,
-                    ),
-                    SizedBox(width: design.spacing.xs),
-                    AppText.body(
-                      l10n.assessmentExit,
-                      color: design.colors.textPrimary,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ],
+                child: GestureDetector(
+                  onTap: onExit,
+                  child: Row(
+                    children: [
+                      Icon(
+                        LucideIcons.chevronLeft,
+                        color: design.colors.textPrimary,
+                        size: 20,
+                      ),
+                      SizedBox(width: design.spacing.xs),
+                      AppText.body(
+                        l10n.assessmentExit,
+                        color: design.colors.textPrimary,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const Spacer(),

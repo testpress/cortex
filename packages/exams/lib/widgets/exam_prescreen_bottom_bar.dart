@@ -75,6 +75,8 @@ class ExamPrescreenBottomBar extends StatelessWidget {
       );
     }
 
+    final bool isAssessment = lesson?.type == LessonType.assessment;
+
     return Container(
       color: design.colors.card,
       padding: EdgeInsets.fromLTRB(
@@ -86,7 +88,7 @@ class ExamPrescreenBottomBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (exam != null)
+          if (exam != null && !isAssessment)
             OfflineExamActionButton(
               examId: testId,
               examData: exam!,

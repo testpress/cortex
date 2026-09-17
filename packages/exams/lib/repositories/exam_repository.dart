@@ -184,7 +184,9 @@ class OnlineExamRepository implements ExamRepository {
     _pendingAnswers.clear();
 
     final attemptId = _currentState.attempt?.activeId?.toString();
-    if (attemptId == null) return;
+    if (attemptId == null) {
+      return;
+    }
 
     for (final entry in pending.entries) {
       final questionId = entry.key;
@@ -499,9 +501,9 @@ class OnlineExamRepository implements ExamRepository {
         isResume &&
         (attempt.sections == null || attempt.sections!.isEmpty)) {
       try {
-        currentAttempt = await _dataSource.sendHeartbeat(
+        currentAttempt = (await _dataSource.sendHeartbeat(
           attempt.activeId!.toString(),
-        );
+        )).copyWith(contentAttemptId: attempt.contentAttemptId);
         heartbeatFetched = true;
       } catch (e, st) {
         _sentryService.captureException(
@@ -554,7 +556,7 @@ class OnlineExamRepository implements ExamRepository {
       final attemptIdStr = currentAttempt.activeId!.toString();
 
       final Future<List<QuestionDto>> questionsFuture =
-          _sectionQuestionsCache.containsKey(attemptIdStr)
+          (!isResume && _sectionQuestionsCache.containsKey(attemptIdStr))
           ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
           : _dataSource.getQuestions(attemptIdStr).then((q) {
               _sectionQuestionsCache[attemptIdStr] = q;
@@ -569,6 +571,8 @@ class OnlineExamRepository implements ExamRepository {
           results[0] as AttemptDto? ?? currentAttempt;
       // Merge the heartbeat details while preserving the original attempt's context (like the course-linked endUrl).
       final AttemptDto updatedAttempt = currentAttempt.copyWith(
+        contentAttemptId:
+            currentAttempt.contentAttemptId ?? attempt.contentAttemptId,
         state: heartbeatAttempt.state,
         remainingTime: heartbeatAttempt.remainingTime,
         sections: heartbeatAttempt.sections,
@@ -618,6 +622,7 @@ class OnlineExamRepository implements ExamRepository {
           );
         }
       }
+
       int initialQuestionIndex = 0;
       if (updatedAttempt.lastViewedQuestionId != null) {
         final index = questions.indexWhere(
@@ -676,7 +681,7 @@ class OnlineExamRepository implements ExamRepository {
 
       final attemptIdStr = attempt.activeId!.toString();
       final Future<List<QuestionDto>> questionsFuture =
-          _sectionQuestionsCache.containsKey(attemptIdStr)
+          (!isResume && _sectionQuestionsCache.containsKey(attemptIdStr))
           ? Future.value(_sectionQuestionsCache[attemptIdStr]!)
           : _dataSource.getQuestions(attemptIdStr).then((q) {
               _sectionQuestionsCache[attemptIdStr] = q;
@@ -687,7 +692,11 @@ class OnlineExamRepository implements ExamRepository {
         heartbeatFuture,
         questionsFuture,
       ]);
-      final AttemptDto updatedAttempt = results[0] as AttemptDto? ?? attempt;
+      final AttemptDto heartbeatAttempt = results[0] as AttemptDto? ?? attempt;
+      final AttemptDto updatedAttempt = heartbeatAttempt.copyWith(
+        contentAttemptId:
+            currentAttempt.contentAttemptId ?? attempt.contentAttemptId,
+      );
       questions = List<QuestionDto>.from(results[1] as List<QuestionDto>);
       _sortQuestions(questions, updatedAttempt.sections);
 
@@ -710,6 +719,7 @@ class OnlineExamRepository implements ExamRepository {
           );
         }
       }
+
       int initialQuestionIndex = 0;
       if (updatedAttempt.lastViewedQuestionId != null) {
         final index = questions.indexWhere(
@@ -977,7 +987,9 @@ class OnlineExamRepository implements ExamRepository {
 
   @override
   Future<void> submitAnswer(String questionId, AnswerDto answer) async {
-    if (_currentState.attempt?.activeId == null) return;
+    if (_currentState.attempt?.activeId == null) {
+      return;
+    }
 
     final updatedAnswers = Map<String, AnswerDto>.from(_currentState.answers);
     final updatedAnswer = AnswerDto(
@@ -1085,11 +1097,10 @@ class OnlineExamRepository implements ExamRepository {
     );
     // ───────────────────────────────────────────────────────────────────────
 
-    // Fire and forget submission
-    _dataSource.submitAnswer(attemptId, questionId, answer).catchError((
-      e,
-      stackTrace,
-    ) {
+    // Await submission to guarantee backend persistence
+    try {
+      await _dataSource.submitAnswer(attemptId, questionId, answer);
+    } catch (e, stackTrace) {
       _sentryService.captureException(e, stackTrace: stackTrace);
       if (kDebugMode) {
         dev.log(
@@ -1099,8 +1110,7 @@ class OnlineExamRepository implements ExamRepository {
           stackTrace: stackTrace,
         );
       }
-      return null;
-    });
+    }
   }
 
   @override
@@ -1186,16 +1196,17 @@ class OnlineExamRepository implements ExamRepository {
           }
         }
       }
-      final isContentExam =
-          _currentState.exam?.attemptsUrl.contains('/contents/') ?? false;
       final contentAttemptId = _currentState.attempt?.contentAttemptId
           ?.toString();
+      final isContentExam =
+          contentAttemptId != null ||
+          (_currentState.exam?.attemptsUrl.contains('/contents/') ?? false);
       final idToEnd = (isContentExam && contentAttemptId != null)
           ? contentAttemptId
           : attemptId;
       final finalAttempt = await _dataSource.endExam(
         idToEnd,
-        isContentExam: isContentExam,
+        isContentExam: isContentExam && contentAttemptId != null,
       );
       stopHeartbeat();
       stopCountdown();
@@ -1238,7 +1249,7 @@ class OnlineExamRepository implements ExamRepository {
 
   @override
   Future<void> pauseExam() async {
-    // Online API relies on user dropping off to naturally pause the timer server-side
+    await _flushPendingAnswers();
     stopCountdown();
     stopHeartbeat();
   }

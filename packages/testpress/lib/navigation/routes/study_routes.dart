@@ -162,60 +162,7 @@ class StudyRoutes {
                 );
               },
             ),
-            GoRoute(
-              path: 'review-analytics',
-              parentNavigatorKey: rootNavigatorKey,
-              builder: (context, state) {
-                final id = state.pathParameters['id']!;
-                final payload = state.extra as ReviewRoutePayload?;
-                return ReviewAnalyticsScreen(
-                  testId: id,
-                  assessmentTitle: payload?.assessmentTitle ?? 'Assessment $id',
-                  questions: payload?.questions ?? const <QuestionDto>[],
-                  attemptStates:
-                      payload?.attemptStates ?? const <String, AnswerDto>{},
-                  attempt: payload?.attempt,
-                  exam: payload?.exam,
-                  onBack: () => context.pop(),
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: 'subject-performance',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    final payload = state.extra as ReviewRoutePayload?;
-                    return ReviewSubjectPerformanceScreen(
-                      assessmentTitle:
-                          payload?.assessmentTitle ?? 'Assessment $id',
-                      questions: payload?.questions ?? const <QuestionDto>[],
-                      attemptStates:
-                          payload?.attemptStates ?? const <String, AnswerDto>{},
-                      attempt: payload?.attempt,
-                      exam: payload?.exam,
-                      onBack: () => context.pop(),
-                    );
-                  },
-                ),
-              ],
-            ),
-            GoRoute(
-              path: 'review-answers',
-              parentNavigatorKey: rootNavigatorKey,
-              builder: (context, state) {
-                final id = state.pathParameters['id']!;
-                final payload = state.extra as ReviewRoutePayload?;
-                return ReviewAnswerDetailScreen(
-                  assessmentTitle: payload?.assessmentTitle ?? 'Assessment $id',
-                  questions: payload?.questions ?? const <QuestionDto>[],
-                  attemptStates:
-                      payload?.attemptStates ?? const <String, AnswerDto>{},
-                  attempt: payload?.attempt,
-                  onBack: () => context.pop(),
-                );
-              },
-            ),
+            ..._buildReviewRoutes(rootNavigatorKey),
           ],
         ),
         GoRoute(
@@ -226,14 +173,101 @@ class StudyRoutes {
             final id = state.pathParameters['id']!;
             final extra = state.extra;
             final lesson = extra is LessonDto ? extra : null;
-            return AssessmentDetailScreen(
-              assessmentId: id,
+            final isOffline = state.uri.queryParameters['isOffline'] == 'true';
+            return ExamPrescreen(
+              testId: id,
               lesson: lesson,
+              isOfflineOnly: isOffline,
               onClose: () => context.pop(),
+              onStartAttempt:
+                  (
+                    isQuizMode, {
+                    bool isPartial = false,
+                    bool isOffline = false,
+                  }) async {
+                    context.pushReplacement(
+                      '/study/assessment/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
+                      extra: lesson,
+                    );
+                  },
+            );
+          },
+          routes: [
+            GoRoute(
+              path: 'player',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                final id = state.pathParameters['id']!;
+                final extra = state.extra;
+                final lesson = extra is LessonDto ? extra : null;
+                return AssessmentDetailScreen(
+                  assessmentId: id,
+                  lesson: lesson,
+                  onClose: () => context.pop(),
+                );
+              },
+            ),
+            ..._buildReviewRoutes(rootNavigatorKey),
+          ],
+        ),
+      ],
+    ),
+  ];
+}
+
+List<RouteBase> _buildReviewRoutes(GlobalKey<NavigatorState> rootNavigatorKey) {
+  return [
+    GoRoute(
+      path: 'review-analytics',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        final payload = state.extra as ReviewRoutePayload?;
+        return ReviewAnalyticsScreen(
+          testId: id,
+          assessmentTitle:
+              payload?.assessmentTitle ?? payload?.exam?.title ?? '',
+          questions: payload?.questions ?? const <QuestionDto>[],
+          attemptStates: payload?.attemptStates ?? const <String, AnswerDto>{},
+          attempt: payload?.attempt,
+          exam: payload?.exam,
+          onBack: () => context.pop(),
+        );
+      },
+      routes: [
+        GoRoute(
+          path: 'subject-performance',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) {
+            final payload = state.extra as ReviewRoutePayload?;
+            return ReviewSubjectPerformanceScreen(
+              assessmentTitle:
+                  payload?.assessmentTitle ?? payload?.exam?.title ?? '',
+              questions: payload?.questions ?? const <QuestionDto>[],
+              attemptStates:
+                  payload?.attemptStates ?? const <String, AnswerDto>{},
+              attempt: payload?.attempt,
+              exam: payload?.exam,
+              onBack: () => context.pop(),
             );
           },
         ),
       ],
+    ),
+    GoRoute(
+      path: 'review-answers',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) {
+        final payload = state.extra as ReviewRoutePayload?;
+        return ReviewAnswerDetailScreen(
+          assessmentTitle:
+              payload?.assessmentTitle ?? payload?.exam?.title ?? '',
+          questions: payload?.questions ?? const <QuestionDto>[],
+          attemptStates: payload?.attemptStates ?? const <String, AnswerDto>{},
+          attempt: payload?.attempt,
+          onBack: () => context.pop(),
+        );
+      },
     ),
   ];
 }
