@@ -62,11 +62,15 @@ final cachedAuthFlagProvider = Provider<bool>((ref) => false);
 class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
 
-  /// Kept for API compatibility — login methods gate on this to avoid a race
-  /// where stale cleanup wipes a freshly written session. With logout() now
-  /// awaiting cleanup before flipping auth state, the Login screen cannot
-  /// appear until cleanup is complete, so this is always a resolved future.
-  final Future<void> _cleanupFuture = Future.value();
+  /// Tracks the in-flight logout cleanup so login methods can wait for it
+  /// before writing new session data to the DB — prevents stale cleanup from
+  /// wiping a freshly written session.
+  ///
+  /// logout() now awaits this future before flipping auth state, so the Login
+  /// screen only appears after cleanup is complete. The field is still assigned
+  /// so any concurrent login call (e.g. loginWithPassword called before the
+  /// logout future resolves) correctly gates on the real in-flight cleanup.
+  Future<void> _cleanupFuture = Future.value();
 
   @override
   FutureOr<bool> build() async {
@@ -139,12 +143,15 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
-    // Run full cleanup first — clears DB, tokens, and session state.
-    // The loading button on the sheet/dialog stays visible throughout because
-    // auth state is still true (no navigation yet).
-    // Only after cleanup completes do we flip state → GoRouter redirects to
-    // Login → the sheet/dialog is naturally unmounted.
-    await _runCleanup();
+    // Assign _cleanupFuture before awaiting so any concurrent login call
+    // (loginWithPassword, loginWithGoogle, etc.) that runs while cleanup is
+    // in-flight will correctly gate on the real cleanup future — not a
+    // resolved no-op — and won’t write new session data until cleanup is done.
+    _cleanupFuture = _runCleanup();
+    // Await cleanup before flipping state: the loading button on the sheet/
+    // dialog stays visible for the full purge duration, and GoRouter only
+    // redirects to Login once everything is wiped.
+    await _cleanupFuture;
     state = const AsyncData(false);
   }
 
