@@ -345,9 +345,6 @@ class _FakeAssessmentController extends AssessmentController {
   Future<void> checkAnswer(String questionId) async {}
 
   @override
-  void goToQuestion(int index) {}
-
-  @override
   Future<void> next() async {}
 
   @override
@@ -358,9 +355,6 @@ class _FakeAssessmentController extends AssessmentController {
 
   @override
   void selectOption(String questionId, String optionId) {}
-
-  @override
-  void togglePalette(bool show) {}
 
   @override
   void tryAgain(String questionId) {}

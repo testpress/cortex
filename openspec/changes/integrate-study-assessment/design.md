@@ -21,6 +21,7 @@ Assessment and quiz lessons launched from the Study tab need to follow the stand
 - **Answer Hydration on Resume**: When syncing an existing attempt, hydrate `attemptStates` with previously submitted options and checked statuses, and restore `currentIndex` to the first unanswered or last viewed question.
 - **Pause & Exit Interception**: Intercept back gestures in `AssessmentDetailScreen` via `PopScope` to display `PauseConfirmationDialog` before exiting.
 - **Hybrid Option Rendering**: Use `AssessmentOptionCard` with `AppHtml` for media embeds (`video`, `iframe`) and `AppHtmlV2` with `AbsorbPointer` for lightweight text options.
+- **Forward-Only Assessment Progression**: Unlike standard exams in `TestDetailScreen` (which maintain bidirectional navigation and a question palette even in quiz mode), `AssessmentDetailScreen` specifically implements a forward-only interactive stepper (Check Answer → Continue) for `LessonType.assessment` study lessons, where instant verification and explanations lock each question sequentially.
 
 ## Risks / Trade-offs
 

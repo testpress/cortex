@@ -17,7 +17,6 @@ class AssessmentState {
   final List<AssessmentQuestion> questions;
   final int currentIndex;
   final Map<String, AssessmentAttemptState> attemptStates;
-  final bool showPalette;
   final bool isCompleted;
   final String? errorMessage;
   final bool allowRetake;
@@ -29,7 +28,6 @@ class AssessmentState {
     this.questions = const [],
     this.currentIndex = 0,
     this.attemptStates = const {},
-    this.showPalette = false,
     this.isCompleted = false,
     this.errorMessage,
     this.allowRetake = true,
@@ -86,7 +84,6 @@ class AssessmentState {
     List<AssessmentQuestion>? questions,
     int? currentIndex,
     Map<String, AssessmentAttemptState>? attemptStates,
-    bool? showPalette,
     bool? isCompleted,
     String? errorMessage,
     bool? allowRetake,
@@ -98,7 +95,6 @@ class AssessmentState {
       questions: questions ?? this.questions,
       currentIndex: currentIndex ?? this.currentIndex,
       attemptStates: attemptStates ?? this.attemptStates,
-      showPalette: showPalette ?? this.showPalette,
       isCompleted: isCompleted ?? this.isCompleted,
       errorMessage: errorMessage ?? this.errorMessage,
       allowRetake: allowRetake ?? this.allowRetake,
@@ -434,17 +430,6 @@ class AssessmentController extends _$AssessmentController {
       );
       await endExam();
     }
-  }
-
-  void goToQuestion(int index) {
-    state = state.copyWith(
-      currentIndex: index.clamp(0, state.questions.length - 1),
-      showPalette: false,
-    );
-  }
-
-  void togglePalette(bool show) {
-    state = state.copyWith(showPalette: show);
   }
 
   void retake() {

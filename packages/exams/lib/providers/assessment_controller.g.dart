@@ -7,7 +7,7 @@ part of 'assessment_controller.dart';
 // **************************************************************************
 
 String _$assessmentControllerHash() =>
-    r'assessmentControllerHash';
+    r'58c5d4175b303800a73a166f097d560a1ddb35a7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -37,16 +37,24 @@ abstract class _$AssessmentController
   AssessmentState build(AssessmentParam param);
 }
 
-/// See also [AssessmentController].
+/// Controller managing business logic, state mutations, and network interactions for assessments.
+///
+/// Copied from [AssessmentController].
 @ProviderFor(AssessmentController)
 const assessmentControllerProvider = AssessmentControllerFamily();
 
-/// See also [AssessmentController].
+/// Controller managing business logic, state mutations, and network interactions for assessments.
+///
+/// Copied from [AssessmentController].
 class AssessmentControllerFamily extends Family<AssessmentState> {
-  /// See also [AssessmentController].
+  /// Controller managing business logic, state mutations, and network interactions for assessments.
+  ///
+  /// Copied from [AssessmentController].
   const AssessmentControllerFamily();
 
-  /// See also [AssessmentController].
+  /// Controller managing business logic, state mutations, and network interactions for assessments.
+  ///
+  /// Copied from [AssessmentController].
   AssessmentControllerProvider call(AssessmentParam param) {
     return AssessmentControllerProvider(param);
   }
@@ -73,14 +81,15 @@ class AssessmentControllerFamily extends Family<AssessmentState> {
   String? get name => r'assessmentControllerProvider';
 }
 
-/// See also [AssessmentController].
+/// Controller managing business logic, state mutations, and network interactions for assessments.
+///
+/// Copied from [AssessmentController].
 class AssessmentControllerProvider
     extends
-        AutoDisposeNotifierProviderImpl<
-          AssessmentController,
-          AssessmentState
-        > {
-  /// See also [AssessmentController].
+        AutoDisposeNotifierProviderImpl<AssessmentController, AssessmentState> {
+  /// Controller managing business logic, state mutations, and network interactions for assessments.
+  ///
+  /// Copied from [AssessmentController].
   AssessmentControllerProvider(AssessmentParam param)
     : this._internal(
         () => AssessmentController()..param = param,
@@ -108,9 +117,7 @@ class AssessmentControllerProvider
   final AssessmentParam param;
 
   @override
-  AssessmentState runNotifierBuild(
-    covariant AssessmentController notifier,
-  ) {
+  AssessmentState runNotifierBuild(covariant AssessmentController notifier) {
     return notifier.build(param);
   }
 
