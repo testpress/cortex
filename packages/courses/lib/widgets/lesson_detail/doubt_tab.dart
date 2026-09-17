@@ -25,64 +25,40 @@ class DoubtTab extends ConsumerWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    return Stack(
+    return Column(
       children: [
-        doubtsAsync.when(
-          data: (doubts) {
-            if (doubts.isEmpty) {
-              return _buildScrollable(
-                context: context,
-                child: _buildEmptyState(context, design, l10n),
-                design: design,
-              );
-            }
-            return CustomScrollView(
-              physics: const ClampingScrollPhysics(),
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.only(
-                    left: design.spacing.md,
-                    right: design.spacing.md,
-                    top: design.spacing.md,
-                    bottom: 100,
-                  ),
-                  sliver: SliverList.separated(
+        Expanded(
+          child: Stack(
+            children: [
+              doubtsAsync.when(
+                data: (doubts) {
+                  if (doubts.isEmpty) {
+                    return _buildEmptyState(context, design, l10n);
+                  }
+                  return ListView.separated(
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.only(
+                      left: design.spacing.md,
+                      right: design.spacing.md,
+                      top: design.spacing.md,
+                      bottom: 80,
+                    ),
                     itemCount: doubts.length,
                     separatorBuilder: (context, index) =>
                         SizedBox(height: design.spacing.sm),
                     itemBuilder: (context, index) {
                       return _DoubtItemCard(doubt: doubts[index]);
                     },
+                  );
+                },
+                loading: () => ListView.separated(
+                  physics: const ClampingScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    left: design.spacing.md,
+                    right: design.spacing.md,
+                    top: design.spacing.md,
+                    bottom: 80,
                   ),
-                ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  fillOverscroll: false,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (footerBuilder != null) footerBuilder!(context),
-                        SizedBox(height: design.spacing.sm),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-          loading: () => CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.only(
-                  left: design.spacing.md,
-                  right: design.spacing.md,
-                  top: design.spacing.md,
-                  bottom: 100,
-                ),
-                sliver: SliverList.separated(
                   itemCount: 2,
                   separatorBuilder: (context, index) =>
                       SizedBox(height: design.spacing.sm),
@@ -102,77 +78,42 @@ class DoubtTab extends ConsumerWidget {
                     );
                   },
                 ),
-              ),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                fillOverscroll: false,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: design.spacing.sm),
-                    ],
+                error: (err, stack) => Center(
+                  child: AppErrorView(
+                    error: err,
+                    onRetry: () =>
+                        ref.invalidate(lessonDoubtsProvider(lessonId)),
                   ),
                 ),
               ),
-            ],
-          ),
-          error: (err, stack) => _buildScrollable(
-            context: context,
-            child: Center(
-              child: AppErrorView(
-                error: err,
-                onRetry: () => ref.invalidate(lessonDoubtsProvider(lessonId)),
-              ),
-            ),
-            design: design,
-          ),
-        ),
-        if (doubtsAsync.hasValue || doubtsAsync.hasError)
-          Positioned(
-            bottom: 96,
-            right: design.spacing.md,
-            child: AskDoubtFab(
-              onTap: () async {
-                onBeforeNavigate?.call();
-                final uri = Uri(
-                  path: '/home/discussions/doubts/ask',
-                  queryParameters: {
-                    'chapterContentId': lesson.id,
-                    'lessonTitle': lesson.title,
-                    'lessonType': lesson.type.name,
-                  },
-                );
-                await context.push(uri.toString());
-                if (!context.mounted) return;
-                onResumeVideo?.call();
-              },
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildScrollable({
-    required BuildContext context,
-    required Widget child,
-    required DesignConfig design,
-  }) {
-    return CustomScrollView(
-      physics: const ClampingScrollPhysics(),
-      slivers: [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          fillOverscroll: false,
-          child: Column(
-            children: [
-              Expanded(child: child),
-              if (footerBuilder != null) footerBuilder!(context),
-              SizedBox(height: design.spacing.sm),
+              if (doubtsAsync.hasValue || doubtsAsync.hasError)
+                Positioned(
+                  bottom: design.spacing.md,
+                  right: design.spacing.md,
+                  child: AskDoubtFab(
+                    onTap: () async {
+                      onBeforeNavigate?.call();
+                      final uri = Uri(
+                        path: '/home/discussions/doubts/ask',
+                        queryParameters: {
+                          'chapterContentId': lesson.id,
+                          'lessonTitle': lesson.title,
+                          'lessonType': lesson.type.name,
+                        },
+                      );
+                      await context.push(uri.toString());
+                      if (!context.mounted) return;
+                      onResumeVideo?.call();
+                    },
+                  ),
+                ),
             ],
           ),
         ),
+        if (footerBuilder != null) ...[
+          footerBuilder!(context),
+          SizedBox(height: design.spacing.sm),
+        ],
       ],
     );
   }
