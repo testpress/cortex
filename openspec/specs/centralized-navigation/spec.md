@@ -4,18 +4,14 @@
 TBD - created by archiving change integrate-whats-new-section. Update Purpose after archive.
 ## Requirements
 ### Requirement: Centralized Lesson Navigation
-The system SHALL provide a unified mechanism for navigating to lesson details that decouples UI components from specific URL path structures.
+The system SHALL provide a unified mechanism for navigating to lesson details that maps content types to registered named routes.
 
-#### Scenario: Named Route Mapping
-- **WHEN** any component needs to navigate to a lesson (Video, PDF, Test, Assessment, etc.)
-- **THEN** it MUST use a centralized `LessonRouter` that maps the content type to a Named Route.
-- **AND** the route names MUST be defined as constants in the `core` package.
+#### Scenario: Assessment route resolution
+- **WHEN** a component navigates to an assessment lesson via `LessonRouter`
+- **THEN** the router MUST resolve `AppRouteNames.assessmentDetail` to `/study/assessment/:id`
+- **AND** the route parameters (such as `id`) MUST be injected into the path parameters
 
-#### Scenario: Route Parameter Injection
-- **WHEN** navigating to a lesson detail screen
-- **THEN** the router MUST automatically inject the required parameters (like `id`) into the path parameters of the route.
-
-#### Scenario: Elimination of Duplicate Logic
-- **WHEN** the centralized navigation system is implemented
-- **THEN** all manual `switch` blocks for lesson routing in `ChaptersListPage`, `LessonCardsSectionWidget`, and `AppRouter` MUST be removed in favor of the centralized call.
+#### Scenario: Elimination of manual route branching
+- **WHEN** navigating to study lessons
+- **THEN** navigation MUST execute through `LessonRouter.navigateToLesson` rather than local route switches
 
