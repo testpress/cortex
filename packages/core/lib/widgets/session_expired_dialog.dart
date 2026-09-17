@@ -40,11 +40,24 @@ class SessionExpiredDialog extends StatelessWidget {
   }
 }
 
-class _DialogCard extends StatelessWidget {
+class _DialogCard extends StatefulWidget {
   const _DialogCard({required this.message, required this.onSignIn});
 
   final String message;
   final VoidCallback onSignIn;
+
+  @override
+  State<_DialogCard> createState() => _DialogCardState();
+}
+
+class _DialogCardState extends State<_DialogCard> {
+  bool _loading = false;
+
+  void _handleSignIn() {
+    if (_loading) return;
+    setState(() => _loading = true);
+    widget.onSignIn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,17 +111,21 @@ class _DialogCard extends StatelessWidget {
 
           // Backend API message — fall back to localized string if empty
           AppText.body(
-            message.isNotEmpty ? message : l10n.sessionExpiredFallbackMessage,
+            widget.message.isNotEmpty
+                ? widget.message
+                : l10n.sessionExpiredFallbackMessage,
             color: design.colors.textSecondary,
             textAlign: TextAlign.center,
           ),
 
           SizedBox(height: design.spacing.xl),
 
-          // Login Again button
+          // Login Again button — spins immediately on tap while the
+          // overlay clears and the route resets in the background.
           AppButton.primary(
             label: l10n.sessionExpiredLoginButton,
-            onPressed: onSignIn,
+            onPressed: _loading ? null : _handleSignIn,
+            loading: _loading,
             fullWidth: true,
           ),
         ],

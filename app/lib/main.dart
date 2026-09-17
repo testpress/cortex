@@ -141,10 +141,7 @@ class CortexApp extends ConsumerWidget {
               Positioned.fill(
                 child: SessionExpiredDialog(
                   message: sessionExpiredMessage,
-                  onSignIn: () {
-                    ref.read(sessionExpiredProvider.notifier).state = null;
-                    ref.read(authProvider.notifier).logout();
-                  },
+                  onSignIn: () => ref.read(authProvider.notifier).logout(),
                 ),
               ),
             ],

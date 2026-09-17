@@ -25,4 +25,6 @@ Stream<List<CourseDto>> profileEnrollment(Ref ref) async* {
   );
 }
 
-final isLogoutSheetOpenProvider = StateProvider<bool>((ref) => false);
+final isLogoutSheetOpenProvider = StateProvider.autoDispose<bool>(
+  (ref) => false,
+);

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
 /// A premium, centered logout confirmation bottom sheet.
-class LogoutConfirmationSheet extends StatelessWidget {
+class LogoutConfirmationSheet extends StatefulWidget {
   const LogoutConfirmationSheet({
     super.key,
     required this.onConfirm,
@@ -11,6 +11,20 @@ class LogoutConfirmationSheet extends StatelessWidget {
 
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
+
+  @override
+  State<LogoutConfirmationSheet> createState() =>
+      _LogoutConfirmationSheetState();
+}
+
+class _LogoutConfirmationSheetState extends State<LogoutConfirmationSheet> {
+  bool _loading = false;
+
+  void _handleConfirm() {
+    if (_loading) return;
+    setState(() => _loading = true);
+    widget.onConfirm();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +112,11 @@ class LogoutConfirmationSheet extends StatelessWidget {
                         label: l10n.logoutButtonLabel,
                         fullWidth: true,
                         backgroundColor: design.colors.error,
-                        leading: const Icon(LucideIcons.logOut),
-                        onPressed: onConfirm,
+                        leading: _loading
+                            ? null
+                            : const Icon(LucideIcons.logOut),
+                        loading: _loading,
+                        onPressed: _loading ? null : _handleConfirm,
                         labelStyle: design.typography.labelBold,
                       ),
                       SizedBox(height: design.spacing.sm),
@@ -110,7 +127,9 @@ class LogoutConfirmationSheet extends StatelessWidget {
                             .withValues(alpha: 0.5),
                         foregroundColor: design.colors.textPrimary,
                         borderColor: const Color(0x00000000),
-                        onPressed: onCancel,
+                        // Disable cancel while confirming — prevents a race
+                        // where the user taps cancel mid-way through cleanup.
+                        onPressed: _loading ? null : widget.onCancel,
                         labelStyle: design.typography.labelBold,
                       ),
                     ],

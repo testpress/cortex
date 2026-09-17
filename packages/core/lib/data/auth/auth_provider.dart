@@ -62,9 +62,11 @@ final cachedAuthFlagProvider = Provider<bool>((ref) => false);
 class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
 
-  /// Tracks the in-flight logout cleanup so login methods can wait for it
-  /// before writing new session data to the DB.
-  Future<void> _cleanupFuture = Future.value();
+  /// Kept for API compatibility — login methods gate on this to avoid a race
+  /// where stale cleanup wipes a freshly written session. With logout() now
+  /// awaiting cleanup before flipping auth state, the Login screen cannot
+  /// appear until cleanup is complete, so this is always a resolved future.
+  final Future<void> _cleanupFuture = Future.value();
 
   @override
   FutureOr<bool> build() async {
@@ -137,15 +139,19 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
-    // Flip auth state immediately — router redirects to Login on this frame.
-    // Store the cleanup work in _cleanupFuture so login methods can gate on it.
+    // Run full cleanup first — clears DB, tokens, and session state.
+    // The loading button on the sheet/dialog stays visible throughout because
+    // auth state is still true (no navigation yet).
+    // Only after cleanup completes do we flip state → GoRouter redirects to
+    // Login → the sheet/dialog is naturally unmounted.
+    await _runCleanup();
     state = const AsyncData(false);
-    _cleanupFuture = _runCleanup();
   }
 
   Future<void> _runCleanup() async {
     try {
-      // Safety net: explicitly clear the user row to guarantee no stale data leaks if the full purge fails
+      // Safety net: explicitly clear the user row to guarantee no stale data
+      // leaks if the full purge fails.
       final userRepo = await ref.read(userRepositoryProvider.future);
       await userRepo.clearCurrentUser();
 
@@ -153,7 +159,13 @@ class Auth extends _$Auth {
       await resetUseCase.execute();
 
       await _repository.logout();
+
+      // Clear the session-expired overlay before the state flip so the Login
+      // screen never appears behind a stale session dialog.
+      ref.read(sessionExpiredProvider.notifier).state = null;
     } catch (e, stackTrace) {
+      // Even on failure, clear the session overlay so the user isn’t stuck.
+      ref.read(sessionExpiredProvider.notifier).state = null;
       ref
           .read(sentryServiceProvider)
           .captureException(
