@@ -144,10 +144,7 @@ class _AppShellBuilder extends ConsumerWidget {
                 isOpen: isLogoutSheetOpen,
                 onClose: closeSheet,
                 child: LogoutConfirmationSheet(
-                  onConfirm: () {
-                    closeSheet();
-                    ref.read(authProvider.notifier).logout();
-                  },
+                  onConfirm: () => ref.read(authProvider.notifier).logout(),
                   onCancel: closeSheet,
                 ),
               ),

@@ -112,42 +112,48 @@ void main() {
       verify(mockRepository.logout()).called(1);
     });
 
-    // Regression: auth state must flip to false synchronously on logout(),
-    // before any cleanup awaits, so the router redirects on the same frame.
+    // Regression: auth state must NOT flip until cleanup has fully completed,
+    // so the loading button on the sheet/dialog stays visible for the full
+    // purge duration — the router only redirects once everything is wiped.
     test(
-      'logout flips state to false synchronously before cleanup completes',
+      'logout keeps state true during cleanup and flips false only after it completes',
       () async {
         // Arrange
         when(mockRepository.isUserLoggedIn()).thenAnswer((_) async => true);
         await container.read(authProvider.future);
 
-        final cleanupStarted = Completer<void>();
         final cleanupGate = Completer<void>();
 
         when(mockUserRepo.clearCurrentUser()).thenAnswer((_) async {
-          cleanupStarted.complete();
           await cleanupGate.future; // block cleanup mid-flight
         });
 
-        // Act — fire logout but don't await it; it returns immediately after
-        // flipping state, while cleanup is still blocked above.
+        // Act — fire logout but don't await; cleanup is blocked above so
+        // state should still be true at this point.
         final logoutFuture = container.read(authProvider.notifier).logout();
 
-        // Wait until cleanup has actually started (proving it's in-flight)
-        await cleanupStarted.future;
+        // Give the event loop a turn so logout() can start _runCleanup()
+        await Future<void>.delayed(const Duration(milliseconds: 10));
 
-        // Assert — state is already false even though cleanup hasn't finished
+        // Assert — state is still true while cleanup is in-flight
+        expect(
+          container.read(authProvider).value,
+          isTrue,
+          reason:
+              'auth state must stay true while cleanup is running so the '
+              'loading button remains visible throughout the purge',
+        );
+
+        // Unblock cleanup and let logout complete
+        cleanupGate.complete();
+        await logoutFuture;
+
+        // Now state must be false — router redirects after cleanup finishes
         expect(
           container.read(authProvider).value,
           isFalse,
-          reason:
-              'auth state must flip synchronously so the router can redirect '
-              'on the same frame, before cleanup completes',
+          reason: 'auth state must flip to false once cleanup is complete',
         );
-
-        // Unblock cleanup and finish the logout
-        cleanupGate.complete();
-        await logoutFuture;
       },
     );
 

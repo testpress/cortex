@@ -63,7 +63,13 @@ class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
 
   /// Tracks the in-flight logout cleanup so login methods can wait for it
-  /// before writing new session data to the DB.
+  /// before writing new session data to the DB — prevents stale cleanup from
+  /// wiping a freshly written session.
+  ///
+  /// logout() now awaits this future before flipping auth state, so the Login
+  /// screen only appears after cleanup is complete. The field is still assigned
+  /// so any concurrent login call (e.g. loginWithPassword called before the
+  /// logout future resolves) correctly gates on the real in-flight cleanup.
   Future<void> _cleanupFuture = Future.value();
 
   @override
@@ -137,15 +143,22 @@ class Auth extends _$Auth {
   }
 
   Future<void> logout() async {
-    // Flip auth state immediately — router redirects to Login on this frame.
-    // Store the cleanup work in _cleanupFuture so login methods can gate on it.
-    state = const AsyncData(false);
+    // Assign _cleanupFuture before awaiting so any concurrent login call
+    // (loginWithPassword, loginWithGoogle, etc.) that runs while cleanup is
+    // in-flight will correctly gate on the real cleanup future — not a
+    // resolved no-op — and won’t write new session data until cleanup is done.
     _cleanupFuture = _runCleanup();
+    // Await cleanup before flipping state: the loading button on the sheet/
+    // dialog stays visible for the full purge duration, and GoRouter only
+    // redirects to Login once everything is wiped.
+    await _cleanupFuture;
+    state = const AsyncData(false);
   }
 
   Future<void> _runCleanup() async {
     try {
-      // Safety net: explicitly clear the user row to guarantee no stale data leaks if the full purge fails
+      // Safety net: explicitly clear the user row to guarantee no stale data
+      // leaks if the full purge fails.
       final userRepo = await ref.read(userRepositoryProvider.future);
       await userRepo.clearCurrentUser();
 
@@ -153,7 +166,13 @@ class Auth extends _$Auth {
       await resetUseCase.execute();
 
       await _repository.logout();
+
+      // Clear the session-expired overlay before the state flip so the Login
+      // screen never appears behind a stale session dialog.
+      ref.read(sessionExpiredProvider.notifier).state = null;
     } catch (e, stackTrace) {
+      // Even on failure, clear the session overlay so the user isn’t stuck.
+      ref.read(sessionExpiredProvider.notifier).state = null;
       ref
           .read(sentryServiceProvider)
           .captureException(
