@@ -1112,6 +1112,9 @@
   "aiSupportTitle": "دردشة الذكاء الاصطناعي",
   "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي",
 "contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
+  "contentLockedTitle": "هذا المحتوى مقفل",
+  "contentLockedPrerequisite": "للوصول إلى محتويات هذه الصفحة، تأكد من إكمال المحتوى السابق بنجاح.",
+  "contentLockedToast": "أكمل المحتوى السابق لإلغاء القفل",
   "accessExpired": "انتهت صلاحية الوصول",
   "accessExpiredOn": "انتهت صلاحية الوصول في {date}",
   "@accessExpiredOn": {

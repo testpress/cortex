@@ -2939,6 +2939,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contentAccessEnded => 'Your access to this content has ended!';
 
   @override
+  String get contentLockedTitle => 'This content is Locked';
+
+  @override
+  String get contentLockedPrerequisite =>
+      'To access the contents of this page, ensure you have successfully completed the previous content.';
+
+  @override
+  String get contentLockedToast => 'Complete previous content to unlock';
+
+  @override
   String get accessExpired => 'Access expired';
 
   @override

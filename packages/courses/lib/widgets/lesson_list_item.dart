@@ -67,6 +67,14 @@ class LessonListItem extends StatelessWidget {
               );
               return;
             }
+            if (lesson.isLocked) {
+              AppToast.show(
+                context,
+                message: L10n.of(context).contentLockedToast,
+                isError: true,
+              );
+              return;
+            }
             onTap?.call();
           };
 
@@ -166,7 +174,9 @@ class LessonListItem extends StatelessWidget {
                                       color: design.colors.textSecondary,
                                     ),
                                   ),
-                                ] else if (lesson.type != LessonType.liveStream)
+                                ] else if (lesson.type !=
+                                        LessonType.liveStream &&
+                                    !lesson.isLocked)
                                   LessonStatusBadge(
                                       status: lesson.progressStatus),
                               ],
@@ -181,8 +191,10 @@ class LessonListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 14, right: 16),
                     child: Icon(
                       lesson.hasEnded
-                          ? LucideIcons.lock
-                          : LucideIcons.chevronRight,
+                          ? LucideIcons.calendarClock
+                          : (lesson.isLocked
+                              ? LucideIcons.lock
+                              : LucideIcons.chevronRight),
                       color: design.colors.textSecondary.withValues(alpha: 0.5),
                       size: 20,
                     ),
