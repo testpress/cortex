@@ -5303,6 +5303,24 @@ abstract class AppLocalizations {
   /// **'Your access to this content has ended!'**
   String get contentAccessEnded;
 
+  /// No description provided for @contentLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This content is Locked'**
+  String get contentLockedTitle;
+
+  /// No description provided for @contentLockedPrerequisite.
+  ///
+  /// In en, this message translates to:
+  /// **'To access the contents of this page, ensure you have successfully completed the previous content.'**
+  String get contentLockedPrerequisite;
+
+  /// No description provided for @contentLockedToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete previous content to unlock'**
+  String get contentLockedToast;
+
   /// No description provided for @accessExpired.
   ///
   /// In en, this message translates to:
