@@ -35,7 +35,7 @@ void main() {
       id: const drift.Value(1),
       examId: const drift.Value('exam_123'),
       title: const drift.Value('AIPMT 2014'),
-      contentId: const drift.Value('content_123'),
+      contentId: const drift.Value('123'),
       duration: const drift.Value('03:00:00'),
       questionCount: const drift.Value(180),
       questionsJson: const drift.Value('[]'),
@@ -71,6 +71,118 @@ void main() {
         expect(allDownloads.length, 1);
         expect(allDownloads.first.status, 'SYNCED');
         expect(allDownloads.first.syncedAt, isNotNull);
+      },
+    );
+
+    test(
+      'Payload contains integer chapter_content_id and exam_question_id',
+      () async {
+        await db.upsertDownload(testDownload);
+        await db.upsertAnswer(
+          OfflineExamAnswersTableCompanion(
+            downloadId: const drift.Value(1),
+            questionId: const drift.Value('456'),
+            selectedChoices: const drift.Value('["choice_1", "choice_2"]'),
+            shortAnswer: const drift.Value('My short answer'),
+            review: const drift.Value(true),
+            savedAt: drift.Value(DateTime.now()),
+          ),
+        );
+
+        when(
+          mockApi.submitOfflineExamAnswers(any, any),
+        ).thenAnswer((_) async => {});
+
+        await service.syncPendingExams();
+
+        final captured = verify(
+          mockApi.submitOfflineExamAnswers('exam_123', captureAny),
+        ).captured;
+        expect(captured.length, 1);
+
+        final payload = captured.first as Map<String, dynamic>;
+        final offlineAttempt =
+            payload['offline_attempt'] as Map<String, dynamic>;
+        expect(offlineAttempt['chapter_content_id'], 123);
+        expect(offlineAttempt['chapter_content_id'], isA<int>());
+
+        final offlineAnswers = payload['offline_answers'] as List<dynamic>;
+        expect(offlineAnswers.length, 1);
+
+        final answer = offlineAnswers.first as Map<String, dynamic>;
+        expect(answer['exam_question_id'], 456);
+        expect(answer['exam_question_id'], isA<int>());
+        expect(answer['short_text'], 'My short answer');
+        expect(answer['review'], isTrue);
+      },
+    );
+
+    test('Non-numeric questionId is skipped and reported to Sentry', () async {
+      await db.upsertDownload(testDownload);
+      // Valid numeric question ID
+      await db.upsertAnswer(
+        OfflineExamAnswersTableCompanion(
+          downloadId: const drift.Value(1),
+          questionId: const drift.Value('456'),
+          savedAt: drift.Value(DateTime.now()),
+        ),
+      );
+      // Invalid non-numeric question ID
+      await db.upsertAnswer(
+        OfflineExamAnswersTableCompanion(
+          downloadId: const drift.Value(1),
+          questionId: const drift.Value('invalid_qid'),
+          savedAt: drift.Value(DateTime.now()),
+        ),
+      );
+
+      when(
+        mockApi.submitOfflineExamAnswers(any, any),
+      ).thenAnswer((_) async => {});
+
+      await service.syncPendingExams();
+
+      verify(
+        mockSentry.captureException(any, level: AppErrorLevel.warning),
+      ).called(1);
+
+      final captured = verify(
+        mockApi.submitOfflineExamAnswers('exam_123', captureAny),
+      ).captured;
+      final payload = captured.first as Map<String, dynamic>;
+      final offlineAnswers = payload['offline_answers'] as List<dynamic>;
+
+      // Only valid answer is included
+      expect(offlineAnswers.length, 1);
+      expect(offlineAnswers.first['exam_question_id'], 456);
+    });
+
+    test(
+      'Non-numeric contentId captures error to Sentry and aborts API submission',
+      () async {
+        final invalidContentDownload = OfflineExamDownloadsTableCompanion(
+          id: const drift.Value(2),
+          examId: const drift.Value('exam_123'),
+          title: const drift.Value('AIPMT 2014'),
+          contentId: const drift.Value('non_numeric_content'),
+          duration: const drift.Value('03:00:00'),
+          questionCount: const drift.Value(180),
+          questionsJson: const drift.Value('[]'),
+          downloadedAt: drift.Value(DateTime.now()),
+          status: const drift.Value('PENDING_SYNC'),
+        );
+        await db.upsertDownload(invalidContentDownload);
+
+        await service.syncPendingExams();
+
+        verifyNever(mockApi.submitOfflineExamAnswers(any, any));
+        verify(
+          mockSentry.captureException(
+            any,
+            level: anyNamed('level'),
+            stackTrace: anyNamed('stackTrace'),
+          ),
+        ).called(greaterThanOrEqualTo(1));
       },
     );
 

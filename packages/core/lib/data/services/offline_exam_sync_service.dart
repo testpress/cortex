@@ -77,9 +77,19 @@ class OfflineExamSyncService {
           shortText: item.shortAnswer,
         );
 
+        final questionIdInt = int.tryParse(item.questionId);
+        if (questionIdInt == null) {
+          _sentryService.captureException(
+            ArgumentError(
+              'exam_question_id is not a valid int: ${item.questionId}',
+            ),
+            level: AppErrorLevel.warning,
+          );
+          continue;
+        }
+
         final jsonAns = answerPayload.toJson();
-        jsonAns['exam_question_id'] =
-            int.tryParse(item.questionId) ?? item.questionId;
+        jsonAns['exam_question_id'] = questionIdInt;
         offlineAnswers.add(jsonAns);
       }
 
@@ -90,8 +100,21 @@ class OfflineExamSyncService {
                   .toUtc()
                   .toIso8601String(),
           "completed_on": download.completedAt?.toUtc().toIso8601String(),
-          "chapter_content_id":
-              int.tryParse(download.contentId) ?? download.contentId,
+          "chapter_content_id": () {
+            final id = int.tryParse(download.contentId);
+            if (id == null) {
+              _sentryService.captureException(
+                ArgumentError(
+                  'chapter_content_id is not a valid int: ${download.contentId}',
+                ),
+                level: AppErrorLevel.error,
+              );
+              throw ArgumentError(
+                'chapter_content_id is not a valid int: ${download.contentId}',
+              );
+            }
+            return id;
+          }(),
         },
         "offline_answers": offlineAnswers,
       };
