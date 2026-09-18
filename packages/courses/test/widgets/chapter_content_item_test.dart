@@ -43,7 +43,7 @@ void main() {
       duration: '',
     );
 
-    testWidgets('shows lock icon and blocks tap', (tester) async {
+    testWidgets('shows calendarClock icon and blocks tap', (tester) async {
       var tapped = false;
       await tester.pumpWidget(wrap(ChapterContentItem(
         lesson: expiredLesson,
@@ -51,7 +51,7 @@ void main() {
       )));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+      expect(find.byIcon(LucideIcons.calendarClock), findsOneWidget);
 
       await tester.tap(find.byType(AppFocusable));
       await tester.pump(const Duration(seconds: 4));
@@ -109,6 +109,60 @@ void main() {
 
       // Checkmark icon should be rendered for completed test
       expect(find.byIcon(LucideIcons.check), findsOneWidget);
+    });
+
+    testWidgets('shows lock icon and blocks tap for locked lesson',
+        (tester) async {
+      final lockedLesson = LessonDto(
+        id: '4',
+        chapterId: '1',
+        title: 'Locked Chapter Content',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.completed,
+        orderIndex: 4,
+        hasEnded: false,
+        isLocked: true,
+        duration: '10 min',
+      );
+
+      var tapped = false;
+      await tester.pumpWidget(wrap(ChapterContentItem(
+        lesson: lockedLesson,
+        onTap: () => tapped = true,
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+      // Even if progressStatus is completed, locked lesson must not show checkmark
+      expect(find.byIcon(LucideIcons.check), findsNothing);
+
+      await tester.tap(find.byType(AppFocusable));
+      await tester.pump(const Duration(seconds: 4));
+
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('renders In Progress badge for in-progress unlocked lesson',
+        (tester) async {
+      final inProgressLesson = LessonDto(
+        id: '5',
+        chapterId: '1',
+        title: 'Shell Script tutorials',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.inProgress,
+        orderIndex: 5,
+        hasEnded: false,
+        isLocked: false,
+        duration: '5m 17s',
+      );
+
+      await tester.pumpWidget(wrap(ChapterContentItem(
+        lesson: inProgressLesson,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.text('In Progress'), findsOneWidget);
     });
   });
 }

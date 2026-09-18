@@ -805,7 +805,10 @@ class LessonDto {
         }
         return parsed;
       })(),
-      isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
+      isLocked:
+          (json['is_locked'] as bool?) ??
+          (json['isLocked'] as bool?) ??
+          !(json['active'] as bool? ?? true),
       orderIndex:
           (json['order'] as num?)?.toInt() ??
           (json['orderIndex'] as num?)?.toInt() ??

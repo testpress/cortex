@@ -126,4 +126,50 @@ void main() {
       },
     );
   });
+
+  group('CurriculumParser progressive locked_contents tests', () {
+    test(
+      'marks lessons present in locked_contents array as isLocked = true',
+      () {
+        final rawPayload = {
+          'results': {
+            'contents': [
+              {
+                'id': 101,
+                'title': 'Lesson 1: Intro',
+                'content_type': 'video',
+                'active': true,
+              },
+              {
+                'id': 102,
+                'title': 'Lesson 2: Advanced',
+                'content_type': 'video',
+                'active': true,
+              },
+              {
+                'id': 103,
+                'title': 'Lesson 3: Masterclass',
+                'content_type': 'video',
+                'active': true,
+                'is_locked': true,
+              },
+            ],
+            'locked_contents': [102],
+          },
+        };
+
+        final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
+        expect(curriculum.lessons.length, 3);
+
+        final lesson101 = curriculum.lessons.firstWhere((l) => l.id == '101');
+        expect(lesson101.isLocked, isFalse);
+
+        final lesson102 = curriculum.lessons.firstWhere((l) => l.id == '102');
+        expect(lesson102.isLocked, isTrue);
+
+        final lesson103 = curriculum.lessons.firstWhere((l) => l.id == '103');
+        expect(lesson103.isLocked, isTrue);
+      },
+    );
+  });
 }

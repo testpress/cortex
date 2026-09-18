@@ -1474,6 +1474,9 @@
   "aiSupportTitle": "AI Chat",
   "aiSupportAskingAi": "ASKING AI",
 "contentAccessEnded": "Your access to this content has ended!",
+  "contentLockedTitle": "This content is Locked",
+  "contentLockedPrerequisite": "To access the contents of this page, ensure you have successfully completed the previous content.",
+  "contentLockedToast": "Complete previous content to unlock",
   "accessExpired": "Access expired",
   "accessExpiredOn": "Access expired on {date}",
   "@accessExpiredOn": {
