@@ -158,7 +158,7 @@ void main() {
     });
 
     test(
-      'Non-numeric contentId captures error to Sentry and aborts API submission',
+      'Non-numeric contentId captures error to Sentry once and drops download as permanent failure',
       () async {
         final invalidContentDownload = OfflineExamDownloadsTableCompanion(
           id: const drift.Value(2),
@@ -177,12 +177,12 @@ void main() {
 
         verifyNever(mockApi.submitOfflineExamAnswers(any, any));
         verify(
-          mockSentry.captureException(
-            any,
-            level: anyNamed('level'),
-            stackTrace: anyNamed('stackTrace'),
-          ),
-        ).called(greaterThanOrEqualTo(1));
+          mockSentry.captureException(any, level: AppErrorLevel.error),
+        ).called(1);
+
+        // Verify permanent failure dropped the corrupt download from DB
+        final allDownloads = await db.watchAllOfflineExams().first;
+        expect(allDownloads, isEmpty);
       },
     );
 
