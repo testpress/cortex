@@ -26,7 +26,7 @@ class SubjectAnalyticsScreen extends ConsumerStatefulWidget {
 
 class _SubjectAnalyticsScreenState
     extends ConsumerState<SubjectAnalyticsScreen> {
-  AnalyticsTab _activeTab = AnalyticsTab.overall;
+  AnalyticsTab _activeTab = AnalyticsTab.individual;
   String _selectedFilter = 'All';
   bool _isFilterMenuOpen = false;
   final LayerLink _layerLink = LayerLink();
@@ -110,35 +110,33 @@ class _SubjectAnalyticsScreenState
                       ),
                     ),
                   ],
-                  bottomContent: widget.parentId == null
-                      ? Row(
-                          children: [
-                            Expanded(
-                              child: _TabButton(
-                                label: l10n.analyticsGraphReports,
-                                isActive: _activeTab == AnalyticsTab.overall,
-                                onTap: () {
-                                  setState(() {
-                                    _activeTab = AnalyticsTab.overall;
-                                  });
-                                },
-                              ),
-                            ),
-                            SizedBox(width: design.spacing.sm),
-                            Expanded(
-                              child: _TabButton(
-                                label: l10n.analyticsTableReports,
-                                isActive: _activeTab == AnalyticsTab.individual,
-                                onTap: () {
-                                  setState(() {
-                                    _activeTab = AnalyticsTab.individual;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      : null,
+                  bottomContent: Row(
+                    children: [
+                      Expanded(
+                        child: _TabButton(
+                          label: l10n.analyticsTableReports,
+                          isActive: _activeTab == AnalyticsTab.individual,
+                          onTap: () {
+                            setState(() {
+                              _activeTab = AnalyticsTab.individual;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: design.spacing.sm),
+                      Expanded(
+                        child: _TabButton(
+                          label: l10n.analyticsGraphReports,
+                          isActive: _activeTab == AnalyticsTab.overall,
+                          onTap: () {
+                            setState(() {
+                              _activeTab = AnalyticsTab.overall;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 // Content
