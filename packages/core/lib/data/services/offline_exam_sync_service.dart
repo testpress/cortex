@@ -77,9 +77,35 @@ class OfflineExamSyncService {
           shortText: item.shortAnswer,
         );
 
+        final questionIdInt = int.tryParse(item.questionId);
+        if (questionIdInt == null) {
+          _sentryService.captureException(
+            ArgumentError(
+              'exam_question_id is not a valid int: ${item.questionId}',
+            ),
+            level: AppErrorLevel.warning,
+          );
+          continue;
+        }
+
         final jsonAns = answerPayload.toJson();
-        jsonAns['question_id'] = item.questionId;
+        jsonAns['exam_question_id'] = questionIdInt;
         offlineAnswers.add(jsonAns);
+      }
+
+      final chapterContentId = int.tryParse(download.contentId);
+      if (chapterContentId == null) {
+        _sentryService.captureException(
+          ArgumentError(
+            'chapter_content_id is not a valid int: ${download.contentId}',
+          ),
+          level: AppErrorLevel.error,
+        );
+        debugPrint(
+          "Permanent failure: non-numeric contentId ${download.contentId}. Dropping sync for exam ${download.id}.",
+        );
+        await _db.deleteDownload(download.id);
+        return false;
       }
 
       final payload = {
@@ -89,6 +115,7 @@ class OfflineExamSyncService {
                   .toUtc()
                   .toIso8601String(),
           "completed_on": download.completedAt?.toUtc().toIso8601String(),
+          "chapter_content_id": chapterContentId,
         },
         "offline_answers": offlineAnswers,
       };
