@@ -130,14 +130,22 @@ class _AppShellBuilder extends ConsumerWidget {
               bottomNavigationBar: AppTabBar(
                 items: items,
                 activeItemId: activeTabId,
-                onTabChange: (id) =>
-                    _onTabItemTapped(navigationShell, id, allTabs: allTabs),
+                onTabChange: (id) => _onTabItemTapped(
+                  navigationShell,
+                  id,
+                  allTabs: allTabs,
+                  ref: ref,
+                ),
               ),
               navigationRail: AppNavigationRail(
                 items: items,
                 activeItemId: activeTabId,
-                onTabChange: (id) =>
-                    _onTabItemTapped(navigationShell, id, allTabs: allTabs),
+                onTabChange: (id) => _onTabItemTapped(
+                  navigationShell,
+                  id,
+                  allTabs: allTabs,
+                  ref: ref,
+                ),
               ),
               drawer: DashboardDrawer(isLandscape: isLandscape),
               bottomSheet: AppBottomSheet(
@@ -161,7 +169,14 @@ void _onTabItemTapped(
   StatefulNavigationShell navigationShell,
   String id, {
   required List<NavTab> allTabs,
+  WidgetRef? ref,
 }) {
   final index = allTabs.indexWhere((tab) => tab.id == id);
+  if (index != -1 && allTabs[index] == NavTab.profile && ref != null) {
+    ref
+        .read(userRepositoryProvider.future)
+        .then((repo) => repo.refreshProfile().ignore())
+        .ignore();
+  }
   navigationShell.goBranch(index != -1 ? index : 0);
 }

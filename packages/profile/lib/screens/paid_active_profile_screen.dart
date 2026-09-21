@@ -10,7 +10,7 @@ import '../widgets/paid_active_profile_header.dart';
 
 import '../widgets/paid_active_account_preferences_section.dart';
 
-class ProfilePage extends ConsumerWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({
     super.key,
     this.onEditProfile,
@@ -23,7 +23,37 @@ class ProfilePage extends ConsumerWidget {
   final VoidCallback? onOpenCertificates;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends ConsumerState<ProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(userRepositoryProvider.future).then((repo) {
+          repo.refreshProfile().ignore();
+        }).ignore();
+      }
+    });
+  }
+
+  void _handleEditProfile() async {
+    if (widget.onEditProfile != null) {
+      widget.onEditProfile!();
+    } else {
+      final result = await context.pushNamed('profile-edit');
+      if (result == true && mounted) {
+        ref.read(userRepositoryProvider.future).then((repo) {
+          repo.refreshProfile().ignore();
+        }).ignore();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final design = Design.of(context);
 
     final isLoggedIn = ref.watch(authProvider).asData?.value ?? false;
@@ -56,9 +86,7 @@ class ProfilePage extends ConsumerWidget {
                         name: user?.name ?? '',
                         avatarUrl: user?.avatar ?? '',
                         joinedDate: user?.joinedDate,
-                        onEditProfileTap:
-                            onEditProfile ??
-                            () => context.pushNamed('profile-edit'),
+                        onEditProfileTap: _handleEditProfile,
                       ),
                       loading: () => const SizedBox(height: 100),
                       error: (err, _) => const SizedBox(height: 100),
@@ -66,49 +94,14 @@ class ProfilePage extends ConsumerWidget {
 
                     SizedBox(height: design.spacing.xl),
 
-                    // Stats Snapshot
-                    // statsAsync.when(
-                    //   data: (StudyMomentumDto stats) =>
-                    //       ProfileLearningSnapshot(
-                    //         lessonsFinished: stats.lessonsFinished,
-                    //         testsAttempted: stats.testsAttempted,
-                    //         assessmentsDone: stats.assessmentsDone,
-                    //         strongestIn: stats.strongestSubject,
-                    //         focusNeededIn: stats.weakSubject,
-                    //       ),
-                    //   loading: () => const SizedBox(height: 200),
-                    //   error: (err, _) => AppErrorView(
-                    //     error: err,
-                    //     onRetry: () => ref.invalidate(studyMomentumProvider),
-                    //   ),
-                    // ),
-
-                    // SizedBox(height: design.spacing.xl),
-
-                    // // Enrolled Courses
-                    // enrolledCoursesAsync.when(
-                    //   data: (courses) =>
-                    //       EnrolledCoursesSection(courses: courses),
-                    //   loading: () => const SizedBox(height: 150),
-                    //   error: (err, _) => AppErrorView(
-                    //     error: err,
-                    //     onRetry: () =>
-                    //         ref.invalidate(profileEnrollmentProvider),
-                    //   ),
-                    // ),
-
-                    // SizedBox(height: design.spacing.xl),
-
                     // Account & Preferences
                     AccountPreferencesSection(
-                      onEditProfileTap:
-                          onEditProfile ??
-                          () => context.pushNamed('profile-edit'),
+                      onEditProfileTap: _handleEditProfile,
                       onNotificationsTap:
-                          onOpenNotifications ??
+                          widget.onOpenNotifications ??
                           () => context.pushNamed('profile-notifications'),
                       onCertificatesTap:
-                          onOpenCertificates ??
+                          widget.onOpenCertificates ??
                           () => context.pushNamed('profile-certificates'),
                       onLogoutTap: () {
                         ref.read(isLogoutSheetOpenProvider.notifier).state =

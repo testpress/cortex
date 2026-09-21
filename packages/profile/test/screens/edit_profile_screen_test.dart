@@ -210,6 +210,7 @@ void main() {
                     email: 'test@example.com',
                     phone: '1234567890',
                     avatar: 'https://example.com/avatar.jpg',
+                    hasCustomAvatar: true,
                   ),
                 ),
               ),
@@ -338,6 +339,7 @@ void main() {
                     phone: '1234567890',
                     avatar:
                         'https://static.testpress.in/static/img/default_medium_image.png',
+                    hasCustomAvatar: false,
                   ),
                 ),
               ),

@@ -23,7 +23,7 @@ final userIdProvider = StreamProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserIdRef = StreamProviderRef<String?>;
-String _$authHash() => r'f9bfbcadf724ae30f34025e7b3cf11b234276af0';
+String _$authHash() => r'85d34e8772aca54b5b31b84324b2543078c0d4fc';
 
 /// See also [Auth].
 @ProviderFor(Auth)
