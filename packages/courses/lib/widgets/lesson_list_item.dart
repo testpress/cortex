@@ -181,7 +181,7 @@ class LessonListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 14, right: 16),
                     child: Icon(
                       lesson.hasEnded
-                          ? LucideIcons.lock
+                          ? LucideIcons.calendarClock
                           : LucideIcons.chevronRight,
                       color: design.colors.textSecondary.withValues(alpha: 0.5),
                       size: 20,

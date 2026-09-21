@@ -192,7 +192,7 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle: bookmarksEnabled
+          onBookmarkToggle: (!lesson.hasEnded && bookmarksEnabled)
               ? () {
                   if (isBookmarked) {
                     _removeBookmark(lesson);
@@ -201,17 +201,24 @@ class _LessonDetailOrchestratorState
                   }
                 }
               : null,
-          onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
-          onDownload: (canDownload && !isDownloaded && !isDownloading)
+          onMarkAsCompleted: (!lesson.hasEnded && supportsManualCompletion)
+              ? _markAsCompleted
+              : null,
+          onDownload: (!lesson.hasEnded &&
+                  canDownload &&
+                  !isDownloaded &&
+                  !isDownloading)
               ? () => _handleDownload(lesson)
               : null,
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
-          stickyFooter: lesson.type != LessonType.video &&
-              lesson.type != LessonType.liveStream,
+          stickyFooter: lesson.hasEnded ||
+              (lesson.type != LessonType.video &&
+                  lesson.type != LessonType.liveStream),
           child: _buildLessonContent(context),
         ),
-        if (lesson.isComplete &&
+        if (!lesson.hasEnded &&
+            lesson.isComplete &&
             helpdeskEnabled &&
             [
               LessonType.pdf,
@@ -291,6 +298,20 @@ class _LessonDetailOrchestratorState
     final onNext = widget.onNext;
     final onPrevious = widget.onPrevious;
     final design = Design.of(context);
+
+    if (lesson.hasEnded) {
+      final formattedEnd =
+          lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
+      final detailMessage = (formattedEnd != null && formattedEnd.isNotEmpty)
+          ? L10n.of(context).accessExpiredOn(formattedEnd)
+          : L10n.of(context).contentAccessEnded;
+
+      return ContentNoticeView(
+        icon: LucideIcons.calendarClock,
+        title: L10n.of(context).accessExpired,
+        message: detailMessage,
+      );
+    }
 
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);
