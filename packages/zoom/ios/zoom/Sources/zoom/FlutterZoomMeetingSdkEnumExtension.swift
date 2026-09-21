@@ -92,7 +92,7 @@ extension MobileRTCMeetError {
     var name: String {
         switch self {
         case .success: return "SUCCESS"
-        case .networkError: return "NETWORK_UNAVAILABLE"
+        case .connectionError: return "NETWORK_UNAVAILABLE"
         case .reconnectError: return "RECONNECT_FAILED"
         case .mmrError: return "MMR_ERROR"
         case .passwordError: return "PASSWORD_ERROR"
@@ -147,15 +147,15 @@ extension MobileRTCMeetError {
 extension MobileRTCMeetingEndReason {
     var name: String {
         switch self {
-        case .selfLeave: return "SELF_LEAVE"
+        case .none: return "NONE"
         case .removedByHost: return "KICK_BY_HOST"
         case .endByHost: return "END_BY_HOST"
         case .jbhTimeout: return "JBH_TIME_OUT"
         case .freeMeetingTimeout: return "FREE_MEETING_TIME_OUT"
         case .noAteendee: return "NO_ATTENDEE"
         case .hostEndForAnotherMeeting: return "HOST_START_ANOTHER_MEETING"
-        case .connectBroken: return "NETWORK_BROKEN"
-        case .unknown: return "UNKNOWN"
+        case .dueToAuthorizedUserLeave: return "AUTHORIZED_USER_LEAVE"
+        case .undefined: return "UNDEFINED"
         @unknown default: return "UNDEFINED"
         }
     }

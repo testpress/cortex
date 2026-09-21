@@ -26,6 +26,6 @@ A new Flutter plugin project.
   # plugin's privacy impact, and then uncomment this line. For more information,
   # see https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
   # s.resource_bundles = {'zoom_privacy' => ['zoom/Sources/zoom/PrivacyInfo.xcprivacy']}
-  s.vendored_frameworks = 'MobileRTC.xcframework'
+  s.vendored_frameworks = 'MobileRTC.xcframework', 'zoomcml.xcframework'
   s.resources = 'MobileRTCResources.bundle'
 end

@@ -1,0 +1,66 @@
+[
+  {
+    "metadataOutputVersion" : "3.0",
+    "storagePrecision" : "Float16",
+    "outputSchema" : [
+      {
+        "hasShapeFlexibility" : "0",
+        "isOptional" : "0",
+        "dataType" : "Float32",
+        "formattedType" : "MultiArray (Float32)",
+        "shortDescription" : "MultiArray of shape (1, 1, 7, 1, 1). The first and second dimensions correspond to sequence and batch size, respectively",
+        "shape" : "[]",
+        "name" : "output",
+        "type" : "MultiArray"
+      }
+    ],
+    "modelParameters" : [
+
+    ],
+    "specificationVersion" : 2,
+    "computePrecision" : "Float16",
+    "isUpdatable" : "0",
+    "stateSchema" : [
+
+    ],
+    "availability" : {
+      "macOS" : "10.13.2",
+      "tvOS" : "11.2",
+      "visionOS" : "1.0",
+      "watchOS" : "4.2",
+      "iOS" : "11.2",
+      "macCatalyst" : "11.2"
+    },
+    "modelType" : {
+      "name" : "MLModelType_neuralNetwork"
+    },
+    "userDefinedMetadata" : {
+
+    },
+    "inputSchema" : [
+      {
+        "height" : "112",
+        "colorspace" : "RGB",
+        "isOptional" : "0",
+        "width" : "112",
+        "isColor" : "1",
+        "formattedType" : "Image (Color 112 × 112)",
+        "hasSizeFlexibility" : "0",
+        "type" : "Image",
+        "shortDescription" : "",
+        "name" : "input"
+      }
+    ],
+    "generatedClassName" : "gesture_cls",
+    "neuralNetworkLayerTypeHistogram" : {
+      "ActivationLinear" : 70,
+      "Flatten" : 1,
+      "ActivationSigmoidHard" : 35,
+      "PoolingAverage" : 1,
+      "Add" : 10,
+      "Convolution" : 52,
+      "InnerProduct" : 1
+    },
+    "method" : "predict"
+  }
+]
