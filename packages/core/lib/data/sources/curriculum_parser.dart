@@ -158,6 +158,17 @@ class CurriculumParser {
       list = results;
     }
 
+    final Set<String> lockedContentIds = {};
+    if (results is Map && results['locked_contents'] is List) {
+      for (var id in results['locked_contents'] as List) {
+        if (id != null) lockedContentIds.add(id.toString());
+      }
+    } else if (data['locked_contents'] is List) {
+      for (var id in data['locked_contents'] as List) {
+        if (id != null) lockedContentIds.add(id.toString());
+      }
+    }
+
     // Default to the outer results if the inner detection failed
     list ??=
         (data['results'] ?? data['contents'] ?? data['chapter_contents'])
@@ -173,20 +184,28 @@ class CurriculumParser {
                       ?.toString()
                       .toLowerCase();
               if (type == 'chapter') return null;
-              final dto = LessonDto.fromJson(json);
+              var dto = LessonDto.fromJson(json);
+
+              final explicitLock =
+                  (json['is_locked'] as bool?) ??
+                  (json['isLocked'] as bool?) ??
+                  false;
+              dto = dto.copyWith(
+                isLocked: explicitLock || lockedContentIds.contains(dto.id),
+              );
 
               // Enrich with chapter title if we found it in the metadata
               if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {
                 final name =
                     chapterNames[dto.chapterId] ??
                     chapterNames[json['chapter']?.toString() ?? ''];
-                if (name != null) return dto.copyWith(chapterTitle: name);
+                if (name != null) dto = dto.copyWith(chapterTitle: name);
               }
 
               // Enforce specific chapter ID if provided
               if (chapterId != null &&
                   (dto.chapterId.isEmpty || dto.chapterId == '0')) {
-                return dto.copyWith(chapterId: chapterId);
+                dto = dto.copyWith(chapterId: chapterId);
               }
 
               return dto;

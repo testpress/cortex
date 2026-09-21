@@ -51,7 +51,7 @@ void main() {
       end: '2023-12-31T23:59:59Z',
     );
 
-    testWidgets('shows lock icon and blocks tap', (tester) async {
+    testWidgets('shows calendarClock icon and blocks tap', (tester) async {
       var tapped = false;
       await tester.pumpWidget(wrap(LessonListItem(
         lesson: expiredLesson,
@@ -59,7 +59,7 @@ void main() {
       )));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+      expect(find.byIcon(LucideIcons.calendarClock), findsOneWidget);
 
       await tester.tap(find.byType(AppFocusable));
       await tester.pump(const Duration(seconds: 4));
@@ -97,6 +97,78 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(LucideIcons.check), findsNothing);
+    });
+
+    testWidgets('shows lock icon and blocks tap for locked lesson',
+        (tester) async {
+      const lockedLesson = LessonDto(
+        id: '3',
+        chapterId: '1',
+        title: 'Locked Lesson',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.notStarted,
+        duration: '15 min',
+        orderIndex: 3,
+        hasEnded: false,
+        isLocked: true,
+        pausedAttemptsCount: 0,
+        disableAttemptResume: false,
+        allowRetake: false,
+        maxRetakes: 0,
+        hasAttempts: false,
+        isRunning: false,
+        isUpcoming: false,
+        isDetailFetched: false,
+      );
+
+      var tapped = false;
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: lockedLesson,
+        onTap: () => tapped = true,
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+
+      await tester.tap(find.byType(AppFocusable));
+      await tester.pump(const Duration(seconds: 4));
+
+      expect(tapped, isFalse);
+    });
+
+    testWidgets(
+        'exposes semantic label with title, type, and lock/expired status',
+        (tester) async {
+      const lockedLesson = LessonDto(
+        id: '4',
+        chapterId: '1',
+        title: 'Algorithms 101',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.notStarted,
+        duration: '15 min',
+        orderIndex: 4,
+        hasEnded: false,
+        isLocked: true,
+        pausedAttemptsCount: 0,
+        disableAttemptResume: false,
+        allowRetake: false,
+        maxRetakes: 0,
+        hasAttempts: false,
+        isRunning: false,
+        isUpcoming: false,
+        isDetailFetched: false,
+      );
+
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: lockedLesson,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.bySemanticsLabel('Algorithms 101, Locked'),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -2985,8 +2985,22 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiSupportAskingAi => 'AI-യോട് ചോദിക്കുന്നു';
 
   @override
+  String get examHasEnded => 'ഈ പരീക്ഷ അവസാനിച്ചു';
+
+  @override
   String get contentAccessEnded =>
       'ഈ ഉള്ളടക്കത്തിലേക്കുള്ള നിങ്ങളുടെ ആക്‌സസ് അവസാനിച്ചു!';
+
+  @override
+  String get contentLockedTitle => 'ഈ ഉള്ളടക്കം ലോക്ക് ചെയ്തിരിക്കുന്നു';
+
+  @override
+  String get contentLockedPrerequisite =>
+      'ഈ പേജിലെ ഉള്ളടക്കങ്ങൾ ആക്‌സസ് ചെയ്യുന്നതിന്, മുമ്പത്തെ ഉള്ളടക്കം വിജയകരമായി പൂർത്തിയാക്കിയെന്ന് ഉറപ്പാക്കുക.';
+
+  @override
+  String get contentLockedToast =>
+      'അൺലോക്ക് ചെയ്യാൻ മുൻപത്തെ ഉള്ളടക്കം പൂർത്തിയാക്കുക';
 
   @override
   String get accessExpired => 'ആക്‌സസ് കാലഹരണപ്പെട്ടു';

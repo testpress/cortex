@@ -2939,7 +2939,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiSupportAskingAi => 'جاري سؤال الذكاء الاصطناعي';
 
   @override
+  String get examHasEnded => 'لقد انتهى هذا الامتحان';
+
+  @override
   String get contentAccessEnded => 'لقد انتهى وصولك إلى هذا المحتوى!';
+
+  @override
+  String get contentLockedTitle => 'هذا المحتوى مقفل';
+
+  @override
+  String get contentLockedPrerequisite =>
+      'للوصول إلى محتويات هذه الصفحة، تأكد من إكمال المحتوى السابق بنجاح.';
+
+  @override
+  String get contentLockedToast => 'أكمل المحتوى السابق لإلغاء القفل';
 
   @override
   String get accessExpired => 'انتهت صلاحية الوصول';

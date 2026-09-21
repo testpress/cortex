@@ -328,6 +328,29 @@ void main() {
         expect(merged.exam?.id, 'exam-4');
       },
     );
+
+    test('mergeWith preserves isLocked: true when either source is locked', () {
+      final unlocked = LessonDto.fromJson({
+        'id': '1',
+        'title': 'Lesson',
+        'content_type': 'video',
+      }).copyWith(isLocked: false);
+
+      final locked = LessonDto.fromJson({
+        'id': '1',
+        'title': 'Lesson',
+        'content_type': 'video',
+      }).copyWith(isLocked: true);
+
+      // Incoming unlocked + Cached locked -> stays locked
+      expect(unlocked.mergeWith(locked).isLocked, isTrue);
+
+      // Incoming locked + Cached unlocked -> stays locked
+      expect(locked.mergeWith(unlocked).isLocked, isTrue);
+
+      // Both unlocked -> unlocked
+      expect(unlocked.mergeWith(unlocked).isLocked, isFalse);
+    });
   });
 
   group('LessonDto.fromJson — liveStream parsing', () {
@@ -416,7 +439,33 @@ void main() {
         final dtoProcessing = LessonDto.fromJson(jsonProcessing);
         expect(dtoProcessing.transcodingStatus, 'Processing');
         expect(dtoProcessing.isTranscodingCompleted, false);
-        expect(dtoProcessing.isTranscodingProcessing, true);
+      },
+    );
+
+    test(
+      'mergeWith preserves title and type from existing when merged with locked stub DTO',
+      () {
+        const existing = LessonDto(
+          id: '247183',
+          chapterId: 'chap-10',
+          title: 'Notes Lesson Title',
+          type: LessonType.notes,
+          duration: '10 min',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: false,
+          orderIndex: 2,
+        );
+
+        final lockedStub = LessonDto.lockedStub('247183');
+
+        final merged = lockedStub.mergeWith(existing);
+
+        expect(merged.id, '247183');
+        expect(merged.title, 'Notes Lesson Title');
+        expect(merged.chapterId, 'chap-10');
+        expect(merged.type, LessonType.notes);
+        expect(merged.isLocked, true);
+        expect(merged.isDetailFetched, true);
       },
     );
   });

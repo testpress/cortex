@@ -56,13 +56,28 @@ class LessonListItem extends StatelessWidget {
     final formattedEnd =
         lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
 
+    final l10n = L10n.of(context);
+    final semanticLabel = switch (true) {
+      _ when lesson.hasEnded => '${lesson.title}, ${l10n.accessExpired}',
+      _ when lesson.isLocked => '${lesson.title}, ${l10n.statusLocked}',
+      _ => l10n.openDetailedLesson(lesson.title),
+    };
+
     final guardedOnTap = isSkeleton
         ? null
         : () {
             if (lesson.hasEnded) {
               AppToast.show(
                 context,
-                message: L10n.of(context).contentAccessEnded,
+                message: l10n.contentAccessEnded,
+                isError: true,
+              );
+              return;
+            }
+            if (lesson.isLocked) {
+              AppToast.show(
+                context,
+                message: l10n.contentLockedToast,
                 isError: true,
               );
               return;
@@ -86,7 +101,7 @@ class LessonListItem extends StatelessWidget {
           highlightColor: design.colors.onSkeleton,
         ),
         child: AppSemantics.button(
-          label: L10n.of(context).openDetailedLesson(lesson.title),
+          label: semanticLabel,
           onTap: guardedOnTap ?? () {},
           child: AppFocusable(
             onTap: guardedOnTap,
@@ -160,13 +175,14 @@ class LessonListItem extends StatelessWidget {
                                     child: AppText.cardSubtitle(
                                       (formattedEnd != null &&
                                               formattedEnd.isNotEmpty)
-                                          ? L10n.of(context)
-                                              .accessExpiredOn(formattedEnd)
-                                          : L10n.of(context).accessExpired,
+                                          ? l10n.accessExpiredOn(formattedEnd)
+                                          : l10n.accessExpired,
                                       color: design.colors.textSecondary,
                                     ),
                                   ),
-                                ] else if (lesson.type != LessonType.liveStream)
+                                ] else if (lesson.type !=
+                                        LessonType.liveStream &&
+                                    !lesson.isLocked)
                                   LessonStatusBadge(
                                       status: lesson.progressStatus),
                               ],
@@ -181,8 +197,10 @@ class LessonListItem extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 14, right: 16),
                     child: Icon(
                       lesson.hasEnded
-                          ? LucideIcons.lock
-                          : LucideIcons.chevronRight,
+                          ? LucideIcons.calendarClock
+                          : (lesson.isLocked
+                              ? LucideIcons.lock
+                              : LucideIcons.chevronRight),
                       color: design.colors.textSecondary.withValues(alpha: 0.5),
                       size: 20,
                     ),
