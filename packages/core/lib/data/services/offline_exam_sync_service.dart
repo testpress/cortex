@@ -78,7 +78,7 @@ class OfflineExamSyncService {
         );
 
         final jsonAns = answerPayload.toJson();
-        jsonAns['question_id'] = item.questionId;
+        jsonAns['exam_question_id'] = item.questionId;
         offlineAnswers.add(jsonAns);
       }
 
@@ -89,6 +89,7 @@ class OfflineExamSyncService {
                   .toUtc()
                   .toIso8601String(),
           "completed_on": download.completedAt?.toUtc().toIso8601String(),
+          "chapter_content_id": download.contentId,
         },
         "offline_answers": offlineAnswers,
       };
