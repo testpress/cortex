@@ -19,6 +19,8 @@ The table reports tab SHALL display a data table showing the subject name, corre
 - **THEN** the system SHALL render rows showing correct, incorrect, and unanswered counts for each subject
 - **AND** the system SHALL NOT render category donut cards below the table
 
+## ADDED Requirements
+
 ### Requirement: Subject Row Navigation
 The system SHALL navigate to the sub-subject analytics view when a non-leaf parent subject row is tapped, and navigate to the topic analytics view when a leaf subject row is tapped.
 
