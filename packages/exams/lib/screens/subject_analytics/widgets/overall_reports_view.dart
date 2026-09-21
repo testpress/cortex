@@ -198,6 +198,7 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
                                     child: BarRow(
                                       subjectAnalytics: subjectAnalytics,
                                       activeFilter: widget.activeFilter,
+                                      showChevron: true,
                                     ),
                                   )
                                 : AppFocusable(
@@ -211,6 +212,7 @@ class _OverallReportsViewState extends ConsumerState<OverallReportsView> {
                                     child: BarRow(
                                       subjectAnalytics: subjectAnalytics,
                                       activeFilter: widget.activeFilter,
+                                      showChevron: true,
                                     ),
                                   );
                           },

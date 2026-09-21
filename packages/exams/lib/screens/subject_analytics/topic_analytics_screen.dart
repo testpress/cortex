@@ -158,7 +158,7 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
                     SizedBox(width: design.spacing.sm),
                     Expanded(
                       child: AppText.title(
-                        l10n.analyticsSubCategory,
+                        topic.name,
                         color: design.colors.textPrimary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -175,59 +175,12 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
             child: AppScroll(
               padding: EdgeInsets.zero,
               children: [
-                // Legend Row
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm + design.spacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: design.colors.card,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: design.colors.divider,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      _LegendItem(
-                        label: l10n.analyticsStrength,
-                        color: design.correctColor,
-                      ),
-                      SizedBox(width: design.spacing.md),
-                      _LegendItem(
-                        label: l10n.analyticsWeakness,
-                        color: design.incorrectColor,
-                      ),
-                      SizedBox(width: design.spacing.md),
-                      _LegendItem(
-                        label: l10n.analyticsUnanswered,
-                        color: design.unansweredColor,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Subject Name Above Bar
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    design.spacing.md,
-                    design.spacing.xl,
-                    design.spacing.md,
-                    design.spacing.xs,
-                  ),
-                  child: AppText.body(
-                    topic.name,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                    color: design.colors.textPrimary,
-                  ),
-                ),
-
                 // BarRow
                 Padding(
-                  padding: EdgeInsets.only(bottom: design.spacing.xl),
+                  padding: EdgeInsets.only(
+                    top: design.spacing.md,
+                    bottom: design.spacing.xl,
+                  ),
                   child: BarRow(
                     subjectAnalytics: topic,
                     activeFilter: 'All',
@@ -247,23 +200,26 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
                         _StatRow(
                           label: l10n.analyticsCorrect,
                           value: '${topic.correctAnswerCount}',
-                          color: design.correctColor,
+                          dotColor: design.correctColor,
+                          valueColor: design.colors.textPrimary,
                         ),
                         _StatRow(
                           label: l10n.analyticsIncorrect,
                           value: '${topic.incorrectAnswerCount}',
-                          color: design.incorrectColor,
+                          dotColor: design.incorrectColor,
+                          valueColor: design.colors.textPrimary,
                         ),
                         _StatRow(
                           label: l10n.analyticsUnanswered,
                           value: '${topic.unansweredCount}',
-                          color: design.unansweredColor,
+                          dotColor: design.unansweredColor,
+                          valueColor: design.colors.textPrimary,
                         ),
                         Container(height: 1, color: design.colors.border),
                         _StatRow(
                           label: l10n.analyticsAccuracy,
                           value: '${topic.accuracy.toStringAsFixed(2)}%',
-                          color: design.colors.primary,
+                          valueColor: design.colors.accent2,
                           isBoldValue: true,
                         ),
                       ],
@@ -279,55 +235,25 @@ class _TopicAnalyticsScreenContent extends StatelessWidget {
   }
 }
 
-class _LegendItem extends StatelessWidget {
-  const _LegendItem({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: design.spacing.sm,
-          height: design.spacing.sm,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        SizedBox(width: design.spacing.sm),
-        AppText.xs(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-            letterSpacing: -0.08,
-          ),
-          color: design.colors.textPrimary,
-        ),
-      ],
-    );
-  }
-}
-
 class _StatRow extends StatelessWidget {
   const _StatRow({
     required this.label,
     required this.value,
-    required this.color,
+    this.dotColor,
+    this.valueColor,
     this.isBoldValue = false,
   });
 
   final String label;
   final String value;
-  final Color color;
+  final Color? dotColor;
+  final Color? valueColor;
   final bool isBoldValue;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final effectiveValueColor = valueColor ?? design.colors.textPrimary;
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
@@ -336,17 +262,34 @@ class _StatRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppText.body(label, color: design.colors.textPrimary),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (dotColor != null) ...[
+                Container(
+                  width: design.spacing.sm,
+                  height: design.spacing.sm,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                SizedBox(width: design.spacing.sm),
+              ],
+              AppText.body(label, color: design.colors.textPrimary),
+            ],
+          ),
           if (isBoldValue)
             AppText.body(
               value,
-              color: color,
+              color: effectiveValueColor,
               style: const TextStyle(fontWeight: FontWeight.w800),
             )
           else
             AppText.body(
               value,
-              color: color,
+              color: effectiveValueColor,
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
         ],

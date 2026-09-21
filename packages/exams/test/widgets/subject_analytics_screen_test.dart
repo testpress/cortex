@@ -37,12 +37,12 @@ void main() {
   }
 
   testWidgets(
-    'SubjectAnalyticsScreen with parentId hides tabs and shows OverallReportsView only',
+    'SubjectAnalyticsScreen with parentId shows tabs and displays Table Reports by default',
     (WidgetTester tester) async {
       await tester.pumpWidget(
         wrap(
           SubjectAnalyticsScreen(
-            parentId: 'chemistry',
+            parentId: '12',
             subjectName: 'Chemistry',
             onBack: () {},
           ),
@@ -52,23 +52,21 @@ void main() {
       // Verify Chemistry title is rendered
       expect(find.text('Chemistry'), findsOneWidget);
 
-      // Verify tabs are NOT rendered
-      expect(find.text('Graph Reports'), findsNothing);
-      expect(find.text('Table Reports'), findsNothing);
+      // Verify tabs are rendered on sub-subject screens
+      expect(find.text('Table Reports'), findsOneWidget);
+      expect(find.text('Graph Reports'), findsOneWidget);
 
-      // Verify OverallReportsView is rendered
-      expect(find.byType(OverallReportsView), findsOneWidget);
-      expect(find.byType(IndividualReportsView), findsNothing);
+      // Verify Table Reports (IndividualReportsView) is rendered by default
+      expect(find.byType(IndividualReportsView), findsOneWidget);
+      expect(find.byType(OverallReportsView), findsNothing);
 
-      // Clean up the widget tree to dispose of the providers and database,
-      // and pump the event loop to run and clear any pending database stream timers.
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
     },
   );
 
   testWidgets(
-    'SubjectAnalyticsScreen renders start-aligned title and tab buttons',
+    'SubjectAnalyticsScreen renders Table Reports on left and Graph Reports on right',
     (WidgetTester tester) async {
       await tester.pumpWidget(
         wrap(
@@ -80,24 +78,33 @@ void main() {
         ),
       );
 
-      // Verify centered title is rendered
+      // Verify title is rendered
       expect(find.text('Test Analytics'), findsOneWidget);
 
       // Verify tab buttons are rendered
-      expect(find.text('Graph Reports'), findsOneWidget);
       expect(find.text('Table Reports'), findsOneWidget);
+      expect(find.text('Graph Reports'), findsOneWidget);
 
-      // Verify OverallReportsView is rendered initially
+      // Verify Table Reports is on the left of Graph Reports
+      final tableTabPos = tester.getTopLeft(find.text('Table Reports'));
+      final graphTabPos = tester.getTopLeft(find.text('Graph Reports'));
+      expect(tableTabPos.dx < graphTabPos.dx, isTrue);
+
+      // Verify IndividualReportsView is rendered initially by default
+      expect(find.byType(IndividualReportsView), findsOneWidget);
+      expect(find.byType(OverallReportsView), findsNothing);
+
+      // Switch to Graph Reports tab
+      await tester.tap(find.text('Graph Reports'));
+      await tester.pump();
+
+      // Verify OverallReportsView is rendered now
       expect(find.byType(OverallReportsView), findsOneWidget);
       expect(find.byType(IndividualReportsView), findsNothing);
 
-      // Switch to Table Reports tab
+      // Switch back to Table Reports tab
       await tester.tap(find.text('Table Reports'));
       await tester.pump();
-
-      // Verify IndividualReportsView is rendered now
-      expect(find.byType(OverallReportsView), findsNothing);
-      expect(find.byType(IndividualReportsView), findsOneWidget);
 
       // Verify CORRECT, INCORRECT, UNANSWERED headers are center-aligned
       final correctHeader = tester.widget<AppText>(
@@ -159,8 +166,6 @@ void main() {
       // Verify red badge is now visible
       expect(hasBadge(), isTrue);
 
-      // Clean up the widget tree to dispose of the providers and database,
-      // and pump the event loop to run and clear any pending database stream timers.
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
     },

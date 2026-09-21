@@ -3,13 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/models/review_models.dart';
 import '../../../../providers/analytics_providers.dart';
-import 'donut_chart.dart';
 import '../subject_analytics_screen.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
-
-// Helper to format percentage values: shows no decimal if whole number, 1 decimal otherwise
-String _formatPct(double pct) => pct.toStringAsFixed(pct % 1 == 0 ? 0 : 2);
 
 class IndividualReportsView extends ConsumerStatefulWidget {
   const IndividualReportsView({
@@ -53,18 +49,6 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
     super.dispose();
   }
 
-  List<SubjectAnalyticsDto> _filterDonutCards(
-    List<SubjectAnalyticsDto> data,
-    String filter,
-  ) {
-    return switch (filter) {
-      'Correct' => data.where((s) => s.correctAnswerCount > 0).toList(),
-      'Incorrect' => data.where((s) => s.incorrectAnswerCount > 0).toList(),
-      'Unanswered' => data.where((s) => s.unansweredCount > 0).toList(),
-      _ => data,
-    };
-  }
-
   Map<int, TableColumnWidth> _getTableColumnWidths(
     String filter,
     bool showCorrect,
@@ -101,7 +85,6 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
   Widget _buildWithSkeleton(
     BuildContext context,
     List<SubjectAnalyticsDto> subjects,
-    List<SubjectAnalyticsDto> donutCardsData,
   ) {
     final design = Design.of(context);
     final subjectsAsync = ref.watch(subjectAnalyticsProvider(_parsedParentId));
@@ -122,15 +105,8 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
         ? List.generate(5, (_) => _skeletonSubject)
         : List<SubjectAnalyticsDto>.from(subjects);
 
-    final displayDonuts = isInitialLoading
-        ? List.generate(2, (_) => _skeletonSubject)
-        : List<SubjectAnalyticsDto>.from(donutCardsData);
-
     if (isFetchingNextPage && !isInitialLoading) {
       displaySubjects.addAll(List.generate(3, (_) => _skeletonSubject));
-      if (displayDonuts.isNotEmpty) {
-        displayDonuts.addAll(List.generate(1, (_) => _skeletonSubject));
-      }
     }
 
     return Skeletonizer(
@@ -139,7 +115,6 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
         context,
         design,
         displaySubjects,
-        displayDonuts,
         hasMorePages,
         isFetchingNextPage,
         () => ref
@@ -156,48 +131,8 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
 
     return subjectsAsync.when(
       skipLoadingOnReload: true,
-      data: (subjects) {
-        if (_parsedParentId == null) {
-          final donutCardsData = _filterDonutCards(
-            subjects,
-            widget.activeFilter,
-          );
-          return _buildWithSkeleton(context, subjects, donutCardsData);
-        } else {
-          if (subjects.isNotEmpty) {
-            final donutCardsData = _filterDonutCards(
-              subjects,
-              widget.activeFilter,
-            );
-            return _buildWithSkeleton(context, subjects, donutCardsData);
-          } else {
-            final selfSubjectAsync = ref.watch(
-              subjectAnalyticsByIdProvider(_parsedParentId!),
-            );
-            return selfSubjectAsync.when(
-              skipLoadingOnReload: true,
-              data: (selfSubject) {
-                final rawDonutCards = selfSubject != null
-                    ? [selfSubject]
-                    : <SubjectAnalyticsDto>[];
-                final donutCardsData = _filterDonutCards(
-                  rawDonutCards,
-                  widget.activeFilter,
-                );
-                return _buildWithSkeleton(context, subjects, donutCardsData);
-              },
-              loading: () => _buildWithSkeleton(context, [], []),
-              error: (err, stack) => Center(
-                child: AppText.body(
-                  'Error loading donut cards: $err',
-                  color: design.colors.error,
-                ),
-              ),
-            );
-          }
-        }
-      },
-      loading: () => _buildWithSkeleton(context, [], []),
+      data: (subjects) => _buildWithSkeleton(context, subjects),
+      loading: () => _buildWithSkeleton(context, []),
       error: (err, stack) => Center(
         child: AppText.body(
           'Error loading subject table: $err',
@@ -211,7 +146,6 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
     BuildContext context,
     DesignConfig design,
     List<SubjectAnalyticsDto> subjects,
-    List<SubjectAnalyticsDto> donutCardsData,
     bool hasMorePages,
     bool isFetchingNextPage,
     VoidCallback onLoadMore,
@@ -248,7 +182,6 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
             ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Table container
                 if (subjects.isEmpty)
                   Container(
                     alignment: Alignment.center,
@@ -283,18 +216,6 @@ class _IndividualReportsViewState extends ConsumerState<IndividualReportsView> {
                     SizedBox(height: design.spacing.md),
                   ] else ...[
                     SizedBox(height: design.spacing.lg),
-                  ],
-                ],
-
-                // Donut Cards Section
-                if (donutCardsData.isNotEmpty) ...[
-                  for (final cardData in donutCardsData) ...[
-                    _DonutCard(
-                      data: cardData,
-                      activeFilter: widget.activeFilter,
-                      formatPct: _formatPct,
-                    ),
-                    SizedBox(height: design.spacing.md),
                   ],
                 ],
               ]),
@@ -374,20 +295,21 @@ class _StatsTable extends StatelessWidget {
           ...subjects.map((subjectAnalytics) {
             final isSkeleton = subjectAnalytics.id == 0;
 
-            void onTap() {
-              if (isSkeleton) return;
-              if (subjectAnalytics.isLeaf) {
-                context.push(
-                  '/exams/analytics/topic/${subjectAnalytics.id}',
-                  extra: subjectAnalytics,
-                );
-              } else {
-                context.push(
-                  '/exams/analytics/${subjectAnalytics.id}',
-                  extra: subjectAnalytics,
-                );
-              }
-            }
+            final onTap = isSkeleton
+                ? null
+                : () {
+                    if (subjectAnalytics.isLeaf) {
+                      context.push(
+                        '/exams/analytics/topic/${subjectAnalytics.id}',
+                        extra: subjectAnalytics,
+                      );
+                    } else {
+                      context.push(
+                        '/exams/analytics/${subjectAnalytics.id}',
+                        extra: subjectAnalytics,
+                      );
+                    }
+                  };
 
             return TableRow(
               decoration: BoxDecoration(
@@ -512,212 +434,6 @@ class _StatsCell extends StatelessWidget {
         color: color,
         style: const TextStyle(fontWeight: FontWeight.w700),
       ),
-    );
-  }
-}
-
-class _DonutCard extends StatelessWidget {
-  const _DonutCard({
-    required this.data,
-    required this.activeFilter,
-    required this.formatPct,
-  });
-
-  final SubjectAnalyticsDto data;
-  final String activeFilter;
-  final String Function(double) formatPct;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    final isSkeleton =
-        (Skeletonizer.maybeOf(context)?.enabled == true) || (data.id == 0);
-
-    final correctPct = data.correctPercentage;
-    final incorrectPct = data.incorrectPercentage;
-    final unansweredPct = data.unansweredPercentage;
-
-    final isCorrectActive = activeFilter == 'All' || activeFilter == 'Correct';
-    final isIncorrectActive =
-        activeFilter == 'All' || activeFilter == 'Incorrect';
-    final isUnansweredActive =
-        activeFilter == 'All' || activeFilter == 'Unanswered';
-
-    ({Color color, Color textColor, Color legendTextColor}) getCategoryStyle({
-      required Color baseColor,
-      required bool isActive,
-    }) {
-      if (isSkeleton) {
-        return (
-          color: design.colors.surfaceVariant,
-          textColor: design.colors.surfaceVariant,
-          legendTextColor: design.colors.surfaceVariant,
-        );
-      }
-      return (
-        color: isActive ? baseColor : design.colors.surfaceVariant,
-        textColor: isActive ? baseColor : design.colors.textTertiary,
-        legendTextColor: isActive
-            ? design.colors.textPrimary
-            : design.colors.textTertiary,
-      );
-    }
-
-    final correctStyle = getCategoryStyle(
-      baseColor: design.correctColor,
-      isActive: isCorrectActive,
-    );
-    final incorrectStyle = getCategoryStyle(
-      baseColor: design.incorrectColor,
-      isActive: isIncorrectActive,
-    );
-    final unansweredStyle = getCategoryStyle(
-      baseColor: design.unansweredColor,
-      isActive: isUnansweredActive,
-    );
-
-    final Color dotSeparatorColor = activeFilter == 'All'
-        ? design.colors.textSecondary
-        : design.colors.textTertiary;
-
-    return Skeletonizer(
-      enabled: data.id == 0,
-      child: AppCard(
-        padding: EdgeInsets.all(design.spacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header: Name and Total
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: AppText.xs(
-                    data.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                AppText.xs(
-                  'Total: ${data.totalQuestionCount}',
-                  color: design.colors.textSecondary,
-                ),
-              ],
-            ),
-            SizedBox(height: design.spacing.sm),
-
-            // Counts row
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AppText.xs(
-                    'Correct: ${data.correctAnswerCount}',
-                    color: correctStyle.textColor,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.sm,
-                    ),
-                    child: AppText.xs('•', color: dotSeparatorColor),
-                  ),
-                  AppText.xs(
-                    'Incorrect: ${data.incorrectAnswerCount}',
-                    color: incorrectStyle.textColor,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.sm,
-                    ),
-                    child: AppText.xs('•', color: dotSeparatorColor),
-                  ),
-                  AppText.xs(
-                    'Unanswered: ${data.unansweredCount}',
-                    color: unansweredStyle.textColor,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: design.spacing.md),
-
-            // Chart + Legend Row
-            Row(
-              children: [
-                // Donut Chart
-                SubjectDonutChart(
-                  correctPct: correctPct,
-                  incorrectPct: incorrectPct,
-                  unansweredPct: unansweredPct,
-                  correctColor: correctStyle.color,
-                  incorrectColor: incorrectStyle.color,
-                  unansweredColor: unansweredStyle.color,
-                  size: design.spacing.xxl + design.spacing.sm,
-                ),
-                SizedBox(width: design.spacing.lg),
-
-                // Legend
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _LegendRow(
-                        color: correctStyle.color,
-                        text: '${formatPct(correctPct)}% correct',
-                        textColor: correctStyle.legendTextColor,
-                      ),
-                      SizedBox(height: design.spacing.sm),
-                      _LegendRow(
-                        color: incorrectStyle.color,
-                        text: '${formatPct(incorrectPct)}% incorrect',
-                        textColor: incorrectStyle.legendTextColor,
-                      ),
-                      SizedBox(height: design.spacing.sm),
-                      _LegendRow(
-                        color: unansweredStyle.color,
-                        text: '${formatPct(unansweredPct)}% unanswered',
-                        textColor: unansweredStyle.legendTextColor,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LegendRow extends StatelessWidget {
-  const _LegendRow({
-    required this.color,
-    required this.text,
-    required this.textColor,
-  });
-
-  final Color color;
-  final String text;
-  final Color textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-
-    return Row(
-      children: [
-        Container(
-          width: design.spacing.sm,
-          height: design.spacing.sm,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        SizedBox(width: design.spacing.sm),
-        Expanded(child: AppText.xs(text, color: textColor)),
-      ],
     );
   }
 }

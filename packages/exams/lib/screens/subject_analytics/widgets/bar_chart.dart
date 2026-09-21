@@ -42,6 +42,7 @@ class BarRow extends StatelessWidget {
     this.fixedLabelWidth = true,
     this.height,
     this.isLargeText = false,
+    this.showChevron = false,
   });
 
   final SubjectAnalyticsDto subjectAnalytics;
@@ -51,6 +52,7 @@ class BarRow extends StatelessWidget {
   final bool fixedLabelWidth;
   final double? height;
   final bool isLargeText;
+  final bool showChevron;
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +208,17 @@ class BarRow extends StatelessWidget {
               ),
             ),
           ),
+          if (showChevron) ...[
+            SizedBox(width: design.spacing.xs),
+            if (isSkeleton || subjectAnalytics.isLeaf)
+              SizedBox(width: design.iconSize.sm)
+            else
+              Icon(
+                LucideIcons.arrowUpRight,
+                size: design.iconSize.sm,
+                color: design.colors.textTertiary,
+              ),
+          ],
         ],
       ),
     );
