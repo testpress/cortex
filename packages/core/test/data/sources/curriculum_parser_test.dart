@@ -126,4 +126,74 @@ void main() {
       },
     );
   });
+
+  group('CurriculumParser locked_contents progressive lock tests', () {
+    test(
+      'marks lessons as locked or unlocked based on results.locked_contents',
+      () {
+        final payload = {
+          'count': 3,
+          'results': {
+            'contents': [
+              {
+                'id': 101,
+                'title': 'Lesson 1 (Unlocked)',
+                'content_type': 'Exam',
+                'active': true,
+              },
+              {
+                'id': 102,
+                'title': 'Lesson 2 (Locked)',
+                'content_type': 'Exam',
+                'active': true,
+              },
+              {
+                'id': 103,
+                'title': 'Lesson 3 (Locked)',
+                'content_type': 'Video',
+                'active': true,
+              },
+            ],
+            'locked_contents': [102, 103],
+          },
+        };
+
+        final lessons = CurriculumParser.mapLessons(payload);
+        expect(lessons.length, 3);
+
+        final l1 = lessons.firstWhere((l) => l.id == '101');
+        final l2 = lessons.firstWhere((l) => l.id == '102');
+        final l3 = lessons.firstWhere((l) => l.id == '103');
+
+        expect(l1.isLocked, false);
+        expect(l2.isLocked, true);
+        expect(l3.isLocked, true);
+      },
+    );
+
+    test('retains individual is_locked when locked_contents is omitted', () {
+      final payload = {
+        'results': {
+          'contents': [
+            {
+              'id': 201,
+              'title': 'Lesson With Explicit Lock',
+              'content_type': 'Exam',
+              'is_locked': true,
+            },
+            {
+              'id': 202,
+              'title': 'Lesson Unlocked',
+              'content_type': 'Exam',
+              'is_locked': false,
+            },
+          ],
+        },
+      };
+
+      final lessons = CurriculumParser.mapLessons(payload);
+      expect(lessons.firstWhere((l) => l.id == '201').isLocked, true);
+      expect(lessons.firstWhere((l) => l.id == '202').isLocked, false);
+    });
+  });
 }

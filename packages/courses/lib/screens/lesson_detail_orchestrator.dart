@@ -24,6 +24,8 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
     this.onNext,
     this.onPrevious,
     this.customBuilder,
+    this.error,
+    this.onRetry,
   });
 
   /// The lesson to render.
@@ -38,6 +40,12 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
   /// Optional builder to provide specialized viewers for specific lesson types
   /// (e.g. Tests and Assessments from the Exams package).
   final Widget Function(BuildContext context, LessonDto lesson)? customBuilder;
+
+  /// Optional error from fetching full lesson detail.
+  final Object? error;
+
+  /// Optional callback to retry fetching lesson detail when in error state.
+  final VoidCallback? onRetry;
 
   @override
   ConsumerState<LessonDetailOrchestrator> createState() =>
@@ -192,19 +200,22 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle: (!lesson.hasEnded && bookmarksEnabled)
-              ? () {
-                  if (isBookmarked) {
-                    _removeBookmark(lesson);
-                  } else {
-                    setState(() => _isBookmarkSheetOpen = true);
-                  }
-                }
-              : null,
-          onMarkAsCompleted: (!lesson.hasEnded && supportsManualCompletion)
-              ? _markAsCompleted
-              : null,
+          onBookmarkToggle:
+              (!lesson.hasEnded && !lesson.isLocked && bookmarksEnabled)
+                  ? () {
+                      if (isBookmarked) {
+                        _removeBookmark(lesson);
+                      } else {
+                        setState(() => _isBookmarkSheetOpen = true);
+                      }
+                    }
+                  : null,
+          onMarkAsCompleted:
+              (!lesson.hasEnded && !lesson.isLocked && supportsManualCompletion)
+                  ? _markAsCompleted
+                  : null,
           onDownload: (!lesson.hasEnded &&
+                  !lesson.isLocked &&
                   canDownload &&
                   !isDownloaded &&
                   !isDownloading)
@@ -213,11 +224,14 @@ class _LessonDetailOrchestratorState
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
           stickyFooter: lesson.hasEnded ||
+              lesson.isLocked ||
+              widget.error != null ||
               (lesson.type != LessonType.video &&
                   lesson.type != LessonType.liveStream),
           child: _buildLessonContent(context),
         ),
         if (!lesson.hasEnded &&
+            !lesson.isLocked &&
             lesson.isComplete &&
             helpdeskEnabled &&
             [
@@ -313,11 +327,28 @@ class _LessonDetailOrchestratorState
       );
     }
 
+    if (lesson.isLocked) {
+      return ContentNoticeView(
+        icon: LucideIcons.lock,
+        title: L10n.of(context).errorAccessDeniedTitle,
+        message: L10n.of(context).completePreviousContentToUnlock,
+      );
+    }
+
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);
       if (customWidget is! SizedBox) {
         return customWidget;
       }
+    }
+
+    if (widget.error != null && !lesson.isComplete) {
+      return Center(
+        child: AppErrorView(
+          error: widget.error,
+          onRetry: widget.onRetry,
+        ),
+      );
     }
 
     // New: Show loader if we have some data from the list but not enough to render the viewer yet

@@ -85,6 +85,13 @@ class CurriculumParser {
     }
 
     final results = data['results'];
+    final lockedList =
+        (results is Map ? results['locked_contents'] : null) ??
+        data['locked_contents'];
+    final Set<String>? lockedIds = lockedList is List
+        ? lockedList.map((e) => e.toString()).toSet()
+        : null;
+
     List<dynamic>? list;
     Map<String, String> chapterNames = {};
 
@@ -173,7 +180,11 @@ class CurriculumParser {
                       ?.toString()
                       .toLowerCase();
               if (type == 'chapter') return null;
-              final dto = LessonDto.fromJson(json);
+              var dto = LessonDto.fromJson(json);
+
+              if (lockedIds != null) {
+                dto = dto.copyWith(isLocked: lockedIds.contains(dto.id));
+              }
 
               // Enrich with chapter title if we found it in the metadata
               if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {

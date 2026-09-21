@@ -5303,6 +5303,12 @@ abstract class AppLocalizations {
   /// **'Your access to this content has ended!'**
   String get contentAccessEnded;
 
+  /// No description provided for @completePreviousContentToUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete previous content to unlock'**
+  String get completePreviousContentToUnlock;
+
   /// No description provided for @accessExpired.
   ///
   /// In en, this message translates to:

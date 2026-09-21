@@ -115,6 +115,18 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       );
     }
 
+    if (lesson?.isLocked == true) {
+      return LessonDetailShell(
+        title: lesson?.title ?? exam?.title ?? l10n.examDetailsTitle,
+        onBack: widget.onClose,
+        child: ContentNoticeView(
+          icon: LucideIcons.lock,
+          title: l10n.errorAccessDeniedTitle,
+          message: l10n.completePreviousContentToUnlock,
+        ),
+      );
+    }
+
     final attemptsUrl = ApiEndpoints.lessonAttempts(widget.testId);
     final attemptsAsync = ref.watch(examAttemptsProvider(attemptsUrl));
 

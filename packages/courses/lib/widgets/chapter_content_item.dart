@@ -47,6 +47,14 @@ class ChapterContentItem extends StatelessWidget {
               );
               return;
             }
+            if (lesson.isLocked) {
+              AppToast.show(
+                context,
+                message: L10n.of(context).completePreviousContentToUnlock,
+                isError: true,
+              );
+              return;
+            }
             onTap();
           };
 
@@ -192,7 +200,9 @@ class ChapterContentItem extends StatelessWidget {
                         child: Icon(
                           lesson.hasEnded
                               ? LucideIcons.calendarClock
-                              : LucideIcons.chevronRight,
+                              : (lesson.isLocked
+                                  ? LucideIcons.lock
+                                  : LucideIcons.chevronRight),
                           size: design.iconSize.action,
                           color: design.colors.textSecondary
                               .withValues(alpha: 0.5),

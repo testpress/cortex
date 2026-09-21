@@ -67,6 +67,14 @@ class LessonListItem extends StatelessWidget {
               );
               return;
             }
+            if (lesson.isLocked) {
+              AppToast.show(
+                context,
+                message: L10n.of(context).completePreviousContentToUnlock,
+                isError: true,
+              );
+              return;
+            }
             onTap?.call();
           };
 
@@ -182,7 +190,9 @@ class LessonListItem extends StatelessWidget {
                     child: Icon(
                       lesson.hasEnded
                           ? LucideIcons.calendarClock
-                          : LucideIcons.chevronRight,
+                          : (lesson.isLocked
+                              ? LucideIcons.lock
+                              : LucideIcons.chevronRight),
                       color: design.colors.textSecondary.withValues(alpha: 0.5),
                       size: 20,
                     ),

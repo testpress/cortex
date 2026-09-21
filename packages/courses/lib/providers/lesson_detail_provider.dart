@@ -17,8 +17,16 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
   final link = ref.keepAlive();
   Timer? disposeTimer;
 
+  final repository = await ref.watch(courseRepositoryProvider.future);
+
+  final initial = await repository.getLesson(lessonId);
+
   ref.onCancel(() {
-    disposeTimer = Timer(const Duration(minutes: 5), link.close);
+    if (initial == null || !initial.isComplete) {
+      link.close();
+    } else {
+      disposeTimer = Timer(const Duration(minutes: 5), link.close);
+    }
   });
   ref.onResume(() async {
     disposeTimer?.cancel();
@@ -27,10 +35,6 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
     repository.refreshLesson(lessonId).ignore();
   });
   ref.onDispose(() => disposeTimer?.cancel());
-
-  final repository = await ref.watch(courseRepositoryProvider.future);
-
-  final initial = await repository.getLesson(lessonId);
 
   final Stream<LessonDto?> dbStream =
       repository.watchLesson(lessonId).map((row) {
@@ -45,6 +49,7 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
       await repository.refreshLesson(lessonId);
     } catch (e, st) {
       sentryService.captureException(e, stackTrace: st);
+      link.close();
       rethrow;
     }
     yield* dbStream;
@@ -57,6 +62,7 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
           .refreshLesson(lessonId)
           .asStream()
           .handleError((e) {
+            link.close();
             throw e;
           })
           .where((_) => false)

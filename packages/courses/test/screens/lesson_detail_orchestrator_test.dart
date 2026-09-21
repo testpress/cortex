@@ -103,4 +103,119 @@ void main() {
       expect(prevClicked, isTrue);
     });
   });
+
+  group('LessonDetailOrchestrator Error Handling', () {
+    const incompleteLesson = LessonDto(
+      id: '102',
+      chapterId: 'chapter-1',
+      title: 'Incomplete Lesson with Error',
+      type: LessonType.video,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '10 min',
+      orderIndex: 2,
+      isLocked: false,
+      isDetailFetched: false,
+    );
+
+    testWidgets(
+        'shows AppErrorView with header and title when error is present',
+        (tester) async {
+      var retryClicked = false;
+
+      await tester.pumpWidget(wrap(
+        LessonDetailOrchestrator(
+          lesson: incompleteLesson,
+          error: const ApiException(
+            'Complete previous content to unlock',
+            type: ApiErrorType.forbidden,
+          ),
+          onRetry: () => retryClicked = true,
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      // Should render shell title
+      expect(find.text('Incomplete Lesson with Error'), findsOneWidget);
+
+      // Should NOT render skeleton loader
+      expect(find.byType(LessonDetailSkeleton), findsNothing);
+
+      // Should render AppErrorView with error message
+      expect(find.byType(AppErrorView), findsOneWidget);
+      expect(find.text('Complete previous content to unlock'), findsOneWidget);
+
+      // Retry button should be functional
+      expect(find.text('Retry'), findsOneWidget);
+      await tester.tap(find.text('Retry'));
+      await tester.pump();
+      expect(retryClicked, isTrue);
+    });
+  });
+
+  group('LessonDetailOrchestrator Locked Content', () {
+    const lockedLesson = LessonDto(
+      id: '103',
+      chapterId: 'chapter-1',
+      title: 'Locked Video Lesson',
+      type: LessonType.video,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '10 min',
+      orderIndex: 3,
+      hasEnded: false,
+      isLocked: true,
+      pausedAttemptsCount: 0,
+      disableAttemptResume: false,
+      allowRetake: false,
+      maxRetakes: 0,
+      hasAttempts: false,
+      isRunning: false,
+      isUpcoming: false,
+      isDetailFetched: false,
+      bookmarkId: 99,
+    );
+
+    testWidgets('shows locked notice view instead of skeleton or error',
+        (tester) async {
+      var nextClicked = false;
+      var prevClicked = false;
+
+      await tester.pumpWidget(wrap(
+        LessonDetailOrchestrator(
+          lesson: lockedLesson,
+          onNext: () => nextClicked = true,
+          onPrevious: () => prevClicked = true,
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      // Should NOT render skeleton loader
+      expect(find.byType(LessonDetailSkeleton), findsNothing);
+
+      // Should render locked icon, title and message
+      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+      expect(find.text('Access Denied'), findsOneWidget);
+      expect(find.text('Complete previous content to unlock'), findsOneWidget);
+
+      // Should NOT render bookmark or completed action
+      expect(find.byIcon(LucideIcons.bookmark), findsNothing);
+      expect(find.byIcon(LucideIcons.bookmarkOff), findsNothing);
+      expect(find.text('Completed'), findsNothing);
+      expect(find.text('Mark as completed'), findsNothing);
+
+      // Should NOT render Ask Doubt FAB
+      expect(find.byType(AskDoubtFab), findsNothing);
+
+      // Footer Next / Previous should be rendered and functional
+      expect(find.text('Next'), findsOneWidget);
+      expect(find.text('Previous'), findsOneWidget);
+
+      await tester.tap(find.text('Next'));
+      await tester.pump();
+      expect(nextClicked, isTrue);
+
+      await tester.tap(find.text('Previous'));
+      await tester.pump();
+      expect(prevClicked, isTrue);
+    });
+  });
 }

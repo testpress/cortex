@@ -2942,6 +2942,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get contentAccessEnded => 'لقد انتهى وصولك إلى هذا المحتوى!';
 
   @override
+  String get completePreviousContentToUnlock =>
+      'أكمل المحتوى السابق لفتح هذا المحتوى';
+
+  @override
   String get accessExpired => 'انتهت صلاحية الوصول';
 
   @override
