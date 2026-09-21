@@ -213,10 +213,10 @@ class _LessonDetailOrchestratorState
                   !isDownloading)
               ? () => _handleDownload(lesson)
               : null,
-          onNext: widget.onNext,
-          onPrevious: widget.onPrevious,
-          stickyFooter: lesson.hasEnded ||
-              lesson.isLocked ||
+          onNext: (!lesson.hasEnded && !lesson.isLocked) ? widget.onNext : null,
+          onPrevious:
+              (!lesson.hasEnded && !lesson.isLocked) ? widget.onPrevious : null,
+          stickyFooter: (!lesson.hasEnded && !lesson.isLocked) &&
               (lesson.type != LessonType.video &&
                   lesson.type != LessonType.liveStream),
           child: _buildLessonContent(context),
@@ -333,7 +333,7 @@ class _LessonDetailOrchestratorState
       }
     }
 
-    // New: Show loader if we have some data from the list but not enough to render the viewer yet
+    // Show loader if we have some data from the list but not enough to render the viewer yet
     if (!lesson.isComplete) {
       return LessonDetailSkeleton(lessonType: lesson.type);
     }

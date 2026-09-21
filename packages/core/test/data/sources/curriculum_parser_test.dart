@@ -129,7 +129,7 @@ void main() {
 
   group('CurriculumParser progressive locked_contents tests', () {
     test(
-      'marks lessons present in locked_contents array as isLocked = true',
+      'marks lessons present in locked_contents array as isLocked = true, preserves explicit is_locked, and keeps active items unlocked',
       () {
         final rawPayload = {
           'results': {
@@ -169,6 +169,77 @@ void main() {
 
         final lesson103 = curriculum.lessons.firstWhere((l) => l.id == '103');
         expect(lesson103.isLocked, isTrue);
+      },
+    );
+
+    test(
+      'lesson with no is_locked, isLocked, or active fields and empty locked_contents defaults to isLocked = false',
+      () {
+        final rawPayload = {
+          'results': {
+            'contents': [
+              {'id': 201, 'title': 'Open Lesson', 'content_type': 'video'},
+            ],
+            'locked_contents': [],
+          },
+        };
+
+        final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
+        expect(curriculum.lessons.length, 1);
+
+        final lesson = curriculum.lessons.first;
+        expect(lesson.isLocked, isFalse);
+      },
+    );
+
+    test(
+      'lesson with no is_locked, isLocked, or active fields but present in locked_contents sets isLocked = true',
+      () {
+        final rawPayload = {
+          'results': {
+            'contents': [
+              {
+                'id': 202,
+                'title': 'Progressively Locked Lesson',
+                'content_type': 'video',
+              },
+            ],
+            'locked_contents': [202],
+          },
+        };
+
+        final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
+        expect(curriculum.lessons.length, 1);
+
+        final lesson = curriculum.lessons.first;
+        expect(lesson.isLocked, isTrue);
+      },
+    );
+
+    test(
+      'ended or inactive exam with active = false not in locked_contents sets isLocked = false',
+      () {
+        final rawPayload = {
+          'results': {
+            'contents': [
+              {
+                'id': 301,
+                'title': 'Ended GMAT Adaptive Exam',
+                'content_type': 'exam',
+                'active': false,
+                'has_ended': true,
+              },
+            ],
+            'locked_contents': [],
+          },
+        };
+
+        final curriculum = CurriculumParser.parseFullCurriculum(rawPayload);
+        expect(curriculum.lessons.length, 1);
+
+        final lesson = curriculum.lessons.first;
+        expect(lesson.isLocked, isFalse);
+        expect(lesson.hasEnded, isTrue);
       },
     );
   });

@@ -61,14 +61,11 @@ void main() {
 
     testWidgets('shows expired message and icon instead of skeleton loader',
         (tester) async {
-      var nextClicked = false;
-      var prevClicked = false;
-
       await tester.pumpWidget(wrap(
         LessonDetailOrchestrator(
           lesson: expiredLesson,
-          onNext: () => nextClicked = true,
-          onPrevious: () => prevClicked = true,
+          onNext: () {},
+          onPrevious: () {},
         ),
       ));
       await tester.pumpAndSettle();
@@ -90,17 +87,9 @@ void main() {
       // Should NOT render Ask Doubt FAB
       expect(find.byType(AskDoubtFab), findsNothing);
 
-      // Footer Next / Previous should be rendered and functional
-      expect(find.text('Next'), findsOneWidget);
-      expect(find.text('Previous'), findsOneWidget);
-
-      await tester.tap(find.text('Next'));
-      await tester.pump();
-      expect(nextClicked, isTrue);
-
-      await tester.tap(find.text('Previous'));
-      await tester.pump();
-      expect(prevClicked, isTrue);
+      // Footer Next / Previous should NOT be rendered
+      expect(find.text('Next'), findsNothing);
+      expect(find.text('Previous'), findsNothing);
     });
 
     testWidgets('expired notes lesson does not show mark as completed',
@@ -140,9 +129,6 @@ void main() {
 
     testWidgets('locked lesson shows locked message, lock icon, and no FAB',
         (tester) async {
-      var nextClicked = false;
-      var prevClicked = false;
-
       const lockedVideo = LessonDto(
         id: '103',
         chapterId: 'chapter-1',
@@ -165,10 +151,8 @@ void main() {
       );
 
       await tester.pumpWidget(wrap(
-        LessonDetailOrchestrator(
+        const LessonDetailOrchestrator(
           lesson: lockedVideo,
-          onNext: () => nextClicked = true,
-          onPrevious: () => prevClicked = true,
         ),
       ));
       await tester.pumpAndSettle();
@@ -193,17 +177,9 @@ void main() {
       expect(find.text('Mark as completed'), findsNothing);
       expect(find.byType(AskDoubtFab), findsNothing);
 
-      // Footer Next / Previous should be rendered and functional
-      expect(find.text('Next'), findsOneWidget);
-      expect(find.text('Previous'), findsOneWidget);
-
-      await tester.tap(find.text('Next'));
-      await tester.pump();
-      expect(nextClicked, isTrue);
-
-      await tester.tap(find.text('Previous'));
-      await tester.pump();
-      expect(prevClicked, isTrue);
+      // Footer Next / Previous should NOT be rendered
+      expect(find.text('Next'), findsNothing);
+      expect(find.text('Previous'), findsNothing);
     });
   });
 }

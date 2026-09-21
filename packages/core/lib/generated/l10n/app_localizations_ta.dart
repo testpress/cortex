@@ -2980,6 +2980,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiSupportAskingAi => 'AI-இடம் கேட்கிறது';
 
   @override
+  String get examHasEnded => 'இந்தத் தேர்வு முடிந்துவிட்டது';
+
+  @override
   String get contentAccessEnded =>
       'இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!';
 

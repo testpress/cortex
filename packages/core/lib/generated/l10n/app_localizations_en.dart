@@ -2936,6 +2936,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiSupportAskingAi => 'ASKING AI';
 
   @override
+  String get examHasEnded => 'This exam has ended';
+
+  @override
   String get contentAccessEnded => 'Your access to this content has ended!';
 
   @override

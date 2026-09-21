@@ -51,11 +51,35 @@ class ExamPrescreenBottomBar extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
+    final bool isEnded =
+        (lesson?.hasEnded ?? false) ||
+        (lesson?.end != null &&
+            DateTime.tryParse(lesson!.end!)?.isBefore(DateTime.now()) ==
+                true) ||
+        (exam?.endDate != null &&
+            DateTime.tryParse(exam!.endDate!)?.isBefore(DateTime.now()) ==
+                true);
+
     final bool canAttempt =
         isOfflineOnly ||
         (exam?.allowRetake ?? true) ||
         !((lesson?.hasAttempts ?? false) &&
             (exam?.pausedAttemptsCount ?? 0) == 0);
+
+    if (isEnded) {
+      return Container(
+        color: design.colors.card,
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.md,
+          design.spacing.md,
+          design.spacing.md,
+          design.spacing.lg,
+        ),
+        child: Center(
+          child: AppText.label(l10n.examHasEnded, textAlign: TextAlign.center),
+        ),
+      );
+    }
 
     if (!canAttempt) {
       return Container(

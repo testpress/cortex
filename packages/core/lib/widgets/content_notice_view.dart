@@ -22,34 +22,37 @@ class ContentNoticeView extends StatelessWidget {
     final design = Design.of(context);
 
     return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
-        child: AppSemantics.container(
-          label: '$title. $message',
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: design.colors.surfaceVariant,
-                  shape: BoxShape.circle,
+      child: Transform.translate(
+        offset: const Offset(0, -36),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
+          child: AppSemantics.container(
+            label: '$title. $message',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: design.colors.surfaceVariant,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: design.iconSize.lg,
+                    color: design.colors.textSecondary,
+                  ),
                 ),
-                child: Icon(
-                  icon,
-                  size: design.iconSize.lg,
-                  color: design.colors.textSecondary,
+                SizedBox(height: design.spacing.md),
+                AppSemantics.header(
+                  label: title,
+                  child: AppText.title(title, textAlign: TextAlign.center),
                 ),
-              ),
-              SizedBox(height: design.spacing.md),
-              AppSemantics.header(
-                label: title,
-                child: AppText.title(title, textAlign: TextAlign.center),
-              ),
-              SizedBox(height: design.spacing.xs),
-              AppText.subtitle(message, textAlign: TextAlign.center),
-            ],
+                SizedBox(height: design.spacing.xs),
+                AppText.subtitle(message, textAlign: TextAlign.center),
+              ],
+            ),
           ),
         ),
       ),

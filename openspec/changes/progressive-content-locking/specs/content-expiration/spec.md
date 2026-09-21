@@ -15,3 +15,8 @@ The system SHALL render an expiration notice and disable interaction actions whi
 - **THEN** `ContentNoticeView` is displayed with a `calendarClock` icon and localized expiration text
 - **AND** Bookmark, Mark as completed, Download, and Ask Doubt FAB actions are disabled
 - **AND** Previous and Next footer navigation remains functional
+
+#### Scenario: Viewing an ended exam in prescreen bottom bar
+- **WHEN** an exam has ended (`hasEnded == true` or `isExamEnded == true`)
+- **THEN** `ExamPrescreenBottomBar` displays an ended notice banner
+- **AND** start and resume attempt actions are suppressed

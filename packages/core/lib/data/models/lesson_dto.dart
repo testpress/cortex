@@ -416,7 +416,8 @@ class LessonDto {
       allowRetake: allowRetake && other.allowRetake,
       maxRetakes: maxRetakes != -1 ? maxRetakes : other.maxRetakes,
       isLocked:
-          isLocked && other.isLocked, // Only locked if both say so (safer)
+          isLocked ||
+          other.isLocked, // Keep locked if either source marked it as locked
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,

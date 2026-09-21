@@ -7,9 +7,17 @@ The system SHALL parse the `locked_contents` array from curriculum API responses
 - **WHEN** curriculum JSON payload contains `locked_contents` containing lesson ID
 - **THEN** the parsed `LessonDto` has `isLocked` set to `true`
 
-#### Scenario: Lesson not present in locked_contents
-- **WHEN** curriculum JSON payload contains active lesson not in `locked_contents`
+#### Scenario: Lesson with explicit is_locked flag
+- **WHEN** curriculum JSON payload contains explicit `is_locked` or `isLocked` set to `true`
+- **THEN** the parsed `LessonDto` has `isLocked` set to `true` even if not in `locked_contents`
+
+#### Scenario: Lesson not present in locked_contents and not explicitly locked
+- **WHEN** curriculum JSON payload contains active lesson not in `locked_contents` and `is_locked` is not true
 - **THEN** the parsed `LessonDto` has `isLocked` set to `false`
+
+#### Scenario: Preserving lock state during partial updates
+- **WHEN** `LessonDto.mergeWith` merges a lesson update into an existing lesson
+- **THEN** `isLocked` remains `true` if either the existing or updated instance is locked
 
 ### Requirement: Block List Navigation for Locked Lessons
 The system SHALL display a lock icon for locked lessons in chapter and course content lists, and prevent navigation on tap with an explanatory toast.

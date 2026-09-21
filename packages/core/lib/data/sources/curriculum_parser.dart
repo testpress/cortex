@@ -186,9 +186,13 @@ class CurriculumParser {
               if (type == 'chapter') return null;
               var dto = LessonDto.fromJson(json);
 
-              if (lockedContentIds.contains(dto.id)) {
-                dto = dto.copyWith(isLocked: true);
-              }
+              final explicitLock =
+                  (json['is_locked'] as bool?) ??
+                  (json['isLocked'] as bool?) ??
+                  false;
+              dto = dto.copyWith(
+                isLocked: explicitLock || lockedContentIds.contains(dto.id),
+              );
 
               // Enrich with chapter title if we found it in the metadata
               if (dto.chapterTitle == null || dto.chapterTitle!.isEmpty) {

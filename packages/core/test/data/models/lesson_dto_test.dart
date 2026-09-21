@@ -328,6 +328,29 @@ void main() {
         expect(merged.exam?.id, 'exam-4');
       },
     );
+
+    test('mergeWith preserves isLocked: true when either source is locked', () {
+      final unlocked = LessonDto.fromJson({
+        'id': '1',
+        'title': 'Lesson',
+        'content_type': 'video',
+      }).copyWith(isLocked: false);
+
+      final locked = LessonDto.fromJson({
+        'id': '1',
+        'title': 'Lesson',
+        'content_type': 'video',
+      }).copyWith(isLocked: true);
+
+      // Incoming unlocked + Cached locked -> stays locked
+      expect(unlocked.mergeWith(locked).isLocked, isTrue);
+
+      // Incoming locked + Cached unlocked -> stays locked
+      expect(locked.mergeWith(unlocked).isLocked, isTrue);
+
+      // Both unlocked -> unlocked
+      expect(unlocked.mergeWith(unlocked).isLocked, isFalse);
+    });
   });
 
   group('LessonDto.fromJson — liveStream parsing', () {

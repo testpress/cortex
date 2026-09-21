@@ -2985,6 +2985,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiSupportAskingAi => 'AI-യോട് ചോദിക്കുന്നു';
 
   @override
+  String get examHasEnded => 'ഈ പരീക്ഷ അവസാനിച്ചു';
+
+  @override
   String get contentAccessEnded =>
       'ഈ ഉള്ളടക്കത്തിലേക്കുള്ള നിങ്ങളുടെ ആക്‌സസ് അവസാനിച്ചു!';
 

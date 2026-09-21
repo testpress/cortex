@@ -2939,6 +2939,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiSupportAskingAi => 'جاري سؤال الذكاء الاصطناعي';
 
   @override
+  String get examHasEnded => 'لقد انتهى هذا الامتحان';
+
+  @override
   String get contentAccessEnded => 'لقد انتهى وصولك إلى هذا المحتوى!';
 
   @override

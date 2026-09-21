@@ -5297,6 +5297,12 @@ abstract class AppLocalizations {
   /// **'ASKING AI'**
   String get aiSupportAskingAi;
 
+  /// No description provided for @examHasEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'This exam has ended'**
+  String get examHasEnded;
+
   /// No description provided for @contentAccessEnded.
   ///
   /// In en, this message translates to:
