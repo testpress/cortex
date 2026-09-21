@@ -191,7 +191,7 @@ class ChapterContentItem extends StatelessWidget {
                       child: Center(
                         child: Icon(
                           lesson.hasEnded
-                              ? LucideIcons.lock
+                              ? LucideIcons.calendarClock
                               : LucideIcons.chevronRight,
                           size: design.iconSize.action,
                           color: design.colors.textSecondary

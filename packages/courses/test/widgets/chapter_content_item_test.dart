@@ -51,7 +51,7 @@ void main() {
       )));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+      expect(find.byIcon(LucideIcons.calendarClock), findsOneWidget);
 
       await tester.tap(find.byType(AppFocusable));
       await tester.pump(const Duration(seconds: 4));
