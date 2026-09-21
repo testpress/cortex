@@ -304,11 +304,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  bool _hasCustomAvatar(String? avatarUrl) {
-    if (avatarUrl == null || avatarUrl.trim().isEmpty) return false;
-    return !avatarUrl.contains('default_');
-  }
-
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
     final user = ref.watch(userProvider).value;
     if (user == null) return const SizedBox.shrink();
@@ -388,7 +383,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget _buildAvatarSheet(DesignConfig design, dynamic l10n) {
     final user = ref.watch(userProvider).value;
-    final hasCustomSavedAvatar = _hasCustomAvatar(user?.avatar);
+    final hasCustomSavedAvatar = user?.hasCustomAvatar ?? false;
     final hasAvatar =
         !_isAvatarRemoved &&
         (_selectedAvatarBytes != null || hasCustomSavedAvatar);

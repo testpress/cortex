@@ -12,6 +12,7 @@ class UserDto {
   final String? email;
   final String? phone;
   final String? avatar;
+  final bool? hasCustomAvatar;
   final bool isPro;
   final DateTime? joinedDate;
 
@@ -24,6 +25,7 @@ class UserDto {
     this.email,
     this.phone,
     this.avatar,
+    this.hasCustomAvatar,
     this.isPro = false,
     this.joinedDate,
   });
@@ -38,6 +40,7 @@ class UserDto {
       email: json['email'] as String?,
       phone: json['phone'] as String?,
       avatar: json['medium_image'] as String?,
+      hasCustomAvatar: json['has_custom_avatar'] as bool?,
       joinedDate: json['joined_date'] != null
           ? DateTime.tryParse(json['joined_date'].toString())
           : null,
@@ -54,6 +57,7 @@ class UserDto {
       email: data.email,
       phone: data.phone,
       avatar: data.avatar,
+      hasCustomAvatar: data.hasCustomAvatar,
       joinedDate: data.joinedDate,
     );
   }
@@ -67,6 +71,7 @@ class UserDto {
     String? email,
     String? phone,
     String? avatar,
+    bool? hasCustomAvatar,
     bool? isPro,
     DateTime? joinedDate,
   }) {
@@ -79,6 +84,7 @@ class UserDto {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       avatar: avatar ?? this.avatar,
+      hasCustomAvatar: hasCustomAvatar ?? this.hasCustomAvatar,
       isPro: isPro ?? this.isPro,
       joinedDate: joinedDate ?? this.joinedDate,
     );
@@ -96,6 +102,7 @@ class UserDto {
         other.email == email &&
         other.phone == phone &&
         other.avatar == avatar &&
+        other.hasCustomAvatar == hasCustomAvatar &&
         other.isPro == isPro &&
         other.joinedDate == joinedDate;
   }
@@ -110,6 +117,7 @@ class UserDto {
     email,
     phone,
     avatar,
+    hasCustomAvatar,
     isPro,
     joinedDate,
   );
@@ -128,6 +136,7 @@ extension UserDtoPersistence on UserDto {
       email: drift.Value(email),
       phone: drift.Value(phone),
       avatar: drift.Value(avatar),
+      hasCustomAvatar: drift.Value(hasCustomAvatar),
       joinedDate: drift.Value(joinedDate),
     );
   }

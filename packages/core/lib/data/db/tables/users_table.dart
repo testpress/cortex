@@ -10,6 +10,7 @@ class UsersTable extends Table {
   TextColumn get email => text().nullable()();
   TextColumn get phone => text().nullable()();
   TextColumn get avatar => text().nullable()(); // URL string
+  BoolColumn get hasCustomAvatar => boolean().nullable()();
   DateTimeColumn get joinedDate => dateTime().nullable()();
 
   @override

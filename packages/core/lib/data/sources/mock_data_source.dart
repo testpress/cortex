@@ -1498,9 +1498,16 @@ class MockDataSource implements DataSource {
       firstName: data['first_name'] as String? ?? mockCurrentUser.firstName,
       lastName: data['last_name'] as String? ?? mockCurrentUser.lastName,
       phone: data['phone'] as String? ?? mockCurrentUser.phone,
-      avatar: data.containsKey('photo')
-          ? data['photo'] as String?
-          : mockCurrentUser.avatar,
+      avatar: data['remove_photo'] == true
+          ? null
+          : (data.containsKey('photo')
+                ? data['photo'] as String?
+                : mockCurrentUser.avatar),
+      hasCustomAvatar: data['remove_photo'] == true
+          ? false
+          : (data.containsKey('photo') && data['photo'] != null
+                ? true
+                : mockCurrentUser.hasCustomAvatar),
       email: mockCurrentUser.email,
       username: mockCurrentUser.username,
       isPro: mockCurrentUser.isPro,

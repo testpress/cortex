@@ -7511,6 +7511,20 @@ class $UsersTableTable extends UsersTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _hasCustomAvatarMeta = const VerificationMeta(
+    'hasCustomAvatar',
+  );
+  @override
+  late final GeneratedColumn<bool> hasCustomAvatar = GeneratedColumn<bool>(
+    'has_custom_avatar',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_custom_avatar" IN (0, 1))',
+    ),
+  );
   static const VerificationMeta _joinedDateMeta = const VerificationMeta(
     'joinedDate',
   );
@@ -7532,6 +7546,7 @@ class $UsersTableTable extends UsersTable
     email,
     phone,
     avatar,
+    hasCustomAvatar,
     joinedDate,
   ];
   @override
@@ -7593,6 +7608,15 @@ class $UsersTableTable extends UsersTable
         avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta),
       );
     }
+    if (data.containsKey('has_custom_avatar')) {
+      context.handle(
+        _hasCustomAvatarMeta,
+        hasCustomAvatar.isAcceptableOrUnknown(
+          data['has_custom_avatar']!,
+          _hasCustomAvatarMeta,
+        ),
+      );
+    }
     if (data.containsKey('joined_date')) {
       context.handle(
         _joinedDateMeta,
@@ -7640,6 +7664,10 @@ class $UsersTableTable extends UsersTable
         DriftSqlType.string,
         data['${effectivePrefix}avatar'],
       ),
+      hasCustomAvatar: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_custom_avatar'],
+      ),
       joinedDate: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}joined_date'],
@@ -7662,6 +7690,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   final String? email;
   final String? phone;
   final String? avatar;
+  final bool? hasCustomAvatar;
   final DateTime? joinedDate;
   const UsersTableData({
     required this.id,
@@ -7672,6 +7701,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     this.email,
     this.phone,
     this.avatar,
+    this.hasCustomAvatar,
     this.joinedDate,
   });
   @override
@@ -7698,6 +7728,9 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     }
     if (!nullToAbsent || avatar != null) {
       map['avatar'] = Variable<String>(avatar);
+    }
+    if (!nullToAbsent || hasCustomAvatar != null) {
+      map['has_custom_avatar'] = Variable<bool>(hasCustomAvatar);
     }
     if (!nullToAbsent || joinedDate != null) {
       map['joined_date'] = Variable<DateTime>(joinedDate);
@@ -7727,6 +7760,9 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
       avatar: avatar == null && nullToAbsent
           ? const Value.absent()
           : Value(avatar),
+      hasCustomAvatar: hasCustomAvatar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hasCustomAvatar),
       joinedDate: joinedDate == null && nullToAbsent
           ? const Value.absent()
           : Value(joinedDate),
@@ -7747,6 +7783,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
       email: serializer.fromJson<String?>(json['email']),
       phone: serializer.fromJson<String?>(json['phone']),
       avatar: serializer.fromJson<String?>(json['avatar']),
+      hasCustomAvatar: serializer.fromJson<bool?>(json['hasCustomAvatar']),
       joinedDate: serializer.fromJson<DateTime?>(json['joinedDate']),
     );
   }
@@ -7762,6 +7799,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
       'email': serializer.toJson<String?>(email),
       'phone': serializer.toJson<String?>(phone),
       'avatar': serializer.toJson<String?>(avatar),
+      'hasCustomAvatar': serializer.toJson<bool?>(hasCustomAvatar),
       'joinedDate': serializer.toJson<DateTime?>(joinedDate),
     };
   }
@@ -7775,6 +7813,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     Value<String?> email = const Value.absent(),
     Value<String?> phone = const Value.absent(),
     Value<String?> avatar = const Value.absent(),
+    Value<bool?> hasCustomAvatar = const Value.absent(),
     Value<DateTime?> joinedDate = const Value.absent(),
   }) => UsersTableData(
     id: id ?? this.id,
@@ -7785,6 +7824,9 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     email: email.present ? email.value : this.email,
     phone: phone.present ? phone.value : this.phone,
     avatar: avatar.present ? avatar.value : this.avatar,
+    hasCustomAvatar: hasCustomAvatar.present
+        ? hasCustomAvatar.value
+        : this.hasCustomAvatar,
     joinedDate: joinedDate.present ? joinedDate.value : this.joinedDate,
   );
   UsersTableData copyWithCompanion(UsersTableCompanion data) {
@@ -7797,6 +7839,9 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
       email: data.email.present ? data.email.value : this.email,
       phone: data.phone.present ? data.phone.value : this.phone,
       avatar: data.avatar.present ? data.avatar.value : this.avatar,
+      hasCustomAvatar: data.hasCustomAvatar.present
+          ? data.hasCustomAvatar.value
+          : this.hasCustomAvatar,
       joinedDate: data.joinedDate.present
           ? data.joinedDate.value
           : this.joinedDate,
@@ -7814,6 +7859,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
           ..write('email: $email, ')
           ..write('phone: $phone, ')
           ..write('avatar: $avatar, ')
+          ..write('hasCustomAvatar: $hasCustomAvatar, ')
           ..write('joinedDate: $joinedDate')
           ..write(')'))
         .toString();
@@ -7829,6 +7875,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     email,
     phone,
     avatar,
+    hasCustomAvatar,
     joinedDate,
   );
   @override
@@ -7843,6 +7890,7 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
           other.email == this.email &&
           other.phone == this.phone &&
           other.avatar == this.avatar &&
+          other.hasCustomAvatar == this.hasCustomAvatar &&
           other.joinedDate == this.joinedDate);
 }
 
@@ -7855,6 +7903,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   final Value<String?> email;
   final Value<String?> phone;
   final Value<String?> avatar;
+  final Value<bool?> hasCustomAvatar;
   final Value<DateTime?> joinedDate;
   final Value<int> rowid;
   const UsersTableCompanion({
@@ -7866,6 +7915,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     this.email = const Value.absent(),
     this.phone = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.hasCustomAvatar = const Value.absent(),
     this.joinedDate = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -7878,6 +7928,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     this.email = const Value.absent(),
     this.phone = const Value.absent(),
     this.avatar = const Value.absent(),
+    this.hasCustomAvatar = const Value.absent(),
     this.joinedDate = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id);
@@ -7890,6 +7941,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     Expression<String>? email,
     Expression<String>? phone,
     Expression<String>? avatar,
+    Expression<bool>? hasCustomAvatar,
     Expression<DateTime>? joinedDate,
     Expression<int>? rowid,
   }) {
@@ -7902,6 +7954,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
       if (email != null) 'email': email,
       if (phone != null) 'phone': phone,
       if (avatar != null) 'avatar': avatar,
+      if (hasCustomAvatar != null) 'has_custom_avatar': hasCustomAvatar,
       if (joinedDate != null) 'joined_date': joinedDate,
       if (rowid != null) 'rowid': rowid,
     });
@@ -7916,6 +7969,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     Value<String?>? email,
     Value<String?>? phone,
     Value<String?>? avatar,
+    Value<bool?>? hasCustomAvatar,
     Value<DateTime?>? joinedDate,
     Value<int>? rowid,
   }) {
@@ -7928,6 +7982,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       avatar: avatar ?? this.avatar,
+      hasCustomAvatar: hasCustomAvatar ?? this.hasCustomAvatar,
       joinedDate: joinedDate ?? this.joinedDate,
       rowid: rowid ?? this.rowid,
     );
@@ -7960,6 +8015,9 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     if (avatar.present) {
       map['avatar'] = Variable<String>(avatar.value);
     }
+    if (hasCustomAvatar.present) {
+      map['has_custom_avatar'] = Variable<bool>(hasCustomAvatar.value);
+    }
     if (joinedDate.present) {
       map['joined_date'] = Variable<DateTime>(joinedDate.value);
     }
@@ -7980,6 +8038,7 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
           ..write('email: $email, ')
           ..write('phone: $phone, ')
           ..write('avatar: $avatar, ')
+          ..write('hasCustomAvatar: $hasCustomAvatar, ')
           ..write('joinedDate: $joinedDate, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -9988,8 +10047,8 @@ class $DashboardContentsTableTable extends DashboardContentsTable
     DashboardSectionType.values,
   );
   static JsonTypeConverter2<DashboardContentType, int, int>
-  $converterlessonType = const EnumIndexConverter<DashboardContentType>(
-    DashboardContentType.values,
+  $converterlessonType = const EnumIndexConverter<LessonType>(
+    LessonType.values,
   );
 }
 
@@ -20709,6 +20768,7 @@ typedef $$UsersTableTableCreateCompanionBuilder =
       Value<String?> email,
       Value<String?> phone,
       Value<String?> avatar,
+      Value<bool?> hasCustomAvatar,
       Value<DateTime?> joinedDate,
       Value<int> rowid,
     });
@@ -20722,6 +20782,7 @@ typedef $$UsersTableTableUpdateCompanionBuilder =
       Value<String?> email,
       Value<String?> phone,
       Value<String?> avatar,
+      Value<bool?> hasCustomAvatar,
       Value<DateTime?> joinedDate,
       Value<int> rowid,
     });
@@ -20772,6 +20833,11 @@ class $$UsersTableTableFilterComposer
 
   ColumnFilters<String> get avatar => $composableBuilder(
     column: $table.avatar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasCustomAvatar => $composableBuilder(
+    column: $table.hasCustomAvatar,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -20830,6 +20896,11 @@ class $$UsersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get hasCustomAvatar => $composableBuilder(
+    column: $table.hasCustomAvatar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get joinedDate => $composableBuilder(
     column: $table.joinedDate,
     builder: (column) => ColumnOrderings(column),
@@ -20868,6 +20939,11 @@ class $$UsersTableTableAnnotationComposer
 
   GeneratedColumn<String> get avatar =>
       $composableBuilder(column: $table.avatar, builder: (column) => column);
+
+  GeneratedColumn<bool> get hasCustomAvatar => $composableBuilder(
+    column: $table.hasCustomAvatar,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get joinedDate => $composableBuilder(
     column: $table.joinedDate,
@@ -20914,6 +20990,7 @@ class $$UsersTableTableTableManager
                 Value<String?> email = const Value.absent(),
                 Value<String?> phone = const Value.absent(),
                 Value<String?> avatar = const Value.absent(),
+                Value<bool?> hasCustomAvatar = const Value.absent(),
                 Value<DateTime?> joinedDate = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UsersTableCompanion(
@@ -20925,6 +21002,7 @@ class $$UsersTableTableTableManager
                 email: email,
                 phone: phone,
                 avatar: avatar,
+                hasCustomAvatar: hasCustomAvatar,
                 joinedDate: joinedDate,
                 rowid: rowid,
               ),
@@ -20938,6 +21016,7 @@ class $$UsersTableTableTableManager
                 Value<String?> email = const Value.absent(),
                 Value<String?> phone = const Value.absent(),
                 Value<String?> avatar = const Value.absent(),
+                Value<bool?> hasCustomAvatar = const Value.absent(),
                 Value<DateTime?> joinedDate = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UsersTableCompanion.insert(
@@ -20949,6 +21028,7 @@ class $$UsersTableTableTableManager
                 email: email,
                 phone: phone,
                 avatar: avatar,
+                hasCustomAvatar: hasCustomAvatar,
                 joinedDate: joinedDate,
                 rowid: rowid,
               ),
