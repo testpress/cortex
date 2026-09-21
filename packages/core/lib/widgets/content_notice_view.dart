@@ -3,8 +3,8 @@ import '../design/design_provider.dart';
 import '../accessibility/app_semantics.dart';
 import 'app_text.dart';
 
-/// A reusable notice view displayed inside lesson detail screens
-/// when content is expired, locked, or unavailable.
+/// A reusable notice view displayed across content and exam screens
+/// when access has expired, locked, or is unavailable.
 class ContentNoticeView extends StatelessWidget {
   const ContentNoticeView({
     super.key,

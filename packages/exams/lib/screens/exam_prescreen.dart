@@ -96,6 +96,25 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     final lesson = fetchedLesson?.mergeWith(widget.lesson) ?? widget.lesson;
     final exam = lesson?.exam;
 
+    if (lesson?.hasEnded == true) {
+      final formattedEnd = lesson?.end != null
+          ? TimeFormatter.formatDate(lesson!.end!)
+          : null;
+      final detailMessage = (formattedEnd != null && formattedEnd.isNotEmpty)
+          ? l10n.accessExpiredOn(formattedEnd)
+          : l10n.contentAccessEnded;
+
+      return LessonDetailShell(
+        title: lesson?.title ?? exam?.title ?? l10n.examDetailsTitle,
+        onBack: widget.onClose,
+        child: ContentNoticeView(
+          icon: LucideIcons.calendarClock,
+          title: l10n.accessExpired,
+          message: detailMessage,
+        ),
+      );
+    }
+
     final attemptsUrl = ApiEndpoints.lessonAttempts(widget.testId);
     final attemptsAsync = ref.watch(examAttemptsProvider(attemptsUrl));
 
@@ -144,25 +163,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       isAttemptsLoading: isAttemptsLoading,
       isOfflineOnly: widget.isOfflineOnly,
     );
-
-    if (lesson?.hasEnded == true) {
-      final formattedEnd = lesson?.end != null
-          ? TimeFormatter.formatDate(lesson!.end!)
-          : null;
-      final detailMessage = (formattedEnd != null && formattedEnd.isNotEmpty)
-          ? l10n.accessExpiredOn(formattedEnd)
-          : l10n.contentAccessEnded;
-
-      return LessonDetailShell(
-        title: lesson?.title ?? exam?.title ?? l10n.examDetailsTitle,
-        onBack: widget.onClose,
-        child: ContentNoticeView(
-          icon: LucideIcons.calendarClock,
-          title: l10n.accessExpired,
-          message: detailMessage,
-        ),
-      );
-    }
 
     return Stack(
       children: [
