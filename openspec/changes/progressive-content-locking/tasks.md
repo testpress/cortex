@@ -2,6 +2,7 @@
  
 -- [x] 1.1 Update `LessonDto` and `CurriculumParser` to extract `locked_contents` and resolve `isLocked` state.
 -- [x] 1.2 Add multi-language localization keys for locked prerequisite and expiry notices (`en`, `ta`, `ar`, `ml`).
+-- [x] 1.3 Handle 403 prerequisite lock responses during direct lesson refreshes by marking lessons as locked in database.
 
 ## 2. List Views & Interaction Guards
 

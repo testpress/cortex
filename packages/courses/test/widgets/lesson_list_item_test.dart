@@ -135,5 +135,40 @@ void main() {
 
       expect(tapped, isFalse);
     });
+
+    testWidgets(
+        'exposes semantic label with title, type, and lock/expired status',
+        (tester) async {
+      const lockedLesson = LessonDto(
+        id: '4',
+        chapterId: '1',
+        title: 'Algorithms 101',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.notStarted,
+        duration: '15 min',
+        orderIndex: 4,
+        hasEnded: false,
+        isLocked: true,
+        pausedAttemptsCount: 0,
+        disableAttemptResume: false,
+        allowRetake: false,
+        maxRetakes: 0,
+        hasAttempts: false,
+        isRunning: false,
+        isUpcoming: false,
+        isDetailFetched: false,
+      );
+
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: lockedLesson,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.bySemanticsLabel('Algorithms 101, Locked'),
+        findsOneWidget,
+      );
+    });
   });
 }

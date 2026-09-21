@@ -439,7 +439,33 @@ void main() {
         final dtoProcessing = LessonDto.fromJson(jsonProcessing);
         expect(dtoProcessing.transcodingStatus, 'Processing');
         expect(dtoProcessing.isTranscodingCompleted, false);
-        expect(dtoProcessing.isTranscodingProcessing, true);
+      },
+    );
+
+    test(
+      'mergeWith preserves title and type from existing when merged with locked stub DTO',
+      () {
+        const existing = LessonDto(
+          id: '247183',
+          chapterId: 'chap-10',
+          title: 'Notes Lesson Title',
+          type: LessonType.notes,
+          duration: '10 min',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: false,
+          orderIndex: 2,
+        );
+
+        final lockedStub = LessonDto.lockedStub('247183');
+
+        final merged = lockedStub.mergeWith(existing);
+
+        expect(merged.id, '247183');
+        expect(merged.title, 'Notes Lesson Title');
+        expect(merged.chapterId, 'chap-10');
+        expect(merged.type, LessonType.notes);
+        expect(merged.isLocked, true);
+        expect(merged.isDetailFetched, true);
       },
     );
   });

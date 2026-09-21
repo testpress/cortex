@@ -19,6 +19,12 @@ The system SHALL parse the `locked_contents` array from curriculum API responses
 - **WHEN** `LessonDto.mergeWith` merges a lesson update into an existing lesson
 - **THEN** `isLocked` remains `true` if either the existing or updated instance is locked
 
+#### Scenario: Refreshing a prerequisite locked lesson detail
+- **WHEN** `refreshLesson` fetches lesson detail directly and the API responds with HTTP 403 Forbidden with prerequisite detail message
+- **THEN** the lesson is updated in the database with `isLocked: true` and `isDetailFetched: true`
+- **AND** the locked lesson state is emitted to listeners to display `ContentNoticeView`
+
+
 ### Requirement: Block List Navigation for Locked Lessons
 The system SHALL display a lock icon for locked lessons in chapter and course content lists, and prevent navigation on tap with an explanatory toast.
 
@@ -39,7 +45,7 @@ The system SHALL render an informational notice explaining prerequisites and dis
 - **WHEN** `LessonDetailOrchestrator` receives a lesson with `isLocked == true`
 - **THEN** `ContentNoticeView` is displayed with a lock icon, title "This content is Locked", and subtitle explaining prerequisite completion
 - **AND** Bookmark, Mark as completed, Download, and Ask Doubt FAB actions are disabled
-- **AND** Previous and Next buttons remain visible and functional in the footer
+- **AND** Previous and Next footer navigation buttons are disabled
 
 #### Scenario: Viewing a locked exam in prescreen
 - **WHEN** `ExamPrescreen` receives an exam lesson with `isLocked == true`

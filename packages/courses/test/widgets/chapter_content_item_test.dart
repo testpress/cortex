@@ -164,5 +164,32 @@ void main() {
 
       expect(find.text('In Progress'), findsOneWidget);
     });
+
+    testWidgets(
+        'exposes semantic label with title, type, and lock/expired status',
+        (tester) async {
+      final lockedLesson = LessonDto(
+        id: '6',
+        chapterId: '1',
+        title: 'Python Basics',
+        type: LessonType.notes,
+        progressStatus: LessonProgressStatus.notStarted,
+        orderIndex: 6,
+        hasEnded: false,
+        isLocked: true,
+        duration: '10 min',
+      );
+
+      await tester.pumpWidget(wrap(ChapterContentItem(
+        lesson: lockedLesson,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.bySemanticsLabel('Python Basics, Locked'),
+        findsOneWidget,
+      );
+    });
   });
 }

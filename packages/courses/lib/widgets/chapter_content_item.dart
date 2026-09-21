@@ -61,6 +61,13 @@ class ChapterContentItem extends StatelessWidget {
             onTap();
           };
 
+    final l10n = L10n.of(context);
+    final semanticLabel = switch (true) {
+      _ when lesson.hasEnded => '${lesson.title}, ${l10n.accessExpired}',
+      _ when lesson.isLocked => '${lesson.title}, ${l10n.statusLocked}',
+      _ => l10n.openDetailedLesson(lesson.title),
+    };
+
     return Padding(
       padding: EdgeInsets.only(bottom: design.spacing.sm),
       child: Container(
@@ -70,7 +77,7 @@ class ChapterContentItem extends StatelessWidget {
           boxShadow: design.shadows.surfaceSoft,
         ),
         child: AppSemantics.button(
-          label: L10n.of(context).openDetailedLesson(lesson.title),
+          label: semanticLabel,
           onTap: activeOnTap ?? () {},
           child: AppFocusable(
             onTap: activeOnTap,

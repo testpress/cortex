@@ -345,6 +345,8 @@ class LessonDto {
         d == '0:00:00';
 
     return copyWith(
+      title: title.isEmpty ? other.title : title,
+      chapterId: chapterId.isEmpty ? other.chapterId : chapterId,
       duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration))
           ? other.duration
           : duration,
@@ -455,8 +457,10 @@ class LessonDto {
           : transcodingStatus,
       // Preserve specialized types (e.g. Attachment promoted to PDF, or Video promoted to Embed)
       type: (() {
-        // If they are different, prefer the more specific one if one is 'attachment' or 'video'
+        // If they are different, prefer the more specific one if one is 'attachment' or 'video' or 'unknown'
         if (type == other.type) return type;
+        if (type == LessonType.unknown) return other.type;
+        if (other.type == LessonType.unknown) return type;
 
         // Promotion: Preference for PDF/Embed/Notes over generic Attachment/Video
         if (type == LessonType.attachment && other.type == LessonType.pdf) {
@@ -482,6 +486,22 @@ class LessonDto {
 
         return type;
       })(),
+    );
+  }
+
+  /// Creates a minimal locked stub for a lesson when the API responds with a 403 Forbidden
+  /// (e.g. prerequisite locked content).
+  factory LessonDto.lockedStub(String lessonId) {
+    return LessonDto(
+      id: lessonId,
+      chapterId: '',
+      title: '',
+      type: LessonType.unknown,
+      duration: '',
+      progressStatus: LessonProgressStatus.notStarted,
+      isLocked: true,
+      orderIndex: 0,
+      isDetailFetched: true,
     );
   }
 

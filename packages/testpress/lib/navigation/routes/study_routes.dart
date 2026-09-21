@@ -57,7 +57,9 @@ class StudyRoutes {
             return Consumer(
               builder: (context, ref, child) {
                 final lessonAsync = ref.watch(lessonDetailProvider(id));
-                final activeLesson = lessonAsync.valueOrNull ?? extraLesson;
+                final activeLesson =
+                    lessonAsync.valueOrNull?.mergeWith(extraLesson) ??
+                    extraLesson;
 
                 if (activeLesson != null) {
                   return _LessonRedirector(
