@@ -1,5 +1,7 @@
 package com.testpress.flutter_zoom_meeting_sdk
 
+import android.os.Handler
+import android.os.Looper
 import com.testpress.flutter_zoom_meeting_sdk.FlutterZoomMeetingSdkPlugin.Companion.PLATFORM
 import io.flutter.plugin.common.EventChannel
 import us.zoom.sdk.MeetingParameter
@@ -9,28 +11,31 @@ import us.zoom.sdk.ZoomSDK
 
 class FlutterZoomEventListenerMeeting(private val eventSinkProvider: () -> EventChannel.EventSink?):
     MeetingServiceListener {
+    private val mainHandler = Handler(Looper.getMainLooper())
+
     override fun onMeetingStatusChanged(
         meetingStatus: MeetingStatus,
         errorCode: Int,
         internalErrorCode: Int
     ) {
         eventLog("onMeetingStatusChanged", "Zoom Meeting Status Changed: $meetingStatus")
-        eventSinkProvider()?.success(
-            mapOf(
-                "platform" to PLATFORM,
-                "event" to "onMeetingStatusChanged",
-                "oriEvent" to "onMeetingStatusChanged",
-                "params" to mapOf(
-                    "statusCode" to meetingStatus.ordinal,
-                    "statusLabel" to MapperMeetingStatus.getErrorName(meetingStatus),
-                    "errorCode" to errorCode,
-                    "errorLabel" to MapperMeetingError.getErrorName(errorCode),
-                    "endReasonCode" to -99,
-                    "endReasonLabel" to "NO_PROVIDED",
-                    "internalErrorCode" to internalErrorCode
-                )
+        val eventMap = mapOf(
+            "platform" to PLATFORM,
+            "event" to "onMeetingStatusChanged",
+            "oriEvent" to "onMeetingStatusChanged",
+            "params" to mapOf(
+                "statusCode" to meetingStatus.ordinal,
+                "statusLabel" to MapperMeetingStatus.getErrorName(meetingStatus),
+                "errorCode" to errorCode,
+                "errorLabel" to MapperMeetingError.getErrorName(errorCode),
+                "endReasonCode" to -99,
+                "endReasonLabel" to "NO_PROVIDED",
+                "internalErrorCode" to internalErrorCode
             )
         )
+        mainHandler.post {
+            eventSinkProvider()?.success(eventMap)
+        }
 
         if (meetingStatus == MeetingStatus.MEETING_STATUS_INMEETING) {
             val audioController = ZoomSDK.getInstance()
@@ -43,7 +48,6 @@ class FlutterZoomEventListenerMeeting(private val eventSinkProvider: () -> Event
                 }
             }
         }
-        
     }
 
     override fun onMeetingParameterNotification(params: MeetingParameter) {
@@ -67,7 +71,8 @@ class FlutterZoomEventListenerMeeting(private val eventSinkProvider: () -> Event
             "params" to paramMap
         )
 
-        eventSinkProvider()?.success(eventMap)
+        mainHandler.post {
+            eventSinkProvider()?.success(eventMap)
+        }
     }
-
 }

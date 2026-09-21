@@ -40,4 +40,36 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
+
+  # Only inject the MobileRTCResources copy phase when the zoom pod is present.
+  # Clients that don't use Zoom won't have zoom.framework at all, so we skip
+  # modifying Runner.xcodeproj entirely for those builds.
+  zoom_included = installer.pods_project.targets.any? { |t| t.name == 'zoom' }
+
+  if zoom_included
+    # MobileRTC's binary hardcodes a lookup for MobileRTCResources.bundle
+    # at [NSBundle mainBundle] (i.e. Runner.app root). With use_frameworks!,
+    # CocoaPods places it inside zoom.framework instead, causing a nil-URL crash.
+    # This injects a build phase that copies it to the app root — same strategy
+    # used by testpress/ios-app via Carthage's Copy Bundle Resources phase.
+    require 'xcodeproj'
+    project = Xcodeproj::Project.open(File.expand_path('../Runner.xcodeproj', __FILE__))
+    runner_target = project.targets.find { |t| t.name == 'Runner' }
+
+    if runner_target
+      phase_name = 'Copy MobileRTCResources Bundle'
+      unless runner_target.shell_script_build_phases.any? { |p| p.name == phase_name }
+        phase = runner_target.new_shell_script_build_phase(phase_name)
+        phase.shell_script = <<~SCRIPT
+          BUNDLE_SRC="${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/zoom.framework/MobileRTCResources.bundle"
+          BUNDLE_DST="${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/MobileRTCResources.bundle"
+          if [ -d "$BUNDLE_SRC" ] && [ ! -d "$BUNDLE_DST" ]; then
+            cp -r "$BUNDLE_SRC" "$BUNDLE_DST"
+          fi
+        SCRIPT
+      end
+    end
+
+    project.save
+  end
 end

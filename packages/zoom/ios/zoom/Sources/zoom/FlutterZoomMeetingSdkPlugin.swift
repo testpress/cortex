@@ -51,7 +51,11 @@ public class FlutterZoomMeetingSdkPlugin: NSObject, FlutterPlugin {
 
             let context = MobileRTCSDKInitContext()
             context.domain = "zoom.us"
+            context.enableLog = true
 
+            // MobileRTCResources.bundle is copied to Runner.app root at build time
+            // by the "Copy MobileRTCResources Bundle" phase injected via Podfile post_install.
+            // MobileRTC finds it automatically via [NSBundle mainBundle] — no path override needed.
             let sdkInitializedSuccessfully = MobileRTC.shared().initialize(
                 context
             )
