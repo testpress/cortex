@@ -190,6 +190,8 @@ class _LessonDetailOrchestratorState
     final isCompleted = _alreadyMarkedComplete ||
         lesson.progressStatus == LessonProgressStatus.completed;
 
+    final isLocked = lesson.isLocked;
+
     return Stack(
       children: [
         LessonDetailShell(
@@ -200,22 +202,21 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle:
-              (!lesson.hasEnded && !lesson.isLocked && bookmarksEnabled)
-                  ? () {
-                      if (isBookmarked) {
-                        _removeBookmark(lesson);
-                      } else {
-                        setState(() => _isBookmarkSheetOpen = true);
-                      }
-                    }
-                  : null,
+          onBookmarkToggle: (!lesson.hasEnded && !isLocked && bookmarksEnabled)
+              ? () {
+                  if (isBookmarked) {
+                    _removeBookmark(lesson);
+                  } else {
+                    setState(() => _isBookmarkSheetOpen = true);
+                  }
+                }
+              : null,
           onMarkAsCompleted:
-              (!lesson.hasEnded && !lesson.isLocked && supportsManualCompletion)
+              (!lesson.hasEnded && !isLocked && supportsManualCompletion)
                   ? _markAsCompleted
                   : null,
           onDownload: (!lesson.hasEnded &&
-                  !lesson.isLocked &&
+                  !isLocked &&
                   canDownload &&
                   !isDownloaded &&
                   !isDownloading)
@@ -224,14 +225,14 @@ class _LessonDetailOrchestratorState
           onNext: widget.onNext,
           onPrevious: widget.onPrevious,
           stickyFooter: lesson.hasEnded ||
-              lesson.isLocked ||
+              isLocked ||
               widget.error != null ||
               (lesson.type != LessonType.video &&
                   lesson.type != LessonType.liveStream),
           child: _buildLessonContent(context),
         ),
         if (!lesson.hasEnded &&
-            !lesson.isLocked &&
+            !isLocked &&
             lesson.isComplete &&
             helpdeskEnabled &&
             [

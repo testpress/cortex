@@ -126,8 +126,8 @@ void main() {
         LessonDetailOrchestrator(
           lesson: incompleteLesson,
           error: const ApiException(
-            'Complete previous content to unlock',
-            type: ApiErrorType.forbidden,
+            'Failed to load lesson',
+            type: ApiErrorType.serverError,
           ),
           onRetry: () => retryClicked = true,
         ),
@@ -142,7 +142,7 @@ void main() {
 
       // Should render AppErrorView with error message
       expect(find.byType(AppErrorView), findsOneWidget);
-      expect(find.text('Complete previous content to unlock'), findsOneWidget);
+      expect(find.text('Failed to load lesson'), findsOneWidget);
 
       // Retry button should be functional
       expect(find.text('Retry'), findsOneWidget);
