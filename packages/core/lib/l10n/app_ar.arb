@@ -1111,7 +1111,8 @@
 
   "aiSupportTitle": "دردشة الذكاء الاصطناعي",
   "aiSupportAskingAi": "جاري سؤال الذكاء الاصطناعي",
-"contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
+  "contentAccessEnded": "لقد انتهى وصولك إلى هذا المحتوى!",
+  "completePreviousContentToUnlock": "أكمل المحتوى السابق لفتح هذا المحتوى",
   "accessExpired": "انتهت صلاحية الوصول",
   "accessExpiredOn": "انتهت صلاحية الوصول في {date}",
   "@accessExpiredOn": {

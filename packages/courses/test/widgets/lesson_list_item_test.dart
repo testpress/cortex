@@ -99,4 +99,38 @@ void main() {
       expect(find.byIcon(LucideIcons.check), findsNothing);
     });
   });
+
+  group('LessonListItem Progressive Lock', () {
+    final lockedExam = LessonDto(
+      id: '20',
+      chapterId: '1',
+      title: 'Locked Exam',
+      type: LessonType.test,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '60 min',
+      orderIndex: 2,
+      hasEnded: false,
+      isLocked: true,
+      hasAttempts: false,
+    );
+
+    testWidgets('shows LucideIcons.lock and blocks tap with error toast',
+        (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: lockedExam,
+        onTap: () => tapped = true,
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+
+      await tester.tap(find.byType(AppFocusable));
+      await tester.pump();
+      expect(find.text('Complete previous content to unlock'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 4));
+
+      expect(tapped, isFalse);
+    });
+  });
 }

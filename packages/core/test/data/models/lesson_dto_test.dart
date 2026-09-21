@@ -420,4 +420,79 @@ void main() {
       },
     );
   });
+
+  group('LessonDto — isLocked parsing and mergeWith', () {
+    test('parses is_locked: true even when active: true', () {
+      final json = {
+        'id': '101',
+        'title': 'Locked Exam',
+        'content_type': 'exam',
+        'active': true,
+        'is_locked': true,
+      };
+
+      final dto = LessonDto.fromJson(json);
+      expect(dto.isLocked, true);
+    });
+
+    test('parses is_locked: false when explicitly false', () {
+      final json = {
+        'id': '102',
+        'title': 'Unlocked Exam',
+        'content_type': 'exam',
+        'active': true,
+        'is_locked': false,
+      };
+
+      final dto = LessonDto.fromJson(json);
+      expect(dto.isLocked, false);
+    });
+
+    test('parses camelCase isLocked fallback', () {
+      final json = {
+        'id': '103',
+        'title': 'Locked Lesson',
+        'content_type': 'video',
+        'isLocked': true,
+      };
+
+      final dto = LessonDto.fromJson(json);
+      expect(dto.isLocked, true);
+    });
+
+    test('defaults isLocked to false when omitted', () {
+      final json = {
+        'id': '104',
+        'title': 'Omitted Lock',
+        'content_type': 'video',
+      };
+
+      final dto = LessonDto.fromJson(json);
+      expect(dto.isLocked, false);
+    });
+
+    test('mergeWith respects fresh server lock state', () {
+      final cachedUnlocked = LessonDto.fromJson({
+        'id': '105',
+        'title': 'Lesson',
+        'content_type': 'exam',
+        'is_locked': false,
+      });
+
+      final freshLocked = LessonDto.fromJson({
+        'id': '105',
+        'title': 'Lesson',
+        'content_type': 'exam',
+        'is_locked': true,
+      });
+
+      // When fresh is locked and cached was unlocked
+      final merged1 = freshLocked.mergeWith(cachedUnlocked);
+      expect(merged1.isLocked, true);
+
+      // When fresh is unlocked and cached was locked (e.g. unlocked after completing prerequisite)
+      final merged2 = cachedUnlocked.mergeWith(freshLocked);
+      expect(merged2.isLocked, false);
+    });
+  });
 }

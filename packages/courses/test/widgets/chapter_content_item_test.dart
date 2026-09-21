@@ -111,4 +111,37 @@ void main() {
       expect(find.byIcon(LucideIcons.check), findsOneWidget);
     });
   });
+
+  group('ChapterContentItem Progressive Lock', () {
+    final lockedLesson = LessonDto(
+      id: '10',
+      chapterId: '1',
+      title: 'Locked Lesson',
+      type: LessonType.video,
+      progressStatus: LessonProgressStatus.notStarted,
+      orderIndex: 1,
+      hasEnded: false,
+      isLocked: true,
+      duration: '10 min',
+    );
+
+    testWidgets('shows LucideIcons.lock and blocks tap with error toast',
+        (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrap(ChapterContentItem(
+        lesson: lockedLesson,
+        onTap: () => tapped = true,
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+
+      await tester.tap(find.byType(AppFocusable));
+      await tester.pump();
+      expect(find.text('Complete previous content to unlock'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 4));
+
+      expect(tapped, isFalse);
+    });
+  });
 }

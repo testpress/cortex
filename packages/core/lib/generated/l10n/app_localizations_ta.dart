@@ -2984,6 +2984,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!';
 
   @override
+  String get completePreviousContentToUnlock =>
+      'திறக்க முந்தைய உள்ளடக்கத்தை முடிக்கவும்';
+
+  @override
   String get accessExpired => 'அணுகல் காலாவதியானது';
 
   @override

@@ -415,8 +415,7 @@ class LessonDto {
       disableAttemptResume: disableAttemptResume || other.disableAttemptResume,
       allowRetake: allowRetake && other.allowRetake,
       maxRetakes: maxRetakes != -1 ? maxRetakes : other.maxRetakes,
-      isLocked:
-          isLocked && other.isLocked, // Only locked if both say so (safer)
+      isLocked: isLocked,
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,
@@ -805,7 +804,7 @@ class LessonDto {
         }
         return parsed;
       })(),
-      isLocked: !(json['active'] as bool? ?? json['isLocked'] == false),
+      isLocked: (json['is_locked'] ?? json['isLocked']) as bool? ?? false,
       orderIndex:
           (json['order'] as num?)?.toInt() ??
           (json['orderIndex'] as num?)?.toInt() ??

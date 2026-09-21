@@ -1352,7 +1352,8 @@
 
   "aiSupportTitle": "AI அரட்டை",
   "aiSupportAskingAi": "AI-இடம் கேட்கிறது",
-"contentAccessEnded": "இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!",
+  "contentAccessEnded": "இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!",
+  "completePreviousContentToUnlock": "திறக்க முந்தைய உள்ளடக்கத்தை முடிக்கவும்",
   "accessExpired": "அணுகல் காலாவதியானது",
   "accessExpiredOn": "{date} அன்று அணுகல் காலாவதியானது",
   "@accessExpiredOn": {

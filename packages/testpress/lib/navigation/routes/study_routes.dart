@@ -64,6 +64,8 @@ class StudyRoutes {
                     lesson: activeLesson,
                     child: LessonDetailOrchestrator(
                       lesson: activeLesson,
+                      error: lessonAsync.hasError ? lessonAsync.error : null,
+                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
                       onNext: activeLesson.nextContentId != null
                           ? () => context.pushReplacement(
                               '/study/lesson/${activeLesson.nextContentId}',

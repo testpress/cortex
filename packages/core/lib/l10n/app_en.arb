@@ -1473,7 +1473,8 @@
 
   "aiSupportTitle": "AI Chat",
   "aiSupportAskingAi": "ASKING AI",
-"contentAccessEnded": "Your access to this content has ended!",
+  "contentAccessEnded": "Your access to this content has ended!",
+  "completePreviousContentToUnlock": "Complete previous content to unlock",
   "accessExpired": "Access expired",
   "accessExpiredOn": "Access expired on {date}",
   "@accessExpiredOn": {
