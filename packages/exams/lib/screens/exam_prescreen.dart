@@ -145,18 +145,6 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       isOfflineOnly: widget.isOfflineOnly,
     );
 
-    if (lesson?.isLocked == true) {
-      return LessonDetailShell(
-        title: lesson?.title ?? l10n.examDetailsTitle,
-        onBack: widget.onClose,
-        child: ContentNoticeView(
-          icon: LucideIcons.lock,
-          title: l10n.contentLockedTitle,
-          message: l10n.contentLockedPrerequisite,
-        ),
-      );
-    }
-
     return Stack(
       children: [
         LessonDetailShell(

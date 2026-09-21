@@ -248,17 +248,6 @@ class HttpDataSource implements DataSource {
       if (data is Map<String, dynamic> && data['error_code'] == 'scheduled') {
         return LessonDto.fromJson(data);
       }
-      if (e.statusCode == 403 && data is Map) {
-        final errorMessage =
-            (data['detail'] ?? data['message'] ?? data['error'])
-                ?.toString()
-                .toLowerCase();
-        if (errorMessage != null &&
-            (errorMessage.contains('previous content') ||
-                errorMessage.contains('unlock'))) {
-          return LessonDto.lockedStub(lessonId);
-        }
-      }
       rethrow;
     }
   }

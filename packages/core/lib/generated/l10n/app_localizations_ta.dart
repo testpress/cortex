@@ -2980,21 +2980,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiSupportAskingAi => 'AI-இடம் கேட்கிறது';
 
   @override
-  String get examHasEnded => 'இந்தத் தேர்வு முடிந்துவிட்டது';
-
-  @override
   String get contentAccessEnded =>
       'இந்த உள்ளடக்கத்திற்கான உங்கள் அணுகல் முடிந்துவிட்டது!';
-
-  @override
-  String get contentLockedTitle => 'இந்த உள்ளடக்கம் பூட்டப்பட்டுள்ளது';
-
-  @override
-  String get contentLockedPrerequisite =>
-      'இப்பக்கத்தின் உள்ளடக்கங்களை அணுக, முந்தைய உள்ளடக்கத்தை வெற்றிகரமாக முடித்துள்ளீர்கள் என்பதை உறுதிப்படுத்தவும்.';
-
-  @override
-  String get contentLockedToast => 'இதைத் திறக்க முந்தைய பாடத்தை முடிக்கவும்';
 
   @override
   String get accessExpired => 'அணுகல் காலாவதியானது';

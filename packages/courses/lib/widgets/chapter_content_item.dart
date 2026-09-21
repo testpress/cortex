@@ -3,7 +3,6 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'lesson_status_badge.dart';
 
 /// Component to display individual lesson or assessment items in the chapter detail.
 class ChapterContentItem extends StatelessWidget {
@@ -36,9 +35,7 @@ class ChapterContentItem extends StatelessWidget {
       LessonType.unknown => design.study.video,
     };
     final icon = _getIconForType(lesson.type);
-    final isCompleted =
-        lesson.progressStatus == LessonProgressStatus.completed &&
-            !lesson.isLocked;
+    final isCompleted = lesson.progressStatus == LessonProgressStatus.completed;
     final activeOnTap = isSkeleton
         ? null
         : () {
@@ -50,23 +47,8 @@ class ChapterContentItem extends StatelessWidget {
               );
               return;
             }
-            if (lesson.isLocked) {
-              AppToast.show(
-                context,
-                message: L10n.of(context).contentLockedToast,
-                isError: true,
-              );
-              return;
-            }
             onTap();
           };
-
-    final l10n = L10n.of(context);
-    final semanticLabel = switch (true) {
-      _ when lesson.hasEnded => '${lesson.title}, ${l10n.accessExpired}',
-      _ when lesson.isLocked => '${lesson.title}, ${l10n.statusLocked}',
-      _ => l10n.openDetailedLesson(lesson.title),
-    };
 
     return Padding(
       padding: EdgeInsets.only(bottom: design.spacing.sm),
@@ -77,7 +59,7 @@ class ChapterContentItem extends StatelessWidget {
           boxShadow: design.shadows.surfaceSoft,
         ),
         child: AppSemantics.button(
-          label: semanticLabel,
+          label: L10n.of(context).openDetailedLesson(lesson.title),
           onTap: activeOnTap ?? () {},
           child: AppFocusable(
             onTap: activeOnTap,
@@ -200,15 +182,6 @@ class ChapterContentItem extends StatelessWidget {
                               _buildSubtitle(context),
                               color: design.colors.textSecondary,
                             ),
-                            if (!isSkeleton &&
-                                !lesson.hasEnded &&
-                                lesson.type != LessonType.liveStream &&
-                                !lesson.isLocked) ...[
-                              SizedBox(height: design.spacing.xs),
-                              LessonStatusBadge(
-                                status: lesson.progressStatus,
-                              ),
-                            ],
                           ],
                         ),
                       ),
@@ -218,10 +191,8 @@ class ChapterContentItem extends StatelessWidget {
                       child: Center(
                         child: Icon(
                           lesson.hasEnded
-                              ? LucideIcons.calendarClock
-                              : (lesson.isLocked
-                                  ? LucideIcons.lock
-                                  : LucideIcons.chevronRight),
+                              ? LucideIcons.lock
+                              : LucideIcons.chevronRight,
                           size: design.iconSize.action,
                           color: design.colors.textSecondary
                               .withValues(alpha: 0.5),

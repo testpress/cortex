@@ -178,59 +178,5 @@ void main() {
         expect(find.byType(ReviewAnswerDetailScreen), findsOneWidget);
       },
     );
-
-    testWidgets(
-      'preserves title and metadata from extraLesson when lessonDetailProvider emits a locked stub',
-      (tester) async {
-        tester.view.physicalSize = const Size(800, 1200);
-        tester.view.devicePixelRatio = 1.0;
-        addTearDown(() {
-          tester.view.resetPhysicalSize();
-          tester.view.resetDevicePixelRatio();
-        });
-
-        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-        const extraLesson = LessonDto(
-          id: '789',
-          chapterId: 'chap-1',
-          title: 'Thermodynamics Video Lesson',
-          type: LessonType.video,
-          duration: '12 min',
-          progressStatus: LessonProgressStatus.notStarted,
-          isLocked: false,
-          orderIndex: 2,
-        );
-
-        final router = GoRouter(
-          navigatorKey: rootNavigatorKey,
-          initialLocation: '/study/lesson/789',
-          routes: [
-            GoRoute(path: '/', builder: (context, state) => const SizedBox()),
-            ...StudyRoutes.routes(rootNavigatorKey),
-          ],
-          initialExtra: extraLesson,
-        );
-
-        final lockedStub = LessonDto.lockedStub('789');
-
-        await tester.pumpWidget(
-          createTestApp(
-            router: router,
-            overrides: [
-              lessonDetailProvider(
-                '789',
-              ).overrideWith((ref) => Stream.value(lockedStub)),
-            ],
-          ),
-        );
-
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 100));
-
-        expect(find.byType(LessonDetailOrchestrator), findsOneWidget);
-        expect(find.text('Thermodynamics Video Lesson'), findsOneWidget);
-        expect(find.byType(ContentNoticeView), findsOneWidget);
-      },
-    );
   });
 }

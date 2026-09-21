@@ -348,49 +348,6 @@ void main() {
       expect(fakeSource.getCourseDetailCallCount, 0);
       expect(fakeSource.getChaptersCallCount, 0);
     });
-
-    test(
-        'refreshLesson handles locked stub DTO, updates DB with isLocked: true and preserves existing metadata',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      final fakeSource = FakeProgressDataSource();
-      final repository = CourseRepository(db, fakeSource, MockSentryService());
-
-      // Seed database with existing cached lesson
-      await db.upsertLessons([
-        LessonsTableCompanion(
-          id: const Value('lesson-lock-1'),
-          title: const Value('Prerequisite Topic'),
-          chapterId: const Value('chap-1'),
-          courseId: const Value('course-101'),
-          type: Value(LessonType.pdf.name),
-          orderIndex: const Value(3),
-          duration: const Value('15 min'),
-          isLocked: const Value(false),
-          progressStatus: Value(LessonProgressStatus.notStarted.name),
-          isDetailFetched: const Value(false),
-        ),
-      ]);
-
-      // DataSource returns locked stub as produced when 403 Forbidden occurs
-      fakeSource.lessonToReturn = LessonDto.lockedStub('lesson-lock-1');
-
-      final refreshed = await repository.refreshLesson('lesson-lock-1');
-
-      expect(refreshed.id, 'lesson-lock-1');
-      expect(refreshed.isLocked, true);
-      expect(refreshed.isDetailFetched, true);
-      expect(refreshed.title, 'Prerequisite Topic');
-      expect(refreshed.type, LessonType.pdf);
-      expect(refreshed.chapterId, 'chap-1');
-
-      // Verify Drift DB was updated
-      final dbLesson = await repository.getLesson('lesson-lock-1');
-      expect(dbLesson?.isLocked, true);
-      expect(dbLesson?.isDetailFetched, true);
-      expect(dbLesson?.title, 'Prerequisite Topic');
-      expect(dbLesson?.type, LessonType.pdf);
-    });
   });
 }
 

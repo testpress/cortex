@@ -51,7 +51,6 @@ export 'widgets/session_expired_dialog.dart';
 export 'widgets/app_confirmation_dialog.dart';
 export 'widgets/ai_composer.dart';
 export 'widgets/donut_chart.dart';
-export 'widgets/content_notice_view.dart';
 
 // Shell
 export 'shell/app_shell.dart';

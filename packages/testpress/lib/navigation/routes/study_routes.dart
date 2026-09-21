@@ -57,9 +57,7 @@ class StudyRoutes {
             return Consumer(
               builder: (context, ref, child) {
                 final lessonAsync = ref.watch(lessonDetailProvider(id));
-                final activeLesson =
-                    lessonAsync.valueOrNull?.mergeWith(extraLesson) ??
-                    extraLesson;
+                final activeLesson = lessonAsync.valueOrNull ?? extraLesson;
 
                 if (activeLesson != null) {
                   return _LessonRedirector(
@@ -67,18 +65,14 @@ class StudyRoutes {
                     child: LessonDetailOrchestrator(
                       lesson: activeLesson,
                       onNext: activeLesson.nextContentId != null
-                          ? () {
-                              context.pushReplacement(
-                                '/study/lesson/${activeLesson.nextContentId}',
-                              );
-                            }
+                          ? () => context.pushReplacement(
+                              '/study/lesson/${activeLesson.nextContentId}',
+                            )
                           : null,
                       onPrevious: activeLesson.previousContentId != null
-                          ? () {
-                              context.pushReplacement(
-                                '/study/lesson/${activeLesson.previousContentId}',
-                              );
-                            }
+                          ? () => context.pushReplacement(
+                              '/study/lesson/${activeLesson.previousContentId}',
+                            )
                           : null,
                     ),
                   );
@@ -100,10 +94,12 @@ class StudyRoutes {
                     color: Design.of(context).colors.surface,
                     child: const Center(child: AppLoadingIndicator()),
                   ),
-                  error: (error, _) => AppErrorView(
-                    error: error,
-                    onRetry: () => ref.invalidate(lessonDetailProvider(id)),
-                  ),
+                  error: (error, _) {
+                    return AppErrorView(
+                      error: error,
+                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
+                    );
+                  },
                 );
               },
             );
@@ -326,13 +322,6 @@ class _LessonRedirectorState extends State<_LessonRedirector> {
 
   @override
   Widget build(BuildContext context) {
-    // For test and assessment types, suppress LessonDetailOrchestrator while
-    // the post-frame redirect to the correct route is pending. This prevents
-    // the "Access expired" or lock notice from flashing on screen for 1 frame.
-    if (widget.lesson.type == LessonType.test ||
-        widget.lesson.type == LessonType.assessment) {
-      return Container(color: Design.of(context).colors.surface);
-    }
     return widget.child;
   }
 }

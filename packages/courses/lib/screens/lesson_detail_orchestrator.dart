@@ -192,38 +192,26 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle:
-              (!lesson.hasEnded && !lesson.isLocked && bookmarksEnabled)
-                  ? () {
-                      if (isBookmarked) {
-                        _removeBookmark(lesson);
-                      } else {
-                        setState(() => _isBookmarkSheetOpen = true);
-                      }
-                    }
-                  : null,
-          onMarkAsCompleted:
-              (!lesson.hasEnded && !lesson.isLocked && supportsManualCompletion)
-                  ? _markAsCompleted
-                  : null,
-          onDownload: (!lesson.hasEnded &&
-                  !lesson.isLocked &&
-                  canDownload &&
-                  !isDownloaded &&
-                  !isDownloading)
+          onBookmarkToggle: bookmarksEnabled
+              ? () {
+                  if (isBookmarked) {
+                    _removeBookmark(lesson);
+                  } else {
+                    setState(() => _isBookmarkSheetOpen = true);
+                  }
+                }
+              : null,
+          onMarkAsCompleted: supportsManualCompletion ? _markAsCompleted : null,
+          onDownload: (canDownload && !isDownloaded && !isDownloading)
               ? () => _handleDownload(lesson)
               : null,
-          onNext: (!lesson.hasEnded && !lesson.isLocked) ? widget.onNext : null,
-          onPrevious:
-              (!lesson.hasEnded && !lesson.isLocked) ? widget.onPrevious : null,
-          stickyFooter: (!lesson.hasEnded && !lesson.isLocked) &&
-              (lesson.type != LessonType.video &&
-                  lesson.type != LessonType.liveStream),
+          onNext: widget.onNext,
+          onPrevious: widget.onPrevious,
+          stickyFooter: lesson.type != LessonType.video &&
+              lesson.type != LessonType.liveStream,
           child: _buildLessonContent(context),
         ),
-        if (!lesson.hasEnded &&
-            !lesson.isLocked &&
-            lesson.isComplete &&
+        if (lesson.isComplete &&
             helpdeskEnabled &&
             [
               LessonType.pdf,
@@ -304,28 +292,6 @@ class _LessonDetailOrchestratorState
     final onPrevious = widget.onPrevious;
     final design = Design.of(context);
 
-    if (lesson.hasEnded) {
-      final formattedEnd =
-          lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
-      final detailMessage = (formattedEnd != null && formattedEnd.isNotEmpty)
-          ? L10n.of(context).accessExpiredOn(formattedEnd)
-          : L10n.of(context).contentAccessEnded;
-
-      return ContentNoticeView(
-        icon: LucideIcons.calendarClock,
-        title: L10n.of(context).accessExpired,
-        message: detailMessage,
-      );
-    }
-
-    if (lesson.isLocked) {
-      return ContentNoticeView(
-        icon: LucideIcons.lock,
-        title: L10n.of(context).contentLockedTitle,
-        message: L10n.of(context).contentLockedPrerequisite,
-      );
-    }
-
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);
       if (customWidget is! SizedBox) {
@@ -333,7 +299,7 @@ class _LessonDetailOrchestratorState
       }
     }
 
-    // Show loader if we have some data from the list but not enough to render the viewer yet
+    // New: Show loader if we have some data from the list but not enough to render the viewer yet
     if (!lesson.isComplete) {
       return LessonDetailSkeleton(lessonType: lesson.type);
     }
