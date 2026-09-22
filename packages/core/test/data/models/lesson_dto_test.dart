@@ -494,5 +494,77 @@ void main() {
       final merged2 = cachedUnlocked.mergeWith(freshLocked);
       expect(merged2.isLocked, false);
     });
+
+    group('isComplete', () {
+      test('returns false for LessonType.test when exam is null', () {
+        final dto = LessonDto.fromJson({
+          'id': '201',
+          'title': 'Test Summary',
+          'content_type': 'Exam',
+          'active': true,
+        });
+
+        expect(dto.type, LessonType.test);
+        expect(dto.exam, isNull);
+        expect(dto.isComplete, false);
+      });
+
+      test('returns true for LessonType.test when exam is not null', () {
+        final dto =
+            LessonDto.fromJson({
+              'id': '202',
+              'title': 'Test with Details',
+              'content_type': 'Exam',
+              'active': true,
+            }).copyWith(
+              exam: ExamDto(
+                id: 'exam-202',
+                title: 'Test with Details',
+                duration: '01:00:00',
+                questionCount: 10,
+                attemptsUrl: 'https://example.com/attempts',
+              ),
+            );
+
+        expect(dto.type, LessonType.test);
+        expect(dto.exam, isNotNull);
+        expect(dto.isComplete, true);
+      });
+
+      test('returns false for LessonType.assessment when exam is null', () {
+        final dto = LessonDto.fromJson({
+          'id': '203',
+          'title': 'Assessment Summary',
+          'content_type': 'Quiz',
+          'active': true,
+        });
+
+        expect(dto.type, LessonType.assessment);
+        expect(dto.exam, isNull);
+        expect(dto.isComplete, false);
+      });
+
+      test('returns true for LessonType.assessment when exam is not null', () {
+        final dto =
+            LessonDto.fromJson({
+              'id': '204',
+              'title': 'Assessment with Details',
+              'content_type': 'Quiz',
+              'active': true,
+            }).copyWith(
+              exam: ExamDto(
+                id: 'exam-204',
+                title: 'Assessment with Details',
+                duration: '00:15:00',
+                questionCount: 5,
+                attemptsUrl: 'https://example.com/attempts',
+              ),
+            );
+
+        expect(dto.type, LessonType.assessment);
+        expect(dto.exam, isNotNull);
+        expect(dto.isComplete, true);
+      });
+    });
   });
 }
