@@ -32,13 +32,9 @@ void main(List<String> args) async {
     exit(1);
   }
 
-  final apiKey =
-      Platform.environment['API_ACCESS_KEY'] ??
-      Platform.environment['CLIENT_API_KEY'];
+  final apiKey = Platform.environment['API_ACCESS_KEY'];
   if (apiKey == null || apiKey.isEmpty) {
-    Logger.error(
-      'Missing API_ACCESS_KEY / CLIENT_API_KEY environment variable.',
-    );
+    Logger.error('Missing API_ACCESS_KEY environment variable.');
     exit(1);
   }
 

@@ -58,11 +58,12 @@ jobs:
         env:
           SUBDOMAIN: ${{ inputs.subdomain }}
           VERSION_TYPE: ${{ inputs.version_type }}
+          API_ACCESS_KEY: ${{ secrets.TESTPRESS_API_KEY }}
         run: |
           echo "Bumping $VERSION_TYPE version for subdomain: $SUBDOMAIN"
           HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT \
             "https://${SUBDOMAIN}.testpress.in/api/v2.5/admin/cortex/update/" \
-            -H "API-ACCESS-KEY: ${{ secrets.API_ACCESS_KEY }}" \
+            -H "API-ACCESS-KEY: $API_ACCESS_KEY" \
             -H "Content-Type: application/json" \
             -d "{\"bump_type\": \"$VERSION_TYPE\"}")
           
@@ -84,7 +85,7 @@ jobs:
       subdomain: ${{ inputs.subdomain }}
       config_path: ${{ inputs.config_path || '' }}
     secrets:
-      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+      API_ACCESS_KEY: ${{ secrets.TESTPRESS_API_KEY }}
 
   ios_release:
     name: iOS Release
@@ -95,6 +96,7 @@ jobs:
       subdomain: ${{ inputs.subdomain }}
       config_path: ${{ inputs.config_path || '' }}
     secrets:
-      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+      API_ACCESS_KEY: ${{ secrets.TESTPRESS_API_KEY }}
       CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
       CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+
