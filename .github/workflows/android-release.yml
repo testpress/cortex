@@ -26,6 +26,7 @@ jobs:
     env:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
       SUBDOMAIN: ${{ inputs.subdomain }}
+      BUNDLE_GEMFILE: ${{ github.workspace }}/fastlane/Gemfile
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -82,12 +83,11 @@ jobs:
         env:
           APP_VERSION: ${{ steps.prep.outputs.version }}
           BUILD_NUMBER: ${{ steps.prep.outputs.build_number }}
-          DART_DEFINES: ${{ steps.prep.outputs.dart_defines }}
         run: |
           flutter build appbundle --release \
             --build-name="$APP_VERSION" \
             --build-number="$BUILD_NUMBER" \
-            $DART_DEFINES
+            --dart-define-from-file=dart_defines.json
 
       - name: Deploy to Google Play Store
         run: bundle exec fastlane android deploy

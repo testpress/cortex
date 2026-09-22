@@ -141,7 +141,40 @@ void main(List<String> args) async {
   // 5. Generate native launcher icons
   await generateNativeIcons(appDir.path, platform: platform);
 
-  // 6. Write GitHub Actions environment outputs (if GITHUB_OUTPUT is set)
+  // 6. Generate dart_defines.json for Flutter to consume safely without shell quoting issues
+  final definesMap = <String, String>{
+    'API_BASE_URL': client.apiBaseUrl,
+    if (File('${appDir.path}/assets/images/institute_logo.png').existsSync())
+      'INSTITUTE_LOGO_PATH': 'assets/images/institute_logo.png',
+    if (client.appName.isNotEmpty) 'INSTITUTE_NAME': client.appName,
+    if (client.serverClientId != null && client.serverClientId!.isNotEmpty)
+      'GOOGLE_SERVER_CLIENT_ID': client.serverClientId!,
+    if (client.primaryColor != null && client.primaryColor!.isNotEmpty)
+      'PRIMARY_COLOR': client.primaryColor!,
+  };
+
+  if (configPath != null && configPath.isNotEmpty) {
+    final customConfigFile = File(configPath);
+    if (customConfigFile.existsSync()) {
+      try {
+        final content = jsonDecode(await customConfigFile.readAsString());
+        if (content is Map<String, dynamic>) {
+          for (final entry in content.entries) {
+            definesMap[entry.key] = entry.value.toString();
+          }
+        }
+      } catch (e) {
+        Logger.warn('Could not parse custom config JSON: $e');
+      }
+    }
+  }
+
+  final jsonContent = const JsonEncoder.withIndent('  ').convert(definesMap);
+  await File('${appDir.path}/dart_defines.json').writeAsString(jsonContent);
+  await File('dart_defines.json').writeAsString(jsonContent);
+  Logger.success('Generated dart_defines.json for Flutter build');
+
+  // 7. Write GitHub Actions environment outputs (if GITHUB_OUTPUT is set)
   final githubOutput = Platform.environment['GITHUB_OUTPUT'];
   final defines = client.toDartDefines(
     configPath: configPath,
