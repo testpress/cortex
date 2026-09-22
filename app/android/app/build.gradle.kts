@@ -31,15 +31,32 @@ android {
         versionName = flutter.versionName
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+    signingConfigs {
+        create("release") {
+            val keystorePath = project.findProperty("android.injected.signing.store.file") as String?
+            if (!keystorePath.isNullOrEmpty()) {
+                val keystoreFile = file(keystorePath)
+                if (keystoreFile.exists()) {
+                    storeFile = keystoreFile
+                    storePassword = project.findProperty("android.injected.signing.store.password") as String?
+                    keyAlias = project.findProperty("android.injected.signing.key.alias") as String?
+                    keyPassword = project.findProperty("android.injected.signing.key.password") as String?
+                }
+            }
         }
     }
 
+    buildTypes {
+        release {
+            val releaseSigning = signingConfigs.getByName("release")
+            signingConfig = if (releaseSigning.storeFile != null) {
+                releaseSigning
+            } else {
+                signingConfigs.getByName("debug")
+            }
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
 }
 
 configurations.all {

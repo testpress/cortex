@@ -1,0 +1,102 @@
+name: Android Release
+
+on:
+  workflow_call:
+    inputs:
+      subdomain:
+        description: 'Client subdomain'
+        required: true
+        type: string
+      config_path:
+        description: 'Path to custom config JSON (optional)'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      API_ACCESS_KEY:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build & Release Android App
+    runs-on: ubuntu-latest
+    env:
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+      SUBDOMAIN: ${{ inputs.subdomain }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          cache: true
+
+      - name: Setup Ruby & Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: fastlane
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Prepare Release Configuration
+        id: prep
+        env:
+          SUBDOMAIN_INPUT: ${{ inputs.subdomain }}
+          CONFIG_PATH_INPUT: ${{ inputs.config_path }}
+        run: |
+          if [ -n "$CONFIG_PATH_INPUT" ]; then
+            dart run app/scripts/prepare_release.dart \
+              --subdomain="$SUBDOMAIN_INPUT" \
+              --platform=android \
+              --config="$CONFIG_PATH_INPUT"
+          else
+            dart run app/scripts/prepare_release.dart \
+              --subdomain="$SUBDOMAIN_INPUT" \
+              --platform=android
+          fi
+
+      - name: Build Android App Bundle (Release)
+        working-directory: app
+        env:
+          APP_VERSION: ${{ steps.prep.outputs.version }}
+          BUILD_NUMBER: ${{ steps.prep.outputs.build_number }}
+          DART_DEFINES: ${{ steps.prep.outputs.dart_defines }}
+        run: |
+          flutter build appbundle --release \
+            --build-name="$APP_VERSION" \
+            --build-number="$BUILD_NUMBER" \
+            $DART_DEFINES
+
+      - name: Deploy to Google Play Store
+        run: bundle exec fastlane android deploy
+
+      - name: Upload AAB Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.subdomain }}-Android-AAB
+          path: app/build/app/outputs/bundle/release/*.aab
+          retention-days: 14
+          if-no-files-found: warn

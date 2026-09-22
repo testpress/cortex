@@ -38,6 +38,12 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Release credentials & generated build metadata
+**/keystore.jks
+**/play_console_key.json
+**/AuthKey_*.p8
+release_metadata.json
+
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
