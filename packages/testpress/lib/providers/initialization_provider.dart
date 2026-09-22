@@ -14,9 +14,6 @@ part 'initialization_provider.g.dart';
 @Riverpod(keepAlive: true)
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
-  final userProgressRepo = await ref.watch(
-    userProgressRepositoryProvider.future,
-  );
 
   // Kick off settings load immediately — runs concurrently with Firebase & SDK init.
   // This way cached settings are ready by the time the home screen renders.
@@ -49,10 +46,8 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
   // Initialize core data in background
   try {
-    // Refresh user profile and progress to see what was recently completed
-    // This allows the Resume Card to find the most recent lesson in the fully-populated DB.
-    final user = await userRepo.refreshProfile();
-    await userProgressRepo.refreshProgress(user.id);
+    // Refresh user profile to see what was recently updated
+    await userRepo.refreshProfile();
   } catch (e, stack) {
     dev.log('App initialization failed', error: e, stackTrace: stack);
     ref

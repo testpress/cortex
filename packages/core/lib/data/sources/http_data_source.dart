@@ -429,6 +429,7 @@ class HttpDataSource implements DataSource {
     );
   }
 
+  // TODO: Implement user progress retrieval (Deferred to follow-up feature ticket)
   @override
   Future<List<UserProgressDto>> getUserProgress(String userId) =>
       throw UnimplementedError(

@@ -37,9 +37,6 @@ Stream<RecentActivityVo?> recentActivity(RecentActivityRef ref) async* {
     return;
   }
 
-  // Trigger background refresh of progress when this provider is watched
-  userProgressRepo.refreshProgress(userId).ignore();
-
   yield* userProgressRepo.watchProgress(userId).asyncMap((list) async {
     if (list.isEmpty) return null;
 

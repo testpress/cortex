@@ -29,6 +29,7 @@ class UserProgressRepository {
         );
   }
 
+  // TODO: Implement user progress retrieval (Deferred to follow-up feature ticket)
   Future<void> refreshProgress(String userId) async {
     final progress = await _source.getUserProgress(userId);
     final companions = progress
