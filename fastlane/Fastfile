@@ -107,6 +107,8 @@ platform :ios do
     # Phase 2 — Export the xcarchive with manual signing.
     # This is exactly what the reference repo does inside build_app's export_options.
     build_app(
+      workspace:          File.join(app_dir, "ios/Runner.xcworkspace"),
+      scheme:             "Runner",
       skip_build_archive: true,
       archive_path:       archive_path,
       export_method:      "app-store",
