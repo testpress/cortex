@@ -34,7 +34,7 @@ CliArgs parseArgs(List<String> args, String scriptName) {
   String? configPath;
   String? apiBaseUrl;
   String platform = 'android';
-  String mode = 'debug';
+  String mode = scriptName.contains('generate') ? 'release' : 'debug';
   final extraArgs = <String>[];
 
   for (final arg in args) {
@@ -69,9 +69,15 @@ CliArgs parseArgs(List<String> args, String scriptName) {
 
   if (apiBaseUrl == null) {
     Logger.error('Missing required argument: --api-base-url');
-    print(
-      'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --api-base-url=https://your-api.com [--platform=android|ios] [--mode=debug|profile|release] [--config=config/your_client.json] [extra flutter args...]',
-    );
+    if (scriptName.contains('generate')) {
+      print(
+        'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --api-base-url=https://your-api.com [--config=config/your_client.json] [extra flutter args...]',
+      );
+    } else {
+      print(
+        'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --api-base-url=https://your-api.com [--platform=android|ios] [--mode=debug|profile|release] [--config=config/your_client.json] [extra flutter args...]',
+      );
+    }
     exit(1);
   }
 
@@ -91,27 +97,6 @@ CliArgs parseArgs(List<String> args, String scriptName) {
     mode: mode,
     extraArgs: extraArgs,
   );
-}
-
-/// Finds the first connected device ID matching the specified platform ('android' or 'ios').
-Future<String?> findDeviceIdForPlatform(String platform) async {
-  try {
-    final result = await Process.run('flutter', ['devices', '--machine']);
-    if (result.exitCode == 0) {
-      final devices = jsonDecode(result.stdout as String) as List<dynamic>;
-      for (final device in devices) {
-        final targetPlatform =
-            device['targetPlatform']?.toString().toLowerCase() ?? '';
-        final isSupported = device['isSupported'] == true;
-        if (isSupported && targetPlatform.startsWith(platform.toLowerCase())) {
-          return device['id']?.toString();
-        }
-      }
-    }
-  } catch (e) {
-    Logger.warn('Failed to query flutter devices: $e');
-  }
-  return null;
 }
 
 /// Runs the complete client setup, executes the given [action], and guarantees cleanup.
@@ -538,10 +523,6 @@ class ClientConfig {
   final String iosClientId;
   final String? googlePlistUrl;
   final dynamic googleServicesJson;
-
-  /// Returns target build number (defaults to Android build number).
-  String get buildNumber =>
-      androidBuildNumber.isNotEmpty ? androidBuildNumber : iosBuildNumber;
 
   const ClientConfig({
     required this.appName,

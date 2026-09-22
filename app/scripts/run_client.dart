@@ -7,32 +7,9 @@ void main(List<String> args) async {
   final cliArgs = parseArgs(args, 'run_client.dart');
 
   await runClientWorkflow(cliArgs, (client, appDirPath) async {
-    final hasExplicitDevice = cliArgs.extraArgs.any(
-      (arg) =>
-          arg == '-d' ||
-          arg == '--device' ||
-          arg.startsWith('-d=') ||
-          arg.startsWith('--device='),
-    );
-
-    String? targetDeviceId;
-    if (!hasExplicitDevice) {
-      targetDeviceId = await findDeviceIdForPlatform(cliArgs.platform);
-      if (targetDeviceId != null) {
-        Logger.info(
-          'Target device resolved for ${cliArgs.platform}: $targetDeviceId',
-        );
-      } else {
-        Logger.warn(
-          'No connected ${cliArgs.platform} device detected. Letting Flutter prompt for devices...',
-        );
-      }
-    }
-
     final runArgs = [
       'run',
       '--${cliArgs.mode}',
-      if (targetDeviceId != null) ...['-d', targetDeviceId],
       ...client.toDartDefines(
         configPath: cliArgs.configPath,
         appDirPath: appDirPath,
