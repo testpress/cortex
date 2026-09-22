@@ -81,15 +81,29 @@ void main(List<String> args) async {
       );
       if (downloaded != null) {
         keystorePath = keystoreFile.path;
-        // Generate key.properties for Gradle signing
-        final keyProperties = File('${appDir.path}/android/key.properties');
+        // Inject signing properties directly into gradle.properties
+        final gradleProps = File('${appDir.path}/android/gradle.properties');
         final content = StringBuffer()
-          ..writeln('storeFile=keystore.jks')
-          ..writeln('storePassword=${client.keystorePassword ?? ""}')
-          ..writeln('keyAlias=${client.keyAlias ?? ""}')
-          ..writeln('keyPassword=${client.keyPassword ?? ""}');
-        await keyProperties.writeAsString(content.toString());
-        Logger.success('Generated ${keyProperties.path}');
+          ..writeln('\n# Injected release signing properties')
+          ..writeln(
+            'android.injected.signing.store.file=${keystoreFile.absolute.path}',
+          )
+          ..writeln(
+            'android.injected.signing.store.password=${client.keystorePassword ?? ""}',
+          )
+          ..writeln(
+            'android.injected.signing.key.alias=${client.keyAlias ?? ""}',
+          )
+          ..writeln(
+            'android.injected.signing.key.password=${client.keyPassword ?? ""}',
+          );
+        await gradleProps.writeAsString(
+          content.toString(),
+          mode: FileMode.append,
+        );
+        Logger.success(
+          'Injected release signing properties into ${gradleProps.path}',
+        );
       }
     }
 

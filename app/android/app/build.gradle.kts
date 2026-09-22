@@ -31,41 +31,15 @@ android {
         versionName = flutter.versionName
     }
 
-    val keystorePropertiesFile = file("key.properties").takeIf { it.exists() }
-        ?: rootProject.file("key.properties").takeIf { it.exists() }
-        ?: project.file("../../key.properties").takeIf { it.exists() }
-    val keystoreProperties = java.util.Properties()
-    if (keystorePropertiesFile != null && keystorePropertiesFile.exists()) {
-        keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
-    }
-
-    signingConfigs {
-        create("release") {
-            val keyPath = keystoreProperties.getProperty("storeFile")
-            if (keyPath != null) {
-                val resolvedKeyFile = file(keyPath).takeIf { it.exists() }
-                    ?: keystorePropertiesFile?.parentFile?.resolve(keyPath)?.takeIf { it.exists() }
-                if (resolvedKeyFile != null && resolvedKeyFile.exists()) {
-                    storeFile = resolvedKeyFile
-                    storePassword = keystoreProperties.getProperty("storePassword")
-                    keyAlias = keystoreProperties.getProperty("keyAlias")
-                    keyPassword = keystoreProperties.getProperty("keyPassword")
-                }
-            }
-        }
-    }
-
     buildTypes {
         release {
-            val releaseSigning = signingConfigs.findByName("release")
-            signingConfig = if (releaseSigning?.storeFile != null) {
-                releaseSigning
-            } else {
-                signingConfigs.getByName("debug")
-            }
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
 }
 
 configurations.all {
