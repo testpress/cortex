@@ -120,7 +120,7 @@ jobs:
         run: bundle exec fastlane ios deploy
 
       - name: Upload IPA Artifact
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.subdomain }}-iOS-IPA

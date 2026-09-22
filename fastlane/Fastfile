@@ -32,7 +32,8 @@ platform :android do
   lane :deploy do |options|
     meta = release_metadata
     package_name = options[:package_name] || meta["package_name"]
-    aab_path = options[:aab] ? resolve_path(options[:aab]) : (Dir[File.join(root_dir, "app/build/app/outputs/bundle/release/*.aab")].first || resolve_path("app/build/app/outputs/bundle/release/app-release.aab"))
+    default_aab = resolve_path("app/build/app/outputs/bundle/release/app-release.aab")
+    aab_path = options[:aab] ? resolve_path(options[:aab]) : (File.exist?(default_aab) ? default_aab : Dir[File.join(root_dir, "app/build/app/outputs/bundle/release/*.aab")].sort.first)
     json_key = resolve_path(options[:json_key] || meta["play_key_path"] || "app/android/play_console_key.json")
     track = options[:track] || "production"
 
@@ -85,7 +86,7 @@ platform :ios do
   desc "Deploy iOS IPA to TestFlight"
   lane :deploy do |options|
     meta = release_metadata
-    ipa_path = options[:ipa] ? resolve_path(options[:ipa]) : Dir[File.join(root_dir, "app/build/ios/ipa/*.ipa")].first
+    ipa_path = options[:ipa] ? resolve_path(options[:ipa]) : Dir[File.join(root_dir, "app/build/ios/ipa/*.ipa")].sort.first
     key_id = options[:key_id] || meta["apple_key_id"]
     issuer_id = options[:issuer_id] || meta["apple_issuer_id"]
     key_filepath = resolve_path(options[:key_filepath] || meta["apple_key_path"])

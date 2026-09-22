@@ -22,7 +22,7 @@ permissions:
 jobs:
   release:
     name: Build & Release Android App
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
       SUBDOMAIN: ${{ inputs.subdomain }}
@@ -34,7 +34,7 @@ jobs:
           lfs: true
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -93,7 +93,7 @@ jobs:
         run: bundle exec fastlane android deploy
 
       - name: Upload AAB Artifact
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.subdomain }}-Android-AAB
