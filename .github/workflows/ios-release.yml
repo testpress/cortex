@@ -50,6 +50,9 @@ jobs:
           flutter-version: '3.44.4'
           cache: true
 
+      - name: Disable Swift Package Manager
+        run: flutter config --no-enable-swift-package-manager
+
       - name: Setup Ruby & Fastlane
         uses: ruby/setup-ruby@v1
         with:
