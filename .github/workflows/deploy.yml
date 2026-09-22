@@ -1,0 +1,93 @@
+name: Deploy Client App
+
+on:
+  workflow_dispatch:
+    inputs:
+      subdomain:
+        description: 'Client subdomain (e.g. lmsdemo)'
+        required: true
+        type: string
+      config_path:
+        description: 'Path to custom config JSON (optional)'
+        required: false
+        type: string
+      build_android:
+        description: 'Release Android'
+        required: false
+        type: boolean
+        default: true
+      build_ios:
+        description: 'Release iOS'
+        required: false
+        type: boolean
+        default: true
+      version_type:
+        description: 'Semantic Version Bump Type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+
+permissions:
+  contents: read
+
+jobs:
+  prepare_and_bump:
+    name: Validate and Bump Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Inputs
+        run: |
+          if [ "${{ inputs.build_android }}" != "true" ] && [ "${{ inputs.build_ios }}" != "true" ]; then
+            echo "::error::At least one platform (Android or iOS) must be selected."
+            exit 1
+          fi
+          if [[ ! "${{ inputs.subdomain }}" =~ ^[a-zA-Z0-9-]+$ ]]; then
+            echo "::error::Subdomain must contain only alphanumeric characters and hyphens"
+            exit 1
+          fi
+
+      - name: Bump Version on Cortex Server
+        run: |
+          echo "Bumping ${{ inputs.version_type }} version for subdomain: ${{ inputs.subdomain }}"
+          HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT \
+            "https://${{ inputs.subdomain }}.testpress.in/api/v2.5/admin/cortex/update/" \
+            -H "API-ACCESS-KEY: ${{ secrets.API_ACCESS_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"bump_type": "${{ inputs.version_type }}"}')
+          
+          HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
+          
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "::error::Version bump failed with HTTP status $HTTP_STATUS: $HTTP_BODY"
+            exit 1
+          fi
+          echo "Version successfully updated on server."
+
+  android_release:
+    name: Android Release
+    needs: prepare_and_bump
+    if: ${{ inputs.build_android }}
+    uses: ./.github/workflows/android-release.yml
+    with:
+      subdomain: ${{ inputs.subdomain }}
+      config_path: ${{ inputs.config_path || '' }}
+    secrets:
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+
+  ios_release:
+    name: iOS Release
+    needs: prepare_and_bump
+    if: ${{ inputs.build_ios }}
+    uses: ./.github/workflows/ios-release.yml
+    with:
+      subdomain: ${{ inputs.subdomain }}
+      config_path: ${{ inputs.config_path || '' }}
+    secrets:
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+      CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
+      CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}

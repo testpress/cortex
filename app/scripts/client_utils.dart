@@ -523,6 +523,16 @@ class ClientConfig {
   final String iosClientId;
   final String? googlePlistUrl;
   final dynamic googleServicesJson;
+  final String? keystoreUrl;
+  final String? keyAlias;
+  final String? keystorePassword;
+  final String? keyPassword;
+  final String? playConsoleKeyUrl;
+  final String? appleApiKeyUrl;
+  final String? appleKeyId;
+  final String? appleIssuerId;
+  final String? appleTeamId;
+  final String? appStoreAppId;
 
   const ClientConfig({
     required this.appName,
@@ -545,6 +555,16 @@ class ClientConfig {
     required this.iosClientId,
     this.googlePlistUrl,
     required this.googleServicesJson,
+    this.keystoreUrl,
+    this.keyAlias,
+    this.keystorePassword,
+    this.keyPassword,
+    this.playConsoleKeyUrl,
+    this.appleApiKeyUrl,
+    this.appleKeyId,
+    this.appleIssuerId,
+    this.appleTeamId,
+    this.appStoreAppId,
   });
 
   factory ClientConfig.fromRemote({
@@ -582,6 +602,16 @@ class ClientConfig {
       iosClientId: remoteConfig['ios_client_id']?.toString() ?? '',
       googlePlistUrl: remoteConfig['google_plist']?.toString(),
       googleServicesJson: remoteConfig['google_services_json'],
+      keystoreUrl: remoteConfig['keystore_file']?.toString(),
+      keyAlias: remoteConfig['key_alias']?.toString(),
+      keystorePassword: remoteConfig['keystore_password']?.toString(),
+      keyPassword: remoteConfig['key_password']?.toString(),
+      playConsoleKeyUrl: remoteConfig['play_console_key_file']?.toString(),
+      appleApiKeyUrl: remoteConfig['apple_api_key']?.toString(),
+      appleKeyId: remoteConfig['apple_key_id']?.toString(),
+      appleIssuerId: remoteConfig['apple_issuer_id']?.toString(),
+      appleTeamId: remoteConfig['team_id']?.toString(),
+      appStoreAppId: remoteConfig['app_store_app_id']?.toString(),
     );
   }
 

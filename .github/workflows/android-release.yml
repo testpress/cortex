@@ -1,0 +1,100 @@
+name: Android Release
+
+on:
+  workflow_call:
+    inputs:
+      subdomain:
+        description: 'Client subdomain'
+        required: true
+        type: string
+      config_path:
+        description: 'Path to custom config JSON (optional)'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      API_ACCESS_KEY:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build & Release Android App
+    runs-on: ubuntu-latest
+    env:
+      API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
+      SUBDOMAIN: ${{ inputs.subdomain }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          cache: true
+
+      - name: Setup Ruby & Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: fastlane
+
+      - name: Fetch Dependencies
+        run: |
+          for dir in app packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/pubspec.yaml" ]; then
+              echo "Fetching dependencies in $dir..."
+              (cd "$dir" && flutter pub get)
+            fi
+          done
+
+      - name: Prepare Release Configuration
+        id: prep
+        run: |
+          if [ -n "${{ inputs.config_path }}" ]; then
+            dart run app/scripts/prepare_release.dart \
+              --subdomain="${{ inputs.subdomain }}" \
+              --platform=android \
+              --config="${{ inputs.config_path }}"
+          else
+            dart run app/scripts/prepare_release.dart \
+              --subdomain="${{ inputs.subdomain }}" \
+              --platform=android
+          fi
+
+      - name: Build Android App Bundle (Release)
+        working-directory: app
+        run: |
+          flutter build appbundle --release \
+            --build-name="${{ steps.prep.outputs.version }}" \
+            --build-number="${{ steps.prep.outputs.build_number }}" \
+            ${{ steps.prep.outputs.dart_defines }}
+
+      - name: Deploy to Google Play Store
+        run: |
+          bundle exec fastlane android deploy \
+            package_name:"${{ steps.prep.outputs.package_name }}" \
+            aab:"app/build/app/outputs/bundle/release/app-release.aab" \
+            json_key:"${{ steps.prep.outputs.play_key_path }}" \
+            track:"production"
+
+      - name: Upload AAB Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.subdomain }}-Android-AAB
+          path: app/build/app/outputs/bundle/release/*.aab
+          retention-days: 14
+          if-no-files-found: warn
