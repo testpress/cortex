@@ -138,6 +138,9 @@ class LessonDto {
       case LessonType.pdf:
       case LessonType.attachment:
         return contentUrl != null && contentUrl!.isNotEmpty;
+      case LessonType.test:
+      case LessonType.assessment:
+        return exam != null;
       default:
         return true;
     }
