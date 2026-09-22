@@ -40,24 +40,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate Inputs
+        env:
+          BUILD_ANDROID: ${{ inputs.build_android }}
+          BUILD_IOS: ${{ inputs.build_ios }}
+          SUBDOMAIN: ${{ inputs.subdomain }}
         run: |
-          if [ "${{ inputs.build_android }}" != "true" ] && [ "${{ inputs.build_ios }}" != "true" ]; then
+          if [ "$BUILD_ANDROID" != "true" ] && [ "$BUILD_IOS" != "true" ]; then
             echo "::error::At least one platform (Android or iOS) must be selected."
             exit 1
           fi
-          if [[ ! "${{ inputs.subdomain }}" =~ ^[a-zA-Z0-9-]+$ ]]; then
+          if [[ ! "$SUBDOMAIN" =~ ^[a-zA-Z0-9-]+$ ]]; then
             echo "::error::Subdomain must contain only alphanumeric characters and hyphens"
             exit 1
           fi
 
       - name: Bump Version on Cortex Server
+        env:
+          SUBDOMAIN: ${{ inputs.subdomain }}
+          VERSION_TYPE: ${{ inputs.version_type }}
         run: |
-          echo "Bumping ${{ inputs.version_type }} version for subdomain: ${{ inputs.subdomain }}"
+          echo "Bumping $VERSION_TYPE version for subdomain: $SUBDOMAIN"
           HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT \
-            "https://${{ inputs.subdomain }}.testpress.in/api/v2.5/admin/cortex/update/" \
+            "https://${SUBDOMAIN}.testpress.in/api/v2.5/admin/cortex/update/" \
             -H "API-ACCESS-KEY: ${{ secrets.API_ACCESS_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"bump_type": "${{ inputs.version_type }}"}')
+            -d "{\"bump_type\": \"$VERSION_TYPE\"}")
           
           HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
           HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
