@@ -102,8 +102,12 @@ jobs:
           fi
 
       - name: Install CocoaPods
-        working-directory: app/ios
-        run: pod install
+        # ruby/setup-ruby switches to Ruby 3.2, breaking the pre-installed system
+        # CocoaPods. Reinstall it in the new Ruby environment so `pod` is usable
+        # by both this step and Flutter's internal pod install during the build.
+        run: |
+          gem install cocoapods --no-document
+          cd app/ios && pod install
 
       # Single lane handles everything: get_provisioning_profile → flutter build
       # (--no-codesign) → build_app export with manual signing → upload_to_testflight.
