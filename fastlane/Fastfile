@@ -77,7 +77,8 @@ platform :ios do
     get_provisioning_profile(
       app_identifier: bundle_id,
       api_key: api_key,
-      force: true
+      readonly: true,
+      skip_certificate_verification: true
     )
   end
 
