@@ -95,9 +95,11 @@ platform :ios do
     # Phase 1 — Flutter compilation + xcarchive (no code-signing yet).
     # --no-codesign skips the xcodebuild -exportArchive step so gym can
     # do it below with the correct manual signing, identical to the reference repo.
-    sh("cd '#{app_dir}' && flutter build ipa --release --no-codesign " \
-       "--build-name='#{app_version}' --build-number='#{build_number}' " \
-       "--dart-define-from-file=dart_defines.json")
+    Bundler.with_unbundled_env do
+      sh("cd '#{app_dir}' && flutter build ipa --release --no-codesign " \
+         "--build-name='#{app_version}' --build-number='#{build_number}' " \
+         "--dart-define-from-file=dart_defines.json")
+    end
 
     archive_path = Dir.glob(File.join(app_dir, "build/ios/archive/*.xcarchive")).first
     UI.user_error!("xcarchive not found after flutter build") unless archive_path
