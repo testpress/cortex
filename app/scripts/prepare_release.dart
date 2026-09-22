@@ -76,7 +76,7 @@ void main(List<String> args) async {
         keystoreFile.path,
       );
       if (downloaded != null) {
-        keystorePath = keystoreFile.path;
+        keystorePath = keystoreFile.absolute.path;
         // Inject signing properties directly into gradle.properties
         final gradleProps = File('${appDir.path}/android/gradle.properties');
         final content = StringBuffer()
@@ -113,7 +113,7 @@ void main(List<String> args) async {
         playKeyFile.path,
       );
       if (downloaded != null) {
-        playKeyPath = playKeyFile.path;
+        playKeyPath = playKeyFile.absolute.path;
       }
     }
   } else {
@@ -130,7 +130,7 @@ void main(List<String> args) async {
         p8File.path,
       );
       if (downloaded != null) {
-        appleKeyPath = p8File.path;
+        appleKeyPath = p8File.absolute.path;
       }
     }
   }

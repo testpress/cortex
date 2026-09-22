@@ -22,7 +22,7 @@ permissions:
 jobs:
   release:
     name: Build & Release Android App
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       API_ACCESS_KEY: ${{ secrets.API_ACCESS_KEY }}
       SUBDOMAIN: ${{ inputs.subdomain }}
