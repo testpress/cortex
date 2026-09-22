@@ -9,13 +9,17 @@ void main(List<String> args) async {
   await runClientWorkflow(cliArgs, (client, appDirPath) async {
     final runArgs = [
       'run',
+      '--${cliArgs.mode}',
       ...client.toDartDefines(
         configPath: cliArgs.configPath,
         appDirPath: appDirPath,
       ),
+      ...cliArgs.extraArgs,
     ];
 
-    print('🚀 Running the app for ${client.appName}... (Hot reload enabled)');
+    Logger.info(
+      'Running the app for ${client.appName} (${cliArgs.platform}, ${cliArgs.mode} mode)...',
+    );
 
     final runProcess = await Process.start(
       'flutter',
@@ -24,6 +28,15 @@ void main(List<String> args) async {
       mode: ProcessStartMode.inheritStdio,
     );
 
+    // Intercept Ctrl+C: kill the flutter child process so that
+    // runClientWorkflow's finally block can run and restore branding.
+    // Without this, Dart exits immediately on SIGINT, skipping cleanup.
+    final sigintSub = ProcessSignal.sigint.watch().listen((_) {
+      Logger.warn('\nInterrupted. Restoring branding changes...');
+      runProcess.kill(ProcessSignal.sigterm);
+    });
+
     await runProcess.exitCode;
+    await sigintSub.cancel();
   });
 }
