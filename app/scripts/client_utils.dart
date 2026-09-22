@@ -4,30 +4,80 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
+/// Formats and prints colorized CLI messages.
+class Logger {
+  static const _reset = '\x1B[0m';
+  static const _cyan = '\x1B[36m';
+  static const _green = '\x1B[32m';
+  static const _yellow = '\x1B[33m';
+  static const _red = '\x1B[31m';
+
+  static void info(String message) {
+    print('$_cyan[INFO]$_reset $message');
+  }
+
+  static void success(String message) {
+    print('$_green[SUCCESS]$_reset $message');
+  }
+
+  static void warn(String message) {
+    print('$_yellow[WARN]$_reset $message');
+  }
+
+  static void error(String message) {
+    print('$_red[ERROR]$_reset $message');
+  }
+}
+
 /// Parses CLI arguments and environment variables.
 CliArgs parseArgs(List<String> args, String scriptName) {
   String? configPath;
   String? apiBaseUrl;
+  String platform = 'android';
+  String mode = 'debug';
+  final extraArgs = <String>[];
 
   for (final arg in args) {
     if (arg.startsWith('--config=')) {
       configPath = arg.substring('--config='.length);
     } else if (arg.startsWith('--api-base-url=')) {
       apiBaseUrl = arg.substring('--api-base-url='.length);
+    } else if (arg.startsWith('--platform=')) {
+      platform = arg.substring('--platform='.length).toLowerCase();
+    } else if (arg.startsWith('--mode=')) {
+      mode = arg.substring('--mode='.length).toLowerCase();
+    } else if (arg == '--release' || arg == '--profile' || arg == '--debug') {
+      mode = arg.substring(2).toLowerCase();
+    } else {
+      extraArgs.add(arg);
     }
   }
 
+  if (platform != 'android' && platform != 'ios') {
+    Logger.error(
+      'Invalid --platform "$platform". Supported values are "android" or "ios".',
+    );
+    exit(1);
+  }
+
+  if (mode != 'debug' && mode != 'profile' && mode != 'release') {
+    Logger.error(
+      'Invalid --mode "$mode". Supported values are "debug", "profile", or "release".',
+    );
+    exit(1);
+  }
+
   if (apiBaseUrl == null) {
-    print('❌ Error: Missing required argument: --api-base-url');
+    Logger.error('Missing required argument: --api-base-url');
     print(
-      'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --api-base-url=https://your-api.com [--config=config/your_client.json]',
+      'Usage: CLIENT_API_KEY=your_key dart run app/scripts/$scriptName --api-base-url=https://your-api.com [--platform=android|ios] [--mode=debug|profile|release] [--config=config/your_client.json] [extra flutter args...]',
     );
     exit(1);
   }
 
   final apiKey = Platform.environment['CLIENT_API_KEY'];
   if (apiKey == null || apiKey.isEmpty) {
-    print('❌ Error: Missing CLIENT_API_KEY environment variable.');
+    Logger.error('Missing CLIENT_API_KEY environment variable.');
     print('Please provide it securely:');
     print('CLIENT_API_KEY="your_key" dart run app/scripts/$scriptName ...');
     exit(1);
@@ -37,7 +87,31 @@ CliArgs parseArgs(List<String> args, String scriptName) {
     configPath: configPath,
     apiBaseUrl: apiBaseUrl,
     apiKey: apiKey,
+    platform: platform,
+    mode: mode,
+    extraArgs: extraArgs,
   );
+}
+
+/// Finds the first connected device ID matching the specified platform ('android' or 'ios').
+Future<String?> findDeviceIdForPlatform(String platform) async {
+  try {
+    final result = await Process.run('flutter', ['devices', '--machine']);
+    if (result.exitCode == 0) {
+      final devices = jsonDecode(result.stdout as String) as List<dynamic>;
+      for (final device in devices) {
+        final targetPlatform =
+            device['targetPlatform']?.toString().toLowerCase() ?? '';
+        final isSupported = device['isSupported'] == true;
+        if (isSupported && targetPlatform.startsWith(platform.toLowerCase())) {
+          return device['id']?.toString();
+        }
+      }
+    }
+  } catch (e) {
+    Logger.warn('Failed to query flutter devices: $e');
+  }
+  return null;
 }
 
 /// Runs the complete client setup, executes the given [action], and guarantees cleanup.
@@ -51,46 +125,68 @@ Future<void> runClientWorkflow(
 
   try {
     final client = await fetchClientConfig(cliArgs.apiBaseUrl, cliArgs.apiKey);
-    print('Applying configuration for: ${client.appName}');
+    Logger.info(
+      'Applying configuration for: ${client.appName} (Platform: ${cliArgs.platform})',
+    );
 
-    downloadedFiles.addAll(await downloadClientAssets(client, appDir.path));
-    await updateNativeBranding(client.appName, client.bundleId, appDir.path);
-    await updateIosGoogleConfig(appDir.path, client.iosClientId);
-    await updateAndroidGoogleConfig(appDir.path, client.googleServicesJson);
+    downloadedFiles.addAll(
+      await downloadClientAssets(
+        client,
+        appDir.path,
+        platform: cliArgs.platform,
+      ),
+    );
+
+    await updateNativeBranding(
+      appName: client.appName,
+      androidPackageName: client.packageName,
+      iosBundleId: client.bundleId,
+      platform: cliArgs.platform,
+      workingDir: appDir.path,
+    );
+
+    if (cliArgs.platform == 'ios') {
+      await updateIosGoogleConfig(appDir.path, client.iosClientId);
+    } else {
+      await updateAndroidGoogleConfig(appDir.path, client.googleServicesJson);
+    }
     brandingUpdated = true;
 
     await updateZoomDependency(appDir.path, client.zoomEnabled);
 
-    final iconConfig = await generateNativeIcons(appDir.path);
+    final iconConfig = await generateNativeIcons(
+      appDir.path,
+      platform: cliArgs.platform,
+    );
     if (iconConfig != null) {
       downloadedFiles.add(iconConfig);
     }
 
     await action(client, appDir.path);
   } catch (e) {
-    print('❌ Error: $e');
+    Logger.error('$e');
   } finally {
     if (downloadedFiles.isNotEmpty) {
       await cleanupTempFiles(downloadedFiles);
     }
     if (brandingUpdated) {
-      await restoreGitChanges();
+      await restoreGitChanges(platform: cliArgs.platform);
     }
   }
 }
 
-/// Fetches remote configuration from `/api/v2.5/admin/android/app-config/`
+/// Fetches remote configuration from `/api/v2.5/admin/cortex/app-config/`
 /// and `/api/v2.3/settings/` concurrently.
 Future<ClientConfig> fetchClientConfig(String apiBaseUrl, String apiKey) async {
   final normalizedBaseUrl = apiBaseUrl.endsWith('/')
       ? apiBaseUrl.substring(0, apiBaseUrl.length - 1)
       : apiBaseUrl;
 
-  print('Fetching remote configuration from $normalizedBaseUrl...');
+  Logger.info('Fetching remote configuration from $normalizedBaseUrl...');
 
   final results = await Future.wait([
     http.get(
-      Uri.parse('$normalizedBaseUrl/api/v2.5/admin/android/app-config/'),
+      Uri.parse('$normalizedBaseUrl/api/v2.5/admin/cortex/app-config/'),
       headers: {'API-access-key': apiKey},
     ),
     http.get(Uri.parse('$normalizedBaseUrl/api/v2.3/settings/')),
@@ -118,11 +214,12 @@ Future<ClientConfig> fetchClientConfig(String apiBaseUrl, String apiKey) async {
   );
 }
 
-/// Downloads client assets (launcher icon, splash, login, institute logo).
+/// Downloads client assets (launcher icon, splash, login, institute logo, google plist).
 Future<List<File>> downloadClientAssets(
   ClientConfig config,
-  String appDirPath,
-) async {
+  String appDirPath, {
+  String platform = 'android',
+}) async {
   final downloadedFiles = <File>[];
 
   if (config.launcherIconUrl != null) {
@@ -134,7 +231,7 @@ Future<List<File>> downloadClientAssets(
   }
 
   if (config.splashScreenUrl != null) {
-    print('Downloading splash screen...');
+    Logger.info('Downloading splash screen...');
     final splashFile = await _downloadFile(
       config.splashScreenUrl!,
       '$appDirPath/assets/images/splash_screen_image.png',
@@ -143,7 +240,7 @@ Future<List<File>> downloadClientAssets(
   }
 
   if (config.loginScreenUrl != null) {
-    print('Downloading login screen image...');
+    Logger.info('Downloading login screen image...');
     final loginFile = await _downloadFile(
       config.loginScreenUrl!,
       '$appDirPath/assets/images/login_screen_image.png',
@@ -152,12 +249,23 @@ Future<List<File>> downloadClientAssets(
   }
 
   if (config.logoUrl != null && config.logoUrl!.isNotEmpty) {
-    print('Downloading institute logo...');
+    Logger.info('Downloading institute logo...');
     final logoFile = await _downloadFile(
       config.logoUrl!,
       '$appDirPath/assets/images/institute_logo.png',
     );
     if (logoFile != null) downloadedFiles.add(logoFile);
+  }
+
+  if (platform == 'ios' &&
+      config.googlePlistUrl != null &&
+      config.googlePlistUrl!.isNotEmpty) {
+    Logger.info('Downloading GoogleService-Info.plist for iOS...');
+    final plistFile = await _downloadFile(
+      config.googlePlistUrl!,
+      '$appDirPath/ios/Runner/GoogleService-Info.plist',
+    );
+    if (plistFile != null) downloadedFiles.add(plistFile);
   }
 
   return downloadedFiles;
@@ -166,8 +274,8 @@ Future<List<File>> downloadClientAssets(
 Future<File?> _downloadFile(String url, String destPath) async {
   final response = await http.get(Uri.parse(url));
   if (response.statusCode != 200) {
-    print(
-      '⚠️ Failed to download asset from $url (HTTP ${response.statusCode}). Skipping...',
+    Logger.warn(
+      'Failed to download asset from $url (HTTP ${response.statusCode}). Skipping...',
     );
     return null;
   }
@@ -179,40 +287,84 @@ Future<File?> _downloadFile(String url, String destPath) async {
   return file;
 }
 
-/// Updates native app name and bundle identifier.
-Future<void> updateNativeBranding(
-  String appName,
-  String bundleId,
-  String workingDir,
-) async {
-  print('Updating App Name and Bundle ID...');
+/// Updates native app name and platform identifier for the target platform.
+Future<void> updateNativeBranding({
+  required String appName,
+  required String androidPackageName,
+  required String iosBundleId,
+  required String platform,
+  required String workingDir,
+}) async {
+  if (platform == 'ios') {
+    Logger.info(
+      'Updating iOS app name ($appName) and bundle ID ($iosBundleId)...',
+    );
 
-  var result = await Process.run('dart', [
-    'run',
-    'rename',
-    'setAppName',
-    '--targets',
-    'ios,android',
-    '--value',
-    appName,
-  ], workingDirectory: workingDir);
+    var result = await Process.run('dart', [
+      'run',
+      'rename',
+      'setAppName',
+      '--targets',
+      'ios',
+      '--value',
+      appName,
+    ], workingDirectory: workingDir);
 
-  if (result.exitCode != 0) {
-    throw Exception('Failed to update app name: ${result.stderr}');
-  }
+    if (result.exitCode != 0) {
+      throw Exception('Failed to update iOS app name: ${result.stderr}');
+    }
 
-  result = await Process.run('dart', [
-    'run',
-    'rename',
-    'setBundleId',
-    '--targets',
-    'ios,android',
-    '--value',
-    bundleId,
-  ], workingDirectory: workingDir);
+    if (iosBundleId.isNotEmpty) {
+      result = await Process.run('dart', [
+        'run',
+        'rename',
+        'setBundleId',
+        '--targets',
+        'ios',
+        '--value',
+        iosBundleId,
+      ], workingDirectory: workingDir);
 
-  if (result.exitCode != 0) {
-    throw Exception('Failed to update bundle ID: ${result.stderr}');
+      if (result.exitCode != 0) {
+        throw Exception('Failed to update iOS bundle ID: ${result.stderr}');
+      }
+    }
+  } else {
+    Logger.info(
+      'Updating Android app name ($appName) and package name ($androidPackageName)...',
+    );
+
+    var result = await Process.run('dart', [
+      'run',
+      'rename',
+      'setAppName',
+      '--targets',
+      'android',
+      '--value',
+      appName,
+    ], workingDirectory: workingDir);
+
+    if (result.exitCode != 0) {
+      throw Exception('Failed to update Android app name: ${result.stderr}');
+    }
+
+    if (androidPackageName.isNotEmpty) {
+      result = await Process.run('dart', [
+        'run',
+        'rename',
+        'setBundleId',
+        '--targets',
+        'android',
+        '--value',
+        androidPackageName,
+      ], workingDirectory: workingDir);
+
+      if (result.exitCode != 0) {
+        throw Exception(
+          'Failed to update Android package name: ${result.stderr}',
+        );
+      }
+    }
   }
 }
 
@@ -221,7 +373,7 @@ Future<void> updateIosGoogleConfig(
   String appDirPath,
   String iosClientId,
 ) async {
-  print('Updating iOS Google Sign-In config...');
+  Logger.info('Updating iOS Google Sign-In config...');
   String reversedClientId = '';
   if (iosClientId.isNotEmpty) {
     reversedClientId = iosClientId.split('.').reversed.join('.');
@@ -243,14 +395,14 @@ Future<void> updateAndroidGoogleConfig(
   dynamic googleServices,
 ) async {
   if (googleServices != null) {
-    print('Writing android/app/google-services.json...');
+    Logger.info('Writing android/app/google-services.json...');
     final file = File('$appDirPath/android/app/google-services.json');
     if (!file.parent.existsSync()) {
       file.parent.createSync(recursive: true);
     }
     await file.writeAsString(jsonEncode(googleServices));
   } else {
-    print('⚠️ google_services_json not found in remote config. Skipping...');
+    Logger.warn('google_services_json not found in remote config. Skipping...');
   }
 }
 
@@ -266,42 +418,48 @@ Future<void> updateZoomDependency(String appDirPath, bool enabled) async {
   );
 
   if (enabled) {
-    print('Enabling Zoom native SDK dependency in pubspec.yaml...');
+    Logger.info('Enabling Zoom native SDK dependency in pubspec.yaml...');
     content = content.replaceAll(
       '  testpress:\n    path: ../packages/testpress',
       '  testpress:\n    path: ../packages/testpress\n  zoom:\n    path: ../packages/zoom',
     );
   } else {
-    print('Zoom native SDK dependency is disabled.');
+    Logger.info('Zoom native SDK dependency is disabled.');
   }
 
   await pubspecFile.writeAsString(content);
 
-  print('Syncing dependencies with flutter pub get...');
+  Logger.info('Syncing dependencies with flutter pub get...');
   final pubGetResult = await Process.run('flutter', [
     'pub',
     'get',
   ], workingDirectory: appDirPath);
 
   if (pubGetResult.exitCode != 0) {
-    print('⚠️ Warning: flutter pub get failed: ${pubGetResult.stderr}');
+    Logger.warn('flutter pub get failed: ${pubGetResult.stderr}');
   }
 }
 
-/// Generates native launcher icons from `temp_launcher.png`.
-Future<File?> generateNativeIcons(String workingDir) async {
+/// Generates native launcher icons from `temp_launcher.png` for the target platform.
+Future<File?> generateNativeIcons(
+  String workingDir, {
+  String platform = 'android',
+}) async {
   final iconFile = File('$workingDir/assets/images/temp_launcher.png');
   if (!iconFile.existsSync()) {
-    print('⚠️ Launcher icon not found. Skipping native icon generation.');
+    Logger.warn('Launcher icon not found. Skipping native icon generation.');
     return null;
   }
 
-  print('Generating native icons...');
+  final isAndroid = platform == 'android';
+  Logger.info(
+    'Generating ${isAndroid ? "Android" : "iOS"} native launcher icons...',
+  );
   final iconConfig = File('$workingDir/flutter_launcher_icons.yaml');
   await iconConfig.writeAsString('''
 flutter_launcher_icons:
-  android: true
-  ios: true
+  android: ${isAndroid ? "true" : "false"}
+  ios: ${isAndroid ? "false" : "true"}
   image_path: "assets/images/temp_launcher.png"
 ''');
 
@@ -318,7 +476,7 @@ flutter_launcher_icons:
 
 /// Cleans up temporary downloaded asset files.
 Future<void> cleanupTempFiles(List<File> files) async {
-  print('Cleaning up temporary files...');
+  Logger.info('Cleaning up temporary files...');
   for (final file in files) {
     if (file.existsSync()) {
       await file.delete();
@@ -327,32 +485,34 @@ Future<void> cleanupTempFiles(List<File> files) async {
 }
 
 /// Restores git working tree to a clean state.
-Future<void> restoreGitChanges() async {
-  print('🧹 Cleaning up native configuration changes...');
+Future<void> restoreGitChanges({String platform = 'android'}) async {
+  Logger.info('Cleaning up native configuration changes...');
+  final pathsToCheckout = [
+    if (platform == 'ios') 'app/ios' else 'app/android',
+    'app/pubspec.yaml',
+    'app/pubspec.lock',
+  ];
+
   final checkoutResult = await Process.run('git', [
     'checkout',
     '--',
-    'app/ios',
-    'app/android',
-    'app/pubspec.yaml',
-    'app/pubspec.lock',
+    ...pathsToCheckout,
   ]);
   if (checkoutResult.exitCode != 0) {
-    print('⚠️ Warning: git checkout failed: ${checkoutResult.stderr}');
+    Logger.warn('git checkout failed: ${checkoutResult.stderr}');
   }
 
   final cleanResult = await Process.run('git', [
     'clean',
     '-fd',
-    'app/ios',
-    'app/android',
+    if (platform == 'ios') 'app/ios' else 'app/android',
   ]);
   if (cleanResult.exitCode != 0) {
-    print('⚠️ Warning: git clean failed: ${cleanResult.stderr}');
+    Logger.warn('git clean failed: ${cleanResult.stderr}');
   }
 
   if (checkoutResult.exitCode == 0 && cleanResult.exitCode == 0) {
-    print('✨ Repository restored to original state.');
+    Logger.success('Workspace restored cleanly.');
   }
 }
 
@@ -360,33 +520,49 @@ Future<void> restoreGitChanges() async {
 class ClientConfig {
   final String appName;
   final String bundleId;
+  final String packageName;
   final String apiBaseUrl;
   final String? logoUrl;
   final String? launcherIconUrl;
   final String? splashScreenUrl;
   final String? loginScreenUrl;
+  final String? launchImageUrl;
   final String? serverClientId;
   final String? primaryColor;
+  final String? secondaryColor;
+  final String? tertiaryColor;
   final String appVersion;
-  final String buildNumber;
+  final String androidBuildNumber;
+  final String iosBuildNumber;
   final bool zoomEnabled;
   final String iosClientId;
+  final String? googlePlistUrl;
   final dynamic googleServicesJson;
+
+  /// Returns target build number (defaults to Android build number).
+  String get buildNumber =>
+      androidBuildNumber.isNotEmpty ? androidBuildNumber : iosBuildNumber;
 
   const ClientConfig({
     required this.appName,
     required this.bundleId,
+    required this.packageName,
     required this.apiBaseUrl,
     required this.logoUrl,
     required this.launcherIconUrl,
     required this.splashScreenUrl,
     required this.loginScreenUrl,
+    this.launchImageUrl,
     required this.serverClientId,
     required this.primaryColor,
+    this.secondaryColor,
+    this.tertiaryColor,
     required this.appVersion,
-    required this.buildNumber,
+    required this.androidBuildNumber,
+    required this.iosBuildNumber,
     required this.zoomEnabled,
     required this.iosClientId,
+    this.googlePlistUrl,
     required this.googleServicesJson,
   });
 
@@ -395,20 +571,35 @@ class ClientConfig {
     required String? logoUrl,
     required String apiBaseUrl,
   }) {
+    final androidCode = remoteConfig['android_version_code'].toString();
+    final iosCode = remoteConfig['ios_version_code'].toString();
+    final pkgName = remoteConfig['package_name'].toString();
+    final bundleId = remoteConfig['bundle_id'].toString();
+
     return ClientConfig(
-      appName: remoteConfig['app_name']?.toString() ?? 'Testpress App',
-      bundleId: remoteConfig['package_name']?.toString() ?? 'in.testpress.app',
+      appName: remoteConfig['app_name'].toString(),
+      bundleId: bundleId,
+      packageName: pkgName,
       apiBaseUrl: apiBaseUrl,
       logoUrl: logoUrl,
-      launcherIconUrl: remoteConfig['launcher_xxxhdpi']?.toString(),
+      launcherIconUrl:
+          remoteConfig['app_icon']?.toString() ??
+          remoteConfig['launcher_xxxhdpi']?.toString(),
       splashScreenUrl: remoteConfig['splash_screen']?.toString(),
-      loginScreenUrl: remoteConfig['login_screen_image']?.toString(),
+      loginScreenUrl:
+          remoteConfig['login_image']?.toString() ??
+          remoteConfig['login_screen_image']?.toString(),
+      launchImageUrl: remoteConfig['launch_image']?.toString(),
       serverClientId: remoteConfig['server_client_id']?.toString(),
       primaryColor: remoteConfig['primary_color']?.toString(),
+      secondaryColor: remoteConfig['secondary_color']?.toString(),
+      tertiaryColor: remoteConfig['tertiary_color']?.toString(),
       appVersion: remoteConfig['version']?.toString() ?? '0.1.0',
-      buildNumber: remoteConfig['version_code']?.toString() ?? '1',
+      androidBuildNumber: androidCode,
+      iosBuildNumber: iosCode,
       zoomEnabled: remoteConfig['zoom_enabled'] as bool? ?? false,
       iosClientId: remoteConfig['ios_client_id']?.toString() ?? '',
+      googlePlistUrl: remoteConfig['google_plist']?.toString(),
       googleServicesJson: remoteConfig['google_services_json'],
     );
   }
@@ -449,10 +640,16 @@ class CliArgs {
   final String? configPath;
   final String apiBaseUrl;
   final String apiKey;
+  final String platform;
+  final String mode;
+  final List<String> extraArgs;
 
   const CliArgs({
     required this.configPath,
     required this.apiBaseUrl,
     required this.apiKey,
+    this.platform = 'android',
+    this.mode = 'debug',
+    this.extraArgs = const [],
   });
 }

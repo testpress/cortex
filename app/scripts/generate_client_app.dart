@@ -6,6 +6,14 @@ import 'client_utils.dart';
 void main(List<String> args) async {
   final cliArgs = parseArgs(args, 'generate_client_app.dart');
 
+  if (cliArgs.platform == 'ios') {
+    Logger.error(
+      'generate_client_app.dart only supports Android (APK) builds.\n'
+      'For iOS development, use run_client.dart with --platform=ios instead.',
+    );
+    exit(1);
+  }
+
   await runClientWorkflow(cliArgs, (client, appDirPath) async {
     final buildArgs = [
       'build',
@@ -15,9 +23,10 @@ void main(List<String> args) async {
         appDirPath: appDirPath,
       ),
       if (client.appVersion.isNotEmpty) '--build-name=${client.appVersion}',
-      if (client.buildNumber.isNotEmpty) '--build-number=${client.buildNumber}',
+      if (client.androidBuildNumber.isNotEmpty)
+        '--build-number=${client.androidBuildNumber}',
+      ...cliArgs.extraArgs,
     ];
-
     await _buildAndRenameApk(appDirPath, client.appName, buildArgs);
   });
 }
@@ -27,7 +36,7 @@ Future<bool> _buildAndRenameApk(
   String appName,
   List<String> buildArgs,
 ) async {
-  print('🚀 Building the APK for $appName... (This may take a few minutes)');
+  Logger.info('Building the APK for $appName... (This may take a few minutes)');
 
   final buildProcess = await Process.start(
     'flutter',
@@ -40,7 +49,7 @@ Future<bool> _buildAndRenameApk(
 
   final exitCode = await buildProcess.exitCode;
   if (exitCode != 0) {
-    print('❌ Build failed with exit code $exitCode');
+    Logger.error('Build failed with exit code $exitCode');
     return false;
   }
 
@@ -55,10 +64,9 @@ Future<bool> _buildAndRenameApk(
     final safeAppName = appName.replaceAll(' ', '_');
     final newApkPath = '${apkFile.parent.path}/$safeAppName.apk';
     await apkFile.rename(newApkPath);
-    print('🎉 SUCCESS! Your APK is ready here:');
-    print('👉 $newApkPath');
+    Logger.success('Your APK is ready: $newApkPath');
   } else {
-    print('🎉 SUCCESS! But could not locate the APK to rename it.');
+    Logger.warn('Build succeeded, but could not locate the APK to rename it.');
   }
   return true;
 }
