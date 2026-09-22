@@ -175,7 +175,12 @@ void main(List<String> args) async {
   if (githubOutput != null && File(githubOutput).existsSync()) {
     final sink = File(githubOutput).openWrite(mode: FileMode.append);
     for (final entry in outputs.entries) {
-      sink.writeln('${entry.key}=${entry.value}');
+      final cleanKey = entry.key.replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '');
+      final delimiter =
+          'EOF_${DateTime.now().microsecondsSinceEpoch}_$cleanKey';
+      sink.writeln('$cleanKey<<$delimiter');
+      sink.writeln(entry.value);
+      sink.writeln(delimiter);
     }
     await sink.close();
     Logger.success('Exported release parameters to GITHUB_OUTPUT');
