@@ -197,42 +197,38 @@ class OfflineExamRepository implements ExamRepository {
   Future<void> _startOfflineExam(ExamDto exam, bool isQuizMode) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
-      var row = await _db.getDownloadByContentId(_contentId);
-      if (row == null) throw Exception("Offline exam not found");
+      final row = await _db.getDownloadByContentId(_contentId);
+      if (row == null) {
+        _emit(
+          ExamAttemptState(
+            status: ExamAttemptStatus.error,
+            exam: exam,
+            errorMessage: ExamErrorCodes.offlineDataNotFound,
+          ),
+        );
+        return;
+      }
 
       if (row.status == 'SYNCED') {
-        // Clear saved answers for this download so they start fresh
-        await _db.clearAnswersForDownload(row.id);
-
-        // Reset download row metadata
-        await _db.upsertDownload(
-          row
-              .toCompanion(false)
-              .copyWith(
-                startedAt: drift.Value(DateTime.now()),
-                completedAt: const drift.Value(null),
-                elapsedSeconds: const drift.Value(0),
-                status: const drift.Value('IN_PROGRESS'),
-                syncedAt: const drift.Value(null),
-              ),
+        _emit(
+          ExamAttemptState(
+            status: ExamAttemptStatus.error,
+            exam: exam,
+            errorMessage: ExamErrorCodes.offlineExamAlreadySynced,
+          ),
         );
-
-        // Fetch refreshed row
-        final updatedRow = await _db.getDownloadByContentId(_contentId);
-        if (updatedRow != null) {
-          row = updatedRow;
-        }
-      } else {
-        // Mark as IN_PROGRESS (normal resume/start)
-        await _db.upsertDownload(
-          row
-              .toCompanion(false)
-              .copyWith(
-                startedAt: drift.Value(DateTime.now()),
-                status: const drift.Value('IN_PROGRESS'),
-              ),
-        );
+        return;
       }
+
+      // Mark as IN_PROGRESS (normal resume/start)
+      await _db.upsertDownload(
+        row
+            .toCompanion(false)
+            .copyWith(
+              startedAt: drift.Value(DateTime.now()),
+              status: const drift.Value('IN_PROGRESS'),
+            ),
+      );
 
       final questionsRaw =
           dart_convert.jsonDecode(row.questionsJson) as List<dynamic>;

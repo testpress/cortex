@@ -16,6 +16,8 @@ enum ExamAttemptStatus {
 
 class ExamErrorCodes {
   static const String offlineDataNotFound = 'error_offline_data_not_found';
+  static const String offlineExamAlreadySynced =
+      'error_offline_exam_already_synced';
 }
 
 class ExamAttemptState {
