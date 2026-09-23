@@ -100,5 +100,11 @@
 		<string>fetch</string>
 		<string>processing</string>
 	</array>
+	<!-- Required by Apple when UIBackgroundModes includes 'processing'.
+	     Must list every BGTaskScheduler identifier the app registers. -->
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.bbflight.background_downloader</string>
+	</array>
 </dict>
 </plist>
