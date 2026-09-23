@@ -130,7 +130,7 @@ class CourseList extends _$CourseList {
       await _pendingSyncRequest;
     }
 
-    final currentSync = _performSync(isReset: true, rethrowError: true);
+    final currentSync = _performSync(isReset: true);
     _pendingSyncRequest = currentSync;
     _isPendingSyncReset = true;
     try {
@@ -143,10 +143,7 @@ class CourseList extends _$CourseList {
     }
   }
 
-  Future<void> _performSync({
-    required bool isReset,
-    bool rethrowError = false,
-  }) async {
+  Future<void> _performSync({required bool isReset}) async {
     if (isReset) {
       _paginationTracker = const PaginationState();
       ref.read(isSyncingInitialPage.notifier).state = true;
@@ -183,7 +180,6 @@ class CourseList extends _$CourseList {
       if (e is ApiException && e.type == ApiErrorType.unauthorized) return;
       // Capture the error but don't rethrow (so stream from DB is still visible)
       ref.read(courseListSyncError.notifier).state = e;
-      if (rethrowError) rethrow;
     } finally {
       if (isReset) {
         ref.read(isSyncingInitialPage.notifier).state = false;

@@ -24,6 +24,24 @@ class MockCourseRepository extends CourseRepository {
     }
     return PaginatedResponseDto(results: []);
   }
+
+  int refreshCalls = 0;
+  bool refreshShouldThrow = false;
+
+  @override
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
+    int page = 1,
+    dynamic tags,
+  }) async {
+    refreshCalls++;
+    if (refreshShouldThrow) {
+      throw const ApiException(
+        'We couldn\'t connect. Please check your internet and try again.',
+        type: ApiErrorType.noInternet,
+      );
+    }
+    return PaginatedResponseDto(results: []);
+  }
 }
 
 class MockSentryService extends SentryService {
@@ -141,6 +159,31 @@ void main() {
 
       expect(container.read(courseSearchProvider).error, isNull);
       expect(mockRepo.searchCalls, 2);
+    });
+  });
+
+  group('CourseList error handling', () {
+    test('sets courseListSyncError on failure and clears only on success',
+        () async {
+      final mockRepo = MockCourseRepository();
+      final container = ProviderContainer(
+        overrides: [
+          courseRepositoryProvider.overrideWith((ref) => mockRepo),
+          authProvider.overrideWith(() => FakeAuth()),
+        ],
+      );
+
+      final notifier = container.read(courseListProvider.notifier);
+      mockRepo.refreshShouldThrow = true;
+
+      // 1. Refresh fails: updates courseListSyncError without throwing
+      await notifier.refresh();
+      expect(container.read(courseListSyncError), isA<ApiException>());
+
+      // 2. Next refresh succeeds: clears courseListSyncError
+      mockRepo.refreshShouldThrow = false;
+      await notifier.refresh();
+      expect(container.read(courseListSyncError), isNull);
     });
   });
 }

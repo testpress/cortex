@@ -156,18 +156,8 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 Expanded(
                   child: AppRefreshIndicator(
                     semanticsLabel: l10n.pullToRefresh,
-                    onRefresh: () async {
-                      try {
-                        await ref.read(courseListProvider.notifier).refresh();
-                      } catch (_) {
-                        if (!context.mounted) return;
-                        AppToast.show(
-                          context,
-                          message: l10n.refreshFailed,
-                          isError: true,
-                        );
-                      }
-                    },
+                    onRefresh: () =>
+                        ref.read(courseListProvider.notifier).refresh(),
                     child: CustomScrollView(
                       controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(
