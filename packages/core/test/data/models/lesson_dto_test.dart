@@ -641,6 +641,61 @@ void main() {
           );
         },
       );
+
+      test(
+        'mergeWith: fresh contentUrl wins over cached/stale contentUrl (e.g. refreshed presigned video/pdf url)',
+        () {
+          final cachedLesson = LessonDto.fromJson({
+            'id': '201',
+            'title': 'Chapter 1 PDF',
+            'content_type': 'pdf',
+            'content_url':
+                'https://s3.amazonaws.com/bucket/old-expired-presigned-url?expires=1000',
+            'active': true,
+          });
+
+          final freshLesson = LessonDto.fromJson({
+            'id': '201',
+            'title': 'Chapter 1 PDF',
+            'content_type': 'pdf',
+            'content_url':
+                'https://s3.amazonaws.com/bucket/fresh-active-presigned-url?expires=9999',
+            'active': true,
+          });
+
+          final merged = freshLesson.mergeWith(cachedLesson);
+
+          expect(
+            merged.contentUrl,
+            'https://s3.amazonaws.com/bucket/fresh-active-presigned-url?expires=9999',
+          );
+        },
+      );
+
+      test(
+        'mergeWith: falls back to cached contentUrl when fresh contentUrl is empty or null',
+        () {
+          final cachedLesson = LessonDto.fromJson({
+            'id': '202',
+            'title': 'Lecture Notes PDF',
+            'content_type': 'pdf',
+            'content_url': 'https://example.com/cached.pdf',
+            'active': true,
+          });
+
+          final freshLessonEmptyUrl = LessonDto.fromJson({
+            'id': '202',
+            'title': 'Lecture Notes PDF',
+            'content_type': 'pdf',
+            'content_url': '',
+            'active': true,
+          });
+
+          final merged = freshLessonEmptyUrl.mergeWith(cachedLesson);
+
+          expect(merged.contentUrl, 'https://example.com/cached.pdf');
+        },
+      );
     });
   });
 }

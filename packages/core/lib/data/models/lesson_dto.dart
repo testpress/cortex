@@ -355,9 +355,7 @@ class LessonDto {
       duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration))
           ? other.duration
           : duration,
-      contentUrl: (other.contentUrl?.isNotEmpty ?? false)
-          ? other.contentUrl
-          : contentUrl,
+      contentUrl: (contentUrl?.isEmpty ?? true) ? other.contentUrl : contentUrl,
       uuid: (uuid?.isEmpty ?? true) ? other.uuid : uuid,
       htmlContent: (htmlContent?.isEmpty ?? true)
           ? other.htmlContent
