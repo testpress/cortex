@@ -359,9 +359,60 @@ Future<void> updateIosGoogleConfig(
   String iosClientId,
 ) async {
   Logger.info('Updating iOS Google Sign-In config...');
+  String effectiveClientId = iosClientId.trim();
+  if (effectiveClientId.toLowerCase() == 'null') {
+    effectiveClientId = '';
+  }
   String reversedClientId = '';
-  if (iosClientId.isNotEmpty) {
-    reversedClientId = iosClientId.split('.').reversed.join('.');
+
+  final plistFile = File('$appDirPath/ios/Runner/GoogleService-Info.plist');
+  if (plistFile.existsSync()) {
+    try {
+      final content = await plistFile.readAsString();
+      final clientIdMatch = RegExp(
+        r'<key>CLIENT_ID</key>\s*<string>([^<]+)</string>',
+      ).firstMatch(content);
+      final reversedClientIdMatch = RegExp(
+        r'<key>REVERSED_CLIENT_ID</key>\s*<string>([^<]+)</string>',
+      ).firstMatch(content);
+
+      if (effectiveClientId.isEmpty) {
+        final parsed = clientIdMatch?.group(1)?.trim();
+        if (parsed != null && parsed.toLowerCase() != 'null') {
+          effectiveClientId = parsed;
+        }
+      }
+      if (reversedClientIdMatch != null) {
+        final parsedReversed = reversedClientIdMatch.group(1)?.trim();
+        if (parsedReversed != null && parsedReversed.toLowerCase() != 'null') {
+          reversedClientId = parsedReversed;
+        }
+      }
+    } catch (e) {
+      Logger.warn('Failed to parse GoogleService-Info.plist: $e');
+    }
+  }
+
+  // If no iOS Google Client ID is provided in remote config or plist, fallback to a placeholder
+  // to prevent the native iOS SDK from throwing 'NSInvalidArgumentException' (SIGABRT crash).
+  if (effectiveClientId.isEmpty) {
+    Logger.warn(
+      'No iOS Google Client ID found. Using placeholder to prevent native crash.',
+    );
+    effectiveClientId = 'unconfigured.apps.googleusercontent.com';
+  }
+
+  // Ensure reversedClientId is never empty if we have a valid effectiveClientId
+  if (reversedClientId.isEmpty && effectiveClientId.isNotEmpty) {
+    reversedClientId = effectiveClientId.split('.').reversed.join('.');
+  }
+
+  // Final sanity check to never write 'null' string
+  if (effectiveClientId.toLowerCase() == 'null') {
+    effectiveClientId = 'unconfigured.apps.googleusercontent.com';
+  }
+  if (reversedClientId.toLowerCase() == 'null') {
+    reversedClientId = 'com.googleusercontent.apps.unconfigured';
   }
 
   final configFile = File('$appDirPath/ios/Flutter/GoogleConfig.xcconfig');
@@ -369,7 +420,7 @@ Future<void> updateIosGoogleConfig(
     configFile.parent.createSync(recursive: true);
   }
   await configFile.writeAsString('''
-GOOGLE_IOS_CLIENT_ID = $iosClientId
+GOOGLE_IOS_CLIENT_ID = $effectiveClientId
 GOOGLE_REVERSED_CLIENT_ID = $reversedClientId
 ''');
 }
