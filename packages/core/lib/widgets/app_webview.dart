@@ -8,6 +8,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../data/auth/auth_provider.dart';
+import '../data/services/sentry_service.dart';
 import '../widgets/app_error_view.dart';
 import '../widgets/app_header.dart';
 import '../widgets/app_back_button.dart';
@@ -91,7 +92,15 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
             : '$defaultUa $appIdentifier';
         await _controller.setUserAgent(newUa);
       }
-    } catch (_) {}
+    } catch (e, stackTrace) {
+      ref
+          .read(sentryServiceProvider)
+          .captureException(
+            e,
+            stackTrace: stackTrace,
+            tags: const {'feature': 'webview_user_agent'},
+          );
+    }
     if (mounted) {
       _loadUrl(widget.url);
     }
