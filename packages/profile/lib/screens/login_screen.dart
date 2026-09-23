@@ -121,7 +121,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ],
                           ),
                         ],
-                        SizedBox(height: design.spacing.xl),
+                        if (_errorMessage != null) ...[
+                          SizedBox(height: design.spacing.md),
+                          AppText.bodySmall(
+                            _errorMessage!,
+                            color: design.colors.error,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                        SizedBox(
+                          height: _errorMessage != null
+                              ? design.spacing.lg
+                              : design.spacing.xl,
+                        ),
                         AppText.cardTitle(
                           displayLoginIdLabel,
                           color: design.colors.textSecondary,
@@ -176,8 +188,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: design.spacing.md),
-                        if (!disableForgotPassword)
+                        if (!disableForgotPassword) ...[
+                          SizedBox(height: design.spacing.md),
                           Align(
                             alignment: Alignment.centerRight,
                             child: AppSemantics.button(
@@ -195,13 +207,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               ),
                             ),
-                          ),
-                        if (_errorMessage != null) ...[
-                          SizedBox(height: design.spacing.md),
-                          AppText.bodySmall(
-                            _errorMessage!,
-                            color: design.colors.error,
-                            textAlign: TextAlign.center,
                           ),
                         ],
                         SizedBox(height: design.spacing.xl),

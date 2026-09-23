@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/login_activity_item.dart';
 
 class LoginActivityScreen extends ConsumerStatefulWidget {
@@ -22,7 +21,7 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
   final List<LoginActivityDto> _activities = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
-  String? _error;
+  Object? _error;
   int _currentPage = 1;
   bool _hasMore = true;
   bool _isLoggingOut = false;
@@ -45,41 +44,57 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
   }
 
   Future<void> _fetchData() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+    final isInitial = _activities.isEmpty && _error == null;
+    if (isInitial) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
 
     try {
       final repo = await ref.read(userRepositoryProvider.future);
       final newItems = await repo.getLoginActivity(page: _currentPage);
 
-      setState(() {
-        _activities.addAll(newItems.results);
-        _hasMore = newItems.next != null;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _activities.addAll(newItems.results);
+          _hasMore = newItems.next != null;
+          _isLoading = false;
+          _error = null;
+        });
+      }
     } catch (e, stack) {
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _error = e;
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _refreshData() async {
-    final repo = await ref.read(userRepositoryProvider.future);
-    final newItems = await repo.getLoginActivity(page: 1);
+    try {
+      final repo = await ref.read(userRepositoryProvider.future);
+      final newItems = await repo.getLoginActivity(page: 1);
 
-    if (mounted) {
-      setState(() {
-        _currentPage = 1;
-        _activities.clear();
-        _activities.addAll(newItems.results);
-        _hasMore = newItems.next != null;
-        _error = null;
-      });
+      if (mounted) {
+        setState(() {
+          _currentPage = 1;
+          _activities.clear();
+          _activities.addAll(newItems.results);
+          _hasMore = newItems.next != null;
+          _error = null;
+        });
+      }
+    } catch (e, stack) {
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      if (mounted) {
+        setState(() {
+          _error = e;
+        });
+      }
     }
   }
 
@@ -103,7 +118,7 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     } catch (e, stack) {
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       setState(() {
-        _error = e.toString();
+        _error = e;
         _isLoadingMore = false;
       });
     }
@@ -195,80 +210,52 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
 
           // Content
           Expanded(
-            child: SkeletonizerConfig(
-              data: SkeletonizerConfigData(
-                effect: ShimmerEffect(
-                  baseColor: design.colors.surfaceVariant,
-                  highlightColor: const Color(0xFFFFFFFF),
-                ),
-              ),
-              child: Skeletonizer(
-                enabled: _isLoading,
-                child: _error != null && _activities.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AppText.body(_error!, color: design.colors.error),
-                            SizedBox(height: design.spacing.md),
-                            AppButton.secondary(
-                              label: l10n.labelRetry,
-                              onPressed: _fetchData,
-                            ),
-                          ],
-                        ),
-                      )
-                    : (_activities.isEmpty && !_isLoading)
-                    ? Center(
-                        child: AppText.body(
-                          l10n.loginActivityNoActivityFound,
-                          color: design.colors.textSecondary,
-                        ),
-                      )
-                    : AppRefreshIndicator(
-                        onRefresh: _refreshData,
-                        child: CustomScrollView(
-                          controller: _scrollController,
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          slivers: [
-                            SliverPadding(
-                              padding: EdgeInsets.all(design.spacing.md),
-                              sliver: SliverList.builder(
-                                itemCount: _isLoading
-                                    ? 4
-                                    : (_activities.length +
-                                          (_isLoadingMore ? 1 : 0)),
-                                itemBuilder: (context, index) {
-                                  if (_isLoading) {
-                                    return LoginActivityItem(
-                                      activity: _skeletonActivity,
-                                    );
-                                  }
-                                  if (index < _activities.length) {
-                                    return LoginActivityItem(
-                                      activity: _activities[index],
-                                    );
-                                  }
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: design.spacing.md,
-                                    ),
-                                    child: Center(
-                                      child: AppLoadingIndicator(
-                                        color: design.colors.primary,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+            child: _isLoading && _activities.isEmpty
+                ? const Center(child: AppLoadingIndicator())
+                : _error != null && _activities.isEmpty
+                ? AppErrorView(error: _error, onRetry: _fetchData)
+                : (_activities.isEmpty && !_isLoading)
+                ? Center(
+                    child: AppText.body(
+                      l10n.loginActivityNoActivityFound,
+                      color: design.colors.textSecondary,
+                    ),
+                  )
+                : AppRefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
                       ),
-              ),
-            ),
+                      slivers: [
+                        SliverPadding(
+                          padding: EdgeInsets.all(design.spacing.md),
+                          sliver: SliverList.builder(
+                            itemCount:
+                                _activities.length + (_isLoadingMore ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index < _activities.length) {
+                                return LoginActivityItem(
+                                  activity: _activities[index],
+                                );
+                              }
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: design.spacing.md,
+                                ),
+                                child: Center(
+                                  child: AppLoadingIndicator(
+                                    color: design.colors.primary,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
           ),
 
           // Static Logout Button
@@ -296,16 +283,3 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
     );
   }
 }
-
-final _skeletonActivity = LoginActivityDto(
-  id: 0,
-  userAgent: 'Mozilla/5.0...',
-  ipAddress: '192.168.1.1',
-  device: 'Mobile',
-  deviceName: 'Device placeholder',
-  browser: 'Browser placeholder',
-  os: 'OS placeholder',
-  lastUsed: DateTime.now(),
-  location: 'Location placeholder',
-  currentDevice: false,
-);
