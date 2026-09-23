@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter/widgets.dart';
@@ -53,9 +54,28 @@ class SentryService {
 
       // Attach to the global network error handler
       onNetworkErrorCapture = (error, stackTrace) {
-        if (error is ApiException && error.type == ApiErrorType.noInternet) {
+        if (error is ApiException) {
+          if (error.type == ApiErrorType.noInternet) {
+            return;
+          }
+
+          final contexts = <String, dynamic>{
+            'api_details': {
+              'error_type': error.type.name,
+              if (error.statusCode != null) 'status_code': error.statusCode,
+              if (error.data != null)
+                'response_data': error.data is String
+                    ? error.data
+                    : jsonEncode(error.data),
+              if (error.error != null)
+                'underlying_error': error.error.toString(),
+            },
+          };
+
+          captureException(error, stackTrace: stackTrace, contexts: contexts);
           return;
         }
+
         captureException(error, stackTrace: stackTrace);
       };
     }
