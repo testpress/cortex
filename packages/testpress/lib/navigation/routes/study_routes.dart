@@ -133,7 +133,7 @@ class StudyRoutes {
                     bool isPartial = false,
                     bool isOffline = false,
                   }) async {
-                    context.pushReplacement(
+                    await context.push(
                       '/study/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
                       extra: lesson,
                     );
@@ -187,7 +187,7 @@ class StudyRoutes {
                     bool isPartial = false,
                     bool isOffline = false,
                   }) async {
-                    context.pushReplacement(
+                    await context.push(
                       '/study/assessment/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
                       extra: lesson,
                     );

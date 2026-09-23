@@ -213,7 +213,7 @@ class ExamsRoutes {
                 bool isPartial = false,
                 bool isOffline = false,
               }) async {
-                context.pushReplacement(
+                await context.push(
                   '/exams/test/$id/player?isQuizMode=$isQuizMode&isPartial=$isPartial&isOffline=$isOffline',
                   extra: lesson,
                 );

@@ -40,7 +40,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     super.initState();
     // If there is already an active in-progress attempt for this exam,
     // skip the prescreen entirely and go straight to the player.
-    Future.microtask(() {
+    Future.microtask(() async {
       if (!mounted) return;
 
       final current = ref.read(examAttemptProvider);
@@ -50,10 +50,26 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
           current.status == ExamAttemptStatus.submitting;
 
       if (isActiveAttempt && examId == widget.testId) {
-        widget.onStartAttempt(current.isQuizMode);
+        await _startAttemptAndRefresh(current.isQuizMode);
         return;
       }
     });
+  }
+
+  Future<void> _startAttemptAndRefresh(
+    bool isQuizMode, {
+    bool isPartial = false,
+    bool isOffline = false,
+  }) async {
+    await widget.onStartAttempt(
+      isQuizMode,
+      isPartial: isPartial,
+      isOffline: isOffline,
+    );
+    if (!mounted) return;
+    final attemptsUrl = ApiEndpoints.lessonAttempts(widget.testId);
+    ref.invalidate(examAttemptsProvider(attemptsUrl));
+    ref.invalidate(lessonDetailProvider(widget.testId));
   }
 
   void _handleOnlineStart({
@@ -67,14 +83,14 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       });
     } else {
       ref.read(examAttemptProvider.notifier).reset();
-      await widget.onStartAttempt(false, isPartial: isPartial);
+      await _startAttemptAndRefresh(false, isPartial: isPartial);
     }
   }
 
   void _handleSelectMode(bool isQuizMode) async {
     setState(() => _isModeSheetOpen = false);
     ref.read(examAttemptProvider.notifier).reset();
-    await widget.onStartAttempt(
+    await _startAttemptAndRefresh(
       isQuizMode,
       isPartial: _selectedRetakeIsPartial,
     );
@@ -83,7 +99,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
   Future<void> _handleStartOffline() async {
     ref.read(examAttemptProvider.notifier).reset();
     // Force regular mode as per spec
-    await widget.onStartAttempt(false, isPartial: false, isOffline: true);
+    await _startAttemptAndRefresh(false, isPartial: false, isOffline: true);
   }
 
   @override
