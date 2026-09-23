@@ -71,50 +71,9 @@ class _OfflineExamActionButtonState
         }
 
         if (download != null) {
-          if (download.status == 'SYNCED') {
+          if (download.status == 'SYNCED' ||
+              download.status == 'PENDING_SYNC') {
             return const SizedBox.shrink();
-          }
-
-          if (download.status == 'PENDING_SYNC') {
-            bool isPastDeadline = false;
-
-            final endDateStr = widget.examData.endDate;
-            final gracePeriod = widget.examData.gracePeriod;
-            final gracePeriodMinutes = int.tryParse(gracePeriod ?? '0') ?? 0;
-
-            if (endDateStr != null && endDateStr.isNotEmpty) {
-              final endDate = DateTime.tryParse(endDateStr);
-              if (endDate != null) {
-                final absoluteDeadline = endDate.add(
-                  Duration(minutes: gracePeriodMinutes),
-                );
-                if (DateTime.now().isAfter(absoluteDeadline)) {
-                  isPastDeadline = true;
-                }
-              }
-            }
-
-            if (isPastDeadline) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: _buildBanner(
-                  context,
-                  l10n.deadlinePassedCannotSync,
-                  design.colors.error,
-                  design.colors.onError,
-                ),
-              );
-            } else {
-              return Padding(
-                padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: _buildBanner(
-                  context,
-                  l10n.pendingSyncConnectToUpload,
-                  design.colors.warning,
-                  design.colors.onWarning,
-                ),
-              );
-            }
           }
 
           final isResuming = download.status == 'IN_PROGRESS';
@@ -147,31 +106,6 @@ class _OfflineExamActionButtonState
       },
       loading: () => const SizedBox.shrink(),
       error: (e, st) => const SizedBox.shrink(),
-    );
-  }
-
-  Widget _buildBanner(
-    BuildContext context,
-    String message,
-    Color bgColor,
-    Color textColor,
-  ) {
-    final design = Design.of(context);
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(design.spacing.md),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(design.radius.lg),
-      ),
-      child: AppText.body(
-        message,
-        textAlign: TextAlign.center,
-        style: design.typography.body.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 }

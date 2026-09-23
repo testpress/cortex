@@ -4865,12 +4865,6 @@ abstract class AppLocalizations {
   /// **'Exam data not found. Your answers may not be submitted.'**
   String get errorOfflineDataNotFound;
 
-  /// Error message when attempting to start an offline exam that has already been synced
-  ///
-  /// In en, this message translates to:
-  /// **'This offline exam has already been submitted and synced.'**
-  String get errorOfflineExamAlreadySynced;
-
   /// No description provided for @reviewScore.
   ///
   /// In en, this message translates to:

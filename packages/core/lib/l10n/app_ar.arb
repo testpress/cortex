@@ -933,7 +933,7 @@
   "noAnswerGiven": "(لم يتم تقديم إجابة)",
   "correctAnswerLabel": "الإجابة الصحيحة:",
   "errorOfflineDataNotFound": "لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك.",
-  "errorOfflineExamAlreadySynced": "تم إرسال هذا الاختبار غير المتصل بالإنترنت ومزامنته بالفعل.",
+
   "reviewScore": "النتيجة",
   "reviewPerformanceExcellent": "أداء ممتاز",
   "reviewPerformanceAverage": "أداء متوسط",

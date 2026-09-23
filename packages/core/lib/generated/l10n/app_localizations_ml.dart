@@ -2701,10 +2701,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'പരീക്ഷാ ഡാറ്റ കണ്ടെത്തിയില്ല. നിങ്ങളുടെ ഉത്തരങ്ങൾ സമർപ്പിച്ചേക്കില്ല.';
 
   @override
-  String get errorOfflineExamAlreadySynced =>
-      'ഈ ഓഫ്‌ലൈൻ പരീക്ഷ ഇതിനകം സമർപ്പിക്കുകയും സമന്വയിപ്പിക്കുകയും ചെയ്‌തു.';
-
-  @override
   String get reviewScore => 'സ്കോർ';
 
   @override

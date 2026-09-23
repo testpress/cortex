@@ -2655,10 +2655,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Exam data not found. Your answers may not be submitted.';
 
   @override
-  String get errorOfflineExamAlreadySynced =>
-      'This offline exam has already been submitted and synced.';
-
-  @override
   String get reviewScore => 'Score';
 
   @override
