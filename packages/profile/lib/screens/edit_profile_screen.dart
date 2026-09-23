@@ -327,8 +327,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           child: AppSemantics.button(
             label: l10n.editProfileChangePhoto,
             onTap: _openAvatarSheet,
-            child: GestureDetector(
+            child: AppFocusable(
               onTap: _openAvatarSheet,
+              borderRadius: BorderRadius.circular(design.radius.full),
               child: Stack(
                 children: [
                   Container(
