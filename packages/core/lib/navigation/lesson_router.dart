@@ -25,7 +25,8 @@ class LessonRouter {
       'embedcontent' ||
       'livestream' ||
       'videoconference' ||
-      'attachment' => AppRouteNames.lessonDetail,
+      'attachment' ||
+      'assignment' => AppRouteNames.lessonDetail,
       'test' => AppRouteNames.testDetail,
       'assessment' => AppRouteNames.assessmentDetail,
       _ => null,

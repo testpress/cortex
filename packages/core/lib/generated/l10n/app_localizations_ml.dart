@@ -930,6 +930,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get chapterTypeAttachment => 'അറ്റാച്ച്‌മെന്റ്';
 
   @override
+  String get chapterTypeAssignment => 'അസൈൻമെന്റ്';
+
+  @override
   String get chapterTypeUnknown => 'അജ്ഞാതം';
 
   @override

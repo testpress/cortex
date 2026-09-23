@@ -934,6 +934,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get chapterTypeAttachment => 'இணைப்பு';
 
   @override
+  String get chapterTypeAssignment => 'ஒப்படைப்பு';
+
+  @override
   String get chapterTypeUnknown => 'தெரியவில்லை';
 
   @override

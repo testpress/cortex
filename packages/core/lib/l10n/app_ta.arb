@@ -426,6 +426,7 @@
   "chapterTypeEmbed": "உட்பொதி உள்ளடக்கம்",
   "chapterTypeNotes": "குறிப்புகள்",
   "chapterTypeAttachment": "இணைப்பு",
+  "chapterTypeAssignment": "ஒப்படைப்பு",
   "chapterTypeUnknown": "தெரியவில்லை",
   "chapterNoContent": "உள்ளடக்கம் இல்லை",
   "chapterNotFound": "அத்தியாயம் காணவில்லை",

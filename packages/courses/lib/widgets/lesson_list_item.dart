@@ -35,7 +35,7 @@ class LessonListItem extends StatelessWidget {
       LessonType.notes ||
       LessonType.attachment =>
         design.study.pdf,
-      LessonType.assessment => design.study.assessment,
+      LessonType.assessment || LessonType.assignment => design.study.assessment,
       LessonType.test => design.study.test,
       LessonType.unknown => design.study.video,
     };
@@ -49,6 +49,7 @@ class LessonListItem extends StatelessWidget {
       LessonType.attachment => LucideIcons.paperclip,
       LessonType.pdf => LucideIcons.fileText,
       LessonType.assessment => LucideIcons.clipboardCheck,
+      LessonType.assignment => LucideIcons.fileCheck,
       LessonType.test => LucideIcons.award,
       LessonType.unknown => LucideIcons.helpCircle,
     };

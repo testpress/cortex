@@ -107,7 +107,8 @@ class StudyContentList extends ConsumerWidget {
                             LessonType.embedContent ||
                             LessonType.liveStream ||
                             LessonType.videoConference ||
-                            LessonType.attachment =>
+                            LessonType.attachment ||
+                            LessonType.assignment =>
                               '/study/lesson/${lesson.id}',
                             LessonType.assessment =>
                               '/study/assessment/${lesson.id}',

@@ -9,6 +9,7 @@ extension LessonTypeIconX on LessonType {
       LessonType.pdf || LessonType.attachment => LucideIcons.paperclip,
       LessonType.notes || LessonType.embedContent => LucideIcons.penSquare,
       LessonType.liveStream => LucideIcons.video,
+      LessonType.assignment => LucideIcons.fileCheck,
       _ => LucideIcons.bookOpen,
     };
   }

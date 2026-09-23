@@ -921,6 +921,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chapterTypeAttachment => 'Attachment';
 
   @override
+  String get chapterTypeAssignment => 'Assignment';
+
+  @override
   String get chapterTypeUnknown => 'Unknown';
 
   @override

@@ -1751,6 +1751,12 @@ abstract class AppLocalizations {
   /// **'Attachment'**
   String get chapterTypeAttachment;
 
+  /// No description provided for @chapterTypeAssignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Assignment'**
+  String get chapterTypeAssignment;
+
   /// No description provided for @chapterTypeUnknown.
   ///
   /// In en, this message translates to:

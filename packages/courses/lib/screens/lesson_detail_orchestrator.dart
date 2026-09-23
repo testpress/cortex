@@ -13,6 +13,7 @@ import '../widgets/lesson_detail/video_conference_viewer.dart';
 import '../widgets/lesson_detail/ask_doubt_fab.dart';
 import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
 import '../widgets/lesson_detail/video_mcq_filter_sheet.dart';
+import '../widgets/lesson_detail/assignment_viewer.dart';
 import '../providers/downloads_provider.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
@@ -197,6 +198,7 @@ class _LessonDetailOrchestratorState
         LessonDetailShell(
           title: lesson.title,
           subtitle: lesson.subtitle,
+          showTitle: lesson.type != LessonType.assignment,
           isBookmarked: isBookmarked,
           isCompleted: isCompleted,
           isDownloaded: canDownload && isDownloaded,
@@ -222,13 +224,15 @@ class _LessonDetailOrchestratorState
                   !isDownloading)
               ? () => _handleDownload(lesson)
               : null,
-          onNext: widget.onNext,
-          onPrevious: widget.onPrevious,
-          stickyFooter: lesson.hasEnded ||
-              isLocked ||
-              widget.error != null ||
-              (lesson.type != LessonType.video &&
-                  lesson.type != LessonType.liveStream),
+          onNext: lesson.type == LessonType.assignment ? null : widget.onNext,
+          onPrevious:
+              lesson.type == LessonType.assignment ? null : widget.onPrevious,
+          stickyFooter: lesson.type != LessonType.assignment &&
+              (lesson.hasEnded ||
+                  isLocked ||
+                  widget.error != null ||
+                  (lesson.type != LessonType.video &&
+                      lesson.type != LessonType.liveStream)),
           child: _buildLessonContent(context),
         ),
         if (!lesson.hasEnded &&
@@ -430,6 +434,11 @@ class _LessonDetailOrchestratorState
             L10n.of(context).lessonSpecializedViewerRequired(lesson.type.name),
             color: design.colors.textSecondary,
           ),
+        );
+      case LessonType.assignment:
+        return AssignmentLessonViewer(
+          lesson: lesson,
+          onComplete: _markAsCompleted,
         );
       case LessonType.unknown:
         break;

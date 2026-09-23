@@ -51,6 +51,53 @@ void main() {
       expect(receivedExtra, {'title': 'Sample Video'});
     });
 
+    testWidgets(
+      'navigates to lessonDetail for assignment string type with extra',
+      (tester) async {
+        String? pushedLocation;
+        Object? receivedExtra;
+
+        final router = GoRouter(
+          initialLocation: '/',
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const SizedBox.shrink(),
+            ),
+            GoRoute(
+              name: AppRouteNames.lessonDetail,
+              path: '/lesson/:id',
+              builder: (context, state) {
+                pushedLocation = state.matchedLocation;
+                receivedExtra = state.extra;
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          WidgetsApp.router(
+            routerConfig: router,
+            color: const Color(0xFF000000),
+          ),
+        );
+
+        final BuildContext context = tester.element(find.byType(SizedBox));
+        LessonRouter.navigateToLesson(
+          context,
+          id: '456',
+          type: 'assignment',
+          extra: {'title': 'Assignment 1'},
+        );
+
+        await tester.pumpAndSettle();
+
+        expect(pushedLocation, '/lesson/456');
+        expect(receivedExtra, {'title': 'Assignment 1'});
+      },
+    );
+
     testWidgets('navigates to testDetail for enum test type with extra', (
       tester,
     ) async {

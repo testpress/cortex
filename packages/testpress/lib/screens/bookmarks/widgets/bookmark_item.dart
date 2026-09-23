@@ -47,6 +47,8 @@ class BookmarkItem extends StatelessWidget {
       case 'quiz':
       case 'assessment':
         return LessonType.test;
+      case 'assignment':
+        return LessonType.assignment;
       case 'post':
       case 'forumpost':
       case 'notice':
@@ -98,7 +100,8 @@ class BookmarkItem extends StatelessWidget {
           LessonType.pdf ||
           LessonType.notes ||
           LessonType.attachment => design.study.pdf,
-          LessonType.assessment => design.study.assessment,
+          LessonType.assessment ||
+          LessonType.assignment => design.study.assessment,
           LessonType.test => design.study.test,
           LessonType.unknown => design.study.video,
         };

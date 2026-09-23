@@ -918,6 +918,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chapterTypeAttachment => 'مرفق';
 
   @override
+  String get chapterTypeAssignment => 'واجب';
+
+  @override
   String get chapterTypeUnknown => 'غير معروف';
 
   @override

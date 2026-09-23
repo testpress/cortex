@@ -328,7 +328,8 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
                                             LessonType.embedContent ||
                                             LessonType.liveStream ||
                                             LessonType.videoConference ||
-                                            LessonType.attachment =>
+                                            LessonType.attachment ||
+                                            LessonType.assignment =>
                                               '${widget.basePath}/lesson/${lesson.id}',
                                             LessonType.assessment =>
                                               '${widget.basePath}/assessment/${lesson.id}',
