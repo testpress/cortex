@@ -130,7 +130,7 @@ class CourseList extends _$CourseList {
       await _pendingSyncRequest;
     }
 
-    final currentSync = _performSync(isReset: true);
+    final currentSync = _performSync(isReset: true, rethrowError: true);
     _pendingSyncRequest = currentSync;
     _isPendingSyncReset = true;
     try {
@@ -143,10 +143,10 @@ class CourseList extends _$CourseList {
     }
   }
 
-  Future<void> _performSync({required bool isReset}) async {
-    // Reset any previous errors
-    ref.read(courseListSyncError.notifier).state = null;
-
+  Future<void> _performSync({
+    required bool isReset,
+    bool rethrowError = false,
+  }) async {
     if (isReset) {
       _paginationTracker = const PaginationState();
       ref.read(isSyncingInitialPage.notifier).state = true;
@@ -164,6 +164,9 @@ class CourseList extends _$CourseList {
         tags: null,
       );
 
+      // Successfully synced: clear any previous errors
+      ref.read(courseListSyncError.notifier).state = null;
+
       // Explicit logic to mark completeness if no results
       if (response.results.isEmpty) {
         _paginationTracker = _paginationTracker.copyWith(hasMore: false);
@@ -180,6 +183,7 @@ class CourseList extends _$CourseList {
       if (e is ApiException && e.type == ApiErrorType.unauthorized) return;
       // Capture the error but don't rethrow (so stream from DB is still visible)
       ref.read(courseListSyncError.notifier).state = e;
+      if (rethrowError) rethrow;
     } finally {
       if (isReset) {
         ref.read(isSyncingInitialPage.notifier).state = false;
