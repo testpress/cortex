@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
 import 'package:courses/widgets/lesson_detail/pdf_password_dialog.dart';
@@ -7,11 +7,21 @@ void main() {
   Widget createTestWidget(Widget child) {
     return DesignProvider(
       config: DesignConfig.defaults(),
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('en'),
-        home: Scaffold(body: child),
+      child: LocalizationProvider(
+        child: Builder(
+          builder: (context) {
+            return WidgetsApp(
+              color: const Color(0xFF000000),
+              locale: const Locale('en'),
+              localizationsDelegates: LocalizationProvider.delegates,
+              pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
+                settings: settings,
+                pageBuilder: (ctx, anim1, anim2) => builder(ctx),
+              ),
+              home: child,
+            );
+          },
+        ),
       ),
     );
   }
@@ -96,11 +106,11 @@ void main() {
           Builder(
             builder: (context) {
               return Center(
-                child: ElevatedButton(
+                child: AppButton.primary(
+                  label: 'Launch Dialog',
                   onPressed: () async {
                     result = await showPdfPasswordDialog(context);
                   },
-                  child: const Text('Launch Dialog'),
                 ),
               );
             },
@@ -116,7 +126,7 @@ void main() {
       expect(find.text('Password Protected'), findsOneWidget);
 
       // Enter password
-      await tester.enterText(find.byType(TextField), 'secret123');
+      await tester.enterText(find.byType(EditableText), 'secret123');
       await tester.pumpAndSettle();
 
       // Tap Open
@@ -136,11 +146,11 @@ void main() {
           Builder(
             builder: (context) {
               return Center(
-                child: ElevatedButton(
+                child: AppButton.primary(
+                  label: 'Launch Dialog',
                   onPressed: () async {
                     result = await showPdfPasswordDialog(context);
                   },
-                  child: const Text('Launch Dialog'),
                 ),
               );
             },

@@ -278,8 +278,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     final isConnected = await hasInternetConnection();
     if (!_isValidRequest(id)) return;
 
-    final isPassword = error is PdfPasswordException ||
-        error.toString().toLowerCase().contains('password');
+    final isPassword = error is PdfPasswordException;
 
     setState(() {
       _isOffline = !isConnected ||
