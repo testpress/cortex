@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -77,6 +78,20 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
     if (permissions != null && permissions.isNotEmpty) {
       await permissions.request();
     }
+
+    try {
+      final defaultUa = await _controller.getUserAgent() ?? '';
+      final appIdentifier = Platform.isAndroid
+          ? 'TestpressAndroidApp/WebView flutter-app'
+          : 'TestpressIOSApp/WebView flutter-app';
+      if (!defaultUa.contains('TestpressAndroidApp') &&
+          !defaultUa.contains('TestpressIOSApp')) {
+        final newUa = defaultUa.isEmpty
+            ? appIdentifier
+            : '$defaultUa $appIdentifier';
+        await _controller.setUserAgent(newUa);
+      }
+    } catch (_) {}
     if (mounted) {
       _loadUrl(widget.url);
     }
@@ -115,13 +130,17 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
     _controller =
         WebViewController.fromPlatformCreationParams(
             params,
-            onPermissionRequest: (request) {
-              if (widget.mediaMode) {
-                request.grant();
-              } else {
-                request.deny();
-              }
-            },
+            onPermissionRequest:
+                (WebViewPlatform.instance is WebKitWebViewPlatform ||
+                    WebViewPlatform.instance is AndroidWebViewPlatform)
+                ? (request) {
+                    if (widget.mediaMode) {
+                      request.grant();
+                    } else {
+                      request.deny();
+                    }
+                  }
+                : null,
           )
           ..setJavaScriptMode(JavaScriptMode.unrestricted)
           ..setNavigationDelegate(
@@ -168,12 +187,16 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
 
     if (!mounted || url != widget.url) return <String, String>{};
 
-    return AppWebView.buildHeaders(
+    final headers = AppWebView.buildHeaders(
       requestUri: uri,
       requestUrl: url,
       initialUrl: widget.url,
       token: token,
     );
+    if (headers.containsKey('Authorization')) {
+      headers['X-Device-Type'] = 'mobile_app';
+    }
+    return headers;
   }
 
   Future<void> _loadUrl(String url) async {

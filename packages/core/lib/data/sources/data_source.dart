@@ -272,6 +272,9 @@ abstract class DataSource {
   /// Fetch the authenticated user's login activity.
   Future<PaginatedLoginActivityDto> getLoginActivity({int page = 1});
 
+  /// Generates a presigned SSO URL path for authenticated web content loading.
+  Future<String> getPresignedSsoUrl();
+
   /// Register the FCM device token on the server.
   Future<void> registerDeviceToken({
     required String token,

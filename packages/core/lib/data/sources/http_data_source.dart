@@ -683,6 +683,19 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<String> getPresignedSsoUrl() async {
+    return performNetworkRequest(
+      _dio.post(ApiEndpoints.presignedSsoUrl),
+      fromJson: (data) {
+        if (data is Map<String, dynamic> && data['sso_url'] != null) {
+          return data['sso_url'] as String;
+        }
+        throw const FormatException('Invalid SSO URL response');
+      },
+    );
+  }
+
+  @override
   Future<void> registerDeviceToken({
     required String token,
     required String hardwareId,
