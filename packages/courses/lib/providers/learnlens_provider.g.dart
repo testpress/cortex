@@ -7,7 +7,7 @@ part of 'learnlens_provider.dart';
 // **************************************************************************
 
 String _$learnLensNetworkClientHash() =>
-    r'4b64098957ad78508b934b69fe9c2c143ea6736c';
+    r'10a711c0369398086010c163d578811ef52e1a8b';
 
 /// Provider for the singleton [LearnLensNetworkClient] instance.
 ///
@@ -49,7 +49,7 @@ final learnLensRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LearnLensRepositoryRef = AutoDisposeProviderRef<LearnLensRepository>;
-String _$learnlensSessionHash() => r'87b48bec25c73cecfaee219958172cbcf2bc9646';
+String _$learnlensSessionHash() => r'512c40bf567d19f79f3a9c201109717e39513b97';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -73,7 +73,7 @@ class _SystemHash {
 }
 
 abstract class _$LearnlensSession
-    extends BuildlessAutoDisposeAsyncNotifier<Map<String, dynamic>?> {
+    extends BuildlessAsyncNotifier<Map<String, dynamic>?> {
   late final int contentId;
 
   FutureOr<Map<String, dynamic>?> build(
@@ -124,8 +124,8 @@ class LearnlensSessionFamily extends Family<AsyncValue<Map<String, dynamic>?>> {
 }
 
 /// See also [LearnlensSession].
-class LearnlensSessionProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    LearnlensSession, Map<String, dynamic>?> {
+class LearnlensSessionProvider
+    extends AsyncNotifierProviderImpl<LearnlensSession, Map<String, dynamic>?> {
   /// See also [LearnlensSession].
   LearnlensSessionProvider(
     int contentId,
@@ -181,8 +181,8 @@ class LearnlensSessionProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<LearnlensSession,
-      Map<String, dynamic>?> createElement() {
+  AsyncNotifierProviderElement<LearnlensSession, Map<String, dynamic>?>
+      createElement() {
     return _LearnlensSessionProviderElement(this);
   }
 
@@ -202,15 +202,13 @@ class LearnlensSessionProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin LearnlensSessionRef
-    on AutoDisposeAsyncNotifierProviderRef<Map<String, dynamic>?> {
+mixin LearnlensSessionRef on AsyncNotifierProviderRef<Map<String, dynamic>?> {
   /// The parameter `contentId` of this provider.
   int get contentId;
 }
 
-class _LearnlensSessionProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<LearnlensSession,
-        Map<String, dynamic>?> with LearnlensSessionRef {
+class _LearnlensSessionProviderElement extends AsyncNotifierProviderElement<
+    LearnlensSession, Map<String, dynamic>?> with LearnlensSessionRef {
   _LearnlensSessionProviderElement(super.provider);
 
   @override
