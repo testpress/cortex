@@ -41,6 +41,16 @@ Future<OfflineExamRepository> offlineExamRepositoryFactory(
   );
 }
 
+/// Streams the SQLite download record for a specific exam.
+@riverpod
+Stream<OfflineExamDownloadsTableData?> offlineExamDownload(
+  Ref ref,
+  String contentId,
+) async* {
+  final db = await ref.watch(appDatabaseProvider.future);
+  yield* db.watchDownloadByContentId(contentId);
+}
+
 /// Fetches attempt history for an exam.
 @Riverpod(dependencies: [examRepository])
 Future<List<AttemptDto>> examAttempts(Ref ref, String attemptsUrl) async {

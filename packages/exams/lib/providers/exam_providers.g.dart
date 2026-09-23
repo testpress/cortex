@@ -180,6 +180,146 @@ class _OfflineExamRepositoryFactoryProviderElement
       (origin as OfflineExamRepositoryFactoryProvider).contentId;
 }
 
+String _$offlineExamDownloadHash() =>
+    r'593e196a4cefdd1077ddf1c38131aa0f4fe63461';
+
+/// Streams the SQLite download record for a specific exam.
+///
+/// Copied from [offlineExamDownload].
+@ProviderFor(offlineExamDownload)
+const offlineExamDownloadProvider = OfflineExamDownloadFamily();
+
+/// Streams the SQLite download record for a specific exam.
+///
+/// Copied from [offlineExamDownload].
+class OfflineExamDownloadFamily
+    extends Family<AsyncValue<OfflineExamDownloadsTableData?>> {
+  /// Streams the SQLite download record for a specific exam.
+  ///
+  /// Copied from [offlineExamDownload].
+  const OfflineExamDownloadFamily();
+
+  /// Streams the SQLite download record for a specific exam.
+  ///
+  /// Copied from [offlineExamDownload].
+  OfflineExamDownloadProvider call(String contentId) {
+    return OfflineExamDownloadProvider(contentId);
+  }
+
+  @override
+  OfflineExamDownloadProvider getProviderOverride(
+    covariant OfflineExamDownloadProvider provider,
+  ) {
+    return call(provider.contentId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'offlineExamDownloadProvider';
+}
+
+/// Streams the SQLite download record for a specific exam.
+///
+/// Copied from [offlineExamDownload].
+class OfflineExamDownloadProvider
+    extends AutoDisposeStreamProvider<OfflineExamDownloadsTableData?> {
+  /// Streams the SQLite download record for a specific exam.
+  ///
+  /// Copied from [offlineExamDownload].
+  OfflineExamDownloadProvider(String contentId)
+    : this._internal(
+        (ref) => offlineExamDownload(ref as OfflineExamDownloadRef, contentId),
+        from: offlineExamDownloadProvider,
+        name: r'offlineExamDownloadProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$offlineExamDownloadHash,
+        dependencies: OfflineExamDownloadFamily._dependencies,
+        allTransitiveDependencies:
+            OfflineExamDownloadFamily._allTransitiveDependencies,
+        contentId: contentId,
+      );
+
+  OfflineExamDownloadProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.contentId,
+  }) : super.internal();
+
+  final String contentId;
+
+  @override
+  Override overrideWith(
+    Stream<OfflineExamDownloadsTableData?> Function(
+      OfflineExamDownloadRef provider,
+    )
+    create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: OfflineExamDownloadProvider._internal(
+        (ref) => create(ref as OfflineExamDownloadRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        contentId: contentId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<OfflineExamDownloadsTableData?>
+  createElement() {
+    return _OfflineExamDownloadProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OfflineExamDownloadProvider && other.contentId == contentId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, contentId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin OfflineExamDownloadRef
+    on AutoDisposeStreamProviderRef<OfflineExamDownloadsTableData?> {
+  /// The parameter `contentId` of this provider.
+  String get contentId;
+}
+
+class _OfflineExamDownloadProviderElement
+    extends AutoDisposeStreamProviderElement<OfflineExamDownloadsTableData?>
+    with OfflineExamDownloadRef {
+  _OfflineExamDownloadProviderElement(super.provider);
+
+  @override
+  String get contentId => (origin as OfflineExamDownloadProvider).contentId;
+}
+
 String _$examAttemptsHash() => r'698ad78d688258faa461f487e8eaa0e49d30bd63';
 
 /// Fetches attempt history for an exam.

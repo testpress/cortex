@@ -54,101 +54,95 @@ class _OfflineExamActionButtonState
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final repoAsync = ref.watch(
-      offlineExamRepositoryFactoryProvider(widget.examId),
-    );
+    final downloadAsync = ref.watch(offlineExamDownloadProvider(widget.examId));
 
-    return repoAsync.when(
-      data: (repo) {
-        return StreamBuilder<OfflineExamDownloadsTableData?>(
-          stream: repo.watchDownloadStatus(),
-          builder: (context, attemptSnapshot) {
-            final download = attemptSnapshot.data;
+    return downloadAsync.when(
+      data: (download) {
+        if (_isDownloading) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: design.spacing.md),
+            child: AppButton.secondary(
+              label: l10n.downloadingExam,
+              fullWidth: true,
+              loading: true,
+              onPressed: null,
+            ),
+          );
+        }
 
-            if (_isDownloading) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: AppButton.secondary(
-                  label: l10n.downloadingExam,
-                  fullWidth: true,
-                  loading: true,
-                  onPressed: null,
-                ),
-              );
-            }
+        if (download != null) {
+          if (download.status == 'SYNCED') {
+            return const SizedBox.shrink();
+          }
 
-            if (download != null) {
-              if (download.status == 'PENDING_SYNC') {
-                bool isPastDeadline = false;
+          if (download.status == 'PENDING_SYNC') {
+            bool isPastDeadline = false;
 
-                final endDateStr = widget.examData.endDate;
-                final gracePeriod = widget.examData.gracePeriod;
-                final gracePeriodMinutes =
-                    int.tryParse(gracePeriod ?? '0') ?? 0;
+            final endDateStr = widget.examData.endDate;
+            final gracePeriod = widget.examData.gracePeriod;
+            final gracePeriodMinutes = int.tryParse(gracePeriod ?? '0') ?? 0;
 
-                if (endDateStr != null && endDateStr.isNotEmpty) {
-                  final endDate = DateTime.tryParse(endDateStr);
-                  if (endDate != null) {
-                    final absoluteDeadline = endDate.add(
-                      Duration(minutes: gracePeriodMinutes),
-                    );
-                    if (DateTime.now().isAfter(absoluteDeadline)) {
-                      isPastDeadline = true;
-                    }
-                  }
-                }
-
-                if (isPastDeadline) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: design.spacing.md),
-                    child: _buildBanner(
-                      context,
-                      l10n.deadlinePassedCannotSync,
-                      design.colors.error,
-                      design.colors.onError,
-                    ),
-                  );
-                } else {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: design.spacing.md),
-                    child: _buildBanner(
-                      context,
-                      l10n.pendingSyncConnectToUpload,
-                      design.colors.warning,
-                      design.colors.onWarning,
-                    ),
-                  );
+            if (endDateStr != null && endDateStr.isNotEmpty) {
+              final endDate = DateTime.tryParse(endDateStr);
+              if (endDate != null) {
+                final absoluteDeadline = endDate.add(
+                  Duration(minutes: gracePeriodMinutes),
+                );
+                if (DateTime.now().isAfter(absoluteDeadline)) {
+                  isPastDeadline = true;
                 }
               }
+            }
 
-              final isResuming = download.status == 'IN_PROGRESS';
-              final label = isResuming
-                  ? l10n.resumeOfflineExam
-                  : l10n.startOfflineExam;
-
+            if (isPastDeadline) {
               return Padding(
                 padding: EdgeInsets.only(bottom: design.spacing.md),
-                child: AppButton.primary(
-                  label: label,
-                  onPressed: widget.onStartOfflineAttempt,
-                  fullWidth: true,
-                  backgroundColor:
-                      design.colors.accent4, // Green/Teal accent for offline
+                child: _buildBanner(
+                  context,
+                  l10n.deadlinePassedCannotSync,
+                  design.colors.error,
+                  design.colors.onError,
+                ),
+              );
+            } else {
+              return Padding(
+                padding: EdgeInsets.only(bottom: design.spacing.md),
+                child: _buildBanner(
+                  context,
+                  l10n.pendingSyncConnectToUpload,
+                  design.colors.warning,
+                  design.colors.onWarning,
                 ),
               );
             }
+          }
 
-            // Not downloaded yet, or was fully synced and cleared
-            final downloadLabel = l10n.downloadExamOffline;
-            return Padding(
-              padding: EdgeInsets.only(bottom: design.spacing.md),
-              child: AppButton.secondary(
-                label: downloadLabel,
-                onPressed: _downloadExam,
-                fullWidth: true,
-              ),
-            );
-          },
+          final isResuming = download.status == 'IN_PROGRESS';
+          final label = isResuming
+              ? l10n.resumeOfflineExam
+              : l10n.startOfflineExam;
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: design.spacing.md),
+            child: AppButton.primary(
+              label: label,
+              onPressed: widget.onStartOfflineAttempt,
+              fullWidth: true,
+              backgroundColor:
+                  design.colors.accent4, // Green/Teal accent for offline
+            ),
+          );
+        }
+
+        // Not downloaded yet, or was fully synced and cleared
+        final downloadLabel = l10n.downloadExamOffline;
+        return Padding(
+          padding: EdgeInsets.only(bottom: design.spacing.md),
+          child: AppButton.secondary(
+            label: downloadLabel,
+            onPressed: _downloadExam,
+            fullWidth: true,
+          ),
         );
       },
       loading: () => const SizedBox.shrink(),
