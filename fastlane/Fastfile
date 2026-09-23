@@ -63,6 +63,7 @@ platform :ios do
     key_id     = options[:key_id]     || meta["apple_key_id"]
     issuer_id  = options[:issuer_id]  || meta["apple_issuer_id"]
     key_filepath = resolve_path(options[:key_filepath] || meta["apple_key_path"])
+    team_id    = options[:team_id]    || meta["apple_team_id"]
 
     app_version  = options[:app_version]  || ENV["APP_VERSION"]
     build_number = options[:build_number] || ENV["BUILD_NUMBER"]
@@ -113,7 +114,9 @@ platform :ios do
       archive_path:       archive_path,
       export_method:      "app-store",
       export_options: {
-        signingStyle: "manual",
+        method:               "app-store",
+        signingStyle:         "manual",
+        teamID:               team_id,
         provisioningProfiles: {
           bundle_id => profile_udid
         }
