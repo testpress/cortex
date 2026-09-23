@@ -304,6 +304,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
+  void _openAvatarSheet() {
+    FocusScope.of(context).unfocus();
+    setState(() => _isAvatarSheetOpen = true);
+  }
+
   Widget _buildAvatarSection(DesignConfig design, dynamic l10n) {
     final user = ref.watch(userProvider).value;
     if (user == null) return const SizedBox.shrink();
@@ -321,9 +326,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         Center(
           child: AppSemantics.button(
             label: l10n.editProfileChangePhoto,
-            onTap: () => setState(() => _isAvatarSheetOpen = true),
+            onTap: _openAvatarSheet,
             child: GestureDetector(
-              onTap: () => setState(() => _isAvatarSheetOpen = true),
+              onTap: _openAvatarSheet,
               child: Stack(
                 children: [
                   Container(
