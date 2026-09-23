@@ -41,10 +41,15 @@ Future<T> performNetworkRequest<T>(
     }
     return fromJson(data) as T;
   } on DioException catch (error, stackTrace) {
-    onNetworkErrorCapture?.call(error, stackTrace);
-    throw ApiException.fromDioException(error);
+    final apiException = ApiException.fromDioException(error);
+    onNetworkErrorCapture?.call(apiException, stackTrace);
+    throw apiException;
   } catch (e, stackTrace) {
-    onNetworkErrorCapture?.call(e, stackTrace);
-    throw ApiException('An unexpected error occurred: $e');
+    final apiException = ApiException(
+      'An unexpected error occurred: $e',
+      error: e,
+    );
+    onNetworkErrorCapture?.call(apiException, stackTrace);
+    throw apiException;
   }
 }

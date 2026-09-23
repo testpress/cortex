@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter/widgets.dart';
@@ -52,10 +53,44 @@ class SentryService {
       });
 
       // Attach to the global network error handler
-      onNetworkErrorCapture = (error, stackTrace) {
-        captureException(error, stackTrace: stackTrace);
-      };
+      attachNetworkErrorHandler();
     }
+  }
+
+  /// Attaches the Sentry network error handler to the global [onNetworkErrorCapture] hook.
+  void attachNetworkErrorHandler() {
+    onNetworkErrorCapture = (error, stackTrace) {
+      if (error is ApiException) {
+        if (error.type == ApiErrorType.noInternet) {
+          return;
+        }
+
+        String? responseData;
+        if (error.data != null) {
+          try {
+            responseData = error.data is String
+                ? error.data as String
+                : jsonEncode(error.data);
+          } catch (_) {
+            responseData = error.data.toString();
+          }
+        }
+
+        final contexts = <String, dynamic>{
+          'api_details': {
+            'error_type': error.type.name,
+            'status_code': ?error.statusCode,
+            'response_data': ?responseData,
+            'underlying_error': ?error.error?.toString(),
+          },
+        };
+
+        captureException(error, stackTrace: stackTrace, contexts: contexts);
+        return;
+      }
+
+      captureException(error, stackTrace: stackTrace);
+    };
   }
 
   /// Returns a navigation observer to track routing breadcrumbs without exposing Sentry types directly
