@@ -144,9 +144,6 @@ class CourseList extends _$CourseList {
   }
 
   Future<void> _performSync({required bool isReset}) async {
-    // Reset any previous errors
-    ref.read(courseListSyncError.notifier).state = null;
-
     if (isReset) {
       _paginationTracker = const PaginationState();
       ref.read(isSyncingInitialPage.notifier).state = true;
@@ -164,6 +161,9 @@ class CourseList extends _$CourseList {
         tags: null,
       );
 
+      // Successfully synced: clear any previous errors
+      ref.read(courseListSyncError.notifier).state = null;
+
       // Explicit logic to mark completeness if no results
       if (response.results.isEmpty) {
         _paginationTracker = _paginationTracker.copyWith(hasMore: false);
@@ -177,7 +177,10 @@ class CourseList extends _$CourseList {
     } catch (e, st) {
       sentryService.captureException(e, stackTrace: st);
       // Suppress 401 errors — the SessionExpiredDialog handles UX globally
-      if (e is ApiException && e.type == ApiErrorType.unauthorized) return;
+      if (e is ApiException && e.type == ApiErrorType.unauthorized) {
+        ref.read(courseListSyncError.notifier).state = null;
+        return;
+      }
       // Capture the error but don't rethrow (so stream from DB is still visible)
       ref.read(courseListSyncError.notifier).state = e;
     } finally {

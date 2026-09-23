@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/data/data.dart';
@@ -21,6 +22,35 @@ class MockCourseRepository extends CourseRepository {
     searchCalls++;
     if (shouldThrow) {
       throw Exception('Search failed');
+    }
+    return PaginatedResponseDto(results: []);
+  }
+
+  int refreshCalls = 0;
+  bool refreshShouldThrow = false;
+  bool unauthorizedError = false;
+  Completer<PaginatedResponseDto<CourseDto>>? refreshCompleter;
+
+  @override
+  Future<PaginatedResponseDto<CourseDto>> refreshCourses({
+    int page = 1,
+    dynamic tags,
+  }) async {
+    refreshCalls++;
+    if (refreshCompleter != null) {
+      return refreshCompleter!.future;
+    }
+    if (unauthorizedError) {
+      throw const ApiException(
+        'Session expired',
+        type: ApiErrorType.unauthorized,
+      );
+    }
+    if (refreshShouldThrow) {
+      throw const ApiException(
+        'We couldn\'t connect. Please check your internet and try again.',
+        type: ApiErrorType.noInternet,
+      );
     }
     return PaginatedResponseDto(results: []);
   }
@@ -141,6 +171,79 @@ void main() {
 
       expect(container.read(courseSearchProvider).error, isNull);
       expect(mockRepo.searchCalls, 2);
+    });
+  });
+
+  group('CourseList error handling', () {
+    test(
+        'courseListSyncError persists in-flight during refresh and clears on success',
+        () async {
+      final mockRepo = MockCourseRepository();
+      final container = ProviderContainer(
+        overrides: [
+          courseRepositoryProvider.overrideWith((ref) => mockRepo),
+          authProvider.overrideWith(() => FakeAuth()),
+        ],
+      );
+
+      final notifier = container.read(courseListProvider.notifier);
+
+      // 1. Initial sync fails: establishes active sync error banner
+      mockRepo.refreshShouldThrow = true;
+      await notifier.refresh();
+      expect(container.read(courseListSyncError), isA<ApiException>());
+
+      // 2. Next refresh starts: gate it behind a Completer to test in-flight state
+      final completer = Completer<PaginatedResponseDto<CourseDto>>();
+      mockRepo.refreshCompleter = completer;
+      mockRepo.refreshShouldThrow = false;
+
+      final refreshFuture = notifier.refresh();
+
+      // Assert error stays non-null WHILE refresh is in-flight (no flicker)
+      expect(container.read(courseListSyncError), isA<ApiException>(),
+          reason:
+              'Error state must remain non-null while refresh is in-flight');
+
+      // 3. Complete the in-flight request with an error
+      completer.completeError(const ApiException(
+        'We couldn\'t connect. Please check your internet and try again.',
+        type: ApiErrorType.noInternet,
+      ));
+
+      await refreshFuture;
+      expect(container.read(courseListSyncError), isA<ApiException>());
+
+      // 4. Successful refresh clears the error
+      mockRepo.refreshCompleter = null;
+      mockRepo.refreshShouldThrow = false;
+      await notifier.refresh();
+      expect(container.read(courseListSyncError), isNull);
+    });
+
+    test('clears courseListSyncError when sync fails with 401 unauthorized',
+        () async {
+      final mockRepo = MockCourseRepository();
+      final container = ProviderContainer(
+        overrides: [
+          courseRepositoryProvider.overrideWith((ref) => mockRepo),
+          authProvider.overrideWith(() => FakeAuth()),
+        ],
+      );
+
+      final notifier = container.read(courseListProvider.notifier);
+
+      // 1. Establish initial error state
+      mockRepo.refreshShouldThrow = true;
+      await notifier.refresh();
+      expect(container.read(courseListSyncError), isA<ApiException>());
+
+      // 2. Subsequent sync fails with 401: clears stale error
+      mockRepo.refreshShouldThrow = false;
+      mockRepo.unauthorizedError = true;
+      await notifier.refresh();
+      expect(container.read(courseListSyncError), isNull,
+          reason: '401 session expired must clear stale sync error banner');
     });
   });
 }
