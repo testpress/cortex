@@ -1505,5 +1505,10 @@
   "qotdSingleCorrect": "ஒரே சரியான விடை",
   "qotdMultipleCorrect": "பல சரியான விடைகள்",
   "qotdErrorSubmitAnswer": "பதிலைச் சமர்ப்பிப்பதில் தோல்வி. மீண்டும் முயற்சிக்கவும்.",
-  "free": "இலவசம்"
+  "free": "இலவசம்",
+  "pdfPasswordProtectedTitle": "கடவுச்சொல் பாதுகாக்கப்பட்டது",
+  "pdfPasswordProtectedMessage": "இந்த ஆவணம் கடவுச்சொல் மூலம் பாதுகாக்கப்பட்டுள்ளது. பார்க்க கடவுச்சொல்லை உள்ளிடவும்.",
+  "pdfPasswordRequiredMessage": "இந்த ஆவணத்தைப் பார்க்க கடவுச்சொல் தேவை.",
+  "pdfPasswordIncorrect": "தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.",
+  "pdfPasswordActionOpen": "திறக்கவும்"
 }

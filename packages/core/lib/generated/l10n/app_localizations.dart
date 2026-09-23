@@ -6118,6 +6118,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'FREE'**
   String get free;
+
+  /// No description provided for @pdfPasswordProtectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Protected'**
+  String get pdfPasswordProtectedTitle;
+
+  /// No description provided for @pdfPasswordProtectedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This document is password protected. Please enter the password to view.'**
+  String get pdfPasswordProtectedMessage;
+
+  /// No description provided for @pdfPasswordRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A password is required to view this document.'**
+  String get pdfPasswordRequiredMessage;
+
+  /// No description provided for @pdfPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password. Please try again.'**
+  String get pdfPasswordIncorrect;
+
+  /// No description provided for @pdfPasswordActionOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get pdfPasswordActionOpen;
 }
 
 class _AppLocalizationsDelegate

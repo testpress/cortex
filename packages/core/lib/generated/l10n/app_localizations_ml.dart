@@ -3437,4 +3437,21 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get free => 'സൗജന്യം';
+
+  @override
+  String get pdfPasswordProtectedTitle => 'പാസ്‌വേഡ് പരിരക്ഷിതം';
+
+  @override
+  String get pdfPasswordProtectedMessage =>
+      'ഈ പ്രമാണം പാസ്‌വേഡ് പരിരക്ഷിതമാണ്. കാണുന്നതിന് പാസ്‌വേഡ് നൽകുക.';
+
+  @override
+  String get pdfPasswordRequiredMessage =>
+      'ഈ പ്രമാണം കാണുന്നതിന് ഒരു പാസ്‌വേഡ് ആവശ്യമാണ്.';
+
+  @override
+  String get pdfPasswordIncorrect => 'തെറ്റായ പാസ്‌വേഡ്. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get pdfPasswordActionOpen => 'തുറക്കുക';
 }

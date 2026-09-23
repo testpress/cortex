@@ -1264,5 +1264,10 @@
   "qotdSingleCorrect": "ഒറ്റ ശരിയുത്തരം",
   "qotdMultipleCorrect": "ഒന്നിലധികം ശരിയുത്തരങ്ങൾ",
   "qotdErrorSubmitAnswer": "ഉത്തരം സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
-  "free": "സൗജന്യം"
+  "free": "സൗജന്യം",
+  "pdfPasswordProtectedTitle": "പാസ്‌വേഡ് പരിരക്ഷിതം",
+  "pdfPasswordProtectedMessage": "ഈ പ്രമാണം പാസ്‌വേഡ് പരിരക്ഷിതമാണ്. കാണുന്നതിന് പാസ്‌വേഡ് നൽകുക.",
+  "pdfPasswordRequiredMessage": "ഈ പ്രമാണം കാണുന്നതിന് ഒരു പാസ്‌വേഡ് ആവശ്യമാണ്.",
+  "pdfPasswordIncorrect": "തെറ്റായ പാസ്‌വേഡ്. വീണ്ടും ശ്രമിക്കുക.",
+  "pdfPasswordActionOpen": "തുറക്കുക"
 }
