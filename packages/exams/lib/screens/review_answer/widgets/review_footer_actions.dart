@@ -3,21 +3,28 @@ import 'package:core/core.dart';
 
 class ReviewFooterActions extends StatelessWidget {
   final AppLocalizations l10n;
-  final VoidCallback onAskDoubt;
+  final VoidCallback? onAskDoubt;
   final VoidCallback? onReport;
   final bool isReported;
 
   const ReviewFooterActions({
     super.key,
     required this.l10n,
-    required this.onAskDoubt,
-    required this.onReport,
+    this.onAskDoubt,
+    this.onReport,
     this.isReported = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (onAskDoubt == null && onReport == null) {
+      return const SizedBox.shrink();
+    }
+
     final design = Design.of(context);
+    final hasDoubt = onAskDoubt != null;
+    final hasReport = onReport != null;
+
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
@@ -31,35 +38,37 @@ class ReviewFooterActions extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: _FooterActionButton(
-              label: l10n.labelAskDoubt,
-              icon: LucideIcons.helpCircle,
-              bg: design.colors.accent2.withValues(
-                alpha: design.isDark ? 0.2 : 0.08,
+          if (hasDoubt)
+            Expanded(
+              child: _FooterActionButton(
+                label: l10n.labelAskDoubt,
+                icon: LucideIcons.helpCircle,
+                bg: design.colors.accent2.withValues(
+                  alpha: design.isDark ? 0.2 : 0.08,
+                ),
+                textColor: design.colors.accent2,
+                borderColor: design.colors.accent2.withValues(
+                  alpha: design.isDark ? 0.4 : 0.2,
+                ),
+                onTap: onAskDoubt,
               ),
-              textColor: design.colors.accent2,
-              borderColor: design.colors.accent2.withValues(
-                alpha: design.isDark ? 0.4 : 0.2,
-              ),
-              onTap: onAskDoubt,
             ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _FooterActionButton(
-              label: isReported ? l10n.labelReported : l10n.labelReport,
-              icon: LucideIcons.flag,
-              bg: design.colors.accent5.withValues(
-                alpha: design.isDark ? 0.2 : 0.08,
+          if (hasDoubt && hasReport) SizedBox(width: design.spacing.sm),
+          if (hasReport)
+            Expanded(
+              child: _FooterActionButton(
+                label: isReported ? l10n.labelReported : l10n.labelReport,
+                icon: LucideIcons.flag,
+                bg: design.colors.accent5.withValues(
+                  alpha: design.isDark ? 0.2 : 0.08,
+                ),
+                textColor: design.colors.accent5,
+                borderColor: design.colors.accent5.withValues(
+                  alpha: design.isDark ? 0.4 : 0.2,
+                ),
+                onTap: isReported ? null : onReport,
               ),
-              textColor: design.colors.accent5,
-              borderColor: design.colors.accent5.withValues(
-                alpha: design.isDark ? 0.4 : 0.2,
-              ),
-              onTap: isReported ? null : onReport,
             ),
-          ),
         ],
       ),
     );
@@ -85,6 +94,7 @@ class _FooterActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final design = Design.of(context);
     return AppSemantics.button(
       label: label,
       enabled: onTap != null,
@@ -97,7 +107,7 @@ class _FooterActionButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(design.radius.md),
               border: Border.all(color: borderColor),
             ),
             child: Row(

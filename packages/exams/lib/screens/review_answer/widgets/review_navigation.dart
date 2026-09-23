@@ -89,31 +89,35 @@ class _NavButton extends StatelessWidget {
         ? (design.colors.onPrimary)
         : (design.colors.textTertiary);
 
-    return GestureDetector(
+    return AppSemantics.button(
+      label: label,
+      enabled: isEnabled,
       onTap: onTap,
-      child: Container(
-        width: 110,
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(design.radius.md),
-          border: isEnabled && design.isDark
-              ? Border.all(color: design.colors.border)
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isLeadingIcon) ...[
-              Icon(icon, color: textColor, size: 16),
-              const SizedBox(width: 8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(design.radius.md),
+            border: isEnabled && design.isDark
+                ? Border.all(color: design.colors.border)
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isLeadingIcon) ...[
+                Icon(icon, color: textColor, size: 16),
+                const SizedBox(width: 8),
+              ],
+              AppText.caption(label, color: textColor),
+              if (!isLeadingIcon) ...[
+                const SizedBox(width: 8),
+                Icon(icon, color: textColor, size: 16),
+              ],
             ],
-            AppText.caption(label, color: textColor),
-            if (!isLeadingIcon) ...[
-              const SizedBox(width: 8),
-              Icon(icon, color: textColor, size: 16),
-            ],
-          ],
+          ),
         ),
       ),
     );
