@@ -253,6 +253,10 @@ class _ReviewAnswerDetailScreenState
       );
     }
 
+    final settings = ref.watch(instituteSettingsProvider);
+    final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
+    final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
+
     final filtered = getFilteredQuestions(_activeFilter);
     final currentQuestion = filtered.isNotEmpty
         ? filtered[_currentQuestionIndex]
@@ -331,8 +335,9 @@ class _ReviewAnswerDetailScreenState
                                 );
                                 return (idx != -1 ? idx + 1 : 1).toString();
                               })(),
-                              onBookmarkToggle: () =>
-                                  _onBookmarkToggle(currentQuestion),
+                              onBookmarkToggle: bookmarksEnabled
+                                  ? () => _onBookmarkToggle(currentQuestion)
+                                  : null,
                             ),
                             ReviewFooterActions(
                               l10n: l10n,
@@ -340,16 +345,20 @@ class _ReviewAnswerDetailScreenState
                                   .watch(examAttemptProvider)
                                   .reportedQuestions
                                   .contains(currentQuestion.id),
-                              onAskDoubt: () => context.push(
-                                '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
-                                extra: {
-                                  'breadcrumbs': [
-                                    if (currentQuestion.subject.isNotEmpty)
-                                      currentQuestion.subject,
-                                  ],
-                                  'questionHtml': currentQuestion.text,
-                                },
-                              ),
+                              onAskDoubt: helpdeskEnabled
+                                  ? () => context.push(
+                                      '/home/discussions/doubts/ask?question_id=${Uri.encodeComponent(currentQuestion.id)}',
+                                      extra: {
+                                        'breadcrumbs': [
+                                          if (currentQuestion
+                                              .subject
+                                              .isNotEmpty)
+                                            currentQuestion.subject,
+                                        ],
+                                        'questionHtml': currentQuestion.text,
+                                      },
+                                    )
+                                  : null,
                               onReport: () => _showReportDialog(
                                 currentQuestion,
                                 design,
