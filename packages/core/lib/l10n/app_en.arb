@@ -1690,5 +1690,10 @@
   "qotdSingleCorrect": "Single Correct",
   "qotdMultipleCorrect": "Multiple Correct",
   "qotdErrorSubmitAnswer": "Failed to submit answer. Please try again.",
-  "free": "FREE"
+  "free": "FREE",
+  "pdfPasswordProtectedTitle": "Password Protected",
+  "pdfPasswordProtectedMessage": "This document is password protected. Please enter the password to view.",
+  "pdfPasswordRequiredMessage": "A password is required to view this document.",
+  "pdfPasswordIncorrect": "Incorrect password. Please try again.",
+  "pdfPasswordActionOpen": "Open"
 }

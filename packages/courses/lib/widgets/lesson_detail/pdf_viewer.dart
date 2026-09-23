@@ -9,6 +9,7 @@ import 'package:no_screenshot/secure_widget.dart';
 import 'package:no_screenshot/overlay_mode.dart';
 import 'lesson_detail_skeleton.dart';
 import 'watermark_overlay.dart';
+import 'pdf_password_dialog.dart';
 
 class AppPdfViewer extends ConsumerStatefulWidget {
   final String? url;
@@ -61,6 +62,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   int _requestId = 0;
   double _lastProgress = -1;
   int _pageCount = 1;
+  int _passwordAttempts = 0;
+  bool _isPasswordError = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -124,7 +127,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
       _setupViewer(id);
     } catch (e, st) {
-      if (e is! ApiException) {
+      if (e is! ApiException && e is! PdfPasswordException) {
         sentry.captureException(e, stackTrace: st);
       }
       if (!_isValidRequest(id)) return;
@@ -154,10 +157,12 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       _isLoading = true;
       _error = null;
       _isOffline = false;
+      _isPasswordError = false;
       _isVisible = false;
       _watermarkText = '';
       _lastProgress = -1;
       _pageCount = 1;
+      _passwordAttempts = 0;
       _pdfViewerWidget = null;
     });
   }
@@ -246,24 +251,40 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
           preferRangeAccess: true,
           controller: _controller,
           params: params,
+          passwordProvider: _passwordProvider,
         );
       } else if (widget.file != null) {
         _pdfViewerWidget = PdfViewer.file(
           widget.file!.path,
           controller: _controller,
           params: params,
+          passwordProvider: _passwordProvider,
         );
       }
     });
+  }
+
+  Future<String?> _passwordProvider() async {
+    if (!mounted) return null;
+    final isRetry = _passwordAttempts > 0;
+    _passwordAttempts++;
+    return await showPdfPasswordDialog(
+      context,
+      isRetry: isRetry,
+    );
   }
 
   Future<void> _handleError(int id, Object error) async {
     final isConnected = await hasInternetConnection();
     if (!_isValidRequest(id)) return;
 
+    final isPassword = error is PdfPasswordException ||
+        error.toString().toLowerCase().contains('password');
+
     setState(() {
       _isOffline = !isConnected ||
           (error is ApiException && error.type == ApiErrorType.noInternet);
+      _isPasswordError = isPassword;
       _error = error.toString();
       _isLoading = false;
       _pdfViewerWidget = null;
@@ -292,10 +313,24 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   Widget _buildError() {
     final l10n = L10n.of(context);
+    final String title;
+    final String message;
+
+    if (_isOffline) {
+      title = l10n.errorNoInternetTitle;
+      message = l10n.errorGenericMessage;
+    } else if (_isPasswordError) {
+      title = l10n.pdfPasswordProtectedTitle;
+      message = l10n.pdfPasswordRequiredMessage;
+    } else {
+      title = l10n.errorGenericTitle;
+      message = l10n.errorGenericMessage;
+    }
+
     return Center(
       child: AppErrorView(
-        title: _isOffline ? l10n.errorNoInternetTitle : l10n.errorGenericTitle,
-        message: l10n.errorGenericMessage,
+        title: title,
+        message: message,
         onRetry: () {
           _resetViewer();
           _load();
@@ -328,6 +363,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   void _onViewerReady(int id, PdfDocument document) {
     if (!_isValidRequest(id)) return;
     _pageCount = document.pages.length;
+    _passwordAttempts = 0;
 
     if (mounted) {
       setState(() {
@@ -356,6 +392,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   void _resetViewer() {
     _controller.removeListener(_trackProgress);
+    _passwordAttempts = 0;
     _initController();
   }
 }

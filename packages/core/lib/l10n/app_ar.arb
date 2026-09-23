@@ -1264,5 +1264,10 @@
   "qotdSingleCorrect": "إجابة صحيحة واحدة",
   "qotdMultipleCorrect": "إجابات صحيحة متعددة",
   "qotdErrorSubmitAnswer": "فشل إرسال الإجابة. يرجى المحاولة مرة أخرى.",
-  "free": "مجاني"
+  "free": "مجاني",
+  "pdfPasswordProtectedTitle": "محمي بكلمة مرور",
+  "pdfPasswordProtectedMessage": "هذا المستند محمي بكلمة مرور. يرجى إدخال كلمة المرور للعرض.",
+  "pdfPasswordRequiredMessage": "مطلوب كلمة مرور لعرض هذا المستند.",
+  "pdfPasswordIncorrect": "كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
+  "pdfPasswordActionOpen": "فتح"
 }

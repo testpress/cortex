@@ -3382,4 +3382,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get free => 'مجاني';
+
+  @override
+  String get pdfPasswordProtectedTitle => 'محمي بكلمة مرور';
+
+  @override
+  String get pdfPasswordProtectedMessage =>
+      'هذا المستند محمي بكلمة مرور. يرجى إدخال كلمة المرور للعرض.';
+
+  @override
+  String get pdfPasswordRequiredMessage => 'مطلوب كلمة مرور لعرض هذا المستند.';
+
+  @override
+  String get pdfPasswordIncorrect =>
+      'كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get pdfPasswordActionOpen => 'فتح';
 }

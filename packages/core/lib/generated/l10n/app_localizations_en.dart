@@ -3382,4 +3382,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get free => 'FREE';
+
+  @override
+  String get pdfPasswordProtectedTitle => 'Password Protected';
+
+  @override
+  String get pdfPasswordProtectedMessage =>
+      'This document is password protected. Please enter the password to view.';
+
+  @override
+  String get pdfPasswordRequiredMessage =>
+      'A password is required to view this document.';
+
+  @override
+  String get pdfPasswordIncorrect => 'Incorrect password. Please try again.';
+
+  @override
+  String get pdfPasswordActionOpen => 'Open';
 }

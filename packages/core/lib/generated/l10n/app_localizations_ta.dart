@@ -3432,4 +3432,22 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get free => 'இலவசம்';
+
+  @override
+  String get pdfPasswordProtectedTitle => 'கடவுச்சொல் பாதுகாக்கப்பட்டது';
+
+  @override
+  String get pdfPasswordProtectedMessage =>
+      'இந்த ஆவணம் கடவுச்சொல் மூலம் பாதுகாக்கப்பட்டுள்ளது. பார்க்க கடவுச்சொல்லை உள்ளிடவும்.';
+
+  @override
+  String get pdfPasswordRequiredMessage =>
+      'இந்த ஆவணத்தைப் பார்க்க கடவுச்சொல் தேவை.';
+
+  @override
+  String get pdfPasswordIncorrect =>
+      'தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get pdfPasswordActionOpen => 'திறக்கவும்';
 }
