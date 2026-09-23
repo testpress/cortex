@@ -50,10 +50,19 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
           current.status == ExamAttemptStatus.submitting;
 
       if (isActiveAttempt && examId == widget.testId) {
-        widget.onStartAttempt(current.isQuizMode);
+        widget.onStartAttempt(current.isQuizMode).then((_) {
+          _refreshPrescreenData();
+        });
         return;
       }
     });
+  }
+
+  void _refreshPrescreenData() {
+    if (!mounted) return;
+    final attemptsUrl = ApiEndpoints.lessonAttempts(widget.testId);
+    ref.invalidate(examAttemptsProvider(attemptsUrl));
+    ref.invalidate(lessonDetailProvider(widget.testId));
   }
 
   void _handleOnlineStart({
@@ -68,6 +77,7 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
     } else {
       ref.read(examAttemptProvider.notifier).reset();
       await widget.onStartAttempt(false, isPartial: isPartial);
+      _refreshPrescreenData();
     }
   }
 
@@ -78,12 +88,14 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       isQuizMode,
       isPartial: _selectedRetakeIsPartial,
     );
+    _refreshPrescreenData();
   }
 
   Future<void> _handleStartOffline() async {
     ref.read(examAttemptProvider.notifier).reset();
     // Force regular mode as per spec
     await widget.onStartAttempt(false, isPartial: false, isOffline: true);
+    _refreshPrescreenData();
   }
 
   @override

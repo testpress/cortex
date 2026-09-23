@@ -178,5 +178,84 @@ void main() {
         expect(find.byType(ReviewAnswerDetailScreen), findsOneWidget);
       },
     );
+
+    testWidgets('renders TestDetailScreen for /study/test/:id/player route', (
+      tester,
+    ) async {
+      final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+      final router = GoRouter(
+        navigatorKey: rootNavigatorKey,
+        initialLocation: '/study/test/123/player',
+        routes: StudyRoutes.routes(rootNavigatorKey),
+      );
+
+      await tester.pumpWidget(
+        createTestApp(
+          router: router,
+          overrides: [
+            lessonDetailProvider(
+              '123',
+            ).overrideWith((ref) => Stream.value(null)),
+          ],
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(TestDetailScreen), findsOneWidget);
+    });
+
+    testWidgets(
+      'onClose on TestDetailScreen pops back to ExamPrescreen when started from Prescreen',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/study/test/123',
+          routes: StudyRoutes.routes(rootNavigatorKey),
+        );
+
+        const testLesson = LessonDto(
+          id: '123',
+          chapterId: 'chap-1',
+          title: 'Sample Test Lesson',
+          type: LessonType.test,
+          duration: '00:30:00',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: false,
+          orderIndex: 0,
+        );
+
+        await tester.pumpWidget(
+          createTestApp(
+            router: router,
+            overrides: [
+              lessonDetailProvider(
+                '123',
+              ).overrideWith((ref) => Stream.value(testLesson)),
+            ],
+          ),
+        );
+
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(find.byType(ExamPrescreen), findsOneWidget);
+
+        // Push player on top of prescreen using router push
+        router.push('/study/test/123/player', extra: testLesson);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(find.byType(TestDetailScreen), findsOneWidget);
+
+        // Pop player screen
+        router.pop();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        // Prescreen should still be displayed
+        expect(find.byType(ExamPrescreen), findsOneWidget);
+      },
+    );
   });
 }
