@@ -1401,6 +1401,7 @@ class CourseRepository {
       if (s.contains('pdf')) return LessonType.pdf;
       if (s.contains('test')) return LessonType.test;
       if (s.contains('assessment')) return LessonType.assessment;
+      if (s.contains('assignment')) return LessonType.assignment;
       _sentryService
           .captureException(FormatException('Unknown LessonType: $s'));
       return LessonType.unknown;

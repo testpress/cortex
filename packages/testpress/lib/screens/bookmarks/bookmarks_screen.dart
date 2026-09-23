@@ -101,6 +101,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
       case 'attachment':
       case 'notes':
       case 'html':
+      case 'assignment':
         if (bookmark.lessonId > 0) {
           context.push('/study/lesson/${bookmark.lessonId}');
         }

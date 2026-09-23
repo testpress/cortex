@@ -566,5 +566,81 @@ void main() {
         expect(dto.isComplete, true);
       });
     });
+
+    group('LessonType.assignment support and safe merge', () {
+      test('parses assignment content_type correctly with web content_url', () {
+        final json = {
+          'id': '101',
+          'title': 'Math Project',
+          'content_type': 'Assignment',
+          'content_url': 'https://rays.testpress.in/chapters/math-ch1/101/',
+          'chapter_slug': 'math-ch1',
+          'chapter': 'math-ch1',
+          'active': true,
+        };
+
+        final dto = LessonDto.fromJson(json);
+
+        expect(dto.type, LessonType.assignment);
+        expect(dto.title, 'Math Project');
+        expect(dto.chapterSlug, 'math-ch1');
+        expect(
+          dto.contentUrl,
+          'https://rays.testpress.in/chapters/math-ch1/101/',
+        );
+        expect(dto.isComplete, true);
+      });
+
+      test('ignores API url in assignment content_url', () {
+        final json = {
+          'id': '102',
+          'title': 'History Assignment',
+          'content_type': 'assignment',
+          'content_url': 'https://rays.testpress.in/api/v2.5/contents/102/',
+          'chapter': 'history-ch2',
+          'active': true,
+        };
+
+        final dto = LessonDto.fromJson(json);
+
+        expect(dto.type, LessonType.assignment);
+        expect(dto.contentUrl, isNull);
+        expect(dto.chapterSlug, 'history-ch2');
+        expect(dto.isComplete, true);
+      });
+
+      test(
+        'safe merge preserves assignment type, title, and contentUrl against incomplete detail',
+        () {
+          final initialDto = LessonDto.fromJson({
+            'id': '103',
+            'title': 'Science Practical',
+            'content_type': 'Assignment',
+            'content_url':
+                'https://rays.testpress.in/chapters/science-lab/103/',
+            'chapter_slug': 'science-lab',
+            'active': true,
+          });
+
+          // Detail response where type is unknown and title/name is empty
+          final incompleteDetailDto = LessonDto.fromJson({
+            'id': '103',
+            'title': '',
+            'name': null,
+            'content_type': null,
+            'active': true,
+          });
+
+          final merged = incompleteDetailDto.mergeWith(initialDto);
+
+          expect(merged.type, LessonType.assignment);
+          expect(merged.title, 'Science Practical');
+          expect(
+            merged.contentUrl,
+            'https://rays.testpress.in/chapters/science-lab/103/',
+          );
+        },
+      );
+    });
   });
 }

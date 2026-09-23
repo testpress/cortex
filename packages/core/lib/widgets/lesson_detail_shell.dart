@@ -21,6 +21,7 @@ class LessonDetailShell extends StatelessWidget {
     this.isBookmarked = false,
     this.isDownloaded = false,
     this.isDownloading = false,
+    this.showTitle = true,
     this.onBookmarkToggle,
     this.onMarkAsCompleted,
     this.onBack,
@@ -37,6 +38,9 @@ class LessonDetailShell extends StatelessWidget {
 
   /// The main title of the lesson.
   final String title;
+
+  /// Whether to display the title and subtitle in the header.
+  final bool showTitle;
 
   /// Optional subtitle (e.g. "Chapter 1 • Lesson 4").
   final String? subtitle;
@@ -303,16 +307,18 @@ class LessonDetailShell extends StatelessWidget {
                     const SizedBox(height: 20),
                 ],
               ),
-              const SizedBox(height: 12),
-              // Row 2: Lesson Title
-              AppText.headline(
-                title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (subtitle != null) ...[
-                const SizedBox(height: 4),
-                AppText.cardCaption(subtitle!),
+              if (showTitle) ...[
+                const SizedBox(height: 12),
+                // Row 2: Lesson Title
+                AppText.headline(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 4),
+                  AppText.cardCaption(subtitle!),
+                ],
               ],
             ],
           ),

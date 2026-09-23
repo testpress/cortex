@@ -42,3 +42,5 @@ export 'providers/info_providers.dart';
 export 'screens/info/info_page.dart';
 export 'screens/downloads_screen.dart';
 export 'providers/downloads_provider.dart';
+export 'providers/assignment_sso_provider.dart';
+export 'widgets/lesson_detail/assignment_viewer.dart';

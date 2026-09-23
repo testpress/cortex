@@ -30,7 +30,7 @@ class ChapterContentItem extends StatelessWidget {
       LessonType.notes ||
       LessonType.attachment =>
         design.study.pdf,
-      LessonType.assessment => design.study.assessment,
+      LessonType.assessment || LessonType.assignment => design.study.assessment,
       LessonType.test => design.study.test,
       LessonType.unknown => design.study.video,
     };
@@ -261,6 +261,8 @@ class ChapterContentItem extends StatelessWidget {
         return LucideIcons.clipboardCheck;
       case LessonType.test:
         return LucideIcons.award;
+      case LessonType.assignment:
+        return LucideIcons.fileCheck;
       case LessonType.unknown:
         return LucideIcons.helpCircle;
     }
@@ -286,6 +288,8 @@ class ChapterContentItem extends StatelessWidget {
         return l10n.chapterTypeAssessment;
       case LessonType.test:
         return l10n.chapterTypeTest;
+      case LessonType.assignment:
+        return 'Assignment';
       case LessonType.unknown:
         return l10n.chapterTypeUnknown;
     }

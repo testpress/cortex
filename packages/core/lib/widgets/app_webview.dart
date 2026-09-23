@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:file_picker/file_picker.dart';
 import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../data/auth/auth_provider.dart';
@@ -26,6 +28,8 @@ class AppWebView extends ConsumerStatefulWidget {
     this.permissions,
     this.mediaMode = false,
     this.showHeader = false,
+    this.useSafeArea = false,
+    this.onNavigationRequest,
   });
 
   final String url;
@@ -33,6 +37,9 @@ class AppWebView extends ConsumerStatefulWidget {
   final List<Permission>? permissions;
   final bool mediaMode;
   final bool showHeader;
+  final bool useSafeArea;
+  final FutureOr<NavigationDecision> Function(NavigationRequest request)?
+  onNavigationRequest;
 
   /// Helper to construct headers with auth token for secure requests.
   @visibleForTesting
@@ -169,9 +176,24 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
               document.documentElement.style.padding = '0';
               document.body.style.margin = '0';
               document.body.style.padding = '0';
+              var style = document.createElement('style');
+              style.innerHTML = 'body, html { margin: 0 !important; padding-top: 0 !important; } .container, .content, main, #content { padding-top: 0 !important; margin-top: 0 !important; }';
+              document.head.appendChild(style);
             ''');
                   } catch (_) {}
                 }
+                try {
+                  await _controller.runJavaScript('''
+              document.addEventListener('click', function(e) {
+                var target = e.target.closest('a');
+                if (target && target.href) {
+                  if (target.getAttribute('target') === '_blank') {
+                    target.removeAttribute('target');
+                  }
+                }
+              }, true);
+            ''');
+                } catch (_) {}
               },
               onWebResourceError: (error) {
                 // Ignore subresource failures or cancelled loads due to redirects/navigation
@@ -184,10 +206,39 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
                 if (uri != null && !['http', 'https'].contains(uri.scheme)) {
                   return NavigationDecision.prevent;
                 }
+                if (widget.onNavigationRequest != null) {
+                  return widget.onNavigationRequest!(request);
+                }
                 return NavigationDecision.navigate;
               },
             ),
           );
+
+    final platform = _controller.platform;
+    if (platform is AndroidWebViewController) {
+      platform.setOnShowFileSelector((params) async {
+        try {
+          final result = await FilePicker.pickFiles(
+            allowMultiple: params.mode == FileSelectorMode.openMultiple,
+          );
+          if (result != null && result.paths.isNotEmpty) {
+            return result.paths
+                .whereType<String>()
+                .map(
+                  (path) =>
+                      path.startsWith('content://') ||
+                          path.startsWith('file://')
+                      ? path
+                      : Uri.file(path).toString(),
+                )
+                .toList();
+          }
+        } catch (e, st) {
+          ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+        }
+        return <String>[];
+      });
+    }
   }
 
   Future<Map<String, String>> _buildHeaders(Uri uri, String url) async {
@@ -288,23 +339,24 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    return Container(
-      color: design.colors.canvas,
-      child: SafeArea(
-        child: Column(
-          children: [
-            if (widget.showHeader)
-              AppHeader(
-                title: widget.title ?? '',
-                leading: AppBackButton(
-                  onTap: () => Navigator.of(context).maybePop(),
-                ),
-              ),
-            _buildProgressBar(design),
-            Expanded(child: _buildWebViewStack()),
-          ],
-        ),
-      ),
+    Widget content = Column(
+      children: [
+        if (widget.showHeader)
+          AppHeader(
+            title: widget.title ?? '',
+            leading: AppBackButton(
+              onTap: () => Navigator.of(context).maybePop(),
+            ),
+          ),
+        _buildProgressBar(design),
+        Expanded(child: _buildWebViewStack()),
+      ],
     );
+
+    if (widget.useSafeArea) {
+      content = SafeArea(child: content);
+    }
+
+    return Container(color: design.colors.canvas, child: content);
   }
 }

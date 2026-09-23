@@ -12,6 +12,7 @@ enum LessonType {
   test,
   assessment,
   videoConference,
+  assignment,
   unknown,
 }
 
@@ -138,6 +139,8 @@ class LessonDto {
       case LessonType.pdf:
       case LessonType.attachment:
         return contentUrl != null && contentUrl!.isNotEmpty;
+      case LessonType.assignment:
+        return id.isNotEmpty;
       case LessonType.test:
       case LessonType.assessment:
         return exam != null;
@@ -348,10 +351,13 @@ class LessonDto {
         d == '0:00:00';
 
     return copyWith(
+      title: (title.isEmpty && other.title.isNotEmpty) ? other.title : title,
       duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration))
           ? other.duration
           : duration,
-      contentUrl: (contentUrl?.isEmpty ?? true) ? other.contentUrl : contentUrl,
+      contentUrl: (other.contentUrl?.isNotEmpty ?? false)
+          ? other.contentUrl
+          : contentUrl,
       uuid: (uuid?.isEmpty ?? true) ? other.uuid : uuid,
       htmlContent: (htmlContent?.isEmpty ?? true)
           ? other.htmlContent
@@ -481,6 +487,13 @@ class LessonDto {
           return LessonType.notes;
         }
 
+        if (type == LessonType.assignment && other.type == LessonType.unknown) {
+          return LessonType.assignment;
+        }
+        if (other.type == LessonType.assignment && type == LessonType.unknown) {
+          return LessonType.assignment;
+        }
+
         return type;
       })(),
     );
@@ -507,6 +520,8 @@ class LessonDto {
       case LessonType.test:
       case LessonType.assessment:
         return _parseExamLesson(json, type);
+      case LessonType.assignment:
+        return _parseAssignmentLesson(json);
       case LessonType.unknown:
         return _parseBase(json, type);
     }
@@ -581,7 +596,23 @@ class LessonDto {
       return LessonType.test;
     }
 
+    // Assignment
+    if (contentType.contains('assignment') || json['assignment'] != null) {
+      return LessonType.assignment;
+    }
+
     return LessonType.unknown; // Fallback
+  }
+
+  static LessonDto _parseAssignmentLesson(Map<String, dynamic> json) {
+    final base = _parseBase(json, LessonType.assignment);
+
+    final rawUrl = json['content_url'] as String? ?? json['url'] as String?;
+    final webUrl = (rawUrl != null && !rawUrl.contains('/api/'))
+        ? rawUrl
+        : null;
+
+    return base.copyWith(contentUrl: webUrl);
   }
 
   static LessonDto _parseVideoLesson(Map<String, dynamic> json) {
@@ -812,7 +843,9 @@ class LessonDto {
           (json['order'] as num?)?.toInt() ??
           (json['orderIndex'] as num?)?.toInt() ??
           0,
-      chapterSlug: json['chapter_slug'] as String?,
+      chapterSlug:
+          json['chapter_slug'] as String? ??
+          (json['chapter'] is String ? json['chapter'] as String : null),
       chapterTitle:
           json['chapter_title'] as String? ?? json['chapterTitle'] as String?,
       uuid: json['uuid']?.toString(),

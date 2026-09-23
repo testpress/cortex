@@ -37,6 +37,7 @@ dependencies:
   tpstreams_player_sdk: 2.2.36
   smooth_page_indicator: ^1.1.0
   permission_handler: ^12.0.1
+  file_picker: ^11.0.2
   skeletonizer: ^2.1.3
   webview_flutter: ^4.10.0
   webview_flutter_wkwebview: ^3.16.0
