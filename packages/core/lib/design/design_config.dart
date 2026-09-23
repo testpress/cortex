@@ -63,13 +63,13 @@ class DesignConfig {
   ///
   /// This factory ensures zero visual changes during migration.
   /// Future work can introduce custom configs for branding.
-  factory DesignConfig.defaults({BuildContext? context}) {
-    return DesignConfig.light(context: context);
+  factory DesignConfig.defaults({BuildContext? context, Color? primary}) {
+    return DesignConfig.light(context: context, primary: primary);
   }
 
   /// Light mode configuration.
-  factory DesignConfig.light({BuildContext? context}) {
-    final colors = DesignColors.light();
+  factory DesignConfig.light({BuildContext? context, Color? primary}) {
+    final colors = DesignColors.light(primary: primary);
     final scale = DesignTypographyScale.defaults();
     return DesignConfig(
       colors: colors,
@@ -90,8 +90,8 @@ class DesignConfig {
   }
 
   /// Dark mode configuration.
-  factory DesignConfig.dark({BuildContext? context}) {
-    final colors = DesignColors.dark();
+  factory DesignConfig.dark({BuildContext? context, Color? primary}) {
+    final colors = DesignColors.dark(primary: primary);
     final scale = DesignTypographyScale.defaults();
     return DesignConfig(
       colors: colors,
@@ -319,24 +319,23 @@ class DesignColors {
     return null;
   }
 
-  factory DesignColors.light() {
-    Color primary = const Color(0xFF6366F1);
+  factory DesignColors.light({Color? primary}) {
+    Color activePrimary = const Color(0xFF6366F1);
     Color onPrimary = const Color(0xFFFFFFFF);
     Color primaryContainer = const Color(0xFFE0E7FF);
     Color onPrimaryContainer = const Color(0xFF1E1B4B);
 
-    if (_envPrimary.isNotEmpty) {
-      final parsedColor = parseColor(_envPrimary);
-      if (parsedColor != null) {
-        primary = parsedColor;
-        onPrimary = _contrastingColor(primary);
-        primaryContainer = lighten(primary, 0.8);
-        onPrimaryContainer = _contrastingColor(primaryContainer);
-      }
+    final resolvedColor =
+        primary ?? (_envPrimary.isNotEmpty ? parseColor(_envPrimary) : null);
+    if (resolvedColor != null) {
+      activePrimary = adaptPrimary(resolvedColor, isDark: false);
+      onPrimary = _contrastingColor(activePrimary);
+      primaryContainer = lighten(activePrimary, 0.8);
+      onPrimaryContainer = _contrastingColor(primaryContainer);
     }
 
     return DesignColors(
-      primary: primary,
+      primary: activePrimary,
       onPrimary: onPrimary,
       primaryContainer: primaryContainer,
       onPrimaryContainer: onPrimaryContainer,
@@ -363,8 +362,8 @@ class DesignColors {
       textTertiary: Color(0xFF94A3B8), // Slate-400
       textInverse: Color(0xFFFFFFFF),
       progressBackground: Color(0xFFDEE5ED),
-      progressForeground: Color(0xFF6366F1),
-      focus: Color(0x666366F1),
+      progressForeground: activePrimary,
+      focus: activePrimary.withValues(alpha: 0.4),
       canvas: Color(0xFFE9EEF4),
       accent1: Color(0xFF9333EA),
       accent2: Color(0xFF2563EB),
@@ -384,37 +383,36 @@ class DesignColors {
     );
   }
 
-  factory DesignColors.dark() {
-    Color primary = const Color(0xFF818CF8);
+  factory DesignColors.dark({Color? primary}) {
+    Color activePrimary = const Color(0xFF818CF8);
     Color onPrimary = const Color(0xFFFFFFFF);
     Color primaryContainer = const Color(0xFF1E1B4B);
     Color onPrimaryContainer = const Color(0xFFE0E7FF);
 
-    if (_envPrimary.isNotEmpty) {
-      final parsedColor = parseColor(_envPrimary);
-      if (parsedColor != null) {
-        primary = parsedColor;
-        onPrimary = _contrastingColor(primary);
-        primaryContainer = darken(primary, 0.6);
-        onPrimaryContainer = _contrastingColor(primaryContainer);
-      }
+    final resolvedColor =
+        primary ?? (_envPrimary.isNotEmpty ? parseColor(_envPrimary) : null);
+    if (resolvedColor != null) {
+      activePrimary = adaptPrimary(resolvedColor, isDark: true);
+      onPrimary = _contrastingColor(activePrimary);
+      primaryContainer = darken(activePrimary, 0.6);
+      onPrimaryContainer = _contrastingColor(primaryContainer);
     }
 
     return DesignColors(
-      primary: primary,
+      primary: activePrimary,
       onPrimary: onPrimary,
       primaryContainer: primaryContainer, // Very dark indigo
       onPrimaryContainer: onPrimaryContainer,
       surface: Color(0xFF18181B), // Zinc-900 (Main UI Surface)
       onSurface: Color(0xFFFAFAFA),
-      surfaceVariant: Color(0xFF27272A), // Zinc-800
+      surfaceVariant: Color(0xFF3F3F46), // Zinc-700
       onSurfaceVariant: Color(0xFFA1A1AA), // Zinc-400
       card: Color(
         0xFF27272A,
       ), // Zinc-800 (Satisfies 1.15:1 ratio with Zinc-900 surface)
       onCard: Color(0xFFF4F4F5), // Zinc-100
       border: Color(0xFF3F3F46), // Zinc-700 for subtle definition
-      divider: Color(0xFF27272A),
+      divider: Color(0xFF3F3F46), // Zinc-700
       success: Color(0xFF22C55E),
       onSuccess: Color(0xFFFFFFFF),
       error: Color(0xFFF87171),
@@ -425,9 +423,9 @@ class DesignColors {
       textSecondary: Color(0xFFD4D4D8), // Zinc-300
       textTertiary: Color(0xFFA1A1AA), // Zinc-400
       textInverse: Color(0xFF09090B),
-      progressBackground: Color(0xFF27272A),
-      progressForeground: Color(0xFF818CF8),
-      focus: Color(0x99818CF8),
+      progressBackground: Color(0xFF3F3F46), // Zinc-700
+      progressForeground: activePrimary,
+      focus: activePrimary.withValues(alpha: 0.6),
       canvas: Color(0xFF09090B), // Zinc-950 (Vantablack void)
       accent1: Color(0xFFA855F7),
       accent2: Color(0xFF3B82F6),
@@ -557,7 +555,8 @@ class DesignColors {
   }
 
   /// Calculate relative luminance (WCAG formula)
-  static double _luminance(Color color) {
+  @visibleForTesting
+  static double luminance(Color color) {
     double r = color.r;
     double g = color.g;
     double b = color.b;
@@ -567,6 +566,31 @@ class DesignColors {
     b = b <= 0.03928 ? b / 12.92 : pow((b + 0.055) / 1.055, 2.4).toDouble();
 
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  static double _luminance(Color color) => luminance(color);
+
+  /// Adapt a primary brand color to ensure appropriate contrast for the given mode.
+  ///
+  /// - In Dark Mode: If the brand color is too dark (luminance < 0.22), it is lightened
+  ///   so it contrasts clearly against dark surfaces (Zinc-900 / Zinc-800).
+  /// - In Light Mode: If the brand color is too light (luminance > 0.42), it is darkened
+  ///   so it contrasts clearly against light surfaces (Slate-150 / White).
+  @visibleForTesting
+  static Color adaptPrimary(Color color, {required bool isDark}) {
+    final lum = luminance(color);
+    if (isDark) {
+      if (lum < 0.22) {
+        final factor = ((0.22 - lum) / 0.22 * 0.40 + 0.30).clamp(0.2, 0.7);
+        return lighten(color, factor);
+      }
+    } else {
+      if (lum > 0.42) {
+        final factor = ((lum - 0.42) / 0.58 * 0.40 + 0.25).clamp(0.2, 0.65);
+        return darken(color, factor);
+      }
+    }
+    return color;
   }
 
   /// Return white or black based on which has better contrast

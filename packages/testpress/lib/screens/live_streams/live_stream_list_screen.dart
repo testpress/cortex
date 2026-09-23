@@ -196,13 +196,60 @@ class _FilterChips extends StatelessWidget {
           final isSelected = selected == status;
           return Padding(
             padding: EdgeInsets.only(right: design.spacing.xs),
-            child: AppChip(
+            child: _FilterPill(
               label: label,
               isSelected: isSelected,
               onTap: () => onSelected(status),
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+}
+
+class _FilterPill extends StatelessWidget {
+  const _FilterPill({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    final bgColor = isSelected
+        ? design.colors.textPrimary
+        : design.colors.surfaceVariant;
+    final fgColor = isSelected ? design.colors.card : design.colors.textPrimary;
+
+    return AppSemantics.button(
+      label: label,
+      onTap: onTap,
+      child: AppFocusable(
+        onTap: onTap,
+        borderRadius: design.radius.pill,
+        child: AnimatedContainer(
+          duration: MotionPreferences.duration(context, design.motion.fast),
+          curve: design.motion.easeOut,
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: design.radius.pill,
+            border: Border.all(
+              color: isSelected ? bgColor : design.colors.border,
+            ),
+          ),
+          child: AppText.label(label, color: fgColor),
+        ),
       ),
     );
   }
@@ -285,11 +332,9 @@ class _CustomSwitch extends StatelessWidget {
             height: 28,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              color: value
-                  ? design.colors.primary
-                  : design.colors.divider.withValues(alpha: 0.5),
+              color: value ? design.colors.primary : design.colors.border,
               border: Border.all(
-                color: value ? design.colors.primary : design.colors.divider,
+                color: value ? design.colors.primary : design.colors.border,
                 width: 1.5,
               ),
             ),
@@ -305,12 +350,12 @@ class _CustomSwitch extends StatelessWidget {
                 child: Container(
                   width: 20,
                   height: 20,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFFFFFFFF),
+                    color: design.colors.onPrimary,
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x1A000000),
+                        color: design.colors.shadow.withValues(alpha: 0.2),
                         blurRadius: 4,
                         offset: Offset(0, 2),
                       ),

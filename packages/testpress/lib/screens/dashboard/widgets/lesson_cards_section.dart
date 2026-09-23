@@ -181,9 +181,7 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                         height: 4,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: design.isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFE2E8F0),
+                          color: design.colors.surfaceVariant,
                           borderRadius: BorderRadius.circular(2),
                         ),
                         alignment: Alignment.centerLeft,
