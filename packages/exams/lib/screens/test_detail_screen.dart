@@ -298,6 +298,22 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
       final lesson = lessonDetailAsync.valueOrNull;
       final attemptsUrl = widget.lesson?.attemptsUrl ?? lesson?.attemptsUrl;
       if (lesson != null && (attemptsUrl == null || attemptsUrl.isEmpty)) {
+        if (lesson.isScheduled) {
+          final scheduledMsg = lesson.scheduledMessage;
+          final detailMessage =
+              (scheduledMsg != null && scheduledMsg.isNotEmpty)
+              ? scheduledMsg
+              : l10n.liveStreamScheduledDefault;
+
+          return Container(
+            color: design.colors.surface,
+            child: ContentNoticeView(
+              icon: LucideIcons.calendarClock,
+              title: l10n.liveStreamScheduledDefault,
+              message: detailMessage,
+            ),
+          );
+        }
         return Container(
           color: design.colors.surface,
           child: Center(

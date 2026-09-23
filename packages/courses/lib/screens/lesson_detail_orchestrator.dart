@@ -204,7 +204,10 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle: (!lesson.hasEnded && !isLocked && bookmarksEnabled)
+          onBookmarkToggle: (!lesson.hasEnded &&
+                  !isLocked &&
+                  !lesson.isScheduled &&
+                  bookmarksEnabled)
               ? () {
                   if (isBookmarked) {
                     _removeBookmark(lesson);
@@ -213,12 +216,15 @@ class _LessonDetailOrchestratorState
                   }
                 }
               : null,
-          onMarkAsCompleted:
-              (!lesson.hasEnded && !isLocked && supportsManualCompletion)
-                  ? _markAsCompleted
-                  : null,
+          onMarkAsCompleted: (!lesson.hasEnded &&
+                  !isLocked &&
+                  !lesson.isScheduled &&
+                  supportsManualCompletion)
+              ? _markAsCompleted
+              : null,
           onDownload: (!lesson.hasEnded &&
                   !isLocked &&
+                  !lesson.isScheduled &&
                   canDownload &&
                   !isDownloaded &&
                   !isDownloading)
@@ -230,6 +236,7 @@ class _LessonDetailOrchestratorState
           stickyFooter: lesson.type != LessonType.assignment &&
               (lesson.hasEnded ||
                   isLocked ||
+                  lesson.isScheduled ||
                   widget.error != null ||
                   (lesson.type != LessonType.video &&
                       lesson.type != LessonType.liveStream)),
@@ -237,6 +244,7 @@ class _LessonDetailOrchestratorState
         ),
         if (!lesson.hasEnded &&
             !isLocked &&
+            !lesson.isScheduled &&
             lesson.isComplete &&
             helpdeskEnabled &&
             [
@@ -337,6 +345,19 @@ class _LessonDetailOrchestratorState
         icon: LucideIcons.lock,
         title: L10n.of(context).errorAccessDeniedTitle,
         message: L10n.of(context).completePreviousContentToUnlock,
+      );
+    }
+
+    if (lesson.isScheduled) {
+      final scheduledMsg = lesson.scheduledMessage;
+      final detailMessage = (scheduledMsg != null && scheduledMsg.isNotEmpty)
+          ? scheduledMsg
+          : L10n.of(context).liveStreamScheduledDefault;
+
+      return ContentNoticeView(
+        icon: LucideIcons.calendarClock,
+        title: L10n.of(context).liveStreamScheduledDefault,
+        message: detailMessage,
       );
     }
 

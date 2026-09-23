@@ -143,6 +143,26 @@ class _ExamPrescreenState extends ConsumerState<ExamPrescreen> {
       );
     }
 
+    if (lesson?.isScheduled == true) {
+      final scheduledLesson = lesson!;
+      final scheduledMsg = scheduledLesson.scheduledMessage;
+      final detailMessage = (scheduledMsg != null && scheduledMsg.isNotEmpty)
+          ? scheduledMsg
+          : l10n.liveStreamScheduledDefault;
+
+      return LessonDetailShell(
+        title: scheduledLesson.title.isNotEmpty
+            ? scheduledLesson.title
+            : exam?.title ?? l10n.examDetailsTitle,
+        onBack: widget.onClose,
+        child: ContentNoticeView(
+          icon: LucideIcons.calendarClock,
+          title: l10n.liveStreamScheduledDefault,
+          message: detailMessage,
+        ),
+      );
+    }
+
     if (lessonDetailAsync.hasError) {
       return LessonDetailShell(
         title: lesson?.title ?? exam?.title ?? l10n.examDetailsTitle,

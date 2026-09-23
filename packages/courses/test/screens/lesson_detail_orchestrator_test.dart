@@ -218,4 +218,99 @@ void main() {
       expect(prevClicked, isTrue);
     });
   });
+
+  group('LessonDetailOrchestrator Scheduled Content', () {
+    const scheduledMessage =
+        'This content will be unlocked on 25th Sep 2026 03:26 AM.';
+    const scheduledVideoLesson = LessonDto(
+      id: '104',
+      chapterId: 'chapter-1',
+      title: 'Scheduled Video Lesson',
+      type: LessonType.video,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '10 min',
+      orderIndex: 4,
+      hasEnded: false,
+      isLocked: false,
+      isScheduled: true,
+      scheduledMessage: scheduledMessage,
+      pausedAttemptsCount: 0,
+      disableAttemptResume: false,
+      allowRetake: false,
+      maxRetakes: 0,
+      hasAttempts: false,
+      isRunning: false,
+      isUpcoming: false,
+      isDetailFetched: true,
+      bookmarkId: 99,
+    );
+
+    testWidgets('shows scheduled notice view for scheduled video lesson',
+        (tester) async {
+      var nextClicked = false;
+      var prevClicked = false;
+
+      await tester.pumpWidget(wrap(
+        LessonDetailOrchestrator(
+          lesson: scheduledVideoLesson,
+          onNext: () => nextClicked = true,
+          onPrevious: () => prevClicked = true,
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      // Should NOT render skeleton loader
+      expect(find.byType(LessonDetailSkeleton), findsNothing);
+
+      // Should render scheduled clock icon, title, and unlock message
+      expect(find.byIcon(LucideIcons.calendarClock), findsOneWidget);
+      expect(find.text('This content is scheduled'), findsOneWidget);
+      expect(find.text(scheduledMessage), findsOneWidget);
+
+      // Should NOT render bookmark or completed action
+      expect(find.byIcon(LucideIcons.bookmark), findsNothing);
+      expect(find.byIcon(LucideIcons.bookmarkOff), findsNothing);
+      expect(find.text('Completed'), findsNothing);
+      expect(find.text('Mark as completed'), findsNothing);
+
+      // Should NOT render Ask Doubt FAB
+      expect(find.byType(AskDoubtFab), findsNothing);
+
+      // Footer Next / Previous should be rendered and functional
+      expect(find.text('Next'), findsOneWidget);
+      expect(find.text('Previous'), findsOneWidget);
+
+      await tester.tap(find.text('Next'));
+      await tester.pump();
+      expect(nextClicked, isTrue);
+
+      await tester.tap(find.text('Previous'));
+      await tester.pump();
+      expect(prevClicked, isTrue);
+    });
+
+    for (final type in [
+      LessonType.embedContent,
+      LessonType.notes,
+      LessonType.attachment,
+      LessonType.pdf,
+    ]) {
+      testWidgets(
+          'shows scheduled notice view for scheduled ${type.name} lesson',
+          (tester) async {
+        final lesson = scheduledVideoLesson.copyWith(type: type);
+
+        await tester.pumpWidget(wrap(
+          LessonDetailOrchestrator(
+            lesson: lesson,
+          ),
+        ));
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(LucideIcons.calendarClock), findsOneWidget);
+        expect(find.text('This content is scheduled'), findsOneWidget);
+        expect(find.text(scheduledMessage), findsOneWidget);
+      });
+    }
+  });
 }
