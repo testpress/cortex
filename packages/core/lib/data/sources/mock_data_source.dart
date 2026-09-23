@@ -1482,6 +1482,11 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<String> getPresignedSsoUrl() async {
+    return '/sso/mock-token/';
+  }
+
+  @override
   Future<void> registerDeviceToken({
     required String token,
     required String hardwareId,

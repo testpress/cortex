@@ -53,4 +53,9 @@ class UserRepository {
   Future<void> registerDeviceToken(String token, String hardwareId) async {
     await _source.registerDeviceToken(token: token, hardwareId: hardwareId);
   }
+
+  /// Fetches a presigned SSO URL path for authenticating WebViews.
+  Future<String> getPresignedSsoUrl() {
+    return _source.getPresignedSsoUrl();
+  }
 }

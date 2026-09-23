@@ -13,6 +13,7 @@ class ApiEndpoints {
   static const String logout = '/api/v2.4/auth/logout/';
   static const String logoutDevices = '/api/v2.4/auth/logout_devices/';
   static const String resetPassword = '/api/v2.3/password/reset/';
+  static const String presignedSsoUrl = '/api/v2.3/presigned_sso_url/';
   static const String userProfile = '/api/v2.5/me/';
   static const String loginActivity = '/api/v2.3/me/login_activity/';
   static const String productCategories = '/api/v2.5/products/categories/';
