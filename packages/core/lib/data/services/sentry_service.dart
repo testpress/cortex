@@ -53,32 +53,44 @@ class SentryService {
       });
 
       // Attach to the global network error handler
-      onNetworkErrorCapture = (error, stackTrace) {
-        if (error is ApiException) {
-          if (error.type == ApiErrorType.noInternet) {
-            return;
-          }
+      attachNetworkErrorHandler();
+    }
+  }
 
-          final contexts = <String, dynamic>{
-            'api_details': {
-              'error_type': error.type.name,
-              if (error.statusCode != null) 'status_code': error.statusCode,
-              if (error.data != null)
-                'response_data': error.data is String
-                    ? error.data
-                    : jsonEncode(error.data),
-              if (error.error != null)
-                'underlying_error': error.error.toString(),
-            },
-          };
-
-          captureException(error, stackTrace: stackTrace, contexts: contexts);
+  /// Attaches the Sentry network error handler to the global [onNetworkErrorCapture] hook.
+  void attachNetworkErrorHandler() {
+    onNetworkErrorCapture = (error, stackTrace) {
+      if (error is ApiException) {
+        if (error.type == ApiErrorType.noInternet) {
           return;
         }
 
-        captureException(error, stackTrace: stackTrace);
-      };
-    }
+        String? responseData;
+        if (error.data != null) {
+          try {
+            responseData = error.data is String
+                ? error.data as String
+                : jsonEncode(error.data);
+          } catch (_) {
+            responseData = error.data.toString();
+          }
+        }
+
+        final contexts = <String, dynamic>{
+          'api_details': {
+            'error_type': error.type.name,
+            'status_code': ?error.statusCode,
+            'response_data': ?responseData,
+            'underlying_error': ?error.error?.toString(),
+          },
+        };
+
+        captureException(error, stackTrace: stackTrace, contexts: contexts);
+        return;
+      }
+
+      captureException(error, stackTrace: stackTrace);
+    };
   }
 
   /// Returns a navigation observer to track routing breadcrumbs without exposing Sentry types directly
