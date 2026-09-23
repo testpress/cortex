@@ -466,5 +466,41 @@ void main() {
         expect(lastTextField.controller?.text, '');
       },
     );
+
+    testWidgets(
+      'tapping avatar unfocuses active text field before opening bottom sheet',
+      (tester) async {
+        await tester.pumpWidget(wrap(const EditProfileScreen()));
+        await tester.pumpAndSettle();
+
+        final l10n = L10n.of(tester.element(find.byType(EditProfileScreen)));
+
+        final firstNameFinder = find.widgetWithText(
+          AppTextField,
+          l10n.editProfileFirstNameLabel,
+        );
+
+        // Focus the first name text field
+        await tester.tap(firstNameFinder);
+        await tester.pumpAndSettle();
+
+        final editableText = find.descendant(
+          of: firstNameFinder,
+          matching: find.byType(EditableText),
+        );
+        final editableWidget = tester.widget<EditableText>(editableText);
+        expect(editableWidget.focusNode.hasFocus, isTrue);
+
+        // Tap the avatar pencil icon
+        await tester.tap(find.byIcon(LucideIcons.pencil));
+        await tester.pumpAndSettle();
+
+        // Focus should be dismissed
+        expect(editableWidget.focusNode.hasFocus, isFalse);
+
+        // Bottom sheet should be open
+        expect(find.text(l10n.editProfileAvatarSheetTitle), findsOneWidget);
+      },
+    );
   });
 }
