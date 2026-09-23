@@ -302,6 +302,7 @@
   "chapterTypeEmbed": "محتوى مضمن",
   "chapterTypeNotes": "ملاحظات",
   "chapterTypeAttachment": "مرفق",
+  "chapterTypeAssignment": "واجب",
   "chapterTypeUnknown": "غير معروف",
   "chapterNoContent": "لا يوجد محتوى متاح",
   "chapterNotFound": "الفصل غير موجود",

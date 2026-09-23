@@ -451,6 +451,7 @@
   "chapterTypeEmbed": "Embed Content",
   "chapterTypeNotes": "Notes",
   "chapterTypeAttachment": "Attachment",
+  "chapterTypeAssignment": "Assignment",
   "chapterTypeUnknown": "Unknown",
   "chapterNoContent": "No content available",
   "chapterNotFound": "Chapter not found",

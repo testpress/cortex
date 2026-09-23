@@ -289,7 +289,7 @@ class ChapterContentItem extends StatelessWidget {
       case LessonType.test:
         return l10n.chapterTypeTest;
       case LessonType.assignment:
-        return 'Assignment';
+        return l10n.chapterTypeAssignment;
       case LessonType.unknown:
         return l10n.chapterTypeUnknown;
     }

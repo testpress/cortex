@@ -48,12 +48,6 @@ class AssignmentLessonViewer extends ConsumerWidget {
               chapterSlug: params.chapterSlug,
               contentId: params.contentId,
             );
-            if (!allowed &&
-                uri != null &&
-                (uri.scheme == 'http' || uri.scheme == 'https')) {
-              unawaited(launchUrl(uri, mode: LaunchMode.externalApplication));
-              return NavigationDecision.prevent;
-            }
             return allowed
                 ? NavigationDecision.navigate
                 : NavigationDecision.prevent;

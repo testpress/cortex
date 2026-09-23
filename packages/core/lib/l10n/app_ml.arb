@@ -302,6 +302,7 @@
   "chapterTypeEmbed": "എംബഡഡ് ഉള്ളടക്കം",
   "chapterTypeNotes": "കുറിപ്പുകൾ",
   "chapterTypeAttachment": "അറ്റാച്ച്‌മെന്റ്",
+  "chapterTypeAssignment": "അസൈൻമെന്റ്",
   "chapterTypeUnknown": "അജ്ഞാതം",
   "chapterNoContent": "ഉള്ളടക്കം ലഭ്യമല്ല",
   "chapterNotFound": "ചാപ്റ്റർ ലഭ്യമല്ല",
