@@ -4763,18 +4763,6 @@ abstract class AppLocalizations {
   /// **'Downloading Exam...'**
   String get downloadingExam;
 
-  /// No description provided for @deadlinePassedCannotSync.
-  ///
-  /// In en, this message translates to:
-  /// **'Deadline Passed. Exam cannot be synced.'**
-  String get deadlinePassedCannotSync;
-
-  /// No description provided for @pendingSyncConnectToUpload.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending Sync. Connect to internet to upload answers.'**
-  String get pendingSyncConnectToUpload;
-
   /// No description provided for @resumeOfflineExam.
   ///
   /// In en, this message translates to:

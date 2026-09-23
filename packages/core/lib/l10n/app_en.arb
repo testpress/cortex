@@ -1266,8 +1266,7 @@
   "defaultStudentName": "Student",
   "examCompletedLabel": "Exam completed",
   "downloadingExam": "Downloading Exam...",
-  "deadlinePassedCannotSync": "Deadline Passed. Exam cannot be synced.",
-  "pendingSyncConnectToUpload": "Pending Sync. Connect to internet to upload answers.",
+
   "resumeOfflineExam": "Resume offline exam",
   "startOfflineExam": "Start offline exam",
   "downloadExamOffline": "Download Exam (Offline)",

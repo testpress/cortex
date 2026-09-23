@@ -896,8 +896,7 @@
   "defaultStudentName": "طالب",
   "examCompletedLabel": "تم إكمال الامتحان",
   "downloadingExam": "جاري تنزيل الامتحان...",
-  "deadlinePassedCannotSync": "انتهى الموعد النهائي. لا يمكن مزامنة الامتحان.",
-  "pendingSyncConnectToUpload": "في انتظار المزامنة. اتصل بالإنترنت لتحميل الإجابات.",
+
   "resumeOfflineExam": "استئناف الامتحان غير المتصل",
   "startOfflineExam": "بدء الامتحان غير المتصل",
   "downloadExamOffline": "تنزيل الامتحان (للاستخدام غير المتصل)",

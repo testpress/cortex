@@ -2598,14 +2598,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get downloadingExam => 'Downloading Exam...';
 
   @override
-  String get deadlinePassedCannotSync =>
-      'Deadline Passed. Exam cannot be synced.';
-
-  @override
-  String get pendingSyncConnectToUpload =>
-      'Pending Sync. Connect to internet to upload answers.';
-
-  @override
   String get resumeOfflineExam => 'Resume offline exam';
 
   @override

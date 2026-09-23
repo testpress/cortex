@@ -2641,14 +2641,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get downloadingExam => 'தேர்வு பதிவிறக்கப்படுகிறது...';
 
   @override
-  String get deadlinePassedCannotSync =>
-      'காலக்கெடு முடிந்தது. தேர்வை ஒத்திசைக்க முடியாது.';
-
-  @override
-  String get pendingSyncConnectToUpload =>
-      'ஒத்திசைக்க காத்திருக்கிறது. பதில்களைப் பதிவேற்ற இணையத்துடன் இணைக்கவும்.';
-
-  @override
   String get resumeOfflineExam => 'ஆஃப்லைன் தேர்வை மீண்டும் தொடங்கு';
 
   @override

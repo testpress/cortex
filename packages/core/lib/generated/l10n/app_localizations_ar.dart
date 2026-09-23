@@ -2604,14 +2604,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get downloadingExam => 'جاري تنزيل الامتحان...';
 
   @override
-  String get deadlinePassedCannotSync =>
-      'انتهى الموعد النهائي. لا يمكن مزامنة الامتحان.';
-
-  @override
-  String get pendingSyncConnectToUpload =>
-      'في انتظار المزامنة. اتصل بالإنترنت لتحميل الإجابات.';
-
-  @override
   String get resumeOfflineExam => 'استئناف الامتحان غير المتصل';
 
   @override
