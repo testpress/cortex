@@ -470,7 +470,7 @@ class _VideoThumbnail extends StatelessWidget {
                   ),
                   child: AppText.labelSmall(
                     item.duration!,
-                    color: design.colors.textInverse,
+                    color: design.colors.onPrimary,
                   ),
                 ),
               ),
@@ -635,7 +635,7 @@ class _DownloadProgressBar extends StatelessWidget {
         height: 4,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: design.colors.surfaceVariant,
+          color: design.colors.progressBackground,
           borderRadius: design.radius.pill,
         ),
         child: FractionallySizedBox(

@@ -140,6 +140,9 @@ class _FilterTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: design.radius.pill,
+            border: Border.all(
+              color: isSelected ? bgColor : design.colors.border,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

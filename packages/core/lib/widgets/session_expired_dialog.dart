@@ -27,12 +27,18 @@ class SessionExpiredDialog extends StatelessWidget {
     return PopScope(
       // Prevent back button from dismissing the dialog
       canPop: false,
-      child: ColoredBox(
-        color: design.colors.overlay,
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
-            child: _DialogCard(message: message, onSignIn: onSignIn),
+      child: DefaultTextStyle(
+        style: design.typography.body.copyWith(
+          color: design.colors.textPrimary,
+          decoration: TextDecoration.none,
+        ),
+        child: ColoredBox(
+          color: design.colors.overlay,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.xl),
+              child: _DialogCard(message: message, onSignIn: onSignIn),
+            ),
           ),
         ),
       ),

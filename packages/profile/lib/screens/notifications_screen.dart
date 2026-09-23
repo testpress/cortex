@@ -232,9 +232,7 @@ class _ToggleControl extends StatelessWidget {
           height: trackHeight,
           padding: EdgeInsets.all((trackHeight - knobSize) / 2),
           decoration: BoxDecoration(
-            color: enabled
-                ? design.colors.accent2
-                : design.colors.surfaceVariant,
+            color: enabled ? design.colors.accent2 : design.colors.border,
             borderRadius: BorderRadius.circular(design.radius.full),
           ),
           child: AnimatedAlign(
@@ -245,7 +243,7 @@ class _ToggleControl extends StatelessWidget {
               width: knobSize,
               height: knobSize,
               decoration: BoxDecoration(
-                color: design.colors.textInverse,
+                color: design.colors.onPrimary,
                 borderRadius: BorderRadius.circular(design.radius.full),
                 boxShadow: design.shadows.surfaceSoft,
               ),

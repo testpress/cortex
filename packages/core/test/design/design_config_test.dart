@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/design/design_config.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   group('DesignColors Parsing and Calculation Tests', () {
     test('parseColor handles standard hex codes correctly', () {
       expect(DesignColors.parseColor('FFFFFF'), const Color(0xFFFFFFFF));
@@ -49,6 +51,55 @@ void main() {
       expect(darkened.r, closeTo(127.5 / 255.0, 0.05));
       expect(darkened.g, closeTo(127.5 / 255.0, 0.05));
       expect(darkened.b, closeTo(127.5 / 255.0, 0.05));
+    });
+
+    test('adaptPrimary lightens dark brand colors in dark mode', () {
+      const darkNavy = Color(0xFF0F172A); // Very dark navy
+      expect(DesignColors.luminance(darkNavy), lessThan(0.05));
+
+      final adapted = DesignColors.adaptPrimary(darkNavy, isDark: true);
+      expect(DesignColors.luminance(adapted), greaterThanOrEqualTo(0.20));
+      expect(
+        DesignColors.luminance(adapted),
+        greaterThan(DesignColors.luminance(darkNavy)),
+      );
+    });
+
+    test('adaptPrimary darkens light brand colors in light mode', () {
+      const brightYellow = Color(0xFFFEF08A); // Very bright pastel yellow
+      expect(DesignColors.luminance(brightYellow), greaterThan(0.80));
+
+      final adapted = DesignColors.adaptPrimary(brightYellow, isDark: false);
+      expect(DesignColors.luminance(adapted), lessThanOrEqualTo(0.50));
+      expect(
+        DesignColors.luminance(adapted),
+        lessThan(DesignColors.luminance(brightYellow)),
+      );
+    });
+
+    test('adaptPrimary preserves balanced brand colors', () {
+      const standardIndigo = Color(0xFF6366F1); // Balanced primary
+      final lightAdapted = DesignColors.adaptPrimary(
+        standardIndigo,
+        isDark: false,
+      );
+      expect(lightAdapted, standardIndigo);
+    });
+
+    test('DesignColors and DesignConfig accept and adapt custom primary', () {
+      const darkNavy = Color(0xFF0F172A);
+      final darkColors = DesignColors.dark(primary: darkNavy);
+      expect(
+        DesignColors.luminance(darkColors.primary),
+        greaterThanOrEqualTo(0.20),
+      );
+
+      const brightYellow = Color(0xFFFEF08A);
+      final lightConfig = DesignConfig.light(primary: brightYellow);
+      expect(
+        DesignColors.luminance(lightConfig.colors.primary),
+        lessThanOrEqualTo(0.50),
+      );
     });
   });
 }
