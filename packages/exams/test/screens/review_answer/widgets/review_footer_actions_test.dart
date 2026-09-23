@@ -11,7 +11,10 @@ void main() {
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, _) => Directionality(
         textDirection: TextDirection.ltr,
-        child: DesignProvider(config: DesignConfig.light(), child: child),
+        child: DesignProvider(
+          config: DesignConfig.light(),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [child]),
+        ),
       ),
     );
   }
@@ -101,5 +104,6 @@ void main() {
     expect(find.text('Ask Doubt'), findsNothing);
     expect(find.text('Report'), findsNothing);
     expect(find.byType(ReviewFooterActions), findsOneWidget);
+    expect(tester.getSize(find.byType(ReviewFooterActions)), Size.zero);
   });
 }
