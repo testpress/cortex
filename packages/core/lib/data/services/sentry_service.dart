@@ -53,6 +53,9 @@ class SentryService {
 
       // Attach to the global network error handler
       onNetworkErrorCapture = (error, stackTrace) {
+        if (error is ApiException && error.type == ApiErrorType.noInternet) {
+          return;
+        }
         captureException(error, stackTrace: stackTrace);
       };
     }
