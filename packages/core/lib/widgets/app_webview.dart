@@ -28,7 +28,7 @@ class AppWebView extends ConsumerStatefulWidget {
     this.permissions,
     this.mediaMode = false,
     this.showHeader = false,
-    this.useSafeArea = false,
+    this.useSafeArea = true,
     this.onNavigationRequest,
   });
 

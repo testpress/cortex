@@ -35,6 +35,7 @@ class AssignmentLessonViewer extends ConsumerWidget {
           key: ValueKey('assignment_webview_${lesson.id}'),
           url: ssoUrl,
           showHeader: false,
+          useSafeArea: false,
           mediaMode: true,
           onNavigationRequest: (request) {
             final uri = Uri.tryParse(request.url);
