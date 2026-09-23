@@ -34,7 +34,7 @@ jobs:
           lfs: true
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -44,6 +44,26 @@ jobs:
         with:
           flutter-version: '3.44.4'
           cache: true
+
+      # Cache Gradle wrapper distribution (~150 MB gradle-8.14-all.zip).
+      # Keyed on the distributionUrl so a Gradle version bump busts the cache.
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/wrapper
+          key: gradle-wrapper-${{ hashFiles('app/android/gradle/wrapper/gradle-wrapper.properties') }}
+
+      # Cache Gradle build outputs (compiled classes, dependency jars, R8 outputs).
+      # Keyed on a hash of all Gradle build scripts + pubspec.lock so a dependency
+      # or build-config change correctly busts the cache.
+      # A restore-key fallback allows a partial cache hit on pubspec.lock changes.
+      - name: Cache Gradle caches
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: gradle-caches-${{ hashFiles('app/android/**/*.gradle.kts', 'app/android/gradle.properties', 'app/pubspec.lock', 'packages/**/pubspec.lock') }}
+          restore-keys: |
+            gradle-caches-
 
       - name: Setup Ruby & Fastlane
         uses: ruby/setup-ruby@v1
@@ -60,6 +80,14 @@ jobs:
               (cd "$dir" && flutter pub get)
             fi
           done
+
+      # Pre-install Android SDK components that native plugins (sqlite3_flutter_libs,
+      # jni) would otherwise download during bundleRelease, adding ~3-5 min.
+      - name: Pre-install Android SDK components
+        run: |
+          echo "Installing required Android SDK components..."
+          sdkmanager --install "platforms;android-31" "cmake;3.22.1" 2>&1 | tail -5
+          echo "SDK components installed."
 
       - name: Prepare Release Configuration
         id: prep
@@ -84,16 +112,21 @@ jobs:
           APP_VERSION: ${{ steps.prep.outputs.version }}
           BUILD_NUMBER: ${{ steps.prep.outputs.build_number }}
         run: |
+          echo "::group::Flutter build appbundle"
+          BUILD_START=$SECONDS
           flutter build appbundle --release \
             --build-name="$APP_VERSION" \
             --build-number="$BUILD_NUMBER" \
             --dart-define-from-file=dart_defines.json
+          BUILD_DURATION=$(( SECONDS - BUILD_START ))
+          echo "::endgroup::"
+          echo "Android build completed in ${BUILD_DURATION}s ($(( BUILD_DURATION / 60 ))m $(( BUILD_DURATION % 60 ))s)"
 
       - name: Deploy to Google Play Store
         run: bundle exec fastlane android deploy
 
       - name: Upload AAB Artifact
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.subdomain }}-Android-AAB

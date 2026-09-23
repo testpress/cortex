@@ -50,12 +50,18 @@ jobs:
           flutter-version: '3.44.4'
           cache: true
 
+      - name: Disable Swift Package Manager
+        run: flutter config --no-enable-swift-package-manager
+
       - name: Setup Ruby & Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
           working-directory: fastlane
+
+      - name: Install System Dependencies
+        run: brew install --quiet imagemagick
 
       - name: Install Signing Certificate
         env:
@@ -98,32 +104,40 @@ jobs:
               --platform=ios
           fi
 
-      - name: Fetch Provisioning Profile (Fastlane Sigh)
-        run: bundle exec fastlane ios get_profile
-
       - name: Install CocoaPods
-        working-directory: app/ios
-        run: pod install
+        # ruby/setup-ruby switches to Ruby 3.2, breaking the pre-installed system
+        # CocoaPods. Reinstall it in the new Ruby environment so `pod` is usable
+        # by both this step and Flutter's internal pod install during the build.
+        run: |
+          gem install cocoapods --no-document
+          cd app/ios && pod install
 
-      - name: Build iOS IPA (Release)
-        working-directory: app
+      # Single lane handles everything: get_provisioning_profile → flutter build
+      # (--no-codesign) → build_app export with manual signing → upload_to_testflight.
+      # Mirrors the reference repo pattern exactly, Flutter compilation is the only addition.
+      - name: Build & Deploy to TestFlight
         env:
           APP_VERSION: ${{ steps.prep.outputs.version }}
           BUILD_NUMBER: ${{ steps.prep.outputs.build_number }}
-        run: |
-          flutter build ipa --release \
-            --build-name="$APP_VERSION" \
-            --build-number="$BUILD_NUMBER" \
-            --dart-define-from-file=dart_defines.json
-
-      - name: Deploy to TestFlight
         run: bundle exec fastlane ios deploy
 
       - name: Upload IPA Artifact
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.subdomain }}-iOS-IPA
-          path: app/build/ios/ipa/*.ipa
+          # gym (build_app) outputs the IPA to the workspace root by default.
+          # The glob covers both gym's default location and flutter build ipa's path.
+          path: |
+            *.ipa
+            app/build/ios/ipa/*.ipa
           retention-days: 14
           if-no-files-found: warn
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.subdomain }}-iOS-gym-logs
+          path: ~/Library/Logs/gym/
+          if-no-files-found: ignore
