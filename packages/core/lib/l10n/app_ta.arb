@@ -1179,6 +1179,7 @@
   "noAnswerGiven": "(பதில் அளிக்கப்படவில்லை)",
   "correctAnswerLabel": "சரியான பதில்:",
   "errorOfflineDataNotFound": "தேர்வு தரவு கிடைக்கவில்லை. உங்கள் பதில்கள் சமர்ப்பிக்கப்படாமல் போகலாம்.",
+  "errorOfflineExamAlreadySynced": "இந்த ஆஃப்லைன் தேர்வு ஏற்கனவே சமர்ப்பிக்கப்பட்டு ஒத்திசைக்கப்பட்டது.",
   "reviewScore": "மதிப்பெண்",
   "reviewPerformanceExcellent": "சிறப்பான செயல்பாடு",
   "reviewPerformanceAverage": "சராசரி செயல்பாடு",

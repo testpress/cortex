@@ -1286,6 +1286,10 @@
   "@errorOfflineDataNotFound": {
     "description": "Error message when local offline exam data goes missing"
   },
+  "errorOfflineExamAlreadySynced": "This offline exam has already been submitted and synced.",
+  "@errorOfflineExamAlreadySynced": {
+    "description": "Error message when attempting to start an offline exam that has already been synced"
+  },
   "reviewScore": "Score",
   "reviewPerformanceExcellent": "Excellent Performance",
   "reviewPerformanceAverage": "Average Performance",

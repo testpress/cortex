@@ -2661,6 +2661,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'لم يتم العثور على بيانات الاختبار. قد لا يتم إرسال إجاباتك.';
 
   @override
+  String get errorOfflineExamAlreadySynced =>
+      'تم إرسال هذا الاختبار غير المتصل بالإنترنت ومزامنته بالفعل.';
+
+  @override
   String get reviewScore => 'النتيجة';
 
   @override

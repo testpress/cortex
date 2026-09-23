@@ -378,9 +378,13 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
               ),
               SizedBox(height: design.spacing.sm),
               AppText.body(
-                state.errorMessage == ExamErrorCodes.offlineDataNotFound
-                    ? l10n.errorOfflineDataNotFound
-                    : (state.errorMessage ?? l10n.errorUnknownOccurred),
+                switch (state.errorMessage) {
+                  ExamErrorCodes.offlineDataNotFound =>
+                    l10n.errorOfflineDataNotFound,
+                  ExamErrorCodes.offlineExamAlreadySynced =>
+                    l10n.errorOfflineExamAlreadySynced,
+                  _ => state.errorMessage ?? l10n.errorUnknownOccurred,
+                },
                 textAlign: TextAlign.center,
                 color: design.colors.textSecondary,
               ),

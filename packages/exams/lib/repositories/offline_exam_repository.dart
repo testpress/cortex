@@ -197,11 +197,27 @@ class OfflineExamRepository implements ExamRepository {
   Future<void> _startOfflineExam(ExamDto exam, bool isQuizMode) async {
     _emit(ExamAttemptState(status: ExamAttemptStatus.loading, exam: exam));
     try {
-      var row = await _db.getDownloadByContentId(_contentId);
-      if (row == null) throw Exception("Offline exam not found");
+      final row = await _db.getDownloadByContentId(_contentId);
+      if (row == null) {
+        _emit(
+          ExamAttemptState(
+            status: ExamAttemptStatus.error,
+            exam: exam,
+            errorMessage: ExamErrorCodes.offlineDataNotFound,
+          ),
+        );
+        return;
+      }
 
       if (row.status == 'SYNCED') {
-        throw Exception("Offline exam has already been submitted and synced");
+        _emit(
+          ExamAttemptState(
+            status: ExamAttemptStatus.error,
+            exam: exam,
+            errorMessage: ExamErrorCodes.offlineExamAlreadySynced,
+          ),
+        );
+        return;
       }
 
       // Mark as IN_PROGRESS (normal resume/start)

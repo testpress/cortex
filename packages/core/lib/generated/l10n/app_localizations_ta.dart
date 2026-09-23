@@ -2698,6 +2698,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'தேர்வு தரவு கிடைக்கவில்லை. உங்கள் பதில்கள் சமர்ப்பிக்கப்படாமல் போகலாம்.';
 
   @override
+  String get errorOfflineExamAlreadySynced =>
+      'இந்த ஆஃப்லைன் தேர்வு ஏற்கனவே சமர்ப்பிக்கப்பட்டு ஒத்திசைக்கப்பட்டது.';
+
+  @override
   String get reviewScore => 'மதிப்பெண்';
 
   @override

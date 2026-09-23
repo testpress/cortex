@@ -47,8 +47,10 @@ Stream<OfflineExamDownloadsTableData?> offlineExamDownload(
   Ref ref,
   String contentId,
 ) async* {
-  final db = await ref.watch(appDatabaseProvider.future);
-  yield* db.watchDownloadByContentId(contentId);
+  final repo = await ref.watch(
+    offlineExamRepositoryFactoryProvider(contentId).future,
+  );
+  yield* repo.watchDownloadStatus();
 }
 
 /// Fetches attempt history for an exam.

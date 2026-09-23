@@ -181,7 +181,7 @@ class _OfflineExamRepositoryFactoryProviderElement
 }
 
 String _$offlineExamDownloadHash() =>
-    r'593e196a4cefdd1077ddf1c38131aa0f4fe63461';
+    r'8fdb2580693beb43d641fcd2560d0433152bac64';
 
 /// Streams the SQLite download record for a specific exam.
 ///

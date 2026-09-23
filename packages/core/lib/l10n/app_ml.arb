@@ -934,6 +934,7 @@
   "noAnswerGiven": "(ഉത്തരം നൽകിയിട്ടില്ല)",
   "correctAnswerLabel": "ശരിയായ ഉത്തരം:",
   "errorOfflineDataNotFound": "പരീക്ഷാ ഡാറ്റ കണ്ടെത്തിയില്ല. നിങ്ങളുടെ ഉത്തരങ്ങൾ സമർപ്പിച്ചേക്കില്ല.",
+  "errorOfflineExamAlreadySynced": "ഈ ഓഫ്‌ലൈൻ പരീക്ഷ ഇതിനകം സമർപ്പിക്കുകയും സമന്വയിപ്പിക്കുകയും ചെയ്‌തു.",
   "reviewScore": "സ്കോർ",
   "reviewPerformanceExcellent": "മികച്ച പ്രകടനം",
   "reviewPerformanceAverage": "ശരാശരി പ്രകടനം",
