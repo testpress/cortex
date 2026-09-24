@@ -284,7 +284,7 @@ class _AssessmentDetailScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppHtml(
+          AppHtmlV2(
             data: q.text,
             fontSize: 17,
             textColor: design.colors.textPrimary,
@@ -394,7 +394,7 @@ class _AssessmentDetailScreenState
                 ),
                 SizedBox(width: design.spacing.sm),
                 Expanded(
-                  child: AppHtml(
+                  child: AppHtmlV2(
                     data: q.explanation!,
                     fontSize: 14,
                     textColor: design.colors.textPrimary,
