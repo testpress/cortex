@@ -345,7 +345,7 @@ final courseSyncMetadataProvider =
 );
 
 typedef _$CourseSyncMetadata = Notifier<DateTime?>;
-String _$courseListHash() => r'6741d1f5cc13fd5bdfeedeae4a4fd2356c3eb9d1';
+String _$courseListHash() => r'5b9495ae5ba7f12db18f742c9df0dcc0f67ae93e';
 
 /// See also [CourseList].
 @ProviderFor(CourseList)

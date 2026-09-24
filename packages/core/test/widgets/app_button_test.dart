@@ -95,4 +95,44 @@ void main() {
       expect(buttonBox.height, greaterThanOrEqualTo(48.0));
     });
   });
+
+  group('AppButton Loading State', () {
+    testWidgets('maintains exact size when transitioning to loading', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(AppButton.primary(label: 'Retry', onPressed: () {})),
+      );
+      final sizeIdle = tester.getSize(find.byType(AppButton));
+
+      await tester.pumpWidget(
+        wrap(
+          AppButton.primary(label: 'Retry', onPressed: () {}, loading: true),
+        ),
+      );
+      final sizeLoading = tester.getSize(find.byType(AppButton));
+
+      expect(sizeLoading, equals(sizeIdle));
+    });
+
+    testWidgets('maintains primary background color when loading', (
+      tester,
+    ) async {
+      final config = DesignConfig.defaults();
+      await tester.pumpWidget(
+        wrap(
+          AppButton.primary(label: 'Retry', onPressed: () {}, loading: true),
+        ),
+      );
+
+      final container = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(AppButton),
+          matching: find.byType(Container),
+        ),
+      );
+      final decoration = container.decoration as BoxDecoration;
+      expect(decoration.color, equals(config.colors.primary));
+    });
+  });
 }

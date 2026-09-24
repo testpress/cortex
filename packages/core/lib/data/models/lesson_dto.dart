@@ -870,7 +870,7 @@ class LessonDto {
       image:
           json['cover_image_medium'] as String? ??
           json['cover_image'] as String?,
-      start: getString('start'),
+      start: getString('start') ?? getString('start_date'),
       end: getString('end'),
       hasEnded: json['has_ended'] as bool? ?? false,
       isRunning:

@@ -58,8 +58,23 @@ Stream<LessonDto?> liveClassDetail(
           .cast<LessonDto?>(),
     ]);
   } else {
-    // Already have complete data: Safe to refresh in the background silently
-    repository.refreshLiveClass(lessonId).ignore();
-    yield* dbStream;
+    // Already have complete data: Safe to refresh in the background silently,
+    // but propagate critical access errors (401, 403, 404).
+    yield* StreamGroup.merge<LessonDto?>([
+      dbStream,
+      repository
+          .refreshLiveClass(lessonId)
+          .asStream()
+          .handleError((e) {
+            if (e is ApiException &&
+                (e.type == ApiErrorType.forbidden ||
+                    e.type == ApiErrorType.unauthorized ||
+                    e.type == ApiErrorType.notFound)) {
+              throw e;
+            }
+          })
+          .where((_) => false)
+          .cast<LessonDto?>(),
+    ]);
   }
 }

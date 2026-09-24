@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,7 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
   final Object? error;
 
   /// Optional callback to retry fetching lesson detail when in error state.
-  final VoidCallback? onRetry;
+  final FutureOr<dynamic> Function()? onRetry;
 
   @override
   ConsumerState<LessonDetailOrchestrator> createState() =>
@@ -204,7 +205,10 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle: (!lesson.hasEnded && !isLocked && bookmarksEnabled)
+          onBookmarkToggle: (!lesson.hasEnded &&
+                  !isLocked &&
+                  !lesson.isScheduled &&
+                  bookmarksEnabled)
               ? () {
                   if (isBookmarked) {
                     _removeBookmark(lesson);
@@ -213,12 +217,15 @@ class _LessonDetailOrchestratorState
                   }
                 }
               : null,
-          onMarkAsCompleted:
-              (!lesson.hasEnded && !isLocked && supportsManualCompletion)
-                  ? _markAsCompleted
-                  : null,
+          onMarkAsCompleted: (!lesson.hasEnded &&
+                  !isLocked &&
+                  !lesson.isScheduled &&
+                  supportsManualCompletion)
+              ? _markAsCompleted
+              : null,
           onDownload: (!lesson.hasEnded &&
                   !isLocked &&
+                  !lesson.isScheduled &&
                   canDownload &&
                   !isDownloaded &&
                   !isDownloading)
@@ -230,6 +237,7 @@ class _LessonDetailOrchestratorState
           stickyFooter: lesson.type != LessonType.assignment &&
               (lesson.hasEnded ||
                   isLocked ||
+                  lesson.isScheduled ||
                   widget.error != null ||
                   (lesson.type != LessonType.video &&
                       lesson.type != LessonType.liveStream)),
@@ -237,6 +245,7 @@ class _LessonDetailOrchestratorState
         ),
         if (!lesson.hasEnded &&
             !isLocked &&
+            !lesson.isScheduled &&
             lesson.isComplete &&
             helpdeskEnabled &&
             [
@@ -340,6 +349,21 @@ class _LessonDetailOrchestratorState
       );
     }
 
+    if (lesson.isScheduled &&
+        lesson.type != LessonType.liveStream &&
+        lesson.type != LessonType.videoConference) {
+      final scheduledMsg = lesson.scheduledMessage;
+      final detailMessage = (scheduledMsg != null && scheduledMsg.isNotEmpty)
+          ? scheduledMsg
+          : L10n.of(context).liveStreamScheduledDefault;
+
+      return ContentNoticeView(
+        icon: LucideIcons.calendarClock,
+        title: L10n.of(context).liveStreamScheduledDefault,
+        message: detailMessage,
+      );
+    }
+
     if (widget.customBuilder != null) {
       final customWidget = widget.customBuilder!(context, lesson);
       if (customWidget is! SizedBox) {
@@ -347,7 +371,14 @@ class _LessonDetailOrchestratorState
       }
     }
 
-    if (widget.error != null && !lesson.isComplete) {
+    final isAccessError = widget.error is ApiException &&
+        ([
+          ApiErrorType.forbidden,
+          ApiErrorType.unauthorized,
+          ApiErrorType.notFound,
+        ].contains((widget.error as ApiException).type));
+
+    if (widget.error != null && (isAccessError || !lesson.isComplete)) {
       return Center(
         child: AppErrorView(
           error: widget.error,

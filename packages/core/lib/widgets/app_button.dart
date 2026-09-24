@@ -79,7 +79,9 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final isDisabled = (onPressed == null && onNavigate == null) || loading;
+    final isDisabled = (onPressed == null && onNavigate == null) && !loading;
+    final isActionBlocked =
+        (onPressed == null && onNavigate == null) || loading;
 
     final effectiveBackgroundColor =
         backgroundColor ??
@@ -90,7 +92,9 @@ class AppButton extends StatelessWidget {
     final effectiveForegroundColor =
         foregroundColor ??
         (variant == AppButtonVariant.primary
-            ? design.colors.onPrimary
+            ? (isDisabled
+                  ? design.colors.textTertiary
+                  : design.colors.onPrimary)
             : (isDisabled
                   ? design.colors.textTertiary
                   : design.colors.primary));
@@ -112,9 +116,9 @@ class AppButton extends StatelessWidget {
     return AppSemantics.button(
       label: label,
       onTap: handleTap,
-      enabled: !isDisabled,
+      enabled: !isActionBlocked,
       child: AppFocusable(
-        onTap: isDisabled ? null : handleTap,
+        onTap: isActionBlocked ? null : handleTap,
         borderRadius: design.radius.button,
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: height),
@@ -173,11 +177,12 @@ class AppButton extends StatelessWidget {
 
                   // Loading Indicator
                   if (loading)
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: AppLoadingIndicator(
-                        color: effectiveForegroundColor,
+                    Positioned.fill(
+                      child: Center(
+                        child: AppLoadingIndicator(
+                          color: effectiveForegroundColor,
+                          size: 18,
+                        ),
                       ),
                     ),
                 ],

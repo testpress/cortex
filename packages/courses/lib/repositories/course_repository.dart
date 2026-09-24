@@ -905,6 +905,12 @@ class CourseRepository {
       }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
+      if (e is ApiException &&
+          (e.type == ApiErrorType.forbidden ||
+              e.type == ApiErrorType.unauthorized ||
+              e.type == ApiErrorType.notFound)) {
+        rethrow;
+      }
     }
   }
 

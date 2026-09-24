@@ -60,6 +60,25 @@ void main() {
       expect(dto.hasEnded, false);
     });
 
+    test('falls back to start_date when start is absent', () {
+      final json = lessonJson();
+      json['start_date'] = '2024-05-01T10:00:00Z';
+
+      final dto = LessonDto.fromJson(json);
+
+      expect(dto.start, '2024-05-01T10:00:00Z');
+    });
+
+    test('prefers start over start_date when both are present', () {
+      final json = lessonJson();
+      json['start'] = '2024-05-01T10:00:00Z';
+      json['start_date'] = '2024-06-01T10:00:00Z';
+
+      final dto = LessonDto.fromJson(json);
+
+      expect(dto.start, '2024-05-01T10:00:00Z');
+    });
+
     test(
       'exam with attempts_count > 0 and explicit state=completed remains completed',
       () {

@@ -65,7 +65,13 @@ class StudyRoutes {
                     child: LessonDetailOrchestrator(
                       lesson: activeLesson,
                       error: lessonAsync.hasError ? lessonAsync.error : null,
-                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
+                      onRetry: () async {
+                        final repo = await ref.read(
+                          courseRepositoryProvider.future,
+                        );
+                        await repo.refreshLesson(id);
+                        ref.invalidate(lessonDetailProvider(id));
+                      },
                       onNext: activeLesson.nextContentId != null
                           ? () => context.pushReplacement(
                               '/study/lesson/${activeLesson.nextContentId}',
@@ -99,7 +105,13 @@ class StudyRoutes {
                   error: (error, _) {
                     return AppErrorView(
                       error: error,
-                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
+                      onRetry: () async {
+                        final repo = await ref.read(
+                          courseRepositoryProvider.future,
+                        );
+                        await repo.refreshLesson(id);
+                        ref.invalidate(lessonDetailProvider(id));
+                      },
                     );
                   },
                 );
