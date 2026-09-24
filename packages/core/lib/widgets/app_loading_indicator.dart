@@ -3,8 +3,9 @@ import '../design/design_provider.dart';
 
 class AppLoadingIndicator extends StatefulWidget {
   final Color? color;
+  final double size;
 
-  const AppLoadingIndicator({super.key, this.color});
+  const AppLoadingIndicator({super.key, this.color, this.size = 24.0});
 
   @override
   State<AppLoadingIndicator> createState() => _AppLoadingIndicatorState();
@@ -32,14 +33,15 @@ class _AppLoadingIndicatorState extends State<AppLoadingIndicator>
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final innerSize = widget.size * (20 / 24);
     return SizedBox(
-      width: 24,
-      height: 24,
+      width: widget.size,
+      height: widget.size,
       child: Center(
         child: RotationTransition(
           turns: _controller,
           child: CustomPaint(
-            size: const Size(20, 20),
+            size: Size(innerSize, innerSize),
             painter: _LoadingIndicatorPainter(
               color: widget.color ?? design.colors.primary,
             ),

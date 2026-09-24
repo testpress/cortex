@@ -210,10 +210,65 @@ void main() {
           container.read(chapterStatusFilterProvider), ChapterStatusFilter.all);
       container.dispose();
     });
+
+    testWidgets(
+        'renders AppErrorView when access error (403 forbidden web_only) occurs even if cached lessons exist',
+        (tester) async {
+      const forbiddenError = ApiException(
+        'This chapter belongs to a course which can be accessed only from web.',
+        type: ApiErrorType.forbidden,
+        statusCode: 403,
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          const ChapterDetailPage(
+            courseId: 'course-1',
+            chapterId: 'chapter-1',
+          ),
+          overrides: [
+            chapterDetailProvider('course-1', 'chapter-1').overrideWith(
+                (ref) => Stream.value((testChapter, 'Test Course'))),
+            chapterDetailControllerProvider.overrideWith(
+              () => _MockForbiddenSyncingController(forbiddenError),
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // AppErrorView is shown
+      expect(find.byType(AppErrorView), findsOneWidget);
+      expect(
+        find.text(
+          'This chapter belongs to a course which can be accessed only from web.',
+        ),
+        findsOneWidget,
+      );
+      // Cached lessons are blocked
+      expect(find.text('Running Lesson'), findsNothing);
+      expect(find.text('Upcoming Lesson'), findsNothing);
+    });
   });
 }
 
 class _MockSyncingController extends ChapterDetailController {
   @override
   bool build() => true; // Simulate background sync in progress
+}
+
+class _MockForbiddenSyncingController extends ChapterDetailController {
+  final Object error;
+  _MockForbiddenSyncingController(this.error);
+
+  @override
+  bool build() => false;
+
+  @override
+  Future<void> initialSync(String courseId, String chapterId) async {
+    ref
+        .read(chapterDetailAccessErrorProvider(courseId, chapterId).notifier)
+        .setError(error);
+  }
 }

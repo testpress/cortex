@@ -69,9 +69,25 @@ Stream<LessonDto?> lessonDetail(LessonDetailRef ref, String lessonId) async* {
           .cast<LessonDto?>(),
     ]);
   } else {
-    // Already have complete data: Safe to refresh in the background silently
-    repository.refreshLesson(lessonId).ignore();
-    yield* dbStream;
+    // Already have complete data: Safe to refresh in the background silently,
+    // but propagate critical access errors (401, 403, 404).
+    yield* StreamGroup.merge<LessonDto?>([
+      dbStream,
+      repository
+          .refreshLesson(lessonId)
+          .asStream()
+          .handleError((e) {
+            if (e is ApiException &&
+                (e.type == ApiErrorType.forbidden ||
+                    e.type == ApiErrorType.unauthorized ||
+                    e.type == ApiErrorType.notFound)) {
+              link.close();
+              throw e;
+            }
+          })
+          .where((_) => false)
+          .cast<LessonDto?>(),
+    ]);
   }
 }
 

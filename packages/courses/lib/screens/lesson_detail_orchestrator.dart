@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,7 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
   final Object? error;
 
   /// Optional callback to retry fetching lesson detail when in error state.
-  final VoidCallback? onRetry;
+  final FutureOr<dynamic> Function()? onRetry;
 
   @override
   ConsumerState<LessonDetailOrchestrator> createState() =>
@@ -368,7 +369,14 @@ class _LessonDetailOrchestratorState
       }
     }
 
-    if (widget.error != null && !lesson.isComplete) {
+    final isAccessError = widget.error is ApiException &&
+        ([
+          ApiErrorType.forbidden,
+          ApiErrorType.unauthorized,
+          ApiErrorType.notFound,
+        ].contains((widget.error as ApiException).type));
+
+    if (widget.error != null && (isAccessError || !lesson.isComplete)) {
       return Center(
         child: AppErrorView(
           error: widget.error,

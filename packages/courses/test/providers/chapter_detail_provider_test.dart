@@ -145,5 +145,40 @@ void main() {
       expect(mockSentry.capturedException, isNotNull);
       expect(container.read(chapterDetailControllerProvider), false);
     });
+
+    test('initialSync sets chapterDetailAccessErrorProvider on 403 forbidden',
+        () async {
+      final forbiddenRepo = ForbiddenCourseRepository();
+      container = ProviderContainer(
+        overrides: [
+          courseRepositoryProvider.overrideWith((ref) => forbiddenRepo),
+          sentryServiceProvider.overrideWithValue(mockSentry),
+        ],
+      );
+
+      final controller =
+          container.read(chapterDetailControllerProvider.notifier);
+
+      await controller.initialSync('course-1', 'chapter-1');
+
+      final accessError = container.read(
+        chapterDetailAccessErrorProvider('course-1', 'chapter-1'),
+      );
+      expect(accessError, isA<ApiException>());
+      expect((accessError as ApiException).type, ApiErrorType.forbidden);
+      expect(container.read(chapterDetailControllerProvider), false);
+    });
   });
+}
+
+class ForbiddenCourseRepository extends MockCourseRepository {
+  @override
+  Future<void> refreshContentStatuses(String courseId,
+      {String? chapterId}) async {
+    throw const ApiException(
+      'This chapter belongs to a course which can be accessed only from web.',
+      type: ApiErrorType.forbidden,
+      statusCode: 403,
+    );
+  }
 }

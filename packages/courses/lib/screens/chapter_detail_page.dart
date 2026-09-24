@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../providers/chapter_detail_provider.dart';
+import '../providers/course_list_provider.dart';
 import '../widgets/chapter_status_filter_bar.dart';
 import '../widgets/chapter_content_item.dart';
 
@@ -53,12 +54,33 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
     // Watch the sync state for skeleton loaders
     final isSyncing = ref.watch(chapterDetailControllerProvider);
 
-    // Check status filter state
+    // Watch status filter state
     final activeStatusFilter = ref.watch(chapterStatusFilterProvider);
+
+    // Watch any access error (403 web_only, 401 unauthorized, etc.)
+    final accessError = ref.watch(chapterDetailAccessErrorProvider(
+            widget.courseId, widget.chapterId)) ??
+        (chapterAsync.hasError && isChapterAccessError(chapterAsync.error)
+            ? chapterAsync.error
+            : null);
 
     return Container(
       color: design.colors.canvas,
       child: () {
+        // If an explicit access denial occurred (e.g. 403 web_only or 401),
+        // block rendering immediately and show AppErrorView, regardless of local DB cache.
+        if (accessError != null) {
+          final pair = chapterAsync.valueOrNull;
+          return _buildErrorState(
+            context,
+            design,
+            l10n,
+            accessError,
+            chapter: pair?.$1,
+            courseTitle: pair?.$2,
+          );
+        }
+
         // If we have data (even if it's currently refreshing in the background),
         // show the content immediately to avoid "loading flashes" between tabs.
         if (chapterAsync.hasValue) {
@@ -214,9 +236,87 @@ class _ChapterDetailPageState extends ConsumerState<ChapterDetailPage> {
               ),
             ],
           ),
-          error: (error, _) => Center(child: AppText.body(error.toString())),
+          error: (error, _) {
+            final pair = chapterAsync.valueOrNull;
+            return _buildErrorState(
+              context,
+              design,
+              l10n,
+              error,
+              chapter: pair?.$1,
+              courseTitle: pair?.$2,
+            );
+          },
         );
       }(),
+    );
+  }
+
+  Widget _buildErrorState(
+    BuildContext context,
+    DesignConfig design,
+    AppLocalizations l10n,
+    Object error, {
+    ChapterDto? chapter,
+    String? courseTitle,
+  }) {
+    final effectiveChapter = chapter ?? _skeletonChapter;
+    return Column(
+      children: [
+        // Unified Top Bar with card background, title, and metadata (chips hidden during error)
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: design.colors.card,
+            border: Border(
+              bottom: BorderSide(color: design.colors.divider, width: 1),
+            ),
+          ),
+          child: _buildHeaderContents(
+            context,
+            design,
+            effectiveChapter,
+            courseTitle,
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: AppErrorView(
+              backgroundColor: design.colors.canvas,
+              error: error,
+              onRetry: () async {
+                try {
+                  final repo = await ref.read(courseRepositoryProvider.future);
+                  await Future.wait([
+                    repo.syncChapterContents(widget.courseId, widget.chapterId),
+                    repo.refreshContentStatuses(widget.courseId,
+                        chapterId: widget.chapterId),
+                  ]);
+                  if (!mounted) return;
+                  ref
+                      .read(chapterDetailAccessErrorProvider(
+                        widget.courseId,
+                        widget.chapterId,
+                      ).notifier)
+                      .clear();
+                  ref.invalidate(
+                    chapterDetailProvider(widget.courseId, widget.chapterId),
+                  );
+                } catch (e) {
+                  if (isChapterAccessError(e)) {
+                    ref
+                        .read(chapterDetailAccessErrorProvider(
+                          widget.courseId,
+                          widget.chapterId,
+                        ).notifier)
+                        .setError(e);
+                  }
+                }
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 

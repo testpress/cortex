@@ -103,5 +103,48 @@ void main() {
         expect(find.text('Custom Message'), findsOneWidget);
       },
     );
+
+    testWidgets('handles async onRetry that throws without unhandled exception', (
+      tester,
+    ) async {
+      var retryCalled = false;
+      await tester.pumpWidget(
+        createTestWidget(
+          AppErrorView(
+            error: const ApiException(
+              'This chapter belongs to a course which can be accessed only from web.',
+              type: ApiErrorType.forbidden,
+            ),
+            onRetry: () async {
+              retryCalled = true;
+              throw const ApiException(
+                'This chapter belongs to a course which can be accessed only from web.',
+                type: ApiErrorType.forbidden,
+              );
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.text('Access Denied'), findsOneWidget);
+
+      // Tap Retry
+      await tester.tap(find.text('Retry'));
+      await tester.pump(); // Start async operation
+
+      expect(retryCalled, isTrue);
+
+      await tester.pumpAndSettle(); // Await completion of future and setState
+
+      // Still renders error view cleanly without unhandled exception
+      expect(find.text('Access Denied'), findsOneWidget);
+      expect(
+        find.text(
+          'This chapter belongs to a course which can be accessed only from web.',
+        ),
+        findsOneWidget,
+      );
+    });
   });
 }

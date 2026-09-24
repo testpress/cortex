@@ -6,7 +6,7 @@ part of 'chapter_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chapterDetailHash() => r'ec4efb9bf733947d9605c663ebbf2edea1ff72a7';
+String _$chapterDetailHash() => r'fdc184cb4421da0e4f6b38592b400ae0f21128e9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -194,8 +194,191 @@ class _ChapterDetailProviderElement
   String get chapterId => (origin as ChapterDetailProvider).chapterId;
 }
 
+String _$chapterDetailAccessErrorHash() =>
+    r'62b0de40a4be420149c703dee06de725ddd77091';
+
+abstract class _$ChapterDetailAccessError
+    extends BuildlessAutoDisposeNotifier<Object?> {
+  late final String courseId;
+  late final String chapterId;
+
+  Object? build(
+    String courseId,
+    String chapterId,
+  );
+}
+
+/// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+///
+/// Copied from [ChapterDetailAccessError].
+@ProviderFor(ChapterDetailAccessError)
+const chapterDetailAccessErrorProvider = ChapterDetailAccessErrorFamily();
+
+/// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+///
+/// Copied from [ChapterDetailAccessError].
+class ChapterDetailAccessErrorFamily extends Family<Object?> {
+  /// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+  ///
+  /// Copied from [ChapterDetailAccessError].
+  const ChapterDetailAccessErrorFamily();
+
+  /// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+  ///
+  /// Copied from [ChapterDetailAccessError].
+  ChapterDetailAccessErrorProvider call(
+    String courseId,
+    String chapterId,
+  ) {
+    return ChapterDetailAccessErrorProvider(
+      courseId,
+      chapterId,
+    );
+  }
+
+  @override
+  ChapterDetailAccessErrorProvider getProviderOverride(
+    covariant ChapterDetailAccessErrorProvider provider,
+  ) {
+    return call(
+      provider.courseId,
+      provider.chapterId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'chapterDetailAccessErrorProvider';
+}
+
+/// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+///
+/// Copied from [ChapterDetailAccessError].
+class ChapterDetailAccessErrorProvider
+    extends AutoDisposeNotifierProviderImpl<ChapterDetailAccessError, Object?> {
+  /// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+  ///
+  /// Copied from [ChapterDetailAccessError].
+  ChapterDetailAccessErrorProvider(
+    String courseId,
+    String chapterId,
+  ) : this._internal(
+          () => ChapterDetailAccessError()
+            ..courseId = courseId
+            ..chapterId = chapterId,
+          from: chapterDetailAccessErrorProvider,
+          name: r'chapterDetailAccessErrorProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$chapterDetailAccessErrorHash,
+          dependencies: ChapterDetailAccessErrorFamily._dependencies,
+          allTransitiveDependencies:
+              ChapterDetailAccessErrorFamily._allTransitiveDependencies,
+          courseId: courseId,
+          chapterId: chapterId,
+        );
+
+  ChapterDetailAccessErrorProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+    required this.chapterId,
+  }) : super.internal();
+
+  final String courseId;
+  final String chapterId;
+
+  @override
+  Object? runNotifierBuild(
+    covariant ChapterDetailAccessError notifier,
+  ) {
+    return notifier.build(
+      courseId,
+      chapterId,
+    );
+  }
+
+  @override
+  Override overrideWith(ChapterDetailAccessError Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: ChapterDetailAccessErrorProvider._internal(
+        () => create()
+          ..courseId = courseId
+          ..chapterId = chapterId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+        chapterId: chapterId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<ChapterDetailAccessError, Object?>
+      createElement() {
+    return _ChapterDetailAccessErrorProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChapterDetailAccessErrorProvider &&
+        other.courseId == courseId &&
+        other.chapterId == chapterId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+    hash = _SystemHash.combine(hash, chapterId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ChapterDetailAccessErrorRef on AutoDisposeNotifierProviderRef<Object?> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+
+  /// The parameter `chapterId` of this provider.
+  String get chapterId;
+}
+
+class _ChapterDetailAccessErrorProviderElement
+    extends AutoDisposeNotifierProviderElement<ChapterDetailAccessError,
+        Object?> with ChapterDetailAccessErrorRef {
+  _ChapterDetailAccessErrorProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as ChapterDetailAccessErrorProvider).courseId;
+  @override
+  String get chapterId =>
+      (origin as ChapterDetailAccessErrorProvider).chapterId;
+}
+
 String _$chapterDetailControllerHash() =>
-    r'0c348d1734fc955a747cae94ebff0e923486c836';
+    r'7e7091835edfb504890e1a0bcaab443dff18da1a';
 
 /// See also [ChapterDetailController].
 @ProviderFor(ChapterDetailController)

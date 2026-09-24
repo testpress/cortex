@@ -6,6 +6,24 @@ import '../repositories/course_repository.dart';
 
 part 'chapter_detail_provider.g.dart';
 
+/// Helper function to determine if an error is an access/permission denial.
+bool isChapterAccessError(Object? e) {
+  return e is ApiException &&
+      (e.type == ApiErrorType.forbidden ||
+          e.type == ApiErrorType.unauthorized ||
+          e.type == ApiErrorType.notFound);
+}
+
+/// Provider to track explicit access denial errors (e.g. 403 web_only, 401 unauthorized).
+@riverpod
+class ChapterDetailAccessError extends _$ChapterDetailAccessError {
+  @override
+  Object? build(String courseId, String chapterId) => null;
+
+  void setError(Object? error) => state = error;
+  void clear() => state = null;
+}
+
 /// Provider that fetches a specific chapter with its lessons.
 /// This provider maps the underlying DTOs to the [ChapterDto] domain model.
 @riverpod
@@ -22,13 +40,37 @@ Stream<(ChapterDto, String?)?> chapterDetail(
   final localLessons = await repo.getLessons(chapterId);
 
   if (chapterRow != null && localLessons.isNotEmpty) {
-    repo.syncChapterContents(courseId, chapterId).ignore();
-    yield* _watchChapter(repo, courseId, chapterId);
+    yield* StreamGroup.merge<(ChapterDto, String?)?>([
+      _watchChapter(repo, courseId, chapterId),
+      repo
+          .syncChapterContents(courseId, chapterId)
+          .asStream()
+          .handleError((e) {
+            if (isChapterAccessError(e)) {
+              ref
+                  .read(chapterDetailAccessErrorProvider(courseId, chapterId)
+                      .notifier)
+                  .setError(e);
+              throw e;
+            }
+          })
+          .where((_) => false)
+          .cast<(ChapterDto, String?)?>(),
+    ]);
     return;
   }
 
   // 2. Fetch from network only if data is missing.
-  await repo.syncChapterContents(courseId, chapterId);
+  try {
+    await repo.syncChapterContents(courseId, chapterId);
+  } catch (e) {
+    if (isChapterAccessError(e)) {
+      ref
+          .read(chapterDetailAccessErrorProvider(courseId, chapterId).notifier)
+          .setError(e);
+    }
+    rethrow;
+  }
   yield* _watchChapter(repo, courseId, chapterId);
 }
 
@@ -64,6 +106,9 @@ class ChapterDetailController extends _$ChapterDetailController {
 
   Future<void> initialSync(String courseId, String chapterId) async {
     final sentry = ref.read(sentryServiceProvider);
+    ref
+        .read(chapterDetailAccessErrorProvider(courseId, chapterId).notifier)
+        .clear();
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       await Future.wait([
@@ -72,6 +117,12 @@ class ChapterDetailController extends _$ChapterDetailController {
       ]);
     } catch (e, st) {
       sentry.captureException(e, stackTrace: st);
+      if (isChapterAccessError(e)) {
+        ref
+            .read(
+                chapterDetailAccessErrorProvider(courseId, chapterId).notifier)
+            .setError(e);
+      }
     } finally {
       state = false;
     }
@@ -80,6 +131,9 @@ class ChapterDetailController extends _$ChapterDetailController {
   Future<void> refresh(String courseId, String chapterId) async {
     state = true;
     final sentry = ref.read(sentryServiceProvider);
+    ref
+        .read(chapterDetailAccessErrorProvider(courseId, chapterId).notifier)
+        .clear();
     try {
       final repo = await ref.read(courseRepositoryProvider.future);
       await Future.wait([
@@ -88,6 +142,12 @@ class ChapterDetailController extends _$ChapterDetailController {
       ]);
     } catch (e, st) {
       sentry.captureException(e, stackTrace: st);
+      if (isChapterAccessError(e)) {
+        ref
+            .read(
+                chapterDetailAccessErrorProvider(courseId, chapterId).notifier)
+            .setError(e);
+      }
       rethrow;
     } finally {
       state = false;

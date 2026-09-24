@@ -139,7 +139,13 @@ class ExamsRoutes {
                   error: (error, _) {
                     return AppErrorView(
                       error: error,
-                      onRetry: () => ref.invalidate(lessonDetailProvider(id)),
+                      onRetry: () async {
+                        final repo = await ref.read(
+                          courseRepositoryProvider.future,
+                        );
+                        await repo.refreshLesson(id);
+                        ref.invalidate(lessonDetailProvider(id));
+                      },
                     );
                   },
                 );
