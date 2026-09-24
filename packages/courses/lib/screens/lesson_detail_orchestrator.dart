@@ -349,7 +349,9 @@ class _LessonDetailOrchestratorState
       );
     }
 
-    if (lesson.isScheduled) {
+    if (lesson.isScheduled &&
+        lesson.type != LessonType.liveStream &&
+        lesson.type != LessonType.videoConference) {
       final scheduledMsg = lesson.scheduledMessage;
       final detailMessage = (scheduledMsg != null && scheduledMsg.isNotEmpty)
           ? scheduledMsg

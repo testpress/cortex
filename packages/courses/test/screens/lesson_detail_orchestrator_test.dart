@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:courses/screens/lesson_detail_orchestrator.dart';
 import 'package:courses/widgets/lesson_detail/ask_doubt_fab.dart';
 import 'package:courses/widgets/lesson_detail/lesson_detail_skeleton.dart';
+import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
+import 'package:courses/widgets/lesson_detail/video_conference_viewer.dart';
 
 void main() {
   Widget wrap(Widget child, {List<Override> overrides = const []}) {
@@ -312,5 +314,42 @@ void main() {
         expect(find.text(scheduledMessage), findsOneWidget);
       });
     }
+
+    testWidgets(
+        'mounts LiveStreamViewer for scheduled liveStream lesson instead of generic notice',
+        (tester) async {
+      final lesson = scheduledVideoLesson.copyWith(
+        type: LessonType.liveStream,
+        contentUrl: 'https://example.com/stream',
+      );
+
+      await tester.pumpWidget(wrap(
+        LessonDetailOrchestrator(
+          lesson: lesson,
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.byType(ContentNoticeView), findsNothing);
+      expect(find.byType(LiveStreamViewer), findsOneWidget);
+    });
+
+    testWidgets(
+        'mounts VideoConferenceViewer for scheduled videoConference lesson instead of generic notice',
+        (tester) async {
+      final lesson = scheduledVideoLesson.copyWith(
+        type: LessonType.videoConference,
+      );
+
+      await tester.pumpWidget(wrap(
+        LessonDetailOrchestrator(
+          lesson: lesson,
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.byType(ContentNoticeView), findsNothing);
+      expect(find.byType(VideoConferenceViewer), findsOneWidget);
+    });
   });
 }

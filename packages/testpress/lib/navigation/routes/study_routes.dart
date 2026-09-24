@@ -110,6 +110,7 @@ class StudyRoutes {
                           courseRepositoryProvider.future,
                         );
                         await repo.refreshLesson(id);
+                        ref.invalidate(lessonDetailProvider(id));
                       },
                     );
                   },
