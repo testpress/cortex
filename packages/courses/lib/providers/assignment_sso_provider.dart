@@ -114,7 +114,7 @@ bool isAllowedAssignmentNavigation({
   final path = uri.path;
 
   // 1. Allow SSO entry point and redirects
-  if (path.startsWith('/sso/')) return true;
+  if (path.startsWith('/sso')) return true;
 
   // 2. Allow target assignment content page and its sub-paths
   if (chapterSlug.isNotEmpty &&
