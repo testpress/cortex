@@ -43,6 +43,10 @@ Internal packages (`core`, `courses`, `exams`) are never exposed to consumers.
 
 ## Getting Started
 
+For a comprehensive walkthrough on prerequisites, code generation, and configuration, see the **[Setup Guide](docs/setup.md)**.
+
+### Quick Start
+
 ```bash
 # Install dependencies
 flutter pub get
@@ -57,7 +61,7 @@ sudo apt install lefthook
 
 lefthook install
 
-# Run reference app
+# Run reference app (requires API_BASE_URL)
 cd app
-flutter run
+flutter run --dart-define=API_BASE_URL=https://lmsdemo.testpress.in/
 ```
