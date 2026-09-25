@@ -205,21 +205,32 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
               label: 'Page $pageNumber of $count',
               value: '$pageNumber of $count',
               slider: true,
-              child: Center(
-                child: Container(
-                  height: 28,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: design.colors.surfaceVariant.withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: design.colors.border),
-                    boxShadow: design.shadows.floating,
-                  ),
-                  child: Center(
-                    child: AppText.caption(
-                      '$pageNumber / $count',
-                      color: design.colors.onSurface,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: OverflowBox(
+                  alignment: Alignment.centerRight,
+                  maxWidth: double.infinity,
+                  child: IntrinsicWidth(
+                    child: Container(
+                      height: 28,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: design.colors.surfaceVariant
+                            .withValues(alpha: 0.95),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: design.colors.border),
+                        boxShadow: design.shadows.floating,
+                      ),
+                      child: Center(
+                        child: AppText.caption(
+                          '$pageNumber / $count',
+                          color: design.colors.onSurface,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontFeatures: [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
