@@ -48,6 +48,11 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// Non-null = show the SessionExpiredDialog with this message.
 final sessionExpiredProvider = StateProvider<String?>((ref) => null);
 
+/// Tracks whether a manual logout operation is currently in progress.
+/// Used by [AuthInterceptor] to suppress false-positive 401 session expiry
+/// dialogs while tearing down the session.
+final isLoggingOutProvider = StateProvider<bool>((ref) => false);
+
 /// Cached pre-boot auth signal set in main() before runApp().
 ///
 /// This is the synchronous routing hint used by [goRouterProvider] to set
@@ -85,6 +90,7 @@ class Auth extends _$Auth {
     // new session data — prevents stale cleanup from wiping a fresh login.
     await _cleanupFuture;
     await _repository.loginWithPassword(username: username, password: password);
+    ref.read(sessionExpiredProvider.notifier).state = null;
 
     state = const AsyncData(true);
   }
@@ -92,6 +98,7 @@ class Auth extends _$Auth {
   Future<void> loginWithGoogle() async {
     await _cleanupFuture;
     await _repository.loginWithGoogle();
+    ref.read(sessionExpiredProvider.notifier).state = null;
 
     state = const AsyncData(true);
   }
@@ -111,6 +118,7 @@ class Auth extends _$Auth {
       phone: phone,
       countryCode: countryCode,
     );
+    ref.read(sessionExpiredProvider.notifier).state = null;
 
     state = const AsyncData(true);
   }
@@ -138,21 +146,30 @@ class Auth extends _$Auth {
       phoneNumber: phoneNumber,
       email: email,
     );
+    ref.read(sessionExpiredProvider.notifier).state = null;
 
     state = const AsyncData(true);
   }
 
   Future<void> logout() async {
-    // Assign _cleanupFuture before awaiting so any concurrent login call
-    // (loginWithPassword, loginWithGoogle, etc.) that runs while cleanup is
-    // in-flight will correctly gate on the real cleanup future — not a
-    // resolved no-op — and won’t write new session data until cleanup is done.
-    _cleanupFuture = _runCleanup();
-    // Await cleanup before flipping state: the loading button on the sheet/
-    // dialog stays visible for the full purge duration, and GoRouter only
-    // redirects to Login once everything is wiped.
-    await _cleanupFuture;
-    state = const AsyncData(false);
+    // Indicate that manual logout is in progress so in-flight requests that
+    // fail with 401 during teardown do not trigger false-positive session expiry dialogs.
+    ref.read(isLoggingOutProvider.notifier).state = true;
+    try {
+      // Assign _cleanupFuture before awaiting so any concurrent login call
+      // (loginWithPassword, loginWithGoogle, etc.) that runs while cleanup is
+      // in-flight will correctly gate on the real cleanup future — not a
+      // resolved no-op — and won’t write new session data until cleanup is done.
+      _cleanupFuture = _runCleanup();
+      // Await cleanup before flipping state: the loading button on the sheet/
+      // dialog stays visible for the full purge duration, and GoRouter only
+      // redirects to Login once everything is wiped.
+      await _cleanupFuture;
+      state = const AsyncData(false);
+    } finally {
+      ref.read(isLoggingOutProvider.notifier).state = false;
+      ref.read(sessionExpiredProvider.notifier).state = null;
+    }
   }
 
   Future<void> _runCleanup() async {
