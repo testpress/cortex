@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
@@ -63,6 +64,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
   @override
   void initState() {
     super.initState();
+    DeviceOrientationHelper.allowVideoOrientations();
     WidgetsBinding.instance.addObserver(this);
     _startFlushTimer();
     _fetchMetadata();
@@ -72,6 +74,26 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     } else {
       _contentId = null;
     }
+  }
+
+  Orientation? _lastOrientation;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final orientation = MediaQuery.of(context).orientation;
+    if (_lastOrientation != null && _lastOrientation != orientation) {
+      if (defaultTargetPlatform == TargetPlatform.iOS && _controller != null) {
+        if (orientation == Orientation.landscape &&
+            !_controller!.value.isFullScreen) {
+          _controller!.enterFullScreen().catchError((_) {});
+        } else if (orientation == Orientation.portrait &&
+            _controller!.value.isFullScreen) {
+          _controller!.exitFullScreen().catchError((_) {});
+        }
+      }
+    }
+    _lastOrientation = orientation;
   }
 
   @override
@@ -87,6 +109,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
 
   @override
   void dispose() {
+    DeviceOrientationHelper.lockToDeviceDefault();
     WidgetsBinding.instance.removeObserver(this);
     _seekDebounceTimer?.cancel();
     _speedToastTimer?.cancel();
@@ -159,12 +182,14 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     if (_contentId != null && _videoAttemptNotifier != null) {
       _videoAttemptNotifier!.forceSync();
     }
+    DeviceOrientationHelper.lockToPortrait();
     if (mounted) {
       setState(() => _isPlayerDestroyed = true);
     }
   }
 
   void restorePlayback() {
+    DeviceOrientationHelper.allowVideoOrientations();
     if (mounted) {
       setState(() {
         _isPlayerDestroyed = false;
@@ -253,6 +278,12 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     }
 
     _restorePlaybackSpeed(controller);
+
+    if (defaultTargetPlatform == TargetPlatform.iOS &&
+        MediaQuery.of(context).orientation == Orientation.landscape &&
+        !controller.value.isFullScreen) {
+      controller.enterFullScreen().catchError((_) {});
+    }
 
     controller.addListener(() {
       final isPlaying = controller.value.isPlaying;

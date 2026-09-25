@@ -18,43 +18,61 @@ class LessonDetailSkeleton extends StatelessWidget {
     Widget skeletonContent;
 
     if (lessonType == LessonType.video || lessonType == LessonType.liveStream) {
-      skeletonContent = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Bone(),
-          ),
-          const SizedBox(height: 24),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Bone.text(words: 5, fontSize: 24),
-          ),
-          const SizedBox(height: 16),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Bone.multiText(lines: 4),
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
+      skeletonContent = LayoutBuilder(
+        builder: (context, constraints) {
+          final isConstrainedHeight =
+              constraints.hasBoundedHeight && constraints.maxHeight < 600;
+          return SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Bone.circle(size: 40),
-                const SizedBox(width: 12),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Bone.text(words: 2, fontSize: 16),
-                    SizedBox(height: 4),
-                    Bone.text(words: 1, fontSize: 12),
-                  ],
+                Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: isConstrainedHeight
+                          ? constraints.maxHeight * 0.5
+                          : double.infinity,
+                    ),
+                    child: const AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Bone(),
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Bone.text(words: 5, fontSize: 24),
+                ),
+                const SizedBox(height: 16),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Bone.multiText(lines: 4),
+                ),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      const Bone.circle(size: 40),
+                      const SizedBox(width: 12),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Bone.text(words: 2, fontSize: 16),
+                          SizedBox(height: 4),
+                          Bone.text(words: 1, fontSize: 12),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
               ],
             ),
-          ),
-          const Spacer(),
-        ],
+          );
+        },
       );
     } else if (lessonType == LessonType.pdf ||
         lessonType == LessonType.attachment) {
@@ -85,17 +103,20 @@ class LessonDetailSkeleton extends StatelessWidget {
       );
     } else {
       // Generic fallback for notes, embeds, etc.
-      skeletonContent = const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Bone.text(words: 4, fontSize: 28),
-            SizedBox(height: 24),
-            Bone.multiText(lines: 12),
-            SizedBox(height: 24),
-            Bone.multiText(lines: 8),
-          ],
+      skeletonContent = const SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Bone.text(words: 4, fontSize: 28),
+              SizedBox(height: 24),
+              Bone.multiText(lines: 12),
+              SizedBox(height: 24),
+              Bone.multiText(lines: 8),
+            ],
+          ),
         ),
       );
     }

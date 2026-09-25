@@ -167,5 +167,41 @@ void main() {
 
       expect(result, isNull);
     });
+
+    testWidgets(
+      'showPdfPasswordDialog renders without overflow when keyboard is open in tablet landscape',
+      (tester) async {
+        tester.view.physicalSize = const Size(1006.6, 441.8);
+        tester.view.devicePixelRatio = 1.0;
+        tester.view.viewInsets = const FakeViewPadding(bottom: 250);
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetViewInsets();
+        });
+
+        await tester.pumpWidget(
+          createTestWidget(
+            Builder(
+              builder: (context) {
+                return Center(
+                  child: AppButton.primary(
+                    label: 'Launch Dialog',
+                    onPressed: () => showPdfPasswordDialog(context),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Launch Dialog'));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Password Protected'), findsOneWidget);
+        expect(find.byType(AppTextField), findsOneWidget);
+      },
+    );
   });
 }

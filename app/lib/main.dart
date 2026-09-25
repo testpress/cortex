@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.validate();
+  await DeviceOrientationHelper.initialize();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   // Read auth state before runApp() via the encapsulated helper so the router
@@ -39,6 +40,15 @@ class CortexAppRoot extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 🚀 BOOTSTRAP: Kick off app initialization (data seeding, etc.)
     ref.watch(appInitializationProvider);
+
+    // 📱 ORIENTATION: Ensure tablets are unlocked once window geometry is established
+    final view = View.of(context);
+    final size = view.physicalSize / view.devicePixelRatio;
+    if (DeviceOrientationHelper.isTablet(size)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        DeviceOrientationHelper.configureOrientations(size);
+      });
+    }
 
     // 🎨 DARK MODE SUPPORT: Both configs are now passed to DesignProvider.
     final lightConfig = DesignConfig.light();

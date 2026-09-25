@@ -18,8 +18,18 @@ Future<String?> showPdfPasswordDialog(
     barrierLabel: l10n.pdfPasswordProtectedTitle,
     barrierColor: design.colors.shadow.withValues(alpha: 0.6),
     pageBuilder: (dialogContext, anim1, anim2) {
-      return Center(
-        child: PdfPasswordDialog(isRetry: isRetry),
+      final viewInsets = MediaQuery.viewInsetsOf(dialogContext);
+      return AnimatedPadding(
+        padding: viewInsets,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: PdfPasswordDialog(isRetry: isRetry),
+            ),
+          ),
+        ),
       );
     },
   );
@@ -80,7 +90,10 @@ class _PdfPasswordDialogState extends State<PdfPasswordDialog> {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 440),
-      margin: EdgeInsets.all(design.spacing.xl),
+      margin: EdgeInsets.symmetric(
+        horizontal: design.spacing.xl,
+        vertical: design.spacing.sm,
+      ),
       padding: EdgeInsets.all(design.spacing.lg),
       decoration: BoxDecoration(
         color: design.colors.surface,
@@ -96,83 +109,85 @@ class _PdfPasswordDialogState extends State<PdfPasswordDialog> {
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppSemantics.header(
-            label: l10n.pdfPasswordProtectedTitle,
-            child: AppText.title(l10n.pdfPasswordProtectedTitle),
-          ),
-          SizedBox(height: design.spacing.sm),
-          AppText.body(
-            l10n.pdfPasswordProtectedMessage,
-            color: design.colors.textSecondary,
-          ),
-          SizedBox(height: design.spacing.md),
-          AppTextField(
-            label: l10n.loginPasswordLabel,
-            hintText: l10n.loginPasswordHint,
-            controller: _controller,
-            obscureText: _obscureText,
-            autofocus: true,
-            errorText: errorMessage,
-            keyboardType: TextInputType.visiblePassword,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => _submit(),
-            onChanged: (_) {
-              if (_localError != null) {
-                setState(() => _localError = null);
-              }
-            },
-            suffixIcon: AppSemantics.button(
-              label: _obscureText
-                  ? l10n.loginShowPassword
-                  : l10n.loginHidePassword,
-              onTap: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSemantics.header(
+              label: l10n.pdfPasswordProtectedTitle,
+              child: AppText.title(l10n.pdfPasswordProtectedTitle),
+            ),
+            SizedBox(height: design.spacing.sm),
+            AppText.body(
+              l10n.pdfPasswordProtectedMessage,
+              color: design.colors.textSecondary,
+            ),
+            SizedBox(height: design.spacing.md),
+            AppTextField(
+              label: l10n.loginPasswordLabel,
+              hintText: l10n.loginPasswordHint,
+              controller: _controller,
+              obscureText: _obscureText,
+              autofocus: true,
+              errorText: errorMessage,
+              keyboardType: TextInputType.visiblePassword,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+              onChanged: (_) {
+                if (_localError != null) {
+                  setState(() => _localError = null);
+                }
               },
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              suffixIcon: AppSemantics.button(
+                label: _obscureText
+                    ? l10n.loginShowPassword
+                    : l10n.loginHidePassword,
                 onTap: () {
                   setState(() {
                     _obscureText = !_obscureText;
                   });
                 },
-                child: Icon(
-                  _obscureText ? LucideIcons.eye : LucideIcons.eyeOff,
-                  color: design.colors.textSecondary,
-                  size: design.iconSize.md,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                  child: Icon(
+                    _obscureText ? LucideIcons.eye : LucideIcons.eyeOff,
+                    color: design.colors.textSecondary,
+                    size: design.iconSize.md,
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: design.spacing.lg),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              AppButton.secondary(
-                label: l10n.labelCancel,
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.md,
-                  vertical: design.spacing.sm,
+            SizedBox(height: design.spacing.lg),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AppButton.secondary(
+                  label: l10n.labelCancel,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.sm,
+                  ),
+                  onPressed: _cancel,
                 ),
-                onPressed: _cancel,
-              ),
-              SizedBox(width: design.spacing.sm),
-              AppButton.primary(
-                label: l10n.pdfPasswordActionOpen,
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.md,
-                  vertical: design.spacing.sm,
+                SizedBox(width: design.spacing.sm),
+                AppButton.primary(
+                  label: l10n.pdfPasswordActionOpen,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.sm,
+                  ),
+                  onPressed: _submit,
                 ),
-                onPressed: _submit,
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
