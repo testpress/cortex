@@ -14,6 +14,7 @@ class DioFactory {
     required Future<String?> Function() getToken,
     void Function(String message)? onSessionExpired,
     bool Function()? isLoggingOut,
+    bool Function()? isAuthenticated,
   }) {
     final dio = Dio(
       BaseOptions(
@@ -40,6 +41,7 @@ class DioFactory {
         getToken: getToken,
         onSessionExpired: onSessionExpired,
         isLoggingOut: isLoggingOut,
+        isAuthenticated: isAuthenticated,
       ),
     );
 
@@ -61,6 +63,7 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
   return DioFactory.createBackgroundDio(
     getToken: () => ref.read(authLocalDataSourceProvider).getToken(),
     isLoggingOut: () => ref.read(isLoggingOutProvider),
+    isAuthenticated: () => ref.read(authProvider).asData?.value != false,
     onSessionExpired: (msg) =>
         ref.read(sessionExpiredProvider.notifier).state = msg,
   );

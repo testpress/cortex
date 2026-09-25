@@ -9,6 +9,7 @@ class AuthInterceptor extends Interceptor {
   final Future<String?> Function() getToken;
   final void Function(String message)? onSessionExpired;
   final bool Function()? isLoggingOut;
+  final bool Function()? isAuthenticated;
   bool _sessionExpiryTriggered = false;
 
   /// Paths that should not have an Authorization header attached.
@@ -25,6 +26,7 @@ class AuthInterceptor extends Interceptor {
     required this.getToken,
     this.onSessionExpired,
     this.isLoggingOut,
+    this.isAuthenticated,
   });
 
   /// Explicitly resets the session expiry guard (e.g. on fresh login).
@@ -55,15 +57,6 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // A successful response with an auth header proves the session is valid.
-    if (response.requestOptions.headers.containsKey('Authorization')) {
-      _sessionExpiryTriggered = false;
-    }
-    super.onResponse(response, handler);
-  }
-
-  @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
       final hasAuthHeader = err.requestOptions.headers['Authorization'] != null;
@@ -77,14 +70,20 @@ class AuthInterceptor extends Interceptor {
           err.requestOptions.path.contains(ApiEndpoints.logoutDevices);
 
       final loggingOut = isLoggingOut?.call() ?? false;
+      final authenticated = isAuthenticated?.call() ?? true;
 
       // Only trigger session expired dialog if:
       // 1. The request was actually authenticated (had Authorization header).
       // 2. It was not an auth flow endpoint (login/signup/otp).
       // 3. It was not an explicit logout request.
       // 4. A manual logout is not currently in progress.
-      // 5. We haven't already shown the session expired dialog for this session.
-      if (hasAuthHeader && !isAuthFlowPath && !isLogoutRequest && !loggingOut) {
+      // 5. The user is not already unauthenticated (e.g. lingering requests after logout).
+      // 6. We haven't already shown the session expired dialog for this session.
+      if (hasAuthHeader &&
+          !isAuthFlowPath &&
+          !isLogoutRequest &&
+          !loggingOut &&
+          authenticated) {
         if (!_sessionExpiryTriggered) {
           _sessionExpiryTriggered = true;
           final apiException = ApiException.fromDioException(err);

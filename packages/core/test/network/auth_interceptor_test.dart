@@ -19,12 +19,14 @@ void main() {
       Future<String?> Function()? getToken,
       void Function(String message)? onSessionExpired,
       bool Function()? loggingOutCallback,
+      bool Function()? isAuthenticatedCallback,
     }) {
       return AuthInterceptor(
         getToken: getToken ?? () async => storedToken,
         onSessionExpired:
             onSessionExpired ?? (msg) => sessionExpiredCalls.add(msg),
         isLoggingOut: loggingOutCallback ?? () => isLoggingOut,
+        isAuthenticated: isAuthenticatedCallback,
       );
     }
 
@@ -192,27 +194,36 @@ void main() {
         },
       );
 
-      test('successful authenticated response resets session expiry guard', () {
+      test(
+        'does NOT trigger onSessionExpired when user is unauthenticated (lingering post-logout request)',
+        () {
+          final interceptor = createInterceptor(
+            isAuthenticatedCallback: () => false,
+          );
+          final err = create401Exception(path: '/api/v3/dashboard/');
+
+          interceptor.onError(err, createHandler());
+
+          expect(sessionExpiredCalls, isEmpty);
+        },
+      );
+
+      test('racing 401s remain suppressed until explicit reset on login', () {
         final interceptor = createInterceptor();
         final err1 = create401Exception(path: '/api/v3/dashboard/');
 
         interceptor.onError(err1, createHandler());
         expect(sessionExpiredCalls.length, 1);
 
-        // A successful 200 response on an authenticated endpoint arrives
-        final successOptions = RequestOptions(
-          path: '/api/v3/courses/',
-          headers: {'Authorization': 'JWT test_token'},
-        );
-        interceptor.onResponse(
-          Response(requestOptions: successOptions, statusCode: 200),
-          ResponseInterceptorHandler(),
-        );
-
-        // Next 401 when token is revoked in this session properly fires again
+        // Subsequent 401s during the same session expiry remain suppressed
         final err2 = create401Exception(path: '/api/v3/courses/');
         interceptor.onError(err2, createHandler());
+        expect(sessionExpiredCalls.length, 1);
 
+        // Once re-authenticated / new login starts, guard is reset
+        interceptor.resetSessionExpiry();
+        final err3 = create401Exception(path: '/api/v3/courses/');
+        interceptor.onError(err3, createHandler());
         expect(sessionExpiredCalls.length, 2);
       });
     });
