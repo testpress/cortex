@@ -115,14 +115,38 @@ void main() {
     const chapterSlug = 'kinematics';
     const contentId = '777';
 
-    test('allows SSO authentication routes', () {
-      final allowed = isAllowedAssignmentNavigation(
-        requestUrl: 'https://portal.myinstitute.com/sso/auth/?token=123',
-        allowedHost: allowedHost,
-        chapterSlug: chapterSlug,
-        contentId: contentId,
+    test('allows SSO authentication routes (/sso/ and /sso_login)', () {
+      expect(
+        isAllowedAssignmentNavigation(
+          requestUrl: 'https://portal.myinstitute.com/sso/auth/?token=123',
+          allowedHost: allowedHost,
+          chapterSlug: chapterSlug,
+          contentId: contentId,
+        ),
+        isTrue,
       );
-      expect(allowed, isTrue);
+
+      expect(
+        isAllowedAssignmentNavigation(
+          requestUrl:
+              'https://portal.myinstitute.com/sso_login/?sig=abc123&sso=xyz',
+          allowedHost: allowedHost,
+          chapterSlug: chapterSlug,
+          contentId: contentId,
+        ),
+        isTrue,
+      );
+
+      expect(
+        isAllowedAssignmentNavigation(
+          requestUrl:
+              'https://portal.myinstitute.com/sso_login?sig=abc123&sso=xyz',
+          allowedHost: allowedHost,
+          chapterSlug: chapterSlug,
+          contentId: contentId,
+        ),
+        isTrue,
+      );
     });
 
     test('allows canonical assignment content url', () {
@@ -174,6 +198,36 @@ void main() {
         contentId: contentId,
       );
       expect(profileAllowed, isFalse);
+
+      final arbitrarySsoAllowed = isAllowedAssignmentNavigation(
+        requestUrl: 'https://portal.myinstitute.com/ssoportal/',
+        allowedHost: allowedHost,
+        chapterSlug: chapterSlug,
+        contentId: contentId,
+      );
+      expect(arbitrarySsoAllowed, isFalse);
+    });
+
+    test('blocks look-alike non-SSO routes', () {
+      final lookAlikes = [
+        'https://portal.myinstitute.com/ssomalicious/',
+        'https://portal.myinstitute.com/sso_other/',
+        'https://portal.myinstitute.com/sso-logout/',
+        'https://portal.myinstitute.com/sso_login_fake/',
+      ];
+
+      for (final url in lookAlikes) {
+        expect(
+          isAllowedAssignmentNavigation(
+            requestUrl: url,
+            allowedHost: allowedHost,
+            chapterSlug: chapterSlug,
+            contentId: contentId,
+          ),
+          isFalse,
+          reason: 'Expected $url to be blocked',
+        );
+      }
     });
 
     test('blocks navigation to external third-party domains', () {
