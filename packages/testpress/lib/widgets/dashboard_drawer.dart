@@ -212,7 +212,13 @@ class DashboardDrawer extends ConsumerWidget {
             AppDrawerItem(
               icon: LucideIcons.shield,
               label: l10n.drawerPrivacy,
-              action: () {},
+              action: () {
+                ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).push(AppRoute(page: const PrivacyPolicyScreen()));
+              },
             ),
             AppDrawerItem(
               icon: design.isDark ? LucideIcons.sun : LucideIcons.moon,
