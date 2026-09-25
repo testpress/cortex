@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -136,11 +137,34 @@ void main() {
 
       expect(find.byType(SafeArea), findsNothing);
     });
+
+    testWidgets(
+      'configures platform-appropriate user agent on initialization',
+      (tester) async {
+        _FakePlatformWebViewController.lastSetUserAgent = null;
+
+        await tester.pumpWidget(
+          wrap(const AppWebView(url: 'https://example.com')),
+        );
+        await tester.pump();
+
+        expect(
+          _FakePlatformWebViewController.lastSetUserAgent,
+          contains(
+            Platform.isAndroid
+                ? 'TestpressAndroidApp/WebView flutter-app'
+                : 'TestpressiOSApp/WebView flutter-app',
+          ),
+        );
+      },
+    );
   });
 }
 
 class _FakePlatformWebViewController extends PlatformWebViewController {
   _FakePlatformWebViewController(super.params) : super.implementation();
+
+  static String? lastSetUserAgent;
 
   @override
   Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
@@ -151,7 +175,9 @@ class _FakePlatformWebViewController extends PlatformWebViewController {
   ) async {}
 
   @override
-  Future<void> setUserAgent(String? userAgent) async {}
+  Future<void> setUserAgent(String? userAgent) async {
+    lastSetUserAgent = userAgent;
+  }
 
   @override
   Future<String?> getUserAgent() async => 'MockUserAgent';
