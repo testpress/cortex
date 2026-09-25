@@ -61,6 +61,7 @@ export 'screens/ai_screen.dart';
 export 'screens/ai_chat_immersive_screen.dart';
 export 'screens/ai_chat_history_screen.dart';
 export 'screens/bp_elearn_my_results_screen.dart';
+export 'screens/privacy_policy_screen.dart';
 
 // Navigation
 export 'navigation/app_route.dart';
