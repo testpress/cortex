@@ -91,9 +91,9 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
       final defaultUa = await _controller.getUserAgent() ?? '';
       final appIdentifier = Platform.isAndroid
           ? 'TestpressAndroidApp/WebView flutter-app'
-          : 'TestpressIOSApp/WebView flutter-app';
+          : 'TestpressiOSApp/WebView flutter-app';
       if (!defaultUa.contains('TestpressAndroidApp') &&
-          !defaultUa.contains('TestpressIOSApp')) {
+          !defaultUa.contains('TestpressiOSApp')) {
         final newUa = defaultUa.isEmpty
             ? appIdentifier
             : '$defaultUa $appIdentifier';
