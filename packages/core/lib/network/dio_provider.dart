@@ -13,6 +13,7 @@ class DioFactory {
   static Dio createBackgroundDio({
     required Future<String?> Function() getToken,
     void Function(String message)? onSessionExpired,
+    bool Function()? isLoggingOut,
   }) {
     final dio = Dio(
       BaseOptions(
@@ -35,7 +36,11 @@ class DioFactory {
 
     dio.interceptors.add(UserAgentInterceptor());
     dio.interceptors.add(
-      AuthInterceptor(getToken: getToken, onSessionExpired: onSessionExpired),
+      AuthInterceptor(
+        getToken: getToken,
+        onSessionExpired: onSessionExpired,
+        isLoggingOut: isLoggingOut,
+      ),
     );
 
     if (kDebugMode) {
@@ -55,6 +60,7 @@ class DioFactory {
 final Provider<Dio> dioProvider = Provider<Dio>((ref) {
   return DioFactory.createBackgroundDio(
     getToken: () => ref.read(authLocalDataSourceProvider).getToken(),
+    isLoggingOut: () => ref.read(isLoggingOutProvider),
     onSessionExpired: (msg) =>
         ref.read(sessionExpiredProvider.notifier).state = msg,
   );
