@@ -205,35 +205,9 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
               label: 'Page $pageNumber of $count',
               value: '$pageNumber of $count',
               slider: true,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: OverflowBox(
-                  alignment: Alignment.centerRight,
-                  maxWidth: double.infinity,
-                  child: IntrinsicWidth(
-                    child: Container(
-                      height: 28,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: design.colors.surfaceVariant
-                            .withValues(alpha: 0.95),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: design.colors.border),
-                        boxShadow: design.shadows.floating,
-                      ),
-                      child: Center(
-                        child: AppText.caption(
-                          '$pageNumber / $count',
-                          color: design.colors.onSurface,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontFeatures: [FontFeature.tabularFigures()],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              child: PdfScrollThumbPill(
+                pageNumber: pageNumber,
+                pageCount: count,
               ),
             );
           },
@@ -368,5 +342,55 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   void _resetViewer() {
     _controller.removeListener(_trackProgress);
     _initController();
+  }
+}
+
+/// The pill widget shown inside the PDF scroll thumb.
+///
+/// Displays the current page number and total page count in a floating
+/// rounded label, independently of [PdfViewerScrollThumb] and [AppPdfViewer].
+@visibleForTesting
+class PdfScrollThumbPill extends StatelessWidget {
+  final int pageNumber;
+  final int pageCount;
+
+  const PdfScrollThumbPill({
+    super.key,
+    required this.pageNumber,
+    required this.pageCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return Align(
+      alignment: Alignment.centerRight,
+      child: OverflowBox(
+        alignment: Alignment.centerRight,
+        maxWidth: double.infinity,
+        child: IntrinsicWidth(
+          child: Container(
+            height: 28,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: design.colors.surfaceVariant.withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: design.colors.border),
+              boxShadow: design.shadows.floating,
+            ),
+            child: Center(
+              child: AppText.caption(
+                '$pageNumber / $pageCount',
+                color: design.colors.onSurface,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontFeatures: [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
