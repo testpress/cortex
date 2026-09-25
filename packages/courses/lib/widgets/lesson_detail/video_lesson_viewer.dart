@@ -172,10 +172,10 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Offstage(
-            offstage: isLandscape,
-            child: _buildVideoSection(design),
-          ),
+          if (isLandscape)
+            Expanded(child: _buildVideoSection(design))
+          else
+            _buildVideoSection(design),
           Expanded(
             child: ColoredBox(color: design.colors.surface),
           ),
@@ -189,10 +189,10 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Offstage(
-              offstage: isLandscape,
-              child: _buildVideoSection(design),
-            ),
+            if (isLandscape)
+              Expanded(child: _buildVideoSection(design))
+            else
+              _buildVideoSection(design),
             Container(
               decoration: BoxDecoration(
                 color: design.colors.surface,

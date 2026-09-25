@@ -47,7 +47,11 @@ class DoubtTab extends ConsumerWidget {
                     separatorBuilder: (context, index) =>
                         SizedBox(height: design.spacing.sm),
                     itemBuilder: (context, index) {
-                      return _DoubtItemCard(doubt: doubts[index]);
+                      return _DoubtItemCard(
+                        doubt: doubts[index],
+                        onBeforeNavigate: onBeforeNavigate,
+                        onResumeVideo: onResumeVideo,
+                      );
                     },
                   );
                 },
@@ -142,16 +146,25 @@ class DoubtTab extends ConsumerWidget {
 
 class _DoubtItemCard extends StatelessWidget {
   final DoubtDto doubt;
+  final VoidCallback? onBeforeNavigate;
+  final VoidCallback? onResumeVideo;
 
-  const _DoubtItemCard({required this.doubt});
+  const _DoubtItemCard({
+    required this.doubt,
+    this.onBeforeNavigate,
+    this.onResumeVideo,
+  });
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
     return AppCard(
-      onTap: () {
-        context.push('/home/discussions/doubts/${doubt.id}');
+      onTap: () async {
+        onBeforeNavigate?.call();
+        await context.push('/home/discussions/doubts/${doubt.id}');
+        if (!context.mounted) return;
+        onResumeVideo?.call();
       },
       padding: EdgeInsets.all(design.spacing.md),
       child: Column(
