@@ -34,6 +34,77 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     super.dispose();
   }
 
+  Widget _buildAppliedCouponCard(
+    BuildContext context,
+    DesignConfig design, {
+    required String? appliedCouponCode,
+    required double? savedAmount,
+    required String productSlug,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: design.spacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.success.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(design.radius.md),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            LucideIcons.tag,
+            color: design.colors.success,
+            size: 24,
+          ),
+          SizedBox(width: design.spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText.labelBold(
+                  appliedCouponCode != null && appliedCouponCode.isNotEmpty
+                      ? appliedCouponCode.toUpperCase()
+                      : 'COUPON',
+                  color: design.colors.success,
+                ),
+                const SizedBox(height: 2),
+                AppText.caption(
+                  savedAmount != null && savedAmount > 0
+                      ? 'You saved ₹${savedAmount.toStringAsFixed(2)}'
+                      : 'Coupon applied',
+                  color: design.colors.success,
+                ),
+              ],
+            ),
+          ),
+          AppSemantics.button(
+            label: L10n.of(context).labelRemove,
+            child: GestureDetector(
+              onTap: () {
+                ref
+                    .read(productDiscountNotifierProvider(productSlug).notifier)
+                    .removeCoupon();
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.xs,
+                  vertical: design.spacing.xs,
+                ),
+                child: AppText.labelBold(
+                  L10n.of(context).labelRemove,
+                  color: design.colors.accent2,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTab(BuildContext context, String label, int index) {
     final design = Design.of(context);
     final isSelected = _selectedSubTabIndex == index;
@@ -79,6 +150,22 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final design = Design.of(context);
     final detailAsync = ref.watch(productDetailProvider(widget.product.slug));
     final product = detailAsync.value ?? widget.product;
+    final discountAsync =
+        ref.watch(productDiscountNotifierProvider(product.slug));
+    final discountOrder = discountAsync.value;
+    final appliedCouponCode = ref
+        .watch(productDiscountNotifierProvider(product.slug).notifier)
+        .appliedCouponCode;
+
+    final originalPriceVal = double.tryParse(product.price.replaceAll(',', ''));
+    final discountedVal = discountOrder != null
+        ? double.tryParse(discountOrder.total.replaceAll(',', ''))
+        : null;
+    final savedAmount = (originalPriceVal != null &&
+            discountedVal != null &&
+            originalPriceVal > discountedVal)
+        ? (originalPriceVal - discountedVal)
+        : null;
     final matchingPrices =
         product.prices.where((p) => p.price == product.price).toList();
     final validityDays =
@@ -173,33 +260,57 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.alphabetic,
-                                    children: [
-                                      AppText.title(
-                                        product.isFree
-                                            ? L10n.of(context).free
-                                            : '₹${product.price}',
-                                        color: design.colors.textPrimary,
+                                  if (discountOrder != null) ...[
+                                    AppText.body(
+                                      '₹${product.price}',
+                                      style: TextStyle(
+                                        decoration: TextDecoration.lineThrough,
+                                        color: design.colors.textSecondary,
                                       ),
-                                      if (!product.isFree &&
-                                          product.strikeThroughPrice != null &&
-                                          product.strikeThroughPrice!
-                                              .isNotEmpty) ...[
-                                        SizedBox(width: design.spacing.sm),
-                                        AppText.body(
-                                          '₹${product.strikeThroughPrice}',
-                                          style: TextStyle(
-                                            decoration:
-                                                TextDecoration.lineThrough,
-                                            color: design.colors.textSecondary,
-                                          ),
+                                    ),
+                                    SizedBox(height: design.spacing.xs / 2),
+                                    AppText.title(
+                                      '₹${discountOrder.total}',
+                                      color: design.colors.textPrimary,
+                                    ),
+                                    SizedBox(height: design.spacing.md),
+                                    _buildAppliedCouponCard(
+                                      context,
+                                      design,
+                                      appliedCouponCode: appliedCouponCode,
+                                      savedAmount: savedAmount,
+                                      productSlug: product.slug,
+                                    ),
+                                  ] else
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        AppText.title(
+                                          product.isFree
+                                              ? L10n.of(context).free
+                                              : '₹${product.price}',
+                                          color: design.colors.textPrimary,
                                         ),
+                                        if (!product.isFree &&
+                                            product.strikeThroughPrice !=
+                                                null &&
+                                            product.strikeThroughPrice!
+                                                .isNotEmpty) ...[
+                                          SizedBox(width: design.spacing.sm),
+                                          AppText.body(
+                                            '₹${product.strikeThroughPrice}',
+                                            style: TextStyle(
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                              color:
+                                                  design.colors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
                                       ],
-                                    ],
-                                  ),
+                                    ),
                                   SizedBox(height: design.spacing.md),
                                   if (validityDays != null)
                                     Padding(
@@ -301,7 +412,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     children: [
                       Row(
                         children: [
-                          if (product.hasCoupons)
+                          if (!product.isFree && discountOrder == null)
                             AppSemantics.button(
                               label: L10n.of(context).storeHaveDiscountCode,
                               child: GestureDetector(
@@ -357,9 +468,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           if (!context.mounted) return;
                           final result = await PaymentProcessingScreen.start(
                             context,
-                            () => ref
-                                .read(storeRepositoryProvider)
-                                .createAndConfirmOrder(product.slug),
+                            () => discountOrder != null
+                                ? (discountOrder.status == 'Completed'
+                                    ? Future.value(discountOrder)
+                                    : ref
+                                        .read(storeRepositoryProvider)
+                                        .confirmOrder(discountOrder.id, {}))
+                                : ref
+                                    .read(storeRepositoryProvider)
+                                    .createAndConfirmOrder(product.slug),
                             dataSource,
                           );
 

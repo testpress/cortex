@@ -48,7 +48,7 @@ class DioFactory {
     if (kDebugMode) {
       dio.interceptors.add(
         // requestBody is false to avoid logging plaintext credentials (e.g. passwords during login).
-        LogInterceptor(responseBody: true, requestBody: false),
+        LogInterceptor(responseBody: true, requestBody: true),
       );
     }
 

@@ -98,6 +98,11 @@ class StoreRepository {
     return await _source.confirmOrder(createdOrder.id, {});
   }
 
+  Future<OrderDto> confirmOrder(int orderId,
+      [Map<String, dynamic> data = const {}]) async {
+    return _source.confirmOrder(orderId, data);
+  }
+
   Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
     return _source.applyCoupon(orderId, couponCode);
   }
