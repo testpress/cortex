@@ -22,17 +22,32 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
   final TextEditingController _couponController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    final currentCode = ref
+        .read(productDiscountNotifierProvider(widget.productSlug).notifier)
+        .appliedCouponCode;
+    if (currentCode != null && currentCode.isNotEmpty) {
+      _couponController.text = currentCode;
+    }
+  }
+
+  @override
   void dispose() {
     _couponController.dispose();
     super.dispose();
   }
 
-  void _applyCoupon() {
+  void _applyCoupon() async {
     final code = _couponController.text.trim();
     if (code.isEmpty) return;
-    ref
+    await ref
         .read(productDiscountNotifierProvider(widget.productSlug).notifier)
         .applyCoupon(code);
+    final state = ref.read(productDiscountNotifierProvider(widget.productSlug));
+    if (state.hasValue && state.value != null && mounted) {
+      widget.onClose();
+    }
   }
 
   String _getErrorMessage(Object error) {
@@ -88,20 +103,32 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                 ),
               ),
               SizedBox(height: design.spacing.lg),
-              AppText.title(L10n.of(context).storeDiscountCoupon),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppText.title(L10n.of(context).storeDiscountCoupon),
+                  AppSemantics.button(
+                    label: L10n.of(context).labelClose,
+                    child: GestureDetector(
+                      onTap: widget.onClose,
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: EdgeInsets.all(design.spacing.xs),
+                        child: Icon(
+                          LucideIcons.x,
+                          size: design.iconSize.md,
+                          color: design.colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: design.spacing.md),
               if (discountState.hasError) ...[
                 AppText.body(
                   _getErrorMessage(discountState.error!),
                   color: design.colors.error,
-                ),
-                SizedBox(height: design.spacing.md),
-              ] else if (discountState.hasValue &&
-                  discountState.value != null) ...[
-                AppText.body(
-                  L10n.of(context)
-                      .storeCouponAppliedSuccess(discountState.value!.total),
-                  color: design.colors.success,
                 ),
                 SizedBox(height: design.spacing.md),
               ],
