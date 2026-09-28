@@ -2810,6 +2810,25 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String get storeCoupon => 'കൂപ്പൺ';
+
+  @override
+  String get storeCouponApplied => 'കൂപ്പൺ പ്രയോഗിച്ചു';
+
+  @override
+  String get storeCouponAppliedSuccessfully => 'കൂപ്പൺ വിജയകരമായി പ്രയോഗിച്ചു';
+
+  @override
+  String storeYouSaved(String amount) {
+    return 'നിങ്ങൾ ₹$amount ലാഭിച്ചു';
+  }
+
+  @override
+  String storeAmountSaved(String amount) {
+    return '₹$amount ലാഭിച്ചു!';
+  }
+
+  @override
   String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -3069,6 +3088,9 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get labelClose => 'അടയ്ക്കുക';
+
+  @override
+  String get labelDone => 'പൂർത്തിയായി';
 
   @override
   String get dialogDeleteVideoTitle => 'വീഡിയോ ഡിലീറ്റ് ചെയ്യുക';

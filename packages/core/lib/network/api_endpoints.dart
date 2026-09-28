@@ -26,7 +26,7 @@ class ApiEndpoints {
       '/api/v2.5/orders/$orderId/refresh/';
   static const String payuDynamicHash = '/api/v2.5/payu/dynamic_hash/';
   static String applyCoupon(int orderId) =>
-      '/api/v2.4/orders/$orderId/apply-coupon/';
+      '/api/v3/orders/$orderId/apply-discount/';
   static String installmentPlans(String slug) =>
       '/api/v3/products/$slug/installment-plans/';
   static const String courseList = '/api/v3/courses/';

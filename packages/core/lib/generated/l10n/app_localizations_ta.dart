@@ -2807,6 +2807,26 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get storeCoupon => 'கூப்பன்';
+
+  @override
+  String get storeCouponApplied => 'கூப்பன் பயன்படுத்தப்பட்டது';
+
+  @override
+  String get storeCouponAppliedSuccessfully =>
+      'கூப்பன் வெற்றிகரமாக பயன்படுத்தப்பட்டது';
+
+  @override
+  String storeYouSaved(String amount) {
+    return 'நீங்கள் ₹$amount சேமித்துள்ளீர்கள்';
+  }
+
+  @override
+  String storeAmountSaved(String amount) {
+    return '₹$amount சேமிக்கப்பட்டது!';
+  }
+
+  @override
   String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -3064,6 +3084,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get labelClose => 'மூடு';
+
+  @override
+  String get labelDone => 'முடிந்தது';
 
   @override
   String get dialogDeleteVideoTitle => 'வீடியோவை நீக்கு';

@@ -166,7 +166,17 @@ class ApiException implements Exception {
             return nestedMsg;
           }
         } catch (_) {
-          // Fall through to returning raw string if JSON parsing fails
+          // Handle Python list string representations like "['Invalid discount code']"
+          final match = RegExp(
+            r"^\[['"
+            r'"](.*?)'
+            r"['"
+            r'"]\]$',
+          ).firstMatch(trimmed);
+          if (match != null) {
+            final inner = match.group(1)?.trim();
+            if (inner != null && inner.isNotEmpty) return inner;
+          }
         }
       }
       return trimmed;
@@ -191,7 +201,7 @@ class ApiException implements Exception {
       final msg = detail['message']?.toString().trim();
       if (msg != null && msg.isNotEmpty) return msg;
     } else if (detail is String && detail.trim().isNotEmpty) {
-      return detail.trim();
+      return extractApiMessage(detail) ?? detail.trim();
     }
 
     final message = map['message']?.toString().trim();

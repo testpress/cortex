@@ -1176,7 +1176,15 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
+  Future<OrderDto> applyCoupon(int orderId, String? couponCode) async {
+    if (couponCode == null || couponCode.isEmpty) {
+      return const OrderDto(
+        id: 101,
+        status: 'Draft',
+        total: '300.00',
+        subtotal: '300.00',
+      );
+    }
     if (couponCode == 'TEST50') {
       return const OrderDto(
         id: 101,

@@ -1010,6 +1010,25 @@
       }
     }
   },
+  "storeCoupon": "قسيمة",
+  "storeCouponApplied": "تم تطبيق القسيمة",
+  "storeCouponAppliedSuccessfully": "تم تطبيق القسيمة بنجاح",
+  "storeYouSaved": "لقد وفرت ₹{amount}",
+  "@storeYouSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeAmountSaved": "تم توفير ₹{amount}!",
+  "@storeAmountSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
   "@storeStatisticsChapters": {
     "placeholders": {
@@ -1147,6 +1166,7 @@
   "labelConfirm": "تأكيد",
   "labelRemove": "إزالة",
   "labelClose": "إغلاق",
+  "labelDone": "تم",
   "dialogDeleteVideoTitle": "حذف الفيديو",
   "dialogDeleteVideoContent": "هل أنت متأكد أنك تريد حذف هذا الفيديو المحمل؟",
   "dialogDeleteDownloadTitle": "حذف التنزيل",

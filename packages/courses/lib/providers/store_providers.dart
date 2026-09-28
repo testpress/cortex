@@ -121,11 +121,16 @@ Future<InstallmentPlansResponseDto> productInstallmentPlans(
 @riverpod
 class ProductDiscountNotifier extends _$ProductDiscountNotifier {
   int? _orderId;
+  String? _appliedCouponCode;
+
+  int? get orderId => _orderId;
+  String? get appliedCouponCode => _appliedCouponCode;
 
   @override
   AsyncValue<OrderDto?> build(String slug) {
     ref.onDispose(() {
       _orderId = null;
+      _appliedCouponCode = null;
     });
     return const AsyncValue.data(null);
   }
@@ -139,6 +144,7 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
       _orderId = orderId;
 
       final updatedOrder = await repo.applyCoupon(orderId, code);
+      _appliedCouponCode = code;
       state = AsyncValue.data(updatedOrder);
     } catch (e, st) {
       if (e is ApiException) {
@@ -147,6 +153,32 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
       } else {
         state = AsyncValue.error(e, st);
       }
+    }
+  }
+
+  void clearError() {
+    if (state.hasError) {
+      state = const AsyncValue.data(null);
+    }
+  }
+
+  Future<void> removeCoupon() async {
+    final orderId = _orderId;
+    if (orderId == null) {
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+      return;
+    }
+
+    state = const AsyncValue.loading();
+    try {
+      final repo = ref.read(storeRepositoryProvider);
+      await repo.removeCoupon(orderId);
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+    } catch (e) {
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
     }
   }
 }
