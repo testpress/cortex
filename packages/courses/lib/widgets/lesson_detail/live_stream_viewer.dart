@@ -116,6 +116,7 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
         }
         themedChatUrl = uri.replace(queryParameters: queryParams).toString();
       } else {
+        // Fall back to raw URL if parsing fails (handled safely by AppWebView)
         themedChatUrl = chatEmbedUrl;
       }
     }

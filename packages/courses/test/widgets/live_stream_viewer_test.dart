@@ -327,6 +327,30 @@ void main() {
         'https://www.youtube.com/live_chat?v=abc123xyz&theme=dark&dark_theme=1',
       );
     });
+
+    testWidgets('falls back to raw chatEmbedUrl when URL is malformed',
+        (tester) async {
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      const malformedUrl = 'https://example.com:abc/chat';
+      final malformedLesson = testTpStreamsRunningLesson.copyWith(
+        chatEmbedUrl: malformedUrl,
+      );
+
+      await tester.pumpWidget(
+        wrap(LiveStreamViewer(lesson: malformedLesson)),
+      );
+      await tester.pump();
+
+      expect(find.byType(AppWebView), findsOneWidget);
+      final webView = tester.widget<AppWebView>(find.byType(AppWebView));
+      expect(webView.url, malformedUrl);
+    });
   });
 
   group('LiveStreamViewer Polling', () {
