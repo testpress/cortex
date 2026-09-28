@@ -2764,6 +2764,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get storeCoupon => 'COUPON';
+
+  @override
+  String get storeCouponApplied => 'Coupon applied';
+
+  @override
+  String get storeCouponAppliedSuccessfully => 'Coupon applied successfully';
+
+  @override
+  String storeYouSaved(String amount) {
+    return 'You saved ₹$amount';
+  }
+
+  @override
+  String storeAmountSaved(String amount) {
+    return '₹$amount saved!';
+  }
+
+  @override
   String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -3018,6 +3037,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelClose => 'Close';
+
+  @override
+  String get labelDone => 'Done';
 
   @override
   String get dialogDeleteVideoTitle => 'Delete Video';

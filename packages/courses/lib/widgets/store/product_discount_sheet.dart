@@ -100,64 +100,68 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
     DesignConfig design,
     double? savedAmount,
   ) {
+    final l10n = L10n.of(context);
     final savedText = savedAmount != null && savedAmount > 0
-        ? '₹${savedAmount.toStringAsFixed(2)} saved!'
-        : 'Coupon applied!';
+        ? l10n.storeAmountSaved(savedAmount.toStringAsFixed(2))
+        : l10n.storeCouponApplied;
+    final semanticLabel = '$savedText ${l10n.storeCouponAppliedSuccessfully}.';
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: design.colors.success.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(design.radius.xl),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          const Positioned.fill(
-            child: CustomPaint(
-              painter: _ConfettiPainter(),
+    return AppSemantics.container(
+      label: semanticLabel,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: design.colors.success.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(design.radius.xl),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Positioned.fill(
+              child: CustomPaint(
+                painter: _ConfettiPainter(),
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: design.spacing.xl,
-              horizontal: design.spacing.lg,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: design.colors.success,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      LucideIcons.check,
-                      size: 28,
-                      color: design.colors.onSuccess,
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: design.spacing.xl,
+                horizontal: design.spacing.lg,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: design.colors.success,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.check,
+                        size: 28,
+                        color: design.colors.onSuccess,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: design.spacing.md),
-                AppText.headline(
-                  savedText,
-                  color: design.colors.success,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: design.spacing.xs),
-                AppText.caption(
-                  'Coupon applied successfully',
-                  color: design.colors.textSecondary,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  SizedBox(height: design.spacing.md),
+                  AppText.headline(
+                    savedText,
+                    color: design.colors.success,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: design.spacing.xs),
+                  AppText.caption(
+                    l10n.storeCouponAppliedSuccessfully,
+                    color: design.colors.textSecondary,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -248,7 +252,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                             _buildCelebrationCard(context, design, savedAmount),
                             SizedBox(height: design.spacing.lg),
                             AppButton.primary(
-                              label: 'Done',
+                              label: L10n.of(context).labelDone,
                               fullWidth: true,
                               backgroundColor: design.colors.accent2,
                               onPressed: _handleClose,
@@ -272,13 +276,17 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                                   child: GestureDetector(
                                     onTap: _handleClose,
                                     behavior: HitTestBehavior.opaque,
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.all(design.spacing.xs),
-                                      child: Icon(
-                                        LucideIcons.x,
-                                        size: design.iconSize.md,
-                                        color: design.colors.textSecondary,
+                                    child: ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        minWidth: 48,
+                                        minHeight: 48,
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          LucideIcons.x,
+                                          size: design.iconSize.md,
+                                          color: design.colors.textSecondary,
+                                        ),
                                       ),
                                     ),
                                   ),

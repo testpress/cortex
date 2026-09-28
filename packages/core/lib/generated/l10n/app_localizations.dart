@@ -5057,6 +5057,36 @@ abstract class AppLocalizations {
   /// **'Coupon applied successfully! New total: {total}'**
   String storeCouponAppliedSuccess(String total);
 
+  /// No description provided for @storeCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'COUPON'**
+  String get storeCoupon;
+
+  /// No description provided for @storeCouponApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon applied'**
+  String get storeCouponApplied;
+
+  /// No description provided for @storeCouponAppliedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon applied successfully'**
+  String get storeCouponAppliedSuccessfully;
+
+  /// No description provided for @storeYouSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'You saved ₹{amount}'**
+  String storeYouSaved(String amount);
+
+  /// No description provided for @storeAmountSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'₹{amount} saved!'**
+  String storeAmountSaved(String amount);
+
   /// No description provided for @storeStatisticsChapters.
   ///
   /// In en, this message translates to:
@@ -5458,6 +5488,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get labelClose;
+
+  /// No description provided for @labelDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get labelDone;
 
   /// No description provided for @dialogDeleteVideoTitle.
   ///

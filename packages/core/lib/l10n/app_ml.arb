@@ -1011,6 +1011,25 @@
       }
     }
   },
+  "storeCoupon": "കൂപ്പൺ",
+  "storeCouponApplied": "കൂപ്പൺ പ്രയോഗിച്ചു",
+  "storeCouponAppliedSuccessfully": "കൂപ്പൺ വിജയകരമായി പ്രയോഗിച്ചു",
+  "storeYouSaved": "നിങ്ങൾ ₹{amount} ലാഭിച്ചു",
+  "@storeYouSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeAmountSaved": "₹{amount} ലാഭിച്ചു!",
+  "@storeAmountSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
   "@storeStatisticsChapters": {
     "placeholders": {
@@ -1147,6 +1166,7 @@
   "labelConfirm": "ഉറപ്പാക്കുക",
   "labelRemove": "നീക്കംചെയ്യുക",
   "labelClose": "അടയ്ക്കുക",
+  "labelDone": "പൂർത്തിയായി",
   "dialogDeleteVideoTitle": "വീഡിയോ ഡിലീറ്റ് ചെയ്യുക",
   "dialogDeleteVideoContent": "ഡൗൺലോഡ് ചെയ്ത ഈ വീഡിയോ ഡിലീറ്റ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
   "dialogDeleteDownloadTitle": "ഡൗൺലോഡ് ഡിലീറ്റ് ചെയ്യുക",

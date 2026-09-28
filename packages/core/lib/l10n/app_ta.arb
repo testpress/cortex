@@ -1256,6 +1256,25 @@
       }
     }
   },
+  "storeCoupon": "கூப்பன்",
+  "storeCouponApplied": "கூப்பன் பயன்படுத்தப்பட்டது",
+  "storeCouponAppliedSuccessfully": "கூப்பன் வெற்றிகரமாக பயன்படுத்தப்பட்டது",
+  "storeYouSaved": "நீங்கள் ₹{amount} சேமித்துள்ளீர்கள்",
+  "@storeYouSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeAmountSaved": "₹{amount} சேமிக்கப்பட்டது!",
+  "@storeAmountSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
   "@storeStatisticsChapters": {
     "placeholders": {
@@ -1388,6 +1407,7 @@
   "labelConfirm": "உறுதி செய்",
   "labelRemove": "அகற்று",
   "labelClose": "மூடு",
+  "labelDone": "முடிந்தது",
   "dialogDeleteVideoTitle": "வீடியோவை நீக்கு",
   "dialogDeleteVideoContent": "பதிவிறக்கப்பட்ட இந்த வீடியோவை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
   "dialogDeleteDownloadTitle": "பதிவிறக்கத்தை நீக்கு",

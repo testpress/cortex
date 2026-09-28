@@ -1378,6 +1378,25 @@
       }
     }
   },
+  "storeCoupon": "COUPON",
+  "storeCouponApplied": "Coupon applied",
+  "storeCouponAppliedSuccessfully": "Coupon applied successfully",
+  "storeYouSaved": "You saved ₹{amount}",
+  "@storeYouSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeAmountSaved": "₹{amount} saved!",
+  "@storeAmountSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "storeStatisticsChapters": "{count, plural, =1{1 Chapter} other{{count} Chapters}}",
   "@storeStatisticsChapters": {
     "placeholders": {
@@ -1509,6 +1528,7 @@
   "labelConfirm": "Confirm",
   "labelRemove": "Remove",
   "labelClose": "Close",
+  "labelDone": "Done",
   "dialogDeleteVideoTitle": "Delete Video",
   "dialogDeleteVideoContent": "Are you sure you want to delete this downloaded video?",
   "dialogDeleteDownloadTitle": "Delete Download",

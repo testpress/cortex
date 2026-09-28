@@ -2770,6 +2770,25 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get storeCoupon => 'قسيمة';
+
+  @override
+  String get storeCouponApplied => 'تم تطبيق القسيمة';
+
+  @override
+  String get storeCouponAppliedSuccessfully => 'تم تطبيق القسيمة بنجاح';
+
+  @override
+  String storeYouSaved(String amount) {
+    return 'لقد وفرت ₹$amount';
+  }
+
+  @override
+  String storeAmountSaved(String amount) {
+    return 'تم توفير ₹$amount!';
+  }
+
+  @override
   String storeStatisticsChapters(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -3021,6 +3040,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get labelClose => 'إغلاق';
+
+  @override
+  String get labelDone => 'تم';
 
   @override
   String get dialogDeleteVideoTitle => 'حذف الفيديو';

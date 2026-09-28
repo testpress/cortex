@@ -244,15 +244,23 @@ void main() {
 
     testWidgets('renders circle-x icon to remove coupon instead of text',
         (tester) async {
+      final couponProduct = ProductDto(
+        id: 524,
+        title: 'Test Course Product',
+        slug: 'test-course-product',
+        price: '300.00',
+        courses: const [372],
+        hasCoupons: true,
+      );
       final fakeRepo = FakeStoreRepository(
         source: const MockDataSource(),
-        product: testProduct,
+        product: couponProduct,
       );
       final fakeCourseRepo = FakeCourseRepository();
 
       await tester.pumpWidget(
         wrapRouter(
-          ProductDetailScreen(product: testProduct),
+          ProductDetailScreen(product: couponProduct),
           overrides: [
             storeRepositoryProvider.overrideWithValue(fakeRepo),
             courseRepositoryProvider
@@ -291,6 +299,31 @@ void main() {
       // Should be removed
       expect(find.byIcon(LucideIcons.xCircle), findsNothing);
       expect(find.text('Have a discount code?'), findsOneWidget);
+    });
+
+    testWidgets('omits Have a discount code when product.hasCoupons is false',
+        (tester) async {
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: testProduct,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: testProduct),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Have a discount code?'), findsNothing);
     });
   });
 }

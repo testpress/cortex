@@ -41,64 +41,78 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     required double? savedAmount,
     required String productSlug,
   }) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: design.spacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: design.colors.success.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(design.radius.md),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            LucideIcons.tag,
-            color: design.colors.success,
-            size: 24,
-          ),
-          SizedBox(width: design.spacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppText.labelBold(
-                  appliedCouponCode != null && appliedCouponCode.isNotEmpty
-                      ? appliedCouponCode.toUpperCase()
-                      : 'COUPON',
-                  color: design.colors.success,
-                ),
-                const SizedBox(height: 2),
-                AppText.caption(
-                  savedAmount != null && savedAmount > 0
-                      ? 'You saved ₹${savedAmount.toStringAsFixed(2)}'
-                      : 'Coupon applied',
-                  color: design.colors.success,
-                ),
-              ],
+    final l10n = L10n.of(context);
+    final semanticLabel = savedAmount != null && savedAmount > 0
+        ? '${l10n.storeCouponApplied}. ${l10n.storeYouSaved(savedAmount.toStringAsFixed(2))}'
+        : l10n.storeCouponApplied;
+
+    return AppSemantics.container(
+      label: semanticLabel,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.md,
+          vertical: design.spacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: design.colors.success.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(design.radius.md),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              LucideIcons.tag,
+              color: design.colors.success,
+              size: 24,
             ),
-          ),
-          AppSemantics.button(
-            label: L10n.of(context).labelRemove,
-            child: GestureDetector(
-              onTap: () {
-                ref
-                    .read(productDiscountNotifierProvider(productSlug).notifier)
-                    .removeCoupon();
-              },
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: EdgeInsets.all(design.spacing.xs),
-                child: Icon(
-                  LucideIcons.xCircle,
-                  size: design.iconSize.md,
-                  color: design.colors.textSecondary,
+            SizedBox(width: design.spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppText.labelBold(
+                    appliedCouponCode != null && appliedCouponCode.isNotEmpty
+                        ? appliedCouponCode.toUpperCase()
+                        : l10n.storeCoupon,
+                    color: design.colors.success,
+                  ),
+                  const SizedBox(height: 2),
+                  AppText.caption(
+                    savedAmount != null && savedAmount > 0
+                        ? l10n.storeYouSaved(savedAmount.toStringAsFixed(2))
+                        : l10n.storeCouponApplied,
+                    color: design.colors.success,
+                  ),
+                ],
+              ),
+            ),
+            AppSemantics.button(
+              label: L10n.of(context).labelRemove,
+              child: GestureDetector(
+                onTap: () {
+                  ref
+                      .read(
+                          productDiscountNotifierProvider(productSlug).notifier)
+                      .removeCoupon();
+                },
+                behavior: HitTestBehavior.opaque,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      LucideIcons.xCircle,
+                      size: design.iconSize.md,
+                      color: design.colors.textSecondary,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
