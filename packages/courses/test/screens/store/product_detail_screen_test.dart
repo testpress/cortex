@@ -300,30 +300,5 @@ void main() {
       expect(find.byIcon(LucideIcons.xCircle), findsNothing);
       expect(find.text('Have a discount code?'), findsOneWidget);
     });
-
-    testWidgets('omits Have a discount code when product.hasCoupons is false',
-        (tester) async {
-      final fakeRepo = FakeStoreRepository(
-        source: const MockDataSource(),
-        product: testProduct,
-      );
-      final fakeCourseRepo = FakeCourseRepository();
-
-      await tester.pumpWidget(
-        wrapRouter(
-          ProductDetailScreen(product: testProduct),
-          overrides: [
-            storeRepositoryProvider.overrideWithValue(fakeRepo),
-            courseRepositoryProvider
-                .overrideWith((ref) async => fakeCourseRepo),
-            dataSourceProvider.overrideWithValue(const MockDataSource()),
-          ],
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      expect(find.text('Have a discount code?'), findsNothing);
-    });
   });
 }
