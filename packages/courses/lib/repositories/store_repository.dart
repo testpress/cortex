@@ -107,6 +107,10 @@ class StoreRepository {
     return _source.applyCoupon(orderId, couponCode);
   }
 
+  Future<OrderDto> removeCoupon(int orderId) async {
+    return _source.applyCoupon(orderId, null);
+  }
+
   // ── Categories ────────────────────────────────────────────────────────────
 
   List<ProductCategoryDto>? getCachedCategories(String cacheKey) =>

@@ -145,8 +145,8 @@ abstract class DataSource {
   /// Generate PayU hash from the backend
   Future<String> generatePayUHash(String hashString);
 
-  /// Apply a coupon to an existing order
-  Future<OrderDto> applyCoupon(int orderId, String couponCode);
+  /// Apply a coupon to an existing order (pass null or empty string to remove coupon)
+  Future<OrderDto> applyCoupon(int orderId, String? couponCode);
 
   /// Fetch installment plans for a product
   Future<InstallmentPlansResponseDto> getInstallmentPlans(String slug);

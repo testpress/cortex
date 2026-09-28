@@ -49,6 +49,16 @@ class FakeStoreRepository extends StoreRepository {
       data: {'detail': "['Invalid discount code']"},
     );
   }
+
+  @override
+  Future<OrderDto> removeCoupon(int orderId) async {
+    return const OrderDto(
+      id: 1,
+      status: 'Draft',
+      total: '100.00',
+      subtotal: '100.00',
+    );
+  }
 }
 
 void main() {

@@ -537,7 +537,7 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
+  Future<OrderDto> applyCoupon(int orderId, String? couponCode) async {
     return performNetworkRequest(
       _dio.patch(ApiEndpoints.applyCoupon(orderId), data: {'code': couponCode}),
       fromJson: (data) => OrderDto.fromJson(data),

@@ -73,12 +73,25 @@ class FakeStoreRepository extends StoreRepository {
     );
   }
 
+  int removeCouponCalls = 0;
+
   @override
   Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
     return const OrderDto(
       id: 1,
       status: 'Draft',
       total: '200.00',
+      subtotal: '300.00',
+    );
+  }
+
+  @override
+  Future<OrderDto> removeCoupon(int orderId) async {
+    removeCouponCalls++;
+    return const OrderDto(
+      id: 1,
+      status: 'Draft',
+      total: '300.00',
       subtotal: '300.00',
     );
   }
@@ -296,7 +309,8 @@ void main() {
       await tester.tap(find.byIcon(LucideIcons.xCircle));
       await tester.pumpAndSettle();
 
-      // Should be removed
+      // Should be removed and called backend removeCoupon
+      expect(fakeRepo.removeCouponCalls, 1);
       expect(find.byIcon(LucideIcons.xCircle), findsNothing);
       expect(find.text('Have a discount code?'), findsOneWidget);
     });

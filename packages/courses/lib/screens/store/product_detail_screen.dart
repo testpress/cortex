@@ -477,6 +477,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         onPressed: () async {
                           final dataSource = ref.read(dataSourceProvider);
 
+                          final existingOrderId = ref
+                              .read(
+                                  productDiscountNotifierProvider(product.slug)
+                                      .notifier)
+                              .orderId;
+
                           if (!context.mounted) return;
                           final result = await PaymentProcessingScreen.start(
                             context,
@@ -486,9 +492,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     : ref
                                         .read(storeRepositoryProvider)
                                         .confirmOrder(discountOrder.id, {}))
-                                : ref
-                                    .read(storeRepositoryProvider)
-                                    .createAndConfirmOrder(product.slug),
+                                : (existingOrderId != null
+                                    ? ref
+                                        .read(storeRepositoryProvider)
+                                        .confirmOrder(existingOrderId, {})
+                                    : ref
+                                        .read(storeRepositoryProvider)
+                                        .createAndConfirmOrder(product.slug)),
                             dataSource,
                           );
 

@@ -162,10 +162,24 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
     }
   }
 
-  void removeCoupon() {
-    _orderId = null;
-    _appliedCouponCode = null;
-    state = const AsyncValue.data(null);
+  Future<void> removeCoupon() async {
+    final orderId = _orderId;
+    if (orderId == null) {
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+      return;
+    }
+
+    state = const AsyncValue.loading();
+    try {
+      final repo = ref.read(storeRepositoryProvider);
+      await repo.removeCoupon(orderId);
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+    } catch (e) {
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+    }
   }
 }
 
