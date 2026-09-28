@@ -156,6 +156,12 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
     }
   }
 
+  void clearError() {
+    if (state.hasError) {
+      state = const AsyncValue.data(null);
+    }
+  }
+
   void removeCoupon() {
     _orderId = null;
     _appliedCouponCode = null;

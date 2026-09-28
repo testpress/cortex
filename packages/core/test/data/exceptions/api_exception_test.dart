@@ -28,6 +28,16 @@ void main() {
       expect(message, 'Error 1\nError 2');
     });
 
+    test(
+      'extractApiMessage extracts from python stringified list in detail',
+      () {
+        final message = ApiException.extractApiMessage({
+          'detail': "['Invalid discount code']",
+        });
+        expect(message, 'Invalid discount code');
+      },
+    );
+
     test('fromDioException maps connectionError to noInternet', () {
       final dioException = DioException(
         requestOptions: RequestOptions(path: ''),

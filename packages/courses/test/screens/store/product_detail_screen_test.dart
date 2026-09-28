@@ -62,6 +62,26 @@ class FakeStoreRepository extends StoreRepository {
       subtotal: '300.00',
     );
   }
+
+  @override
+  Future<OrderDto> createOrder(String slug) async {
+    return const OrderDto(
+      id: 1,
+      status: 'Draft',
+      total: '300.00',
+      subtotal: '300.00',
+    );
+  }
+
+  @override
+  Future<OrderDto> applyCoupon(int orderId, String couponCode) async {
+    return const OrderDto(
+      id: 1,
+      status: 'Draft',
+      total: '200.00',
+      subtotal: '300.00',
+    );
+  }
 }
 
 class FakeCourseRepository extends CourseRepository {
@@ -220,6 +240,57 @@ void main() {
       expect(find.text('FREE'), findsOneWidget);
       expect(find.text('₹0.00'), findsNothing);
       expect(find.text('₹1000.00'), findsNothing);
+    });
+
+    testWidgets('renders circle-x icon to remove coupon instead of text',
+        (tester) async {
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: testProduct,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: testProduct),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Open discount sheet
+      await tester.tap(find.text('Have a discount code?'));
+      await tester.pumpAndSettle();
+
+      // Enter coupon and apply
+      await tester.enterText(find.byType(EditableText), 'SAVE100');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('APPLY'));
+      await tester.pumpAndSettle();
+
+      // Tap Done
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+
+      // Applied coupon card should show code, savings, and circle-x icon, NOT 'Remove' text
+      expect(find.text('SAVE100'), findsOneWidget);
+      expect(find.text('You saved ₹100.00'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.xCircle), findsOneWidget);
+      expect(find.text('Remove'), findsNothing);
+
+      // Tap circle-x icon to remove coupon
+      await tester.tap(find.byIcon(LucideIcons.xCircle));
+      await tester.pumpAndSettle();
+
+      // Should be removed
+      expect(find.byIcon(LucideIcons.xCircle), findsNothing);
+      expect(find.text('Have a discount code?'), findsOneWidget);
     });
   });
 }

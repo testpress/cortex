@@ -89,13 +89,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               },
               behavior: HitTestBehavior.opaque,
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.xs,
-                  vertical: design.spacing.xs,
-                ),
-                child: AppText.labelBold(
-                  L10n.of(context).labelRemove,
-                  color: design.colors.accent2,
+                padding: EdgeInsets.all(design.spacing.xs),
+                child: Icon(
+                  LucideIcons.xCircle,
+                  size: design.iconSize.md,
+                  color: design.colors.textSecondary,
                 ),
               ),
             ),
@@ -149,10 +147,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final detailAsync = ref.watch(productDetailProvider(widget.product.slug));
-    final product = detailAsync.value ?? widget.product;
+    final product = detailAsync.valueOrNull ?? widget.product;
     final discountAsync =
         ref.watch(productDiscountNotifierProvider(product.slug));
-    final discountOrder = discountAsync.value;
+    final discountOrder = discountAsync.valueOrNull;
     final appliedCouponCode = ref
         .watch(productDiscountNotifierProvider(product.slug).notifier)
         .appliedCouponCode;
@@ -501,10 +499,22 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ),
         AppBottomSheet(
           isOpen: _isDiscountSheetOpen,
-          onClose: () => setState(() => _isDiscountSheetOpen = false),
+          onClose: () {
+            ref
+                .read(productDiscountNotifierProvider(product.slug).notifier)
+                .clearError();
+            setState(() => _isDiscountSheetOpen = false);
+          },
           child: ProductDiscountSheet(
             productSlug: product.slug,
-            onClose: () => setState(() => _isDiscountSheetOpen = false),
+            product: product,
+            originalPrice: product.price,
+            onClose: () {
+              ref
+                  .read(productDiscountNotifierProvider(product.slug).notifier)
+                  .clearError();
+              setState(() => _isDiscountSheetOpen = false);
+            },
           ),
         ),
         AppBottomSheet(
