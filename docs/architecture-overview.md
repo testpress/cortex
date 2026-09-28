@@ -330,15 +330,15 @@ When modifying Drift tables (`*table.dart`), Riverpod annotations (`@riverpod`),
 ```bash
 # In packages/core (for DB & core providers)
 cd packages/core
-flutter pub run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs
 
 # In domain packages (e.g. packages/courses)
 cd packages/courses
-flutter pub run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 > [!TIP]
-> If you are actively modifying models or tables, run `flutter pub run build_runner watch` to recompile automatically on save.
+> If you are actively modifying models or tables, run `dart run build_runner watch --delete-conflicting-outputs` to recompile automatically on save.
 
 ---
 
@@ -354,4 +354,4 @@ flutter pub run build_runner build --delete-conflicting-outputs
 | **Data Fetching** | Calling `Dio.get(...)` inside a Widget's `initState` | Read a Riverpod provider backed by a Repository |
 | **Offline Data** | Bypassing SQLite and relying solely on network responses | Write network responses to Drift; stream from Drift to UI |
 | **Touch Targets** | Adding tiny clickable icons (< 48x48 dp) | Wrap in `AppSemantics.button` with minimum 48dp hit area |
-| **Riverpod** | Calling `ref.watch()` inside an `onPressed` callback | Use `ref.read()` inside callbacks; `ref.watch()` only in `build()` |
+| **Riverpod** | Calling `ref.watch()` inside an `onPresse  d` callback | Use `ref.read()` inside callbacks; `ref.watch()` only in `build()` |
