@@ -99,6 +99,28 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
     }
 
     // TpStreams / null provider — inline video player
+    final chatEmbedUrl = lesson.chatEmbedUrl?.trim();
+    final hasChat = chatEmbedUrl != null && chatEmbedUrl.isNotEmpty;
+
+    String? themedChatUrl;
+    if (hasChat) {
+      final isDarkMode = Design.of(context).isDark;
+      final uri = Uri.tryParse(chatEmbedUrl);
+      if (uri != null) {
+        final queryParams = Map<String, String>.from(uri.queryParameters);
+        queryParams['theme'] = isDarkMode ? 'dark' : 'light';
+        if (isDarkMode &&
+            (uri.host.contains('youtube.com') ||
+                uri.host.contains('youtu.be'))) {
+          queryParams['dark_theme'] = '1';
+        }
+        themedChatUrl = uri.replace(queryParameters: queryParams).toString();
+      } else {
+        // Fall back to raw URL if parsing fails (handled safely by AppWebView)
+        themedChatUrl = chatEmbedUrl;
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -108,8 +130,15 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
             assetId: lesson.uuid,
           ),
         ),
-        const Expanded(
-          child: ColoredBox(color: Color(0xFF000000)),
+        Expanded(
+          child: hasChat
+              ? AppWebView(
+                  key: ValueKey('live_chat_webview_${lesson.id}'),
+                  url: themedChatUrl!,
+                  showHeader: false,
+                  useSafeArea: false,
+                )
+              : const ColoredBox(color: Color(0xFF000000)),
         ),
         if (footerBuilder != null) footerBuilder(context),
       ],
