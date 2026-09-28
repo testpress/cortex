@@ -1574,11 +1574,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String playbackSpeedRestored(String speed) {
-    return 'Playing at ${speed}x';
+    return 'Playing at ${speed}X';
   }
 
   @override
   String get playbackSpeedReset => 'Reset';
+
+  @override
+  String rememberPlaybackSpeedPrompt(String speed) {
+    return 'Remember ${speed}X for future videos?';
+  }
+
+  @override
+  String get actionYes => 'Yes';
+
+  @override
+  String get actionNo => 'No';
 
   @override
   String get settingsHighContrastSubtitle => 'Increase visual contrast';

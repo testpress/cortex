@@ -1570,11 +1570,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String playbackSpeedRestored(String speed) {
-    return 'يتم التشغيل بسرعة ${speed}x';
+    return 'يتم التشغيل بسرعة ${speed}X';
   }
 
   @override
   String get playbackSpeedReset => 'إعادة تعيين';
+
+  @override
+  String rememberPlaybackSpeedPrompt(String speed) {
+    return 'هل تريد تذكر سرعة ${speed}X لمقاطع الفيديو المستقبلية؟';
+  }
+
+  @override
+  String get actionYes => 'نعم';
+
+  @override
+  String get actionNo => 'لا';
 
   @override
   String get settingsHighContrastSubtitle => 'زيادة التباين البصري';

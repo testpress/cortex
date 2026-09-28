@@ -39,9 +39,152 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
   final _videoPositionNotifier = ValueNotifier<Duration>(Duration.zero);
   final _isAutoScrollEnabledNotifier = ValueNotifier<bool>(true);
   int _currentTabIndex = 0;
+  double? _pendingSpeedForRememberPrompt;
+  bool _isSavingPrompt = false;
 
   void _handleSeek(Duration target) {
     _videoPlayerKey.currentState?.seek(target);
+  }
+
+  Future<void> _onPlaybackSpeedChanged(double speed) async {
+    if (speed == 1.0) {
+      if (_pendingSpeedForRememberPrompt != null) {
+        setState(() {
+          _pendingSpeedForRememberPrompt = null;
+        });
+      }
+      return;
+    }
+    try {
+      final playbackState = ref.read(playbackSettingsNotifierProvider);
+      final settings = playbackState.hasValue
+          ? playbackState.requireValue
+          : await ref.read(playbackSettingsNotifierProvider.future);
+      if (!mounted) return;
+      if (settings.rememberPlaybackSpeed) {
+        await ref
+            .read(playbackSettingsNotifierProvider.notifier)
+            .updateGlobalPlaybackSpeed(speed);
+        if (_pendingSpeedForRememberPrompt != null) {
+          setState(() {
+            _pendingSpeedForRememberPrompt = null;
+          });
+        }
+        return;
+      }
+
+      if (settings.hasDismissedPlaybackSpeedPrompt) return;
+
+      setState(() {
+        _pendingSpeedForRememberPrompt = speed;
+      });
+    } catch (e, st) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
+  }
+
+  Future<void> _onAcceptRememberSpeed() async {
+    final speed = _pendingSpeedForRememberPrompt;
+    if (speed == null || _isSavingPrompt) return;
+
+    setState(() {
+      _isSavingPrompt = true;
+    });
+
+    try {
+      await ref
+          .read(playbackSettingsNotifierProvider.notifier)
+          .enableRememberPlaybackSpeedAndSave(speed);
+      if (!mounted) return;
+      setState(() {
+        _pendingSpeedForRememberPrompt = null;
+        _isSavingPrompt = false;
+      });
+    } catch (e, st) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+      setState(() {
+        _isSavingPrompt = false;
+      });
+      AppToast.show(
+        context,
+        message: L10n.of(context).errorGenericMessage,
+        isError: true,
+      );
+    }
+  }
+
+  Future<void> _onDismissRememberSpeed() async {
+    if (_isSavingPrompt) return;
+    setState(() {
+      _pendingSpeedForRememberPrompt = null;
+    });
+    try {
+      await ref
+          .read(playbackSettingsNotifierProvider.notifier)
+          .dismissPlaybackSpeedPrompt();
+    } catch (e, st) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
+  }
+
+  Widget _buildRememberSpeedBanner(DesignConfig design) {
+    final l10n = L10n.of(context);
+    final speed = _pendingSpeedForRememberPrompt ?? 1.0;
+    final speedLabel =
+        speed == speed.roundToDouble() ? speed.toInt().toString() : '$speed';
+    final promptText = l10n.rememberPlaybackSpeedPrompt(speedLabel);
+
+    return AppSemantics.container(
+      label: promptText,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.md,
+          vertical: design.spacing.md,
+        ),
+        decoration: BoxDecoration(
+          color: design.colors.surface,
+          borderRadius: BorderRadius.circular(design.radius.lg),
+          border: Border.all(
+            color: design.colors.divider.withValues(alpha: 0.8),
+          ),
+          boxShadow: design.shadows.floating,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: AppText.bodySmall(
+                promptText,
+                color: design.colors.textPrimary,
+                maxLines: 2,
+              ),
+            ),
+            SizedBox(width: design.spacing.sm),
+            AppButton.secondary(
+              label: l10n.actionNo,
+              backgroundColor:
+                  design.colors.surfaceVariant.withValues(alpha: 0.5),
+              foregroundColor: design.colors.textPrimary,
+              borderColor: design.colors.border,
+              labelStyle: design.typography.labelBold,
+              onPressed: _isSavingPrompt ? null : _onDismissRememberSpeed,
+              height: 38.0,
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            ),
+            SizedBox(width: design.spacing.xs),
+            AppButton.primary(
+              label: l10n.actionYes,
+              loading: _isSavingPrompt,
+              onPressed: _isSavingPrompt ? null : _onAcceptRememberSpeed,
+              height: 38.0,
+              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   List<VideoLessonTab> _getTabsForLesson(
@@ -147,6 +290,9 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
     _syncTabs(helpdeskEnabled);
   }
 
+  static const double _kFooterBottomOffset = 88.0;
+  static const double _kDefaultBottomOffset = 16.0;
+
   @override
   void dispose() {
     if (_activeTabs.isNotEmpty) {
@@ -168,8 +314,12 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
     final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
     _syncTabs(helpdeskEnabled);
 
+    final showRememberPrompt =
+        _pendingSpeedForRememberPrompt != null && !isLandscape;
+
+    final Widget content;
     if (_activeTabs.isEmpty) {
-      return Column(
+      content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (isLandscape)
@@ -182,70 +332,115 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
           if (widget.footerBuilder != null) widget.footerBuilder!(context),
         ],
       );
+    } else {
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isLandscape)
+            Expanded(child: _buildVideoSection(design))
+          else
+            _buildVideoSection(design),
+          Container(
+            decoration: BoxDecoration(
+              color: design.colors.surface,
+              border: Border(
+                bottom: BorderSide(
+                  color: design.colors.divider.withValues(alpha: 0.5),
+                  width: 1,
+                ),
+              ),
+            ),
+            child: _buildTabBar(context, design),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: _activeTabs.map(_buildTabWidget).toList(),
+            ),
+          ),
+        ],
+      );
     }
 
     return Stack(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isLandscape)
-              Expanded(child: _buildVideoSection(design))
-            else
-              _buildVideoSection(design),
-            Container(
-              decoration: BoxDecoration(
-                color: design.colors.surface,
-                border: Border(
-                  bottom: BorderSide(
-                    color: design.colors.divider.withValues(alpha: 0.5),
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: _buildTabBar(context, design),
+        content,
+        Positioned(
+          bottom: (widget.footerBuilder != null
+                  ? _kFooterBottomOffset
+                  : _kDefaultBottomOffset) +
+              MediaQuery.of(context).padding.bottom,
+          left: design.spacing.md,
+          right: design.spacing.md,
+          child: AnimatedSwitcher(
+            duration: MotionPreferences.duration(
+              context,
+              design.motion.normal,
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _activeTabs.map(_buildTabWidget).toList(),
-              ),
+            reverseDuration: MotionPreferences.duration(
+              context,
+              design.motion.fast,
             ),
-          ],
-        ),
-        ValueListenableBuilder<bool>(
-          valueListenable: _isAutoScrollEnabledNotifier,
-          builder: (context, isAutoScrollEnabled, _) {
-            final isTranscriptTab =
-                _activeTabs[_tabController.index] == VideoLessonTab.transcript;
-            if (!isAutoScrollEnabled && isTranscriptTab) {
-              return Positioned(
-                bottom: widget.footerBuilder != null ? 60 : 12,
-                left: 0,
-                right: 0,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: AppButton.primary(
-                    label: L10n.of(context).videoLessonSyncToVideo,
-                    onPressed: () {
-                      _isAutoScrollEnabledNotifier.value = true;
-                    },
-                    height: 48.0,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: design.spacing.md),
-                    leading: Icon(
-                      LucideIcons.refreshCw,
-                      size: design.iconSize.sm,
-                      color: design.colors.onPrimary,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.25),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: MotionPreferences.curve(
+                      context,
+                      design.motion.easeOut,
                     ),
-                  ),
+                  )),
+                  child: child,
                 ),
               );
-            }
-            return const SizedBox.shrink();
-          },
+            },
+            child: showRememberPrompt
+                ? KeyedSubtree(
+                    key: const ValueKey('remember_speed_banner'),
+                    child: _buildRememberSpeedBanner(design),
+                  )
+                : const SizedBox.shrink(key: ValueKey('empty_banner')),
+          ),
         ),
+        if (_activeTabs.isNotEmpty)
+          ValueListenableBuilder<bool>(
+            valueListenable: _isAutoScrollEnabledNotifier,
+            builder: (context, isAutoScrollEnabled, _) {
+              final isTranscriptTab = _activeTabs[_tabController.index] ==
+                  VideoLessonTab.transcript;
+              if (!isAutoScrollEnabled && isTranscriptTab) {
+                return Positioned(
+                  bottom: widget.footerBuilder != null ? 60 : 12,
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AppButton.primary(
+                      label: L10n.of(context).videoLessonSyncToVideo,
+                      onPressed: () {
+                        _isAutoScrollEnabledNotifier.value = true;
+                      },
+                      height: 48.0,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: design.spacing.md),
+                      leading: Icon(
+                        LucideIcons.refreshCw,
+                        size: design.iconSize.sm,
+                        color: design.colors.onPrimary,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
       ],
     );
   }
@@ -346,6 +541,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
       onSeekOccurred: () {
         _isAutoScrollEnabledNotifier.value = true;
       },
+      onPlaybackSpeedChanged: _onPlaybackSpeedChanged,
     );
   }
 

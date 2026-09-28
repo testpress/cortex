@@ -1597,11 +1597,22 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String playbackSpeedRestored(String speed) {
-    return '${speed}x வேகத்தில் இயங்குகிறது';
+    return '${speed}X வேகத்தில் இயங்குகிறது';
   }
 
   @override
   String get playbackSpeedReset => 'மீட்டமை';
+
+  @override
+  String rememberPlaybackSpeedPrompt(String speed) {
+    return 'எதிர்கால வீடியோக்களுக்கு ${speed}X வேகத்தை நினைவில் வைக்கவா?';
+  }
+
+  @override
+  String get actionYes => 'ஆம்';
+
+  @override
+  String get actionNo => 'இல்லை';
 
   @override
   String get settingsHighContrastSubtitle => 'காட்சி முரண்பாட்டை அதிகரிக்கவும்';

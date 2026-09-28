@@ -186,4 +186,330 @@ void main() {
       expect(player.initialPosition, equals(125.4));
     });
   });
+
+  group('VideoLessonViewer Remember Playback Speed Prompt', () {
+    testWidgets(
+        'shows remember speed banner when speed changes to non-1x and not previously dismissed',
+        (tester) async {
+      final notifier = FakePlaybackSettingsNotifier(
+        PlaybackSettings(
+          quality: VideoQuality.auto,
+          autoPlayNext: false,
+          rememberPlaybackSpeed: false,
+          globalPlaybackSpeed: null,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider.overrideWith(() => notifier),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 1.5X for future videos?'), findsNothing);
+
+      // Trigger playback speed change on CustomVideoPlayer
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      player.onPlaybackSpeedChanged?.call(1.5);
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 1.5X for future videos?'), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is Semantics &&
+              w.container == true &&
+              w.properties.label == 'Remember 1.5X for future videos?',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Yes'), findsOneWidget);
+      expect(find.text('No'), findsOneWidget);
+
+      // Tap 'No'
+      await tester.tap(find.text('No'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 1.5X for future videos?'), findsNothing);
+      expect(notifier.dismissedRememberPrompt, isTrue);
+    });
+
+    testWidgets('does not show banner if previously dismissed', (tester) async {
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider
+                  .overrideWith(() => FakePlaybackSettingsNotifier(
+                        PlaybackSettings(
+                          quality: VideoQuality.auto,
+                          autoPlayNext: false,
+                          rememberPlaybackSpeed: false,
+                          globalPlaybackSpeed: null,
+                          hasDismissedPlaybackSpeedPrompt: true,
+                        ),
+                      )),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      player.onPlaybackSpeedChanged?.call(2.0);
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 2X for future videos?'), findsNothing);
+    });
+
+    testWidgets('does not show banner when speed is 1.0x', (tester) async {
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider
+                  .overrideWith(() => FakePlaybackSettingsNotifier(
+                        PlaybackSettings(
+                          quality: VideoQuality.auto,
+                          autoPlayNext: false,
+                          rememberPlaybackSpeed: false,
+                          globalPlaybackSpeed: null,
+                        ),
+                      )),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      player.onPlaybackSpeedChanged?.call(1.0);
+
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Remember'), findsNothing);
+    });
+
+    testWidgets(
+        'accepting prompt enables rememberPlaybackSpeed and saves exact speed without setting dismissal flag',
+        (tester) async {
+      final notifier = FakePlaybackSettingsNotifier(
+        PlaybackSettings(
+          quality: VideoQuality.auto,
+          autoPlayNext: false,
+          rememberPlaybackSpeed: false,
+          globalPlaybackSpeed: null,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider.overrideWith(() => notifier),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      player.onPlaybackSpeedChanged?.call(1.75);
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 1.75X for future videos?'), findsOneWidget);
+
+      await tester.tap(find.text('Yes'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 1.75X for future videos?'), findsNothing);
+      expect(notifier.dismissedRememberPrompt, isNull);
+      expect(notifier.savedRememberPlaybackSpeed, isTrue);
+      expect(notifier.savedGlobalPlaybackSpeed, equals(1.75));
+    });
+
+    testWidgets('rapid speed changes update the speed displayed in the prompt',
+        (tester) async {
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider
+                  .overrideWith(() => FakePlaybackSettingsNotifier(
+                        PlaybackSettings(
+                          quality: VideoQuality.auto,
+                          autoPlayNext: false,
+                          rememberPlaybackSpeed: false,
+                          globalPlaybackSpeed: null,
+                        ),
+                      )),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+
+      player.onPlaybackSpeedChanged?.call(1.5);
+      await tester.pumpAndSettle();
+      expect(find.text('Remember 1.5X for future videos?'), findsOneWidget);
+
+      player.onPlaybackSpeedChanged?.call(2.0);
+      await tester.pumpAndSettle();
+      expect(find.text('Remember 2X for future videos?'), findsOneWidget);
+    });
+
+    testWidgets(
+        'silently updates speed and shows no prompt when rememberPlaybackSpeed is ON',
+        (tester) async {
+      final notifier = FakePlaybackSettingsNotifier(
+        PlaybackSettings(
+          quality: VideoQuality.auto,
+          autoPlayNext: false,
+          rememberPlaybackSpeed: true,
+          globalPlaybackSpeed: 1.5,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider.overrideWith(() => notifier),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+
+      player.onPlaybackSpeedChanged?.call(2.0);
+      await tester.pumpAndSettle();
+
+      expect(
+          find.textContaining('Remember 2X for future videos?'), findsNothing);
+      expect(notifier.savedGlobalPlaybackSpeed, equals(2.0));
+    });
+
+    testWidgets(
+        'shows prompt when speed changes if rememberPlaybackSpeed was manually re-toggled OFF after prior dismissal',
+        (tester) async {
+      final notifier = FakePlaybackSettingsNotifier(
+        PlaybackSettings(
+          quality: VideoQuality.auto,
+          autoPlayNext: false,
+          rememberPlaybackSpeed: false,
+          globalPlaybackSpeed: null,
+          hasDismissedPlaybackSpeedPrompt: true,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(size: Size(400, 800)),
+          child: wrap(
+            const VideoLessonViewer(lesson: testLesson),
+            overrides: [
+              playbackSettingsNotifierProvider.overrideWith(() => notifier),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Simulate user manually toggling setting in settings screen
+      final container = ProviderScope.containerOf(
+          tester.element(find.byType(VideoLessonViewer)));
+      await container.read(playbackSettingsNotifierProvider.future);
+      await container
+          .read(playbackSettingsNotifierProvider.notifier)
+          .updateRememberPlaybackSpeed(false);
+      await tester.pumpAndSettle();
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      player.onPlaybackSpeedChanged?.call(1.75);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Remember 1.75X for future videos?'), findsOneWidget);
+    });
+  });
+}
+
+class FakePlaybackSettingsNotifier extends PlaybackSettingsNotifier {
+  FakePlaybackSettingsNotifier(PlaybackSettings initial) : _current = initial;
+  PlaybackSettings _current;
+
+  bool? savedRememberPlaybackSpeed;
+  double? savedGlobalPlaybackSpeed;
+  bool? dismissedRememberPrompt;
+
+  @override
+  Future<PlaybackSettings> build() async => _current;
+
+  @override
+  Future<void> updateRememberPlaybackSpeed(bool enabled) async {
+    savedRememberPlaybackSpeed = enabled;
+    dismissedRememberPrompt = false;
+    _current = _current.copyWith(
+      rememberPlaybackSpeed: enabled,
+      hasDismissedPlaybackSpeedPrompt: false,
+    );
+    state = AsyncValue.data(_current);
+  }
+
+  @override
+  Future<void> enableRememberPlaybackSpeedAndSave(double speed) async {
+    savedRememberPlaybackSpeed = true;
+    savedGlobalPlaybackSpeed = speed;
+    _current = _current.copyWith(
+      rememberPlaybackSpeed: true,
+      globalPlaybackSpeed: speed,
+    );
+    state = AsyncValue.data(_current);
+  }
+
+  @override
+  Future<void> updateGlobalPlaybackSpeed(double speed) async {
+    savedGlobalPlaybackSpeed = speed;
+    _current = _current.copyWith(globalPlaybackSpeed: speed);
+    state = AsyncValue.data(_current);
+  }
+
+  @override
+  Future<void> dismissPlaybackSpeedPrompt() async {
+    dismissedRememberPrompt = true;
+    _current = _current.copyWith(
+      hasDismissedPlaybackSpeedPrompt: true,
+    );
+    state = AsyncValue.data(_current);
+  }
 }

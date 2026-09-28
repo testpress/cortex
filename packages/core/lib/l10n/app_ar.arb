@@ -538,7 +538,7 @@
   "settingsAutoPlaySubtitle": "بدء الدرس التالي تلقائيًا",
   "settingsRememberPlaybackSpeed": "تذكر سرعة التشغيل",
   "settingsRememberPlaybackSpeedSubtitle": "ابدأ كل فيديو بالسرعة التي استخدمتها آخر مرة",
-  "playbackSpeedRestored": "يتم التشغيل بسرعة {speed}x",
+  "playbackSpeedRestored": "يتم التشغيل بسرعة {speed}X",
   "@playbackSpeedRestored": {
     "placeholders": {
       "speed": {
@@ -547,6 +547,16 @@
     }
   },
   "playbackSpeedReset": "إعادة تعيين",
+  "rememberPlaybackSpeedPrompt": "هل تريد تذكر سرعة {speed}X لمقاطع الفيديو المستقبلية؟",
+  "@rememberPlaybackSpeedPrompt": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "actionYes": "نعم",
+  "actionNo": "لا",
   "settingsHighContrastSubtitle": "زيادة التباين البصري",
   "editProfileTitle": "تعديل الملف الشخصي",
   "editProfileNameLabel": "الاسم الكامل",

@@ -2924,7 +2924,7 @@ abstract class AppLocalizations {
   /// No description provided for @playbackSpeedRestored.
   ///
   /// In en, this message translates to:
-  /// **'Playing at {speed}x'**
+  /// **'Playing at {speed}X'**
   String playbackSpeedRestored(String speed);
 
   /// No description provided for @playbackSpeedReset.
@@ -2932,6 +2932,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get playbackSpeedReset;
+
+  /// No description provided for @rememberPlaybackSpeedPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember {speed}X for future videos?'**
+  String rememberPlaybackSpeedPrompt(String speed);
+
+  /// No description provided for @actionYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get actionYes;
+
+  /// No description provided for @actionNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get actionNo;
 
   /// No description provided for @settingsHighContrastSubtitle.
   ///

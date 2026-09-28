@@ -19,6 +19,7 @@ class CustomVideoPlayer extends ConsumerStatefulWidget {
   final VoidCallback? onComplete;
   final ValueChanged<Duration>? onPositionChanged;
   final VoidCallback? onSeekOccurred;
+  final ValueChanged<double>? onPlaybackSpeedChanged;
 
   const CustomVideoPlayer({
     super.key,
@@ -29,6 +30,7 @@ class CustomVideoPlayer extends ConsumerStatefulWidget {
     this.onComplete,
     this.onPositionChanged,
     this.onSeekOccurred,
+    this.onPlaybackSpeedChanged,
   });
 
   @override
@@ -489,7 +491,7 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     _lastRateSampleTime = now;
     _lastRateSamplePos = pos;
 
-    if (wallDelta < 0.4 || posDelta <= 0.05) {
+    if (wallDelta < 0.2 || posDelta <= 0.05) {
       _steadyRateSamples = 0;
       return;
     }
@@ -507,9 +509,10 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     }
 
     _steadyRateSamples++;
-    if (_steadyRateSamples >= 3) {
+    if (_steadyRateSamples >= 2) {
       _steadyRateSamples = 0;
       _lastPersistedSpeed = nearest;
+      widget.onPlaybackSpeedChanged?.call(nearest);
       _persistPlaybackSpeed(nearest);
     }
   }

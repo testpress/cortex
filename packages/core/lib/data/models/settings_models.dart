@@ -18,11 +18,14 @@ class PlaybackSettings {
   final bool autoPlayNext;
   final bool rememberPlaybackSpeed;
   final double? globalPlaybackSpeed;
+  final bool hasDismissedPlaybackSpeedPrompt;
+
   PlaybackSettings({
     required this.quality,
     required this.autoPlayNext,
     this.rememberPlaybackSpeed = false,
     this.globalPlaybackSpeed,
+    this.hasDismissedPlaybackSpeedPrompt = false,
   });
 
   PlaybackSettings copyWith({
@@ -30,6 +33,7 @@ class PlaybackSettings {
     bool? autoPlayNext,
     bool? rememberPlaybackSpeed,
     double? globalPlaybackSpeed,
+    bool? hasDismissedPlaybackSpeedPrompt,
   }) {
     return PlaybackSettings(
       quality: quality ?? this.quality,
@@ -37,6 +41,9 @@ class PlaybackSettings {
       rememberPlaybackSpeed:
           rememberPlaybackSpeed ?? this.rememberPlaybackSpeed,
       globalPlaybackSpeed: globalPlaybackSpeed ?? this.globalPlaybackSpeed,
+      hasDismissedPlaybackSpeedPrompt:
+          hasDismissedPlaybackSpeedPrompt ??
+          this.hasDismissedPlaybackSpeedPrompt,
     );
   }
 }
