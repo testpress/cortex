@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,107 @@ import 'package:courses/courses.dart';
 import 'package:courses/repositories/course_repository.dart';
 import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
 import 'package:courses/widgets/lesson_detail/fermion_lobby_view.dart';
+// ignore: depend_on_referenced_packages
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
+
+class _FakePlatformWebViewController extends PlatformWebViewController {
+  _FakePlatformWebViewController(super.params) : super.implementation();
+
+  @override
+  Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
+
+  @override
+  Future<void> setPlatformNavigationDelegate(
+    PlatformNavigationDelegate handler,
+  ) async {}
+
+  @override
+  Future<void> setUserAgent(String? userAgent) async {}
+
+  @override
+  Future<String?> getUserAgent() async => 'MockUserAgent';
+
+  @override
+  Future<void> setOnConsoleMessage(
+    void Function(JavaScriptConsoleMessage consoleMessage) onConsoleMessage,
+  ) async {}
+
+  @override
+  Future<void> loadRequest(LoadRequestParams params) async {}
+}
+
+class _FakePlatformWebViewWidget extends PlatformWebViewWidget {
+  _FakePlatformWebViewWidget(super.params) : super.implementation();
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}
+
+class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
+  _FakePlatformNavigationDelegate(super.params) : super.implementation();
+
+  @override
+  Future<void> setOnProgress(void Function(int progress) onProgress) async {}
+
+  @override
+  Future<void> setOnPageStarted(
+    void Function(String url) onPageStarted,
+  ) async {}
+
+  @override
+  Future<void> setOnPageFinished(
+    void Function(String url) onPageFinished,
+  ) async {}
+
+  @override
+  Future<void> setOnWebResourceError(
+    void Function(WebResourceError error) onWebResourceError,
+  ) async {}
+
+  @override
+  Future<void> setOnNavigationRequest(
+    FutureOr<NavigationDecision> Function(NavigationRequest request)
+        onNavigationRequest,
+  ) async {}
+
+  @override
+  Future<void> setOnUrlChange(
+    void Function(UrlChange change) onUrlChange,
+  ) async {}
+
+  @override
+  Future<void> setOnHttpAuthRequest(
+    void Function(HttpAuthRequest request) onHttpAuthRequest,
+  ) async {}
+
+  @override
+  Future<void> setOnHttpError(
+    void Function(HttpResponseError error) onHttpError,
+  ) async {}
+}
+
+class _FakeWebViewPlatform extends WebViewPlatform {
+  @override
+  PlatformWebViewController createPlatformWebViewController(
+    PlatformWebViewControllerCreationParams params,
+  ) {
+    return _FakePlatformWebViewController(params);
+  }
+
+  @override
+  PlatformNavigationDelegate createPlatformNavigationDelegate(
+    PlatformNavigationDelegateCreationParams params,
+  ) {
+    return _FakePlatformNavigationDelegate(params);
+  }
+
+  @override
+  PlatformWebViewWidget createPlatformWebViewWidget(
+    PlatformWebViewWidgetCreationParams params,
+  ) {
+    return _FakePlatformWebViewWidget(params);
+  }
+}
 
 class FakeCourseRepository extends Fake implements CourseRepository {
   int refreshLessonCallCount = 0;
@@ -29,11 +131,21 @@ class FakeCourseRepository extends Fake implements CourseRepository {
 }
 
 void main() {
-  Widget wrap(Widget child, {List<Override> overrides = const []}) {
+  setUpAll(() {
+    WebViewPlatform.instance = _FakeWebViewPlatform();
+  });
+
+  Widget wrap(
+    Widget child, {
+    List<Override> overrides = const [],
+    bool isDark = false,
+  }) {
     return ProviderScope(
       overrides: overrides,
       child: DesignProvider(
-        config: DesignConfig.defaults(),
+        config: isDark
+            ? DesignConfig.defaults().copyWith(isDark: true)
+            : DesignConfig.defaults(),
         child: LocalizationProvider(
           child: Builder(
             builder: (context) {
@@ -97,6 +209,36 @@ void main() {
     streamStatus: 'running',
   );
 
+  final testTpStreamsWithChatLesson = LessonDto(
+    id: '4',
+    chapterId: '10',
+    title: 'TpStreams Session with Live Chat',
+    type: LessonType.liveStream,
+    progressStatus: LessonProgressStatus.notStarted,
+    orderIndex: 3,
+    duration: '60 min',
+    isLocked: false,
+    contentUrl: 'tp-asset-123',
+    liveStreamProvider: 'TpStreams',
+    streamStatus: 'running',
+    chatEmbedUrl: 'https://example.com/live/chat',
+  );
+
+  final testYouTubeLiveStreamLesson = LessonDto(
+    id: '5',
+    chapterId: '10',
+    title: 'YouTube Live Session',
+    type: LessonType.liveStream,
+    progressStatus: LessonProgressStatus.notStarted,
+    orderIndex: 4,
+    duration: '60 min',
+    isLocked: false,
+    contentUrl: 'tp-asset-123',
+    liveStreamProvider: 'TpStreams',
+    streamStatus: 'running',
+    chatEmbedUrl: 'https://www.youtube.com/live_chat?v=abc123xyz',
+  );
+
   group('LiveStreamViewer Gating & Routing', () {
     testWidgets('renders FermionLobbyView for running Fermion session',
         (tester) async {
@@ -122,13 +264,68 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     });
 
-    testWidgets('renders inline player for TpStreams session', (tester) async {
+    testWidgets('renders inline player for TpStreams session without chat',
+        (tester) async {
       await tester.pumpWidget(
           wrap(LiveStreamViewer(lesson: testTpStreamsRunningLesson)));
       await tester.pumpAndSettle();
 
       expect(find.byType(FermionLobbyView), findsNothing);
       expect(find.byType(ScheduledMessageView), findsNothing);
+      expect(find.byType(AppWebView), findsNothing);
+      expect(find.byType(ColoredBox), findsOneWidget);
+    });
+
+    testWidgets('renders AppWebView with theme=light in light mode',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          LiveStreamViewer(lesson: testTpStreamsWithChatLesson),
+          isDark: false,
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(FermionLobbyView), findsNothing);
+      expect(find.byType(ScheduledMessageView), findsNothing);
+      expect(find.byType(AppWebView), findsOneWidget);
+      final webView = tester.widget<AppWebView>(find.byType(AppWebView));
+      expect(webView.url, 'https://example.com/live/chat?theme=light');
+      expect(webView.showHeader, isFalse);
+      expect(webView.useSafeArea, isFalse);
+    });
+
+    testWidgets('renders AppWebView with theme=dark in dark mode',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          LiveStreamViewer(lesson: testTpStreamsWithChatLesson),
+          isDark: true,
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(AppWebView), findsOneWidget);
+      final webView = tester.widget<AppWebView>(find.byType(AppWebView));
+      expect(webView.url, 'https://example.com/live/chat?theme=dark');
+    });
+
+    testWidgets('renders AppWebView with dark_theme=1 for YouTube in dark mode',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          LiveStreamViewer(lesson: testYouTubeLiveStreamLesson),
+          isDark: true,
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(AppWebView), findsOneWidget);
+      final webView = tester.widget<AppWebView>(find.byType(AppWebView));
+      expect(
+        webView.url,
+        'https://www.youtube.com/live_chat?v=abc123xyz&theme=dark&dark_theme=1',
+      );
     });
   });
 
