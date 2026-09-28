@@ -26,12 +26,10 @@ cortex/
 
 ## Documentation
 
-**Architecture decisions and AI context live in [`packages/core/docs/`](packages/core/docs/).**
-
-This keeps the repo root clean while providing structured documentation for:
-- Architecture overview
-- Design decisions (ADRs)
-- AI-native context for future sessions
+- **[Architecture & Developer Guide](docs/architecture-overview.md)**: System design, monorepo package boundaries, offline-first Drift/Dio pattern, Riverpod state management, GoRouter, and UI guidelines.
+- **[Data Flow & Runtime Concepts](docs/data-flow-and-concepts.md)**: Deep dive into Riverpod dependency injection, memoization, scoped singletons, Drift reactive streams, and the API-to-UI data pipeline.
+- **[Setup Guide](docs/setup.md)**: Local environment setup, dependency installation, and build runner commands.
+- **Architecture Decisions & AI Context**: Deep ADRs and LLM behavioral rules live in [`packages/core/docs/`](packages/core/docs/).
 
 ## Public API
 
