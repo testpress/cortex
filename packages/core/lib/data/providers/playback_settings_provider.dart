@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/db/app_database.dart';
 import 'package:core/data/db/database_provider.dart';
 import 'package:core/data/models/settings_models.dart';
+import 'package:core/data/providers/playback_speed_prompt_provider.dart';
 
 part 'playback_settings_provider.g.dart';
 
@@ -56,8 +57,25 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
       AppSettingsTableCompanion(rememberPlaybackSpeed: Value(enabled)),
     );
 
+    await ref.read(playbackSpeedPromptDismissedProvider.notifier).reset();
+
     final current = await future;
     state = AsyncValue.data(current.copyWith(rememberPlaybackSpeed: enabled));
+  }
+
+  Future<void> enableRememberPlaybackSpeedAndSave(double speed) async {
+    final db = await ref.read(appDatabaseProvider.future);
+    await db.updateSettings(
+      AppSettingsTableCompanion(
+        rememberPlaybackSpeed: const Value(true),
+        globalPlaybackSpeed: Value(speed),
+      ),
+    );
+
+    final current = await future;
+    state = AsyncValue.data(
+      current.copyWith(rememberPlaybackSpeed: true, globalPlaybackSpeed: speed),
+    );
   }
 
   Future<void> updateGlobalPlaybackSpeed(double speed) async {

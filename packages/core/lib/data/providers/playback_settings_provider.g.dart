@@ -7,7 +7,7 @@ part of 'playback_settings_provider.dart';
 // **************************************************************************
 
 String _$playbackSettingsNotifierHash() =>
-    r'6a1eb20a7ae0b849e8ade00d4dfcc8d5bf7b417d';
+    r'8e271caa01964e89f82ae83ed016eb1801c2c1d1';
 
 /// The active playback settings, owned by core so domain packages (courses,
 /// profile) can read and update them without importing each other.

@@ -1584,11 +1584,22 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String playbackSpeedRestored(String speed) {
-    return '${speed}x എന്ന വേഗതയിൽ പ്ലേ ചെയ്യുന്നു';
+    return '${speed}X എന്ന വേഗതയിൽ പ്ലേ ചെയ്യുന്നു';
   }
 
   @override
   String get playbackSpeedReset => 'പുനഃസജ്ജമാക്കുക';
+
+  @override
+  String rememberPlaybackSpeedPrompt(String speed) {
+    return 'ഭാവിയിലെ വീഡിയോകൾക്കായി ${speed}X വേഗത ഓർമ്മിക്കണോ?';
+  }
+
+  @override
+  String get actionYes => 'അതെ';
+
+  @override
+  String get actionNo => 'ഇല്ല';
 
   @override
   String get settingsHighContrastSubtitle =>

@@ -538,7 +538,7 @@
   "settingsAutoPlaySubtitle": "അടുത്ത പാഠം തനിയെ ആരംഭിക്കുക",
   "settingsRememberPlaybackSpeed": "പ്ലേബാക്ക് വേഗത ഓർക്കുക",
   "settingsRememberPlaybackSpeedSubtitle": "അവസാനം ഉപയോഗിച്ച വേഗതയിൽ ഓരോ വീഡിയോയും ആരംഭിക്കുക",
-  "playbackSpeedRestored": "{speed}x എന്ന വേഗതയിൽ പ്ലേ ചെയ്യുന്നു",
+  "playbackSpeedRestored": "{speed}X എന്ന വേഗതയിൽ പ്ലേ ചെയ്യുന്നു",
   "@playbackSpeedRestored": {
     "placeholders": {
       "speed": {
@@ -547,6 +547,16 @@
     }
   },
   "playbackSpeedReset": "പുനഃസജ്ജമാക്കുക",
+  "rememberPlaybackSpeedPrompt": "ഭാവിയിലെ വീഡിയോകൾക്കായി {speed}X വേഗത ഓർമ്മിക്കണോ?",
+  "@rememberPlaybackSpeedPrompt": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
+  "actionYes": "അതെ",
+  "actionNo": "ഇല്ല",
   "settingsHighContrastSubtitle": "കാഴ്ചയിലെ വൈരുദ്ധ്യം വർദ്ധിപ്പിക്കുക",
   "editProfileTitle": "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
   "editProfileNameLabel": "മുഴുവൻ പേര്",
