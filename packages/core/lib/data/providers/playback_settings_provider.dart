@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/db/app_database.dart';
 import 'package:core/data/db/database_provider.dart';
 import 'package:core/data/models/settings_models.dart';
-import 'package:core/data/providers/shared_preferences_provider.dart';
+import 'package:core/data/providers/playback_speed_prompt_provider.dart';
 
 part 'playback_settings_provider.g.dart';
 
@@ -13,16 +13,10 @@ part 'playback_settings_provider.g.dart';
 /// See ADR 0005-user-state-in-core.md.
 @Riverpod(keepAlive: true)
 class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
-  static const String _kDismissedPlaybackSpeedPromptKey =
-      'has_dismissed_playback_speed';
-
   @override
   Future<PlaybackSettings> build() async {
     final db = await ref.watch(appDatabaseProvider.future);
     final settings = await db.getAppSettings();
-    final prefs = ref.watch(sharedPreferencesProvider);
-    final hasDismissed =
-        prefs.getBool(_kDismissedPlaybackSpeedPromptKey) ?? false;
 
     final quality = VideoQuality.values.firstWhere(
       (e) => e.name == settings.videoQuality,
@@ -34,17 +28,6 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
       autoPlayNext: settings.autoPlayNext,
       rememberPlaybackSpeed: settings.rememberPlaybackSpeed,
       globalPlaybackSpeed: settings.globalPlaybackSpeed,
-      hasDismissedPlaybackSpeedPrompt: hasDismissed,
-    );
-  }
-
-  Future<void> dismissPlaybackSpeedPrompt() async {
-    final prefs = ref.read(sharedPreferencesProvider);
-    await prefs.setBool(_kDismissedPlaybackSpeedPromptKey, true);
-
-    final current = await future;
-    state = AsyncValue.data(
-      current.copyWith(hasDismissedPlaybackSpeedPrompt: true),
     );
   }
 
@@ -74,16 +57,10 @@ class PlaybackSettingsNotifier extends _$PlaybackSettingsNotifier {
       AppSettingsTableCompanion(rememberPlaybackSpeed: Value(enabled)),
     );
 
-    final prefs = ref.read(sharedPreferencesProvider);
-    await prefs.remove(_kDismissedPlaybackSpeedPromptKey);
+    await ref.read(playbackSpeedPromptDismissedProvider.notifier).reset();
 
     final current = await future;
-    state = AsyncValue.data(
-      current.copyWith(
-        rememberPlaybackSpeed: enabled,
-        hasDismissedPlaybackSpeedPrompt: false,
-      ),
-    );
+    state = AsyncValue.data(current.copyWith(rememberPlaybackSpeed: enabled));
   }
 
   Future<void> enableRememberPlaybackSpeedAndSave(double speed) async {

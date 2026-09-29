@@ -199,6 +199,7 @@ void main() {
           globalPlaybackSpeed: null,
         ),
       );
+      final promptNotifier = FakePlaybackSpeedPromptDismissed(false);
 
       await tester.pumpWidget(
         MediaQuery(
@@ -207,6 +208,8 @@ void main() {
             const VideoLessonViewer(lesson: testLesson),
             overrides: [
               playbackSettingsNotifierProvider.overrideWith(() => notifier),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => promptNotifier),
             ],
           ),
         ),
@@ -240,10 +243,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Remember 1.5X for future videos?'), findsNothing);
-      expect(notifier.dismissedRememberPrompt, isTrue);
+      expect(promptNotifier.dismissed, isTrue);
     });
 
     testWidgets('does not show banner if previously dismissed', (tester) async {
+      final promptNotifier = FakePlaybackSpeedPromptDismissed(true);
+
       await tester.pumpWidget(
         MediaQuery(
           data: const MediaQueryData(size: Size(400, 800)),
@@ -257,9 +262,10 @@ void main() {
                           autoPlayNext: false,
                           rememberPlaybackSpeed: false,
                           globalPlaybackSpeed: null,
-                          hasDismissedPlaybackSpeedPrompt: true,
                         ),
                       )),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => promptNotifier),
             ],
           ),
         ),
@@ -291,6 +297,8 @@ void main() {
                           globalPlaybackSpeed: null,
                         ),
                       )),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => FakePlaybackSpeedPromptDismissed(false)),
             ],
           ),
         ),
@@ -317,6 +325,7 @@ void main() {
           globalPlaybackSpeed: null,
         ),
       );
+      final promptNotifier = FakePlaybackSpeedPromptDismissed(false);
 
       await tester.pumpWidget(
         MediaQuery(
@@ -325,6 +334,8 @@ void main() {
             const VideoLessonViewer(lesson: testLesson),
             overrides: [
               playbackSettingsNotifierProvider.overrideWith(() => notifier),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => promptNotifier),
             ],
           ),
         ),
@@ -343,7 +354,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Remember 1.75X for future videos?'), findsNothing);
-      expect(notifier.dismissedRememberPrompt, isNull);
+      expect(promptNotifier.dismissed, isNull);
       expect(notifier.savedRememberPlaybackSpeed, isTrue);
       expect(notifier.savedGlobalPlaybackSpeed, equals(1.75));
     });
@@ -365,6 +376,8 @@ void main() {
                           globalPlaybackSpeed: null,
                         ),
                       )),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => FakePlaybackSpeedPromptDismissed(false)),
             ],
           ),
         ),
@@ -402,6 +415,8 @@ void main() {
             const VideoLessonViewer(lesson: testLesson),
             overrides: [
               playbackSettingsNotifierProvider.overrideWith(() => notifier),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => FakePlaybackSpeedPromptDismissed(false)),
             ],
           ),
         ),
@@ -428,9 +443,9 @@ void main() {
           autoPlayNext: false,
           rememberPlaybackSpeed: false,
           globalPlaybackSpeed: null,
-          hasDismissedPlaybackSpeedPrompt: true,
         ),
       );
+      final promptNotifier = FakePlaybackSpeedPromptDismissed(true);
 
       await tester.pumpWidget(
         MediaQuery(
@@ -439,6 +454,8 @@ void main() {
             const VideoLessonViewer(lesson: testLesson),
             overrides: [
               playbackSettingsNotifierProvider.overrideWith(() => notifier),
+              playbackSpeedPromptDismissedProvider
+                  .overrideWith(() => promptNotifier),
             ],
           ),
         ),
@@ -464,13 +481,35 @@ void main() {
   });
 }
 
+class FakePlaybackSpeedPromptDismissed extends PlaybackSpeedPromptDismissed {
+  FakePlaybackSpeedPromptDismissed([this._initial = false]);
+  bool _initial;
+  bool? dismissed;
+
+  @override
+  bool build() => _initial;
+
+  @override
+  Future<void> dismiss() async {
+    dismissed = true;
+    _initial = true;
+    state = true;
+  }
+
+  @override
+  Future<void> reset() async {
+    dismissed = false;
+    _initial = false;
+    state = false;
+  }
+}
+
 class FakePlaybackSettingsNotifier extends PlaybackSettingsNotifier {
   FakePlaybackSettingsNotifier(PlaybackSettings initial) : _current = initial;
   PlaybackSettings _current;
 
   bool? savedRememberPlaybackSpeed;
   double? savedGlobalPlaybackSpeed;
-  bool? dismissedRememberPrompt;
 
   @override
   Future<PlaybackSettings> build() async => _current;
@@ -478,10 +517,9 @@ class FakePlaybackSettingsNotifier extends PlaybackSettingsNotifier {
   @override
   Future<void> updateRememberPlaybackSpeed(bool enabled) async {
     savedRememberPlaybackSpeed = enabled;
-    dismissedRememberPrompt = false;
+    await ref.read(playbackSpeedPromptDismissedProvider.notifier).reset();
     _current = _current.copyWith(
       rememberPlaybackSpeed: enabled,
-      hasDismissedPlaybackSpeedPrompt: false,
     );
     state = AsyncValue.data(_current);
   }
@@ -501,15 +539,6 @@ class FakePlaybackSettingsNotifier extends PlaybackSettingsNotifier {
   Future<void> updateGlobalPlaybackSpeed(double speed) async {
     savedGlobalPlaybackSpeed = speed;
     _current = _current.copyWith(globalPlaybackSpeed: speed);
-    state = AsyncValue.data(_current);
-  }
-
-  @override
-  Future<void> dismissPlaybackSpeedPrompt() async {
-    dismissedRememberPrompt = true;
-    _current = _current.copyWith(
-      hasDismissedPlaybackSpeedPrompt: true,
-    );
     state = AsyncValue.data(_current);
   }
 }

@@ -73,7 +73,8 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
         return;
       }
 
-      if (settings.hasDismissedPlaybackSpeedPrompt) return;
+      final hasDismissed = ref.read(playbackSpeedPromptDismissedProvider);
+      if (hasDismissed) return;
 
       setState(() {
         _pendingSpeedForRememberPrompt = speed;
@@ -121,9 +122,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
       _pendingSpeedForRememberPrompt = null;
     });
     try {
-      await ref
-          .read(playbackSettingsNotifierProvider.notifier)
-          .dismissPlaybackSpeedPrompt();
+      await ref.read(playbackSpeedPromptDismissedProvider.notifier).dismiss();
     } catch (e, st) {
       if (!mounted) return;
       ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
@@ -145,10 +144,10 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
           vertical: design.spacing.md,
         ),
         decoration: BoxDecoration(
-          color: design.colors.surface,
-          borderRadius: BorderRadius.circular(design.radius.lg),
+          color: design.colors.card,
+          borderRadius: design.radius.card,
           border: Border.all(
-            color: design.colors.divider.withValues(alpha: 0.8),
+            color: design.colors.divider,
           ),
           boxShadow: design.shadows.floating,
         ),
@@ -164,10 +163,9 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
             SizedBox(width: design.spacing.sm),
             AppButton.secondary(
               label: l10n.actionNo,
-              backgroundColor:
-                  design.colors.surfaceVariant.withValues(alpha: 0.5),
+              backgroundColor: design.colors.surfaceVariant,
               foregroundColor: design.colors.textPrimary,
-              borderColor: design.colors.border,
+              borderColor: const Color(0x00000000),
               labelStyle: design.typography.labelBold,
               onPressed: _isSavingPrompt ? null : _onDismissRememberSpeed,
               height: 38.0,
