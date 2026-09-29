@@ -18,7 +18,6 @@ class PlaybackSettings {
   final bool autoPlayNext;
   final bool rememberPlaybackSpeed;
   final double? globalPlaybackSpeed;
-
   PlaybackSettings({
     required this.quality,
     required this.autoPlayNext,

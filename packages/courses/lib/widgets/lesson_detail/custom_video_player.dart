@@ -411,7 +411,6 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
-        vertical: design.spacing.xs * 1.5,
       ),
       decoration: BoxDecoration(
         color: design.colors.textPrimary,
@@ -434,14 +433,16 @@ class CustomVideoPlayerState extends ConsumerState<CustomVideoPlayer>
             child: GestureDetector(
               onTap: () => _resetPlaybackSpeed(_controller!),
               behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.xs,
-                  vertical: design.spacing.xs,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 48.0,
+                  minHeight: 48.0,
                 ),
-                child: AppText.labelBold(
-                  l10n.playbackSpeedReset,
-                  color: design.colors.accent2,
+                child: Center(
+                  child: AppText.labelBold(
+                    l10n.playbackSpeedReset,
+                    color: design.colors.accent2,
+                  ),
                 ),
               ),
             ),

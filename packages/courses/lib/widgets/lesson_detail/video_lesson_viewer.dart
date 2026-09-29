@@ -141,7 +141,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: design.spacing.md,
-          vertical: design.spacing.md,
+          vertical: design.spacing.xs,
         ),
         decoration: BoxDecoration(
           color: design.colors.card,
@@ -161,25 +161,74 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
               ),
             ),
             SizedBox(width: design.spacing.sm),
-            AppButton.secondary(
+            _buildPromptButton(
+              design: design,
               label: l10n.actionNo,
+              onTap: _isSavingPrompt ? null : _onDismissRememberSpeed,
               backgroundColor: design.colors.surfaceVariant,
-              foregroundColor: design.colors.textPrimary,
-              borderColor: const Color(0x00000000),
-              labelStyle: design.typography.labelBold,
-              onPressed: _isSavingPrompt ? null : _onDismissRememberSpeed,
-              height: 38.0,
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+              textColor: design.colors.textPrimary,
             ),
             SizedBox(width: design.spacing.xs),
-            AppButton.primary(
+            _buildPromptButton(
+              design: design,
               label: l10n.actionYes,
+              onTap: _isSavingPrompt ? null : _onAcceptRememberSpeed,
+              backgroundColor: _isSavingPrompt
+                  ? design.colors.border
+                  : design.colors.primary,
+              textColor: design.colors.onPrimary,
               loading: _isSavingPrompt,
-              onPressed: _isSavingPrompt ? null : _onAcceptRememberSpeed,
-              height: 38.0,
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPromptButton({
+    required DesignConfig design,
+    required String label,
+    required VoidCallback? onTap,
+    required Color backgroundColor,
+    required Color textColor,
+    bool loading = false,
+  }) {
+    return AppSemantics.button(
+      label: label,
+      onTap: onTap,
+      child: AppFocusable(
+        onTap: onTap,
+        borderRadius: design.radius.button,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: 48.0,
+            minHeight: 48.0,
+          ),
+          child: Center(
+            child: Container(
+              height: 36,
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.md,
+              ),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: design.radius.button,
+              ),
+              child: loading
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: AppLoadingIndicator(
+                        size: 16,
+                      ),
+                    )
+                  : AppText.labelBold(
+                      label,
+                      color: textColor,
+                    ),
+            ),
+          ),
         ),
       ),
     );
