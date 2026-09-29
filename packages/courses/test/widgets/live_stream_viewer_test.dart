@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -436,6 +437,53 @@ void main() {
       );
 
       expect(semanticsFinder, findsOneWidget);
+    });
+
+    testWidgets(
+        'allows video orientations on attend class and restores device default orientations on pop',
+        (tester) async {
+      final log = <MethodCall>[];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (call) async {
+        log.add(call);
+        return null;
+      });
+
+      await tester.pumpWidget(
+        wrap(
+          Navigator(
+            onGenerateRoute: (settings) => AppRoute(
+              page: FermionLobbyView(lesson: testFermionRunningLesson),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final attendButton = find.text('Attend Class');
+      expect(attendButton, findsOneWidget);
+
+      await tester.tap(attendButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        log.any(
+          (c) =>
+              c.method == 'SystemChrome.setPreferredOrientations' &&
+              (c.arguments as List).contains('DeviceOrientation.landscapeLeft'),
+        ),
+        isTrue,
+      );
+
+      final backButton = find.byType(AppBackButton);
+      expect(backButton, findsOneWidget);
+      await tester.tap(backButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        log.last.method == 'SystemChrome.setPreferredOrientations',
+        isTrue,
+      );
     });
   });
 }

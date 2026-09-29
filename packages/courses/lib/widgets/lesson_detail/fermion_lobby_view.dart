@@ -22,17 +22,22 @@ class FermionLobbyView extends ConsumerWidget {
   void _openWebView(BuildContext context, WidgetRef ref) async {
     final url = lesson.contentUrl;
     if (url == null || url.isEmpty) return;
-    await Navigator.of(context).push(
-      AppRoute(
-        page: AppWebView(
-          url: url,
-          title: lesson.title,
-          showHeader: true,
-          permissions: const [Permission.camera, Permission.microphone],
-          mediaMode: true,
+    await DeviceOrientationHelper.allowVideoOrientations();
+    try {
+      await Navigator.of(context).push(
+        AppRoute(
+          page: AppWebView(
+            url: url,
+            title: lesson.title,
+            showHeader: true,
+            permissions: const [Permission.camera, Permission.microphone],
+            mediaMode: true,
+          ),
         ),
-      ),
-    );
+      );
+    } finally {
+      await DeviceOrientationHelper.lockToDeviceDefault();
+    }
     if (context.mounted) {
       ref.invalidate(lessonDetailProvider(lesson.id));
     }
