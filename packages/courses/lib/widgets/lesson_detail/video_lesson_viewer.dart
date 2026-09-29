@@ -48,11 +48,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
 
   Future<void> _onPlaybackSpeedChanged(double speed) async {
     if (speed == 1.0) {
-      if (_pendingSpeedForRememberPrompt != null) {
-        setState(() {
-          _pendingSpeedForRememberPrompt = null;
-        });
-      }
+      _clearPendingRememberPrompt();
       return;
     }
     try {
@@ -65,11 +61,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
         await ref
             .read(playbackSettingsNotifierProvider.notifier)
             .updateGlobalPlaybackSpeed(speed);
-        if (_pendingSpeedForRememberPrompt != null) {
-          setState(() {
-            _pendingSpeedForRememberPrompt = null;
-          });
-        }
+        _clearPendingRememberPrompt();
         return;
       }
 
@@ -82,6 +74,14 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
     } catch (e, st) {
       if (!mounted) return;
       ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
+    }
+  }
+
+  void _clearPendingRememberPrompt() {
+    if (_pendingSpeedForRememberPrompt != null && mounted) {
+      setState(() {
+        _pendingSpeedForRememberPrompt = null;
+      });
     }
   }
 
@@ -118,9 +118,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
 
   Future<void> _onDismissRememberSpeed() async {
     if (_isSavingPrompt) return;
-    setState(() {
-      _pendingSpeedForRememberPrompt = null;
-    });
+    _clearPendingRememberPrompt();
     try {
       await ref.read(playbackSpeedPromptDismissedProvider.notifier).dismiss();
     } catch (e, st) {
@@ -206,7 +204,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
           ),
           child: Center(
             child: Container(
-              height: 36,
+              height: design.spacing.xl + design.spacing.xs,
               padding: EdgeInsets.symmetric(
                 horizontal: design.spacing.md,
               ),
@@ -216,11 +214,11 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
                 borderRadius: design.radius.button,
               ),
               child: loading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
+                  ? SizedBox(
+                      width: design.iconSize.sm,
+                      height: design.iconSize.sm,
                       child: AppLoadingIndicator(
-                        size: 16,
+                        size: design.iconSize.sm,
                       ),
                     )
                   : AppText.labelBold(
