@@ -22,9 +22,10 @@ class FermionLobbyView extends ConsumerWidget {
   void _openWebView(BuildContext context, WidgetRef ref) async {
     final url = lesson.contentUrl;
     if (url == null || url.isEmpty) return;
+    final navigator = Navigator.of(context);
     await DeviceOrientationHelper.allowVideoOrientations();
     try {
-      await Navigator.of(context).push(
+      await navigator.push(
         AppRoute(
           page: AppWebView(
             url: url,

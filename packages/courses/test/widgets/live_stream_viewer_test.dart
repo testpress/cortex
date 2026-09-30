@@ -442,11 +442,22 @@ void main() {
     testWidgets(
         'allows video orientations on attend class and restores device default orientations on pop',
         (tester) async {
+      tester.view.physicalSize = const Size(393 * 3, 852 * 3);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
       final log = <MethodCall>[];
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(SystemChannels.platform, (call) async {
         log.add(call);
         return null;
+      });
+      addTearDown(() {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(SystemChannels.platform, null);
       });
 
       await tester.pumpWidget(
@@ -480,9 +491,10 @@ void main() {
       await tester.tap(backButton);
       await tester.pumpAndSettle();
 
+      expect(log.last.method, 'SystemChrome.setPreferredOrientations');
       expect(
-        log.last.method == 'SystemChrome.setPreferredOrientations',
-        isTrue,
+        log.last.arguments,
+        equals(['DeviceOrientation.portraitUp']),
       );
     });
   });
