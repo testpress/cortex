@@ -9,6 +9,6 @@
   "SHOW_EXAM_TAB": true,
   "SHOW_INFO_TAB": true,
   "SHOW_PROFILE_TAB": false,
-  "SHOW_AI_TAB": true,
+  "SHOW_AI_TAB": false,
   "SHOW_CERTIFICATE": false
 }
