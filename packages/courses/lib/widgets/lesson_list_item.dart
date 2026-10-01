@@ -175,9 +175,21 @@ class LessonListItem extends StatelessWidget {
                                       color: design.colors.textSecondary,
                                     ),
                                   ),
-                                ] else if (lesson.type != LessonType.liveStream)
-                                  LessonStatusBadge(
-                                      status: lesson.progressStatus),
+                                ] else ...[
+                                  if (lesson.duration.isNotEmpty) ...[
+                                    AppText.cardSubtitle(
+                                      lesson.duration,
+                                      color: design.colors.textSecondary,
+                                    ),
+                                    if (lesson.type != LessonType.liveStream &&
+                                        lesson.progressStatus !=
+                                            LessonProgressStatus.notStarted)
+                                      const SizedBox(width: 8),
+                                  ],
+                                  if (lesson.type != LessonType.liveStream)
+                                    LessonStatusBadge(
+                                        status: lesson.progressStatus),
+                                ],
                               ],
                             ),
                           ],
