@@ -45,21 +45,17 @@ For a comprehensive walkthrough on prerequisites, code generation, and configura
 
 ### Quick Start
 
+Install Flutter and a Java 21 JDK. From the repository root on macOS/Linux:
+
 ```bash
-# Install dependencies
-flutter pub get
+# Find Java 21, configure Flutter's JDK, and fetch app dependencies
+bash tool/setup.sh
 
-# Install pre-commit hooks
-# Mac:
-brew install lefthook
-
-# Ubuntu:
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
-sudo apt install lefthook
-
-lefthook install
-
-# Run reference app (requires API_BASE_URL)
 cd app
 flutter run --dart-define=API_BASE_URL=https://lmsdemo.testpress.in/
 ```
+
+Setup configures Flutter's machine-wide JDK setting so terminal and IDE builds use
+Java 21. If Java 21 is missing, it prints installation instructions. Android builds
+reject other Java versions before starting Gradle. For Windows setup, Android SDK
+prerequisites, Git hooks, and custom JDK paths, see [the setup guide](docs/setup.md).

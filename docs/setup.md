@@ -9,6 +9,7 @@ This guide walks you through setting up your local development environment for t
 Ensure you have the following installed on your machine:
 
 - **Flutter SDK**: Recommended Flutter `3.44.x` (or newer stable Flutter 3). Check with `flutter --version`.
+- **Java JDK**: Java `21`, declared in `.java-version`, for Android builds. A newer default system Java can coexist with it.
 - **Dart SDK**: Included with your Flutter installation.
 - **Git**: For version control.
 - **Lefthook**: Fast git git hooks manager for formatting and lint checks.
@@ -17,6 +18,69 @@ Ensure you have the following installed on your machine:
   - iOS (macOS only): Xcode and CocoaPods (`sudo gem install cocoapods` or `brew install cocoapods`).
 
 ---
+
+### First-run Android setup
+
+From the repository root on macOS/Linux:
+
+```bash
+bash tool/setup.sh
+```
+
+This finds an installed Java 21 JDK, configures Flutter to use it, and runs
+`flutter pub get` in `app/`. It checks `JAVA_HOME`, macOS registered JDKs and
+Homebrew locations, standard Linux JDK locations, and the Java on `PATH`.
+For a custom installation, pass the JDK home (the directory containing `bin/java`
+and `bin/javac`):
+
+```bash
+bash tool/setup.sh "/path/to/jdk-21"
+```
+
+If no Java 21 JDK is found, setup exits with installation instructions. On macOS:
+
+```bash
+brew install openjdk@21
+bash tool/setup.sh
+```
+
+On Linux or Windows, install a Java 21 JDK such as
+[Eclipse Temurin](https://adoptium.net/temurin/releases/?version=21).
+On Windows, configure Flutter explicitly, then fetch dependencies:
+
+```powershell
+flutter config --jdk-dir="C:\path\to\jdk-21"
+cd app
+flutter pub get
+```
+
+**Flutter's JDK configuration is machine-wide**, including IDE launches and other
+Flutter projects. Changing `java` on the shell PATH alone might not change the JDK
+Flutter selects. To return to Flutter's automatic selection later:
+
+```bash
+flutter config --jdk-dir=""
+```
+
+If running `app/android/gradlew` directly, also set `JAVA_HOME` to the Java 21 JDK.
+On macOS with a registered JDK:
+
+```bash
+export JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+```
+
+Both Gradle launchers validate their selected Java before starting Gradle. When
+updating/regenerating wrappers, preserve the Cortex JDK validation blocks.
+A custom `org.gradle.java.home` in project or user `gradle.properties`, a daemon
+JVM criteria file, or a command-line JVM override can select a different daemon
+JDK; remove such overrides or align them with Java 21.
+
+Android Studio users should also set the project's **Gradle JDK** to Java 21 under
+Settings → Build, Execution, Deployment → Build Tools → Gradle.
+
+Install Android SDK Command-line Tools through Android Studio's SDK Manager, then
+run `flutter doctor --android-licenses` and `flutter doctor -v`. Start an emulator
+or connect a device before launching the app.
 
 ## 2. Monorepo Dependency Installation
 
@@ -115,7 +179,7 @@ dart run build_runner watch --delete-conflicting-outputs
 
 `AppConfig.validate()` runs on application startup and requires a valid `API_BASE_URL`.
 
-To run the reference app, navigate to `app/` and pass the required `--dart-define` flags:
+After completing the first-run setup above, navigate to `app/` and pass the required `--dart-define` flags:
 
 ```bash
 cd app
@@ -167,3 +231,13 @@ for dir in app packages/*; do
   fi
 done
 ```
+
+### Android setup regression checks
+
+```bash
+python3 tool/test_android_environment.py
+```
+
+These checks use stub Java and Flutter executables to verify early version
+rejection, argument forwarding, JDK discovery, and setup failures without changing
+your Flutter configuration. Android build CI runs the same checks.
