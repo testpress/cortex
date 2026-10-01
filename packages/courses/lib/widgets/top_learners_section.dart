@@ -197,20 +197,20 @@ class _LearnerCard extends StatelessWidget {
     IconData rankIcon;
     switch (learner.rank) {
       case 1:
-        badgeBgColor = design.colors.rank1.withValues(alpha: 0.18);
-        badgeTextColor = design.colors.rank1;
+        badgeBgColor = design.colors.rank1;
+        badgeTextColor = design.colors.textInverse;
         cardTopBgColor = design.colors.rank1.withValues(alpha: 0.12);
         rankIcon = LucideIcons.crown;
         break;
       case 2:
-        badgeBgColor = design.colors.rank2.withValues(alpha: 0.25);
-        badgeTextColor = design.colors.textSecondary;
+        badgeBgColor = design.colors.rank2;
+        badgeTextColor = design.colors.textInverse;
         cardTopBgColor = design.colors.rank2.withValues(alpha: 0.25);
         rankIcon = LucideIcons.crown;
         break;
       case 3:
-        badgeBgColor = design.colors.rank3.withValues(alpha: 0.25);
-        badgeTextColor = design.colors.rank3;
+        badgeBgColor = design.colors.rank3;
+        badgeTextColor = design.colors.textInverse;
         cardTopBgColor = design.colors.rank3.withValues(alpha: 0.12);
         rankIcon = LucideIcons.crown;
         break;
@@ -311,7 +311,7 @@ class _LearnerCard extends StatelessWidget {
                             width: _kSmallBadgeSize,
                             height: _kSmallBadgeSize,
                             decoration: BoxDecoration(
-                              color: badgeTextColor,
+                              color: badgeBgColor,
                               shape: BoxShape.circle,
                               border: Border.all(
                                   color: design.colors.card, width: 2),
