@@ -124,22 +124,13 @@ class AnnouncementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    // Create a deterministic color palette based on item index using design tokens
-    final colors = [
-      (
-        bg: design.colors.success.withValues(alpha: 0.1),
-        text: design.colors.success
-      ), // Green
-      (
-        bg: design.colors.primary.withValues(alpha: 0.1),
-        text: design.colors.primary
-      ), // Purple
-      (
-        bg: design.colors.warning.withValues(alpha: 0.1),
-        text: design.colors.warning
-      ), // Amber
+    // Create a deterministic background tint palette based on item index using design tokens
+    final bgColors = [
+      design.colors.success.withValues(alpha: 0.1),
+      design.colors.primary.withValues(alpha: 0.1),
+      design.colors.warning.withValues(alpha: 0.1),
     ];
-    final colorScheme = colors[index % colors.length];
+    final bgColor = bgColors[index % bgColors.length];
 
     return AppSemantics.button(
       label: post.title,
@@ -150,7 +141,7 @@ class AnnouncementCard extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(design.spacing.md),
           decoration: BoxDecoration(
-            color: colorScheme.bg,
+            color: bgColor,
             borderRadius: design.radius.card,
             boxShadow: [
               BoxShadow(
@@ -169,7 +160,7 @@ class AnnouncementCard extends StatelessWidget {
                   children: [
                     AppText.body(
                       post.title,
-                      color: colorScheme.text,
+                      color: design.colors.textPrimary,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w600),
@@ -177,7 +168,7 @@ class AnnouncementCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     AppText.bodySmall(
                       post.summary.replaceAll(RegExp(r'[\r\n]+'), ' ').trim(),
-                      color: colorScheme.text.withValues(alpha: 0.8),
+                      color: design.colors.textSecondary,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -188,7 +179,7 @@ class AnnouncementCard extends StatelessWidget {
               Icon(
                 LucideIcons.chevronRight,
                 size: 20,
-                color: colorScheme.text.withValues(alpha: 0.6),
+                color: design.colors.textSecondary,
               ),
             ],
           ),
