@@ -42,14 +42,6 @@ class _AITabState extends ConsumerState<AITab>
   String _conversationId = '';
   bool _isSubmitting = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() {
-      if (mounted) setState(() {});
-    });
-  }
-
   String _formatTime(DateTime time) {
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
@@ -234,10 +226,10 @@ class _AITabState extends ConsumerState<AITab>
                 ),
               ),
             ),
-            child: ValueListenableBuilder<TextEditingValue>(
-              valueListenable: _controller,
-              builder: (context, value, _) {
-                final isDirty = value.text.trim().isNotEmpty;
+            child: ListenableBuilder(
+              listenable: Listenable.merge([_controller, _focusNode]),
+              builder: (context, _) {
+                final isDirty = _controller.text.trim().isNotEmpty;
                 final isFocused = _focusNode.hasFocus;
                 final isActive = isFocused || isDirty;
                 return Row(
@@ -249,8 +241,7 @@ class _AITabState extends ConsumerState<AITab>
                         controller: _controller,
                         focusNode: _focusNode,
                         hintText: l10n.videoLessonAiHint,
-                        borderColor:
-                            isActive ? design.colors.accent2 : null,
+                        borderColor: isActive ? design.colors.accent2 : null,
                         onSubmitted:
                             _isSubmitting ? null : (_) => _sendMessage(),
                         contentPadding: EdgeInsets.symmetric(
@@ -260,22 +251,36 @@ class _AITabState extends ConsumerState<AITab>
                       ),
                     ),
                     SizedBox(width: design.spacing.sm),
-                    GestureDetector(
+                    AppSemantics.button(
+                      label: l10n.videoAiSendMessage,
                       onTap: isDirty && !_isSubmitting ? _sendMessage : null,
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: isDirty && !_isSubmitting
-                              ? design.colors.accent2
-                              : design.colors.accent2.withValues(alpha: 0.35),
-                          borderRadius: BorderRadius.circular(design.radius.md),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            LucideIcons.send,
-                            size: 18,
-                            color: design.colors.textInverse,
+                      enabled: isDirty && !_isSubmitting,
+                      child: GestureDetector(
+                        onTap: isDirty && !_isSubmitting ? _sendMessage : null,
+                        behavior: HitTestBehavior.opaque,
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: Center(
+                            child: Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: isDirty && !_isSubmitting
+                                    ? design.colors.accent2
+                                    : design.colors.accent2
+                                        .withValues(alpha: 0.35),
+                                borderRadius:
+                                    BorderRadius.circular(design.radius.md),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  LucideIcons.send,
+                                  size: 18,
+                                  color: design.colors.textInverse,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -294,107 +299,118 @@ class _AITabState extends ConsumerState<AITab>
 
   Widget _buildChatBubble(_ChatMessage message, DesignConfig design) {
     final isAI = message.isAi;
-    return Padding(
-      padding: EdgeInsets.only(bottom: design.spacing.md),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment:
-            isAI ? MainAxisAlignment.start : MainAxisAlignment.end,
-        children: [
-          if (isAI)
-            Container(
-              width: 28,
-              height: 28,
-              margin: EdgeInsets.only(right: design.spacing.sm, top: 2),
-              decoration: BoxDecoration(
-                color: design.colors.surfaceVariant,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Icon(
-                  LucideIcons.sparkles,
-                  size: 14,
-                  color: design.colors.textSecondary,
+    final timeStr = _formatTime(message.timestamp);
+    final senderLabel = isAI ? 'AI' : 'You';
+    final semanticLabel = message.isLoading
+        ? '$senderLabel, ${L10n.of(context).videoAiThinking}'
+        : '$senderLabel: ${message.text}, $timeStr';
+
+    return AppSemantics.container(
+      label: semanticLabel,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: design.spacing.md),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment:
+              isAI ? MainAxisAlignment.start : MainAxisAlignment.end,
+          children: [
+            if (isAI)
+              Container(
+                width: 28,
+                height: 28,
+                margin: EdgeInsets.only(right: design.spacing.sm, top: 2),
+                decoration: BoxDecoration(
+                  color: design.colors.surfaceVariant,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    LucideIcons.sparkles,
+                    size: 14,
+                    color: design.colors.textSecondary,
+                  ),
                 ),
               ),
-            ),
-          Flexible(
-            child: Column(
-              crossAxisAlignment:
-                  isAI ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(design.spacing.sm),
-                  decoration: BoxDecoration(
-                    color: isAI ? design.colors.surface : design.colors.accent2,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(isAI ? 0 : design.radius.md),
-                      topRight: Radius.circular(isAI ? design.radius.md : 0),
-                      bottomLeft: Radius.circular(design.radius.md),
-                      bottomRight: Radius.circular(design.radius.md),
+            Flexible(
+              child: Column(
+                crossAxisAlignment:
+                    isAI ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(design.spacing.sm),
+                    decoration: BoxDecoration(
+                      color:
+                          isAI ? design.colors.surface : design.colors.accent2,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(isAI ? 0 : design.radius.md),
+                        topRight: Radius.circular(isAI ? design.radius.md : 0),
+                        bottomLeft: Radius.circular(design.radius.md),
+                        bottomRight: Radius.circular(design.radius.md),
+                      ),
+                      border: isAI
+                          ? Border.all(color: design.colors.divider)
+                          : null,
                     ),
-                    border:
-                        isAI ? Border.all(color: design.colors.divider) : null,
-                  ),
-                  child: message.isLoading
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.xs,
-                            vertical: design.spacing.xs,
-                          ),
-                          child: _ThreeDotWavingIndicator(
-                            color: design.colors.textSecondary,
-                          ),
-                        )
-                      : isAI
-                          ? AppMarkdown(
-                              data: _processMarkdown(message.text),
-                              selectable: true,
-                              onTapLink: (url) {
-                                if (url.startsWith('timestamp:')) {
-                                  final timeStr =
-                                      url.substring('timestamp:'.length);
-                                  final duration =
-                                      TimeFormatter.parseDuration(timeStr);
-                                  widget.onSeek?.call(duration);
-                                }
-                              },
-                            )
-                          : AppText.body(
-                              message.text,
-                              color: design.colors.textInverse,
-                              style: const TextStyle(fontSize: 14, height: 1.5),
+                    child: message.isLoading
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: design.spacing.xs,
+                              vertical: design.spacing.xs,
                             ),
-                ),
-                if (!message.isLoading) ...[
-                  SizedBox(height: design.spacing.xs),
-                  AppText.caption(
-                    _formatTime(message.timestamp),
-                    color: design.colors.textTertiary,
+                            child: _ThreeDotWavingIndicator(
+                              color: design.colors.textSecondary,
+                            ),
+                          )
+                        : isAI
+                            ? AppMarkdown(
+                                data: _processMarkdown(message.text),
+                                selectable: true,
+                                onTapLink: (url) {
+                                  if (url.startsWith('timestamp:')) {
+                                    final timeStr =
+                                        url.substring('timestamp:'.length);
+                                    final duration =
+                                        TimeFormatter.parseDuration(timeStr);
+                                    widget.onSeek?.call(duration);
+                                  }
+                                },
+                              )
+                            : AppText.bodySmall(
+                                message.text,
+                                color: design.colors.textInverse,
+                                style: const TextStyle(height: 1.5),
+                              ),
                   ),
+                  if (!message.isLoading) ...[
+                    SizedBox(height: design.spacing.xs),
+                    AppText.caption(
+                      timeStr,
+                      color: design.colors.textTertiary,
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          ),
-          if (!isAI)
-            Container(
-              width: 28,
-              height: 28,
-              margin: EdgeInsets.only(left: design.spacing.sm, top: 2),
-              decoration: BoxDecoration(
-                color: design.colors.accent2,
-                shape: BoxShape.circle,
               ),
-              child: Center(
-                child: Icon(
-                  LucideIcons.user,
-                  size: 14,
-                  color: design.colors.textInverse,
+            ),
+            if (!isAI)
+              Container(
+                width: 28,
+                height: 28,
+                margin: EdgeInsets.only(left: design.spacing.sm, top: 2),
+                decoration: BoxDecoration(
+                  color: design.colors.accent2,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    LucideIcons.user,
+                    size: 14,
+                    color: design.colors.textInverse,
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -425,7 +441,7 @@ class __ThreeDotWavingIndicatorState extends State<_ThreeDotWavingIndicator>
     super.didChangeDependencies();
     final duration = MotionPreferences.duration(
       context,
-      const Duration(milliseconds: 1200),
+      Design.of(context).motion.verySlow,
     );
     _controller.duration = duration;
 
