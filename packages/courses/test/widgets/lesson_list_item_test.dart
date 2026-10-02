@@ -133,4 +133,87 @@ void main() {
       expect(tapped, isFalse);
     });
   });
+
+  group('LessonListItem Duration', () {
+    testWidgets('shows duration when present', (tester) async {
+      final lessonWithDuration = LessonDto(
+        id: '30',
+        chapterId: '1',
+        title: 'Video Lesson',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.notStarted,
+        duration: '32 min',
+        orderIndex: 1,
+        hasEnded: false,
+        isLocked: false,
+        hasAttempts: false,
+      );
+
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: lessonWithDuration,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.text('32 min'), findsOneWidget);
+    });
+
+    testWidgets(
+        'shows duration and in-progress status badge together with token spacing',
+        (tester) async {
+      final inProgressLesson = LessonDto(
+        id: '31',
+        chapterId: '1',
+        title: 'In Progress Video',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.inProgress,
+        duration: '45 min',
+        orderIndex: 2,
+        hasEnded: false,
+        isLocked: false,
+        hasAttempts: false,
+      );
+
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: inProgressLesson,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.text('45 min'), findsOneWidget);
+      expect(find.text('In Progress'), findsOneWidget);
+
+      final sizedBoxFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is SizedBox &&
+            widget.width == DesignConfig.defaults().spacing.sm,
+      );
+      expect(sizedBoxFinder, findsOneWidget);
+    });
+
+    testWidgets('does not show duration text when duration is empty',
+        (tester) async {
+      final lessonWithoutDuration = LessonDto(
+        id: '32',
+        chapterId: '1',
+        title: 'PDF Lesson',
+        type: LessonType.pdf,
+        progressStatus: LessonProgressStatus.notStarted,
+        duration: '',
+        orderIndex: 3,
+        hasEnded: false,
+        isLocked: false,
+        hasAttempts: false,
+      );
+
+      await tester.pumpWidget(wrap(LessonListItem(
+        lesson: lessonWithoutDuration,
+        onTap: () {},
+      )));
+      await tester.pumpAndSettle();
+
+      expect(find.text('min'), findsNothing);
+      expect(find.textContaining('min'), findsNothing);
+    });
+  });
 }

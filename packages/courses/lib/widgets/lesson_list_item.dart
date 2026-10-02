@@ -57,6 +57,11 @@ class LessonListItem extends StatelessWidget {
     final formattedEnd =
         lesson.end != null ? TimeFormatter.formatDate(lesson.end!) : null;
 
+    final showBadge = LessonStatusBadge.shouldShow(
+      status: lesson.progressStatus,
+      type: lesson.type,
+    );
+
     final guardedOnTap = isSkeleton
         ? null
         : () {
@@ -175,9 +180,20 @@ class LessonListItem extends StatelessWidget {
                                       color: design.colors.textSecondary,
                                     ),
                                   ),
-                                ] else if (lesson.type != LessonType.liveStream)
+                                ] else ...[
+                                  if (lesson.duration.isNotEmpty) ...[
+                                    AppText.cardSubtitle(
+                                      lesson.duration,
+                                      color: design.colors.textSecondary,
+                                    ),
+                                    if (showBadge)
+                                      SizedBox(width: design.spacing.sm),
+                                  ],
                                   LessonStatusBadge(
-                                      status: lesson.progressStatus),
+                                    status: lesson.progressStatus,
+                                    type: lesson.type,
+                                  ),
+                                ],
                               ],
                             ),
                           ],
