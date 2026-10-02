@@ -30,7 +30,7 @@ The system SHALL display an in-player contextual prompt when the user changes pl
 ### Requirement: Restored Speed Notification
 The system SHALL display a temporary, non-blocking notification when a remembered playback speed is restored.
 
-#### Scenario: Non-blocking speed indication on subsequent video load
+#### Scenario: Non-blocking speed indication
 - **WHEN** a subsequently opened video starts playing and restores a remembered speed other than the default (1x)
 - **THEN** the system SHALL show a temporary notification indicating the restored speed with uppercase multiplier notation (e.g. "Playing at 3X")
 - **AND** the notification MUST NOT appear on the currently playing video where the speed was originally chosen
