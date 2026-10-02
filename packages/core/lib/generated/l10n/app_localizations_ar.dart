@@ -972,7 +972,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'اسأل سؤال';
 
   @override
-  String get videoLessonTabAiSupport => 'دردشة AI';
+  String get videoLessonTabAiSupport => 'اسأل AI';
 
   @override
   String get videoLessonLectureNotes => 'ملاحظات المحاضرة';

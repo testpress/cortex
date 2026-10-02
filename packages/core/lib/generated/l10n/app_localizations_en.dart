@@ -975,7 +975,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'Ask Doubt';
 
   @override
-  String get videoLessonTabAiSupport => 'AI Chat';
+  String get videoLessonTabAiSupport => 'Ask AI';
 
   @override
   String get videoLessonLectureNotes => 'Lecture Notes';
@@ -1021,7 +1021,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoLessonPending => 'Pending';
 
   @override
-  String get videoLessonAiHint => 'Ask AI anything about this lecture...';
+  String get videoLessonAiHint => 'Ask a question about this lesson...';
 
   @override
   String get videoLessonTabMcq => 'MCQ';

@@ -984,7 +984,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'സംശയം ചോദിക്കുക';
 
   @override
-  String get videoLessonTabAiSupport => 'AI ചാറ്റ്';
+  String get videoLessonTabAiSupport => 'AI-യോട് ചോദിക്കുക';
 
   @override
   String get videoLessonLectureNotes => 'ലെക്ചർ കുറിപ്പുകൾ';

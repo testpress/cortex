@@ -1850,7 +1850,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoLessonTabAiSupport.
   ///
   /// In en, this message translates to:
-  /// **'AI Chat'**
+  /// **'Ask AI'**
   String get videoLessonTabAiSupport;
 
   /// No description provided for @videoLessonLectureNotes.
@@ -1934,7 +1934,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoLessonAiHint.
   ///
   /// In en, this message translates to:
-  /// **'Ask AI anything about this lecture...'**
+  /// **'Ask a question about this lesson...'**
   String get videoLessonAiHint;
 
   /// No description provided for @videoLessonTabMcq.

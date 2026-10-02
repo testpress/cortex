@@ -988,7 +988,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'சந்தேகம் கேள்';
 
   @override
-  String get videoLessonTabAiSupport => 'AI அரட்டை';
+  String get videoLessonTabAiSupport => 'AI-யிடம் கேட்க';
 
   @override
   String get videoLessonLectureNotes => 'விரிவுரை குறிப்புகள்';
