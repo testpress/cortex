@@ -181,14 +181,20 @@ class LessonListItem extends StatelessWidget {
                                       lesson.duration,
                                       color: design.colors.textSecondary,
                                     ),
-                                    if (lesson.type != LessonType.liveStream &&
-                                        lesson.progressStatus !=
-                                            LessonProgressStatus.notStarted)
-                                      const SizedBox(width: 8),
+                                    if (LessonStatusBadge.shouldShow(
+                                      status: lesson.progressStatus,
+                                      type: lesson.type,
+                                    ))
+                                      SizedBox(width: design.spacing.sm),
                                   ],
-                                  if (lesson.type != LessonType.liveStream)
+                                  if (LessonStatusBadge.shouldShow(
+                                    status: lesson.progressStatus,
+                                    type: lesson.type,
+                                  ))
                                     LessonStatusBadge(
-                                        status: lesson.progressStatus),
+                                      status: lesson.progressStatus,
+                                      type: lesson.type,
+                                    ),
                                 ],
                               ],
                             ),

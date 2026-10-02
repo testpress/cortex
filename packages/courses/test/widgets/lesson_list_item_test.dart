@@ -158,7 +158,7 @@ void main() {
       expect(find.text('32 min'), findsOneWidget);
     });
 
-    testWidgets('shows duration and in-progress status badge together',
+    testWidgets('shows duration and in-progress status badge together with token spacing',
         (tester) async {
       final inProgressLesson = LessonDto(
         id: '31',
@@ -181,6 +181,13 @@ void main() {
 
       expect(find.text('45 min'), findsOneWidget);
       expect(find.text('In Progress'), findsOneWidget);
+
+      final sizedBoxFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is SizedBox &&
+            widget.width == DesignConfig.defaults().spacing.sm,
+      );
+      expect(sizedBoxFinder, findsOneWidget);
     });
 
     testWidgets('does not show duration text when duration is empty',

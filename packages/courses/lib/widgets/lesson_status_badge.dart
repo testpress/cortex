@@ -7,12 +7,30 @@ import 'package:flutter/widgets.dart';
 /// Maps [LessonProgressStatus] to systematic [DesignStatusColors] tokens.
 /// Re-designed as per user request to remove "locked" visuals for paid users.
 class LessonStatusBadge extends StatelessWidget {
-  const LessonStatusBadge({super.key, required this.status});
+  const LessonStatusBadge({
+    super.key,
+    required this.status,
+    this.type,
+  });
 
   final LessonProgressStatus status;
+  final LessonType? type;
+
+  /// Returns whether a status badge should be displayed for the given [status] and optional [type].
+  static bool shouldShow({
+    required LessonProgressStatus status,
+    LessonType? type,
+  }) {
+    if (type == LessonType.liveStream) return false;
+    return status != LessonProgressStatus.notStarted;
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!shouldShow(status: status, type: type)) {
+      return const SizedBox.shrink();
+    }
+
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
