@@ -158,7 +158,8 @@ void main() {
       expect(find.text('32 min'), findsOneWidget);
     });
 
-    testWidgets('shows duration and in-progress status badge together with token spacing',
+    testWidgets(
+        'shows duration and in-progress status badge together with token spacing',
         (tester) async {
       final inProgressLesson = LessonDto(
         id: '31',
