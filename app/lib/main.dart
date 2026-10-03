@@ -108,10 +108,10 @@ class CortexApp extends ConsumerWidget {
         return const Locale('en');
       },
       routerConfig: ref.watch(goRouterProvider),
-      // Set Plus Jakarta Sans on the Material theme so widgets that still
+      // Set Inter on the Material theme so widgets that still
       // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
       theme: ThemeData(
-        fontFamily: GoogleFonts.notoSans().fontFamily,
+        fontFamily: GoogleFonts.inter().fontFamily,
         scaffoldBackgroundColor: design.colors.canvas,
         canvasColor: design.colors.canvas,
         colorScheme: ColorScheme.fromSeed(
