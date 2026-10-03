@@ -11,7 +11,7 @@ The system SHALL display flat white card backgrounds (`card`) across the initial
 
 #### Scenario: Displaying header and progress bar
 - **WHEN** the user views the active MCQ quiz
-- **THEN** the system displays the header `"Practice Test"`, a pill badge with the question count, `"Question X of Y"`, `"N answered"`, and a linear progress bar reflecting overall answered progress.
+- **THEN** the system displays the header `"Practice Test"`, a pill badge with the question count, `"Question X of Y"`, `"N answered"`, and a linear progress bar reflecting overall question progress wrapped with `AppSemantics.progressValue` semantics for screen readers. The question body renders without a redundant numeric index prefix (`"N."`) since the progress row above already indicates the question position.
 
 ### Requirement: Staged Option Selection and Check Answer Flow
 The system SHALL allow learners to select an option without immediate validation, enabling evaluation only when the Check Answer button is tapped.
@@ -40,7 +40,7 @@ The system SHALL provide a "View All Questions" trigger button and bottom sheet 
 
 #### Scenario: Opening question palette
 - **WHEN** the user taps "View All Questions"
-- **THEN** a bottom sheet displays a grid of question numbers with indicators for answered, current, and unanswered questions.
+- **THEN** a modal route is opened via `showGeneralDialog` containing `VideoMcqPaletteSheet` wrapped in `AppSemantics.container`, displaying a grid of question numbers, a 48x48dp touch-target close button, and built-in backdrop dismissal.
 
 #### Scenario: Jumping to a question from palette
 - **WHEN** the user taps a question number in the palette

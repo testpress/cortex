@@ -24,7 +24,13 @@
 
 ## 5. View All Questions (Question Palette)
 
-- [x] 5.1 Add `VideoMcqPaletteSheet` bottom sheet modal displaying question number grid (1..N) with answered, current, and unanswered status indicators.
+- [x] 5.1 Add `VideoMcqPaletteSheet` displaying question number grid (1..N) with answered, current, and unanswered status indicators.
 - [x] 5.2 Add "View All Questions (X/Y answered)" trigger button in `VideoMcqStepperCard` below navigation controls.
 - [x] 5.3 Wire palette item tap to jump directly to the selected question and dismiss the sheet.
 - [x] 5.4 Add widget tests covering palette trigger display, opening the bottom sheet, and jumping to questions.
+- [x] 5.5 Refactor palette sheet opening to use modal dialog route (`showGeneralDialog`) for proper screen overlay, focus trapping, and back navigation.
+
+## 6. Accessibility
+
+- [x] 6.1 Wrap the linear progress bar in `VideoMcqStepperCard` with `AppSemantics.progressValue` with progress and question label.
+- [x] 6.2 Update `VideoMcqPaletteSheet` with 48x48dp close button touch target, backdrop dismiss button semantics, and sheet container semantics.

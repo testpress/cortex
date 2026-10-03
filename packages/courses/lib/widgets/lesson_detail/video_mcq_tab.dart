@@ -36,7 +36,6 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
   List<LearnLensQuizQuestionDto> _questions = [];
   int _currentQuestionIndex = 0;
   bool _isQuizCompleted = false;
-  bool _showPalette = false;
   final Map<int, String> _selectedAnswers = {};
   final Set<int> _checkedQuestions = {};
   final Set<int> _showHints = {};
@@ -227,13 +226,11 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       );
     }
 
-    return Stack(
-      children: [
-        VideoMcqStepperCard(
+    return VideoMcqStepperCard(
           question: _questions[_currentQuestionIndex],
           currentIndex: _currentQuestionIndex,
           totalQuestions: _questions.length,
-          answeredCount: _checkedQuestions.length,
+          answeredCount: _selectedAnswers.length,
           difficulty: widget.difficulty,
           selectedOption: _selectedAnswers[_currentQuestionIndex],
           isAnswerChecked: _checkedQuestions.contains(_currentQuestionIndex),
@@ -273,31 +270,51 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
               }
             });
           },
-          onViewAllQuestions: () {
-            setState(() {
-              _showPalette = true;
-            });
-          },
+          onViewAllQuestions: () => _openPaletteSheet(context),
           onSeek: widget.onSeek,
-        ),
-        if (_showPalette)
-          VideoMcqPaletteSheet(
+        );
+  }
+
+  void _openPaletteSheet(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    showGeneralDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: l10n.commonCloseButton,
+      barrierColor: design.colors.shadow.withValues(alpha: 0.5),
+      transitionDuration: const Duration(milliseconds: 300),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.0, 1.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOutCubic,
+            ),
+          ),
+          child: child,
+        );
+      },
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: VideoMcqPaletteSheet(
             totalQuestions: _questions.length,
             currentIndex: _currentQuestionIndex,
-            checkedIndices: _checkedQuestions,
-            onClose: () {
-              setState(() {
-                _showPalette = false;
-              });
-            },
+            checkedIndices: _selectedAnswers.keys.toSet(),
+            onClose: () => Navigator.of(dialogContext).pop(),
             onQuestionSelected: (index) {
               setState(() {
                 _currentQuestionIndex = index;
-                _showPalette = false;
               });
+              Navigator.of(dialogContext).pop();
             },
           ),
-      ],
+        );
+      },
     );
   }
 }

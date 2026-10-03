@@ -38,11 +38,9 @@ class VideoMcqStepperCard extends StatelessWidget {
     this.onSeek,
   });
 
-  Widget _buildHeader(
-    BuildContext context,
-    DesignConfig design,
-    AppLocalizations l10n,
-  ) {
+  Widget _buildHeader(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -64,11 +62,9 @@ class VideoMcqStepperCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(
-    BuildContext context,
-    DesignConfig design,
-    AppLocalizations l10n,
-  ) {
+  Widget _buildProgressBar(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
     final progress =
         totalQuestions > 0 ? (currentIndex + 1) / totalQuestions : 0.0;
     return Column(
@@ -88,18 +84,32 @@ class VideoMcqStepperCard extends StatelessWidget {
           ],
         ),
         SizedBox(height: design.spacing.xs),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(design.radius.pill.topLeft.x),
-          child: Container(
-            height: 4.0,
-            width: double.infinity,
-            color: design.colors.divider.withValues(alpha: 0.5),
-            alignment: Alignment.centerLeft,
-            child: FractionallySizedBox(
-              widthFactor: progress.clamp(0.0, 1.0),
-              child: Container(
-                color: design.colors.primary,
-              ),
+        AppSemantics.progressValue(
+          value: progress.clamp(0.0, 1.0),
+          label: l10n.testQuestionXofY(currentIndex + 1, totalQuestions),
+          child: ClipRRect(
+            borderRadius: design.radius.pill,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Container(
+                  height: design.spacing.xs,
+                  width: double.infinity,
+                  color: design.colors.divider.withValues(alpha: 0.5),
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedContainer(
+                    duration: MotionPreferences.duration(
+                      context,
+                      design.motion.normal,
+                    ),
+                    curve: MotionPreferences.curve(
+                      context,
+                      design.motion.easeOut,
+                    ),
+                    width: constraints.maxWidth * progress.clamp(0.0, 1.0),
+                    color: design.colors.primary,
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -147,88 +157,21 @@ class VideoMcqStepperCard extends StatelessWidget {
     required bool isAnswerChecked,
     required bool isOptionCorrect,
   }) {
+    Color borderColor;
+    Color? dotColor;
+
     if (isAnswerChecked) {
       if (isOptionCorrect) {
-        return Container(
-          width: 20.0,
-          height: 20.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: design.colors.success,
-              width: 2.0,
-            ),
-          ),
-          child: Center(
-            child: Container(
-              width: 10.0,
-              height: 10.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: design.colors.success,
-              ),
-            ),
-          ),
-        );
+        borderColor = dotColor = design.colors.success;
       } else if (isSelected) {
-        return Container(
-          width: 20.0,
-          height: 20.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: design.colors.error,
-              width: 2.0,
-            ),
-          ),
-          child: Center(
-            child: Container(
-              width: 10.0,
-              height: 10.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: design.colors.error,
-              ),
-            ),
-          ),
-        );
+        borderColor = dotColor = design.colors.error;
       } else {
-        return Container(
-          width: 20.0,
-          height: 20.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: design.colors.border,
-              width: 1.5,
-            ),
-          ),
-        );
+        borderColor = design.colors.border;
       }
-    }
-
-    if (isSelected) {
-      return Container(
-        width: 20.0,
-        height: 20.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: design.colors.success,
-            width: 2.0,
-          ),
-        ),
-        child: Center(
-          child: Container(
-            width: 10.0,
-            height: 10.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: design.colors.success,
-            ),
-          ),
-        ),
-      );
+    } else if (isSelected) {
+      borderColor = dotColor = design.colors.success;
+    } else {
+      borderColor = design.colors.border;
     }
 
     return Container(
@@ -237,10 +180,79 @@ class VideoMcqStepperCard extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: design.colors.border,
-          width: 1.5,
+          color: borderColor,
+          width: dotColor != null ? 2.0 : 1.5,
         ),
       ),
+      child: dotColor != null
+          ? Center(
+              child: Container(
+                width: 10.0,
+                height: 10.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: dotColor,
+                ),
+              ),
+            )
+          : null,
+    );
+  }
+
+  Widget _buildExplanation(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final isUserCorrect = selectedOption != null &&
+        question.isOptionCorrect(
+          selectedOption!,
+          question.options.indexOf(selectedOption!),
+        );
+    final statusColor =
+        isUserCorrect ? design.colors.success : design.colors.error;
+    final statusTitle =
+        isUserCorrect ? l10n.videoMcqCorrect : l10n.videoMcqIncorrect;
+
+    return Column(
+      children: [
+        SizedBox(height: design.spacing.sm),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(design.spacing.md),
+          decoration: BoxDecoration(
+            color: statusColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(design.radius.sm),
+            border: Border.all(
+              color: statusColor.withValues(alpha: 0.3),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    LucideIcons.lightbulb,
+                    color: statusColor,
+                    size: 16,
+                  ),
+                  SizedBox(width: design.spacing.xs),
+                  AppText.labelBold(
+                    statusTitle,
+                    color: statusColor,
+                  ),
+                ],
+              ),
+              SizedBox(height: design.spacing.sm),
+              _buildTextWithTimestamps(
+                context,
+                question.explanation,
+                design,
+                textColor: design.colors.textPrimary,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -256,12 +268,11 @@ class VideoMcqStepperCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildHeader(context, design, l10n),
+          _buildHeader(context),
           SizedBox(height: design.spacing.md),
-          _buildProgressBar(context, design, l10n),
+          _buildProgressBar(context),
           SizedBox(height: design.spacing.lg),
 
-          // Question Text (16px semi-bold)
           AppText.base(
             question.text,
             style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4),
@@ -269,7 +280,6 @@ class VideoMcqStepperCard extends StatelessWidget {
           ),
           SizedBox(height: design.spacing.lg),
 
-          // Options List
           ...question.options.asMap().entries.map((entry) {
             final optionIndex = entry.key;
             final option = entry.value;
@@ -311,7 +321,7 @@ class VideoMcqStepperCard extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.only(bottom: design.spacing.md),
               child: AppSemantics.button(
-                label: isOptionSelected ? '$option, selected' : option,
+                label: option,
                 child: AppFocusable(
                   onTap: isAnswerChecked ? null : () => onSelectOption(option),
                   child: Container(
@@ -367,7 +377,6 @@ class VideoMcqStepperCard extends StatelessWidget {
             );
           }),
 
-          // Hint Button (Above Check Answer - Only shown before answer is checked)
           if (!isAnswerChecked && question.hint.isNotEmpty) ...[
             SizedBox(height: design.spacing.xs),
             AppSemantics.button(
@@ -430,7 +439,6 @@ class VideoMcqStepperCard extends StatelessWidget {
             ],
           ],
 
-          // Check Answer Button (Below Hint, above Prev/Next)
           if (!isAnswerChecked && selectedOption != null) ...[
             SizedBox(height: design.spacing.md),
             AppButton.primary(
@@ -441,153 +449,50 @@ class VideoMcqStepperCard extends StatelessWidget {
             ),
           ],
 
-          // Explanation Section
-          if (isAnswerChecked && question.explanation.isNotEmpty) ...[
-            () {
-              final isUserCorrect = selectedOption != null &&
-                  question.isOptionCorrect(
-                    selectedOption!,
-                    question.options.indexOf(selectedOption!),
-                  );
-              final statusColor =
-                  isUserCorrect ? design.colors.success : design.colors.error;
-              final statusTitle =
-                  isUserCorrect ? l10n.videoMcqCorrect : l10n.videoMcqIncorrect;
-
-              return Column(
-                children: [
-                  SizedBox(height: design.spacing.sm),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(design.spacing.md),
-                    decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(design.radius.sm),
-                      border: Border.all(
-                        color: statusColor.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              LucideIcons.lightbulb,
-                              color: statusColor,
-                              size: 16,
-                            ),
-                            SizedBox(width: design.spacing.xs),
-                            AppText.labelBold(
-                              statusTitle,
-                              color: statusColor,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: design.spacing.sm),
-                        _buildTextWithTimestamps(
-                          context,
-                          question.explanation,
-                          design,
-                          textColor: design.colors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }(),
-          ],
+          if (isAnswerChecked && question.explanation.isNotEmpty)
+            _buildExplanation(context),
 
           SizedBox(height: design.spacing.lg),
 
-          // Navigation Footer: [ Previous ]  [ Next ]
           Row(
             children: [
               Expanded(
-                child: AppSemantics.button(
+                child: AppButton.secondary(
                   label: l10n.videoMcqPrevious,
-                  enabled: currentIndex > 0,
-                  onTap: currentIndex > 0 ? onPrevious : null,
-                  child: AppFocusable(
-                    onTap: currentIndex > 0 ? onPrevious : null,
-                    child: Container(
-                      height: 48.0,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: design.colors.card,
-                        borderRadius: BorderRadius.circular(design.radius.md),
-                        border: Border.all(
-                          color: design.colors.divider,
-                        ),
-                      ),
-                      child: AppText.labelBold(
-                        l10n.videoMcqPrevious,
-                        color: currentIndex > 0
-                            ? design.colors.textPrimary
-                            : design.colors.textTertiary.withValues(alpha: 0.5),
-                      ),
-                    ),
-                  ),
+                  onPressed: currentIndex > 0 ? onPrevious : null,
+                  backgroundColor: design.colors.card,
+                  foregroundColor: currentIndex > 0
+                      ? design.colors.textPrimary
+                      : design.colors.textTertiary.withValues(alpha: 0.5),
+                  borderColor: design.colors.divider,
+                  fullWidth: true,
                 ),
               ),
               SizedBox(width: design.spacing.md),
               Expanded(
-                child: AppSemantics.button(
+                child: AppButton.secondary(
                   label: currentIndex < totalQuestions - 1
                       ? l10n.videoMcqNext
                       : l10n.testFinish,
-                  onTap: onNext,
-                  child: AppFocusable(
-                    onTap: onNext,
-                    child: Container(
-                      height: 48.0,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: design.colors.card,
-                        borderRadius: BorderRadius.circular(design.radius.md),
-                        border: Border.all(
-                          color: design.colors.divider,
-                        ),
-                      ),
-                      child: AppText.labelBold(
-                        currentIndex < totalQuestions - 1
-                            ? l10n.videoMcqNext
-                            : l10n.testFinish,
-                        color: design.colors.textPrimary,
-                      ),
-                    ),
-                  ),
+                  onPressed: onNext,
+                  backgroundColor: design.colors.card,
+                  foregroundColor: design.colors.textPrimary,
+                  borderColor: design.colors.divider,
+                  fullWidth: true,
                 ),
               ),
             ],
           ),
 
-          // View All Questions Trigger Button
           if (onViewAllQuestions != null) ...[
             SizedBox(height: design.spacing.md),
-            AppSemantics.button(
+            AppButton.secondary(
               label: l10n.testViewAllQuestions(answeredCount, totalQuestions),
-              onTap: onViewAllQuestions,
-              child: AppFocusable(
-                onTap: onViewAllQuestions,
-                child: Container(
-                  width: double.infinity,
-                  height: 48.0,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: design.colors.card,
-                    borderRadius: BorderRadius.circular(design.radius.md),
-                    border: Border.all(
-                      color: design.colors.divider,
-                    ),
-                  ),
-                  child: AppText.labelBold(
-                    l10n.testViewAllQuestions(answeredCount, totalQuestions),
-                    color: design.colors.textPrimary,
-                  ),
-                ),
-              ),
+              onPressed: onViewAllQuestions,
+              backgroundColor: design.colors.card,
+              foregroundColor: design.colors.textPrimary,
+              borderColor: design.colors.divider,
+              fullWidth: true,
             ),
           ],
         ],

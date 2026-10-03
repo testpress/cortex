@@ -68,7 +68,7 @@ void main() {
     );
   }
 
-  testWidgets('renders title, question count pill badge, and progress bar', (tester) async {
+  testWidgets('renders title, question count pill badge, and progress bar with accessibility semantics', (tester) async {
     await tester.pumpWidget(buildSubject(
       currentIndex: 0,
       totalQuestions: 5,
@@ -81,6 +81,11 @@ void main() {
     expect(find.text('Question 1 of 5'), findsOneWidget);
     expect(find.text('1 answered'), findsOneWidget);
     expect(find.text(sampleQuestion.text), findsOneWidget);
+
+    final semanticsFinder = find.byWidgetPredicate(
+      (w) => w is Semantics && w.properties.label == 'Question 1 of 5' && w.properties.value == '20%',
+    );
+    expect(semanticsFinder, findsOneWidget);
   });
 
   testWidgets('hides Check Answer button when no option is selected', (tester) async {
@@ -203,5 +208,109 @@ void main() {
     await tester.tap(find.text('View All Questions (2/5 answered)'));
     await tester.pumpAndSettle();
     expect(paletteTapped, isTrue);
+  });
+
+  testWidgets('validates Check Answer visibility rules and disabled Previous together across state transitions', (tester) async {
+    var previousCallCount = 0;
+    var nextCallCount = 0;
+
+    await tester.pumpWidget(wrap(
+      StatefulBuilder(
+        builder: (context, setState) {
+          int currentIndex = 0;
+          String? selectedOption;
+          bool isAnswerChecked = false;
+
+          return StatefulBuilder(
+            builder: (context, setInnerState) {
+              return VideoMcqStepperCard(
+                question: sampleQuestion,
+                currentIndex: currentIndex,
+                totalQuestions: 5,
+                difficulty: 'medium',
+                selectedOption: selectedOption,
+                isAnswerChecked: isAnswerChecked,
+                onSelectOption: (opt) {
+                  setInnerState(() {
+                    selectedOption = opt;
+                  });
+                },
+                onCheckAnswer: () {
+                  setInnerState(() {
+                    isAnswerChecked = true;
+                  });
+                },
+                showHint: false,
+                onToggleHint: () {},
+                onPrevious: () {
+                  previousCallCount++;
+                  if (currentIndex > 0) {
+                    setInnerState(() {
+                      currentIndex--;
+                      selectedOption = null;
+                      isAnswerChecked = false;
+                    });
+                  }
+                },
+                onNext: () {
+                  nextCallCount++;
+                  if (currentIndex < 4) {
+                    setInnerState(() {
+                      currentIndex++;
+                      selectedOption = null;
+                      isAnswerChecked = false;
+                    });
+                  }
+                },
+              );
+            },
+          );
+        },
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    // 1. Initial State: No option selected at index 0
+    expect(find.text('Check Answer'), findsNothing);
+    expect(find.text('Correct!'), findsNothing);
+
+    // Tapping disabled Previous at index 0 does nothing
+    await tester.ensureVisible(find.text('Previous'));
+    await tester.tap(find.text('Previous'));
+    await tester.pumpAndSettle();
+    expect(previousCallCount, 0);
+
+    // 2. Select option '3 atm' -> Check Answer appears
+    await tester.ensureVisible(find.text('3 atm'));
+    await tester.tap(find.text('3 atm'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Check Answer'), findsOneWidget);
+    expect(find.text('Correct!'), findsNothing);
+
+    // 3. Tap Check Answer -> Check Answer disappears, explanation appears
+    await tester.ensureVisible(find.text('Check Answer'));
+    await tester.tap(find.text('Check Answer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Check Answer'), findsNothing);
+    expect(find.text('Correct!'), findsOneWidget);
+    expect(find.textContaining('Gay-Lussac'), findsOneWidget);
+
+    // 4. Tap Next -> Moves to index 1, Check Answer is hidden, Previous is enabled
+    await tester.ensureVisible(find.text('Next'));
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    expect(nextCallCount, 1);
+
+    expect(find.text('Question 2 of 5'), findsOneWidget);
+    expect(find.text('Check Answer'), findsNothing);
+
+    // Previous is now enabled at index 1
+    await tester.ensureVisible(find.text('Previous'));
+    await tester.tap(find.text('Previous'));
+    await tester.pumpAndSettle();
+    expect(previousCallCount, 1);
+    expect(find.text('Question 1 of 5'), findsOneWidget);
   });
 }
