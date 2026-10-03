@@ -510,7 +510,8 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
             footerBuilder: widget.footerBuilder,
             onBeforeNavigate: () =>
                 _videoPlayerKey.currentState?.finalizePlayback(),
-            onResumeVideo: () => _videoPlayerKey.currentState?.restorePlayback(),
+            onResumeVideo: () =>
+                _videoPlayerKey.currentState?.restorePlayback(),
           ),
         );
       case VideoLessonTab.aiSupport:
