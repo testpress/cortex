@@ -1144,6 +1144,26 @@ class AppLocalizationsTa extends AppLocalizations {
   String get videoAiSendMessage => 'செய்தி அனுப்பு';
 
   @override
+  String get videoAiSenderAi => 'AI';
+
+  @override
+  String get videoAiSenderYou => 'நீங்கள்';
+
+  @override
+  String videoAiChatMessageSemantic(
+    String sender,
+    String message,
+    String time,
+  ) {
+    return '$sender: $message, $time';
+  }
+
+  @override
+  String videoAiLoadingSemantic(String sender, String status) {
+    return '$sender, $status';
+  }
+
+  @override
   String videoMcqScoreSummary(int correct, int total, int percentage) {
     return '$total-இல் $correct சரியானவை ($percentage%)';
   }

@@ -18,3 +18,10 @@
 
 - [x] 4.1 Update video lesson tab bar active tab indicator decoration in `video_lesson_viewer.dart` to a highlighted background style
 - [x] 4.2 Update tab label to "Ask AI" (`videoLessonTabAiSupport`) across all localization files and regenerate code
+
+## 5. Accessibility Review Fixes
+
+- [x] 5.1 Remove semantic label from AI bubble container so AppMarkdown timestamp links stay reachable to screen readers
+- [x] 5.2 Wrap inner `GestureDetector` on send button with `ExcludeSemantics` to prevent double tap handler in semantics tree
+- [x] 5.3 Replace hardcoded English sender strings with localized ARB keys (`videoAiSenderAi`, `videoAiSenderYou`, `videoAiLoadingSemantic`, `videoAiChatMessageSemantic`)
+- [x] 5.4 Extract send button magic values to named constants (`_sendButtonInnerSize`, `_sendButtonIconSize`, `_sendButtonDisabledAlpha`)

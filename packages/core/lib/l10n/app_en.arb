@@ -555,6 +555,35 @@
   "videoMcqPreviousQuestion": "Previous Question",
   "videoMcqNextQuestion": "Next Question",
   "videoAiSendMessage": "Send Message",
+  "videoAiSenderAi": "AI",
+  "videoAiSenderYou": "You",
+  "videoAiChatMessageSemantic": "{sender}: {message}, {time}",
+  "@videoAiChatMessageSemantic": {
+    "description": "Semantic announcement for a chat message with sender, message text, and timestamp",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "videoAiLoadingSemantic": "{sender}, {status}",
+  "@videoAiLoadingSemantic": {
+    "description": "Semantic announcement for an in-progress AI response",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "videoMcqScoreSummary": "{correct} out of {total} Correct ({percentage}%)",
   "@videoMcqScoreSummary": {
     "placeholders": {
