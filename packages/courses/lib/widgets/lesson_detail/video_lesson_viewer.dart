@@ -528,28 +528,30 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
   Widget _buildTabContent(Widget child, {bool isSliver = false}) {
     final design = Design.of(context);
 
-    return CustomScrollView(
-      physics: const ClampingScrollPhysics(),
-      slivers: [
-        isSliver ? child : SliverToBoxAdapter(child: child),
-        if (widget.footerBuilder != null)
-          SliverFillRemaining(
-            hasScrollBody: false,
-            fillOverscroll: false,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  widget.footerBuilder!(context),
-                  SizedBox(height: design.spacing.sm),
-                ],
+    return Container(
+      color: design.colors.card,
+      child: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          isSliver ? child : SliverToBoxAdapter(child: child),
+          if (widget.footerBuilder != null)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              fillOverscroll: false,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  color: design.colors.surface,
+                  padding: EdgeInsets.only(bottom: design.spacing.sm),
+                  child: widget.footerBuilder!(context),
+                ),
               ),
-            ),
-          )
-        else
-          SliverToBoxAdapter(child: SizedBox(height: design.spacing.sm)),
-      ],
+            )
+          else
+            SliverToBoxAdapter(child: SizedBox(height: design.spacing.sm)),
+        ],
+      ),
     );
   }
 

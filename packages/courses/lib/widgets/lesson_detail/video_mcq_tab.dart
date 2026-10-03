@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../providers/learnlens_provider.dart';
 import 'mcq/video_mcq_initial_card.dart';
+import 'mcq/video_mcq_palette_sheet.dart';
 import 'mcq/video_mcq_stepper_card.dart';
 import 'mcq/video_mcq_summary_card.dart';
 
@@ -35,7 +36,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
   List<LearnLensQuizQuestionDto> _questions = [];
   int _currentQuestionIndex = 0;
   bool _isQuizCompleted = false;
+  bool _showPalette = false;
   final Map<int, String> _selectedAnswers = {};
+  final Set<int> _checkedQuestions = {};
   final Set<int> _showHints = {};
 
   @override
@@ -49,6 +52,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       _currentQuestionIndex = 0;
       _isQuizCompleted = false;
       _selectedAnswers.clear();
+      _checkedQuestions.clear();
       _showHints.clear();
     });
 
@@ -113,7 +117,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     if (_isLoading) {
-      return Padding(
+      return Container(
+        color: design.colors.card,
+        width: double.infinity,
         padding: EdgeInsets.all(design.spacing.xl),
         child: Center(
           child: Column(
@@ -126,6 +132,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
               ),
               SizedBox(height: design.spacing.xl),
               AppLoadingIndicator(color: design.colors.accent2),
+              SizedBox(height: design.spacing.lg),
             ],
           ),
         ),
@@ -133,7 +140,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     if (_errorMessage != null) {
-      return Padding(
+      return Container(
+        color: design.colors.card,
+        width: double.infinity,
         padding: EdgeInsets.all(design.spacing.xl),
         child: Center(
           child: Column(
@@ -159,7 +168,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     if (_questions.isEmpty) {
-      return Padding(
+      return Container(
+        color: design.colors.card,
+        width: double.infinity,
         padding: EdgeInsets.all(design.spacing.xl),
         child: Center(
           child: Column(
@@ -198,6 +209,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
             _currentQuestionIndex = 0;
             _isQuizCompleted = false;
             _selectedAnswers.clear();
+            _checkedQuestions.clear();
             _showHints.clear();
           });
         },
@@ -208,50 +220,84 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
             _isQuizCompleted = false;
             _questions.clear();
             _selectedAnswers.clear();
+            _checkedQuestions.clear();
             _showHints.clear();
           });
         },
       );
     }
 
-    return VideoMcqStepperCard(
-      question: _questions[_currentQuestionIndex],
-      currentIndex: _currentQuestionIndex,
-      totalQuestions: _questions.length,
-      difficulty: widget.difficulty,
-      selectedOption: _selectedAnswers[_currentQuestionIndex],
-      showHint: _showHints.contains(_currentQuestionIndex),
-      onToggleHint: () {
-        setState(() {
-          if (_showHints.contains(_currentQuestionIndex)) {
-            _showHints.remove(_currentQuestionIndex);
-          } else {
-            _showHints.add(_currentQuestionIndex);
-          }
-        });
-      },
-      onSelectOption: (option) {
-        setState(() {
-          _selectedAnswers[_currentQuestionIndex] = option;
-        });
-      },
-      onPrevious: () {
-        setState(() {
-          if (_currentQuestionIndex > 0) {
-            _currentQuestionIndex--;
-          }
-        });
-      },
-      onNext: () {
-        setState(() {
-          if (_currentQuestionIndex < _questions.length - 1) {
-            _currentQuestionIndex++;
-          } else {
-            _isQuizCompleted = true;
-          }
-        });
-      },
-      onSeek: widget.onSeek,
+    return Stack(
+      children: [
+        VideoMcqStepperCard(
+          question: _questions[_currentQuestionIndex],
+          currentIndex: _currentQuestionIndex,
+          totalQuestions: _questions.length,
+          answeredCount: _checkedQuestions.length,
+          difficulty: widget.difficulty,
+          selectedOption: _selectedAnswers[_currentQuestionIndex],
+          isAnswerChecked: _checkedQuestions.contains(_currentQuestionIndex),
+          onCheckAnswer: () {
+            setState(() {
+              _checkedQuestions.add(_currentQuestionIndex);
+            });
+          },
+          showHint: _showHints.contains(_currentQuestionIndex),
+          onToggleHint: () {
+            setState(() {
+              if (_showHints.contains(_currentQuestionIndex)) {
+                _showHints.remove(_currentQuestionIndex);
+              } else {
+                _showHints.add(_currentQuestionIndex);
+              }
+            });
+          },
+          onSelectOption: (option) {
+            setState(() {
+              _selectedAnswers[_currentQuestionIndex] = option;
+            });
+          },
+          onPrevious: () {
+            setState(() {
+              if (_currentQuestionIndex > 0) {
+                _currentQuestionIndex--;
+              }
+            });
+          },
+          onNext: () {
+            setState(() {
+              if (_currentQuestionIndex < _questions.length - 1) {
+                _currentQuestionIndex++;
+              } else {
+                _isQuizCompleted = true;
+              }
+            });
+          },
+          onViewAllQuestions: () {
+            setState(() {
+              _showPalette = true;
+            });
+          },
+          onSeek: widget.onSeek,
+        ),
+        if (_showPalette)
+          VideoMcqPaletteSheet(
+            totalQuestions: _questions.length,
+            currentIndex: _currentQuestionIndex,
+            checkedIndices: _checkedQuestions,
+            onClose: () {
+              setState(() {
+                _showPalette = false;
+              });
+            },
+            onQuestionSelected: (index) {
+              setState(() {
+                _currentQuestionIndex = index;
+                _showPalette = false;
+              });
+            },
+          ),
+      ],
     );
   }
 }

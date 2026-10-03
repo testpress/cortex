@@ -1127,6 +1127,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoMcqNextQuestion => 'Next Question';
 
   @override
+  String get videoMcqPracticeTestHeading => 'Practice Test';
+
+  @override
+  String videoMcqAnsweredCount(int count) {
+    return '$count answered';
+  }
+
+  @override
+  String get videoMcqCheckAnswer => 'Check Answer';
+
+  @override
+  String get videoMcqPrevious => 'Previous';
+
+  @override
+  String get videoMcqNext => 'Next';
+
+  @override
+  String get videoMcqCorrect => 'Correct!';
+
+  @override
+  String get videoMcqIncorrect => 'Incorrect';
+
+  @override
+  String get videoMcqQuestionsPaletteTitle => 'Questions';
+
+  @override
   String get videoAiSendMessage => 'Send Message';
 
   @override

@@ -2123,6 +2123,54 @@ abstract class AppLocalizations {
   /// **'Next Question'**
   String get videoMcqNextQuestion;
 
+  /// No description provided for @videoMcqPracticeTestHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Test'**
+  String get videoMcqPracticeTestHeading;
+
+  /// No description provided for @videoMcqAnsweredCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} answered'**
+  String videoMcqAnsweredCount(int count);
+
+  /// No description provided for @videoMcqCheckAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Answer'**
+  String get videoMcqCheckAnswer;
+
+  /// No description provided for @videoMcqPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get videoMcqPrevious;
+
+  /// No description provided for @videoMcqNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get videoMcqNext;
+
+  /// No description provided for @videoMcqCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct!'**
+  String get videoMcqCorrect;
+
+  /// No description provided for @videoMcqIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect'**
+  String get videoMcqIncorrect;
+
+  /// No description provided for @videoMcqQuestionsPaletteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
+  String get videoMcqQuestionsPaletteTitle;
+
   /// No description provided for @videoAiSendMessage.
   ///
   /// In en, this message translates to:

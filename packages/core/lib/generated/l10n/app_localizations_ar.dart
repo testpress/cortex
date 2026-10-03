@@ -1126,6 +1126,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get videoMcqNextQuestion => 'السؤال التالي';
 
   @override
+  String get videoMcqPracticeTestHeading => 'اختبار تدريبي';
+
+  @override
+  String videoMcqAnsweredCount(int count) {
+    return 'تمت الإجابة على $count';
+  }
+
+  @override
+  String get videoMcqCheckAnswer => 'تحقق من الإجابة';
+
+  @override
+  String get videoMcqPrevious => 'السابق';
+
+  @override
+  String get videoMcqNext => 'التالي';
+
+  @override
+  String get videoMcqCorrect => 'صحيح!';
+
+  @override
+  String get videoMcqIncorrect => 'غير صحيح';
+
+  @override
+  String get videoMcqQuestionsPaletteTitle => 'الأسئلة';
+
+  @override
   String get videoAiSendMessage => 'إرسال رسالة';
 
   @override

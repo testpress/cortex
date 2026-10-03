@@ -554,6 +554,21 @@
   "videoMcqDifficultyHard": "Hard",
   "videoMcqPreviousQuestion": "Previous Question",
   "videoMcqNextQuestion": "Next Question",
+  "videoMcqPracticeTestHeading": "Practice Test",
+  "videoMcqAnsweredCount": "{count} answered",
+  "@videoMcqAnsweredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "videoMcqCheckAnswer": "Check Answer",
+  "videoMcqPrevious": "Previous",
+  "videoMcqNext": "Next",
+  "videoMcqCorrect": "Correct!",
+  "videoMcqIncorrect": "Incorrect",
+  "videoMcqQuestionsPaletteTitle": "Questions",
   "videoAiSendMessage": "Send Message",
   "videoAiSenderAi": "AI",
   "videoAiSenderYou": "You",

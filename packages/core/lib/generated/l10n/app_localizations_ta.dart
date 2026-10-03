@@ -1141,6 +1141,32 @@ class AppLocalizationsTa extends AppLocalizations {
   String get videoMcqNextQuestion => 'அடுத்த வினா';
 
   @override
+  String get videoMcqPracticeTestHeading => 'பயிற்சித் தேர்வு';
+
+  @override
+  String videoMcqAnsweredCount(int count) {
+    return '$count பதிலளிக்கப்பட்டது';
+  }
+
+  @override
+  String get videoMcqCheckAnswer => 'பதிலை சரிபார்க்கவும்';
+
+  @override
+  String get videoMcqPrevious => 'முந்தையது';
+
+  @override
+  String get videoMcqNext => 'அடுத்தது';
+
+  @override
+  String get videoMcqCorrect => 'சரியானது!';
+
+  @override
+  String get videoMcqIncorrect => 'தவறானது';
+
+  @override
+  String get videoMcqQuestionsPaletteTitle => 'வினாக்கள்';
+
+  @override
   String get videoAiSendMessage => 'செய்தி அனுப்பு';
 
   @override
