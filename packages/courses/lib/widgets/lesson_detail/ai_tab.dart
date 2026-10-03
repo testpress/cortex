@@ -321,19 +321,21 @@ class _AITabState extends ConsumerState<AITab>
             isAI ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           if (isAI)
-            Container(
-              width: 28,
-              height: 28,
-              margin: EdgeInsets.only(right: design.spacing.sm, top: 2),
-              decoration: BoxDecoration(
-                color: design.colors.surfaceVariant,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Icon(
-                  LucideIcons.sparkles,
-                  size: 14,
-                  color: design.colors.textSecondary,
+            ExcludeSemantics(
+              child: Container(
+                width: 28,
+                height: 28,
+                margin: EdgeInsets.only(right: design.spacing.sm, top: 2),
+                decoration: BoxDecoration(
+                  color: design.colors.surfaceVariant,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    LucideIcons.sparkles,
+                    size: 14,
+                    color: design.colors.textSecondary,
+                  ),
                 ),
               ),
             ),
@@ -397,19 +399,21 @@ class _AITabState extends ConsumerState<AITab>
             ),
           ),
           if (!isAI)
-            Container(
-              width: 28,
-              height: 28,
-              margin: EdgeInsets.only(left: design.spacing.sm, top: 2),
-              decoration: BoxDecoration(
-                color: design.colors.accent2,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Icon(
-                  LucideIcons.user,
-                  size: 14,
-                  color: design.colors.textInverse,
+            ExcludeSemantics(
+              child: Container(
+                width: 28,
+                height: 28,
+                margin: EdgeInsets.only(left: design.spacing.sm, top: 2),
+                decoration: BoxDecoration(
+                  color: design.colors.accent2,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    LucideIcons.user,
+                    size: 14,
+                    color: design.colors.textInverse,
+                  ),
                 ),
               ),
             ),
@@ -417,7 +421,13 @@ class _AITabState extends ConsumerState<AITab>
       ),
     );
 
-    if (isAI) return content;
+    if (message.isLoading) {
+      return AppSemantics.container(label: semanticLabel, child: content);
+    }
+    // No label — AppMarkdown's timestamp links must stay individually focusable.
+    if (isAI) {
+      return Semantics(container: true, child: content);
+    }
     return AppSemantics.container(label: semanticLabel, child: content);
   }
 }
