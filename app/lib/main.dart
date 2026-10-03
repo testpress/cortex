@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -108,10 +107,10 @@ class CortexApp extends ConsumerWidget {
         return const Locale('en');
       },
       routerConfig: ref.watch(goRouterProvider),
-      // Set Plus Jakarta Sans on the Material theme so widgets that still
-      // use Material's text theme (Scaffold, SnackBar, etc.) also use it.
+      // Derive the font family from the design typography scale so the font
+      // is declared once in core and the app shell just reads it.
       theme: ThemeData(
-        fontFamily: GoogleFonts.notoSans().fontFamily,
+        fontFamily: design.typographyScale.base.fontFamily,
         scaffoldBackgroundColor: design.colors.canvas,
         canvasColor: design.colors.canvas,
         colorScheme: ColorScheme.fromSeed(

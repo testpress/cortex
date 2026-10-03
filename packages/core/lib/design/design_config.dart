@@ -1373,14 +1373,12 @@ class DesignTypographyScale {
   final TextStyle xl5;
 
   factory DesignTypographyScale.defaults() {
-    // Plus Jakarta Sans: geometric humanist typeface designed for UI.
-    // Excellent weight differentiation at w400/w600/w700, tight and clean
-    // at small sizes, and highly legible inside dense LMS content cards.
+    // Inter: neutral, highly legible UI typeface designed specifically for screens.
     //
-    // GoogleFonts.plusJakartaSans() registers the font family on the TextStyle.
+    // GoogleFonts.inter() registers the font family on the TextStyle.
     // Each atom then copyWith()s the size/height so the family is inherited
     // by every semantic role (display, headline, body, etc.) automatically.
-    final f = GoogleFonts.plusJakartaSans;
+    final f = GoogleFonts.inter;
     return DesignTypographyScale(
       // xxs/xs/sm carry body-adjacent height for readability in dense rows.
       xxs: f(fontSize: 10, height: 1.2),
