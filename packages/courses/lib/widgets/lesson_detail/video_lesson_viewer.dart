@@ -483,6 +483,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
   }
 
   Widget _buildTabWidget(VideoLessonTab tab) {
+    final design = Design.of(context);
     switch (tab) {
       case VideoLessonTab.notes:
         return _buildTabContent(
@@ -490,21 +491,28 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
                 lesson: widget.lesson, isSliver: true, onSeek: _handleSeek),
             isSliver: true);
       case VideoLessonTab.transcript:
-        return TranscriptsTab(
-          lesson: widget.lesson,
-          onSeek: _handleSeek,
-          videoPositionNotifier: _videoPositionNotifier,
-          isAutoScrollEnabledNotifier: _isAutoScrollEnabledNotifier,
-          isActive:
-              _activeTabs[_tabController.index] == VideoLessonTab.transcript,
+        return ColoredBox(
+          color: design.colors.card,
+          child: TranscriptsTab(
+            lesson: widget.lesson,
+            onSeek: _handleSeek,
+            videoPositionNotifier: _videoPositionNotifier,
+            isAutoScrollEnabledNotifier: _isAutoScrollEnabledNotifier,
+            isActive:
+                _activeTabs[_tabController.index] == VideoLessonTab.transcript,
+          ),
         );
       case VideoLessonTab.askDoubt:
-        return DoubtTab(
-          lesson: widget.lesson,
-          footerBuilder: widget.footerBuilder,
-          onBeforeNavigate: () =>
-              _videoPlayerKey.currentState?.finalizePlayback(),
-          onResumeVideo: () => _videoPlayerKey.currentState?.restorePlayback(),
+        return ColoredBox(
+          color: design.colors.card,
+          child: DoubtTab(
+            lesson: widget.lesson,
+            footerBuilder: widget.footerBuilder,
+            onBeforeNavigate: () =>
+                _videoPlayerKey.currentState?.finalizePlayback(),
+            onResumeVideo: () =>
+                _videoPlayerKey.currentState?.restorePlayback(),
+          ),
         );
       case VideoLessonTab.aiSupport:
         return AITab(
