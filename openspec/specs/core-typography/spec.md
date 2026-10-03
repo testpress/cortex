@@ -1,12 +1,12 @@
-# Purpose
+# core-typography Specification
+
+## Purpose
 The `core-typography` capability provides a standardized, scale-based typography system that replaces arbitrary font sizes with a consistent, accessible, and high-fidelity text rendering framework. It simplifies the developer experience by mapping semantic UI roles (H1-H4, body, etc.) to a foundational scale, ensuring design consistency and eliminating "magic numbers" in feature code.
 
-# Requirements
-
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Foundational Typography Scale
-The system SHALL provide a standardized, scale-based typography system to replace arbitrary font sizes.
+The system SHALL provide a standardized, scale-based typography system to replace arbitrary font sizes, constructed using the Inter typeface family across all foundational tokens.
 
 #### Scenario: Predefined Scale Access
 - **WHEN** a developer accesses typography tokens in `DesignConfig`
@@ -23,6 +23,7 @@ The system SHALL provide a standardized, scale-based typography system to replac
 | `xl3` | 30px | — | Display |
 | `xl4` | 36px | — | — |
 | `xl5` | 48px | — | — |
+- **AND** all typography scale tokens SHALL inherit the Inter font family.
 
 ### Requirement: Integrated Typography Attributes
 The system SHALL treat a "Typography Molecule" as a cohesive unit of at least five attributes: Size, Weight, Line Height, Letter Spacing, and **Semantic Color**.
@@ -72,6 +73,11 @@ The system SHALL treat a "Typography Molecule" as a cohesive unit of at least fi
 ### Requirement: Optical Tracking Logic
 The system SHALL provide "Optical Tracking" where letter spacing is automatically tightened as the scale increases, ensuring visual tension in headings and clarity in body text.
 
+#### Scenario: Display Letter Spacing Adjustment
+- **WHEN** text is rendered using larger heading or display scales (`xl` through `xl5`)
+- **THEN** letter spacing SHALL be reduced to tighter tracking values
+- **AND** body and caption scales SHALL maintain neutral or positive letter spacing.
+
 ### Requirement: Scale-Based Widget Constructors
 The `AppText` widget SHALL provide direct access to the foundational scale via named constructors.
 
@@ -79,17 +85,12 @@ The `AppText` widget SHALL provide direct access to the foundational scale via n
 - **WHEN** a developer uses `AppText.lg("Hello")`
 - **THEN** the text SHALL render using the `lg` (18px) scale style, even if no semantic role exists for that size.
 
-
 ### Requirement: Accessibility-Aware Scaling
 All typography scales SHALL respect the user's system font size preferences.
 
 #### Scenario: Respecting Text Scaler
 - **WHEN** the user increases text size in their system settings
 - **THEN** `AppText` components using any scale SHALL scale proportionally.
-
----
-
-## ADDED Requirements from refactor-hardcoded-typography
 
 ### Requirement: Semantic Typography Resolution
 The system SHALL resolve widget text styles primarily through semantic `AppText` constructors that reflect the content's functional role, rather than atomic measurements.
