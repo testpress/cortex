@@ -2,7 +2,9 @@
 
 ## Purpose
 TBD - created by archiving change video-ai-chat-mcq. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: LearnLens Metadata Parsing & Persistence
 The system SHALL parse `is_ai_enabled`, `can_enable_learnlens_ai`, `learnlens_asset_id`, and `learnlens_asset_status` from the video lesson API payload and persist them in the local database.
 
@@ -56,3 +58,10 @@ The system SHALL parse stored video position strings in both decimal seconds for
 - **WHEN** a lesson's `lastWatchedDuration` is stored as a formatted timestamp string `"00:02:05"`
 - **THEN** the system SHALL parse the timestamp into the equivalent duration (125 seconds) and set `initialPosition` accordingly instead of defaulting to 0.0.
 
+### Requirement: Video Lesson Tab Bar Highlighted Active Indicator
+The system SHALL display the video lesson tab bar using a highlighted background indicator on the active tab and display "Ask AI" as the AI tab label.
+
+#### Scenario: Active Tab Highlighting
+- **WHEN** the user switches tabs in a video lesson
+- **THEN** the active tab SHALL be styled with a highlighted container background rather than an underline indicator.
+- **AND** the AI tab header SHALL display localized "Ask AI".
