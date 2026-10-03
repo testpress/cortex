@@ -38,7 +38,7 @@ void main() {
       VideoMcqPaletteSheet(
         totalQuestions: 5,
         currentIndex: 1,
-        checkedIndices: const {0, 1},
+        answeredIndices: const {0, 1},
         onQuestionSelected: (idx) => selectedIndex = idx,
         onClose: () => closed = true,
       ),
@@ -98,7 +98,7 @@ void main() {
                 child: VideoMcqPaletteSheet(
                   totalQuestions: 5,
                   currentIndex: 0,
-                  checkedIndices: const {},
+                  answeredIndices: const {},
                   onQuestionSelected: (idx) {
                     selectedIndex = idx;
                     Navigator.of(dialogContext).pop();

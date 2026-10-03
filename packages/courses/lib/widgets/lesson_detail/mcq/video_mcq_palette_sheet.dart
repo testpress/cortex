@@ -4,7 +4,7 @@ import 'package:core/core.dart';
 class VideoMcqPaletteSheet extends StatelessWidget {
   final int totalQuestions;
   final int currentIndex;
-  final Set<int> checkedIndices;
+  final Set<int> answeredIndices;
   final ValueChanged<int> onQuestionSelected;
   final VoidCallback onClose;
 
@@ -12,7 +12,7 @@ class VideoMcqPaletteSheet extends StatelessWidget {
     super.key,
     required this.totalQuestions,
     required this.currentIndex,
-    required this.checkedIndices,
+    required this.answeredIndices,
     required this.onQuestionSelected,
     required this.onClose,
   });
@@ -21,7 +21,7 @@ class VideoMcqPaletteSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final answeredCount = checkedIndices.length;
+    final answeredCount = answeredIndices.length;
 
     return AppSemantics.container(
       label: l10n.testPaletteTitle,
@@ -136,7 +136,7 @@ class VideoMcqPaletteSheet extends StatelessWidget {
                     ),
                     itemCount: totalQuestions,
                     itemBuilder: (context, index) {
-                      final isAnswered = checkedIndices.contains(index);
+                      final isAnswered = answeredIndices.contains(index);
 
                       final Color? bgColor =
                           isAnswered ? design.colors.success : null;

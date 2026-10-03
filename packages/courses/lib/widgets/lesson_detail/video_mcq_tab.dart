@@ -305,7 +305,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
           child: VideoMcqPaletteSheet(
             totalQuestions: _questions.length,
             currentIndex: _currentQuestionIndex,
-            checkedIndices: _selectedAnswers.keys.toSet(),
+            answeredIndices: _selectedAnswers.keys.toSet(),
             onClose: () => Navigator.of(dialogContext).pop(),
             onQuestionSelected: (index) {
               setState(() {
