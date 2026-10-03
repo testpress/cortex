@@ -227,52 +227,52 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     return VideoMcqStepperCard(
-          question: _questions[_currentQuestionIndex],
-          currentIndex: _currentQuestionIndex,
-          totalQuestions: _questions.length,
-          answeredCount: _selectedAnswers.length,
-          difficulty: widget.difficulty,
-          selectedOption: _selectedAnswers[_currentQuestionIndex],
-          isAnswerChecked: _checkedQuestions.contains(_currentQuestionIndex),
-          onCheckAnswer: () {
-            setState(() {
-              _checkedQuestions.add(_currentQuestionIndex);
-            });
-          },
-          showHint: _showHints.contains(_currentQuestionIndex),
-          onToggleHint: () {
-            setState(() {
-              if (_showHints.contains(_currentQuestionIndex)) {
-                _showHints.remove(_currentQuestionIndex);
-              } else {
-                _showHints.add(_currentQuestionIndex);
-              }
-            });
-          },
-          onSelectOption: (option) {
-            setState(() {
-              _selectedAnswers[_currentQuestionIndex] = option;
-            });
-          },
-          onPrevious: () {
-            setState(() {
-              if (_currentQuestionIndex > 0) {
-                _currentQuestionIndex--;
-              }
-            });
-          },
-          onNext: () {
-            setState(() {
-              if (_currentQuestionIndex < _questions.length - 1) {
-                _currentQuestionIndex++;
-              } else {
-                _isQuizCompleted = true;
-              }
-            });
-          },
-          onViewAllQuestions: () => _openPaletteSheet(context),
-          onSeek: widget.onSeek,
-        );
+      question: _questions[_currentQuestionIndex],
+      currentIndex: _currentQuestionIndex,
+      totalQuestions: _questions.length,
+      answeredCount: _selectedAnswers.length,
+      difficulty: widget.difficulty,
+      selectedOption: _selectedAnswers[_currentQuestionIndex],
+      isAnswerChecked: _checkedQuestions.contains(_currentQuestionIndex),
+      onCheckAnswer: () {
+        setState(() {
+          _checkedQuestions.add(_currentQuestionIndex);
+        });
+      },
+      showHint: _showHints.contains(_currentQuestionIndex),
+      onToggleHint: () {
+        setState(() {
+          if (_showHints.contains(_currentQuestionIndex)) {
+            _showHints.remove(_currentQuestionIndex);
+          } else {
+            _showHints.add(_currentQuestionIndex);
+          }
+        });
+      },
+      onSelectOption: (option) {
+        setState(() {
+          _selectedAnswers[_currentQuestionIndex] = option;
+        });
+      },
+      onPrevious: () {
+        setState(() {
+          if (_currentQuestionIndex > 0) {
+            _currentQuestionIndex--;
+          }
+        });
+      },
+      onNext: () {
+        setState(() {
+          if (_currentQuestionIndex < _questions.length - 1) {
+            _currentQuestionIndex++;
+          } else {
+            _isQuizCompleted = true;
+          }
+        });
+      },
+      onViewAllQuestions: () => _openPaletteSheet(context),
+      onSeek: widget.onSeek,
+    );
   }
 
   void _openPaletteSheet(BuildContext context) {
@@ -283,7 +283,8 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       barrierDismissible: true,
       barrierLabel: l10n.commonCloseButton,
       barrierColor: design.colors.shadow.withValues(alpha: 0.5),
-      transitionDuration: const Duration(milliseconds: 300),
+      transitionDuration:
+          MotionPreferences.duration(context, design.motion.normal),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return SlideTransition(
           position: Tween<Offset>(
@@ -292,7 +293,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
           ).animate(
             CurvedAnimation(
               parent: animation,
-              curve: Curves.easeInOutCubic,
+              curve: MotionPreferences.curve(context, design.motion.easeOut),
             ),
           ),
           child: child,

@@ -98,7 +98,6 @@ class VideoMcqPaletteSheet extends StatelessWidget {
                   ],
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.only(
                   left: design.spacing.lg,
@@ -119,11 +118,9 @@ class VideoMcqPaletteSheet extends StatelessWidget {
                   ],
                 ),
               ),
-
               Container(
                   height: 1,
                   color: design.colors.border.withValues(alpha: 0.5)),
-
               Flexible(
                 child: AppSemantics.scrollableList(
                   itemCount: totalQuestions,

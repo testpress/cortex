@@ -29,7 +29,8 @@ void main() {
     );
   }
 
-  testWidgets('renders question grid and handles selection and close', (tester) async {
+  testWidgets('renders question grid and handles selection and close',
+      (tester) async {
     var selectedIndex = -1;
     var closed = false;
 
@@ -65,7 +66,10 @@ void main() {
     // Verify semantics container and buttons
     expect(
       find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.label == 'Hey! Review Your Answers' && w.container == true,
+        (w) =>
+            w is Semantics &&
+            w.properties.label == 'Hey! Review Your Answers' &&
+            w.container == true,
       ),
       findsOneWidget,
     );
@@ -76,7 +80,9 @@ void main() {
     expect(closed, isTrue);
   });
 
-  testWidgets('opening in showGeneralDialog renders sheet and dismisses on barrier tap', (tester) async {
+  testWidgets(
+      'opening in showGeneralDialog renders sheet and dismisses on barrier tap',
+      (tester) async {
     var selectedIndex = -1;
 
     await tester.pumpWidget(wrap(

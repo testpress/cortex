@@ -272,14 +272,12 @@ class VideoMcqStepperCard extends StatelessWidget {
           SizedBox(height: design.spacing.md),
           _buildProgressBar(context),
           SizedBox(height: design.spacing.lg),
-
           AppText.base(
             question.text,
             style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4),
             color: design.colors.textPrimary,
           ),
           SizedBox(height: design.spacing.lg),
-
           ...question.options.asMap().entries.map((entry) {
             final optionIndex = entry.key;
             final option = entry.value;
@@ -376,7 +374,6 @@ class VideoMcqStepperCard extends StatelessWidget {
               ),
             );
           }),
-
           if (!isAnswerChecked && question.hint.isNotEmpty) ...[
             SizedBox(height: design.spacing.xs),
             AppSemantics.button(
@@ -438,7 +435,6 @@ class VideoMcqStepperCard extends StatelessWidget {
               ),
             ],
           ],
-
           if (!isAnswerChecked && selectedOption != null) ...[
             SizedBox(height: design.spacing.md),
             AppButton.primary(
@@ -448,12 +444,9 @@ class VideoMcqStepperCard extends StatelessWidget {
               backgroundColor: design.colors.success,
             ),
           ],
-
           if (isAnswerChecked && question.explanation.isNotEmpty)
             _buildExplanation(context),
-
           SizedBox(height: design.spacing.lg),
-
           Row(
             children: [
               Expanded(
@@ -483,7 +476,6 @@ class VideoMcqStepperCard extends StatelessWidget {
               ),
             ],
           ),
-
           if (onViewAllQuestions != null) ...[
             SizedBox(height: design.spacing.md),
             AppButton.secondary(

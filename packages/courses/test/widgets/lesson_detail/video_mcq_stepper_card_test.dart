@@ -34,7 +34,8 @@ void main() {
 
   final sampleQuestion = LearnLensQuizQuestionDto(
     id: 'q1',
-    text: 'A gas in a closed container is heated from 27°C to 127°C. What will be the final pressure?',
+    text:
+        'A gas in a closed container is heated from 27°C to 127°C. What will be the final pressure?',
     options: ['2.67 atm', '4 atm', '3 atm', '2 atm'],
     correctAnswer: '3 atm',
     explanation: 'Gay-Lussac Law explanation.',
@@ -68,7 +69,9 @@ void main() {
     );
   }
 
-  testWidgets('renders title, question count pill badge, and progress bar with accessibility semantics', (tester) async {
+  testWidgets(
+      'renders title, question count pill badge, and progress bar with accessibility semantics',
+      (tester) async {
     await tester.pumpWidget(buildSubject(
       currentIndex: 0,
       totalQuestions: 5,
@@ -83,20 +86,27 @@ void main() {
     expect(find.text(sampleQuestion.text), findsOneWidget);
 
     final semanticsFinder = find.byWidgetPredicate(
-      (w) => w is Semantics && w.properties.label == 'Question 1 of 5' && w.properties.value == '20%',
+      (w) =>
+          w is Semantics &&
+          w.properties.label == 'Question 1 of 5' &&
+          w.properties.value == '20%',
     );
     expect(semanticsFinder, findsOneWidget);
   });
 
-  testWidgets('hides Check Answer button when no option is selected', (tester) async {
-    await tester.pumpWidget(buildSubject(selectedOption: null, isAnswerChecked: false));
+  testWidgets('hides Check Answer button when no option is selected',
+      (tester) async {
+    await tester
+        .pumpWidget(buildSubject(selectedOption: null, isAnswerChecked: false));
     await tester.pumpAndSettle();
 
     expect(find.text('Check Answer'), findsNothing);
     expect(find.text('Explanation'), findsNothing);
   });
 
-  testWidgets('shows Check Answer button and hides explanation when option is selected but not checked', (tester) async {
+  testWidgets(
+      'shows Check Answer button and hides explanation when option is selected but not checked',
+      (tester) async {
     var checkTapped = false;
     await tester.pumpWidget(buildSubject(
       selectedOption: '3 atm',
@@ -113,7 +123,8 @@ void main() {
     expect(checkTapped, isTrue);
   });
 
-  testWidgets('reveals explanation and hides Check Answer button once checked', (tester) async {
+  testWidgets('reveals explanation and hides Check Answer button once checked',
+      (tester) async {
     await tester.pumpWidget(buildSubject(
       selectedOption: '3 atm',
       isAnswerChecked: true,
@@ -125,7 +136,8 @@ void main() {
     expect(find.textContaining('Gay-Lussac'), findsOneWidget);
   });
 
-  testWidgets('disables Previous on first question and triggers Next', (tester) async {
+  testWidgets('disables Previous on first question and triggers Next',
+      (tester) async {
     var previousTapped = false;
     var nextTapped = false;
 
@@ -158,7 +170,8 @@ void main() {
     expect(nextTapped, isTrue);
   });
 
-  testWidgets('enables Previous on subsequent questions and triggers callback', (tester) async {
+  testWidgets('enables Previous on subsequent questions and triggers callback',
+      (tester) async {
     var previousTapped = false;
 
     await tester.pumpWidget(wrap(
@@ -182,7 +195,8 @@ void main() {
     expect(previousTapped, isTrue);
   });
 
-  testWidgets('renders View All Questions trigger button and triggers callback', (tester) async {
+  testWidgets('renders View All Questions trigger button and triggers callback',
+      (tester) async {
     var paletteTapped = false;
 
     await tester.pumpWidget(wrap(
@@ -210,7 +224,9 @@ void main() {
     expect(paletteTapped, isTrue);
   });
 
-  testWidgets('validates Check Answer visibility rules and disabled Previous together across state transitions', (tester) async {
+  testWidgets(
+      'validates Check Answer visibility rules and disabled Previous together across state transitions',
+      (tester) async {
     var previousCallCount = 0;
     var nextCallCount = 0;
 
