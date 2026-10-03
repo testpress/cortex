@@ -3,7 +3,7 @@
 ## 1. Core Typography Update
 
 - [x] 1.1 Update `DesignTypographyScale.defaults()` in `packages/core/lib/design/design_config.dart` to use `GoogleFonts.inter` and verify analyzer passes
-- [x] 1.2 Update `ThemeData.fontFamily` in `app/lib/main.dart` to `GoogleFonts.inter().fontFamily` and verify analyzer passes
+- [x] 1.2 Update `ThemeData.fontFamily` in `app/lib/main.dart` to derive from `design.typographyScale.base.fontFamily` and verify analyzer passes
 
 ## 2. Verification
 

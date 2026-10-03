@@ -7,7 +7,7 @@ The product design system and Figma UI designs specify the **Inter** typeface fa
 ## What Changes
 
 - Update `DesignTypographyScale.defaults()` in `packages/core` to construct all typography scale atoms using `GoogleFonts.inter`.
-- Update the global fallback `MaterialApp` theme in `app/lib/main.dart` to use `GoogleFonts.inter().fontFamily`.
+- Update the global fallback `MaterialApp` theme in `app/lib/main.dart` to derive its `fontFamily` from `design.typographyScale.base.fontFamily`.
 - Preserve all existing atomic scale sizes (`xxs` through `xl5`), font weights, line heights, and semantic `AppText` roles.
 
 ## Capabilities
