@@ -195,22 +195,24 @@ class _LearnerCard extends StatelessWidget {
     Color badgeTextColor;
     Color cardTopBgColor;
     IconData rankIcon;
+    final Color rankForeground =
+        design.isDark ? design.colors.textInverse : design.colors.textPrimary;
     switch (learner.rank) {
       case 1:
         badgeBgColor = design.colors.rank1;
-        badgeTextColor = design.colors.textInverse;
+        badgeTextColor = rankForeground;
         cardTopBgColor = design.colors.rank1.withValues(alpha: 0.12);
         rankIcon = LucideIcons.crown;
         break;
       case 2:
         badgeBgColor = design.colors.rank2;
-        badgeTextColor = design.colors.textInverse;
+        badgeTextColor = rankForeground;
         cardTopBgColor = design.colors.rank2.withValues(alpha: 0.25);
         rankIcon = LucideIcons.crown;
         break;
       case 3:
         badgeBgColor = design.colors.rank3;
-        badgeTextColor = design.colors.textInverse;
+        badgeTextColor = rankForeground;
         cardTopBgColor = design.colors.rank3.withValues(alpha: 0.12);
         rankIcon = LucideIcons.crown;
         break;
@@ -320,7 +322,7 @@ class _LearnerCard extends StatelessWidget {
                             child: Icon(
                               rankIcon,
                               size: 12,
-                              color: design.colors.textInverse,
+                              color: badgeTextColor,
                             ),
                           ),
                         ),
