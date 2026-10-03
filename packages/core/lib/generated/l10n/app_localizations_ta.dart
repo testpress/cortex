@@ -988,7 +988,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get videoLessonTabAskDoubt => 'சந்தேகம் கேள்';
 
   @override
-  String get videoLessonTabAiSupport => 'AI அரட்டை';
+  String get videoLessonTabAiSupport => 'AI-யிடம் கேட்க';
 
   @override
   String get videoLessonLectureNotes => 'விரிவுரை குறிப்புகள்';
@@ -1142,6 +1142,26 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get videoAiSendMessage => 'செய்தி அனுப்பு';
+
+  @override
+  String get videoAiSenderAi => 'AI';
+
+  @override
+  String get videoAiSenderYou => 'நீங்கள்';
+
+  @override
+  String videoAiChatMessageSemantic(
+    String sender,
+    String message,
+    String time,
+  ) {
+    return '$sender: $message, $time';
+  }
+
+  @override
+  String videoAiLoadingSemantic(String sender, String status) {
+    return '$sender, $status';
+  }
 
   @override
   String videoMcqScoreSummary(int correct, int total, int percentage) {

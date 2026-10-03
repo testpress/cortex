@@ -26,6 +26,8 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.maxLines = 1,
+    this.borderColor,
+    this.focusNode,
   });
 
   final String label;
@@ -46,6 +48,8 @@ class AppTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final int? maxLines;
+  final Color? borderColor;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +70,14 @@ class AppTextField extends StatelessWidget {
             border: Border.all(
               color: errorText != null
                   ? design.colors.error
-                  : design.colors.border,
+                  : (borderColor ?? design.colors.border),
+              width: borderColor != null ? 1.5 : 1.0,
             ),
           ),
           child: Material(
             type: MaterialType.transparency,
             child: TextField(
+              focusNode: focusNode,
               controller: controller,
               onChanged: onChanged,
               keyboardType: keyboardType,

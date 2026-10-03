@@ -491,7 +491,7 @@
   "videoLessonTabTranscript": "Transcript",
   "videoLessonSyncToVideo": "Sync to Video",
   "videoLessonTabAskDoubt": "Ask Doubt",
-  "videoLessonTabAiSupport": "AI Chat",
+  "videoLessonTabAiSupport": "Ask AI",
   "videoLessonLectureNotes": "Lecture Notes",
   "videoLessonDownloadPdf": "Download PDF",
   "videoLessonKeyFormula": "Key Formula",
@@ -515,7 +515,7 @@
   },
   "videoLessonSubmitDoubt": "Submit Doubt",
   "videoLessonPending": "Pending",
-  "videoLessonAiHint": "Ask AI anything about this lecture...",
+  "videoLessonAiHint": "Ask a question about this lesson...",
   "videoLessonTabMcq": "MCQ",
   "videoMcqGenerating": "Generating practice questions with AI...",
   "videoMcqRetry": "Retry",
@@ -555,6 +555,35 @@
   "videoMcqPreviousQuestion": "Previous Question",
   "videoMcqNextQuestion": "Next Question",
   "videoAiSendMessage": "Send Message",
+  "videoAiSenderAi": "AI",
+  "videoAiSenderYou": "You",
+  "videoAiChatMessageSemantic": "{sender}: {message}, {time}",
+  "@videoAiChatMessageSemantic": {
+    "description": "Semantic announcement for a chat message with sender, message text, and timestamp",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "videoAiLoadingSemantic": "{sender}, {status}",
+  "@videoAiLoadingSemantic": {
+    "description": "Semantic announcement for an in-progress AI response",
+    "placeholders": {
+      "sender": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "videoMcqScoreSummary": "{correct} out of {total} Correct ({percentage}%)",
   "@videoMcqScoreSummary": {
     "placeholders": {

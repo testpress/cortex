@@ -24,20 +24,33 @@ class _ChatMessage {
   final String text;
   final bool isAi;
   final bool isLoading;
+  final DateTime timestamp;
 
-  const _ChatMessage({
+  _ChatMessage({
     required this.text,
     required this.isAi,
     this.isLoading = false,
-  });
+    DateTime? timestamp,
+  }) : timestamp = timestamp ?? DateTime.now();
 }
 
 class _AITabState extends ConsumerState<AITab>
     with AutomaticKeepAliveClientMixin {
+  static const double _sendButtonInnerSize = 44;
+  static const double _sendButtonIconSize = 18;
+  static const double _sendButtonDisabledAlpha = 0.35;
+
   final _controller = TextEditingController();
+  final _focusNode = FocusNode();
   final List<_ChatMessage> _messages = [];
   String _conversationId = '';
   bool _isSubmitting = false;
+
+  String _formatTime(DateTime time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -60,6 +73,7 @@ class _AITabState extends ConsumerState<AITab>
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -85,7 +99,7 @@ class _AITabState extends ConsumerState<AITab>
     setState(() {
       _messages.add(_ChatMessage(text: query, isAi: false));
       _messages.add(
-        const _ChatMessage(text: '', isAi: true, isLoading: true),
+        _ChatMessage(text: '', isAi: true, isLoading: true),
       );
       _isSubmitting = true;
     });
@@ -180,82 +194,126 @@ class _AITabState extends ConsumerState<AITab>
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final isKeyboardOpen = bottomInset > 0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Scrollable messages area
-        Expanded(
-          child: AppSemantics.scrollableList(
-            itemCount: _messages.length,
-            label: l10n.aiSupportTitle,
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(design.spacing.md),
+    return Container(
+      color: design.colors.card,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Scrollable messages area
+          Expanded(
+            child: AppSemantics.scrollableList(
               itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildChatBubble(_messages[index], design);
-              },
-            ),
-          ),
-        ),
-        // Pinned composer at bottom
-        Container(
-          padding: EdgeInsets.fromLTRB(
-            design.spacing.md,
-            design.spacing.sm,
-            design.spacing.md,
-            design.spacing.sm + bottomInset,
-          ),
-          decoration: BoxDecoration(
-            color: design.colors.surface,
-            border: Border(
-              top: BorderSide(
-                color: design.colors.divider.withValues(alpha: 0.5),
+              label: l10n.aiSupportTitle,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.all(design.spacing.md),
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  return _buildChatBubble(_messages[index], design);
+                },
               ),
             ),
           ),
-          child: ValueListenableBuilder<TextEditingValue>(
-            valueListenable: _controller,
-            builder: (context, value, _) {
-              final isDirty = value.text.trim().isNotEmpty;
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: AppTextField(
-                      label: '',
-                      controller: _controller,
-                      hintText: l10n.videoLessonAiHint,
-                      onSubmitted: _isSubmitting ? null : (_) => _sendMessage(),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.md,
-                        vertical: design.spacing.sm,
+          // Pinned composer at bottom
+          Container(
+            padding: EdgeInsets.fromLTRB(
+              design.spacing.md,
+              design.spacing.sm,
+              design.spacing.md,
+              design.spacing.sm + bottomInset,
+            ),
+            decoration: BoxDecoration(
+              color: design.colors.card,
+              border: Border(
+                top: BorderSide(
+                  color: design.colors.divider.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+            child: ListenableBuilder(
+              listenable: Listenable.merge([_controller, _focusNode]),
+              builder: (context, _) {
+                final isDirty = _controller.text.trim().isNotEmpty;
+                final isFocused = _focusNode.hasFocus;
+                final isActive = isFocused || isDirty;
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: AppTextField(
+                        label: '',
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        hintText: l10n.videoLessonAiHint,
+                        borderColor: isActive ? design.colors.accent2 : null,
+                        onSubmitted:
+                            _isSubmitting ? null : (_) => _sendMessage(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: design.spacing.md,
+                          vertical: design.spacing.sm,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: design.spacing.sm),
-                  AppIconButton(
-                    icon: LucideIcons.sendHorizontal,
-                    onTap: isDirty && !_isSubmitting ? _sendMessage : () {},
-                    accessibilityLabel: l10n.videoAiSendMessage,
-                    color: isDirty && !_isSubmitting
-                        ? design.colors.accent2
-                        : design.colors.textTertiary,
-                  ),
-                ],
-              );
-            },
+                    SizedBox(width: design.spacing.sm),
+                    AppSemantics.button(
+                      label: l10n.videoAiSendMessage,
+                      onTap: isDirty && !_isSubmitting ? _sendMessage : null,
+                      enabled: isDirty && !_isSubmitting,
+                      child: ExcludeSemantics(
+                        child: GestureDetector(
+                          onTap:
+                              isDirty && !_isSubmitting ? _sendMessage : null,
+                          behavior: HitTestBehavior.opaque,
+                          child: SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: Center(
+                              child: Container(
+                                width: _sendButtonInnerSize,
+                                height: _sendButtonInnerSize,
+                                decoration: BoxDecoration(
+                                  color: isDirty && !_isSubmitting
+                                      ? design.colors.accent2
+                                      : design.colors.accent2.withValues(
+                                          alpha: _sendButtonDisabledAlpha),
+                                  borderRadius:
+                                      BorderRadius.circular(design.radius.md),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    LucideIcons.send,
+                                    size: _sendButtonIconSize,
+                                    color: design.colors.textInverse,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-        if (widget.footerBuilder != null && !isKeyboardOpen)
-          widget.footerBuilder!(context),
-      ],
+          if (widget.footerBuilder != null && !isKeyboardOpen)
+            widget.footerBuilder!(context),
+        ],
+      ),
     );
   }
 
   Widget _buildChatBubble(_ChatMessage message, DesignConfig design) {
     final isAI = message.isAi;
-    return Padding(
+    final timeStr = _formatTime(message.timestamp);
+    final l10n = L10n.of(context);
+    final senderLabel = isAI ? l10n.videoAiSenderAi : l10n.videoAiSenderYou;
+    final semanticLabel = message.isLoading
+        ? l10n.videoAiLoadingSemantic(senderLabel, l10n.videoAiThinking)
+        : l10n.videoAiChatMessageSemantic(senderLabel, message.text, timeStr);
+
+    final content = Padding(
       padding: EdgeInsets.only(bottom: design.spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,76 +321,114 @@ class _AITabState extends ConsumerState<AITab>
             isAI ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           if (isAI)
-            Container(
-              width: 28,
-              height: 28,
-              margin: EdgeInsets.only(right: design.spacing.sm, top: 2),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [design.colors.accent2, design.colors.accent1],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            ExcludeSemantics(
+              child: Container(
+                width: 28,
+                height: 28,
+                margin: EdgeInsets.only(right: design.spacing.sm, top: 2),
+                decoration: BoxDecoration(
+                  color: design.colors.surfaceVariant,
+                  shape: BoxShape.circle,
                 ),
-                borderRadius: BorderRadius.circular(design.radius.sm),
-              ),
-              child: Center(
-                child: Icon(
-                  LucideIcons.sparkles,
-                  size: 14,
-                  color: design.colors.textInverse,
+                child: Center(
+                  child: Icon(
+                    LucideIcons.sparkles,
+                    size: 14,
+                    color: design.colors.textSecondary,
+                  ),
                 ),
               ),
             ),
           Flexible(
-            child: Container(
-              padding: EdgeInsets.all(design.spacing.sm),
-              decoration: BoxDecoration(
-                color: isAI ? design.colors.card : design.colors.accent2,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(isAI ? 0 : design.radius.md),
-                  topRight: Radius.circular(isAI ? design.radius.md : 0),
-                  bottomLeft: Radius.circular(design.radius.md),
-                  bottomRight: Radius.circular(design.radius.md),
-                ),
-                border: isAI ? Border.all(color: design.colors.divider) : null,
-              ),
-              child: message.isLoading
-                  ? Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppText.caption(
-                          L10n.of(context).videoAiThinking,
-                          color: design.colors.textSecondary,
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        _ThreeDotWavingIndicator(
-                            color: design.colors.textSecondary),
-                      ],
-                    )
-                  : isAI
-                      ? AppMarkdown(
-                          data: _processMarkdown(message.text),
-                          selectable: true,
-                          onTapLink: (url) {
-                            if (url.startsWith('timestamp:')) {
-                              final timeStr =
-                                  url.substring('timestamp:'.length);
-                              final duration =
-                                  TimeFormatter.parseDuration(timeStr);
-                              widget.onSeek?.call(duration);
-                            }
-                          },
+            child: Column(
+              crossAxisAlignment:
+                  isAI ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(design.spacing.sm),
+                  decoration: BoxDecoration(
+                    color: isAI ? design.colors.surface : design.colors.accent2,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(isAI ? 0 : design.radius.md),
+                      topRight: Radius.circular(isAI ? design.radius.md : 0),
+                      bottomLeft: Radius.circular(design.radius.md),
+                      bottomRight: Radius.circular(design.radius.md),
+                    ),
+                    border:
+                        isAI ? Border.all(color: design.colors.divider) : null,
+                  ),
+                  child: message.isLoading
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.xs,
+                            vertical: design.spacing.xs,
+                          ),
+                          child: _ThreeDotWavingIndicator(
+                            color: design.colors.textSecondary,
+                          ),
                         )
-                      : AppText.body(
-                          message.text,
-                          color: design.colors.textInverse,
-                          style: const TextStyle(fontSize: 13, height: 1.4),
-                        ),
+                      : isAI
+                          ? AppMarkdown(
+                              data: _processMarkdown(message.text),
+                              selectable: true,
+                              onTapLink: (url) {
+                                if (url.startsWith('timestamp:')) {
+                                  final timeStr =
+                                      url.substring('timestamp:'.length);
+                                  final duration =
+                                      TimeFormatter.parseDuration(timeStr);
+                                  widget.onSeek?.call(duration);
+                                }
+                              },
+                            )
+                          : AppText.bodySmall(
+                              message.text,
+                              color: design.colors.textInverse,
+                              style: const TextStyle(height: 1.5),
+                            ),
+                ),
+                if (!message.isLoading) ...[
+                  SizedBox(height: design.spacing.xs),
+                  AppText.caption(
+                    timeStr,
+                    color: design.colors.textTertiary,
+                  ),
+                ],
+              ],
             ),
           ),
+          if (!isAI)
+            ExcludeSemantics(
+              child: Container(
+                width: 28,
+                height: 28,
+                margin: EdgeInsets.only(left: design.spacing.sm, top: 2),
+                decoration: BoxDecoration(
+                  color: design.colors.accent2,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    LucideIcons.user,
+                    size: 14,
+                    color: design.colors.textInverse,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
+
+    if (message.isLoading) {
+      return AppSemantics.container(label: semanticLabel, child: content);
+    }
+    // No label — AppMarkdown's timestamp links must stay individually focusable.
+    if (isAI) {
+      return Semantics(container: true, child: content);
+    }
+    return AppSemantics.container(label: semanticLabel, child: content);
   }
 }
 
@@ -359,10 +455,9 @@ class __ThreeDotWavingIndicatorState extends State<_ThreeDotWavingIndicator>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final design = Design.of(context);
     final duration = MotionPreferences.duration(
       context,
-      design.motion.slow,
+      Design.of(context).motion.verySlow,
     );
     _controller.duration = duration;
 

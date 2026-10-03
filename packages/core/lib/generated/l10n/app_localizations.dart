@@ -1850,7 +1850,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoLessonTabAiSupport.
   ///
   /// In en, this message translates to:
-  /// **'AI Chat'**
+  /// **'Ask AI'**
   String get videoLessonTabAiSupport;
 
   /// No description provided for @videoLessonLectureNotes.
@@ -1934,7 +1934,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoLessonAiHint.
   ///
   /// In en, this message translates to:
-  /// **'Ask AI anything about this lecture...'**
+  /// **'Ask a question about this lesson...'**
   String get videoLessonAiHint;
 
   /// No description provided for @videoLessonTabMcq.
@@ -2128,6 +2128,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send Message'**
   String get videoAiSendMessage;
+
+  /// No description provided for @videoAiSenderAi.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get videoAiSenderAi;
+
+  /// No description provided for @videoAiSenderYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get videoAiSenderYou;
+
+  /// Semantic announcement for a chat message with sender, message text, and timestamp
+  ///
+  /// In en, this message translates to:
+  /// **'{sender}: {message}, {time}'**
+  String videoAiChatMessageSemantic(String sender, String message, String time);
+
+  /// Semantic announcement for an in-progress AI response
+  ///
+  /// In en, this message translates to:
+  /// **'{sender}, {status}'**
+  String videoAiLoadingSemantic(String sender, String status);
 
   /// No description provided for @videoMcqScoreSummary.
   ///
