@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../providers/learnlens_provider.dart';
 import 'mcq/video_mcq_initial_card.dart';
+import 'mcq/video_mcq_palette_sheet.dart';
 import 'mcq/video_mcq_stepper_card.dart';
 import 'mcq/video_mcq_summary_card.dart';
 
@@ -36,6 +37,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
   int _currentQuestionIndex = 0;
   bool _isQuizCompleted = false;
   final Map<int, String> _selectedAnswers = {};
+  final Set<int> _checkedQuestions = {};
   final Set<int> _showHints = {};
 
   @override
@@ -49,6 +51,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       _currentQuestionIndex = 0;
       _isQuizCompleted = false;
       _selectedAnswers.clear();
+      _checkedQuestions.clear();
       _showHints.clear();
     });
 
@@ -113,7 +116,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     if (_isLoading) {
-      return Padding(
+      return Container(
+        color: design.colors.card,
+        width: double.infinity,
         padding: EdgeInsets.all(design.spacing.xl),
         child: Center(
           child: Column(
@@ -126,6 +131,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
               ),
               SizedBox(height: design.spacing.xl),
               AppLoadingIndicator(color: design.colors.accent2),
+              SizedBox(height: design.spacing.lg),
             ],
           ),
         ),
@@ -133,7 +139,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     if (_errorMessage != null) {
-      return Padding(
+      return Container(
+        color: design.colors.card,
+        width: double.infinity,
         padding: EdgeInsets.all(design.spacing.xl),
         child: Center(
           child: Column(
@@ -159,7 +167,9 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     }
 
     if (_questions.isEmpty) {
-      return Padding(
+      return Container(
+        color: design.colors.card,
+        width: double.infinity,
         padding: EdgeInsets.all(design.spacing.xl),
         child: Center(
           child: Column(
@@ -198,6 +208,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
             _currentQuestionIndex = 0;
             _isQuizCompleted = false;
             _selectedAnswers.clear();
+            _checkedQuestions.clear();
             _showHints.clear();
           });
         },
@@ -208,6 +219,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
             _isQuizCompleted = false;
             _questions.clear();
             _selectedAnswers.clear();
+            _checkedQuestions.clear();
             _showHints.clear();
           });
         },
@@ -218,8 +230,15 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       question: _questions[_currentQuestionIndex],
       currentIndex: _currentQuestionIndex,
       totalQuestions: _questions.length,
+      answeredCount: _selectedAnswers.length,
       difficulty: widget.difficulty,
       selectedOption: _selectedAnswers[_currentQuestionIndex],
+      isAnswerChecked: _checkedQuestions.contains(_currentQuestionIndex),
+      onCheckAnswer: () {
+        setState(() {
+          _checkedQuestions.add(_currentQuestionIndex);
+        });
+      },
       showHint: _showHints.contains(_currentQuestionIndex),
       onToggleHint: () {
         setState(() {
@@ -251,7 +270,52 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
           }
         });
       },
+      onViewAllQuestions: () => _openPaletteSheet(context),
       onSeek: widget.onSeek,
+    );
+  }
+
+  void _openPaletteSheet(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    showGeneralDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: l10n.commonCloseButton,
+      barrierColor: design.colors.shadow.withValues(alpha: 0.5),
+      transitionDuration:
+          MotionPreferences.duration(context, design.motion.normal),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.0, 1.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: MotionPreferences.curve(context, design.motion.easeOut),
+            ),
+          ),
+          child: child,
+        );
+      },
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: VideoMcqPaletteSheet(
+            totalQuestions: _questions.length,
+            currentIndex: _currentQuestionIndex,
+            answeredIndices: _selectedAnswers.keys.toSet(),
+            onClose: () => Navigator.of(dialogContext).pop(),
+            onQuestionSelected: (index) {
+              setState(() {
+                _currentQuestionIndex = index;
+              });
+              Navigator.of(dialogContext).pop();
+            },
+          ),
+        );
+      },
     );
   }
 }

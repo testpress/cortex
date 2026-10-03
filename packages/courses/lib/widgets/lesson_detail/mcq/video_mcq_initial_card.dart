@@ -27,7 +27,9 @@ class VideoMcqInitialCard extends StatelessWidget {
       _ => l10n.videoMcqDifficultyMedium,
     };
 
-    return Padding(
+    return Container(
+      color: design.colors.card,
+      width: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.md,
         vertical: design.spacing.xl,
