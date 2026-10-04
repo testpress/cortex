@@ -170,5 +170,50 @@ void main() {
       expect(semantics.properties.enabled, false);
       expect(semantics.properties.onTap, isNull);
     });
+
+    testWidgets(
+        'does not enable semantics button or handle tap when slug is empty',
+        (tester) async {
+      const productWithEmptySlug = ProductDto(
+        id: 4,
+        title: 'Empty Slug Product',
+        slug: '',
+        price: '100.00',
+        courses: [],
+        image: '',
+      );
+
+      await tester.pumpWidget(wrap(const ProductCard(
+        product: productWithEmptySlug,
+        isSkeleton: false,
+      )));
+      await tester.pump();
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.button == true,
+      );
+      expect(semanticsFinder, findsOneWidget);
+      final Semantics semantics = tester.widget(semanticsFinder);
+      expect(semantics.properties.enabled, false);
+      expect(semantics.properties.onTap, isNull);
+    });
+
+    testWidgets(
+        'enables semantics button and tap handler for a normal product with valid slug',
+        (tester) async {
+      await tester.pumpWidget(wrap(ProductCard(
+        product: testProductWithStrikethrough,
+        isSkeleton: false,
+      )));
+      await tester.pump();
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.button == true,
+      );
+      expect(semanticsFinder, findsOneWidget);
+      final Semantics semantics = tester.widget(semanticsFinder);
+      expect(semantics.properties.enabled, true);
+      expect(semantics.properties.onTap, isNotNull);
+    });
   });
 }
