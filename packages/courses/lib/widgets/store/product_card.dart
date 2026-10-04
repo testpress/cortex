@@ -17,17 +17,18 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final isInteractive = !isSkeleton && product.slug.isNotEmpty;
+    final handleTap = isInteractive
+        ? () => context.push('/store/product/${product.slug}', extra: product)
+        : null;
 
     return AppSemantics.button(
       label: product.title,
-      onTap: () {
-        context.push('/store/product/${product.slug}', extra: product);
-      },
+      enabled: isInteractive,
+      onTap: handleTap,
       child: AppCard(
         padding: EdgeInsets.zero,
-        onTap: () {
-          context.push('/store/product/${product.slug}', extra: product);
-        },
+        onTap: handleTap,
         child: Skeletonizer(
           enabled: isSkeleton,
           ignoreContainers: true,

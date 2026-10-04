@@ -1,8 +1,8 @@
-import 'package:core/data/data.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:courses/widgets/store/product_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Widget wrap(Widget child) {
@@ -151,6 +151,183 @@ void main() {
       expect(sizedBoxFinder, findsWidgets);
       final SizedBox priceSizedBox = tester.widget(sizedBoxFinder.first);
       expect(priceSizedBox.height, 24);
+    });
+
+    testWidgets(
+        'does not enable semantics button or handle tap when isSkeleton is true',
+        (tester) async {
+      await tester.pumpWidget(wrap(ProductCard(
+        product: testProductWithStrikethrough,
+        isSkeleton: true,
+      )));
+      await tester.pump();
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.button == true,
+      );
+      expect(semanticsFinder, findsOneWidget);
+      final Semantics semantics = tester.widget(semanticsFinder);
+      expect(semantics.properties.enabled, false);
+      expect(semantics.properties.onTap, isNull);
+    });
+
+    testWidgets(
+        'does not enable semantics button or handle tap when slug is empty',
+        (tester) async {
+      const productWithEmptySlug = ProductDto(
+        id: 4,
+        title: 'Empty Slug Product',
+        slug: '',
+        price: '100.00',
+        courses: [],
+        image: '',
+      );
+
+      await tester.pumpWidget(wrap(const ProductCard(
+        product: productWithEmptySlug,
+        isSkeleton: false,
+      )));
+      await tester.pump();
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.button == true,
+      );
+      expect(semanticsFinder, findsOneWidget);
+      final Semantics semantics = tester.widget(semanticsFinder);
+      expect(semantics.properties.enabled, false);
+      expect(semantics.properties.onTap, isNull);
+    });
+
+    testWidgets(
+        'enables semantics button and tap handler for a normal product with valid slug',
+        (tester) async {
+      await tester.pumpWidget(wrap(ProductCard(
+        product: testProductWithStrikethrough,
+        isSkeleton: false,
+      )));
+      await tester.pump();
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.button == true,
+      );
+      expect(semanticsFinder, findsOneWidget);
+      final Semantics semantics = tester.widget(semanticsFinder);
+      expect(semantics.properties.enabled, true);
+      expect(semantics.properties.onTap, isNotNull);
+    });
+
+    testWidgets(
+        'tapping card when isSkeleton is true does not trigger navigation',
+        (tester) async {
+      var didNavigate = false;
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => wrap(ProductCard(
+              product: testProductWithStrikethrough,
+              isSkeleton: true,
+            )),
+          ),
+          GoRoute(
+            path: '/store/product/:slug',
+            builder: (context, state) {
+              didNavigate = true;
+              return const SizedBox();
+            },
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pump();
+
+      await tester.tap(find.byType(ProductCard));
+      await tester.pump();
+
+      expect(didNavigate, false);
+    });
+
+    testWidgets('tapping card with empty slug does not trigger navigation',
+        (tester) async {
+      const productWithEmptySlug = ProductDto(
+        id: 4,
+        title: 'Empty Slug Product',
+        slug: '',
+        price: '100.00',
+        courses: [],
+        image: '',
+      );
+
+      var didNavigate = false;
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => wrap(const ProductCard(
+              product: productWithEmptySlug,
+              isSkeleton: false,
+            )),
+          ),
+          GoRoute(
+            path: '/store/product/:slug',
+            builder: (context, state) {
+              didNavigate = true;
+              return const SizedBox();
+            },
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pump();
+
+      await tester.tap(find.byType(ProductCard));
+      await tester.pumpAndSettle();
+
+      expect(didNavigate, false);
+    });
+
+    testWidgets(
+        'tapping normal card navigates to product details route with product extra',
+        (tester) async {
+      var didNavigate = false;
+      String? navigatedPath;
+      Object? navigatedExtra;
+
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => wrap(ProductCard(
+              product: testProductWithStrikethrough,
+              isSkeleton: false,
+            )),
+          ),
+          GoRoute(
+            path: '/store/product/:slug',
+            builder: (context, state) {
+              didNavigate = true;
+              navigatedPath = state.uri.path;
+              navigatedExtra = state.extra;
+              return const SizedBox();
+            },
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pump();
+
+      await tester.tap(find.byType(ProductCard));
+      await tester.pumpAndSettle();
+
+      expect(didNavigate, true);
+      expect(navigatedPath, '/store/product/brahmos-all-ssc');
+      expect(navigatedExtra, testProductWithStrikethrough);
     });
   });
 }
