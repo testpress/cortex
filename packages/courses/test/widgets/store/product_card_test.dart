@@ -152,5 +152,23 @@ void main() {
       final SizedBox priceSizedBox = tester.widget(sizedBoxFinder.first);
       expect(priceSizedBox.height, 24);
     });
+
+    testWidgets(
+        'does not enable semantics button or handle tap when isSkeleton is true',
+        (tester) async {
+      await tester.pumpWidget(wrap(ProductCard(
+        product: testProductWithStrikethrough,
+        isSkeleton: true,
+      )));
+      await tester.pump();
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.button == true,
+      );
+      expect(semanticsFinder, findsOneWidget);
+      final Semantics semantics = tester.widget(semanticsFinder);
+      expect(semantics.properties.enabled, false);
+      expect(semantics.properties.onTap, isNull);
+    });
   });
 }
