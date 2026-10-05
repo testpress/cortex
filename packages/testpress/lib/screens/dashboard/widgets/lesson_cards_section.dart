@@ -322,18 +322,23 @@ class LessonCardsSectionWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    AppText.title(title),
-                    AppSemantics.button(
-                      label: l10n.viewAllAction,
-                      onTap: onViewAll,
-                      child: GestureDetector(
+                    AppSemantics.header(
+                      label: title,
+                      child: AppText.title(title),
+                    ),
+                    if (onViewAll != null && !isSkeleton)
+                      AppSemantics.button(
+                        label: l10n.viewAllAction,
                         onTap: onViewAll,
-                        child: AppText.labelSmall(
-                          l10n.viewAllAction,
-                          color: design.colors.primary,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: onViewAll,
+                          child: AppText.labelSmall(
+                            l10n.viewAllAction,
+                            color: design.colors.primary,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
