@@ -78,10 +78,13 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
   }
 
   String _getErrorMessage(Object error) {
+    final serverErrorMessage = mounted
+        ? L10n.of(context).errorServerMessage
+        : 'The server is having trouble. Please try again later.';
     if (error is ApiException) {
       if (error.type == ApiErrorType.serverError ||
           (error.statusCode != null && error.statusCode! >= 500)) {
-        return 'The server is having trouble. Please try again later.';
+        return serverErrorMessage;
       }
       final extracted = ApiException.extractApiMessage(error.data);
       if (extracted != null &&
@@ -96,7 +99,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
         error.toString().replaceFirst(RegExp(r'^(?:Exception|Error):\s*'), '');
 
     if (msg.startsWith('<!') || msg.toLowerCase().contains('<html')) {
-      return 'The server is having trouble. Please try again later.';
+      return serverErrorMessage;
     }
 
     final match =

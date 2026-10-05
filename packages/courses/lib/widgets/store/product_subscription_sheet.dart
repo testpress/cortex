@@ -82,7 +82,7 @@ class _ProductSubscriptionSheetState
                   children: [
                     Expanded(
                       child: AppText.title(
-                        'Select a plan to proceed with your purchase',
+                        L10n.of(context).storeSelectPlanToProceed,
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),

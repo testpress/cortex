@@ -60,8 +60,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final l10n = L10n.of(context);
     final isCoupon = appliedCouponCode != null && appliedCouponCode.isNotEmpty;
     final semanticLabel = savedAmount != null && savedAmount > 0
-        ? '${isCoupon ? l10n.storeCouponApplied : "Special discount applied"}. ${l10n.storeYouSaved(savedAmount.toStringAsFixed(2))}'
-        : (isCoupon ? l10n.storeCouponApplied : "Special discount applied");
+        ? '${isCoupon ? l10n.storeCouponApplied : l10n.storeSpecialDiscountApplied}. ${l10n.storeYouSaved(savedAmount.toStringAsFixed(2))}'
+        : (isCoupon
+            ? l10n.storeCouponApplied
+            : l10n.storeSpecialDiscountApplied);
 
     return AppSemantics.container(
       label: semanticLabel,
@@ -90,7 +92,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   AppText.labelBold(
                     isCoupon
                         ? appliedCouponCode.toUpperCase()
-                        : 'SPECIAL DISCOUNT',
+                        : l10n.storeSpecialDiscount,
                     color: design.colors.success,
                   ),
                   const SizedBox(height: 2),
@@ -99,7 +101,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         ? l10n.storeYouSaved(savedAmount.toStringAsFixed(2))
                         : (isCoupon
                             ? l10n.storeCouponApplied
-                            : 'Special discount applied'),
+                            : l10n.storeSpecialDiscountApplied),
                     color: design.colors.success,
                   ),
                 ],
@@ -383,8 +385,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                           ? '${selectedPlanDetail.durationInDays ~/ 365} year${selectedPlanDetail.durationInDays > 365 ? 's' : ''}'
                                           : '${selectedPlanDetail.durationInDays} days';
                                       return AppSemantics.button(
-                                        label:
-                                            'Selected plan: $durationText. ₹${selectedPlanDetail.price}. Tap to change.',
+                                        label: L10n.of(context)
+                                            .storeSelectedPlanTapToChange(
+                                          '$durationText. ₹${selectedPlanDetail.price}',
+                                        ),
                                         child: GestureDetector(
                                           onTap: () {
                                             setState(() {
@@ -592,7 +596,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       SizedBox(height: design.spacing.md),
                       AppButton.primary(
                         label: allPlanDetails.isNotEmpty
-                            ? (_hasChosenPlan ? 'Proceed to Buy' : 'Subscribe')
+                            ? (_hasChosenPlan
+                                ? L10n.of(context).storeProceedToBuy
+                                : L10n.of(context).storeSubscribe)
                             : ((product.buyNowText?.isNotEmpty == true)
                                 ? product.buyNowText!
                                 : L10n.of(context).storeBuyNow),

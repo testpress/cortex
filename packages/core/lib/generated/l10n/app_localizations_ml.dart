@@ -2807,6 +2807,27 @@ class AppLocalizationsMl extends AppLocalizations {
   String get storeBuyNow => 'ഇപ്പോൾ വാങ്ങുക';
 
   @override
+  String get storeProceedToBuy => 'വാങ്ങാൻ തുടരുക';
+
+  @override
+  String get storeSubscribe => 'സബ്‌സ്‌ക്രൈബ് ചെയ്യുക';
+
+  @override
+  String get storeSelectPlanToProceed =>
+      'നിങ്ങളുടെ വാങ്ങലുമായി മുന്നോട്ട് പോകാൻ ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get storeSpecialDiscountApplied => 'പ്രത്യേക കിഴിവ് ബാധകമാക്കി';
+
+  @override
+  String get storeSpecialDiscount => 'പ്രത്യേക കിഴിവ്';
+
+  @override
+  String storeSelectedPlanTapToChange(String plan) {
+    return 'തിരഞ്ഞെടുത്ത പ്ലാൻ: $plan. മാറ്റാൻ ടാപ്പ് ചെയ്യുക.';
+  }
+
+  @override
   String get storeCheckoutComingSoon => 'ചെക്ക്ഔട്ട് പ്രക്രിയ ഉടൻ വരും';
 
   @override
@@ -3133,6 +3154,10 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get errorServerTitle => 'സെർവർ പിശക്';
+
+  @override
+  String get errorServerMessage =>
+      'സെർവറിൽ പ്രശ്നമുണ്ട്. ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.';
 
   @override
   String get errorRateLimitedTitle => 'നിരവധി അഭ്യർത്ഥനകൾ';
