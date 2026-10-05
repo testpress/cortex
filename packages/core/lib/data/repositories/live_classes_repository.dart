@@ -75,18 +75,24 @@ class LiveClassesRepository {
       final cachedRows = await _db.select(_db.liveClassesTable).get();
       final cached = cachedRows.map(_rowToDto).toList();
 
-      final matchingDate = cached.where((c) {
+      return cached.where((c) {
         final start = c.startDateTime;
-        if (start != null) {
-          return _formatDate(start.toLocal()) == targetDate;
+        if (start == null) return false;
+        final isDateMatch = _formatDate(start.toLocal()) == targetDate;
+        if (!isDateMatch) return false;
+
+        if (status != null && status.isNotEmpty) {
+          final expectedStatus = switch (status) {
+            'live' => LiveClassStatus.live,
+            'completed' => LiveClassStatus.completed,
+            'cancelled' => LiveClassStatus.cancelled,
+            _ => LiveClassStatus.upcoming,
+          };
+          return c.status == expectedStatus;
         }
+
         return true;
       }).toList();
-
-      if (matchingDate.isNotEmpty) {
-        return matchingDate;
-      }
-      return cached;
     }
   }
 
@@ -99,10 +105,14 @@ class LiveClassesRepository {
     };
     return LiveClassDto(
       id: r.id,
-      subject: r.subject,
+      title: r.topic,
       topic: r.topic,
+      courseName: r.subject,
+      subject: r.subject,
+      start: r.time,
       time: r.time,
-      faculty: r.faculty,
+      faculty: r.faculty.isNotEmpty ? r.faculty : null,
+      provider: r.faculty.isNotEmpty ? r.faculty : null,
       status: statusVal,
       durationMinutes: r.durationMinutes,
     );
@@ -117,10 +127,10 @@ class LiveClassesRepository {
     };
     return LiveClassesTableCompanion.insert(
       id: dto.id,
-      subject: dto.subject,
-      topic: dto.topic,
-      time: dto.time,
-      faculty: dto.faculty ?? '',
+      subject: dto.courseName.isNotEmpty ? dto.courseName : dto.subject,
+      topic: dto.title.isNotEmpty ? dto.title : dto.topic,
+      time: dto.start.isNotEmpty ? dto.start : dto.time,
+      faculty: dto.faculty ?? dto.provider ?? '',
       status: statusStr,
       durationMinutes: Value(dto.durationMinutes),
     );
