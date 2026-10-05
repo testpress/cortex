@@ -386,6 +386,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
           else
             _buildVideoSection(design),
           Container(
+            width: double.infinity,
             color: design.colors.card,
             child: _buildTabBar(context, design),
           ),
@@ -608,10 +609,11 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
   }
 
   Widget _buildTabBar(BuildContext context, DesignConfig design) {
+    final isSingleTab = _activeTabs.length == 1;
     return TabBar(
       controller: _tabController,
-      isScrollable: true,
-      tabAlignment: TabAlignment.start,
+      isScrollable: isSingleTab,
+      tabAlignment: isSingleTab ? TabAlignment.start : TabAlignment.fill,
       dividerColor: design.colors.transparent,
       indicator: BoxDecoration(
         color: design.colors.primaryContainer,
