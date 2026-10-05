@@ -349,6 +349,46 @@ void main() {
       expect(fakeSource.getChaptersCallCount, 0);
     });
   });
+
+  group('CoursesTableDataX', () {
+    CoursesTableData createData(String tags) {
+      return CoursesTableData(
+        id: '1',
+        title: 'Course',
+        colorIndex: 0,
+        chapterCount: 0,
+        totalContents: 0,
+        progress: 0,
+        completedLessons: 0,
+        tags: tags,
+        examsCount: 0,
+        orderIndex: 0,
+        isChaptersSynced: false,
+      );
+    }
+
+    test(
+        'isExamCourse matches exam and exams case-insensitively with or without spaces',
+        () {
+      expect(createData('["exams"]').isExamCourse, isTrue);
+      expect(createData('["exam"]').isExamCourse, isTrue);
+      expect(createData('["Exams"]').isExamCourse, isTrue);
+      expect(createData('[" Exams "]').isExamCourse, isTrue);
+      expect(createData('[" exam "]').isExamCourse, isTrue);
+      expect(createData('["study", "Exams"]').isExamCourse, isTrue);
+      expect(createData('["study"]').isExamCourse, isFalse);
+      expect(createData('[]').isExamCourse, isFalse);
+      expect(createData('').isExamCourse, isFalse);
+    });
+
+    test('isInfoCourse matches info case-insensitively with or without spaces',
+        () {
+      expect(createData('["info"]').isInfoCourse, isTrue);
+      expect(createData('["Info"]').isInfoCourse, isTrue);
+      expect(createData('[" info "]').isInfoCourse, isTrue);
+      expect(createData('["study"]').isInfoCourse, isFalse);
+    });
+  });
 }
 
 class FakeProgressDataSource extends MockDataSource {
