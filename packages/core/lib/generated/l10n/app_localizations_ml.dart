@@ -3528,4 +3528,35 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get pdfPasswordActionOpen => 'തുറക്കുക';
+
+  @override
+  String dashboardLiveClassTodayTime(String timeRange) {
+    return 'ഇന്ന്, $timeRange';
+  }
+
+  @override
+  String dashboardLiveClassStartsAt(String time) {
+    return '$time-ന് ആരംഭിക്കുന്നു';
+  }
+
+  @override
+  String get dashboardLiveClassStatusLiveNow => 'ലൈവ് ഇപ്പോൾ';
+
+  @override
+  String get dashboardLiveClassStatusUpcoming => 'വരാനിരിക്കുന്നത്';
+
+  @override
+  String get dashboardLiveClassStatusCompleted => 'പൂർത്തിയായി';
+
+  @override
+  String get dashboardLiveClassStatusCancelled => 'റദ്ദാക്കി';
+
+  @override
+  String get dashboardLiveClassJoinNow => 'ഇപ്പോൾ ചേരുക';
+
+  @override
+  String get dashboardLiveClassWatchRecording => 'റെക്കോർഡിംഗ് കാണുക';
+
+  @override
+  String get dashboardLiveClassCancelled => 'ഈ ക്ലാസ് റദ്ദാക്കി';
 }

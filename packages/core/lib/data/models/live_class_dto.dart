@@ -6,22 +6,43 @@ enum LiveClassStatus { completed, live, upcoming, cancelled }
 /// Live class DTO — a scheduled or ongoing class session.
 class LiveClassDto {
   final String id;
-  final String subject; // Course name
-  final String topic; // Title
-  final String time; // Start time ISO 8601 string
-  final String faculty; // Provider / Faculty name
+  final String title;
+  final String courseName;
+  final String start;
+  final String? faculty;
+  final String? provider;
   final LiveClassStatus status;
   final int? durationMinutes;
 
   const LiveClassDto({
     required this.id,
-    required this.subject,
-    required this.topic,
-    required this.time,
-    required this.faculty,
+    String? title,
+    String? topic,
+    String? courseName,
+    String? subject,
+    String? start,
+    String? time,
+    this.faculty,
+    this.provider,
     required this.status,
     this.durationMinutes,
-  });
+  }) : title = title ?? topic ?? '',
+       courseName = courseName ?? subject ?? '',
+       start = start ?? time ?? '';
+
+  /// Backward-compatibility aliases
+  String get topic => title;
+  String get subject => courseName;
+  String get time => start;
+
+  /// Parsed start DateTime from ISO 8601 string.
+  DateTime? get startDateTime => DateTime.tryParse(start);
+
+  /// Calculated end DateTime based on [startDateTime] and [durationMinutes].
+  DateTime? get endDateTime =>
+      startDateTime != null && durationMinutes != null && durationMinutes! > 0
+      ? startDateTime!.add(Duration(minutes: durationMinutes!))
+      : null;
 
   factory LiveClassDto.fromJson(Map<String, dynamic> json, String courseName) {
     final statusStr = json['status'] as String? ?? 'upcoming';
@@ -32,22 +53,17 @@ class LiveClassDto {
       _ => LiveClassStatus.upcoming,
     };
 
-    // Store start time as string
     final startTimeStr = json['start'] as String? ?? '';
-
-    // Duration and provider info mapped to faculty column
-    final providerStr = json['provider'] as String? ?? '';
+    final providerStr = json['provider'] as String?;
     final durationInt = json['duration'] as int? ?? 0;
-    final facultyStr = providerStr.isNotEmpty
-        ? (durationInt > 0 ? '$providerStr • $durationInt mins' : providerStr)
-        : (durationInt > 0 ? '$durationInt mins' : '');
 
     return LiveClassDto(
       id: (json['id'] ?? '').toString(),
-      subject: courseName,
-      topic: json['title'] as String? ?? '',
-      time: startTimeStr,
-      faculty: facultyStr,
+      title: json['title'] as String? ?? '',
+      courseName: courseName,
+      start: startTimeStr,
+      faculty: json['faculty'] as String?,
+      provider: providerStr,
       status: statusVal,
       durationMinutes: durationInt > 0 ? durationInt : null,
     );

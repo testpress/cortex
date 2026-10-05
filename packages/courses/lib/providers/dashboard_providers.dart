@@ -14,6 +14,33 @@ Future<void> dashboardBootstrap(Ref ref) async {
   await repository.refreshDashboard();
 }
 
+/// Fetches the single most relevant live class for today — independently of
+/// the main dashboard bootstrap so the rest of the screen never waits on it.
+///
+/// Priority 1 — currently live.
+/// Priority 2 — next upcoming class whose start time is still in the future.
+/// Returns null when there is nothing to show.
+@riverpod
+Future<LiveClassDto?> dashboardLiveClass(Ref ref) async {
+  final repository = await ref.watch(liveClassesRepositoryProvider.future);
+  final classes = await repository.getTodayLiveClasses();
+  if (classes.isEmpty) return null;
+
+  final now = DateTime.now();
+
+  // Priority 1: currently live
+  final liveNow =
+      classes.where((c) => c.status == LiveClassStatus.live).firstOrNull;
+  if (liveNow != null) return liveNow;
+
+  // Priority 2: next upcoming with a start time still in the future
+  return classes.where((c) {
+    if (c.status != LiveClassStatus.upcoming) return false;
+    final startTime = c.startDateTime?.toLocal();
+    return startTime != null && startTime.isAfter(now);
+  }).firstOrNull;
+}
+
 @riverpod
 Future<String> appVersion(Ref ref) async {
   final packageInfo = await PackageInfo.fromPlatform();

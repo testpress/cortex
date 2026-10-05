@@ -14,7 +14,6 @@ export 'widgets/study_momentum_grid.dart';
 export 'widgets/today_snapshot.dart';
 export 'widgets/top_learners_section.dart';
 export 'widgets/promotional_banners.dart';
-export 'widgets/contextual_hero_card.dart';
 export 'screens/chapters_list_page.dart';
 export 'widgets/chapters_filter_tab_bar.dart';
 export 'widgets/chapter_curriculum_item.dart';

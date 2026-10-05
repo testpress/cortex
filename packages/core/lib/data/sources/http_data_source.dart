@@ -273,6 +273,8 @@ class HttpDataSource implements DataSource {
     int page = 1,
     String? status,
     String? ordering,
+    String? listRangeFrom,
+    String? listRangeTo,
   }) async {
     return performNetworkRequest(
       _dio.get(
@@ -281,6 +283,10 @@ class HttpDataSource implements DataSource {
           'page': page,
           if (status != null && status.isNotEmpty) 'status': status,
           if (ordering != null && ordering.isNotEmpty) 'ordering': ordering,
+          if (listRangeFrom != null && listRangeFrom.isNotEmpty)
+            'list_range__from': listRangeFrom,
+          if (listRangeTo != null && listRangeTo.isNotEmpty)
+            'list_range_to': listRangeTo,
         },
       ),
       fromJson: LiveClassDto.fromListResponse,

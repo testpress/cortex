@@ -6268,6 +6268,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get pdfPasswordActionOpen;
+
+  /// No description provided for @dashboardLiveClassTodayTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Today, {timeRange}'**
+  String dashboardLiveClassTodayTime(String timeRange);
+
+  /// No description provided for @dashboardLiveClassStartsAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts at {time}'**
+  String dashboardLiveClassStartsAt(String time);
+
+  /// No description provided for @dashboardLiveClassStatusLiveNow.
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE NOW'**
+  String get dashboardLiveClassStatusLiveNow;
+
+  /// No description provided for @dashboardLiveClassStatusUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'UPCOMING'**
+  String get dashboardLiveClassStatusUpcoming;
+
+  /// No description provided for @dashboardLiveClassStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'COMPLETED'**
+  String get dashboardLiveClassStatusCompleted;
+
+  /// No description provided for @dashboardLiveClassStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'CANCELLED'**
+  String get dashboardLiveClassStatusCancelled;
+
+  /// No description provided for @dashboardLiveClassJoinNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Now'**
+  String get dashboardLiveClassJoinNow;
+
+  /// No description provided for @dashboardLiveClassWatchRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch Recording'**
+  String get dashboardLiveClassWatchRecording;
+
+  /// No description provided for @dashboardLiveClassCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'This class has been cancelled'**
+  String get dashboardLiveClassCancelled;
 }
 
 class _AppLocalizationsDelegate

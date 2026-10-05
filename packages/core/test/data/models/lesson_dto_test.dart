@@ -715,6 +715,42 @@ void main() {
           expect(merged.contentUrl, 'https://example.com/cached.pdf');
         },
       );
+
+      test(
+        'parses live class detail endpoint with status "live" and "join_url"',
+        () {
+          final json = {
+            'id': 111,
+            'title': 'Exam Review Discussion',
+            'start': '2026-10-05T15:42:47+05:30',
+            'end': null,
+            'duration': 60,
+            'status': 'live',
+            'course_id': 3,
+            'meeting_id': '6ac37839213a21dbb899e368',
+            'provider': 'Fermion',
+            'is_chapter_content': true,
+            'detail_url':
+                'https://cortexlms.testpress.in/api/v3/live-classes/contents/111/',
+            'uuid': 'OmZY5wYUGlY',
+            'join_url':
+                'https://cortex.fermion.app/embed/live-session?token=abc',
+            'show_recorded_video': true,
+          };
+
+          final dto = LessonDto.fromJson(json);
+
+          expect(dto.type, LessonType.liveStream);
+          expect(dto.isFermion, true);
+          expect(dto.streamStatus, 'live');
+          expect(dto.isStreamRunning, true);
+          expect(dto.isStreamCompleted, false);
+          expect(
+            dto.contentUrl,
+            'https://cortex.fermion.app/embed/live-session?token=abc',
+          );
+        },
+      );
     });
   });
 }

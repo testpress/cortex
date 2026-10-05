@@ -1312,5 +1312,14 @@
   "pdfPasswordProtectedMessage": "ഈ പ്രമാണം പാസ്‌വേഡ് പരിരക്ഷിതമാണ്. കാണുന്നതിന് പാസ്‌വേഡ് നൽകുക.",
   "pdfPasswordRequiredMessage": "ഈ പ്രമാണം കാണുന്നതിന് ഒരു പാസ്‌വേഡ് ആവശ്യമാണ്.",
   "pdfPasswordIncorrect": "തെറ്റായ പാസ്‌വേഡ്. വീണ്ടും ശ്രമിക്കുക.",
-  "pdfPasswordActionOpen": "തുറക്കുക"
+  "pdfPasswordActionOpen": "തുറക്കുക",
+  "dashboardLiveClassTodayTime": "ഇന്ന്, {timeRange}",
+  "dashboardLiveClassStartsAt": "{time}-ന് ആരംഭിക്കുന്നു",
+  "dashboardLiveClassStatusLiveNow": "ലൈവ് ഇപ്പോൾ",
+  "dashboardLiveClassStatusUpcoming": "വരാനിരിക്കുന്നത്",
+  "dashboardLiveClassStatusCompleted": "പൂർത്തിയായി",
+  "dashboardLiveClassStatusCancelled": "റദ്ദാക്കി",
+  "dashboardLiveClassJoinNow": "ഇപ്പോൾ ചേരുക",
+  "dashboardLiveClassWatchRecording": "റെക്കോർഡിംഗ് കാണുക",
+  "dashboardLiveClassCancelled": "ഈ ക്ലാസ് റദ്ദാക്കി"
 }

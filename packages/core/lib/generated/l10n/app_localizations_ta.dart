@@ -3525,4 +3525,36 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get pdfPasswordActionOpen => 'திறக்கவும்';
+
+  @override
+  String dashboardLiveClassTodayTime(String timeRange) {
+    return 'இன்று, $timeRange';
+  }
+
+  @override
+  String dashboardLiveClassStartsAt(String time) {
+    return '$time-ல் தொடங்குகிறது';
+  }
+
+  @override
+  String get dashboardLiveClassStatusLiveNow => 'நேரலை';
+
+  @override
+  String get dashboardLiveClassStatusUpcoming => 'வரவிருக்கும்';
+
+  @override
+  String get dashboardLiveClassStatusCompleted => 'முடிந்தது';
+
+  @override
+  String get dashboardLiveClassStatusCancelled => 'ரத்து செய்யப்பட்டது';
+
+  @override
+  String get dashboardLiveClassJoinNow => 'இப்போது சேரவும்';
+
+  @override
+  String get dashboardLiveClassWatchRecording => 'பதிவைக் காண்க';
+
+  @override
+  String get dashboardLiveClassCancelled =>
+      'இந்த வகுப்பு ரத்து செய்யப்பட்டுள்ளது';
 }

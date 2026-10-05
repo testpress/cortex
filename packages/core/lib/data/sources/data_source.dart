@@ -64,6 +64,8 @@ abstract class DataSource {
     int page = 1,
     String? status,
     String? ordering,
+    String? listRangeFrom,
+    String? listRangeTo,
   });
 
   /// Fetch all forum categories (global, not course-scoped).

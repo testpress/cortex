@@ -3473,4 +3473,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfPasswordActionOpen => 'Open';
+
+  @override
+  String dashboardLiveClassTodayTime(String timeRange) {
+    return 'Today, $timeRange';
+  }
+
+  @override
+  String dashboardLiveClassStartsAt(String time) {
+    return 'Starts at $time';
+  }
+
+  @override
+  String get dashboardLiveClassStatusLiveNow => 'LIVE NOW';
+
+  @override
+  String get dashboardLiveClassStatusUpcoming => 'UPCOMING';
+
+  @override
+  String get dashboardLiveClassStatusCompleted => 'COMPLETED';
+
+  @override
+  String get dashboardLiveClassStatusCancelled => 'CANCELLED';
+
+  @override
+  String get dashboardLiveClassJoinNow => 'Join Now';
+
+  @override
+  String get dashboardLiveClassWatchRecording => 'Watch Recording';
+
+  @override
+  String get dashboardLiveClassCancelled => 'This class has been cancelled';
 }

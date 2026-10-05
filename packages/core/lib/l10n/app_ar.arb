@@ -1312,5 +1312,14 @@
   "pdfPasswordProtectedMessage": "هذا المستند محمي بكلمة مرور. يرجى إدخال كلمة المرور للعرض.",
   "pdfPasswordRequiredMessage": "مطلوب كلمة مرور لعرض هذا المستند.",
   "pdfPasswordIncorrect": "كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
-  "pdfPasswordActionOpen": "فتح"
+  "pdfPasswordActionOpen": "فتح",
+  "dashboardLiveClassTodayTime": "اليوم، {timeRange}",
+  "dashboardLiveClassStartsAt": "يبدأ في {time}",
+  "dashboardLiveClassStatusLiveNow": "مباشر الآن",
+  "dashboardLiveClassStatusUpcoming": "قادم",
+  "dashboardLiveClassStatusCompleted": "مكتمل",
+  "dashboardLiveClassStatusCancelled": "ملغى",
+  "dashboardLiveClassJoinNow": "انضم الآن",
+  "dashboardLiveClassWatchRecording": "مشاهدة التسجيل",
+  "dashboardLiveClassCancelled": "تم إلغاء هذه الحصة"
 }

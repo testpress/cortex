@@ -24,6 +24,32 @@ final dashboardBootstrapProvider = AutoDisposeFutureProvider<void>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DashboardBootstrapRef = AutoDisposeFutureProviderRef<void>;
+String _$dashboardLiveClassHash() =>
+    r'43c16f39f6ae345a433a624452aec1fed6b587d4';
+
+/// Fetches the single most relevant live class for today — independently of
+/// the main dashboard bootstrap so the rest of the screen never waits on it.
+///
+/// Priority 1 — currently live.
+/// Priority 2 — next upcoming class whose start time is still in the future.
+/// Returns null when there is nothing to show.
+///
+/// Copied from [dashboardLiveClass].
+@ProviderFor(dashboardLiveClass)
+final dashboardLiveClassProvider =
+    AutoDisposeFutureProvider<LiveClassDto?>.internal(
+  dashboardLiveClass,
+  name: r'dashboardLiveClassProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dashboardLiveClassHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DashboardLiveClassRef = AutoDisposeFutureProviderRef<LiveClassDto?>;
 String _$appVersionHash() => r'e8bdf0eb01e50b65eb7931eadc45c32b561fce64';
 
 /// See also [appVersion].

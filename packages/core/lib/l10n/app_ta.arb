@@ -1553,5 +1553,14 @@
   "pdfPasswordProtectedMessage": "இந்த ஆவணம் கடவுச்சொல் மூலம் பாதுகாக்கப்பட்டுள்ளது. பார்க்க கடவுச்சொல்லை உள்ளிடவும்.",
   "pdfPasswordRequiredMessage": "இந்த ஆவணத்தைப் பார்க்க கடவுச்சொல் தேவை.",
   "pdfPasswordIncorrect": "தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.",
-  "pdfPasswordActionOpen": "திறக்கவும்"
+  "pdfPasswordActionOpen": "திறக்கவும்",
+  "dashboardLiveClassTodayTime": "இன்று, {timeRange}",
+  "dashboardLiveClassStartsAt": "{time}-ல் தொடங்குகிறது",
+  "dashboardLiveClassStatusLiveNow": "நேரலை",
+  "dashboardLiveClassStatusUpcoming": "வரவிருக்கும்",
+  "dashboardLiveClassStatusCompleted": "முடிந்தது",
+  "dashboardLiveClassStatusCancelled": "ரத்து செய்யப்பட்டது",
+  "dashboardLiveClassJoinNow": "இப்போது சேரவும்",
+  "dashboardLiveClassWatchRecording": "பதிவைக் காண்க",
+  "dashboardLiveClassCancelled": "இந்த வகுப்பு ரத்து செய்யப்பட்டுள்ளது"
 }

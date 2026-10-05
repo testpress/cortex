@@ -1,12 +1,14 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart' as dto;
+import 'package:courses/courses.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'widgets/dashboard_header_widget.dart';
 import 'widgets/greeting_section_widget.dart';
 import 'widgets/top_carousel_section_widget.dart';
-import 'widgets/contextual_hero_section_widget.dart';
+import 'widgets/dashboard_live_section_card.dart';
 import 'widgets/today_schedule_section_widget.dart';
 import 'widgets/lesson_cards_section_wrapper.dart';
 import 'widgets/announcements_section_widget.dart';
@@ -60,6 +62,15 @@ class _HomeLayout extends ConsumerWidget {
                 semanticsLabel: L10n.of(context).pullToRefresh,
                 onRefresh: () async {
                   try {
+                    // Trigger live classes refresh in the background without blocking
+                    // the screen's pull-to-refresh indicator, which completes as soon
+                    // as the primary dashboard data is updated.
+                    unawaited(
+                      ref
+                          .refresh(dashboardLiveClassProvider.future)
+                          .catchError((_) => null),
+                    );
+
                     final repo = await ref.read(
                       dto.dashboardRepositoryProvider.future,
                     );
@@ -79,8 +90,7 @@ class _HomeLayout extends ConsumerWidget {
                   children: [
                     const GreetingSectionWidget(),
                     const TopCarouselSectionWidget(),
-                    if (dto.AppConfig.showContextualHero)
-                      const ContextualHeroSectionWidget(),
+                    const DashboardLiveSectionCard(),
                     if (dto.AppConfig.showTodaySchedule)
                       const TodayScheduleSectionWidget(),
                     const LessonCardsSectionWrapper(),
