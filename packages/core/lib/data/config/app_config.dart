@@ -81,11 +81,6 @@ class AppConfig {
     defaultValue: false,
   );
 
-  static const bool showContextualHero = bool.fromEnvironment(
-    'SHOW_CONTEXTUAL_HERO',
-    defaultValue: false,
-  );
-
   static const bool showStudyCategoryButtons = bool.fromEnvironment(
     'SHOW_STUDY_CATEGORY_BUTTONS',
     defaultValue: false,

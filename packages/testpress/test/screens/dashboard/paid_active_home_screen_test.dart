@@ -238,5 +238,44 @@ void main() {
         expect(find.byType(HeroBannerCarousel), findsNothing);
       },
     );
+
+    testWidgets(
+      'pull-to-refresh triggers refresh of dashboardLiveClassProvider',
+      (tester) async {
+        var liveClassCallCount = 0;
+        final overrides = [
+          dashboardBootstrapProvider.overrideWith((ref) => null),
+          heroBannersProvider.overrideWith(
+            (ref) => Stream.value(<DashboardBannerDto>[]),
+          ),
+          todayClassesProvider.overrideWith((ref) => <LiveClassDto>[]),
+          pendingAssignmentsProvider.overrideWith((ref) => <AssignmentDto>[]),
+          upcomingTestsProvider.overrideWith((ref) => <ScheduledTest>[]),
+          dashboardLiveClassProvider.overrideWith((ref) async {
+            liveClassCallCount++;
+            return null;
+          }),
+        ];
+
+        await tester.pumpWidget(
+          wrap(const PaidActiveHomeScreen(), overrides: overrides),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        final initialCount = liveClassCallCount;
+
+        // Trigger refresh via the SingleChildScrollView inside AppRefreshIndicator
+        await tester.fling(
+          find.byType(SingleChildScrollView),
+          const Offset(0.0, 300.0),
+          1000.0,
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(liveClassCallCount, greaterThan(initialCount));
+      },
+    );
   });
 }

@@ -1453,14 +1453,16 @@ class LessonPaginationController {
 }
 
 extension CoursesTableDataX on CoursesTableData {
+  static final _examTagPattern = RegExp(r'"\s*exams?\s*"');
+  static final _infoTagPattern = RegExp(r'"\s*info\s*"');
+
   String get devicesStr => (allowedDevices ?? '').toLowerCase();
   String get tagsStr => (tags ?? '').toLowerCase();
 
   bool get hasMobileAccess => devicesStr.contains('mobile');
   bool get isEmptyTags => tagsStr.isEmpty || tagsStr == '[]';
 
-  bool get isExamCourse =>
-      tagsStr.contains('"exams"') || (tagsStr.contains('"exam"'));
+  bool get isExamCourse => _examTagPattern.hasMatch(tagsStr);
 
-  bool get isInfoCourse => tagsStr.contains('"info"');
+  bool get isInfoCourse => _infoTagPattern.hasMatch(tagsStr);
 }

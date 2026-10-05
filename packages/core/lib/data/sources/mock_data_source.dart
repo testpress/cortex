@@ -834,6 +834,8 @@ class MockDataSource implements DataSource {
     int page = 1,
     String? status,
     String? ordering,
+    String? listRangeFrom,
+    String? listRangeTo,
   }) async {
     final list = const [
       LiveClassDto(

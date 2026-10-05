@@ -3473,4 +3473,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pdfPasswordActionOpen => 'فتح';
+
+  @override
+  String dashboardLiveClassTodayTime(String timeRange) {
+    return 'اليوم، $timeRange';
+  }
+
+  @override
+  String dashboardLiveClassStartsAt(String time) {
+    return 'يبدأ في $time';
+  }
+
+  @override
+  String get dashboardLiveClassStatusLiveNow => 'مباشر الآن';
+
+  @override
+  String get dashboardLiveClassStatusUpcoming => 'قادم';
+
+  @override
+  String get dashboardLiveClassStatusCompleted => 'مكتمل';
+
+  @override
+  String get dashboardLiveClassStatusCancelled => 'ملغى';
+
+  @override
+  String get dashboardLiveClassJoinNow => 'انضم الآن';
+
+  @override
+  String get dashboardLiveClassWatchRecording => 'مشاهدة التسجيل';
+
+  @override
+  String get dashboardLiveClassCancelled => 'تم إلغاء هذه الحصة';
 }

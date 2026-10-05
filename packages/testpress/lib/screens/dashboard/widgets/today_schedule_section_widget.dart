@@ -26,7 +26,7 @@ class TodayScheduleSectionWidget extends ConsumerWidget {
               id: d.id,
               subject: d.subject,
               time: d.time,
-              faculty: d.faculty,
+              faculty: d.faculty ?? '',
               status: switch (d.status) {
                 dto.LiveClassStatus.live => ClassStatus.live,
                 dto.LiveClassStatus.upcoming => ClassStatus.upcoming,

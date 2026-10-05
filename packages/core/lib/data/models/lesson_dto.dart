@@ -114,10 +114,16 @@ class LessonDto {
       liveStreamProvider?.toLowerCase().contains('fermion') ?? false;
 
   /// Whether this live stream is completed/ended.
-  bool get isStreamCompleted => streamStatus?.toLowerCase() == 'completed';
+  bool get isStreamCompleted {
+    final s = streamStatus?.toLowerCase();
+    return s == 'completed' || s == 'ended';
+  }
 
   /// Whether this live stream is currently running.
-  bool get isStreamRunning => streamStatus?.toLowerCase() == 'running';
+  bool get isStreamRunning {
+    final s = streamStatus?.toLowerCase();
+    return s == 'running' || s == 'live';
+  }
 
   /// Checks if the lesson has enough metadata to be rendered without a specialized loader.
   bool get isComplete {
@@ -684,7 +690,9 @@ class LessonDto {
     // stays a real URL (or null).
     final String? fermionUrl =
         (liveStream?['stream_url'] ??
+                liveStream?['join_url'] ??
                 json['stream_url'] ??
+                json['join_url'] ??
                 json['content_url'] ??
                 json['url'])
             as String?;
@@ -875,17 +883,17 @@ class LessonDto {
       hasEnded: json['has_ended'] as bool? ?? false,
       isRunning:
           json['is_running'] as bool? ??
-          [
-                'running',
-                'live',
-              ].contains(liveStream?['status']?.toString().toLowerCase()) ||
+          ['running', 'live'].contains(
+                (liveStream?['status'] ?? json['status'])
+                    ?.toString()
+                    .toLowerCase(),
+              ) ||
               (json['has_started'] as bool? ?? false),
       isUpcoming:
           json['is_upcoming'] as bool? ??
-          [
-            'upcoming',
-            'scheduled',
-          ].contains(liveStream?['status']?.toString().toLowerCase()),
+          ['upcoming', 'scheduled'].contains(
+            (liveStream?['status'] ?? json['status'])?.toString().toLowerCase(),
+          ),
       hasAttempts: (() {
         final total = (json['attempts_count'] as num?)?.toInt() ?? 0;
         final paused =

@@ -84,24 +84,23 @@ class ClassCard extends StatelessWidget {
                     ),
                   ),
                 SizedBox(height: design.spacing.sm),
-                Row(
-                  children: [
-                    AppText.bodySmall(
-                      classItem.faculty,
+                if (classItem.faculty != null &&
+                    classItem.faculty!.isNotEmpty) ...[
+                  AppText.bodySmall(
+                    classItem.faculty!,
+                    color: design.colors.textTertiary,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: AppText.bodySmall(
+                      "•",
                       color: design.colors.textTertiary,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: AppText.bodySmall(
-                        "•",
-                        color: design.colors.textTertiary,
-                      ),
-                    ),
-                    AppText.bodySmall(
-                      classItem.time,
-                      color: design.colors.textTertiary,
-                    ),
-                  ],
+                  ),
+                ],
+                AppText.bodySmall(
+                  classItem.time,
+                  color: design.colors.textTertiary,
                 ),
               ],
             ),

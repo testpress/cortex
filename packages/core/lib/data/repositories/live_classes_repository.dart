@@ -14,23 +14,7 @@ class LiveClassesRepository {
   /// Watch all cached live classes from the local database.
   Stream<List<LiveClassDto>> watchLiveClasses() {
     return _db.watchAllLiveClasses().map(
-      (rows) => rows.map((r) {
-        final statusVal = switch (r.status) {
-          'live' => LiveClassStatus.live,
-          'completed' => LiveClassStatus.completed,
-          'cancelled' => LiveClassStatus.cancelled,
-          _ => LiveClassStatus.upcoming,
-        };
-        return LiveClassDto(
-          id: r.id,
-          subject: r.subject,
-          topic: r.topic,
-          time: r.time,
-          faculty: r.faculty,
-          status: statusVal,
-          durationMinutes: r.durationMinutes,
-        );
-      }).toList(),
+      (rows) => rows.map(_rowToDto).toList(),
     );
   }
 
@@ -38,31 +22,20 @@ class LiveClassesRepository {
   Future<PaginatedResponseDto<LiveClassDto>> fetchLiveClasses({
     int page = 1,
     String? status,
+    String? ordering = '-start',
     bool clearCache = false,
+    String? listRangeFrom,
+    String? listRangeTo,
   }) async {
     final response = await _source.getLiveClasses(
       page: page,
       status: status,
-      ordering: '-start',
+      ordering: ordering,
+      listRangeFrom: listRangeFrom,
+      listRangeTo: listRangeTo,
     );
 
-    final companions = response.results.map((dto) {
-      final statusStr = switch (dto.status) {
-        LiveClassStatus.live => 'live',
-        LiveClassStatus.completed => 'completed',
-        LiveClassStatus.cancelled => 'cancelled',
-        _ => 'upcoming',
-      };
-      return LiveClassesTableCompanion.insert(
-        id: dto.id,
-        subject: dto.subject,
-        topic: dto.topic,
-        time: dto.time,
-        faculty: dto.faculty,
-        status: statusStr,
-        durationMinutes: Value(dto.durationMinutes),
-      );
-    }).toList();
+    final companions = response.results.map(_dtoToCompanion).toList();
 
     if (clearCache && page == 1) {
       // Clear all items before writing page 1 to invalidate stale local data
@@ -75,5 +48,98 @@ class LiveClassesRepository {
     }
 
     return response;
+  }
+
+  Future<List<LiveClassDto>> getTodayLiveClasses({
+    String? date,
+    String? status,
+  }) async {
+    final targetDate = date ?? _formatDate(DateTime.now());
+    try {
+      final response = await _source.getLiveClasses(
+        page: 1,
+        status: status,
+        ordering: 'start',
+        listRangeFrom: targetDate,
+        listRangeTo: targetDate,
+      );
+
+      final companions = response.results.map(_dtoToCompanion).toList();
+      if (companions.isNotEmpty) {
+        await _db.upsertLiveClasses(companions);
+      }
+
+      return response.results;
+    } catch (_) {
+      // Fallback to local DB cache when offline
+      final cachedRows = await _db.select(_db.liveClassesTable).get();
+      final cached = cachedRows.map(_rowToDto).toList();
+
+      return cached.where((c) {
+        final start = c.startDateTime;
+        if (start == null) return false;
+        final isDateMatch = _formatDate(start.toLocal()) == targetDate;
+        if (!isDateMatch) return false;
+
+        if (status != null && status.isNotEmpty) {
+          final expectedStatus = switch (status) {
+            'live' => LiveClassStatus.live,
+            'completed' => LiveClassStatus.completed,
+            'cancelled' => LiveClassStatus.cancelled,
+            _ => LiveClassStatus.upcoming,
+          };
+          return c.status == expectedStatus;
+        }
+
+        return true;
+      }).toList();
+    }
+  }
+
+  static LiveClassDto _rowToDto(LiveClassesTableData r) {
+    final statusVal = switch (r.status) {
+      'live' => LiveClassStatus.live,
+      'completed' => LiveClassStatus.completed,
+      'cancelled' => LiveClassStatus.cancelled,
+      _ => LiveClassStatus.upcoming,
+    };
+    return LiveClassDto(
+      id: r.id,
+      title: r.topic,
+      topic: r.topic,
+      courseName: r.subject,
+      subject: r.subject,
+      start: r.time,
+      time: r.time,
+      faculty: r.faculty.isNotEmpty ? r.faculty : null,
+      provider: r.faculty.isNotEmpty ? r.faculty : null,
+      status: statusVal,
+      durationMinutes: r.durationMinutes,
+    );
+  }
+
+  static LiveClassesTableCompanion _dtoToCompanion(LiveClassDto dto) {
+    final statusStr = switch (dto.status) {
+      LiveClassStatus.live => 'live',
+      LiveClassStatus.completed => 'completed',
+      LiveClassStatus.cancelled => 'cancelled',
+      _ => 'upcoming',
+    };
+    return LiveClassesTableCompanion.insert(
+      id: dto.id,
+      subject: dto.courseName.isNotEmpty ? dto.courseName : dto.subject,
+      topic: dto.title.isNotEmpty ? dto.title : dto.topic,
+      time: dto.start.isNotEmpty ? dto.start : dto.time,
+      faculty: dto.faculty ?? dto.provider ?? '',
+      status: statusStr,
+      durationMinutes: Value(dto.durationMinutes),
+    );
+  }
+
+  static String _formatDate(DateTime dt) {
+    final year = dt.year.toString().padLeft(4, '0');
+    final month = dt.month.toString().padLeft(2, '0');
+    final day = dt.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
   }
 }

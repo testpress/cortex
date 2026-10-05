@@ -1770,5 +1770,28 @@
   "pdfPasswordProtectedMessage": "This document is password protected. Please enter the password to view.",
   "pdfPasswordRequiredMessage": "A password is required to view this document.",
   "pdfPasswordIncorrect": "Incorrect password. Please try again.",
-  "pdfPasswordActionOpen": "Open"
+  "pdfPasswordActionOpen": "Open",
+  "dashboardLiveClassTodayTime": "Today, {timeRange}",
+  "@dashboardLiveClassTodayTime": {
+    "placeholders": {
+      "timeRange": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardLiveClassStartsAt": "Starts at {time}",
+  "@dashboardLiveClassStartsAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardLiveClassStatusLiveNow": "LIVE NOW",
+  "dashboardLiveClassStatusUpcoming": "UPCOMING",
+  "dashboardLiveClassStatusCompleted": "COMPLETED",
+  "dashboardLiveClassStatusCancelled": "CANCELLED",
+  "dashboardLiveClassJoinNow": "Join Now",
+  "dashboardLiveClassWatchRecording": "Watch Recording",
+  "dashboardLiveClassCancelled": "This class has been cancelled"
 }
