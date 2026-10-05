@@ -179,11 +179,14 @@ class CourseRepository {
         final idsToDelete = allCourses
             .where((row) {
               final dto = rowToCourseDto(row);
-              final isExam = dto.tags.any((t) => t.toLowerCase() == 'exams') ||
-                  (dto.tags.isEmpty && dto.examsCount > 0);
-              final isInfo = dto.tags.any((t) => t.toLowerCase() == 'info');
+              final isExam = dto.tags.any((t) {
+                final tag = t.trim().toLowerCase();
+                return tag == 'exam' || tag == 'exams';
+              });
+              final isInfo =
+                  dto.tags.any((t) => t.trim().toLowerCase() == 'info');
 
-              if (tags == 'exams') return isExam;
+              if (tags == 'exams' || tags == 'exam') return isExam;
               if (tags == 'info' || tags == 'info_page') return isInfo;
               if (tags == null) return !isExam && !isInfo;
               return dto.tags
@@ -1457,7 +1460,7 @@ extension CoursesTableDataX on CoursesTableData {
   bool get isEmptyTags => tagsStr.isEmpty || tagsStr == '[]';
 
   bool get isExamCourse =>
-      tagsStr.contains('"exams"') || (isEmptyTags && examsCount > 0);
+      tagsStr.contains('"exams"') || (tagsStr.contains('"exam"'));
 
   bool get isInfoCourse => tagsStr.contains('"info"');
 }
