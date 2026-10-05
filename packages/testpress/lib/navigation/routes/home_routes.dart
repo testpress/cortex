@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:discussions/discussions.dart';
+import '../../screens/dashboard/dashboard_lessons_list_screen.dart';
 import '../../screens/dashboard/paid_active_home_screen.dart';
 
 class HomeRoutes {
@@ -11,6 +12,42 @@ class HomeRoutes {
       path: '/home',
       builder: (context, state) => const PaidActiveHomeScreen(),
       routes: [
+        GoRoute(
+          path: 'lessons',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) {
+            final typeParam = state.uri.queryParameters['type'];
+            final sectionType = DashboardSectionType.values.firstWhere(
+              (e) => e.name == typeParam,
+              orElse: () => DashboardSectionType.resumeLearning,
+            );
+            final l10n = L10n.of(context);
+            final titleParam = state.uri.queryParameters['title'];
+            final title = (titleParam != null && titleParam.isNotEmpty)
+                ? titleParam
+                : switch (sectionType) {
+                    DashboardSectionType.resumeLearning =>
+                      l10n.dashboardResumeTitle,
+                    DashboardSectionType.whatsNew =>
+                      l10n.dashboardWhatsNewTitle,
+                    DashboardSectionType.completedLearning =>
+                      l10n.dashboardRecentlyCompletedTitle,
+                  };
+            final isCompleted =
+                state.uri.queryParameters['isCompleted'] == 'true' ||
+                sectionType == DashboardSectionType.completedLearning;
+            final initialLessons = state.extra is List<DashboardContentDto>
+                ? state.extra as List<DashboardContentDto>
+                : null;
+
+            return DashboardLessonsListScreen(
+              title: title,
+              sectionType: sectionType,
+              initialLessons: initialLessons,
+              isCompleted: isCompleted,
+            );
+          },
+        ),
         GoRoute(
           path: 'discussions/forum',
           parentNavigatorKey: rootNavigatorKey,
