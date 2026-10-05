@@ -14,11 +14,13 @@ const _skeletonLesson = DashboardContentDto(
 class LessonCardWidget extends StatefulWidget {
   final DashboardContentDto lesson;
   final bool isCompleted;
+  final bool isResume;
 
   const LessonCardWidget({
     super.key,
     required this.lesson,
     this.isCompleted = false,
+    this.isResume = false,
   });
 
   @override
@@ -36,7 +38,14 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
     final design = Design.of(context);
     final lesson = widget.lesson;
     final isCompleted = widget.isCompleted;
+    final isResume =
+        widget.isResume ||
+        lesson.sectionType == DashboardSectionType.resumeLearning;
     final textMuted = design.colors.textSecondary.withValues(alpha: 0.7);
+    final duration = lesson.totalDuration ?? lesson.remainingDuration;
+    final hasChapter =
+        lesson.chapterTitle != null && lesson.chapterTitle!.isNotEmpty;
+    final hasDuration = duration != null && duration.isNotEmpty;
 
     return Opacity(
       opacity: 1.0,
@@ -125,7 +134,9 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
             // Content Area
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                padding: isResume
+                    ? const EdgeInsets.fromLTRB(12, 10, 12, 10)
+                    : const EdgeInsets.fromLTRB(12, 9, 12, 9),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -141,16 +152,51 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              if (lesson.chapterTitle != null) ...[
-                                const SizedBox(height: 1),
-                                AppText.cardSubtitle(
-                                  lesson.chapterTitle!,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
+                              if (isResume) ...[
+                                if (hasChapter) ...[
+                                  const SizedBox(height: 1),
+                                  AppText.cardSubtitle(
+                                    lesson.chapterTitle!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
-                                ),
+                                ],
+                              ] else ...[
+                                if (hasChapter || hasDuration) ...[
+                                  const SizedBox(height: 1),
+                                  Row(
+                                    children: [
+                                      if (hasChapter)
+                                        Flexible(
+                                          child: AppText.cardSubtitle(
+                                            lesson.chapterTitle!,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      if (hasChapter && hasDuration) ...[
+                                        AppText.cardSubtitle(
+                                          ' • ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: textMuted,
+                                          ),
+                                        ),
+                                      ],
+                                      if (hasDuration)
+                                        AppText.cardCaption(
+                                          duration,
+                                          color: textMuted,
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ],
                             ],
                           ),
@@ -162,39 +208,44 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    // Metadata
-                    if (lesson.remainingDuration != null ||
-                        lesson.totalDuration != null) ...[
-                      AppText.cardCaption(
-                        (lesson.remainingDuration != null && !isCompleted)
-                            ? '${lesson.remainingDuration!} left'
-                            : (lesson.totalDuration ??
-                                  lesson.remainingDuration!),
-                        color: textMuted,
-                      ),
-                    ],
-                    // Progress Bar
-                    if (lesson.progress != null && !isCompleted) ...[
-                      const SizedBox(height: 10),
-                      Container(
-                        height: 4,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: design.colors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(2),
+                    if (isResume) ...[
+                      // Metadata
+                      if (lesson.remainingDuration != null ||
+                          lesson.totalDuration != null) ...[
+                        const SizedBox(height: 6),
+                        AppText.cardCaption(
+                          (lesson.remainingDuration != null && !isCompleted)
+                              ? '${lesson.remainingDuration!} left'
+                              : (lesson.totalDuration ??
+                                    lesson.remainingDuration!),
+                          color: textMuted,
                         ),
-                        alignment: Alignment.centerLeft,
-                        child: FractionallySizedBox(
-                          widthFactor: (lesson.progress! / 100).clamp(0.0, 1.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: design.colors.primary,
-                              borderRadius: BorderRadius.circular(2),
+                      ],
+                      // Progress Bar
+                      if (lesson.progress != null && !isCompleted) ...[
+                        const SizedBox(height: 10),
+                        Container(
+                          height: 4,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: design.colors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          alignment: Alignment.centerLeft,
+                          child: FractionallySizedBox(
+                            widthFactor: (lesson.progress! / 100).clamp(
+                              0.0,
+                              1.0,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: design.colors.primary,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
                   ],
                 ),
@@ -208,14 +259,17 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
 }
 
 class LessonCardsSectionWidget extends StatelessWidget {
-  static const double _cardContentHeightWithMetadata = 90.0;
-  static const double _cardContentHeightCompact = 65.0;
+  static const double _cardContentHeightWithMetadata = 80.0;
+  static const double _cardContentHeightCompact = 50.0;
   static const double _carouselBottomMargin = 16.0;
 
   final List<DashboardContentDto> resumeLessons;
   final List<DashboardContentDto> whatsNewLessons;
   final List<DashboardContentDto> recentlyCompletedLessons;
   final bool isLoading;
+  final VoidCallback? onResumeViewAll;
+  final VoidCallback? onWhatsNewViewAll;
+  final VoidCallback? onRecentlyCompletedViewAll;
 
   const LessonCardsSectionWidget({
     super.key,
@@ -223,6 +277,9 @@ class LessonCardsSectionWidget extends StatelessWidget {
     required this.whatsNewLessons,
     required this.recentlyCompletedLessons,
     this.isLoading = false,
+    this.onResumeViewAll,
+    this.onWhatsNewViewAll,
+    this.onRecentlyCompletedViewAll,
   });
 
   Widget _buildCarouselSection(
@@ -230,12 +287,15 @@ class LessonCardsSectionWidget extends StatelessWidget {
     String title,
     List<DashboardContentDto> lessons, {
     bool isCompleted = false,
+    bool isResume = false,
     bool showMetadata = true,
+    VoidCallback? onViewAll,
   }) {
     final isSkeleton = isLoading && lessons.isEmpty;
     if (lessons.isEmpty && !isSkeleton) return const SizedBox.shrink();
 
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Skeletonizer(
       enabled: isSkeleton,
@@ -259,7 +319,23 @@ class LessonCardsSectionWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
-                child: AppText.title(title),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText.title(title),
+                    AppSemantics.button(
+                      label: l10n.viewAllAction,
+                      onTap: onViewAll,
+                      child: GestureDetector(
+                        onTap: onViewAll,
+                        child: AppText.labelSmall(
+                          l10n.viewAllAction,
+                          color: design.colors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: design.spacing.sm),
               AppCarousel(
@@ -287,6 +363,7 @@ class LessonCardsSectionWidget extends StatelessWidget {
                       child: LessonCardWidget(
                         lesson: lesson,
                         isCompleted: isCompleted,
+                        isResume: isResume,
                       ),
                     ),
                   );
@@ -312,14 +389,18 @@ class LessonCardsSectionWidget extends StatelessWidget {
             context,
             l10n.dashboardResumeTitle,
             resumeLessons,
+            isResume: true,
             showMetadata: true,
+            onViewAll: onResumeViewAll,
           ),
         if (AppConfig.showWhatsNewSection)
           _buildCarouselSection(
             context,
             l10n.dashboardWhatsNewTitle,
             whatsNewLessons,
+            isResume: false,
             showMetadata: false,
+            onViewAll: onWhatsNewViewAll,
           ),
         if (AppConfig.showRecentlyCompletedSection)
           _buildCarouselSection(
@@ -327,7 +408,9 @@ class LessonCardsSectionWidget extends StatelessWidget {
             l10n.dashboardRecentlyCompletedTitle,
             recentlyCompletedLessons,
             isCompleted: true,
+            isResume: false,
             showMetadata: false,
+            onViewAll: onRecentlyCompletedViewAll,
           ),
       ],
     );
