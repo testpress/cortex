@@ -116,7 +116,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
         child: AspectRatio(
-          aspectRatio: 16 / 9,
+          aspectRatio: 5 / 2,
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(design.radius.xl)),
             child: isSkeleton
@@ -159,7 +159,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                                   banner.imageUrl.isNotEmpty
                                       ? CachedNetworkImage(
                                           imageUrl: banner.imageUrl,
-                                          fit: BoxFit.cover,
+                                          fit: BoxFit.contain,
                                           fadeInDuration: Duration.zero,
                                           filterQuality: FilterQuality.high,
                                           memCacheWidth: 800,
