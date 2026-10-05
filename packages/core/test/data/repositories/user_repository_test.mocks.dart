@@ -432,12 +432,16 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
     int? page = 1,
     String? status,
     String? ordering,
+    String? listRangeFrom,
+    String? listRangeTo,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getLiveClasses, [], {
               #page: page,
               #status: status,
               #ordering: ordering,
+              #listRangeFrom: listRangeFrom,
+              #listRangeTo: listRangeTo,
             }),
             returnValue:
                 _i3.Future<_i2.PaginatedResponseDto<_i2.LiveClassDto>>.value(
@@ -447,6 +451,8 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
                       #page: page,
                       #status: status,
                       #ordering: ordering,
+                      #listRangeFrom: listRangeFrom,
+                      #listRangeTo: listRangeTo,
                     }),
                   ),
                 ),
@@ -458,6 +464,8 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
                       #page: page,
                       #status: status,
                       #ordering: ordering,
+                      #listRangeFrom: listRangeFrom,
+                      #listRangeTo: listRangeTo,
                     }),
                   ),
                 ),
@@ -1488,6 +1496,25 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
                 ),
           )
           as _i3.Future<_i2.PaginatedLoginActivityDto>);
+
+  @override
+  _i3.Future<String> getPresignedSsoUrl() =>
+      (super.noSuchMethod(
+            Invocation.method(#getPresignedSsoUrl, []),
+            returnValue: _i3.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#getPresignedSsoUrl, []),
+              ),
+            ),
+            returnValueForMissingStub: _i3.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#getPresignedSsoUrl, []),
+              ),
+            ),
+          )
+          as _i3.Future<String>);
 
   @override
   _i3.Future<void> registerDeviceToken({

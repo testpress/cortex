@@ -3,30 +3,31 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LiveClassDto.fromJson', () {
-    test(
-      'parses properties and derives faculty string with provider and duration',
-      () {
-        final json = {
-          'id': 1720,
-          'title': 'Demo Class',
-          'start': '2021-04-16T13:24:45.972388+05:30',
-          'status': 'live',
-          'provider': 'Zoom',
-          'duration': 45,
-        };
+    test('parses properties correctly including provider and duration', () {
+      final json = {
+        'id': 1720,
+        'title': 'Demo Class',
+        'start': '2021-04-16T13:24:45.972388+05:30',
+        'status': 'live',
+        'provider': 'Zoom',
+        'duration': 45,
+        'faculty': 'Dr. Smith',
+      };
 
-        final dto = LiveClassDto.fromJson(json, 'Physics');
+      final dto = LiveClassDto.fromJson(json, 'Physics');
 
-        expect(dto.id, '1720');
-        expect(dto.topic, 'Demo Class');
-        expect(dto.subject, 'Physics');
-        expect(dto.status, LiveClassStatus.live);
-        expect(dto.durationMinutes, 45);
-        expect(dto.faculty, 'Zoom • 45 mins');
-      },
-    );
+      expect(dto.id, '1720');
+      expect(dto.topic, 'Demo Class');
+      expect(dto.title, 'Demo Class');
+      expect(dto.subject, 'Physics');
+      expect(dto.courseName, 'Physics');
+      expect(dto.status, LiveClassStatus.live);
+      expect(dto.durationMinutes, 45);
+      expect(dto.provider, 'Zoom');
+      expect(dto.faculty, 'Dr. Smith');
+    });
 
-    test('handles null/empty provider and maps duration correctly', () {
+    test('handles null faculty and provider correctly', () {
       final json = {
         'id': 1721,
         'title': 'Another Class',
@@ -40,7 +41,8 @@ void main() {
 
       expect(dto.status, LiveClassStatus.upcoming);
       expect(dto.durationMinutes, 60);
-      expect(dto.faculty, '60 mins');
+      expect(dto.provider, isNull);
+      expect(dto.faculty, isNull);
     });
 
     test('maps cancelled status correctly', () {

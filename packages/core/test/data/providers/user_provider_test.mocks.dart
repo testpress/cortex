@@ -5,10 +5,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:core/data/auth/auth_repository.dart' as _i5;
+import 'package:core/data/auth/auth_repository.dart' as _i6;
 import 'package:core/data/data.dart' as _i2;
 import 'package:core/data/repositories/user_repository.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -116,12 +117,31 @@ class MockUserRepository extends _i1.Mock implements _i3.UserRepository {
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  _i4.Future<String> getPresignedSsoUrl() =>
+      (super.noSuchMethod(
+            Invocation.method(#getPresignedSsoUrl, []),
+            returnValue: _i4.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#getPresignedSsoUrl, []),
+              ),
+            ),
+            returnValueForMissingStub: _i4.Future<String>.value(
+              _i5.dummyValue<String>(
+                this,
+                Invocation.method(#getPresignedSsoUrl, []),
+              ),
+            ),
+          )
+          as _i4.Future<String>);
 }
 
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthRepository extends _i1.Mock implements _i5.AuthRepository {
+class MockAuthRepository extends _i1.Mock implements _i6.AuthRepository {
   @override
   _i4.Future<bool> isUserLoggedIn() =>
       (super.noSuchMethod(
