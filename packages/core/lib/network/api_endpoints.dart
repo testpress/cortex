@@ -17,8 +17,8 @@ class ApiEndpoints {
   static const String userProfile = '/api/v2.5/me/';
   static const String loginActivity = '/api/v2.3/me/login_activity/';
   static const String productCategories = '/api/v2.5/products/categories/';
-  static const String products = '/api/v2.4/products/';
-  static String product(String slug) => '/api/v2.4/products/$slug/';
+  static const String products = '/api/v3/products/';
+  static String product(String slug) => '/api/v3/products/$slug/';
   static const String createOrder = '/api/v3/orders/';
   static String confirmOrder(int orderId) =>
       '/api/v2.4/orders/$orderId/confirm/';

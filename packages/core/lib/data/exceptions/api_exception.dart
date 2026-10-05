@@ -157,6 +157,12 @@ class ApiException implements Exception {
     if (responseData == null) return null;
     if (responseData is String && responseData.trim().isNotEmpty) {
       final trimmed = responseData.trim();
+      // If it's an HTML error page, never extract it as a user-facing error message
+      if (trimmed.startsWith('<!') ||
+          trimmed.toLowerCase().contains('<html') ||
+          trimmed.toLowerCase().contains('<body')) {
+        return null;
+      }
       if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
           (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
         try {

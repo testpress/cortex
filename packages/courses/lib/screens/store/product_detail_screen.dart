@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core/core.dart';
 import '../../widgets/store/product_discount_sheet.dart';
 import '../../widgets/store/product_installment_sheet.dart';
+import '../../widgets/store/product_subscription_sheet.dart';
 import '../../widgets/store/product_expandable_course_card.dart';
 import '../../providers/store_providers.dart';
 import 'package:core/data/data.dart';
@@ -24,9 +25,24 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   bool _isDiscountSheetOpen = false;
   bool _isInstallmentsSheetOpen = false;
+  bool _isSubscriptionSheetOpen = false;
+  bool _hasChosenPlan = false;
   int _selectedSubTabIndex = 0;
+  int? _selectedPlanDetailId;
 
   final TextEditingController _couponController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final allPlanDetails = [
+      for (final p in widget.product.plans) ...p.planDetails
+    ];
+    if (allPlanDetails.length == 1) {
+      _hasChosenPlan = true;
+      _selectedPlanDetailId = allPlanDetails.first.id;
+    }
+  }
 
   @override
   void dispose() {
@@ -42,9 +58,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     required String productSlug,
   }) {
     final l10n = L10n.of(context);
+    final isCoupon = appliedCouponCode != null && appliedCouponCode.isNotEmpty;
     final semanticLabel = savedAmount != null && savedAmount > 0
-        ? '${l10n.storeCouponApplied}. ${l10n.storeYouSaved(savedAmount.toStringAsFixed(2))}'
-        : l10n.storeCouponApplied;
+        ? '${isCoupon ? l10n.storeCouponApplied : "Special discount applied"}. ${l10n.storeYouSaved(savedAmount.toStringAsFixed(2))}'
+        : (isCoupon ? l10n.storeCouponApplied : "Special discount applied");
 
     return AppSemantics.container(
       label: semanticLabel,
@@ -71,46 +88,49 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppText.labelBold(
-                    appliedCouponCode != null && appliedCouponCode.isNotEmpty
+                    isCoupon
                         ? appliedCouponCode.toUpperCase()
-                        : l10n.storeCoupon,
+                        : 'SPECIAL DISCOUNT',
                     color: design.colors.success,
                   ),
                   const SizedBox(height: 2),
                   AppText.caption(
                     savedAmount != null && savedAmount > 0
                         ? l10n.storeYouSaved(savedAmount.toStringAsFixed(2))
-                        : l10n.storeCouponApplied,
+                        : (isCoupon
+                            ? l10n.storeCouponApplied
+                            : 'Special discount applied'),
                     color: design.colors.success,
                   ),
                 ],
               ),
             ),
-            AppSemantics.button(
-              label: L10n.of(context).labelRemove,
-              child: GestureDetector(
-                onTap: () {
-                  ref
-                      .read(
-                          productDiscountNotifierProvider(productSlug).notifier)
-                      .removeCoupon();
-                },
-                behavior: HitTestBehavior.opaque,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 48,
-                    minHeight: 48,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      LucideIcons.xCircle,
-                      size: design.iconSize.md,
-                      color: design.colors.textSecondary,
+            if (isCoupon)
+              AppSemantics.button(
+                label: L10n.of(context).labelRemove,
+                child: GestureDetector(
+                  onTap: () {
+                    ref
+                        .read(productDiscountNotifierProvider(productSlug)
+                            .notifier)
+                        .removeCoupon();
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 48,
+                      minHeight: 48,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.xCircle,
+                        size: design.iconSize.md,
+                        color: design.colors.textSecondary,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -169,19 +189,46 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         .watch(productDiscountNotifierProvider(product.slug).notifier)
         .appliedCouponCode;
 
-    final originalPriceVal = double.tryParse(product.price.replaceAll(',', ''));
+    final allPlanDetails = [for (final p in product.plans) ...p.planDetails];
+    final selectedPlanDetail = _selectedPlanDetailId != null
+        ? allPlanDetails.where((d) => d.id == _selectedPlanDetailId).firstOrNull
+        : (_hasChosenPlan ? allPlanDetails.firstOrNull : null);
+
+    final basePriceStr =
+        selectedPlanDetail != null ? selectedPlanDetail.price : product.price;
+    final strikeThroughStr = selectedPlanDetail != null
+        ? selectedPlanDetail.strikeThroughPrice
+        : product.strikeThroughPrice;
+
+    final originalPriceVal = double.tryParse(basePriceStr.replaceAll(',', ''));
     final discountedVal = discountOrder != null
         ? double.tryParse(discountOrder.total.replaceAll(',', ''))
         : null;
-    final savedAmount = (originalPriceVal != null &&
-            discountedVal != null &&
-            originalPriceVal > discountedVal)
-        ? (originalPriceVal - discountedVal)
-        : null;
+
+    final savedFromItems = () {
+      if (discountOrder != null && discountOrder.orderItems.isNotEmpty) {
+        final item = discountOrder.orderItems.first;
+        final before = double.tryParse(
+            item.priceBeforeDiscounts?.replaceAll(',', '') ?? '');
+        final price = double.tryParse(item.price.replaceAll(',', ''));
+        if (before != null && price != null && before > price) {
+          return before - price;
+        }
+      }
+      return null;
+    }();
+
+    final savedAmount = savedFromItems ??
+        ((originalPriceVal != null &&
+                discountedVal != null &&
+                originalPriceVal > discountedVal)
+            ? (originalPriceVal - discountedVal)
+            : null);
     final matchingPrices =
-        product.prices.where((p) => p.price == product.price).toList();
-    final validityDays =
-        matchingPrices.length == 1 ? matchingPrices.first.validity : null;
+        product.prices.where((p) => p.price == basePriceStr).toList();
+    final validityDays = selectedPlanDetail != null
+        ? selectedPlanDetail.durationInDays
+        : (matchingPrices.length == 1 ? matchingPrices.first.validity : null);
 
     final hasDescription = product.descriptionHtml.isNotEmpty;
     final hasCourse = product.coursesDetails.isNotEmpty;
@@ -243,12 +290,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            if (product.image != null &&
-                                product.image!.isNotEmpty)
+                            if (product.thumbnailUrl != null &&
+                                product.thumbnailUrl!.isNotEmpty)
                               AspectRatio(
                                 aspectRatio: 16 / 9,
                                 child: CachedNetworkImage(
-                                  imageUrl: product.image!,
+                                  imageUrl: product.thumbnailUrl!,
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => Container(
                                     color: design.colors.surfaceVariant,
@@ -274,7 +321,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 children: [
                                   if (discountOrder != null) ...[
                                     AppText.body(
-                                      '₹${product.price}',
+                                      '₹$basePriceStr',
                                       style: TextStyle(
                                         decoration: TextDecoration.lineThrough,
                                         color: design.colors.textSecondary,
@@ -302,17 +349,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         AppText.title(
                                           product.isFree
                                               ? L10n.of(context).free
-                                              : '₹${product.price}',
+                                              : '₹$basePriceStr',
                                           color: design.colors.textPrimary,
                                         ),
                                         if (!product.isFree &&
-                                            product.strikeThroughPrice !=
-                                                null &&
-                                            product.strikeThroughPrice!
-                                                .isNotEmpty) ...[
+                                            strikeThroughStr != null &&
+                                            strikeThroughStr.isNotEmpty) ...[
                                           SizedBox(width: design.spacing.sm),
                                           AppText.body(
-                                            '₹${product.strikeThroughPrice}',
+                                            '₹$strikeThroughStr',
                                             style: TextStyle(
                                               decoration:
                                                   TextDecoration.lineThrough,
@@ -323,6 +368,74 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         ],
                                       ],
                                     ),
+                                  if (allPlanDetails.isNotEmpty &&
+                                      _hasChosenPlan &&
+                                      selectedPlanDetail != null) ...[
+                                    SizedBox(height: design.spacing.md),
+                                    () {
+                                      final durationText = selectedPlanDetail
+                                                      .durationInDays >=
+                                                  365 &&
+                                              selectedPlanDetail
+                                                          .durationInDays %
+                                                      365 ==
+                                                  0
+                                          ? '${selectedPlanDetail.durationInDays ~/ 365} year${selectedPlanDetail.durationInDays > 365 ? 's' : ''}'
+                                          : '${selectedPlanDetail.durationInDays} days';
+                                      return AppSemantics.button(
+                                        label:
+                                            'Selected plan: $durationText. ₹${selectedPlanDetail.price}. Tap to change.',
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _isSubscriptionSheetOpen = true;
+                                            });
+                                          },
+                                          behavior: HitTestBehavior.opaque,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: design.spacing.md,
+                                              vertical: design.spacing.sm,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: design.colors.accent2
+                                                  .withValues(alpha: 0.08),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      design.radius.md),
+                                              border: Border.all(
+                                                color: design.colors.accent2
+                                                    .withValues(alpha: 0.3),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  LucideIcons.checkCircle,
+                                                  size: design.iconSize.sm,
+                                                  color: design.colors.accent2,
+                                                ),
+                                                SizedBox(
+                                                    width: design.spacing.xs),
+                                                AppText.labelBold(
+                                                  '$durationText. ₹${selectedPlanDetail.price}',
+                                                  color: design.colors.accent2,
+                                                ),
+                                                SizedBox(
+                                                    width: design.spacing.xs),
+                                                Icon(
+                                                  LucideIcons.chevronDown,
+                                                  size: design.iconSize.xs,
+                                                  color: design.colors.accent2,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }(),
+                                  ],
                                   SizedBox(height: design.spacing.md),
                                   if (validityDays != null)
                                     Padding(
@@ -429,6 +542,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               label: L10n.of(context).storeHaveDiscountCode,
                               child: GestureDetector(
                                 onTap: () {
+                                  if (allPlanDetails.isNotEmpty &&
+                                      _selectedPlanDetailId == null) {
+                                    final firstPlanId = allPlanDetails.first.id;
+                                    ref
+                                        .read(productDiscountNotifierProvider(
+                                                product.slug)
+                                            .notifier)
+                                        .setSelectedPlanDetailId(firstPlanId);
+                                  }
                                   setState(() {
                                     _isDiscountSheetOpen = true;
                                   });
@@ -445,74 +567,91 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               ),
                             ),
                           const Spacer(),
-                          AppSemantics.button(
-                            label: L10n.of(context).storePayInstallments,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _isInstallmentsSheetOpen = true;
-                                });
-                              },
-                              behavior: HitTestBehavior.opaque,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: design.spacing.xs),
-                                child: AppText.labelBold(
-                                  L10n.of(context).storePayInstallments,
-                                  color: design.colors.accent2,
+                          if (allPlanDetails.isEmpty)
+                            AppSemantics.button(
+                              label: L10n.of(context).storePayInstallments,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isInstallmentsSheetOpen = true;
+                                  });
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: design.spacing.xs),
+                                  child: AppText.labelBold(
+                                    L10n.of(context).storePayInstallments,
+                                    color: design.colors.accent2,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                       SizedBox(height: design.spacing.md),
                       AppButton.primary(
-                        label: (product.buyNowText?.isNotEmpty == true)
-                            ? product.buyNowText!
-                            : L10n.of(context).storeBuyNow,
+                        label: allPlanDetails.isNotEmpty
+                            ? (_hasChosenPlan ? 'Proceed to Buy' : 'Subscribe')
+                            : ((product.buyNowText?.isNotEmpty == true)
+                                ? product.buyNowText!
+                                : L10n.of(context).storeBuyNow),
                         fullWidth: true,
                         backgroundColor: design.colors.accent2,
                         loading: false,
-                        onPressed: () async {
-                          final dataSource = ref.read(dataSourceProvider);
+                        onPressed: (allPlanDetails.isNotEmpty &&
+                                !_hasChosenPlan)
+                            ? () {
+                                setState(() {
+                                  _isSubscriptionSheetOpen = true;
+                                });
+                              }
+                            : () async {
+                                final dataSource = ref.read(dataSourceProvider);
 
-                          final existingOrderId = ref
-                              .read(
-                                  productDiscountNotifierProvider(product.slug)
-                                      .notifier)
-                              .orderId;
+                                final existingOrderId = ref
+                                    .read(productDiscountNotifierProvider(
+                                            product.slug)
+                                        .notifier)
+                                    .orderId;
 
-                          if (!context.mounted) return;
-                          final result = await PaymentProcessingScreen.start(
-                            context,
-                            () => discountOrder != null
-                                ? (discountOrder.status == 'Completed'
-                                    ? Future.value(discountOrder)
-                                    : ref
-                                        .read(storeRepositoryProvider)
-                                        .confirmOrder(discountOrder.id, {}))
-                                : (existingOrderId != null
-                                    ? ref
-                                        .read(storeRepositoryProvider)
-                                        .confirmOrder(existingOrderId, {})
-                                    : ref
-                                        .read(storeRepositoryProvider)
-                                        .createAndConfirmOrder(product.slug)),
-                            dataSource,
-                          );
+                                if (!context.mounted) return;
+                                final result =
+                                    await PaymentProcessingScreen.start(
+                                  context,
+                                  () => discountOrder != null
+                                      ? (discountOrder.status == 'Completed'
+                                          ? Future.value(discountOrder)
+                                          : ref
+                                              .read(storeRepositoryProvider)
+                                              .confirmOrder(
+                                                  discountOrder.id, {}))
+                                      : (existingOrderId != null
+                                          ? ref
+                                              .read(storeRepositoryProvider)
+                                              .confirmOrder(existingOrderId, {})
+                                          : ref
+                                              .read(storeRepositoryProvider)
+                                              .createAndConfirmOrder(
+                                                product.slug,
+                                                planDetailId:
+                                                    _selectedPlanDetailId,
+                                              )),
+                                  dataSource,
+                                );
 
-                          if (!context.mounted) return;
-                          if (result?.status == PaymentResultStatus.success) {
-                            refreshStoreAfterPurchase(ref,
-                                productSlug: product.slug);
+                                if (!context.mounted) return;
+                                if (result?.status ==
+                                    PaymentResultStatus.success) {
+                                  refreshStoreAfterPurchase(ref,
+                                      productSlug: product.slug);
 
-                            final redirect = result?.redirectRoute;
-                            if (redirect != null && context.mounted) {
-                              context.go(redirect);
-                            }
-                          }
-                        },
+                                  final redirect = result?.redirectRoute;
+                                  if (redirect != null && context.mounted) {
+                                    context.go(redirect);
+                                  }
+                                }
+                              },
                       ),
                     ],
                   ),
@@ -532,7 +671,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           child: ProductDiscountSheet(
             productSlug: product.slug,
             product: product,
-            originalPrice: product.price,
+            originalPrice: basePriceStr,
             onClose: () {
               ref
                   .read(productDiscountNotifierProvider(product.slug).notifier)
@@ -547,6 +686,24 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           child: ProductInstallmentSheet(
             product: product,
             onClose: () => setState(() => _isInstallmentsSheetOpen = false),
+          ),
+        ),
+        AppBottomSheet(
+          isOpen: _isSubscriptionSheetOpen,
+          onClose: () => setState(() => _isSubscriptionSheetOpen = false),
+          child: ProductSubscriptionSheet(
+            product: product,
+            initialSelectedPlanDetailId: _selectedPlanDetailId,
+            onPlanSelected: (detailId) {
+              setState(() {
+                _selectedPlanDetailId = detailId;
+                _hasChosenPlan = true;
+              });
+              ref
+                  .read(productDiscountNotifierProvider(product.slug).notifier)
+                  .setSelectedPlanDetailId(detailId);
+            },
+            onClose: () => setState(() => _isSubscriptionSheetOpen = false),
           ),
         ),
       ],

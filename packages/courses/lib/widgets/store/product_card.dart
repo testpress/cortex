@@ -47,9 +47,10 @@ class ProductCard extends StatelessWidget {
                     topLeft: design.radius.card.topLeft,
                     topRight: design.radius.card.topRight,
                   ),
-                  child: product.image != null && product.image!.isNotEmpty
+                  child: product.thumbnailUrl != null &&
+                          product.thumbnailUrl!.isNotEmpty
                       ? CachedNetworkImage(
-                          imageUrl: product.image!,
+                          imageUrl: product.thumbnailUrl!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) =>
                               const _ImagePlaceholder(),

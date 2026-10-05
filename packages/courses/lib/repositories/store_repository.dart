@@ -80,18 +80,33 @@ class StoreRepository {
 
   Future<ProductDto> fetchProductDetail(String slug) async {
     final response = await _source.getProduct(slug);
-    // Optionally update the cache with this detail. Since this returns more detail
-    // (like hasCoupons), we can update the specific product in the cache.
+    // Optionally update the cache with this detail.
     // For now we just return it.
     return response;
   }
 
-  Future<OrderDto> createOrder(String productSlug) async {
-    return _source.createOrder(productSlug);
+  Future<OrderDto> createOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
+    return _source.createOrder(
+      productSlug,
+      planDetailId: planDetailId,
+      installmentPlanId: installmentPlanId,
+    );
   }
 
-  Future<OrderDto> createAndConfirmOrder(String productSlug) async {
-    final createdOrder = await _source.createOrder(productSlug);
+  Future<OrderDto> createAndConfirmOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
+    final createdOrder = await _source.createOrder(
+      productSlug,
+      planDetailId: planDetailId,
+      installmentPlanId: installmentPlanId,
+    );
     if (createdOrder.status == 'Completed') {
       return createdOrder;
     }

@@ -70,6 +70,13 @@ class _ProductInstallmentSheetState
 
                   return plansAsync.when(
                     data: (res) {
+                      if (res.userInstallmentPlans.isNotEmpty) {
+                        return _buildUserOngoingInstallment(
+                          context,
+                          res.userInstallmentPlans.first,
+                          design,
+                        );
+                      }
                       if (res.installmentPlans.isEmpty) {
                         return Padding(
                           padding: EdgeInsets.all(design.spacing.lg),
@@ -331,9 +338,11 @@ class _ProductInstallmentSheetState
                   if (!context.mounted) return;
                   final result = await PaymentProcessingScreen.start(
                     context,
-                    () => ref
-                        .read(storeRepositoryProvider)
-                        .createAndConfirmOrder(widget.product.slug),
+                    () =>
+                        ref.read(storeRepositoryProvider).createAndConfirmOrder(
+                              widget.product.slug,
+                              installmentPlanId: plan.id,
+                            ),
                     dataSource,
                   );
 
@@ -352,6 +361,114 @@ class _ProductInstallmentSheetState
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildUserOngoingInstallment(
+    BuildContext context,
+    UserInstallmentPlanDto active,
+    DesignConfig design,
+  ) {
+    final nextInstallmentNum = active.paidInstallmentCount + 1;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: design.spacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppText.title('Ongoing Installment'),
+                  AppSemantics.button(
+                    label: L10n.of(context).labelClose,
+                    child: GestureDetector(
+                      onTap: widget.onClose,
+                      behavior: HitTestBehavior.opaque,
+                      child: Icon(
+                        LucideIcons.x,
+                        size: design.iconSize.md,
+                        color: design.colors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: design.spacing.sm),
+              Container(
+                padding: EdgeInsets.all(design.spacing.md),
+                decoration: BoxDecoration(
+                  color: design.colors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(design.radius.md),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText.labelBold('Installments Paid'),
+                        AppText.labelBold(
+                          '${active.paidInstallmentCount} Paid',
+                          color: design.colors.success,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: design.spacing.xs),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText.labelBold('Next Due Amount'),
+                        AppText.title(
+                          '₹${active.nextDueAmount}',
+                          color: design.colors.accent2,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: design.spacing.lg),
+        Container(height: 1, color: design.colors.border),
+        Padding(
+          padding: EdgeInsets.fromLTRB(design.spacing.lg, design.spacing.lg,
+              design.spacing.lg, design.spacing.sm),
+          child: AppButton.primary(
+            label:
+                'Pay Next Installment (#$nextInstallmentNum) • ₹${active.nextDueAmount}',
+            fullWidth: true,
+            backgroundColor: design.colors.accent2,
+            loading: false,
+            onPressed: () async {
+              final dataSource = ref.read(dataSourceProvider);
+              if (!context.mounted) return;
+              final result = await PaymentProcessingScreen.start(
+                context,
+                () => ref.read(storeRepositoryProvider).createAndConfirmOrder(
+                      widget.product.slug,
+                      installmentPlanId: active.installmentPlanId,
+                    ),
+                dataSource,
+              );
+              if (!context.mounted) return;
+              if (result?.status == PaymentResultStatus.success) {
+                refreshStoreAfterPurchase(ref,
+                    productSlug: widget.product.slug);
+                final redirect = result?.redirectRoute;
+                if (redirect != null && context.mounted) {
+                  context.go(redirect);
+                }
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }
