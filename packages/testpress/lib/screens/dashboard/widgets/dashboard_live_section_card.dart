@@ -85,6 +85,17 @@ class DashboardLiveSectionCard extends ConsumerWidget {
               : '',
         );
 
+        // ── Semantics ────────────────────────────────────────────────────────
+        final semanticsElements = [
+          statusLabel,
+          liveClass.title,
+          liveClass.courseName,
+          if (liveClass.faculty != null && liveClass.faculty!.trim().isNotEmpty)
+            liveClass.faculty!.trim(),
+          if (todayTimeText.isNotEmpty) todayTimeText,
+        ];
+        final cardSemanticsLabel = semanticsElements.join('. ');
+
         // ── Card ─────────────────────────────────────────────────────────────
         return Padding(
           padding: EdgeInsets.only(
@@ -93,8 +104,7 @@ class DashboardLiveSectionCard extends ConsumerWidget {
             bottom: design.spacing.md,
           ),
           child: AppSemantics.container(
-            label:
-                '${liveClass.title}, ${liveClass.courseName}${liveClass.faculty != null ? ', ${liveClass.faculty}' : ''}${todayTimeText.isNotEmpty ? ', $todayTimeText' : ''}',
+            label: cardSemanticsLabel,
             child: AppCard(
               showFloatingShadow: true,
               child: Column(
@@ -102,7 +112,7 @@ class DashboardLiveSectionCard extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      _buildVideoIcon(design, status),
+                      ExcludeSemantics(child: _buildVideoIcon(design, status)),
                       SizedBox(width: design.spacing.sm),
                       AppText.cardTitle(
                         statusLabel,
@@ -126,10 +136,12 @@ class DashboardLiveSectionCard extends ConsumerWidget {
                     SizedBox(height: design.spacing.sm),
                     Row(
                       children: [
-                        Icon(
-                          LucideIcons.calendar,
-                          size: design.iconSize.sm,
-                          color: design.colors.textPrimary,
+                        ExcludeSemantics(
+                          child: Icon(
+                            LucideIcons.calendar,
+                            size: design.iconSize.sm,
+                            color: design.colors.textPrimary,
+                          ),
                         ),
                         SizedBox(width: design.spacing.sm),
                         AppText.bodySmall(
@@ -269,7 +281,9 @@ class DashboardLiveSectionCard extends ConsumerWidget {
     _ButtonAction a => AppButton(
       label: a.label,
       leading: a.icon != null
-          ? Icon(a.icon, size: d.iconSize.sm, color: a.fg)
+          ? ExcludeSemantics(
+              child: Icon(a.icon, size: d.iconSize.sm, color: a.fg),
+            )
           : null,
       fullWidth: true,
       onPressed: onTap,
@@ -282,7 +296,9 @@ class DashboardLiveSectionCard extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(a.icon, size: d.iconSize.sm, color: a.fg),
+          ExcludeSemantics(
+            child: Icon(a.icon, size: d.iconSize.sm, color: a.fg),
+          ),
           SizedBox(width: d.spacing.sm),
           AppText.cardTitle(a.label, color: a.fg),
         ],
