@@ -3,7 +3,7 @@
 ### Requirement: View Installment Plans
 The system SHALL display available installment plans for a product and SHALL distinguish between a first-time installment enrollment and an active ongoing installment plan.
 
-#### Scenario: Product has installments and user has no active plan
+#### Scenario: Product has installments
 - **WHEN** user views the installment plans sheet and `user_installment_plans` is empty
 - **THEN** system displays the list of available installment plans
 
