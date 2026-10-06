@@ -9,6 +9,7 @@ enum BootstrapState {
   authenticated,
   unauthenticated,
   enforceStudentData,
+  parallelLoginRequired,
   error,
 }
 
@@ -24,6 +25,10 @@ BootstrapState bootstrap(BootstrapRef ref) {
       final enforceRequired = ref.watch(enforceStudentDataRequiredProvider);
       if (enforceRequired) {
         return BootstrapState.enforceStudentData;
+      }
+
+      if (ref.watch(parallelLoginRequiredProvider) != null) {
+        return BootstrapState.parallelLoginRequired;
       }
 
       if (settings.forceStudentData) {

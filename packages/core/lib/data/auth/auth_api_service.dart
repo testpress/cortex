@@ -151,7 +151,9 @@ class AuthApiService {
   ///   If the student's profile is actually incomplete, subsequent API requests
   ///   will still trigger a 302 redirect from the backend, which [AuthInterceptor]
   ///   catches reactively as a secondary line of defense.
-  Future<bool> checkStudentDataCollected() async {
+  Future<bool> checkStudentDataCollected({
+    bool throwOnParallelLogin = false,
+  }) async {
     try {
       final response = await _dio.get(ApiEndpoints.checkStudentDataPermission);
       final data = response.data;
@@ -166,6 +168,11 @@ class AuthApiService {
           return false;
         }
       }
+      if (throwOnParallelLogin &&
+          error.response?.statusCode == 403 &&
+          _isParallelLoginRestriction(error.response?.data)) {
+        throw const ParallelLoginException();
+      }
       _sentryService.captureException(
         error,
         stackTrace: stackTrace,
@@ -175,6 +182,12 @@ class AuthApiService {
       // Subsequent API calls are still gated reactively via AuthInterceptor (302 handler).
       return true;
     }
+  }
+
+  static bool _isParallelLoginRestriction(dynamic data) {
+    if (data is Map) return data['error_code'] == 'parallel_login_restriction';
+    if (data is String) return data.contains('parallel_login_restriction');
+    return false;
   }
 
   AuthApiResult _parseSession(Map<String, dynamic> body) {

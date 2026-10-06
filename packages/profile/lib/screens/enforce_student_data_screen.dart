@@ -27,7 +27,7 @@ class _EnforceStudentDataScreenState
       // Verify with the backend if student data has been marked as collected
       final isCollected = await ref
           .read(authRepositoryProvider)
-          .checkStudentDataCollected();
+          .checkStudentDataCollected(throwOnParallelLogin: true);
 
       if (!isCollected) {
         if (mounted) {
@@ -48,6 +48,10 @@ class _EnforceStudentDataScreenState
       } else if (mounted) {
         context.go('/home');
       }
+    } on ParallelLoginException catch (e) {
+      ref.read(enforceStudentDataRequiredProvider.notifier).state = false;
+      ref.read(parallelLoginRequiredProvider.notifier).state = e.message;
+      if (mounted) context.go('/login-activity');
     } catch (e, stack) {
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {

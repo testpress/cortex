@@ -143,8 +143,12 @@ class AuthRepository {
   /// transient network or server errors to prevent blocking user entry; any
   /// truly incomplete profiles will be reactively caught by [AuthInterceptor] on
   /// subsequent API requests.
-  Future<bool> checkStudentDataCollected() async {
-    return _apiService.checkStudentDataCollected();
+  Future<bool> checkStudentDataCollected({
+    bool throwOnParallelLogin = false,
+  }) async {
+    return _apiService.checkStudentDataCollected(
+      throwOnParallelLogin: throwOnParallelLogin,
+    );
   }
 
   Future<void> _clearToken() async {

@@ -26,6 +26,17 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
   bool _hasMore = true;
   bool _isLoggingOut = false;
 
+  bool _isStudentDataRequired(Object error) {
+    return error is ApiException &&
+        (error.type == ApiErrorType.enforceStudentData ||
+            error.statusCode == 302);
+  }
+
+  void _handleStudentDataRequired() {
+    ref.read(enforceStudentDataRequiredProvider.notifier).state = true;
+    if (mounted) context.go('/enforce-student-data');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +75,10 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
         });
       }
     } catch (e, stack) {
+      if (_isStudentDataRequired(e)) {
+        _handleStudentDataRequired();
+        return;
+      }
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() {
@@ -89,6 +104,10 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
         });
       }
     } catch (e, stack) {
+      if (_isStudentDataRequired(e)) {
+        _handleStudentDataRequired();
+        return;
+      }
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (mounted) {
         setState(() {
@@ -132,7 +151,11 @@ class _LoginActivityScreenState extends ConsumerState<LoginActivityScreen> {
       await ref.read(authProvider.notifier).logoutOtherDevices();
       if (mounted) {
         if (widget.restrictionMessage != null) {
-          context.pop(true);
+          // Parallel-login entry can be created by router redirection, so
+          // there may be no route available to pop after the API succeeds.
+          // Replacing the location also works when this screen was pushed
+          // from the login flow.
+          context.go('/home');
         } else {
           AppToast.show(
             context,

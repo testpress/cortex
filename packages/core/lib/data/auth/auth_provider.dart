@@ -7,6 +7,7 @@ import '../config/app_config.dart';
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 import 'auth_repository.dart';
+import 'types/auth_exception.dart';
 import '../../network/dio_provider.dart';
 import '../db/database_provider.dart';
 import '../sources/data_source_provider.dart';
@@ -47,6 +48,9 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// `null` = no session expiry in progress.
 /// Non-null = show the SessionExpiredDialog with this message.
 final sessionExpiredProvider = StateProvider<String?>((ref) => null);
+
+/// Non-null when the authenticated session is blocked by parallel-login rules.
+final parallelLoginRequiredProvider = StateProvider<String?>((ref) => null);
 
 /// Tracks whether student data completion is required (detected proactively or reactively via 302).
 final enforceStudentDataRequiredProvider = StateProvider<bool>((ref) => false);
@@ -95,7 +99,16 @@ class Auth extends _$Auth {
 
   @override
   FutureOr<bool> build() async {
-    return await _repository.isUserLoggedIn();
+    final isLoggedIn = await _repository.isUserLoggedIn();
+    if (!isLoggedIn) return false;
+
+    try {
+      await _repository.verifyLogin();
+    } on ParallelLoginException catch (e) {
+      ref.read(parallelLoginRequiredProvider.notifier).state = e.message;
+    }
+
+    return true;
   }
 
   Future<void> loginWithPassword({
@@ -107,6 +120,7 @@ class Auth extends _$Auth {
     await _cleanupFuture;
     await _repository.loginWithPassword(username: username, password: password);
     ref.read(sessionExpiredProvider.notifier).state = null;
+    ref.read(parallelLoginRequiredProvider.notifier).state = null;
     _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
@@ -116,6 +130,7 @@ class Auth extends _$Auth {
     await _cleanupFuture;
     await _repository.loginWithGoogle();
     ref.read(sessionExpiredProvider.notifier).state = null;
+    ref.read(parallelLoginRequiredProvider.notifier).state = null;
     _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
@@ -137,6 +152,7 @@ class Auth extends _$Auth {
       countryCode: countryCode,
     );
     ref.read(sessionExpiredProvider.notifier).state = null;
+    ref.read(parallelLoginRequiredProvider.notifier).state = null;
     _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
@@ -227,6 +243,7 @@ class Auth extends _$Auth {
     await _repository.logoutOtherDevices();
     // Re-verify the session — if the restriction is cleared, mark as authenticated.
     await _repository.verifyLogin();
+    ref.read(parallelLoginRequiredProvider.notifier).state = null;
     state = const AsyncData(true);
   }
 }

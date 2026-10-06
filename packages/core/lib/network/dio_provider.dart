@@ -14,6 +14,7 @@ class DioFactory {
     required Future<String?> Function() getToken,
     void Function(String message)? onSessionExpired,
     void Function()? onEnforceStudentDataRequired,
+    void Function(String message)? onParallelLoginRestriction,
     bool Function()? isLoggingOut,
     bool Function()? isAuthenticated,
   }) {
@@ -43,6 +44,7 @@ class DioFactory {
         getToken: getToken,
         onSessionExpired: onSessionExpired,
         onEnforceStudentDataRequired: onEnforceStudentDataRequired,
+        onParallelLoginRestriction: onParallelLoginRestriction,
         isLoggingOut: isLoggingOut,
         isAuthenticated: isAuthenticated,
       ),
@@ -71,5 +73,7 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
         ref.read(sessionExpiredProvider.notifier).state = msg,
     onEnforceStudentDataRequired: () =>
         ref.read(enforceStudentDataRequiredProvider.notifier).state = true,
+    onParallelLoginRestriction: (msg) =>
+        ref.read(parallelLoginRequiredProvider.notifier).state = msg,
   );
 });

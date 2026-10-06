@@ -9,9 +9,11 @@ class AuthInterceptor extends Interceptor {
   final Future<String?> Function() getToken;
   final void Function(String message)? onSessionExpired;
   final void Function()? onEnforceStudentDataRequired;
+  final void Function(String message)? onParallelLoginRestriction;
   final bool Function()? isLoggingOut;
   final bool Function()? isAuthenticated;
   bool _sessionExpiryTriggered = false;
+  bool _parallelLoginTriggered = false;
 
   /// Paths that should not have an Authorization header attached.
   static const _authFlowPaths = [
@@ -27,6 +29,7 @@ class AuthInterceptor extends Interceptor {
     required this.getToken,
     this.onSessionExpired,
     this.onEnforceStudentDataRequired,
+    this.onParallelLoginRestriction,
     this.isLoggingOut,
     this.isAuthenticated,
   });
@@ -34,6 +37,7 @@ class AuthInterceptor extends Interceptor {
   /// Explicitly resets the session expiry guard (e.g. on fresh login).
   void resetSessionExpiry() {
     _sessionExpiryTriggered = false;
+    _parallelLoginTriggered = false;
   }
 
   @override
@@ -94,6 +98,23 @@ class AuthInterceptor extends Interceptor {
           onSessionExpired?.call(apiException.message);
         }
       }
+    } else if (err.response?.statusCode == 403) {
+      final hasAuthHeader = err.requestOptions.headers['Authorization'] != null;
+      final isLogoutRequest =
+          err.requestOptions.path.contains(ApiEndpoints.logout) ||
+          err.requestOptions.path.contains(ApiEndpoints.logoutDevices);
+      final authenticated = isAuthenticated?.call() ?? true;
+
+      if (hasAuthHeader &&
+          !isLogoutRequest &&
+          authenticated &&
+          !_parallelLoginTriggered &&
+          _isParallelLoginRestriction(err.response?.data)) {
+        _parallelLoginTriggered = true;
+        onParallelLoginRestriction?.call(
+          _extractDetailMessage(err.response?.data),
+        );
+      }
     } else if (err.response?.statusCode == 302) {
       final location = err.response?.headers.value('location') ?? '';
       if (location.contains('/settings/force/')) {
@@ -101,5 +122,16 @@ class AuthInterceptor extends Interceptor {
       }
     }
     super.onError(err, handler);
+  }
+
+  static bool _isParallelLoginRestriction(dynamic data) {
+    if (data is Map) return data['error_code'] == 'parallel_login_restriction';
+    if (data is String) return data.contains('parallel_login_restriction');
+    return false;
+  }
+
+  static String _extractDetailMessage(dynamic data) {
+    if (data is Map) return (data['detail'] as String?) ?? '';
+    return '';
   }
 }

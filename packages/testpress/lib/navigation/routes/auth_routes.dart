@@ -49,8 +49,16 @@ class AuthRoutes {
       return '/enforce-student-data';
     }
 
+    if (bootstrapState == BootstrapState.parallelLoginRequired) {
+      if (path == '/login-activity') return null;
+      return '/login-activity';
+    }
+
     if (bootstrapState == BootstrapState.authenticated) {
-      if (isAuthRoute || path == '/enforce-student-data') return '/home';
+      if ((isAuthRoute && path != '/login-activity') ||
+          path == '/enforce-student-data') {
+        return '/home';
+      }
       return null;
     }
 
@@ -120,10 +128,16 @@ class AuthRoutes {
       path: '/login-activity',
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
+        final message =
+            extra?['message'] as String? ??
+            ProviderScope.containerOf(
+              context,
+              listen: false,
+            ).read(parallelLoginRequiredProvider);
         return slideTransitionPage(
           context,
           state.pageKey,
-          LoginActivityScreen(restrictionMessage: extra?['message'] as String?),
+          LoginActivityScreen(restrictionMessage: message),
         );
       },
     ),
