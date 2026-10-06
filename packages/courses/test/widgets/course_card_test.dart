@@ -98,5 +98,90 @@ void main() {
       expect(find.text('Advanced Flutter'), findsOneWidget);
       expect(find.byIcon(LucideIcons.chevronRight), findsOneWidget);
     });
+
+    testWidgets(
+        'course requiring registration renders action button and hides progress bar',
+        (
+      tester,
+    ) async {
+      final lockedCourse = CourseDto(
+        id: '768',
+        title: 'IBPS RRB PO XV PRELIMS',
+        colorIndex: 0,
+        chapterCount: 1,
+        totalContents: 10,
+        progress: 0,
+        externalContentLink: 'https://example.com/sso/register/768',
+        externalLinkLabel: 'REQUEST PACKAGE',
+      );
+
+      var tapped = false;
+      await tester.pumpWidget(
+        wrap(
+          CourseCard(
+            course: lockedCourse,
+            onTap: () => tapped = true,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Verify title and action button
+      expect(find.text('IBPS RRB PO XV PRELIMS'), findsOneWidget);
+      expect(find.text('REQUEST PACKAGE'), findsOneWidget);
+      final button = tester.widget<AppButton>(find.byType(AppButton));
+      expect(button.variant, AppButtonVariant.secondary);
+
+      // Verify progress semantics are not rendered
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics && widget.properties.label == 'Course progress',
+      );
+      expect(semanticsFinder, findsNothing);
+
+      // Verify button semantics include course title
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              widget.properties.button == true &&
+              widget.properties.label ==
+                  'REQUEST PACKAGE, IBPS RRB PO XV PRELIMS',
+        ),
+        findsWidgets,
+      );
+
+      // Tap button and verify callback
+      await tester.tap(find.text('REQUEST PACKAGE'));
+      expect(tapped, isTrue);
+    });
+
+    testWidgets('pending approval course renders secondary action button', (
+      tester,
+    ) async {
+      final pendingCourse = CourseDto(
+        id: '768',
+        title: 'IBPS RRB PO XV PRELIMS',
+        colorIndex: 0,
+        chapterCount: 1,
+        totalContents: 10,
+        progress: 0,
+        externalContentLink: 'https://example.com/sso/register/768',
+        externalLinkLabel: 'RESUBMIT',
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          CourseCard(
+            course: pendingCourse,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('RESUBMIT'), findsOneWidget);
+      final appButton = tester.widget<AppButton>(find.byType(AppButton));
+      expect(appButton.variant, AppButtonVariant.secondary);
+    });
   });
 }

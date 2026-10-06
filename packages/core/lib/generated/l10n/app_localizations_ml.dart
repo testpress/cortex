@@ -859,6 +859,11 @@ class AppLocalizationsMl extends AppLocalizations {
   }
 
   @override
+  String openCourse(String title) {
+    return 'കോഴ്സ് തുറക്കുക: $title';
+  }
+
+  @override
   String get filterAll => 'എല്ലാം';
 
   @override

@@ -102,7 +102,23 @@ class CourseCard extends StatelessWidget {
                     '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
                     color: design.colors.textSecondary,
                   ),
-                  if (_isMobileAllowed) ...[
+                  if (course.requiresExternalRegistration) ...[
+                    SizedBox(height: design.spacing.md),
+                    AppSemantics.button(
+                      label: '${course.enrollmentTitle}, ${course.title}',
+                      onTap: onTap,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          label: course.enrollmentTitle,
+                          variant: AppButtonVariant.secondary,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.md,
+                          ),
+                          onPressed: onTap,
+                        ),
+                      ),
+                    ),
+                  ] else if (_isMobileAllowed) ...[
                     SizedBox(height: design.spacing.md),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -158,8 +174,12 @@ class CourseCard extends StatelessWidget {
       return card;
     }
 
+    final semanticLabel = course.requiresExternalRegistration
+        ? '${course.enrollmentTitle}, ${course.title}'
+        : L10n.of(context).openCourse(course.title);
+
     return AppSemantics.button(
-      label: 'Open course: ${course.title}',
+      label: semanticLabel,
       onTap: onTap!,
       child: AppFocusable(
         onTap: onTap,

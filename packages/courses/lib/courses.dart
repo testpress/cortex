@@ -15,6 +15,7 @@ export 'widgets/today_snapshot.dart';
 export 'widgets/top_learners_section.dart';
 export 'widgets/promotional_banners.dart';
 export 'screens/chapters_list_page.dart';
+export 'screens/course_enrollment_screen.dart';
 export 'widgets/chapters_filter_tab_bar.dart';
 export 'widgets/chapter_curriculum_item.dart';
 export 'widgets/curriculum_header.dart';

@@ -395,6 +395,7 @@
       }
     }
   },
+  "openCourse": "பாடத்தைத் திற: {title}",
   "chapterMetadata": "{lessons} {lessonsLabel} · {assessments} {assessmentsLabel}",
   "@chapterMetadata": {
     "placeholders": {

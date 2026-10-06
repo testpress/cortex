@@ -10,6 +10,7 @@ import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
 import '../widgets/lesson_list_item.dart';
 import '../widgets/chapters_filter_rules.dart';
+import 'course_enrollment_screen.dart';
 
 /// Screen displaying the full curriculum (chapters and lessons) of a course.
 class ChaptersListPage extends ConsumerStatefulWidget {
@@ -37,6 +38,7 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter? _activeFilter;
   late final ScrollController _scrollController;
+  bool _hasRedirected = false;
 
   @override
   void initState() {
@@ -87,6 +89,23 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     super.dispose();
   }
 
+  void _redirectToEnrollment(CourseDto course) {
+    if (_hasRedirected || course.externalContentLink == null) return;
+    _hasRedirected = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pushReplacement(
+          AppRoute(
+            page: CourseEnrollmentScreen(
+              url: course.externalContentLink!,
+              title: course.enrollmentTitle,
+            ),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -98,15 +117,25 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       subChaptersProvider(widget.courseId, widget.parentId),
     );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
+    final course = courseAsync.maybeWhen(
+      data: (c) => c,
+      orElse: () => null,
+    );
+
+    if (course != null && course.requiresExternalRegistration) {
+      _redirectToEnrollment(course);
+      return Container(
+        color: design.colors.canvas,
+        child: const Center(
+          child: AppLoadingIndicator(),
+        ),
+      );
+    }
+
     return Container(
       color: design.colors.canvas,
       child: chaptersAsync.when(
         data: (chapters) {
-          final course = courseAsync.maybeWhen(
-            data: (c) => c,
-            orElse: () => null,
-          );
-
           // Show lessons ONLY when the route explicitly says this is a leaf
           // (set from chapter.isLeaf in the API) or a filter tab is active.
           // Do NOT fall back on chapters.isEmpty — that fires whenever the DB

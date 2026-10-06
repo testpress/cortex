@@ -1626,6 +1626,12 @@ abstract class AppLocalizations {
   /// **'{count,plural, =1{1 content} other{{count} contents}}'**
   String courseContentsCount(int count);
 
+  /// No description provided for @openCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Open course: {title}'**
+  String openCourse(String title);
+
   /// No description provided for @filterAll.
   ///
   /// In en, this message translates to:

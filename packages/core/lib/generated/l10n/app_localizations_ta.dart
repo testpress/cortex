@@ -863,6 +863,11 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String openCourse(String title) {
+    return 'பாடத்தைத் திற: $title';
+  }
+
+  @override
   String get filterAll => 'அனைத்தும்';
 
   @override

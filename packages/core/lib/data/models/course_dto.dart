@@ -25,6 +25,13 @@ class CourseDto {
   final int order;
   final List<ChapterDto> chapters;
 
+  /// SSO enrollment URL returned by the API when a course requires external
+  /// registration or approval. Non-null means the course is locked.
+  final String? externalContentLink;
+
+  /// Button label returned by the API (e.g. "REQUEST PACKAGE", "Pending Approval").
+  final String? externalLinkLabel;
+
   const CourseDto({
     required this.id,
     required this.title,
@@ -40,9 +47,26 @@ class CourseDto {
     this.image,
     this.isChaptersSynced = false,
     this.chapters = const [],
+    this.externalContentLink,
+    this.externalLinkLabel,
   });
 
   final bool isChaptersSynced;
+
+  /// Returns `true` if the course requires external registration/approval before access.
+  bool get requiresExternalRegistration {
+    return externalContentLink != null &&
+        externalContentLink!.trim().isNotEmpty;
+  }
+
+  /// Returns the display title for external enrollment/approval screens,
+  /// falling back to [title] if [externalLinkLabel] is empty or null.
+  String get enrollmentTitle {
+    if (externalLinkLabel != null && externalLinkLabel!.trim().isNotEmpty) {
+      return externalLinkLabel!;
+    }
+    return title;
+  }
 
   String get formattedProgress {
     final p = progress ?? 0.0;
@@ -81,6 +105,8 @@ class CourseDto {
     int? order,
     bool? isChaptersSynced,
     List<ChapterDto>? chapters,
+    String? externalContentLink,
+    String? externalLinkLabel,
   }) {
     return CourseDto(
       id: id ?? this.id,
@@ -97,6 +123,8 @@ class CourseDto {
       order: order ?? this.order,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
       chapters: chapters ?? this.chapters,
+      externalContentLink: externalContentLink ?? this.externalContentLink,
+      externalLinkLabel: externalLinkLabel ?? this.externalLinkLabel,
     );
   }
 
@@ -120,6 +148,8 @@ class CourseDto {
               ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      externalContentLink: json['external_content_link'] as String?,
+      externalLinkLabel: json['external_link_label'] as String?,
     );
     return dto;
   }
@@ -196,6 +226,8 @@ class CourseDto {
       'order': order,
       'isChaptersSynced': isChaptersSynced,
       'chapters': chapters.map((e) => e.toJson()).toList(),
+      'external_content_link': externalContentLink,
+      'external_link_label': externalLinkLabel,
     };
   }
 }
