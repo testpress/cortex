@@ -1,3 +1,4 @@
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/widgets.dart';
 import '../accessibility/app_semantics.dart';
 import '../design/design_provider.dart';
@@ -67,85 +68,126 @@ class AppTabBar extends StatelessWidget {
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: design.colors.card,
                 borderRadius: design.radius.pill,
                 boxShadow: [
                   BoxShadow(
-                    color: design.colors.textPrimary.withValues(alpha: 0.20),
-                    blurRadius: 48,
-                    offset: const Offset(0, 16),
+                    color: const Color(
+                      0xFF000000,
+                    ).withValues(alpha: design.isDark ? 0.32 : 0.08),
+                    blurRadius: 32,
+                    offset: const Offset(0, 10),
                   ),
                   BoxShadow(
-                    color: design.colors.textPrimary.withValues(alpha: 0.12),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
+                    color: const Color(
+                      0xFF000000,
+                    ).withValues(alpha: design.isDark ? 0.16 : 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              padding: EdgeInsets.zero,
-              height: 64,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final tabWidth = items.isNotEmpty
-                      ? constraints.maxWidth / items.length
-                      : 0.0;
-                  final activeIndex = items.indexWhere(
-                    (item) => item.id == activeItemId,
-                  );
+              child: ClipRRect(
+                borderRadius: design.radius.pill,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: Container(
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: design.isDark
+                          ? design.colors.card.withValues(alpha: 0.75)
+                          : design.colors.surface.withValues(alpha: 0.72),
+                      borderRadius: design.radius.pill,
+                      border: Border.all(
+                        color: design.isDark
+                            ? const Color(0xFFFFFFFF).withValues(alpha: 0.14)
+                            : const Color(0xFFFFFFFF).withValues(alpha: 0.75),
+                        width: 1.0,
+                      ),
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final tabWidth = items.isNotEmpty
+                            ? constraints.maxWidth / items.length
+                            : 0.0;
+                        final activeIndex = items.indexWhere(
+                          (item) => item.id == activeItemId,
+                        );
 
-                  return Stack(
-                    children: [
-                      AnimatedPositioned(
-                        duration: MotionPreferences.duration(
-                          context,
-                          design.motion.normal,
-                        ),
-                        curve: MotionPreferences.curve(
-                          context,
-                          design.motion.easeOut,
-                        ),
-                        left: activeIndex >= 0 ? activeIndex * tabWidth : 0,
-                        width: tabWidth,
-                        top: 0,
-                        bottom: 0,
-                        child: AnimatedOpacity(
-                          duration: MotionPreferences.duration(
-                            context,
-                            design.motion.normal,
-                          ),
-                          opacity: activeIndex >= 0 ? 1.0 : 0.0,
-                          child: Center(
-                            child: Container(
-                              margin: EdgeInsets.all(design.spacing.xs),
-                              decoration: BoxDecoration(
-                                color: design.colors.primary.withValues(
-                                  alpha: 0.10,
+                        return Stack(
+                          children: [
+                            AnimatedPositioned(
+                              duration: MotionPreferences.duration(
+                                context,
+                                design.motion.normal,
+                              ),
+                              curve: MotionPreferences.curve(
+                                context,
+                                design.motion.easeOut,
+                              ),
+                              left: activeIndex >= 0
+                                  ? activeIndex * tabWidth
+                                  : 0,
+                              width: tabWidth,
+                              top: 0,
+                              bottom: 0,
+                              child: AnimatedOpacity(
+                                duration: MotionPreferences.duration(
+                                  context,
+                                  design.motion.normal,
                                 ),
-                                borderRadius: design.radius.pill,
+                                opacity: activeIndex >= 0 ? 1.0 : 0.0,
+                                child: Center(
+                                  child: Container(
+                                    margin: EdgeInsets.all(design.spacing.xs),
+                                    decoration: BoxDecoration(
+                                      color: design.isDark
+                                          ? design.colors.primary.withValues(
+                                              alpha: 0.18,
+                                            )
+                                          : design.colors.primary.withValues(
+                                              alpha: 0.10,
+                                            ),
+                                      borderRadius: design.radius.pill,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFF000000)
+                                              .withValues(
+                                                alpha: design.isDark
+                                                    ? 0.20
+                                                    : 0.04,
+                                              ),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: items.map((item) {
-                          final isActive = item.id == activeItemId;
-                          return Expanded(
-                            key: ValueKey(item.id),
-                            child: _TabItemWidget(
-                              key: ValueKey('${item.id}_tab'),
-                              item: item,
-                              isActive: isActive,
-                              onTap: () => onTabChange(item.id),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: items.map((item) {
+                                final isActive = item.id == activeItemId;
+                                return Expanded(
+                                  key: ValueKey(item.id),
+                                  child: _TabItemWidget(
+                                    key: ValueKey('${item.id}_tab'),
+                                    item: item,
+                                    isActive: isActive,
+                                    onTap: () => onTabChange(item.id),
+                                  ),
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  );
-                },
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

@@ -97,5 +97,41 @@ void main() {
         expect(animatedOpacity.duration, normalDuration);
       },
     );
+
+    testWidgets('renders BackdropFilter for glassmorphic blur', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          AppTabBar(items: testItems, activeItemId: '1', onTabChange: (_) {}),
+        ),
+      );
+
+      expect(find.byType(BackdropFilter), findsOneWidget);
+    });
+
+    testWidgets('renders correctly in dark mode', (tester) async {
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(platformBrightness: Brightness.dark),
+          child: Builder(
+            builder: (context) {
+              return DesignProvider(
+                config: DesignConfig.dark(context: context),
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: AppTabBar(
+                    items: testItems,
+                    activeItemId: '1',
+                    onTabChange: (_) {},
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('Tab 1'), findsOneWidget);
+      expect(find.byType(BackdropFilter), findsOneWidget);
+    });
   });
 }
