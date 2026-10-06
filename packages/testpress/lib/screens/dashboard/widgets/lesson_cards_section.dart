@@ -108,8 +108,8 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                       ),
                     ),
 
-                  // Progress Badge
-                  if (lesson.progress != null)
+                  // Progress Badge for Resume
+                  if (isResume && lesson.progress != null && !isCompleted)
                     Positioned(
                       top: 8,
                       right: 8,
@@ -124,6 +124,27 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                         ),
                         child: AppText.labelSmall(
                           '${lesson.progress!.toInt()}%',
+                          color: design.colors.textPrimary,
+                        ),
+                      ),
+                    ),
+
+                  // Duration Badge (bottom-right of the image)
+                  if (!isResume && hasDuration)
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: design.colors.surface.withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: AppText.labelSmall(
+                          duration,
                           color: design.colors.textPrimary,
                         ),
                       ),
@@ -152,51 +173,16 @@ class _LessonCardWidgetState extends State<LessonCardWidget>
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              if (isResume) ...[
-                                if (hasChapter) ...[
-                                  const SizedBox(height: 1),
-                                  AppText.cardSubtitle(
-                                    lesson.chapterTitle!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                              if (hasChapter) ...[
+                                const SizedBox(height: 1),
+                                AppText.cardSubtitle(
+                                  lesson.chapterTitle!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                ],
-                              ] else ...[
-                                if (hasChapter || hasDuration) ...[
-                                  const SizedBox(height: 1),
-                                  Row(
-                                    children: [
-                                      if (hasChapter)
-                                        Flexible(
-                                          child: AppText.cardSubtitle(
-                                            lesson.chapterTitle!,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                      if (hasChapter && hasDuration) ...[
-                                        AppText.cardSubtitle(
-                                          ' • ',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: textMuted,
-                                          ),
-                                        ),
-                                      ],
-                                      if (hasDuration)
-                                        AppText.cardCaption(
-                                          duration,
-                                          color: textMuted,
-                                        ),
-                                    ],
-                                  ),
-                                ],
+                                ),
                               ],
                             ],
                           ),

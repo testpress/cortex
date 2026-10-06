@@ -258,7 +258,8 @@ class DashboardLessonListItem extends StatelessWidget {
                               ),
                             ),
                           ),
-                        if (lesson.progress != null)
+                        // Progress Badge for Resume
+                        if (isResume && lesson.progress != null && !isCompleted)
                           Positioned(
                             top: 4,
                             right: 4,
@@ -275,6 +276,29 @@ class DashboardLessonListItem extends StatelessWidget {
                               ),
                               child: AppText.labelSmall(
                                 '${lesson.progress!.toInt()}%',
+                                color: design.colors.textPrimary,
+                              ),
+                            ),
+                          ),
+
+                        // Duration Badge (bottom-right of image for What's New & Completed)
+                        if (!isResume && hasDuration)
+                          Positioned(
+                            bottom: 4,
+                            right: 4,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: design.colors.surface.withValues(
+                                  alpha: 0.85,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: AppText.labelSmall(
+                                duration,
                                 color: design.colors.textPrimary,
                               ),
                             ),
@@ -342,34 +366,13 @@ class DashboardLessonListItem extends StatelessWidget {
                         ],
                       ] else ...[
                         // Recently Completed and What's New:
-                        // Duration shown on the right side of the chapter/Exams
-                        if (hasChapter || hasDuration) ...[
-                          const SizedBox(height: 3),
-                          Row(
-                            children: [
-                              if (hasChapter)
-                                Flexible(
-                                  child: AppText.cardSubtitle(
-                                    lesson.chapterTitle!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              if (hasChapter && hasDuration) ...[
-                                AppText.cardSubtitle(
-                                  ' • ',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: textMuted,
-                                  ),
-                                ),
-                              ],
-                              if (hasDuration)
-                                AppText.cardCaption(duration, color: textMuted),
-                            ],
+                        if (hasChapter) ...[
+                          const SizedBox(height: 2),
+                          AppText.cardSubtitle(
+                            lesson.chapterTitle!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.w400),
                           ),
                         ],
                       ],
