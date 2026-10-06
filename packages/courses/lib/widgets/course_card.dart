@@ -176,7 +176,7 @@ class CourseCard extends StatelessWidget {
 
     final semanticLabel = course.requiresExternalRegistration
         ? '${course.enrollmentTitle}, ${course.title}'
-        : 'Open course: ${course.title}';
+        : L10n.of(context).openCourse(course.title);
 
     return AppSemantics.button(
       label: semanticLabel,

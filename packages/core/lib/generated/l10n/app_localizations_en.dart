@@ -850,6 +850,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String openCourse(String title) {
+    return 'Open course: $title';
+  }
+
+  @override
   String get filterAll => 'All';
 
   @override

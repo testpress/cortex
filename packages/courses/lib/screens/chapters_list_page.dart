@@ -38,6 +38,7 @@ class ChaptersListPage extends ConsumerStatefulWidget {
 class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
   CurriculumFilter? _activeFilter;
   late final ScrollController _scrollController;
+  bool _hasRedirected = false;
 
   @override
   void initState() {
@@ -88,12 +89,39 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     super.dispose();
   }
 
+  void _redirectToEnrollment(CourseDto course) {
+    if (_hasRedirected || course.externalContentLink == null) return;
+    _hasRedirected = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          AppRoute(
+            page: CourseEnrollmentScreen(
+              url: course.externalContentLink!,
+              title: course.enrollmentTitle,
+            ),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final visibleFilters = ChaptersFilterRules.getVisibleFilters();
     final activeFilter = _resolvedActiveFilter;
+
+    ref.listen<AsyncValue<CourseDto?>>(
+      courseDetailProvider(widget.courseId),
+      (previous, next) {
+        final course = next.valueOrNull;
+        if (course != null && course.requiresExternalRegistration) {
+          _redirectToEnrollment(course);
+        }
+      },
+    );
 
     final chaptersAsync = ref.watch(
       subChaptersProvider(widget.courseId, widget.parentId),
@@ -105,18 +133,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     );
 
     if (course != null && course.requiresExternalRegistration) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            AppRoute(
-              page: CourseEnrollmentScreen(
-                url: course.externalContentLink!,
-                title: course.enrollmentTitle,
-              ),
-            ),
-          );
-        }
-      });
+      _redirectToEnrollment(course);
       return Container(
         color: design.colors.canvas,
       );

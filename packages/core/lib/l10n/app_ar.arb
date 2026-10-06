@@ -710,6 +710,7 @@
   "infoPageEmptyState": "لا توجد موارد تعلم متاحة حاليًا.",
   "infoPageLoadError": "تعذر تحميل الموارد. يرجى المحاولة مرة أخرى.",
   "infoPageOpenCourse": "افتح {title}",
+  "openCourse": "فتح الدورة التدريبية: {title}",
   "infoPageLessonsCount": "{count,plural, =1{درس واحد} other{{count} دروس}}",
   "videoLessonNoTranscriptAvailable": "لا يوجد نص متاح لهذا الدرس.",
   "videoLessonTranscriptionInProgress": "تفريغ النص قيد المعالجة",

@@ -405,6 +405,14 @@
       }
     }
   },
+  "openCourse": "Open course: {title}",
+  "@openCourse": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "filterAll": "All",
   "curriculumLessonsLabel": "Lessons",
   "curriculumAssessmentsLabel": "Assessments",

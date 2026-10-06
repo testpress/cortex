@@ -847,6 +847,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String openCourse(String title) {
+    return 'فتح الدورة التدريبية: $title';
+  }
+
+  @override
   String get filterAll => 'الكل';
 
   @override
