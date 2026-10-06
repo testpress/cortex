@@ -102,17 +102,21 @@ class CourseCard extends StatelessWidget {
                     '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
                     color: design.colors.textSecondary,
                   ),
-                  if (course.requiresExternalRegistration &&
-                      course.externalLinkLabel?.isNotEmpty == true) ...[
+                  if (course.requiresExternalRegistration) ...[
                     SizedBox(height: design.spacing.md),
-                    AppButton(
-                      label: course.externalLinkLabel!,
-                      variant: AppButtonVariant.secondary,
-                      height: 36,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.md,
+                    AppSemantics.button(
+                      label: '${course.enrollmentTitle}, ${course.title}',
+                      onTap: onTap,
+                      child: ExcludeSemantics(
+                        child: AppButton(
+                          label: course.enrollmentTitle,
+                          variant: AppButtonVariant.secondary,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.md,
+                          ),
+                          onPressed: onTap,
+                        ),
                       ),
-                      onPressed: onTap,
                     ),
                   ] else if (_isMobileAllowed) ...[
                     SizedBox(height: design.spacing.md),
@@ -170,8 +174,12 @@ class CourseCard extends StatelessWidget {
       return card;
     }
 
+    final semanticLabel = course.requiresExternalRegistration
+        ? '${course.enrollmentTitle}, ${course.title}'
+        : 'Open course: ${course.title}';
+
     return AppSemantics.button(
-      label: 'Open course: ${course.title}',
+      label: semanticLabel,
       onTap: onTap!,
       child: AppFocusable(
         onTap: onTap,

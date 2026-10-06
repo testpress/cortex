@@ -1,6 +1,6 @@
 ## Context
 
-Certain courses in the Testpress platform require approval workflows (e.g., "REQUEST PACKAGE" or "Pending Approval"). The `/api/v2.4/courses/` endpoint provides `external_content_link` (containing an SSO URL with token/signature) and `external_link_label` (containing the action title). In the mobile client, we must ingest and persist these fields, display appropriate action buttons on the course card, open the enrollment form via WebView, show a completion confirmation, and refresh the course catalog to reflect state transitions.
+Certain courses in the Testpress platform require approval workflows (e.g., "REQUEST PACKAGE" or "Pending Approval"). The `/api/v3/courses/` endpoint provides `external_content_link` (containing an SSO URL with token/signature) and `external_link_label` (containing the action title). In the mobile client, we must ingest and persist these fields, display appropriate action buttons on the course card, open the enrollment form via WebView, show a completion confirmation, and refresh the course catalog to reflect state transitions.
 
 ## Goals / Non-Goals
 

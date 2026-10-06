@@ -348,6 +348,68 @@ void main() {
       expect(fakeSource.getCourseDetailCallCount, 0);
       expect(fakeSource.getChaptersCallCount, 0);
     });
+
+    test('persists and reads back externalContentLink and externalLinkLabel',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // 1. Refresh course detail with external link fields from DataSource
+      fakeSource.detailToReturn = const CourseDto(
+        id: 'course-approval-1',
+        title: 'Approval Required Course',
+        colorIndex: 1,
+        chapterCount: 2,
+        totalContents: 5,
+        externalContentLink: 'https://example.com/sso/register?course=1',
+        externalLinkLabel: 'REQUEST PACKAGE',
+      );
+
+      final refreshed =
+          await repository.refreshCourseDetail('course-approval-1');
+      expect(
+        refreshed?.externalContentLink,
+        'https://example.com/sso/register?course=1',
+      );
+      expect(refreshed?.externalLinkLabel, 'REQUEST PACKAGE');
+
+      // 2. Read back using getCourse (which queries local DB)
+      final localCourse = await repository.getCourse('course-approval-1');
+      expect(
+        localCourse?.externalContentLink,
+        'https://example.com/sso/register?course=1',
+      );
+      expect(localCourse?.externalLinkLabel, 'REQUEST PACKAGE');
+
+      // 3. Read back using watchCourses stream
+      final coursesList = await repository.watchCourses().first;
+      final courseInDb =
+          coursesList.firstWhere((c) => c.id == 'course-approval-1');
+      expect(
+        courseInDb.externalContentLink,
+        'https://example.com/sso/register?course=1',
+      );
+      expect(courseInDb.externalLinkLabel, 'REQUEST PACKAGE');
+
+      // 4. Update when access is approved (link fields become null)
+      fakeSource.detailToReturn = const CourseDto(
+        id: 'course-approval-1',
+        title: 'Approval Required Course',
+        colorIndex: 1,
+        chapterCount: 2,
+        totalContents: 5,
+        externalContentLink: null,
+        externalLinkLabel: null,
+      );
+
+      await repository.refreshCourseDetail('course-approval-1');
+      final approvedCourse = await repository.getCourse('course-approval-1');
+      expect(approvedCourse?.externalContentLink, isNull);
+      expect(approvedCourse?.externalLinkLabel, isNull);
+
+      await db.close();
+    });
   });
 
   group('CoursesTableDataX', () {

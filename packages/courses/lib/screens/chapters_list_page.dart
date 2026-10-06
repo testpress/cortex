@@ -99,27 +99,33 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       subChaptersProvider(widget.courseId, widget.parentId),
     );
     final courseAsync = ref.watch(courseDetailProvider(widget.courseId));
+    final course = courseAsync.maybeWhen(
+      data: (c) => c,
+      orElse: () => null,
+    );
+
+    if (course != null && course.requiresExternalRegistration) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            AppRoute(
+              page: CourseEnrollmentScreen(
+                url: course.externalContentLink!,
+                title: course.enrollmentTitle,
+              ),
+            ),
+          );
+        }
+      });
+      return Container(
+        color: design.colors.canvas,
+      );
+    }
+
     return Container(
       color: design.colors.canvas,
       child: chaptersAsync.when(
         data: (chapters) {
-          final course = courseAsync.maybeWhen(
-            data: (c) => c,
-            orElse: () => null,
-          );
-
-          if (course != null &&
-              course.requiresExternalRegistration &&
-              course.externalContentLink != null &&
-              course.externalContentLink!.trim().isNotEmpty) {
-            return CourseEnrollmentScreen(
-              url: course.externalContentLink!,
-              title: course.externalLinkLabel?.isNotEmpty == true
-                  ? course.externalLinkLabel!
-                  : course.title,
-            );
-          }
-
           // Show lessons ONLY when the route explicitly says this is a leaf
           // (set from chapter.isLeaf in the API) or a filter tab is active.
           // Do NOT fall back on chapters.isEmpty — that fires whenever the DB

@@ -72,20 +72,12 @@ class StudyContentList extends ConsumerWidget {
                           onTap: isSkeleton
                               ? null
                               : () {
-                                  if (course.requiresExternalRegistration &&
-                                      course.externalContentLink != null &&
-                                      course.externalContentLink!
-                                          .trim()
-                                          .isNotEmpty) {
+                                  if (course.requiresExternalRegistration) {
                                     Navigator.of(context).push(
                                       AppRoute(
                                         page: CourseEnrollmentScreen(
                                           url: course.externalContentLink!,
-                                          title: course.externalLinkLabel
-                                                      ?.isNotEmpty ==
-                                                  true
-                                              ? course.externalLinkLabel!
-                                              : course.title,
+                                          title: course.enrollmentTitle,
                                         ),
                                       ),
                                     );

@@ -139,6 +139,18 @@ void main() {
       );
       expect(semanticsFinder, findsNothing);
 
+      // Verify button semantics include course title
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              widget.properties.button == true &&
+              widget.properties.label ==
+                  'REQUEST PACKAGE, IBPS RRB PO XV PRELIMS',
+        ),
+        findsWidgets,
+      );
+
       // Tap button and verify callback
       await tester.tap(find.text('REQUEST PACKAGE'));
       expect(tapped, isTrue);

@@ -59,11 +59,13 @@ class CourseDto {
         externalContentLink!.trim().isNotEmpty;
   }
 
-  /// Returns `true` if the course is submitted and waiting for administrator approval.
-  bool get isPendingApproval {
-    if (!requiresExternalRegistration) return false;
-    final label = externalLinkLabel?.toUpperCase() ?? '';
-    return label.contains('PENDING') || label.contains('RESUBMIT');
+  /// Returns the display title for external enrollment/approval screens,
+  /// falling back to [title] if [externalLinkLabel] is empty or null.
+  String get enrollmentTitle {
+    if (externalLinkLabel != null && externalLinkLabel!.trim().isNotEmpty) {
+      return externalLinkLabel!;
+    }
+    return title;
   }
 
   String get formattedProgress {

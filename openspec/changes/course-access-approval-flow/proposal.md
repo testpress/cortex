@@ -1,11 +1,11 @@
 ## Why
 
-Some courses require administrative approval, package requests, or external registration before students can access their contents. The backend conveys this state via `external_content_link` and `external_link_label` in the `/api/v2.4/courses/` response. Currently, the client app does not persist or handle these fields, resulting in broken or unhandled access states when learners attempt to interact with restricted courses.
+Some courses require administrative approval, package requests, or external registration before students can access their contents. The backend conveys this state via `external_content_link` and `external_link_label` in the `/api/v3/courses/` response. Currently, the client app does not persist or handle these fields, resulting in broken or unhandled access states when learners attempt to interact with restricted courses.
 
 ## What Changes
 
 - Ingest `external_content_link` and `external_link_label` from the course API response into `CourseDto` and persist them in the Drift `CoursesTable`.
-- Surface course access states in `Course` domain model (`requiresExternalRegistration`, `isPendingApproval`).
+- Surface course access states in `CourseDto` (`requiresExternalRegistration`, `enrollmentTitle`).
 - Update `CourseCard` UI to display dynamic action buttons (e.g., "REQUEST PACKAGE", "Pending Approval", "Resubmit") instead of default progress bars when registration is required.
 - Provide `CourseEnrollmentScreen` wrapper to open `externalContentLink` in an authenticated WebView, allowing the web flow to handle registration, approval notices, and rejection messages.
 - Refresh course list upon returning from the enrollment screen.

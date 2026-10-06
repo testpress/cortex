@@ -27,7 +27,6 @@ void main() {
         expect(dto.externalContentLink, 'https://example.com/sso/register/768');
         expect(dto.externalLinkLabel, 'REQUEST PACKAGE');
         expect(dto.requiresExternalRegistration, isTrue);
-        expect(dto.isPendingApproval, isFalse);
       },
     );
 
@@ -104,39 +103,38 @@ void main() {
       },
     );
 
-    test('isPendingApproval detects RESUBMIT and PENDING labels', () {
-      const requestCourse = CourseDto(
-        id: '1',
-        title: 'Request Course',
-        colorIndex: 0,
-        chapterCount: 1,
-        totalContents: 1,
-        externalContentLink: 'https://example.com/sso',
-        externalLinkLabel: 'REQUEST PACKAGE',
-      );
-      expect(requestCourse.isPendingApproval, isFalse);
+    test(
+      'enrollmentTitle returns externalLinkLabel when present, falls back to title',
+      () {
+        const courseWithLabel = CourseDto(
+          id: '1',
+          title: 'Original Title',
+          colorIndex: 0,
+          chapterCount: 1,
+          totalContents: 1,
+          externalLinkLabel: 'REQUEST PACKAGE',
+        );
+        expect(courseWithLabel.enrollmentTitle, equals('REQUEST PACKAGE'));
 
-      const resubmitCourse = CourseDto(
-        id: '2',
-        title: 'Resubmit Course',
-        colorIndex: 0,
-        chapterCount: 1,
-        totalContents: 1,
-        externalContentLink: 'https://example.com/sso',
-        externalLinkLabel: 'RESUBMIT',
-      );
-      expect(resubmitCourse.isPendingApproval, isTrue);
+        const courseWithoutLabel = CourseDto(
+          id: '2',
+          title: 'Original Title',
+          colorIndex: 0,
+          chapterCount: 1,
+          totalContents: 1,
+        );
+        expect(courseWithoutLabel.enrollmentTitle, equals('Original Title'));
 
-      const pendingCourse = CourseDto(
-        id: '3',
-        title: 'Pending Course',
-        colorIndex: 0,
-        chapterCount: 1,
-        totalContents: 1,
-        externalContentLink: 'https://example.com/sso',
-        externalLinkLabel: 'Pending Approval',
-      );
-      expect(pendingCourse.isPendingApproval, isTrue);
-    });
+        const courseWithEmptyLabel = CourseDto(
+          id: '3',
+          title: 'Original Title',
+          colorIndex: 0,
+          chapterCount: 1,
+          totalContents: 1,
+          externalLinkLabel: '   ',
+        );
+        expect(courseWithEmptyLabel.enrollmentTitle, equals('Original Title'));
+      },
+    );
   });
 }

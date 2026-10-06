@@ -7,7 +7,7 @@
 
 ## 2. Domain Model & Business Helpers (packages/core & packages/courses)
 
-- [x] 2.1 Add helper getters `requiresExternalRegistration` and `isPendingApproval` to `Course` model.
+- [x] 2.1 Add helper getters `requiresExternalRegistration` and `enrollmentTitle` to `CourseDto`.
 - [x] 2.2 Add unit tests for `CourseDto` parsing and `Course` domain model helper logic.
 
 ## 3. Course Card UI & Action Button (packages/courses)
