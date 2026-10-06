@@ -19,7 +19,7 @@ class _EnforceStudentDataScreenState
   bool _isSubmitting = false;
   int _pageLoadCount = 0;
 
-  Future<void> _handleFormCompleted({bool silentIfNotCollected = false}) async {
+  Future<void> _handleFormCompleted() async {
     if (_isSubmitting) return;
     setState(() => _isSubmitting = true);
 
@@ -30,7 +30,7 @@ class _EnforceStudentDataScreenState
           .checkStudentDataCollected();
 
       if (!isCollected) {
-        if (!silentIfNotCollected && mounted) {
+        if (mounted) {
           AppToast.show(
             context,
             message: L10n.of(context).enforceStudentDataIncomplete,
@@ -50,7 +50,7 @@ class _EnforceStudentDataScreenState
       }
     } catch (e, stack) {
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
-      if (!silentIfNotCollected && mounted) {
+      if (mounted) {
         AppToast.show(
           context,
           message: L10n.of(context).enforceStudentDataVerifyError,
@@ -79,7 +79,7 @@ class _EnforceStudentDataScreenState
     if (isSameHost &&
         !currentUri.path.contains('/settings/force/mobile') &&
         !currentUri.path.contains('/login')) {
-      _handleFormCompleted(silentIfNotCollected: true);
+      _handleFormCompleted();
     }
   }
 
@@ -114,7 +114,7 @@ class _EnforceStudentDataScreenState
     // 4. Same-host navigation redirected away from /settings/force/mobile/ (e.g. to / or /home)
     // Verify with backend check_permission as source of truth.
     if (!targetUri.path.contains('/settings/force/mobile')) {
-      _handleFormCompleted(silentIfNotCollected: true);
+      _handleFormCompleted();
       return NavigationDecision.prevent;
     }
 

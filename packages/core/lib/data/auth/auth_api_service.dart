@@ -161,7 +161,10 @@ class AuthApiService {
       return true;
     } on DioException catch (error, stackTrace) {
       if (error.response?.statusCode == 302) {
-        return false;
+        final location = error.response?.headers.value('location') ?? '';
+        if (location.contains('/settings/force/')) {
+          return false;
+        }
       }
       _sentryService.captureException(
         error,
