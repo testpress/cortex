@@ -150,6 +150,11 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
 
   @override
   AsyncValue<OrderDto?> build(String slug) {
+    _orderId = null;
+    _appliedCouponCode = null;
+    _selectedPlanDetailId = null;
+    _selectedInstallmentPlanId = null;
+
     ref.onDispose(() {
       _orderId = null;
       _appliedCouponCode = null;
@@ -183,13 +188,7 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
           state = AsyncValue.error(e.message, st);
         } else {
           final extracted = ApiException.extractApiMessage(e.data);
-          state = AsyncValue.error(
-              (extracted != null &&
-                      !extracted.startsWith('<!') &&
-                      !extracted.toLowerCase().contains('<html'))
-                  ? extracted
-                  : e.message,
-              st);
+          state = AsyncValue.error(extracted ?? e.message, st);
         }
       } else {
         state = AsyncValue.error(e, st);

@@ -86,29 +86,13 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
           (error.statusCode != null && error.statusCode! >= 500)) {
         return serverErrorMessage;
       }
-      final extracted = ApiException.extractApiMessage(error.data);
-      if (extracted != null &&
-          !extracted.startsWith('<!') &&
-          !extracted.toLowerCase().contains('<html')) {
-        return extracted;
-      }
-      return error.message;
+      return ApiException.extractApiMessage(error.data) ?? error.message;
     }
 
-    String msg =
+    final msg =
         error.toString().replaceFirst(RegExp(r'^(?:Exception|Error):\s*'), '');
 
-    if (msg.startsWith('<!') || msg.toLowerCase().contains('<html')) {
-      return serverErrorMessage;
-    }
-
-    final match =
-        RegExp(r"^\[['" r'"](.*?)' r"['" r'"]\]$').firstMatch(msg.trim());
-    if (match != null) {
-      final inner = match.group(1)?.trim();
-      if (inner != null && inner.isNotEmpty) return inner;
-    }
-    return msg;
+    return ApiException.extractApiMessage(msg) ?? serverErrorMessage;
   }
 
   Widget _buildCelebrationCard(
