@@ -2804,6 +2804,28 @@ class AppLocalizationsTa extends AppLocalizations {
   String get storeBuyNow => 'இப்போது வாங்குங்கள்';
 
   @override
+  String get storeProceedToBuy => 'வாங்க தொடரவும்';
+
+  @override
+  String get storeSubscribe => 'சந்தா செலுத்துங்கள்';
+
+  @override
+  String get storeSelectPlanToProceed =>
+      'உங்கள் வாங்குதலைத் தொடர ஒரு திட்டத்தைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get storeSpecialDiscountApplied =>
+      'சிறப்பு தள்ளுபடி பயன்படுத்தப்பட்டது';
+
+  @override
+  String get storeSpecialDiscount => 'சிறப்பு தள்ளுபடி';
+
+  @override
+  String storeSelectedPlanTapToChange(String plan) {
+    return 'தேர்ந்தெடுக்கப்பட்ட திட்டம்: $plan. மாற்ற தட்டவும்.';
+  }
+
+  @override
   String get storeCheckoutComingSoon => 'செக்அவுட் செயல்முறை விரைவில் வரும்';
 
   @override
@@ -3129,6 +3151,10 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get errorServerTitle => 'சேவையக பிழை';
+
+  @override
+  String get errorServerMessage =>
+      'சேவையகத்தில் சிக்கல் உள்ளது. பின்னர் மீண்டும் முயற்சிக்கவும்.';
 
   @override
   String get errorRateLimitedTitle => 'மிக அதிக கோரிக்கைகள்';

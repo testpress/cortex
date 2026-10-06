@@ -122,15 +122,44 @@ Future<InstallmentPlansResponseDto> productInstallmentPlans(
 class ProductDiscountNotifier extends _$ProductDiscountNotifier {
   int? _orderId;
   String? _appliedCouponCode;
+  int? _selectedPlanDetailId;
+  int? _selectedInstallmentPlanId;
 
   int? get orderId => _orderId;
   String? get appliedCouponCode => _appliedCouponCode;
+  int? get selectedPlanDetailId => _selectedPlanDetailId;
+  int? get selectedInstallmentPlanId => _selectedInstallmentPlanId;
+
+  void setSelectedPlanDetailId(int? id) {
+    if (_selectedPlanDetailId != id) {
+      _selectedPlanDetailId = id;
+      _orderId = null;
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+    }
+  }
+
+  void setSelectedInstallmentPlanId(int? id) {
+    if (_selectedInstallmentPlanId != id) {
+      _selectedInstallmentPlanId = id;
+      _orderId = null;
+      _appliedCouponCode = null;
+      state = const AsyncValue.data(null);
+    }
+  }
 
   @override
   AsyncValue<OrderDto?> build(String slug) {
+    _orderId = null;
+    _appliedCouponCode = null;
+    _selectedPlanDetailId = null;
+    _selectedInstallmentPlanId = null;
+
     ref.onDispose(() {
       _orderId = null;
       _appliedCouponCode = null;
+      _selectedPlanDetailId = null;
+      _selectedInstallmentPlanId = null;
     });
     return const AsyncValue.data(null);
   }
@@ -140,19 +169,20 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
     try {
       final repo = ref.read(storeRepositoryProvider);
       // Reuse existing draft order if available to avoid creating multiple orders
-      final orderId = _orderId ?? (await repo.createOrder(slug)).id;
+      final orderId = _orderId ??
+          (await repo.createOrder(
+            slug,
+            planDetailId: _selectedPlanDetailId,
+            installmentPlanId: _selectedInstallmentPlanId,
+          ))
+              .id;
       _orderId = orderId;
 
       final updatedOrder = await repo.applyCoupon(orderId, code);
       _appliedCouponCode = code;
       state = AsyncValue.data(updatedOrder);
     } catch (e, st) {
-      if (e is ApiException) {
-        state = AsyncValue.error(
-            ApiException.extractApiMessage(e.data) ?? e.message, st);
-      } else {
-        state = AsyncValue.error(e, st);
-      }
+      state = AsyncValue.error(e, st);
     }
   }
 

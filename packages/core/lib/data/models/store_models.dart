@@ -116,7 +116,99 @@ class ProductCourseDto {
   };
 }
 
-/// DTO for Products (Store items) — maps to /api/v2.4/products/.
+/// DTO for subscription plan durations and pricing in v3.
+class PlanDetailDto {
+  final int id;
+  final int durationInDays;
+  final String price;
+  final String? strikeThroughPrice;
+
+  const PlanDetailDto({
+    required this.id,
+    required this.durationInDays,
+    required this.price,
+    this.strikeThroughPrice,
+  });
+
+  factory PlanDetailDto.fromJson(Map<String, dynamic> json) {
+    return PlanDetailDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      durationInDays: (json['duration_in_days'] as num?)?.toInt() ?? 0,
+      price: json['price']?.toString() ?? '',
+      strikeThroughPrice: json['strike_through_price']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'duration_in_days': durationInDays,
+    'price': price,
+    if (strikeThroughPrice != null) 'strike_through_price': strikeThroughPrice,
+  };
+}
+
+/// DTO for subscription plans in v3.
+class SubscriptionPlanDto {
+  final int id;
+  final int productId;
+  final String name;
+  final String description;
+  final List<int> planDetailIds;
+  final List<int> courseIds;
+  final List<PlanDetailDto> planDetails;
+
+  const SubscriptionPlanDto({
+    required this.id,
+    required this.productId,
+    required this.name,
+    this.description = '',
+    this.planDetailIds = const [],
+    this.courseIds = const [],
+    this.planDetails = const [],
+  });
+
+  factory SubscriptionPlanDto.fromJson(
+    Map<String, dynamic> json, {
+    List<PlanDetailDto> parsedDetails = const [],
+  }) {
+    final detailIds =
+        (json['plan_detail_ids'] as List<dynamic>?)
+            ?.map((e) => (e as num).toInt())
+            .toList() ??
+        const [];
+    return SubscriptionPlanDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      productId: (json['product_id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      planDetailIds: detailIds,
+      courseIds:
+          (json['course_ids'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList() ??
+          const [],
+      planDetails: parsedDetails.isNotEmpty
+          ? parsedDetails
+          : (json['plan_details'] as List<dynamic>?)
+                    ?.whereType<Map<String, dynamic>>()
+                    .map((e) => PlanDetailDto.fromJson(e))
+                    .toList() ??
+                const [],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'product_id': productId,
+    'name': name,
+    'description': description,
+    'plan_detail_ids': planDetailIds,
+    'course_ids': courseIds,
+    'plan_details': planDetails.map((d) => d.toJson()).toList(),
+  };
+}
+
+/// DTO for Products (Store items) — maps to /api/v3/products/.
 class ProductDto {
   final int id;
   final String title;
@@ -125,12 +217,13 @@ class ProductDto {
   final String price;
   final List<int> courses;
   final String? image;
+  final List<int> planIds;
+  final List<SubscriptionPlanDto> plans;
   final String? strikeThroughPrice;
   final String? buyNowText;
   final String? category;
   final List<PriceDto> prices;
   final List<ProductCourseDto> coursesDetails;
-  final bool hasCoupons;
 
   const ProductDto({
     required this.id,
@@ -140,65 +233,111 @@ class ProductDto {
     required this.price,
     required this.courses,
     this.image,
+    this.planIds = const [],
+    this.plans = const [],
     this.strikeThroughPrice,
     this.buyNowText,
     this.category,
     this.prices = const [],
     this.coursesDetails = const [],
-    this.hasCoupons = false,
   });
 
   bool get isFree => double.tryParse(price.replaceAll(',', '')) == 0;
+
+  String? get thumbnailUrl => image;
 
   factory ProductDto.fromJson(
     Map<String, dynamic> json, {
     List<PriceDto> parsedPrices = const [],
     List<ProductCourseDto> parsedCourses = const [],
+    List<SubscriptionPlanDto> parsedPlans = const [],
   }) {
+    final resolvedImage = () {
+      final rawImages = json['images'] as List<dynamic>?;
+      if (rawImages != null && rawImages.isNotEmpty) {
+        final first = rawImages.first;
+        if (first is Map) {
+          final map = Map<String, dynamic>.from(first);
+          final url =
+              (map['medium'] ?? map['original'] ?? map['small']) as String?;
+          if (url != null && url.isNotEmpty) return url;
+        }
+      }
+      if (json['image'] is String && (json['image'] as String).isNotEmpty) {
+        return json['image'] as String;
+      }
+      return null;
+    }();
+
     return ProductDto(
-      id: json['id'] as int,
-      title: json['title'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      title: json['title'] as String? ?? '',
       slug: json['slug'] as String? ?? '',
       descriptionHtml: json['description_html'] as String? ?? '',
       price:
-          (json['current_price'] as String?) ??
           (json['price'] as String?) ??
+          (json['current_price'] as String?) ??
           '',
       courses: () {
         final rawCourses = json['courses'] as List<dynamic>? ?? [];
         return rawCourses
             .map((e) {
-              if (e is int) return e;
-              if (e is Map && e['id'] is int) {
-                return e['id'] as int;
+              if (e is num) return e.toInt();
+              if (e is Map && e['id'] is num) {
+                return (e['id'] as num).toInt();
               }
               return -1;
             })
             .where((id) => id != -1)
             .toList();
       }(),
-      image: () {
-        if (json['image'] is String) return json['image'] as String?;
-        final images = json['images'] as List<dynamic>?;
-        if (images != null && images.isNotEmpty) {
-          final firstImg = (images.first is Map)
-              ? Map<String, dynamic>.from(images.first as Map)
-              : null;
-          return firstImg?['medium'] as String? ??
-              firstImg?['original'] as String?;
-        }
-        return null;
+      image: resolvedImage,
+      planIds:
+          (json['plan_ids'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList() ??
+          const [],
+      plans: () {
+        if (parsedPlans.isNotEmpty) return parsedPlans;
+        final rawPlanDetails =
+            (json['plan_details'] as List<dynamic>?)
+                ?.whereType<Map<String, dynamic>>()
+                .map((e) => PlanDetailDto.fromJson(e))
+                .toList() ??
+            const <PlanDetailDto>[];
+        return (json['plans'] as List<dynamic>?)
+                ?.whereType<Map<String, dynamic>>()
+                .map((e) {
+                  final detailIds =
+                      (e['plan_detail_ids'] as List<dynamic>?)
+                          ?.map((id) => (id as num).toInt())
+                          .toList() ??
+                      const <int>[];
+                  final details = rawPlanDetails
+                      .where((d) => detailIds.contains(d.id))
+                      .toList();
+                  return SubscriptionPlanDto.fromJson(
+                    e,
+                    parsedDetails: details,
+                  );
+                })
+                .toList() ??
+            const <SubscriptionPlanDto>[];
       }(),
       strikeThroughPrice: json['strike_through_price'] as String?,
       buyNowText: json['buy_now_text'] as String? ?? 'Buy Now',
-      category: json['category'] as String?,
+      category: json['category'] is String
+          ? json['category'] as String
+          : (json['category'] is Map
+                ? json['category']['name'] as String?
+                : null),
       prices: parsedPrices.isNotEmpty
           ? parsedPrices
           : (json['prices'] as List<dynamic>?)
                     ?.whereType<Map<String, dynamic>>()
                     .map((e) => PriceDto.fromJson(e))
                     .toList() ??
-                [],
+                const [],
       coursesDetails: () {
         if (parsedCourses.isNotEmpty) {
           return parsedCourses;
@@ -223,7 +362,6 @@ class ProductDto {
         }
         return details;
       }(),
-      hasCoupons: json['has_coupons'] as bool? ?? false,
     );
   }
 
@@ -232,15 +370,49 @@ class ProductDto {
     'title': title,
     'slug': slug,
     'description_html': descriptionHtml,
+    'price': price,
     'current_price': price,
     'courses': courses,
     'image': image,
+    'plan_ids': planIds,
+    'plans': plans.map((p) => p.toJson()).toList(),
     'strike_through_price': strikeThroughPrice,
     'buy_now_text': buyNowText,
     'category': category,
     'prices': prices.map((p) => p.toJson()).toList(),
     'courses_details': coursesDetails.map((c) => c.toJson()).toList(),
-    'has_coupons': hasCoupons,
+  };
+}
+
+/// DTO for an order line item in v3, containing price details and discounts.
+class OrderItemDto {
+  final int id;
+  final String product;
+  final String price;
+  final String? priceBeforeDiscounts;
+
+  const OrderItemDto({
+    required this.id,
+    required this.product,
+    required this.price,
+    this.priceBeforeDiscounts,
+  });
+
+  factory OrderItemDto.fromJson(Map<String, dynamic> json) {
+    return OrderItemDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      product: json['product'] as String? ?? '',
+      price: json['price']?.toString() ?? '',
+      priceBeforeDiscounts: json['price_before_discounts']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'product': product,
+    'price': price,
+    if (priceBeforeDiscounts != null)
+      'price_before_discounts': priceBeforeDiscounts,
   };
 }
 
@@ -256,6 +428,7 @@ class OrderDto {
   final String? email;
   final String? phone;
   final String? pgUrl;
+  final List<OrderItemDto> orderItems;
 
   const OrderDto({
     required this.id,
@@ -269,9 +442,11 @@ class OrderDto {
     this.email,
     this.phone,
     this.pgUrl,
+    this.orderItems = const [],
   });
 
   factory OrderDto.fromJson(Map<String, dynamic> json) {
+    final rawOrderItems = json['order_items'] as List<dynamic>? ?? [];
     return OrderDto(
       id: (json['id'] as num?)?.toInt() ?? 0,
       status: json['status'] as String? ?? '',
@@ -284,6 +459,10 @@ class OrderDto {
       email: json['email'] as String?,
       phone: json['phone'] as String?,
       pgUrl: json['pg_url'] as String?,
+      orderItems: rawOrderItems
+          .whereType<Map<String, dynamic>>()
+          .map((e) => OrderItemDto.fromJson(e))
+          .toList(),
     );
   }
 
@@ -300,11 +479,12 @@ class OrderDto {
       'email': email,
       'phone': phone,
       'pg_url': pgUrl,
+      'order_items': orderItems.map((item) => item.toJson()).toList(),
     };
   }
 }
 
-/// Parses the sideloaded envelope from /api/v2.4/products/.
+/// Parses the sideloaded envelope from /api/v3/products/ (and v2.4).
 class StoreProductsResponseDto {
   final int count;
   final String? next;
@@ -323,11 +503,41 @@ class StoreProductsResponseDto {
         ? Map<String, dynamic>.from(json['results'] as Map)
         : <String, dynamic>{};
 
-    // Parse sideloaded prices
+    // Parse sideloaded prices (v2.4 backward compatibility)
     final pricesRaw = results['prices'] as List<dynamic>? ?? [];
     final allPrices = pricesRaw
         .map((e) => PriceDto.fromJson(Map<String, dynamic>.from(e as Map)))
         .toList();
+
+    // Parse sideloaded plan_details (v3)
+    final planDetailsRaw = results['plan_details'] as List<dynamic>? ?? [];
+    final allPlanDetails = planDetailsRaw
+        .whereType<Map<String, dynamic>>()
+        .map((e) => PlanDetailDto.fromJson(e))
+        .toList();
+
+    // Parse sideloaded plans (v3) and link their plan_details
+    final plansRaw = results['plans'] as List<dynamic>? ?? [];
+    final allPlans = plansRaw.whereType<Map<String, dynamic>>().map((e) {
+      final detailIds =
+          (e['plan_detail_ids'] as List<dynamic>?)
+              ?.map((id) => (id as num).toInt())
+              .toList() ??
+          const <int>[];
+      final details = allPlanDetails
+          .where((d) => detailIds.contains(d.id))
+          .toList();
+      return SubscriptionPlanDto.fromJson(e, parsedDetails: details);
+    }).toList();
+
+    // Parse sideloaded categories (v3)
+    final categoriesRaw = results['categories'] as List<dynamic>? ?? [];
+    final categoryMap = <int, String>{};
+    for (final cat in categoriesRaw) {
+      if (cat is Map && cat['id'] is num && cat['name'] is String) {
+        categoryMap[(cat['id'] as num).toInt()] = cat['name'] as String;
+      }
+    }
 
     // Parse sideloaded courses
     final coursesRaw = results['courses'] as List<dynamic>? ?? [];
@@ -337,7 +547,7 @@ class StoreProductsResponseDto {
         )
         .toList();
 
-    // Parse products and attach prices & courses
+    // Parse products and attach prices, courses, plans, categories
     final productsRaw = results['products'] as List<dynamic>? ?? [];
     final parsedProducts = productsRaw.map((e) {
       final productMap = Map<String, dynamic>.from(e as Map);
@@ -367,10 +577,28 @@ class StoreProductsResponseDto {
           .where((c) => productCourseIds.contains(c.id))
           .toList();
 
+      final productPlanIds =
+          (productMap['plan_ids'] as List<dynamic>?)
+              ?.map((id) => (id as num).toInt())
+              .toList() ??
+          [];
+      final productPlans = allPlans
+          .where((p) => productPlanIds.contains(p.id))
+          .toList();
+
+      // Resolve category name from sideloaded categories if not present
+      if (productMap['category'] == null && productMap['category_id'] is num) {
+        final catId = (productMap['category_id'] as num).toInt();
+        if (categoryMap.containsKey(catId)) {
+          productMap['category'] = categoryMap[catId];
+        }
+      }
+
       return ProductDto.fromJson(
         productMap,
         parsedPrices: productPrices,
         parsedCourses: productCourses,
+        parsedPlans: productPlans,
       );
     }).toList();
 
@@ -461,9 +689,46 @@ class InstallmentPlanDto {
   }
 }
 
+/// DTO for a user's active/ongoing installment plan in v3.
+class UserInstallmentPlanDto {
+  final int id;
+  final int installmentPlanId;
+  final int paidInstallmentCount;
+  final String nextDueAmount;
+  final String status;
+
+  const UserInstallmentPlanDto({
+    required this.id,
+    required this.installmentPlanId,
+    required this.paidInstallmentCount,
+    required this.nextDueAmount,
+    this.status = 'active',
+  });
+
+  factory UserInstallmentPlanDto.fromJson(Map<String, dynamic> json) {
+    return UserInstallmentPlanDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      installmentPlanId: (json['installment_plan_id'] as num?)?.toInt() ?? 0,
+      paidInstallmentCount:
+          (json['paid_installment_count'] as num?)?.toInt() ?? 0,
+      nextDueAmount:
+          (json['next_due_amount'] ?? json['amount'])?.toString() ?? '0.00',
+      status: json['status'] as String? ?? 'active',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'installment_plan_id': installmentPlanId,
+    'paid_installment_count': paidInstallmentCount,
+    'next_due_amount': nextDueAmount,
+    'status': status,
+  };
+}
+
 class InstallmentPlansResponseDto {
   final List<InstallmentPlanDto> installmentPlans;
-  final List<dynamic> userInstallmentPlans;
+  final List<UserInstallmentPlanDto> userInstallmentPlans;
 
   const InstallmentPlansResponseDto({
     required this.installmentPlans,
@@ -482,7 +747,14 @@ class InstallmentPlansResponseDto {
               .toList() ??
           [],
       userInstallmentPlans:
-          json['user_installment_plans'] as List<dynamic>? ?? [],
+          (json['user_installment_plans'] as List<dynamic>?)
+              ?.map(
+                (e) => UserInstallmentPlanDto.fromJson(
+                  Map<String, dynamic>.from(e as Map),
+                ),
+              )
+              .toList() ??
+          [],
     );
   }
 }

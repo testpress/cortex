@@ -78,21 +78,19 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
   }
 
   String _getErrorMessage(Object error) {
-    String msg;
+    final serverErrorMessage = L10n.of(context).errorServerMessage;
     if (error is ApiException) {
-      msg = ApiException.extractApiMessage(error.data) ?? error.message;
-    } else {
-      msg = error
-          .toString()
-          .replaceFirst(RegExp(r'^(?:Exception|Error):\s*'), '');
+      if (error.type == ApiErrorType.serverError ||
+          (error.statusCode != null && error.statusCode! >= 500)) {
+        return serverErrorMessage;
+      }
+      return ApiException.extractApiMessage(error.data) ?? error.message;
     }
-    final match =
-        RegExp(r"^\[['" r'"](.*?)' r"['" r'"]\]$').firstMatch(msg.trim());
-    if (match != null) {
-      final inner = match.group(1)?.trim();
-      if (inner != null && inner.isNotEmpty) return inner;
-    }
-    return msg;
+
+    final msg =
+        error.toString().replaceFirst(RegExp(r'^(?:Exception|Error):\s*'), '');
+
+    return ApiException.extractApiMessage(msg) ?? serverErrorMessage;
   }
 
   Widget _buildCelebrationCard(
@@ -186,11 +184,25 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
     final discountedVal = discountOrder != null
         ? double.tryParse(discountOrder.total.replaceAll(',', ''))
         : null;
-    final savedAmount = (originalPriceVal != null &&
-            discountedVal != null &&
-            originalPriceVal > discountedVal)
-        ? (originalPriceVal - discountedVal)
-        : null;
+    final savedFromItems = () {
+      if (discountOrder != null && discountOrder.orderItems.isNotEmpty) {
+        final item = discountOrder.orderItems.first;
+        final before = double.tryParse(
+            item.priceBeforeDiscounts?.replaceAll(',', '') ?? '');
+        final price = double.tryParse(item.price.replaceAll(',', ''));
+        if (before != null && price != null && before > price) {
+          return before - price;
+        }
+      }
+      return null;
+    }();
+
+    final savedAmount = savedFromItems ??
+        ((originalPriceVal != null &&
+                discountedVal != null &&
+                originalPriceVal > discountedVal)
+            ? (originalPriceVal - discountedVal)
+            : null);
 
     final shouldAnimate = MotionPreferences.shouldAnimate(context);
     final duration = shouldAnimate
@@ -262,70 +274,75 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
                       )
                     : KeyedSubtree(
                         key: const ValueKey('coupon_input_view'),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AppText.title(
-                                    L10n.of(context).storeDiscountCoupon),
-                                AppSemantics.button(
-                                  label: L10n.of(context).labelClose,
-                                  child: GestureDetector(
-                                    onTap: _handleClose,
-                                    behavior: HitTestBehavior.opaque,
-                                    child: ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                        minWidth: 48,
-                                        minHeight: 48,
-                                      ),
-                                      child: Center(
-                                        child: Icon(
-                                          LucideIcons.x,
-                                          size: design.iconSize.md,
-                                          color: design.colors.textSecondary,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AppText.title(
+                                      L10n.of(context).storeDiscountCoupon),
+                                  AppSemantics.button(
+                                    label: L10n.of(context).labelClose,
+                                    child: GestureDetector(
+                                      onTap: _handleClose,
+                                      behavior: HitTestBehavior.opaque,
+                                      child: ConstrainedBox(
+                                        constraints: const BoxConstraints(
+                                          minWidth: 48,
+                                          minHeight: 48,
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            LucideIcons.x,
+                                            size: design.iconSize.md,
+                                            color: design.colors.textSecondary,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: design.spacing.md),
-                            if (discountState.hasError) ...[
-                              AppText.body(
-                                _getErrorMessage(discountState.error!),
-                                color: design.colors.error,
+                                ],
                               ),
                               SizedBox(height: design.spacing.md),
-                            ],
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: AppTextField(
-                                    label: "",
-                                    hintText: L10n.of(context).storeCouponHint,
-                                    controller: _couponController,
-                                  ),
+                              if (discountState.hasError) ...[
+                                AppText.body(
+                                  _getErrorMessage(discountState.error!),
+                                  color: design.colors.error,
                                 ),
-                                SizedBox(width: design.spacing.sm),
-                                discountState.isLoading
-                                    ? const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 16.0),
-                                        child: AppLoadingIndicator(),
-                                      )
-                                    : AppButton.primary(
-                                        label:
-                                            L10n.of(context).storeApplyCoupon,
-                                        backgroundColor: design.colors.accent2,
-                                        onPressed: _applyCoupon,
-                                      ),
+                                SizedBox(height: design.spacing.md),
                               ],
-                            ),
-                          ],
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: AppTextField(
+                                      label: "",
+                                      hintText:
+                                          L10n.of(context).storeCouponHint,
+                                      controller: _couponController,
+                                    ),
+                                  ),
+                                  SizedBox(width: design.spacing.sm),
+                                  discountState.isLoading
+                                      ? const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16.0),
+                                          child: AppLoadingIndicator(),
+                                        )
+                                      : AppButton.primary(
+                                          label:
+                                              L10n.of(context).storeApplyCoupon,
+                                          backgroundColor:
+                                              design.colors.accent2,
+                                          onPressed: _applyCoupon,
+                                        ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
               ),

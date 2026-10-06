@@ -53,8 +53,15 @@ class FakeStoreRepository extends StoreRepository {
     );
   }
 
+  int? lastPlanDetailId;
+
   @override
-  Future<OrderDto> createAndConfirmOrder(String productSlug) async {
+  Future<OrderDto> createAndConfirmOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
+    lastPlanDetailId = planDetailId;
     return const OrderDto(
       id: 101,
       status: 'Completed',
@@ -64,7 +71,11 @@ class FakeStoreRepository extends StoreRepository {
   }
 
   @override
-  Future<OrderDto> createOrder(String slug) async {
+  Future<OrderDto> createOrder(
+    String slug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
     return const OrderDto(
       id: 1,
       status: 'Draft',
@@ -166,7 +177,6 @@ void main() {
     slug: 'test-course-product',
     price: '300.00',
     courses: const [372],
-    hasCoupons: false,
   );
 
   group('ProductDetailScreen Payment & Store Refresh', () {
@@ -226,7 +236,6 @@ void main() {
         price: '0.00',
         strikeThroughPrice: '1000.00',
         courses: const [373],
-        hasCoupons: false,
       );
 
       final fakeRepo = FakeStoreRepository(
@@ -263,7 +272,6 @@ void main() {
         slug: 'test-course-product',
         price: '300.00',
         courses: const [372],
-        hasCoupons: true,
       );
       final fakeRepo = FakeStoreRepository(
         source: const MockDataSource(),
@@ -313,6 +321,90 @@ void main() {
       expect(fakeRepo.removeCouponCalls, 1);
       expect(find.byIcon(LucideIcons.xCircle), findsNothing);
       expect(find.text('Have a discount code?'), findsOneWidget);
+    });
+
+    testWidgets(
+        'plan-based product shows Subscribe, hides installments, selects plan in sheet, and switches to Proceed to Buy',
+        (tester) async {
+      final subProduct = ProductDto(
+        id: 526,
+        title: 'Subscription Test Course',
+        slug: 'sub-test-course',
+        price: '599.00',
+        courses: const [372],
+        plans: const [
+          SubscriptionPlanDto(
+            id: 201,
+            productId: 526,
+            name: 'Standard Tier',
+            planDetails: [
+              PlanDetailDto(
+                id: 301,
+                durationInDays: 180,
+                price: '599.00',
+              ),
+              PlanDetailDto(
+                id: 302,
+                durationInDays: 365,
+                price: '999.00',
+              ),
+            ],
+          ),
+        ],
+      );
+
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: subProduct,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: subProduct),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Verify "Subscribe" is displayed and "Pay in installments" is hidden
+      expect(find.text('Subscribe'), findsOneWidget);
+      expect(find.text('Proceed to Buy'), findsNothing);
+      expect(find.text('Pay in installments'), findsNothing);
+
+      // Tap Subscribe button
+      await tester.tap(find.text('Subscribe'));
+      await tester.pumpAndSettle();
+
+      // Verify bottom sheet opened with title and plan options, and no option is pre-selected
+      expect(find.text('Select a plan to proceed with your purchase'),
+          findsOneWidget);
+      expect(find.text('180 days. ₹599.00'), findsOneWidget);
+      expect(find.text('1 year. ₹999.00'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.checkCircle), findsNothing);
+
+      // Tap on the 365 days option -> sheet closes and selects plan 302
+      await tester.tap(find.text('1 year. ₹999.00'));
+      await tester.pumpAndSettle();
+
+      // Sheet is closed, button is now "Proceed to Buy", and selected plan badge is shown
+      expect(find.text('Select a plan to proceed with your purchase'),
+          findsNothing);
+      expect(find.text('Proceed to Buy'), findsOneWidget);
+      expect(find.text('Subscribe'), findsNothing);
+      expect(find.text('1 year. ₹999.00'), findsOneWidget);
+
+      // Tap Proceed to Buy -> creates order with selected planDetailId 302
+      await tester.tap(find.text('Proceed to Buy'));
+      await tester.pumpAndSettle();
+
+      expect(fakeRepo.lastPlanDetailId, 302);
     });
   });
 }

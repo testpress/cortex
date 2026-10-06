@@ -501,16 +501,20 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<OrderDto> createOrder(String productSlug) async {
+  Future<OrderDto> createOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
+    final body = <String, dynamic>{
+      'order_items': [
+        {'product': productSlug, 'quantity': 1},
+      ],
+      'plan_detail_id': ?planDetailId,
+      'installment_plan_id': ?installmentPlanId,
+    };
     return performNetworkRequest(
-      _dio.post(
-        ApiEndpoints.createOrder,
-        data: {
-          'order_items': [
-            {'product': productSlug},
-          ],
-        },
-      ),
+      _dio.post(ApiEndpoints.createOrder, data: body),
       fromJson: (data) => OrderDto.fromJson(data),
     );
   }

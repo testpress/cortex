@@ -133,7 +133,11 @@ abstract class DataSource {
   Future<ProductDto> getProduct(String slug);
 
   /// Create a draft order for a product
-  Future<OrderDto> createOrder(String productSlug);
+  Future<OrderDto> createOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  });
 
   /// Confirm an order to get payment gateway keys
   Future<OrderDto> confirmOrder(

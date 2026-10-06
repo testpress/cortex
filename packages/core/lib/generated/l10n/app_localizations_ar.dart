@@ -2767,6 +2767,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storeBuyNow => 'اشتري الآن';
 
   @override
+  String get storeProceedToBuy => 'المتابعة للشراء';
+
+  @override
+  String get storeSubscribe => 'اشتراك';
+
+  @override
+  String get storeSelectPlanToProceed => 'حدد خطة للمتابعة في عملية الشراء';
+
+  @override
+  String get storeSpecialDiscountApplied => 'تم تطبيق خصم خاص';
+
+  @override
+  String get storeSpecialDiscount => 'خصم خاص';
+
+  @override
+  String storeSelectedPlanTapToChange(String plan) {
+    return 'الخطة المحددة: $plan. اضغط للتغيير.';
+  }
+
+  @override
   String get storeCheckoutComingSoon => 'عملية الدفع قريباً';
 
   @override
@@ -3085,6 +3105,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorServerTitle => 'خطأ في الخادم';
+
+  @override
+  String get errorServerMessage =>
+      'الخادم يواجه مشكلة. يرجى المحاولة مرة أخرى لاحقًا.';
 
   @override
   String get errorRateLimitedTitle => 'طلبات كثيرة جداً';

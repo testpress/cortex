@@ -2761,6 +2761,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storeBuyNow => 'Buy Now';
 
   @override
+  String get storeProceedToBuy => 'Proceed to Buy';
+
+  @override
+  String get storeSubscribe => 'Subscribe';
+
+  @override
+  String get storeSelectPlanToProceed =>
+      'Select a plan to proceed with your purchase';
+
+  @override
+  String get storeSpecialDiscountApplied => 'Special discount applied';
+
+  @override
+  String get storeSpecialDiscount => 'SPECIAL DISCOUNT';
+
+  @override
+  String storeSelectedPlanTapToChange(String plan) {
+    return 'Selected plan: $plan. Tap to change.';
+  }
+
+  @override
   String get storeCheckoutComingSoon => 'Checkout flow coming soon';
 
   @override
@@ -3082,6 +3103,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorServerTitle => 'Server Error';
+
+  @override
+  String get errorServerMessage =>
+      'The server is having trouble. Please try again later.';
 
   @override
   String get errorRateLimitedTitle => 'Too Many Requests';

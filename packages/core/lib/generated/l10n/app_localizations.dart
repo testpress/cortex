@@ -5051,6 +5051,42 @@ abstract class AppLocalizations {
   /// **'Buy Now'**
   String get storeBuyNow;
 
+  /// No description provided for @storeProceedToBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceed to Buy'**
+  String get storeProceedToBuy;
+
+  /// No description provided for @storeSubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe'**
+  String get storeSubscribe;
+
+  /// No description provided for @storeSelectPlanToProceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a plan to proceed with your purchase'**
+  String get storeSelectPlanToProceed;
+
+  /// No description provided for @storeSpecialDiscountApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Special discount applied'**
+  String get storeSpecialDiscountApplied;
+
+  /// No description provided for @storeSpecialDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'SPECIAL DISCOUNT'**
+  String get storeSpecialDiscount;
+
+  /// No description provided for @storeSelectedPlanTapToChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected plan: {plan}. Tap to change.'**
+  String storeSelectedPlanTapToChange(String plan);
+
   /// No description provided for @storeCheckoutComingSoon.
   ///
   /// In en, this message translates to:
@@ -5554,6 +5590,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Server Error'**
   String get errorServerTitle;
+
+  /// No description provided for @errorServerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is having trouble. Please try again later.'**
+  String get errorServerMessage;
 
   /// No description provided for @errorRateLimitedTitle.
   ///

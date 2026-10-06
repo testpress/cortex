@@ -64,7 +64,11 @@ class FakeStoreRepository extends StoreRepository {
   }
 
   @override
-  Future<OrderDto> createAndConfirmOrder(String productSlug) async {
+  Future<OrderDto> createAndConfirmOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
     return const OrderDto(
       id: 101,
       status: 'Completed',
@@ -143,7 +147,6 @@ void main() {
     slug: 'test-course-product',
     price: '300.00',
     courses: const [372],
-    hasCoupons: false,
   );
 
   group('ProductInstallmentSheet Payment & Store Refresh', () {

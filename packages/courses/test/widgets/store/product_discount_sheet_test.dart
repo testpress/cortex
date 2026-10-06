@@ -24,7 +24,11 @@ class FakeStoreRepository extends StoreRepository {
         );
 
   @override
-  Future<OrderDto> createOrder(String slug) async {
+  Future<OrderDto> createOrder(
+    String slug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
     return const OrderDto(
       id: 1,
       status: 'Draft',
@@ -103,7 +107,6 @@ void main() {
     descriptionHtml: 'Description',
     prices: [],
     coursesDetails: [],
-    hasCoupons: true,
   );
 
   testWidgets('renders input view initially', (tester) async {
@@ -264,4 +267,58 @@ void main() {
     // Error should not be present
     expect(find.text('Invalid discount code'), findsNothing);
   });
+
+  testWidgets(
+      'handles 500 HTML server error response gracefully without overflowing or showing HTML',
+      (tester) async {
+    final fakeRepo = FakeStoreRepository500();
+
+    await tester.pumpWidget(
+      wrapRouter(
+        ProductDiscountSheet(
+          product: testProduct,
+          productSlug: testProduct.slug,
+          originalPrice: testProduct.price,
+          onClose: () {},
+        ),
+        overrides: [
+          storeRepositoryProvider.overrideWithValue(fakeRepo),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(EditableText), 'ANYCODE');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('APPLY'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('The server is having trouble. Please try again later.'),
+        findsOneWidget);
+    expect(find.textContaining('<!doctype html>'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+}
+
+class FakeStoreRepository500 extends StoreRepository {
+  FakeStoreRepository500()
+      : super(
+          source: const MockDataSource(),
+          sentryService: MockSentryService(),
+        );
+
+  @override
+  Future<OrderDto> createOrder(
+    String slug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
+    throw const ApiException(
+      'The server is having trouble. Please try again later.',
+      type: ApiErrorType.serverError,
+      statusCode: 500,
+      data:
+          '<!doctype html><html lang="en"><head><title>Server Error</title></head><body><h1>Server Error</h1></body></html>',
+    );
+  }
 }

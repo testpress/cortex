@@ -824,19 +824,44 @@ class MockMockitoDataSource extends _i1.Mock implements _i2.DataSource {
           as _i3.Future<_i2.ProductDto>);
 
   @override
-  _i3.Future<_i2.OrderDto> createOrder(String? productSlug) =>
+  _i3.Future<_i2.OrderDto> createOrder(
+    String? productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#createOrder, [productSlug]),
+            Invocation.method(
+              #createOrder,
+              [productSlug],
+              {
+                #planDetailId: planDetailId,
+                #installmentPlanId: installmentPlanId,
+              },
+            ),
             returnValue: _i3.Future<_i2.OrderDto>.value(
               _FakeOrderDto_8(
                 this,
-                Invocation.method(#createOrder, [productSlug]),
+                Invocation.method(
+                  #createOrder,
+                  [productSlug],
+                  {
+                    #planDetailId: planDetailId,
+                    #installmentPlanId: installmentPlanId,
+                  },
+                ),
               ),
             ),
             returnValueForMissingStub: _i3.Future<_i2.OrderDto>.value(
               _FakeOrderDto_8(
                 this,
-                Invocation.method(#createOrder, [productSlug]),
+                Invocation.method(
+                  #createOrder,
+                  [productSlug],
+                  {
+                    #planDetailId: planDetailId,
+                    #installmentPlanId: installmentPlanId,
+                  },
+                ),
               ),
             ),
           )

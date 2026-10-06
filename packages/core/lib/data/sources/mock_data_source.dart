@@ -1128,12 +1128,15 @@ class MockDataSource implements DataSource {
       slug: slug,
       price: '300.00',
       courses: const [372],
-      hasCoupons: true,
     );
   }
 
   @override
-  Future<OrderDto> createOrder(String productSlug) async {
+  Future<OrderDto> createOrder(
+    String productSlug, {
+    int? planDetailId,
+    int? installmentPlanId,
+  }) async {
     return const OrderDto(
       id: 101,
       status: 'Draft',

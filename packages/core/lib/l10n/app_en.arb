@@ -1365,6 +1365,19 @@
   "storeProductBack": "Back",
   "storeSelectPlan": "Select Plan",
   "storeBuyNow": "Buy Now",
+  "storeProceedToBuy": "Proceed to Buy",
+  "storeSubscribe": "Subscribe",
+  "storeSelectPlanToProceed": "Select a plan to proceed with your purchase",
+  "storeSpecialDiscountApplied": "Special discount applied",
+  "storeSpecialDiscount": "SPECIAL DISCOUNT",
+  "storeSelectedPlanTapToChange": "Selected plan: {plan}. Tap to change.",
+  "@storeSelectedPlanTapToChange": {
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
   "storeCheckoutComingSoon": "Checkout flow coming soon",
   "storeValidityDays": "Validity: {days} days",
   "@storeValidityDays": {
@@ -1578,6 +1591,7 @@
   "errorAccessDeniedTitle": "Access Denied",
   "errorNotFoundTitle": "Not Found",
   "errorServerTitle": "Server Error",
+  "errorServerMessage": "The server is having trouble. Please try again later.",
   "errorRateLimitedTitle": "Too Many Requests",
   "labelConfirm": "Confirm",
   "labelRemove": "Remove",
