@@ -3528,4 +3528,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dashboardLiveClassCancelled => 'تم إلغاء هذه الحصة';
+
+  @override
+  String get enforceStudentDataTitle => 'أكمل ملفك الشخصي';
+
+  @override
+  String get enforceStudentDataLogout => 'تسجيل الخروج';
+
+  @override
+  String get enforceStudentDataContinue => 'المتابعة إلى التطبيق';
+
+  @override
+  String get enforceStudentDataIncomplete => 'يرجى إكمال بياناتك وحفظها أولاً.';
+
+  @override
+  String get enforceStudentDataVerifyError =>
+      'تعذّر التحقق من بيانات الملف الشخصي. يرجى المحاولة مرة أخرى.';
 }

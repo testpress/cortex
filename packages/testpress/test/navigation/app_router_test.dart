@@ -247,6 +247,42 @@ void main() {
         expect(find.byType(ConnectionErrorScreen), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'navigates to /enforce-student-data when bootstrapState is enforceStudentData',
+      (tester) async {
+        final container = ProviderContainer(
+          overrides: [
+            cachedAuthFlagProvider.overrideWithValue(true),
+            bootstrapProvider.overrideWithValue(
+              BootstrapState.enforceStudentData,
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final router = container.read(goRouterProvider);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: DesignProvider(
+              config: DesignConfig.light(),
+              child: MaterialApp.router(
+                routerConfig: router,
+                localizationsDelegates: LocalizationProvider.delegates,
+                supportedLocales: LocalizationProvider.supportedLocales,
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          '/enforce-student-data',
+        );
+      },
+    );
   });
 
   // -------------------------------------------------------------------------

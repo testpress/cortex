@@ -48,6 +48,15 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 /// Non-null = show the SessionExpiredDialog with this message.
 final sessionExpiredProvider = StateProvider<String?>((ref) => null);
 
+/// Tracks whether student data completion is required (detected proactively or reactively via 302).
+final enforceStudentDataRequiredProvider = StateProvider<bool>((ref) => false);
+
+/// Checks whether student data has been collected when institute settings enforce it.
+final studentDataCollectedProvider = FutureProvider<bool>((ref) async {
+  final authRepo = ref.watch(authRepositoryProvider);
+  return authRepo.checkStudentDataCollected();
+});
+
 /// Tracks whether a manual logout operation is currently in progress.
 /// Used by [AuthInterceptor] to suppress false-positive 401 session expiry
 /// dialogs while tearing down the session.

@@ -1807,5 +1807,25 @@
   "dashboardLiveClassStatusCancelled": "CANCELLED",
   "dashboardLiveClassJoinNow": "Join Now",
   "dashboardLiveClassWatchRecording": "Watch Recording",
-  "dashboardLiveClassCancelled": "This class has been cancelled"
+  "dashboardLiveClassCancelled": "This class has been cancelled",
+  "enforceStudentDataTitle": "Complete Profile",
+  "@enforceStudentDataTitle": {
+    "description": "Header title on the enforce student data screen"
+  },
+  "enforceStudentDataLogout": "Logout",
+  "@enforceStudentDataLogout": {
+    "description": "Logout button label on the enforce student data screen"
+  },
+  "enforceStudentDataContinue": "Continue to App",
+  "@enforceStudentDataContinue": {
+    "description": "Primary action button to proceed after completing student data form"
+  },
+  "enforceStudentDataIncomplete": "Please complete and save your details first.",
+  "@enforceStudentDataIncomplete": {
+    "description": "Toast shown when the student taps Continue but the form is still incomplete"
+  },
+  "enforceStudentDataVerifyError": "Unable to verify profile details. Please try again.",
+  "@enforceStudentDataVerifyError": {
+    "description": "Toast shown when the permission check API call fails"
+  }
 }

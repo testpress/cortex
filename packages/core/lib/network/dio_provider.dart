@@ -13,12 +13,14 @@ class DioFactory {
   static Dio createBackgroundDio({
     required Future<String?> Function() getToken,
     void Function(String message)? onSessionExpired,
+    void Function()? onEnforceStudentDataRequired,
     bool Function()? isLoggingOut,
     bool Function()? isAuthenticated,
   }) {
     final dio = Dio(
       BaseOptions(
         baseUrl: AppConfig.apiBaseUrl,
+        followRedirects: false,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -40,6 +42,7 @@ class DioFactory {
       AuthInterceptor(
         getToken: getToken,
         onSessionExpired: onSessionExpired,
+        onEnforceStudentDataRequired: onEnforceStudentDataRequired,
         isLoggingOut: isLoggingOut,
         isAuthenticated: isAuthenticated,
       ),
@@ -66,5 +69,7 @@ final Provider<Dio> dioProvider = Provider<Dio>((ref) {
     isAuthenticated: () => ref.read(authProvider).asData?.value != false,
     onSessionExpired: (msg) =>
         ref.read(sessionExpiredProvider.notifier).state = msg,
+    onEnforceStudentDataRequired: () =>
+        ref.read(enforceStudentDataRequiredProvider.notifier).state = true,
   );
 });

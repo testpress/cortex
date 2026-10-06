@@ -1328,5 +1328,10 @@
   "dashboardLiveClassStatusCancelled": "ملغى",
   "dashboardLiveClassJoinNow": "انضم الآن",
   "dashboardLiveClassWatchRecording": "مشاهدة التسجيل",
-  "dashboardLiveClassCancelled": "تم إلغاء هذه الحصة"
+  "dashboardLiveClassCancelled": "تم إلغاء هذه الحصة",
+  "enforceStudentDataTitle": "أكمل ملفك الشخصي",
+  "enforceStudentDataLogout": "تسجيل الخروج",
+  "enforceStudentDataContinue": "المتابعة إلى التطبيق",
+  "enforceStudentDataIncomplete": "يرجى إكمال بياناتك وحفظها أولاً.",
+  "enforceStudentDataVerifyError": "تعذّر التحقق من بيانات الملف الشخصي. يرجى المحاولة مرة أخرى."
 }

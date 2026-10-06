@@ -39,6 +39,7 @@ class InstituteSettings {
   // User Settings
   final bool enableUserPhoto;
   final bool allowProfileEdit;
+  final bool forceStudentData;
 
   //Learnings
   final bool coursesEnabled;
@@ -114,6 +115,7 @@ class InstituteSettings {
     required this.learnlensEnabled,
     required this.disableStudentReport,
     required this.qotdEnabled,
+    this.forceStudentData = false,
     this.learnlensOrgID,
     this.videoWatermarkType,
     this.videoWatermarkPosition,
@@ -154,6 +156,7 @@ class InstituteSettings {
       allowSignup: json['allow_signup'] as bool? ?? false,
       enableUserPhoto: json['enable_user_photo'] as bool? ?? false,
       allowProfileEdit: json['allow_profile_edit'] as bool? ?? false,
+      forceStudentData: json['force_student_data'] as bool? ?? false,
       loginIdLabel: json['login_label'] as String? ?? 'Student Id',
       loginPasswordLabel: json['login_password_label'] as String? ?? 'Password',
       disableForgotPassword: json['disable_forgot_password'] as bool? ?? true,

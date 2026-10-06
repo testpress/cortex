@@ -1328,5 +1328,10 @@
   "dashboardLiveClassStatusCancelled": "റദ്ദാക്കി",
   "dashboardLiveClassJoinNow": "ഇപ്പോൾ ചേരുക",
   "dashboardLiveClassWatchRecording": "റെക്കോർഡിംഗ് കാണുക",
-  "dashboardLiveClassCancelled": "ഈ ക്ലാസ് റദ്ദാക്കി"
+  "dashboardLiveClassCancelled": "ഈ ക്ലാസ് റദ്ദാക്കി",
+  "enforceStudentDataTitle": "പ്രൊഫൈൽ പൂർത്തിയാക്കുക",
+  "enforceStudentDataLogout": "ലോഗ്ഔട്ട്",
+  "enforceStudentDataContinue": "ആപ്പിലേക്ക് തുടരുക",
+  "enforceStudentDataIncomplete": "ദയവായി ആദ്യം നിങ്ങളുടെ വിവരങ്ങൾ പൂർത്തിയാക്കി സേവ് ചെയ്യുക.",
+  "enforceStudentDataVerifyError": "പ്രൊഫൈൽ വിവരങ്ങൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക."
 }

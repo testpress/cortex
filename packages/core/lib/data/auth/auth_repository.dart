@@ -137,6 +137,10 @@ class AuthRepository {
     return _apiService.resetPassword(email: email);
   }
 
+  Future<bool> checkStudentDataCollected() async {
+    return _apiService.checkStudentDataCollected();
+  }
+
   Future<void> _clearToken() async {
     await _localDataSource.clearToken();
   }

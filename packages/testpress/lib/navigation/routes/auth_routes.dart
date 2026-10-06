@@ -44,17 +44,25 @@ class AuthRoutes {
       return '/onboarding';
     }
 
+    if (bootstrapState == BootstrapState.enforceStudentData) {
+      if (path == '/enforce-student-data') return null;
+      return '/enforce-student-data';
+    }
+
     if (bootstrapState == BootstrapState.authenticated) {
-      if (isAuthRoute) return '/home';
+      if (isAuthRoute || path == '/enforce-student-data') return '/home';
       return null;
     }
 
     // Unauthenticated
     if (!isAuthRoute) return '/login';
 
-    // /onboarding and /connection-error are in _authPaths so !isAuthRoute won't catch it —
-    // an unauthenticated user landing here must go to login.
-    if (path == '/onboarding' || path == '/connection-error') return '/login';
+    // /onboarding, /connection-error, and /enforce-student-data - unauthenticated user landing here must go to login.
+    if (path == '/onboarding' ||
+        path == '/connection-error' ||
+        path == '/enforce-student-data') {
+      return '/login';
+    }
 
     return null;
   }
@@ -118,6 +126,14 @@ class AuthRoutes {
           LoginActivityScreen(restrictionMessage: extra?['message'] as String?),
         );
       },
+    ),
+    GoRoute(
+      path: '/enforce-student-data',
+      pageBuilder: (context, state) => slideTransitionPage(
+        context,
+        state.pageKey,
+        const EnforceStudentDataScreen(),
+      ),
     ),
   ];
 }

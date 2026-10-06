@@ -226,6 +226,56 @@ void main() {
         interceptor.onError(err3, createHandler());
         expect(sessionExpiredCalls.length, 2);
       });
+
+      test(
+        'triggers onEnforceStudentDataRequired when response is 302 to /settings/force/',
+        () {
+          bool enforceTriggered = false;
+          final interceptor = AuthInterceptor(
+            getToken: () async => 'token',
+            onEnforceStudentDataRequired: () => enforceTriggered = true,
+          );
+
+          final err = DioException(
+            requestOptions: RequestOptions(path: '/api/v3/dashboard/'),
+            response: Response(
+              requestOptions: RequestOptions(path: '/api/v3/dashboard/'),
+              statusCode: 302,
+              headers: Headers.fromMap({
+                'location': ['/settings/force/'],
+              }),
+            ),
+          );
+
+          interceptor.onError(err, createHandler());
+          expect(enforceTriggered, isTrue);
+        },
+      );
+
+      test(
+        'does not trigger onEnforceStudentDataRequired when 302 is to another location',
+        () {
+          bool enforceTriggered = false;
+          final interceptor = AuthInterceptor(
+            getToken: () async => 'token',
+            onEnforceStudentDataRequired: () => enforceTriggered = true,
+          );
+
+          final err = DioException(
+            requestOptions: RequestOptions(path: '/api/v3/dashboard/'),
+            response: Response(
+              requestOptions: RequestOptions(path: '/api/v3/dashboard/'),
+              statusCode: 302,
+              headers: Headers.fromMap({
+                'location': ['/other/redirect/'],
+              }),
+            ),
+          );
+
+          interceptor.onError(err, createHandler());
+          expect(enforceTriggered, isFalse);
+        },
+      );
     });
   });
 }

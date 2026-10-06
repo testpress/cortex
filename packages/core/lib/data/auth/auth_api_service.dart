@@ -140,6 +140,27 @@ class AuthApiService {
     }
   }
 
+  Future<bool> checkStudentDataCollected() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.checkStudentDataPermission);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return (data['is_data_collected'] as bool?) ?? true;
+      }
+      return true;
+    } on DioException catch (error, stackTrace) {
+      if (error.response?.statusCode == 302) {
+        return false;
+      }
+      _sentryService.captureException(
+        error,
+        stackTrace: stackTrace,
+        tags: const {'feature': 'check_student_data_permission'},
+      );
+      return true;
+    }
+  }
+
   AuthApiResult _parseSession(Map<String, dynamic> body) {
     final authToken = (body['token'] ?? '').toString();
 

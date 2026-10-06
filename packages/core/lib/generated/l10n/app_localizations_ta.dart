@@ -3583,4 +3583,21 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get dashboardLiveClassCancelled =>
       'இந்த வகுப்பு ரத்து செய்யப்பட்டுள்ளது';
+
+  @override
+  String get enforceStudentDataTitle => 'முழுமையான சுயவிவரம்';
+
+  @override
+  String get enforceStudentDataLogout => 'வெளியேறு';
+
+  @override
+  String get enforceStudentDataContinue => 'பயன்பாட்டிற்குத் தொடரவும்';
+
+  @override
+  String get enforceStudentDataIncomplete =>
+      'உங்கள் விவரங்களை முதலில் பூர்த்தி செய்து சேமிக்கவும்.';
+
+  @override
+  String get enforceStudentDataVerifyError =>
+      'சுயவிவர விவரங்களைச் சரிபார்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 }

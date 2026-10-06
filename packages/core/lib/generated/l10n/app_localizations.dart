@@ -6364,6 +6364,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This class has been cancelled'**
   String get dashboardLiveClassCancelled;
+
+  /// Header title on the enforce student data screen
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Profile'**
+  String get enforceStudentDataTitle;
+
+  /// Logout button label on the enforce student data screen
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get enforceStudentDataLogout;
+
+  /// Primary action button to proceed after completing student data form
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to App'**
+  String get enforceStudentDataContinue;
+
+  /// Toast shown when the student taps Continue but the form is still incomplete
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete and save your details first.'**
+  String get enforceStudentDataIncomplete;
+
+  /// Toast shown when the permission check API call fails
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify profile details. Please try again.'**
+  String get enforceStudentDataVerifyError;
 }
 
 class _AppLocalizationsDelegate

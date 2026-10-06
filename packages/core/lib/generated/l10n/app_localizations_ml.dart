@@ -3584,4 +3584,21 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get dashboardLiveClassCancelled => 'ഈ ക്ലാസ് റദ്ദാക്കി';
+
+  @override
+  String get enforceStudentDataTitle => 'പ്രൊഫൈൽ പൂർത്തിയാക്കുക';
+
+  @override
+  String get enforceStudentDataLogout => 'ലോഗ്ഔട്ട്';
+
+  @override
+  String get enforceStudentDataContinue => 'ആപ്പിലേക്ക് തുടരുക';
+
+  @override
+  String get enforceStudentDataIncomplete =>
+      'ദയവായി ആദ്യം നിങ്ങളുടെ വിവരങ്ങൾ പൂർത്തിയാക്കി സേവ് ചെയ്യുക.';
+
+  @override
+  String get enforceStudentDataVerifyError =>
+      'പ്രൊഫൈൽ വിവരങ്ങൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.';
 }

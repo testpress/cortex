@@ -15,6 +15,8 @@ class ApiEndpoints {
   static const String resetPassword = '/api/v2.3/password/reset/';
   static const String presignedSsoUrl = '/api/v2.3/presigned_sso_url/';
   static const String userProfile = '/api/v2.5/me/';
+  static const String checkStudentDataPermission =
+      '/api/v2.3/me/check_permission/';
   static const String loginActivity = '/api/v2.3/me/login_activity/';
   static const String productCategories = '/api/v2.5/products/categories/';
   static const String products = '/api/v3/products/';

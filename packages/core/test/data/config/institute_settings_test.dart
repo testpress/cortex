@@ -23,6 +23,15 @@ void main() {
 
       expect(settings.videoWatermarkType, isNull);
       expect(settings.videoWatermarkPosition, isNull);
+      expect(settings.forceStudentData, isFalse);
+    });
+
+    test('parses force_student_data correctly', () {
+      final json = {'name': 'Test Institute', 'force_student_data': true};
+
+      final settings = InstituteSettings.fromJson(json);
+
+      expect(settings.forceStudentData, isTrue);
     });
   });
 }

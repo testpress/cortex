@@ -103,6 +103,7 @@ class _AppErrorViewState extends State<AppErrorView> {
         case ApiErrorType.rateLimited:
           displayTitle ??= l10n.errorRateLimitedTitle;
           break;
+        case ApiErrorType.enforceStudentData:
         case ApiErrorType.badRequest:
         case ApiErrorType.malformedResponse:
         case ApiErrorType.unknown:
