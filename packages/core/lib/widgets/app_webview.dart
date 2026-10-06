@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+export 'package:webview_flutter/webview_flutter.dart'
+    show NavigationDecision, NavigationRequest;
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:file_picker/file_picker.dart';
@@ -30,6 +32,7 @@ class AppWebView extends ConsumerStatefulWidget {
     this.showHeader = false,
     this.useSafeArea = true,
     this.onNavigationRequest,
+    this.onPageFinished,
   });
 
   final String url;
@@ -40,6 +43,7 @@ class AppWebView extends ConsumerStatefulWidget {
   final bool useSafeArea;
   final FutureOr<NavigationDecision> Function(NavigationRequest request)?
   onNavigationRequest;
+  final void Function(String url)? onPageFinished;
 
   /// Helper to construct headers with auth token for secure requests.
   @visibleForTesting
@@ -194,6 +198,7 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
               }, true);
             ''');
                 } catch (_) {}
+                widget.onPageFinished?.call(url);
               },
               onWebResourceError: (error) {
                 // Ignore subresource failures or cancelled loads due to redirects/navigation

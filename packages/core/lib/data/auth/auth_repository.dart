@@ -137,6 +137,16 @@ class AuthRepository {
     return _apiService.resetPassword(email: email);
   }
 
+  /// Checks whether student profile data has been collected when enforced by institute settings.
+  ///
+  /// Delegates to [AuthApiService.checkStudentDataCollected]. Fails open on
+  /// transient network or server errors to prevent blocking user entry; any
+  /// truly incomplete profiles will be reactively caught by [AuthInterceptor] on
+  /// subsequent API requests.
+  Future<bool> checkStudentDataCollected() async {
+    return _apiService.checkStudentDataCollected();
+  }
+
   Future<void> _clearToken() async {
     await _localDataSource.clearToken();
   }

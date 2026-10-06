@@ -8,6 +8,7 @@ import '../data/exceptions/api_exception.dart';
 class AuthInterceptor extends Interceptor {
   final Future<String?> Function() getToken;
   final void Function(String message)? onSessionExpired;
+  final void Function()? onEnforceStudentDataRequired;
   final bool Function()? isLoggingOut;
   final bool Function()? isAuthenticated;
   bool _sessionExpiryTriggered = false;
@@ -25,6 +26,7 @@ class AuthInterceptor extends Interceptor {
   AuthInterceptor({
     required this.getToken,
     this.onSessionExpired,
+    this.onEnforceStudentDataRequired,
     this.isLoggingOut,
     this.isAuthenticated,
   });
@@ -91,6 +93,11 @@ class AuthInterceptor extends Interceptor {
           // resolves an empty message to a localized fallback at render time.
           onSessionExpired?.call(apiException.message);
         }
+      }
+    } else if (err.response?.statusCode == 302) {
+      final location = err.response?.headers.value('location') ?? '';
+      if (location.contains('/settings/force/')) {
+        onEnforceStudentDataRequired?.call();
       }
     }
     super.onError(err, handler);

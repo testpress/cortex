@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
@@ -9,6 +11,8 @@ import 'package:testpress/navigation/bootstrap_provider.dart';
 import 'package:testpress/providers/initialization_provider.dart';
 import 'package:testpress/screens/connection_error_screen.dart';
 
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
+
 // ---------------------------------------------------------------------------
 // Minimal Auth mocks (same pattern as bootstrap_provider_test.dart)
 // ---------------------------------------------------------------------------
@@ -17,7 +21,109 @@ class _AuthLoading extends Auth {
   FutureOr<bool> build() => Completer<bool>().future; // never resolves
 }
 
+class _FakePlatformWebViewController extends PlatformWebViewController {
+  _FakePlatformWebViewController(super.params) : super.implementation();
+
+  @override
+  Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
+
+  @override
+  Future<void> setPlatformNavigationDelegate(
+    PlatformNavigationDelegate handler,
+  ) async {}
+
+  @override
+  Future<void> setUserAgent(String? userAgent) async {}
+
+  @override
+  Future<String?> getUserAgent() async => 'MockUserAgent';
+
+  @override
+  Future<void> setOnConsoleMessage(
+    void Function(JavaScriptConsoleMessage consoleMessage) onConsoleMessage,
+  ) async {}
+
+  @override
+  Future<void> loadRequest(LoadRequestParams params) async {}
+}
+
+class _FakePlatformWebViewWidget extends PlatformWebViewWidget {
+  _FakePlatformWebViewWidget(super.params) : super.implementation();
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}
+
+class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
+  _FakePlatformNavigationDelegate(super.params) : super.implementation();
+
+  @override
+  Future<void> setOnProgress(void Function(int progress) onProgress) async {}
+
+  @override
+  Future<void> setOnPageStarted(
+    void Function(String url) onPageStarted,
+  ) async {}
+
+  @override
+  Future<void> setOnPageFinished(
+    void Function(String url) onPageFinished,
+  ) async {}
+
+  @override
+  Future<void> setOnWebResourceError(
+    void Function(WebResourceError error) onWebResourceError,
+  ) async {}
+
+  @override
+  Future<void> setOnNavigationRequest(
+    FutureOr<NavigationDecision> Function(NavigationRequest request)
+    onNavigationRequest,
+  ) async {}
+
+  @override
+  Future<void> setOnUrlChange(
+    void Function(UrlChange change) onUrlChange,
+  ) async {}
+
+  @override
+  Future<void> setOnHttpAuthRequest(
+    void Function(HttpAuthRequest request) onHttpAuthRequest,
+  ) async {}
+
+  @override
+  Future<void> setOnHttpError(
+    void Function(HttpResponseError error) onHttpError,
+  ) async {}
+}
+
+class _FakeWebViewPlatform extends WebViewPlatform {
+  @override
+  PlatformWebViewController createPlatformWebViewController(
+    PlatformWebViewControllerCreationParams params,
+  ) {
+    return _FakePlatformWebViewController(params);
+  }
+
+  @override
+  PlatformNavigationDelegate createPlatformNavigationDelegate(
+    PlatformNavigationDelegateCreationParams params,
+  ) {
+    return _FakePlatformNavigationDelegate(params);
+  }
+
+  @override
+  PlatformWebViewWidget createPlatformWebViewWidget(
+    PlatformWebViewWidgetCreationParams params,
+  ) {
+    return _FakePlatformWebViewWidget(params);
+  }
+}
+
 void main() {
+  setUpAll(() {
+    WebViewPlatform.instance = _FakeWebViewPlatform();
+  });
   // -------------------------------------------------------------------------
   // buildPrimaryNavigationItems
   // -------------------------------------------------------------------------
@@ -245,6 +351,42 @@ void main() {
           '/connection-error',
         );
         expect(find.byType(ConnectionErrorScreen), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'navigates to /enforce-student-data when bootstrapState is enforceStudentData',
+      (tester) async {
+        final container = ProviderContainer(
+          overrides: [
+            cachedAuthFlagProvider.overrideWithValue(true),
+            bootstrapProvider.overrideWithValue(
+              BootstrapState.enforceStudentData,
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final router = container.read(goRouterProvider);
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: DesignProvider(
+              config: DesignConfig.light(),
+              child: MaterialApp.router(
+                routerConfig: router,
+                localizationsDelegates: LocalizationProvider.delegates,
+                supportedLocales: LocalizationProvider.supportedLocales,
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        expect(
+          router.routeInformationProvider.value.uri.path,
+          '/enforce-student-data',
+        );
       },
     );
   });

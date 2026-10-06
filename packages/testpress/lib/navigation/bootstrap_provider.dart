@@ -4,7 +4,13 @@ import '../providers/initialization_provider.dart';
 
 part 'bootstrap_provider.g.dart';
 
-enum BootstrapState { loading, authenticated, unauthenticated, error }
+enum BootstrapState {
+  loading,
+  authenticated,
+  unauthenticated,
+  enforceStudentData,
+  error,
+}
 
 @riverpod
 BootstrapState bootstrap(BootstrapRef ref) {
@@ -15,6 +21,21 @@ BootstrapState bootstrap(BootstrapRef ref) {
       return BootstrapState.loading;
     }
     if (authState.valueOrNull == true) {
+      final enforceRequired = ref.watch(enforceStudentDataRequiredProvider);
+      if (enforceRequired) {
+        return BootstrapState.enforceStudentData;
+      }
+
+      if (settings.forceStudentData) {
+        final dataCollected = ref.watch(studentDataCollectedProvider);
+        if (dataCollected.isLoading) {
+          return BootstrapState.loading;
+        }
+        if (dataCollected.valueOrNull == false) {
+          return BootstrapState.enforceStudentData;
+        }
+      }
+
       return BootstrapState.authenticated;
     }
     return BootstrapState.unauthenticated;

@@ -23,6 +23,9 @@ enum ApiErrorType {
   /// 429 Too Many Requests
   rateLimited,
 
+  /// 302 Redirect to /settings/force/
+  enforceStudentData,
+
   /// 5xx Server errors
   serverError,
 
@@ -72,6 +75,19 @@ class ApiException implements Exception {
       final statusCode = error.response?.statusCode;
       final data = error.response?.data;
       final backendMessage = extractApiMessage(data);
+
+      if (statusCode == 302) {
+        final location = error.response?.headers.value('location') ?? '';
+        if (location.contains('/settings/force/')) {
+          return ApiException(
+            'Student profile update is required.',
+            type: ApiErrorType.enforceStudentData,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          );
+        }
+      }
 
       if (statusCode == 400 || statusCode == 422) {
         return ApiException(

@@ -115,4 +115,69 @@ void main() {
       expect(state, BootstrapState.error);
     },
   );
+
+  test(
+    'yields enforceStudentData when forceStudentData is true and student data is not collected',
+    () async {
+      final enforcedSettings = InstituteSettings.fromJson(const {
+        'force_student_data': true,
+      });
+
+      final container = ProviderContainer(
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enforcedSettings),
+          authProvider.overrideWith(MockAuthAuthenticated.new),
+          studentDataCollectedProvider.overrideWith((ref) => false),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(authProvider.future);
+
+      final state = container.read(bootstrapProvider);
+      expect(state, BootstrapState.enforceStudentData);
+    },
+  );
+
+  test(
+    'yields authenticated when forceStudentData is true and student data is collected',
+    () async {
+      final enforcedSettings = InstituteSettings.fromJson(const {
+        'force_student_data': true,
+      });
+
+      final container = ProviderContainer(
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enforcedSettings),
+          authProvider.overrideWith(MockAuthAuthenticated.new),
+          studentDataCollectedProvider.overrideWith((ref) => true),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(authProvider.future);
+
+      final state = container.read(bootstrapProvider);
+      expect(state, BootstrapState.authenticated);
+    },
+  );
+
+  test(
+    'yields enforceStudentData when enforceStudentDataRequiredProvider is true',
+    () async {
+      final container = ProviderContainer(
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => dummySettings),
+          authProvider.overrideWith(MockAuthAuthenticated.new),
+          enforceStudentDataRequiredProvider.overrideWith((ref) => true),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(authProvider.future);
+
+      final state = container.read(bootstrapProvider);
+      expect(state, BootstrapState.enforceStudentData);
+    },
+  );
 }

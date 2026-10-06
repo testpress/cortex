@@ -3529,4 +3529,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboardLiveClassCancelled => 'This class has been cancelled';
+
+  @override
+  String get enforceStudentDataTitle => 'Complete Profile';
+
+  @override
+  String get enforceStudentDataLogout => 'Logout';
+
+  @override
+  String get enforceStudentDataContinue => 'Continue to App';
+
+  @override
+  String get enforceStudentDataIncomplete =>
+      'Please complete and save your details first.';
+
+  @override
+  String get enforceStudentDataVerifyError =>
+      'Unable to verify profile details. Please try again.';
 }

@@ -140,6 +140,43 @@ class AuthApiService {
     }
   }
 
+  /// Checks whether mandatory student profile data has been collected.
+  ///
+  /// Calls `GET /api/v2.3/me/check_permission/`.
+  /// - Returns `false` when `is_data_collected` is false or if the request
+  ///   is redirected with HTTP 302 to `/settings/force/mobile/`.
+  /// - **Fails open (returns `true`)** on non-302 errors (e.g. network timeout,
+  ///   connectivity drop, 5xx): this is intentional to avoid blocking authenticated
+  ///   students from accessing the app during transient network or backend glitches.
+  ///   If the student's profile is actually incomplete, subsequent API requests
+  ///   will still trigger a 302 redirect from the backend, which [AuthInterceptor]
+  ///   catches reactively as a secondary line of defense.
+  Future<bool> checkStudentDataCollected() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.checkStudentDataPermission);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return (data['is_data_collected'] as bool?) ?? true;
+      }
+      return true;
+    } on DioException catch (error, stackTrace) {
+      if (error.response?.statusCode == 302) {
+        final location = error.response?.headers.value('location') ?? '';
+        if (location.contains('/settings/force/')) {
+          return false;
+        }
+      }
+      _sentryService.captureException(
+        error,
+        stackTrace: stackTrace,
+        tags: const {'feature': 'check_student_data_permission'},
+      );
+      // Intentionally fails open to avoid blocking users during transient network issues.
+      // Subsequent API calls are still gated reactively via AuthInterceptor (302 handler).
+      return true;
+    }
+  }
+
   AuthApiResult _parseSession(Map<String, dynamic> body) {
     final authToken = (body['token'] ?? '').toString();
 
