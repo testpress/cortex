@@ -102,7 +102,19 @@ class CourseCard extends StatelessWidget {
                     '${L10n.of(context).curriculumChaptersCount(course.chapterCount)} · ${L10n.of(context).courseContentsCount(course.totalContents)}',
                     color: design.colors.textSecondary,
                   ),
-                  if (_isMobileAllowed) ...[
+                  if (course.requiresExternalRegistration &&
+                      course.externalLinkLabel?.isNotEmpty == true) ...[
+                    SizedBox(height: design.spacing.md),
+                    AppButton(
+                      label: course.externalLinkLabel!,
+                      variant: AppButtonVariant.secondary,
+                      height: 36,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                      ),
+                      onPressed: onTap,
+                    ),
+                  ] else if (_isMobileAllowed) ...[
                     SizedBox(height: design.spacing.md),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

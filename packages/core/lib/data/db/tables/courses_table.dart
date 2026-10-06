@@ -17,6 +17,13 @@ class CoursesTable extends Table {
   BoolColumn get isChaptersSynced =>
       boolean().withDefault(const Constant(false))();
 
+  /// SSO enrollment URL when a course requires external registration.
+  /// Null when the course is fully approved and accessible.
+  TextColumn get externalContentLink => text().nullable()();
+
+  /// Button label text (e.g. "REQUEST PACKAGE", "Pending Approval").
+  TextColumn get externalLinkLabel => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

@@ -10,6 +10,7 @@ import '../widgets/chapter_curriculum_item.dart';
 import '../widgets/curriculum_header.dart';
 import '../widgets/lesson_list_item.dart';
 import '../widgets/chapters_filter_rules.dart';
+import 'course_enrollment_screen.dart';
 
 /// Screen displaying the full curriculum (chapters and lessons) of a course.
 class ChaptersListPage extends ConsumerStatefulWidget {
@@ -106,6 +107,18 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
             data: (c) => c,
             orElse: () => null,
           );
+
+          if (course != null &&
+              course.requiresExternalRegistration &&
+              course.externalContentLink != null &&
+              course.externalContentLink!.trim().isNotEmpty) {
+            return CourseEnrollmentScreen(
+              url: course.externalContentLink!,
+              title: course.externalLinkLabel?.isNotEmpty == true
+                  ? course.externalLinkLabel!
+                  : course.title,
+            );
+          }
 
           // Show lessons ONLY when the route explicitly says this is a leaf
           // (set from chapter.isLeaf in the API) or a filter tab is active.

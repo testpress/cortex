@@ -1207,6 +1207,8 @@ class CourseRepository {
         allowedDevices: _safeDecodeList<String>(row.allowedDevices),
         examsCount: row.examsCount,
         isChaptersSynced: row.isChaptersSynced,
+        externalContentLink: row.externalContentLink,
+        externalLinkLabel: row.externalLinkLabel,
       );
 
   List<T> _safeDecodeList<T>(String? json) {
@@ -1238,6 +1240,8 @@ class CourseRepository {
         examsCount: Value(dto.examsCount),
         orderIndex: Value(dto.order),
         isChaptersSynced: Value(dto.isChaptersSynced),
+        externalContentLink: Value(dto.externalContentLink),
+        externalLinkLabel: Value(dto.externalLinkLabel),
       );
 
   ChapterDto rowToChapterDto(ChaptersTableData row) => ChapterDto(

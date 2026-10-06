@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../providers/course_list_provider.dart';
+import '../screens/course_enrollment_screen.dart';
 import '../widgets/course_card.dart';
 import '../widgets/lesson_list_item.dart';
 
@@ -70,9 +71,30 @@ class StudyContentList extends ConsumerWidget {
                           isSkeleton: isSkeleton,
                           onTap: isSkeleton
                               ? null
-                              : () => context.push(
-                                    '/study/course/${course.id}/chapters',
-                                  ),
+                              : () {
+                                  if (course.requiresExternalRegistration &&
+                                      course.externalContentLink != null &&
+                                      course.externalContentLink!
+                                          .trim()
+                                          .isNotEmpty) {
+                                    Navigator.of(context).push(
+                                      AppRoute(
+                                        page: CourseEnrollmentScreen(
+                                          url: course.externalContentLink!,
+                                          title: course.externalLinkLabel
+                                                      ?.isNotEmpty ==
+                                                  true
+                                              ? course.externalLinkLabel!
+                                              : course.title,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    context.push(
+                                      '/study/course/${course.id}/chapters',
+                                    );
+                                  }
+                                },
                         ),
                       );
                     },

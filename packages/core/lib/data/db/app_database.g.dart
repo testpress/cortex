@@ -153,6 +153,29 @@ class $CoursesTableTable extends CoursesTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _externalContentLinkMeta =
+      const VerificationMeta('externalContentLink');
+  @override
+  late final GeneratedColumn<String> externalContentLink =
+      GeneratedColumn<String>(
+        'external_content_link',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _externalLinkLabelMeta = const VerificationMeta(
+    'externalLinkLabel',
+  );
+  @override
+  late final GeneratedColumn<String> externalLinkLabel =
+      GeneratedColumn<String>(
+        'external_link_label',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -168,6 +191,8 @@ class $CoursesTableTable extends CoursesTable
     examsCount,
     orderIndex,
     isChaptersSynced,
+    externalContentLink,
+    externalLinkLabel,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -279,6 +304,24 @@ class $CoursesTableTable extends CoursesTable
         ),
       );
     }
+    if (data.containsKey('external_content_link')) {
+      context.handle(
+        _externalContentLinkMeta,
+        externalContentLink.isAcceptableOrUnknown(
+          data['external_content_link']!,
+          _externalContentLinkMeta,
+        ),
+      );
+    }
+    if (data.containsKey('external_link_label')) {
+      context.handle(
+        _externalLinkLabelMeta,
+        externalLinkLabel.isAcceptableOrUnknown(
+          data['external_link_label']!,
+          _externalLinkLabelMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -340,6 +383,14 @@ class $CoursesTableTable extends CoursesTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_chapters_synced'],
       )!,
+      externalContentLink: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_content_link'],
+      ),
+      externalLinkLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_link_label'],
+      ),
     );
   }
 
@@ -364,6 +415,13 @@ class CoursesTableData extends DataClass
   final int examsCount;
   final int orderIndex;
   final bool isChaptersSynced;
+
+  /// SSO enrollment URL when a course requires external registration.
+  /// Null when the course is fully approved and accessible.
+  final String? externalContentLink;
+
+  /// Button label text (e.g. "REQUEST PACKAGE", "Pending Approval").
+  final String? externalLinkLabel;
   const CoursesTableData({
     required this.id,
     required this.title,
@@ -378,6 +436,8 @@ class CoursesTableData extends DataClass
     required this.examsCount,
     required this.orderIndex,
     required this.isChaptersSynced,
+    this.externalContentLink,
+    this.externalLinkLabel,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -401,6 +461,12 @@ class CoursesTableData extends DataClass
     map['exams_count'] = Variable<int>(examsCount);
     map['order_index'] = Variable<int>(orderIndex);
     map['is_chapters_synced'] = Variable<bool>(isChaptersSynced);
+    if (!nullToAbsent || externalContentLink != null) {
+      map['external_content_link'] = Variable<String>(externalContentLink);
+    }
+    if (!nullToAbsent || externalLinkLabel != null) {
+      map['external_link_label'] = Variable<String>(externalLinkLabel);
+    }
     return map;
   }
 
@@ -423,6 +489,12 @@ class CoursesTableData extends DataClass
       examsCount: Value(examsCount),
       orderIndex: Value(orderIndex),
       isChaptersSynced: Value(isChaptersSynced),
+      externalContentLink: externalContentLink == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalContentLink),
+      externalLinkLabel: externalLinkLabel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalLinkLabel),
     );
   }
 
@@ -445,6 +517,12 @@ class CoursesTableData extends DataClass
       examsCount: serializer.fromJson<int>(json['examsCount']),
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
       isChaptersSynced: serializer.fromJson<bool>(json['isChaptersSynced']),
+      externalContentLink: serializer.fromJson<String?>(
+        json['externalContentLink'],
+      ),
+      externalLinkLabel: serializer.fromJson<String?>(
+        json['externalLinkLabel'],
+      ),
     );
   }
   @override
@@ -464,6 +542,8 @@ class CoursesTableData extends DataClass
       'examsCount': serializer.toJson<int>(examsCount),
       'orderIndex': serializer.toJson<int>(orderIndex),
       'isChaptersSynced': serializer.toJson<bool>(isChaptersSynced),
+      'externalContentLink': serializer.toJson<String?>(externalContentLink),
+      'externalLinkLabel': serializer.toJson<String?>(externalLinkLabel),
     };
   }
 
@@ -481,6 +561,8 @@ class CoursesTableData extends DataClass
     int? examsCount,
     int? orderIndex,
     bool? isChaptersSynced,
+    Value<String?> externalContentLink = const Value.absent(),
+    Value<String?> externalLinkLabel = const Value.absent(),
   }) => CoursesTableData(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -497,6 +579,12 @@ class CoursesTableData extends DataClass
     examsCount: examsCount ?? this.examsCount,
     orderIndex: orderIndex ?? this.orderIndex,
     isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
+    externalContentLink: externalContentLink.present
+        ? externalContentLink.value
+        : this.externalContentLink,
+    externalLinkLabel: externalLinkLabel.present
+        ? externalLinkLabel.value
+        : this.externalLinkLabel,
   );
   CoursesTableData copyWithCompanion(CoursesTableCompanion data) {
     return CoursesTableData(
@@ -529,6 +617,12 @@ class CoursesTableData extends DataClass
       isChaptersSynced: data.isChaptersSynced.present
           ? data.isChaptersSynced.value
           : this.isChaptersSynced,
+      externalContentLink: data.externalContentLink.present
+          ? data.externalContentLink.value
+          : this.externalContentLink,
+      externalLinkLabel: data.externalLinkLabel.present
+          ? data.externalLinkLabel.value
+          : this.externalLinkLabel,
     );
   }
 
@@ -547,7 +641,9 @@ class CoursesTableData extends DataClass
           ..write('allowedDevices: $allowedDevices, ')
           ..write('examsCount: $examsCount, ')
           ..write('orderIndex: $orderIndex, ')
-          ..write('isChaptersSynced: $isChaptersSynced')
+          ..write('isChaptersSynced: $isChaptersSynced, ')
+          ..write('externalContentLink: $externalContentLink, ')
+          ..write('externalLinkLabel: $externalLinkLabel')
           ..write(')'))
         .toString();
   }
@@ -567,6 +663,8 @@ class CoursesTableData extends DataClass
     examsCount,
     orderIndex,
     isChaptersSynced,
+    externalContentLink,
+    externalLinkLabel,
   );
   @override
   bool operator ==(Object other) =>
@@ -584,7 +682,9 @@ class CoursesTableData extends DataClass
           other.allowedDevices == this.allowedDevices &&
           other.examsCount == this.examsCount &&
           other.orderIndex == this.orderIndex &&
-          other.isChaptersSynced == this.isChaptersSynced);
+          other.isChaptersSynced == this.isChaptersSynced &&
+          other.externalContentLink == this.externalContentLink &&
+          other.externalLinkLabel == this.externalLinkLabel);
 }
 
 class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
@@ -601,6 +701,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
   final Value<int> examsCount;
   final Value<int> orderIndex;
   final Value<bool> isChaptersSynced;
+  final Value<String?> externalContentLink;
+  final Value<String?> externalLinkLabel;
   final Value<int> rowid;
   const CoursesTableCompanion({
     this.id = const Value.absent(),
@@ -616,6 +718,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.examsCount = const Value.absent(),
     this.orderIndex = const Value.absent(),
     this.isChaptersSynced = const Value.absent(),
+    this.externalContentLink = const Value.absent(),
+    this.externalLinkLabel = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CoursesTableCompanion.insert({
@@ -632,6 +736,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     this.examsCount = const Value.absent(),
     this.orderIndex = const Value.absent(),
     this.isChaptersSynced = const Value.absent(),
+    this.externalContentLink = const Value.absent(),
+    this.externalLinkLabel = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -651,6 +757,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Expression<int>? examsCount,
     Expression<int>? orderIndex,
     Expression<bool>? isChaptersSynced,
+    Expression<String>? externalContentLink,
+    Expression<String>? externalLinkLabel,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -667,6 +775,9 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       if (examsCount != null) 'exams_count': examsCount,
       if (orderIndex != null) 'order_index': orderIndex,
       if (isChaptersSynced != null) 'is_chapters_synced': isChaptersSynced,
+      if (externalContentLink != null)
+        'external_content_link': externalContentLink,
+      if (externalLinkLabel != null) 'external_link_label': externalLinkLabel,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -685,6 +796,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     Value<int>? examsCount,
     Value<int>? orderIndex,
     Value<bool>? isChaptersSynced,
+    Value<String?>? externalContentLink,
+    Value<String?>? externalLinkLabel,
     Value<int>? rowid,
   }) {
     return CoursesTableCompanion(
@@ -701,6 +814,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
       examsCount: examsCount ?? this.examsCount,
       orderIndex: orderIndex ?? this.orderIndex,
       isChaptersSynced: isChaptersSynced ?? this.isChaptersSynced,
+      externalContentLink: externalContentLink ?? this.externalContentLink,
+      externalLinkLabel: externalLinkLabel ?? this.externalLinkLabel,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -747,6 +862,14 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
     if (isChaptersSynced.present) {
       map['is_chapters_synced'] = Variable<bool>(isChaptersSynced.value);
     }
+    if (externalContentLink.present) {
+      map['external_content_link'] = Variable<String>(
+        externalContentLink.value,
+      );
+    }
+    if (externalLinkLabel.present) {
+      map['external_link_label'] = Variable<String>(externalLinkLabel.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -769,6 +892,8 @@ class CoursesTableCompanion extends UpdateCompanion<CoursesTableData> {
           ..write('examsCount: $examsCount, ')
           ..write('orderIndex: $orderIndex, ')
           ..write('isChaptersSynced: $isChaptersSynced, ')
+          ..write('externalContentLink: $externalContentLink, ')
+          ..write('externalLinkLabel: $externalLinkLabel, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17359,6 +17484,8 @@ typedef $$CoursesTableTableCreateCompanionBuilder =
       Value<int> examsCount,
       Value<int> orderIndex,
       Value<bool> isChaptersSynced,
+      Value<String?> externalContentLink,
+      Value<String?> externalLinkLabel,
       Value<int> rowid,
     });
 typedef $$CoursesTableTableUpdateCompanionBuilder =
@@ -17376,6 +17503,8 @@ typedef $$CoursesTableTableUpdateCompanionBuilder =
       Value<int> examsCount,
       Value<int> orderIndex,
       Value<bool> isChaptersSynced,
+      Value<String?> externalContentLink,
+      Value<String?> externalLinkLabel,
       Value<int> rowid,
     });
 
@@ -17450,6 +17579,16 @@ class $$CoursesTableTableFilterComposer
 
   ColumnFilters<bool> get isChaptersSynced => $composableBuilder(
     column: $table.isChaptersSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalContentLink => $composableBuilder(
+    column: $table.externalContentLink,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalLinkLabel => $composableBuilder(
+    column: $table.externalLinkLabel,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -17527,6 +17666,16 @@ class $$CoursesTableTableOrderingComposer
     column: $table.isChaptersSynced,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get externalContentLink => $composableBuilder(
+    column: $table.externalContentLink,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get externalLinkLabel => $composableBuilder(
+    column: $table.externalLinkLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CoursesTableTableAnnotationComposer
@@ -17592,6 +17741,16 @@ class $$CoursesTableTableAnnotationComposer
     column: $table.isChaptersSynced,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get externalContentLink => $composableBuilder(
+    column: $table.externalContentLink,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get externalLinkLabel => $composableBuilder(
+    column: $table.externalLinkLabel,
+    builder: (column) => column,
+  );
 }
 
 class $$CoursesTableTableTableManager
@@ -17638,6 +17797,8 @@ class $$CoursesTableTableTableManager
                 Value<int> examsCount = const Value.absent(),
                 Value<int> orderIndex = const Value.absent(),
                 Value<bool> isChaptersSynced = const Value.absent(),
+                Value<String?> externalContentLink = const Value.absent(),
+                Value<String?> externalLinkLabel = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion(
                 id: id,
@@ -17653,6 +17814,8 @@ class $$CoursesTableTableTableManager
                 examsCount: examsCount,
                 orderIndex: orderIndex,
                 isChaptersSynced: isChaptersSynced,
+                externalContentLink: externalContentLink,
+                externalLinkLabel: externalLinkLabel,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -17670,6 +17833,8 @@ class $$CoursesTableTableTableManager
                 Value<int> examsCount = const Value.absent(),
                 Value<int> orderIndex = const Value.absent(),
                 Value<bool> isChaptersSynced = const Value.absent(),
+                Value<String?> externalContentLink = const Value.absent(),
+                Value<String?> externalLinkLabel = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CoursesTableCompanion.insert(
                 id: id,
@@ -17685,6 +17850,8 @@ class $$CoursesTableTableTableManager
                 examsCount: examsCount,
                 orderIndex: orderIndex,
                 isChaptersSynced: isChaptersSynced,
+                externalContentLink: externalContentLink,
+                externalLinkLabel: externalLinkLabel,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
