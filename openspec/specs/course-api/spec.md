@@ -3,20 +3,17 @@
 ## Purpose
 The Course API integrates the remote course catalog with the local Drift database, handling synchronization, pagination, and structural metadata fetching for all curriculum types.
 ## Requirements
-
-### Real Course API Integration
-The system SHALL fetch real course data from the course API and persist it into the local Drift database, including metadata for categorization, device compatibility, and user course completion statistics.
+### Requirement: Real Course API Integration
+The system SHALL fetch real course data from the course API and persist it into the local Drift database, including metadata for categorization, device compatibility, access approval links/labels, and user course completion statistics.
 
 #### Scenario: Fetching courses on Study tab entry
 - **WHEN** the user is authenticated and opens the Study tab
-- **THEN** the system makes a GET request to `/api/v3/courses/`
-- **AND** the response is mapped to `CourseDto`, including `tags`, `tag_ids`, `exams_count`, `allowed_devices`, and progress/completion metrics from `user_course_credits` (`course_completion_percentage` and `total_unique_attempts` mapped by `course_id`)
-- **AND** the data is upserted into the Drift `CoursesTable`
-- **AND** the UI observes the Drift stream and reflects the updated data including course completion percentage and lessons progress ratio
+- **THEN** the system makes a GET request to `/api/v3/courses/` (or paginated catalog endpoints)
+- **AND** the response is mapped to `CourseDto`, including `tags`, `tag_ids`, `exams_count`, `allowed_devices`, `external_content_link`, `external_link_label`, and progress/completion metrics from `user_course_credits`
+- **AND** the data is upserted into the Drift `CoursesTable` including `externalContentLink` and `externalLinkLabel`
+- **AND** the UI observes the Drift stream and reflects the updated data including course registration status and action button labels
 
----
-
-### Paginated Fetching
+### Requirement: Paginated Fetching
 The system SHALL support incremental loading of courses.
 
 #### Scenario: First page load
@@ -30,7 +27,7 @@ The system SHALL support incremental loading of courses.
 
 ---
 
-### Loading Experience
+### Requirement: Loading Experience
 The system SHALL surface loading state appropriately without blocking the UI unnecessarily.
 
 #### Scenario: First visit with empty cache
@@ -49,7 +46,7 @@ The system SHALL surface loading state appropriately without blocking the UI unn
 
 ---
 
-### Auth Gate
+### Requirement: Auth Gate
 The system SHALL NOT fetch courses before the user is authenticated.
 
 #### Scenario: Unauthenticated access
@@ -58,7 +55,7 @@ The system SHALL NOT fetch courses before the user is authenticated.
 
 ---
 
-### Authorization Header
+### Requirement: Authorization Header
 All API requests SHALL include the `Authorization` header.
 
 #### Scenario: Making an authenticated API call

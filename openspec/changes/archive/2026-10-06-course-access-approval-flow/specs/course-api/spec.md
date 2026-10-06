@@ -1,6 +1,6 @@
 ## MODIFIED Requirements
 
-### Real Course API Integration
+### Requirement: Real Course API Integration
 The system SHALL fetch real course data from the course API and persist it into the local Drift database, including metadata for categorization, device compatibility, access approval links/labels, and user course completion statistics.
 
 #### Scenario: Fetching courses on Study tab entry
