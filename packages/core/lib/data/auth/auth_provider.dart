@@ -53,6 +53,9 @@ final enforceStudentDataRequiredProvider = StateProvider<bool>((ref) => false);
 
 /// Checks whether student data has been collected when institute settings enforce it.
 final studentDataCollectedProvider = FutureProvider<bool>((ref) async {
+  final authState = ref.watch(authProvider);
+  if (authState.valueOrNull != true) return true;
+
   final authRepo = ref.watch(authRepositoryProvider);
   return authRepo.checkStudentDataCollected();
 });
@@ -75,6 +78,10 @@ final cachedAuthFlagProvider = Provider<bool>((ref) => false);
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   AuthRepository get _repository => ref.read(authRepositoryProvider);
+
+  void _resetEnforceStudentDataState() {
+    ref.read(enforceStudentDataRequiredProvider.notifier).state = false;
+  }
 
   /// Tracks the in-flight logout cleanup so login methods can wait for it
   /// before writing new session data to the DB — prevents stale cleanup from
@@ -100,6 +107,7 @@ class Auth extends _$Auth {
     await _cleanupFuture;
     await _repository.loginWithPassword(username: username, password: password);
     ref.read(sessionExpiredProvider.notifier).state = null;
+    _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
   }
@@ -108,6 +116,7 @@ class Auth extends _$Auth {
     await _cleanupFuture;
     await _repository.loginWithGoogle();
     ref.read(sessionExpiredProvider.notifier).state = null;
+    _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
   }
@@ -128,6 +137,7 @@ class Auth extends _$Auth {
       countryCode: countryCode,
     );
     ref.read(sessionExpiredProvider.notifier).state = null;
+    _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
   }
@@ -156,6 +166,7 @@ class Auth extends _$Auth {
       email: email,
     );
     ref.read(sessionExpiredProvider.notifier).state = null;
+    _resetEnforceStudentDataState();
 
     state = const AsyncData(true);
   }
@@ -178,6 +189,7 @@ class Auth extends _$Auth {
     } finally {
       ref.read(isLoggingOutProvider.notifier).state = false;
       ref.read(sessionExpiredProvider.notifier).state = null;
+      _resetEnforceStudentDataState();
     }
   }
 
@@ -192,6 +204,7 @@ class Auth extends _$Auth {
       await resetUseCase.execute();
 
       await _repository.logout();
+      _resetEnforceStudentDataState();
 
       // Clear the session-expired overlay before the state flip so the Login
       // screen never appears behind a stale session dialog.
@@ -199,6 +212,7 @@ class Auth extends _$Auth {
     } catch (e, stackTrace) {
       // Even on failure, clear the session overlay so the user isn’t stuck.
       ref.read(sessionExpiredProvider.notifier).state = null;
+      _resetEnforceStudentDataState();
       ref
           .read(sentryServiceProvider)
           .captureException(

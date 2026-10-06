@@ -31,7 +31,6 @@ class _EnforceStudentDataScreenState
 
       if (!isCollected) {
         if (!silentIfNotCollected && mounted) {
-          // W1: use L10n key
           AppToast.show(
             context,
             message: L10n.of(context).enforceStudentDataIncomplete,
@@ -52,7 +51,6 @@ class _EnforceStudentDataScreenState
     } catch (e, stack) {
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
       if (!silentIfNotCollected && mounted) {
-        // W1: use L10n key
         AppToast.show(
           context,
           message: L10n.of(context).enforceStudentDataVerifyError,
@@ -66,25 +64,60 @@ class _EnforceStudentDataScreenState
     }
   }
 
-  // W3: only fire verification when redirected AWAY from the enforce form
-  void _onPageFinished(String url) {
+  void _onPageFinished(String pageUrl, String initialUrl) {
     _pageLoadCount++;
-    if (_pageLoadCount > 1 && !url.contains('/settings/force/mobile')) {
+    if (_pageLoadCount <= 1) return;
+
+    final initialUri = Uri.tryParse(initialUrl);
+    final currentUri = Uri.tryParse(pageUrl);
+
+    if (initialUri == null || currentUri == null) return;
+
+    final isSameHost =
+        currentUri.host.isNotEmpty && currentUri.host == initialUri.host;
+
+    if (isSameHost &&
+        !currentUri.path.contains('/settings/force/mobile') &&
+        !currentUri.path.contains('/login')) {
       _handleFormCompleted(silentIfNotCollected: true);
     }
   }
 
-  FutureOr<NavigationDecision> _onNavigationRequest(NavigationRequest request) {
-    final uri = Uri.tryParse(request.url);
-    if (uri != null) {
-      final path = uri.path;
-      // If server redirects away from /settings/force/mobile/ (e.g. to / or /home or /settings/profile/),
-      // the form submission has completed successfully.
-      if (!path.contains('/settings/force/mobile')) {
-        _handleFormCompleted();
-        return NavigationDecision.prevent;
-      }
+  FutureOr<NavigationDecision> _onNavigationRequest(
+    NavigationRequest request,
+    String initialUrl,
+  ) {
+    // 1. Only process main-frame navigations (allow subframes, iframes, etc.)
+    if (!request.isMainFrame) {
+      return NavigationDecision.navigate;
     }
+
+    final initialUri = Uri.tryParse(initialUrl);
+    final targetUri = Uri.tryParse(request.url);
+
+    if (initialUri == null || targetUri == null) {
+      return NavigationDecision.navigate;
+    }
+
+    // 2. Restrict to same-host navigations (ignore external links, about:blank, etc.)
+    final isSameHost =
+        targetUri.host.isNotEmpty && targetUri.host == initialUri.host;
+    if (!isSameHost) {
+      return NavigationDecision.navigate;
+    }
+
+    // 3. Exclude login / session-expiry redirects
+    if (targetUri.path.contains('/login')) {
+      return NavigationDecision.navigate;
+    }
+
+    // 4. Same-host navigation redirected away from /settings/force/mobile/ (e.g. to / or /home)
+    // Verify with backend check_permission as source of truth.
+    if (!targetUri.path.contains('/settings/force/mobile')) {
+      _handleFormCompleted(silentIfNotCollected: true);
+      return NavigationDecision.prevent;
+    }
+
     return NavigationDecision.navigate;
   }
 
@@ -100,19 +133,18 @@ class _EnforceStudentDataScreenState
       child: Column(
         children: [
           AppHeader(
-            // W1: use L10n key
             title: l10n.enforceStudentDataTitle,
             actions: [
-              // W2: single onTap on AppSemantics.button; no inner GestureDetector
               AppSemantics.button(
                 label: l10n.enforceStudentDataLogout,
                 onTap: () => ref.read(authProvider.notifier).logout(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.sm,
-                    // S2 from review: ensure 48dp min touch target via vertical padding
-                    vertical: design.spacing.md,
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minHeight: 48,
+                    minWidth: 48,
                   ),
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -122,7 +154,6 @@ class _EnforceStudentDataScreenState
                         color: design.colors.error,
                       ),
                       SizedBox(width: design.spacing.xs),
-                      // W1: use L10n key
                       AppText.bodySmall(
                         l10n.enforceStudentDataLogout,
                         color: design.colors.error,
@@ -141,8 +172,9 @@ class _EnforceStudentDataScreenState
                     url: url,
                     showHeader: false,
                     useSafeArea: false,
-                    onNavigationRequest: _onNavigationRequest,
-                    onPageFinished: _onPageFinished,
+                    onNavigationRequest: (req) =>
+                        _onNavigationRequest(req, url),
+                    onPageFinished: (pageUrl) => _onPageFinished(pageUrl, url),
                   )
                 else
                   const Center(child: AppLoadingIndicator()),
@@ -168,7 +200,6 @@ class _EnforceStudentDataScreenState
             child: SafeArea(
               top: false,
               child: AppButton.primary(
-                // W1: use L10n key
                 label: l10n.enforceStudentDataContinue,
                 fullWidth: true,
                 loading: _isSubmitting,
