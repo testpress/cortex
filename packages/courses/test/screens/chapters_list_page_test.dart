@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
-import 'package:courses/providers/course_detail_provider.dart';
-import 'package:courses/screens/course_enrollment_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

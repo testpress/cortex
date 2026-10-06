@@ -113,16 +113,6 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     final visibleFilters = ChaptersFilterRules.getVisibleFilters();
     final activeFilter = _resolvedActiveFilter;
 
-    ref.listen<AsyncValue<CourseDto?>>(
-      courseDetailProvider(widget.courseId),
-      (previous, next) {
-        final course = next.valueOrNull;
-        if (course != null && course.requiresExternalRegistration) {
-          _redirectToEnrollment(course);
-        }
-      },
-    );
-
     final chaptersAsync = ref.watch(
       subChaptersProvider(widget.courseId, widget.parentId),
     );
@@ -136,6 +126,9 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
       _redirectToEnrollment(course);
       return Container(
         color: design.colors.canvas,
+        child: const Center(
+          child: AppLoadingIndicator(),
+        ),
       );
     }
 
