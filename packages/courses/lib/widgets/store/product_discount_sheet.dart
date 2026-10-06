@@ -78,9 +78,7 @@ class _ProductDiscountSheetState extends ConsumerState<ProductDiscountSheet> {
   }
 
   String _getErrorMessage(Object error) {
-    final serverErrorMessage = mounted
-        ? L10n.of(context).errorServerMessage
-        : 'The server is having trouble. Please try again later.';
+    final serverErrorMessage = L10n.of(context).errorServerMessage;
     if (error is ApiException) {
       if (error.type == ApiErrorType.serverError ||
           (error.statusCode != null && error.statusCode! >= 500)) {

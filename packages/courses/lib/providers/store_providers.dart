@@ -182,17 +182,7 @@ class ProductDiscountNotifier extends _$ProductDiscountNotifier {
       _appliedCouponCode = code;
       state = AsyncValue.data(updatedOrder);
     } catch (e, st) {
-      if (e is ApiException) {
-        if (e.type == ApiErrorType.serverError ||
-            (e.statusCode != null && e.statusCode! >= 500)) {
-          state = AsyncValue.error(e.message, st);
-        } else {
-          final extracted = ApiException.extractApiMessage(e.data);
-          state = AsyncValue.error(extracted ?? e.message, st);
-        }
-      } else {
-        state = AsyncValue.error(e, st);
-      }
+      state = AsyncValue.error(e, st);
     }
   }
 
