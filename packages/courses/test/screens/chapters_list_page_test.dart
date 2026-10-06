@@ -205,6 +205,84 @@ void main() {
       expect(navObserver.pushCount,
           2); // CourseEnrollmentScreen pushed to root navigator
       expect(find.byType(CourseEnrollmentScreen), findsOneWidget);
+
+      // Verify navigating back from enrollment screen lands back on StudyContentList
+      Navigator.of(
+        tester.element(find.byType(CourseEnrollmentScreen)),
+        rootNavigator: true,
+      ).pop();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CourseEnrollmentScreen), findsNothing);
+      expect(find.byType(StudyContentList), findsOneWidget);
+      expect(find.text('Approval Required Course'), findsOneWidget);
+    });
+
+    testWidgets(
+        'redirect replaces ChaptersListPage on root navigator so pop returns to parent screen',
+        (tester) async {
+      final navObserver = TestNavigatorObserver();
+
+      const approvalCourse = CourseDto(
+        id: 'course-1',
+        title: 'Approval Required Course',
+        colorIndex: 1,
+        chapterCount: 2,
+        totalContents: 5,
+        externalContentLink: 'https://example.com/sso/register?course=1',
+        externalLinkLabel: 'REQUEST PACKAGE',
+      );
+
+      late BuildContext savedContext;
+
+      await tester.pumpWidget(
+        wrap(
+          Builder(
+            builder: (ctx) {
+              savedContext = ctx;
+              return const Text('Parent Study Screen');
+            },
+          ),
+          navigatorObserver: navObserver,
+          overrides: [
+            courseDetailProvider('course-1').overrideWith(
+              (ref) => Stream.value(approvalCourse),
+            ),
+            subChaptersProvider('course-1', null).overrideWith(
+              (ref) => Stream.value([]),
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.text('Parent Study Screen'), findsOneWidget);
+
+      // Push ChaptersListPage on the root navigator (mimicking route navigation)
+      Navigator.of(savedContext, rootNavigator: true).push(
+        AppRoute(page: const ChaptersListPage(courseId: 'course-1')),
+      );
+
+      // Pump to trigger build, postFrameCallback, and pushReplacement
+      await tester.pump();
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      // Verify CourseEnrollmentScreen replaced ChaptersListPage
+      expect(find.byType(CourseEnrollmentScreen), findsOneWidget);
+      expect(find.byType(ChaptersListPage), findsNothing);
+
+      // Now pop from CourseEnrollmentScreen
+      Navigator.of(
+        tester.element(find.byType(CourseEnrollmentScreen)),
+        rootNavigator: true,
+      ).pop();
+      await tester.pumpAndSettle();
+
+      // Verify we land directly back on the Parent Study Screen (NOT on ChaptersListPage)
+      expect(find.byType(CourseEnrollmentScreen), findsNothing);
+      expect(find.byType(ChaptersListPage), findsNothing);
+      expect(find.text('Parent Study Screen'), findsOneWidget);
     });
   });
 }
