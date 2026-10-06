@@ -94,7 +94,7 @@ class _ChaptersListPageState extends ConsumerState<ChaptersListPage> {
     _hasRedirected = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context, rootNavigator: true).pushReplacement(
           AppRoute(
             page: CourseEnrollmentScreen(
               url: course.externalContentLink!,

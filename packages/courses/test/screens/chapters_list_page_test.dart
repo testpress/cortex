@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
+import 'package:courses/widgets/study_content_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -158,6 +159,52 @@ void main() {
       expect(navObserver.replaceCount, 0);
       expect(find.byType(CourseEnrollmentScreen), findsNothing);
       expect(find.text('Chapter 1: Getting Started'), findsOneWidget);
+    });
+
+    testWidgets(
+        'StudyContentList tapping approval course pushes CourseEnrollmentScreen to root navigator',
+        (tester) async {
+      final navObserver = TestNavigatorObserver();
+
+      const approvalCourse = CourseDto(
+        id: 'course-1',
+        title: 'Approval Required Course',
+        colorIndex: 1,
+        chapterCount: 2,
+        totalContents: 5,
+        externalContentLink: 'https://example.com/sso/register?course=1',
+        externalLinkLabel: 'REQUEST PACKAGE',
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          CustomScrollView(
+            slivers: [
+              StudyContentList(
+                enrolledCoursesState: const AsyncValue.data([approvalCourse]),
+                isSyncingInitial: false,
+                isSyncingMore: false,
+                allLessons: const [],
+                activeTypeFilters: const {},
+                searchQuery: '',
+              ),
+            ],
+          ),
+          navigatorObserver: navObserver,
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(navObserver.pushCount, 1); // Initial home route pushed
+      expect(find.byType(CourseEnrollmentScreen), findsNothing);
+
+      // Tap the course card
+      await tester.tap(find.text('Approval Required Course'));
+      await tester.pumpAndSettle();
+
+      expect(navObserver.pushCount,
+          2); // CourseEnrollmentScreen pushed to root navigator
+      expect(find.byType(CourseEnrollmentScreen), findsOneWidget);
     });
   });
 }

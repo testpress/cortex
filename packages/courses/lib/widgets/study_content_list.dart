@@ -73,7 +73,10 @@ class StudyContentList extends ConsumerWidget {
                               ? null
                               : () {
                                   if (course.requiresExternalRegistration) {
-                                    Navigator.of(context).push(
+                                    Navigator.of(
+                                      context,
+                                      rootNavigator: true,
+                                    ).push(
                                       AppRoute(
                                         page: CourseEnrollmentScreen(
                                           url: course.externalContentLink!,
