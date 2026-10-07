@@ -1792,6 +1792,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get commonBackSemantic => 'பின்செல்';
 
   @override
+  String get commonClearSearchSemantic => 'தேடலை அழி';
+
+  @override
   String get forumFilterSemantic => 'வடிகட்டி';
 
   @override

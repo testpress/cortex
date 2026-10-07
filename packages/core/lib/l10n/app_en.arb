@@ -895,6 +895,7 @@
   "forumFilterByActivity": "Filter by Activity",
   "forumFilterClearAll": "Clear All",
   "commonBackSemantic": "Back",
+  "commonClearSearchSemantic": "Clear search",
   "forumFilterSemantic": "Filter",
   "forumFilterActivityPosted": "Posted by me",
   "forumFilterActivityCommented": "Commented by me",

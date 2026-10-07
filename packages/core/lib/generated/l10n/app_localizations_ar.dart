@@ -1765,6 +1765,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonBackSemantic => 'عودة';
 
   @override
+  String get commonClearSearchSemantic => 'مسح البحث';
+
+  @override
   String get forumFilterSemantic => 'تصفية';
 
   @override

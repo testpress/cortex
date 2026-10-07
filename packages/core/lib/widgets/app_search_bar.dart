@@ -11,6 +11,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/widgets.dart';
 import '../design/design_provider.dart';
 import '../accessibility/app_semantics.dart';
+import '../localization/l10n_helper.dart';
 
 class AppSearchBar extends StatefulWidget {
   const AppSearchBar({
@@ -19,6 +20,7 @@ class AppSearchBar extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.onClear,
+    this.clearSemanticLabel,
     this.controller,
     this.backgroundColor,
   });
@@ -27,6 +29,9 @@ class AppSearchBar extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onClear;
+
+  /// Accessibility label for the clear button. Defaults to localized "Clear search".
+  final String? clearSemanticLabel;
   final TextEditingController? controller;
   final Color? backgroundColor;
 
@@ -49,16 +54,19 @@ class _AppSearchBarState extends State<AppSearchBar> {
   void didUpdateWidget(AppSearchBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      (oldWidget.controller ?? _internalController)?.removeListener(
-        _onTextChanged,
-      );
+      oldWidget.controller?.removeListener(_onTextChanged);
+      if (oldWidget.controller == null && _internalController != null) {
+        _internalController!.removeListener(_onTextChanged);
+        _internalController!.dispose();
+        _internalController = null;
+      }
       _effectiveController.addListener(_onTextChanged);
     }
   }
 
   @override
   void dispose() {
-    _effectiveController.removeListener(_onTextChanged);
+    (widget.controller ?? _internalController)?.removeListener(_onTextChanged);
     _internalController?.dispose();
     super.dispose();
   }
@@ -78,6 +86,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final hasText = _effectiveController.text.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
@@ -85,7 +95,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
         borderRadius: BorderRadius.circular(design.radius.lg),
         border: Border.all(color: design.colors.border.withValues(alpha: 0.5)),
       ),
-      padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
+      padding: EdgeInsets.only(
+        left: design.spacing.md,
+        right: hasText ? 0 : design.spacing.md,
+      ),
       child: Row(
         children: [
           Icon(LucideIcons.search, color: design.colors.textTertiary, size: 20),
@@ -115,25 +128,27 @@ class _AppSearchBarState extends State<AppSearchBar> {
               ),
             ),
           ),
-          if (_effectiveController.text.isNotEmpty) ...[
-            SizedBox(width: design.spacing.xs),
+          if (hasText)
             AppSemantics.button(
-              label: 'Clear search',
+              label:
+                  widget.clearSemanticLabel ?? l10n.commonClearSearchSemantic,
               onTap: _handleClear,
               child: GestureDetector(
                 onTap: _handleClear,
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: EdgeInsets.all(design.spacing.xs),
-                  child: Icon(
-                    LucideIcons.x,
-                    color: design.colors.textTertiary,
-                    size: 18,
+                excludeFromSemantics: true,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 48),
+                  child: Center(
+                    child: Icon(
+                      LucideIcons.x,
+                      color: design.colors.textTertiary,
+                      size: 18,
+                    ),
                   ),
                 ),
               ),
             ),
-          ],
         ],
       ),
     );

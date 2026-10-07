@@ -789,6 +789,7 @@
   "forumFilterByActivity": "செயல்பாட்டின்படி வடிகட்டுக",
   "forumFilterClearAll": "அனைத்தையும் அழி",
   "commonBackSemantic": "பின்செல்",
+  "commonClearSearchSemantic": "தேடலை அழி",
   "forumFilterSemantic": "வடிகட்டி",
   "forumFilterActivityPosted": "நான் பதிவிட்டது",
   "forumFilterActivityCommented": "நான் கருத்துத் தெரிவித்தது",
