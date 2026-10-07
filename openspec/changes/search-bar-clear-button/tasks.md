@@ -4,7 +4,7 @@
 - [x] 1.2 Implement listener attachment and safe disposal in `didUpdateWidget` and `dispose` to prevent memory leaks during controller swaps.
 - [x] 1.3 Add a trailing clear button (`LucideIcons.x`) conditioned on `_effectiveController.text.isNotEmpty`.
 - [x] 1.4 Wire the clear button tap handler to clear text, invoke `onChanged?.call('')`, and call the optional `onClear?.call()`.
-- [x] 1.5 Wrap the clear button in `ConstrainedBox(constraints: BoxConstraints(minWidth: 48))` with `padding: EdgeInsets.only(left: design.spacing.md, right: hasText ? 0 : design.spacing.md)`.
+- [x] 1.5 Wrap the clear button in `ConstrainedBox(constraints: BoxConstraints(minWidth: 48, minHeight: 48))` with `padding: EdgeInsets.only(left: design.spacing.md, right: hasText ? 0 : design.spacing.md)` and set `height: 48` on `AppSearchBar`.
 
 ## 2. Accessibility & Localization (packages/core)
 

@@ -163,5 +163,47 @@ void main() {
       expect(find.byIcon(LucideIcons.x), findsNothing);
       externalController.dispose();
     });
+
+    testWidgets(
+      'clear button meets minimum 48x48 touch target size (WCAG 2.5.5)',
+      (tester) async {
+        final controller = TextEditingController(text: 'sample text');
+
+        await tester.pumpWidget(
+          wrap(AppSearchBar(hintText: 'Search...', controller: controller)),
+        );
+
+        final clearButtonFinder = find.byWidgetPredicate(
+          (widget) =>
+              widget is GestureDetector &&
+              widget.child is ConstrainedBox &&
+              (widget.child as ConstrainedBox).child is Center,
+        );
+
+        expect(clearButtonFinder, findsOneWidget);
+        final size = tester.getSize(clearButtonFinder);
+        expect(size.width, greaterThanOrEqualTo(48.0));
+        expect(size.height, greaterThanOrEqualTo(48.0));
+      },
+    );
+
+    testWidgets('maintains minHeight 48dp whether empty or filled', (
+      tester,
+    ) async {
+      final controller = TextEditingController();
+
+      await tester.pumpWidget(
+        wrap(AppSearchBar(hintText: 'Search...', controller: controller)),
+      );
+
+      final emptySize = tester.getSize(find.byType(AppSearchBar));
+      expect(emptySize.height, greaterThanOrEqualTo(48.0));
+
+      controller.text = 'new query';
+      await tester.pump();
+
+      final filledSize = tester.getSize(find.byType(AppSearchBar));
+      expect(filledSize.height, emptySize.height);
+    });
   });
 }

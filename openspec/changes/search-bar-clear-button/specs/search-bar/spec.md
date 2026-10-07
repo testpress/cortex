@@ -26,13 +26,14 @@ The system SHALL reset the input text and notify listeners when the clear button
 ---
 
 ### Requirement: Accessibility & Touch Target Standards
-The system SHALL provide an accessible semantic button role and a minimum 48dp touch width for the clear action.
+The system SHALL provide an accessible semantic button role and a minimum 48×48dp touch target for the clear action.
 
 #### Scenario: Screen reader announces clear button
 - **WHEN** assistive technologies focus on the clear button
 - **THEN** the button is announced with a localized label ("Clear search", "தேடலை அழி", "തിരയൽ മായ്ക്കുക", "مسح البحث") or custom `clearSemanticLabel` override
 - **AND** no duplicate tap actions are emitted to the accessibility tree.
 
-#### Scenario: Touch area width
+#### Scenario: Touch area dimensions
 - **WHEN** the clear button is rendered
-- **THEN** its hit area has a minimum width of 48dp (`BoxConstraints(minWidth: 48)`).
+- **THEN** its hit area has a minimum size of 48×48dp (`BoxConstraints(minWidth: 48, minHeight: 48)`)
+- **AND** `AppSearchBar` maintains a consistent fixed `height: 48` whether empty or filled to prevent layout shifts.

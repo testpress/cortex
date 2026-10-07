@@ -90,6 +90,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
     final hasText = _effectiveController.text.isNotEmpty;
 
     return Container(
+      height: 48,
       decoration: BoxDecoration(
         color: widget.backgroundColor ?? design.colors.surface,
         borderRadius: BorderRadius.circular(design.radius.lg),
@@ -101,7 +102,11 @@ class _AppSearchBarState extends State<AppSearchBar> {
       ),
       child: Row(
         children: [
-          Icon(LucideIcons.search, color: design.colors.textTertiary, size: 20),
+          Icon(
+            LucideIcons.search,
+            color: design.colors.textTertiary,
+            size: design.iconSize.md,
+          ),
           SizedBox(width: design.spacing.sm),
           Expanded(
             child: Material(
@@ -138,12 +143,15 @@ class _AppSearchBarState extends State<AppSearchBar> {
                 behavior: HitTestBehavior.opaque,
                 excludeFromSemantics: true,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: 48),
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
                   child: Center(
                     child: Icon(
                       LucideIcons.x,
                       color: design.colors.textTertiary,
-                      size: 18,
+                      size: design.iconSize.md,
                     ),
                   ),
                 ),
