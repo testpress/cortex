@@ -611,6 +611,7 @@
   "forumFilterByActivity": "تصفية حسب النشاط",
   "forumFilterClearAll": "مسح الكل",
   "commonBackSemantic": "عودة",
+  "commonClearSearchSemantic": "مسح البحث",
   "forumFilterSemantic": "تصفية",
   "forumFilterActivityPosted": "نشرتها أنا",
   "forumFilterActivityCommented": "علقت عليها أنا",

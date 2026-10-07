@@ -1769,6 +1769,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonBackSemantic => 'Back';
 
   @override
+  String get commonClearSearchSemantic => 'Clear search';
+
+  @override
   String get forumFilterSemantic => 'Filter';
 
   @override

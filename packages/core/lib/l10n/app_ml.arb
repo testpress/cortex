@@ -611,6 +611,7 @@
   "forumFilterByActivity": "പ്രവർത്തനം അനുസരിച്ച് ഫിൽറ്റർ ചെയ്യുക",
   "forumFilterClearAll": "എല്ലാം മായ്‌ക്കുക",
   "commonBackSemantic": "തിരികെ",
+  "commonClearSearchSemantic": "തിരയൽ മായ്ക്കുക",
   "forumFilterSemantic": "ഫിൽറ്റർ",
   "forumFilterActivityPosted": "ഞാൻ പോസ്റ്റ് ചെയ്തത്",
   "forumFilterActivityCommented": "ഞാൻ കമന്റ് ചെയ്തത്",

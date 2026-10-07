@@ -1780,6 +1780,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get commonBackSemantic => 'തിരികെ';
 
   @override
+  String get commonClearSearchSemantic => 'തിരയൽ മായ്ക്കുക';
+
+  @override
   String get forumFilterSemantic => 'ഫിൽറ്റർ';
 
   @override

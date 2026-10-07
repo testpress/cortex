@@ -3281,6 +3281,12 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get commonBackSemantic;
 
+  /// No description provided for @commonClearSearchSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get commonClearSearchSemantic;
+
   /// No description provided for @forumFilterSemantic.
   ///
   /// In en, this message translates to:
