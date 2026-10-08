@@ -30,6 +30,17 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
       return;
     }
 
+    final userIdentifier = (order.email != null && order.email!.isNotEmpty)
+        ? order.email!
+        : ((order.phone != null && order.phone!.isNotEmpty)
+              ? order.phone!
+              : null);
+
+    if (userIdentifier == null) {
+      _onResult?.call('Failed', 'User email or phone is required for payment');
+      return;
+    }
+
     final Map<String, Object> payUPaymentParams = {
       PayUPaymentParamKey.key: apiKey,
       PayUPaymentParamKey.transactionId: orderId,
@@ -38,6 +49,7 @@ class PayUHandler implements PaymentHandler, PayUCheckoutProProtocol {
       PayUPaymentParamKey.firstName: order.name ?? 'User',
       PayUPaymentParamKey.email: order.email ?? 'user@example.com',
       PayUPaymentParamKey.phone: order.phone ?? '9999999999',
+      PayUPaymentParamKey.userCredential: '$apiKey:$userIdentifier',
       PayUPaymentParamKey.ios_surl: 'https://payu.herokuapp.com/ios_success',
       PayUPaymentParamKey.ios_furl: 'https://payu.herokuapp.com/ios_failure',
       PayUPaymentParamKey.android_surl: 'https://payu.herokuapp.com/success',
