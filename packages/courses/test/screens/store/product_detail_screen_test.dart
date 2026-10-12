@@ -406,5 +406,73 @@ void main() {
 
       expect(fakeRepo.lastPlanDetailId, 302);
     });
+
+    testWidgets(
+        'curriculum scopes to base course and excludes subscription-only courses',
+        (tester) async {
+      const baseCourse = ProductCourseDto(
+        id: 1200,
+        title: 'Base Video Course',
+        slug: 'base-video-course',
+        chaptersCount: 10,
+      );
+      const planCourse = ProductCourseDto(
+        id: 1861,
+        title: 'Plan Tier Course',
+        slug: 'plan-tier-course',
+        chaptersCount: 2,
+      );
+      final product = ProductDto(
+        id: 526,
+        title: 'Multi-Course Product',
+        slug: 'multi-course-product',
+        price: '599.00',
+        descriptionHtml: '<p>Description</p>',
+        courses: const [1200, 1861],
+        coursesDetails: const [baseCourse, planCourse],
+        plans: const [
+          SubscriptionPlanDto(
+            id: 201,
+            productId: 526,
+            name: 'Tier Plan',
+            courseIds: [1861],
+            planDetails: [
+              PlanDetailDto(
+                id: 301,
+                durationInDays: 30,
+                price: '599.00',
+              ),
+            ],
+          ),
+        ],
+      );
+
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: product,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: product),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Tap Curriculum tab
+      await tester.tap(find.text('Curriculum'));
+      await tester.pumpAndSettle();
+
+      // Base course should be rendered, but plan course should be excluded from curriculum
+      expect(find.text('Base Video Course'), findsOneWidget);
+      expect(find.text('Plan Tier Course'), findsNothing);
+    });
   });
 }

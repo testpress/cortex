@@ -1,0 +1,268 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core/core.dart';
+import 'package:core/data/data.dart';
+import '../../providers/store_providers.dart';
+import 'store_content_tile.dart';
+
+/// Chapter tree node that recursively renders nested sub-chapters or chapter contents.
+class StoreChapterTile extends ConsumerStatefulWidget {
+  final String courseId;
+  final ChapterDto chapter;
+  final Map<String, List<ChapterDto>>? childrenByParentId;
+  final int depth;
+  final VoidCallback? onBuyTap;
+
+  const StoreChapterTile({
+    super.key,
+    required this.courseId,
+    required this.chapter,
+    this.childrenByParentId,
+    this.depth = 0,
+    this.onBuyTap,
+  });
+
+  /// Builds a parentId -> `List<ChapterDto>` map once for O(1) child lookups.
+  static Map<String, List<ChapterDto>> buildChildrenMap(
+    List<ChapterDto> chapters,
+  ) {
+    final map = <String, List<ChapterDto>>{};
+    for (final c in chapters) {
+      final pid = c.parentId;
+      if (pid != null && pid.isNotEmpty) {
+        (map[pid] ??= []).add(c);
+      }
+    }
+    return map;
+  }
+
+  @override
+  ConsumerState<StoreChapterTile> createState() => _StoreChapterTileState();
+}
+
+class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
+  bool _isExpanded = false;
+
+  Map<String, List<ChapterDto>> get _childrenMap =>
+      widget.childrenByParentId ?? const {};
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final chapter = widget.chapter;
+
+    // Find children chapters via pre-built map (O(1))
+    final childChapters = _childrenMap[chapter.id] ?? const [];
+    final hasChildren = childChapters.isNotEmpty;
+    final isLeaf = chapter.isLeaf && !hasChildren;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Chapter Header Tile
+        Semantics(
+          expanded: _isExpanded,
+          child: AppSemantics.button(
+            label: chapter.title,
+            child: AppFocusable(
+              onTap: () {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              },
+              borderRadius: BorderRadius.circular(design.radius.sm),
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(minHeight: kMinTouchTargetSize),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: (widget.depth * design.spacing.md).toDouble(),
+                    top: design.spacing.md,
+                    bottom: design.spacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _isExpanded
+                            ? LucideIcons.chevronDown
+                            : LucideIcons.chevronRight,
+                        size: design.iconSize.sm,
+                        color: design.colors.textPrimary,
+                      ),
+                      SizedBox(width: design.spacing.sm),
+                      Expanded(
+                        child: AppText.cardTitle(
+                          chapter.title,
+                          color: design.colors.textPrimary,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // Expanded Body
+        if (_isExpanded) ...[
+          if (!isLeaf && hasChildren)
+            ...childChapters.map(
+              (child) => StoreChapterTile(
+                courseId: widget.courseId,
+                chapter: child,
+                childrenByParentId: _childrenMap,
+                depth: widget.depth + 1,
+                onBuyTap: widget.onBuyTap,
+              ),
+            )
+          else
+            _buildContentsList(context, design),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildContentsList(BuildContext context, DesignConfig design) {
+    final l10n = L10n.of(context);
+    final contentsAsync = ref.watch(
+      storeChapterContentsProvider(widget.courseId, widget.chapter.id),
+    );
+
+    return contentsAsync.when(
+      loading: () => StoreChapterContentsSkeleton(depth: widget.depth + 1),
+      error: (err, _) => Padding(
+        padding: EdgeInsets.only(
+          left: _titleAlignedIndent(design),
+          top: design.spacing.xs,
+          bottom: design.spacing.xs,
+        ),
+        child: AppText.bodySmall(
+          l10n.storeFailedToLoadContents,
+          color: design.colors.textSecondary,
+        ),
+      ),
+      data: (contents) => _buildContentsColumn(context, design, contents),
+    );
+  }
+
+  double _titleAlignedIndent(DesignConfig design) {
+    return (widget.depth * design.spacing.md +
+            design.iconSize.sm +
+            design.spacing.sm)
+        .toDouble();
+  }
+
+  Widget _buildContentsColumn(
+    BuildContext context,
+    DesignConfig design,
+    List<LessonDto> contents,
+  ) {
+    final l10n = L10n.of(context);
+    if (contents.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: _titleAlignedIndent(design),
+          top: design.spacing.xs,
+          bottom: design.spacing.xs,
+        ),
+        child: AppText.bodySmall(
+          l10n.storeNoContentAvailable,
+          color: design.colors.textSecondary,
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: contents.map((c) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: ((widget.depth + 1) * design.spacing.md).toDouble(),
+          ),
+          child: StoreContentTile(
+            content: c,
+            onBuyTap: widget.onBuyTap,
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+/// Dimensions for skeleton placeholders.
+const double _kSkeletonLineHeight = 16.0;
+const double _kSkeletonBadgeWidth = 40.0;
+const double _kSkeletonBadgeHeight = 12.0;
+
+/// Loading skeleton for chapter tree items and chapter contents/lessons.
+class StoreChapterContentsSkeleton extends StatelessWidget {
+  final int depth;
+  final int count;
+  final bool showTrailing;
+
+  const StoreChapterContentsSkeleton({
+    super.key,
+    this.depth = 0,
+    this.count = 2,
+    this.showTrailing = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return Padding(
+      padding: EdgeInsets.only(
+        left: (depth * design.spacing.md).toDouble(),
+        top: design.spacing.xs,
+        bottom: design.spacing.xs,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: List.generate(
+          count,
+          (_) => Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: design.spacing.xs,
+              horizontal: design.spacing.xs,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: design.spacing.md,
+                  height: design.spacing.md,
+                  decoration: BoxDecoration(
+                    color: design.colors.skeleton,
+                    borderRadius: BorderRadius.circular(design.radius.sm),
+                  ),
+                ),
+                SizedBox(width: design.spacing.sm),
+                Expanded(
+                  child: Container(
+                    height: _kSkeletonLineHeight,
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(design.radius.sm),
+                    ),
+                  ),
+                ),
+                if (showTrailing) ...[
+                  SizedBox(width: design.spacing.md),
+                  Container(
+                    width: _kSkeletonBadgeWidth,
+                    height: _kSkeletonBadgeHeight,
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(design.radius.sm),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

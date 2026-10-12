@@ -331,6 +331,289 @@ class _ProductInstallmentPlansProviderElement
   String get slug => (origin as ProductInstallmentPlansProvider).slug;
 }
 
+String _$storeCourseChaptersHash() =>
+    r'b58ce667cca8da9e153ebbf03a2750ff49cf4d46';
+
+/// See also [storeCourseChapters].
+@ProviderFor(storeCourseChapters)
+const storeCourseChaptersProvider = StoreCourseChaptersFamily();
+
+/// See also [storeCourseChapters].
+class StoreCourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
+  /// See also [storeCourseChapters].
+  const StoreCourseChaptersFamily();
+
+  /// See also [storeCourseChapters].
+  StoreCourseChaptersProvider call(
+    String courseId,
+  ) {
+    return StoreCourseChaptersProvider(
+      courseId,
+    );
+  }
+
+  @override
+  StoreCourseChaptersProvider getProviderOverride(
+    covariant StoreCourseChaptersProvider provider,
+  ) {
+    return call(
+      provider.courseId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'storeCourseChaptersProvider';
+}
+
+/// See also [storeCourseChapters].
+class StoreCourseChaptersProvider
+    extends AutoDisposeFutureProvider<List<ChapterDto>> {
+  /// See also [storeCourseChapters].
+  StoreCourseChaptersProvider(
+    String courseId,
+  ) : this._internal(
+          (ref) => storeCourseChapters(
+            ref as StoreCourseChaptersRef,
+            courseId,
+          ),
+          from: storeCourseChaptersProvider,
+          name: r'storeCourseChaptersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$storeCourseChaptersHash,
+          dependencies: StoreCourseChaptersFamily._dependencies,
+          allTransitiveDependencies:
+              StoreCourseChaptersFamily._allTransitiveDependencies,
+          courseId: courseId,
+        );
+
+  StoreCourseChaptersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+  }) : super.internal();
+
+  final String courseId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<ChapterDto>> Function(StoreCourseChaptersRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: StoreCourseChaptersProvider._internal(
+        (ref) => create(ref as StoreCourseChaptersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<ChapterDto>> createElement() {
+    return _StoreCourseChaptersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is StoreCourseChaptersProvider && other.courseId == courseId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin StoreCourseChaptersRef on AutoDisposeFutureProviderRef<List<ChapterDto>> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+}
+
+class _StoreCourseChaptersProviderElement
+    extends AutoDisposeFutureProviderElement<List<ChapterDto>>
+    with StoreCourseChaptersRef {
+  _StoreCourseChaptersProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as StoreCourseChaptersProvider).courseId;
+}
+
+String _$storeChapterContentsHash() =>
+    r'57cb466be0cf3b25e872b125ea7ec3eba769ad65';
+
+/// See also [storeChapterContents].
+@ProviderFor(storeChapterContents)
+const storeChapterContentsProvider = StoreChapterContentsFamily();
+
+/// See also [storeChapterContents].
+class StoreChapterContentsFamily extends Family<AsyncValue<List<LessonDto>>> {
+  /// See also [storeChapterContents].
+  const StoreChapterContentsFamily();
+
+  /// See also [storeChapterContents].
+  StoreChapterContentsProvider call(
+    String courseId,
+    String chapterId,
+  ) {
+    return StoreChapterContentsProvider(
+      courseId,
+      chapterId,
+    );
+  }
+
+  @override
+  StoreChapterContentsProvider getProviderOverride(
+    covariant StoreChapterContentsProvider provider,
+  ) {
+    return call(
+      provider.courseId,
+      provider.chapterId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'storeChapterContentsProvider';
+}
+
+/// See also [storeChapterContents].
+class StoreChapterContentsProvider
+    extends AutoDisposeFutureProvider<List<LessonDto>> {
+  /// See also [storeChapterContents].
+  StoreChapterContentsProvider(
+    String courseId,
+    String chapterId,
+  ) : this._internal(
+          (ref) => storeChapterContents(
+            ref as StoreChapterContentsRef,
+            courseId,
+            chapterId,
+          ),
+          from: storeChapterContentsProvider,
+          name: r'storeChapterContentsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$storeChapterContentsHash,
+          dependencies: StoreChapterContentsFamily._dependencies,
+          allTransitiveDependencies:
+              StoreChapterContentsFamily._allTransitiveDependencies,
+          courseId: courseId,
+          chapterId: chapterId,
+        );
+
+  StoreChapterContentsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.courseId,
+    required this.chapterId,
+  }) : super.internal();
+
+  final String courseId;
+  final String chapterId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<LessonDto>> Function(StoreChapterContentsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: StoreChapterContentsProvider._internal(
+        (ref) => create(ref as StoreChapterContentsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        courseId: courseId,
+        chapterId: chapterId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<LessonDto>> createElement() {
+    return _StoreChapterContentsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is StoreChapterContentsProvider &&
+        other.courseId == courseId &&
+        other.chapterId == chapterId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, courseId.hashCode);
+    hash = _SystemHash.combine(hash, chapterId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin StoreChapterContentsRef on AutoDisposeFutureProviderRef<List<LessonDto>> {
+  /// The parameter `courseId` of this provider.
+  String get courseId;
+
+  /// The parameter `chapterId` of this provider.
+  String get chapterId;
+}
+
+class _StoreChapterContentsProviderElement
+    extends AutoDisposeFutureProviderElement<List<LessonDto>>
+    with StoreChapterContentsRef {
+  _StoreChapterContentsProviderElement(super.provider);
+
+  @override
+  String get courseId => (origin as StoreChapterContentsProvider).courseId;
+  @override
+  String get chapterId => (origin as StoreChapterContentsProvider).chapterId;
+}
+
 String _$storeSearchQueryHash() => r'cef4370a0c27a5f2184443d9f45287720c7bfdba';
 
 /// See also [StoreSearchQuery].
@@ -382,7 +665,7 @@ final storeProductsProvider = AutoDisposeAsyncNotifierProvider<StoreProducts,
 typedef _$StoreProducts
     = AutoDisposeAsyncNotifier<PaginatedResponseDto<ProductDto>>;
 String _$productDiscountNotifierHash() =>
-    r'5a72de820681e5ede8203c1b0794c19b1e99128a';
+    r'38e40fc356693af171ba36480d1f1a7c3e4900f6';
 
 abstract class _$ProductDiscountNotifier
     extends BuildlessAutoDisposeNotifier<AsyncValue<OrderDto?>> {

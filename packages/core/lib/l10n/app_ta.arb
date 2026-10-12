@@ -1375,6 +1375,24 @@
     }
   },
   "storeNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை",
+  "storeFailedToLoadContents": "உள்ளடக்கங்களை ஏற்றுவதில் தோல்வி",
+  "storeBuyToUnlock": "திறக்க வாங்கவும்",
+  "storeDurationYears": "{count, plural, =1{1 ஆண்டு} other{{count} ஆண்டுகள்}}",
+  "@storeDurationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storeDurationDays": "{count, plural, =1{1 நாள்} other{{count} நாட்கள்}}",
+  "@storeDurationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "paymentProcessing": "உங்கள் கட்டணத்தை செயலாக்குகிறது...",
   "paymentSuccessful": "கட்டணம் வெற்றிகரமாக செலுத்தப்பட்டது!",
   "paymentSuccessDescription": "உங்கள் பதிவு வெற்றிகரமாக உறுதிசெய்யப்பட்டுள்ளது.",

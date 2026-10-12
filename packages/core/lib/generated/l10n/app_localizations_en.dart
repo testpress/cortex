@@ -2958,6 +2958,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storeNoContentAvailable => 'No content available';
 
   @override
+  String get storeFailedToLoadContents => 'Failed to load contents';
+
+  @override
+  String get storeBuyToUnlock => 'Buy to Unlock';
+
+  @override
+  String storeDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years',
+      one: '1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get paymentProcessing => 'Processing your payment...';
 
   @override

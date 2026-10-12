@@ -1130,6 +1130,24 @@
     }
   },
   "storeNoContentAvailable": "ഉള്ളടക്കം ലഭ്യമല്ല",
+  "storeFailedToLoadContents": "ഉള്ളടക്കം ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+  "storeBuyToUnlock": "അൺലോക്ക് ചെയ്യാൻ വാങ്ങുക",
+  "storeDurationYears": "{count, plural, =1{1 വർഷം} other{{count} വർഷങ്ങൾ}}",
+  "@storeDurationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storeDurationDays": "{count, plural, =1{1 ദിവസം} other{{count} ദിവസങ്ങൾ}}",
+  "@storeDurationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "paymentProcessing": "നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...",
   "paymentSuccessful": "പേയ്മെൻ്റ് വിജയിച്ചു!",
   "paymentSuccessDescription": "നിങ്ങളുടെ എൻറോൾമെൻ്റ് വിജയകരമായി സ്ഥിരീകരിച്ചു.",
