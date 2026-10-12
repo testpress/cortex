@@ -70,7 +70,7 @@ class _ProductSubscriptionSheetState
                 alignment: Alignment.center,
                 child: Container(
                   width: design.spacing.xl * 1.5,
-                  height: 4,
+                  height: design.spacing.xs,
                   decoration: BoxDecoration(
                     color: design.colors.border,
                     borderRadius: BorderRadius.circular(design.radius.full),

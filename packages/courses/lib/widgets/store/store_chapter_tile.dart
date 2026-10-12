@@ -205,6 +205,9 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
   }
 }
 
+/// Height of skeleton line placeholders.
+const double _kSkeletonLineHeight = 14.0;
+
 /// Loading skeleton for chapter contents/lessons.
 class StoreChapterContentsSkeleton extends StatelessWidget {
   final int depth;
@@ -241,7 +244,7 @@ class StoreChapterContentsSkeleton extends StatelessWidget {
                 SizedBox(width: design.spacing.sm),
                 Expanded(
                   child: Container(
-                    height: 14,
+                    height: _kSkeletonLineHeight,
                     decoration: BoxDecoration(
                       color: design.colors.skeleton,
                       borderRadius: BorderRadius.circular(design.radius.sm),
