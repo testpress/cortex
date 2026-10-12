@@ -13,7 +13,7 @@ The system SHALL display the curriculum structure for a given product, scoping c
 
 #### Scenario: Expand chapter to view contents
 - **WHEN** user expands a leaf chapter
-- **THEN** system fetches and renders chapter contents with content type icons and locked badge
+- **THEN** system fetches and renders chapter contents with content type icons and prominent locked badge
 
 #### Scenario: Re-expand already viewed chapters
 - **WHEN** user collapses and re-expands an already fetched chapter

@@ -18,6 +18,7 @@
 - [x] 3.3 Render chapter tree list tiles with expandable caret icons and skeleton shimmer loading state.
 - [x] 3.5 Refactor `StoreChapterTile` to remove redundant `allChapters` parameter and rely directly on `childrenByParentId`.
 - [x] 3.6 Unify duplicate chapter skeleton between `product_expandable_course_card.dart` and `store_chapter_tile.dart` using design tokens and named constants.
+- [x] 3.7 Style "Buy to Unlock" badge with `accent2` tokens to align with the screen's primary CTA styling.
 
 ## 4. Testing & Verification
 

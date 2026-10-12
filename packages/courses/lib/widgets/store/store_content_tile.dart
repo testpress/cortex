@@ -47,9 +47,10 @@ class StoreContentTile extends StatelessWidget {
         vertical: design.spacing.xs,
       ),
       decoration: BoxDecoration(
+        color: design.colors.accent2.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(design.radius.sm),
         border: Border.all(
-          color: design.colors.border,
+          color: design.colors.accent2.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -58,12 +59,13 @@ class StoreContentTile extends StatelessWidget {
           Icon(
             LucideIcons.lock,
             size: design.iconSize.xs,
-            color: design.colors.textSecondary,
+            color: design.colors.accent2,
           ),
           SizedBox(width: design.spacing.xs),
           AppText.caption(
             l10n.storeBuyToUnlock,
-            color: design.colors.textSecondary,
+            color: design.colors.accent2,
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
       ),
