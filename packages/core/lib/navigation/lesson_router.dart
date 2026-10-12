@@ -13,6 +13,7 @@ class LessonRouter {
     required String id,
     required dynamic type,
     Object? extra,
+    bool isPreview = false,
   }) {
     final typeStr = type is Enum
         ? type.name.toLowerCase()
@@ -33,7 +34,12 @@ class LessonRouter {
     };
 
     if (routeName != null) {
-      context.pushNamed(routeName, pathParameters: {'id': id}, extra: extra);
+      context.pushNamed(
+        routeName,
+        pathParameters: {'id': id},
+        queryParameters: isPreview ? const {'preview': 'true'} : const {},
+        extra: extra,
+      );
     }
   }
 }

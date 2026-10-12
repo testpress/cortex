@@ -3009,6 +3009,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get storeBuyToUnlock => 'திறக்க வாங்கவும்';
 
   @override
+  String get storeFreePreview => 'இலவச முன்னோட்டம்';
+
+  @override
   String storeDurationYears(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -51,6 +51,7 @@ class StudyRoutes {
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
             final id = state.pathParameters['id']!;
+            final isPreview = state.uri.queryParameters['preview'] == 'true';
             final extraLesson = state.extra is LessonDto
                 ? state.extra as LessonDto
                 : null;
@@ -72,12 +73,17 @@ class StudyRoutes {
                         await repo.refreshLesson(id);
                         ref.invalidate(lessonDetailProvider(id));
                       },
-                      onNext: activeLesson.nextContentId != null
+                      enableBookmarks: !isPreview,
+                      enableCompletion: !isPreview,
+                      enableDownloads: !isPreview,
+                      enableHelpdesk: !isPreview,
+                      onNext: (!isPreview && activeLesson.nextContentId != null)
                           ? () => context.pushReplacement(
                               '/study/lesson/${activeLesson.nextContentId}',
                             )
                           : null,
-                      onPrevious: activeLesson.previousContentId != null
+                      onPrevious:
+                          (!isPreview && activeLesson.previousContentId != null)
                           ? () => context.pushReplacement(
                               '/study/lesson/${activeLesson.previousContentId}',
                             )

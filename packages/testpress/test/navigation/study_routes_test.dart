@@ -257,5 +257,57 @@ void main() {
         expect(find.byType(ExamPrescreen), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'omits onNext and onPrevious in LessonDetailOrchestrator when preview=true',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/study/lesson/101?preview=true',
+          routes: StudyRoutes.routes(rootNavigatorKey),
+        );
+
+        const videoLesson = LessonDto(
+          id: '101',
+          chapterId: 'chap-1',
+          title: 'Sample Video Lesson',
+          type: LessonType.video,
+          duration: '00:10:00',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: false,
+          uuid: 'vid-uuid-101',
+          nextContentId: '102',
+          previousContentId: '100',
+          orderIndex: 0,
+        );
+
+        await tester.pumpWidget(
+          createTestApp(
+            router: router,
+            overrides: [
+              lessonDetailProvider(
+                '101',
+              ).overrideWith((ref) => Stream.value(videoLesson)),
+            ],
+          ),
+        );
+
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        final orchestratorFinder = find.byType(LessonDetailOrchestrator);
+        expect(orchestratorFinder, findsOneWidget);
+        final orchestrator = tester.widget<LessonDetailOrchestrator>(
+          orchestratorFinder,
+        );
+        expect(orchestrator.onNext, isNull);
+        expect(orchestrator.onPrevious, isNull);
+        expect(orchestrator.enableBookmarks, isFalse);
+        expect(orchestrator.enableCompletion, isFalse);
+        expect(orchestrator.enableDownloads, isFalse);
+        expect(orchestrator.enableHelpdesk, isFalse);
+      },
+    );
   });
 }

@@ -203,5 +203,48 @@ void main() {
       // Location remains root
       expect(router.state.matchedLocation, '/');
     });
+
+    testWidgets('passes preview=true query parameter when isPreview is true', (
+      tester,
+    ) async {
+      String? pushedLocation;
+      Map<String, String>? queryParams;
+
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const SizedBox.shrink(),
+          ),
+          GoRoute(
+            name: AppRouteNames.lessonDetail,
+            path: '/lesson/:id',
+            builder: (context, state) {
+              pushedLocation = state.matchedLocation;
+              queryParams = state.uri.queryParameters;
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        WidgetsApp.router(routerConfig: router, color: const Color(0xFF000000)),
+      );
+
+      final BuildContext context = tester.element(find.byType(SizedBox));
+      LessonRouter.navigateToLesson(
+        context,
+        id: '123',
+        type: 'video',
+        isPreview: true,
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(pushedLocation, '/lesson/123');
+      expect(queryParams, {'preview': 'true'});
+    });
   });
 }

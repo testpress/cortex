@@ -8,11 +8,13 @@ import 'store_chapter_tile.dart';
 class ProductExpandableCourseCard extends ConsumerStatefulWidget {
   final ProductCourseDto course;
   final VoidCallback? onBuyTap;
+  final ValueChanged<LessonDto>? onPreviewTap;
 
   const ProductExpandableCourseCard({
     super.key,
     required this.course,
     this.onBuyTap,
+    this.onPreviewTap,
   });
 
   @override
@@ -166,6 +168,7 @@ class _ProductExpandableCourseCardState
               chapter: chapter,
               childrenByParentId: childrenMap,
               onBuyTap: widget.onBuyTap,
+              onPreviewTap: widget.onPreviewTap,
             ),
           )
           .toList(),

@@ -1545,6 +1545,7 @@
   "storeNoContentAvailable": "No content available",
   "storeFailedToLoadContents": "Failed to load contents",
   "storeBuyToUnlock": "Buy to Unlock",
+  "storeFreePreview": "Free Preview",
   "storeDurationYears": "{count, plural, =1{1 year} other{{count} years}}",
   "@storeDurationYears": {
     "placeholders": {

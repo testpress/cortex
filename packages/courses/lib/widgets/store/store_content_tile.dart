@@ -9,11 +9,13 @@ const double kMinTouchTargetSize = 48.0;
 class StoreContentTile extends StatelessWidget {
   final LessonDto content;
   final VoidCallback? onBuyTap;
+  final ValueChanged<LessonDto>? onPreviewTap;
 
   const StoreContentTile({
     super.key,
     required this.content,
     this.onBuyTap,
+    this.onPreviewTap,
   });
 
   IconData _getContentIcon(LessonType type) {
@@ -41,30 +43,40 @@ class StoreContentTile extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
+    final isPreview = content.isFreePreview;
+    final badgeColor =
+        isPreview ? design.colors.success : design.colors.accent2;
+    final badgeIcon = isPreview ? LucideIcons.playCircle : LucideIcons.lock;
+    final badgeLabel =
+        isPreview ? l10n.storeFreePreview : l10n.storeBuyToUnlock;
+    final activeAction = isPreview
+        ? (onPreviewTap != null ? () => onPreviewTap!(content) : null)
+        : onBuyTap;
+
     final badgeWidget = Container(
       padding: EdgeInsets.symmetric(
         horizontal: design.spacing.sm,
         vertical: design.spacing.xs,
       ),
       decoration: BoxDecoration(
-        color: design.colors.accent2.withValues(alpha: 0.08),
+        color: badgeColor.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(design.radius.sm),
         border: Border.all(
-          color: design.colors.accent2.withValues(alpha: 0.3),
+          color: badgeColor.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            LucideIcons.lock,
+            badgeIcon,
             size: design.iconSize.xs,
-            color: design.colors.accent2,
+            color: badgeColor,
           ),
           SizedBox(width: design.spacing.xs),
           AppText.caption(
-            l10n.storeBuyToUnlock,
-            color: design.colors.accent2,
+            badgeLabel,
+            color: badgeColor,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
@@ -72,12 +84,12 @@ class StoreContentTile extends StatelessWidget {
     );
 
     final Widget badge;
-    if (onBuyTap != null) {
+    if (activeAction != null) {
       badge = AppSemantics.button(
-        label: l10n.storeBuyToUnlock,
-        onTap: onBuyTap,
+        label: badgeLabel,
+        onTap: activeAction,
         child: AppFocusable(
-          onTap: onBuyTap,
+          onTap: activeAction,
           borderRadius: BorderRadius.circular(design.radius.sm),
           child: ConstrainedBox(
             constraints: const BoxConstraints(
@@ -95,12 +107,13 @@ class StoreContentTile extends StatelessWidget {
     }
 
     return AppSemantics.container(
-      label: onBuyTap != null
+      label: activeAction != null
           ? content.title
-          : '${content.title}, ${l10n.storeBuyToUnlock}',
+          : '${content.title}, $badgeLabel',
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: onBuyTap != null ? design.spacing.xs : design.spacing.sm,
+          vertical:
+              activeAction != null ? design.spacing.xs : design.spacing.sm,
         ),
         child: Row(
           children: [

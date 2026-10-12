@@ -5321,6 +5321,12 @@ abstract class AppLocalizations {
   /// **'Buy to Unlock'**
   String get storeBuyToUnlock;
 
+  /// No description provided for @storeFreePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Preview'**
+  String get storeFreePreview;
+
   /// No description provided for @storeDurationYears.
   ///
   /// In en, this message translates to:

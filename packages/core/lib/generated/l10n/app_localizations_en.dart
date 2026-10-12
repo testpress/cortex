@@ -2964,6 +2964,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storeBuyToUnlock => 'Buy to Unlock';
 
   @override
+  String get storeFreePreview => 'Free Preview';
+
+  @override
   String storeDurationYears(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

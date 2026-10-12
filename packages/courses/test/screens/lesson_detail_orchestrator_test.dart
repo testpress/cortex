@@ -352,4 +352,46 @@ void main() {
       expect(find.byType(VideoConferenceViewer), findsOneWidget);
     });
   });
+
+  group('LessonDetailOrchestrator Capabilities', () {
+    const activePdfLesson = LessonDto(
+      id: '202',
+      chapterId: 'chapter-1',
+      title: 'Active PDF Lesson',
+      type: LessonType.pdf,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '10 min',
+      orderIndex: 1,
+      hasEnded: false,
+      isLocked: false,
+      isDetailFetched: true,
+      contentUrl: 'https://example.com/test.pdf',
+    );
+
+    testWidgets(
+        'omits bookmarks, completion, and doubt FAB when capabilities disabled',
+        (tester) async {
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+        'is_bookmarks_enabled': true,
+      });
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: activePdfLesson,
+          enableBookmarks: false,
+          enableCompletion: false,
+          enableHelpdesk: false,
+        ),
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+        ],
+      ));
+      await tester.pump();
+
+      expect(find.byType(AskDoubtFab), findsNothing);
+      expect(find.byIcon(LucideIcons.bookmark), findsNothing);
+      expect(find.text('Mark as completed'), findsNothing);
+    });
+  });
 }

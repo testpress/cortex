@@ -28,6 +28,10 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
     this.customBuilder,
     this.error,
     this.onRetry,
+    this.enableBookmarks = true,
+    this.enableCompletion = true,
+    this.enableDownloads = true,
+    this.enableHelpdesk = true,
   });
 
   /// The lesson to render.
@@ -48,6 +52,18 @@ class LessonDetailOrchestrator extends ConsumerStatefulWidget {
 
   /// Optional callback to retry fetching lesson detail when in error state.
   final FutureOr<dynamic> Function()? onRetry;
+
+  /// Whether bookmarking capability is enabled.
+  final bool enableBookmarks;
+
+  /// Whether marking as completed capability is enabled.
+  final bool enableCompletion;
+
+  /// Whether offline downloading capability is enabled.
+  final bool enableDownloads;
+
+  /// Whether helpdesk / ask doubt capability is enabled.
+  final bool enableHelpdesk;
 
   @override
   ConsumerState<LessonDetailOrchestrator> createState() =>
@@ -205,7 +221,8 @@ class _LessonDetailOrchestratorState
           isDownloaded: canDownload && isDownloaded,
           isDownloading: canDownload && isDownloading,
           onBack: () => Navigator.of(context).pop(),
-          onBookmarkToggle: (!lesson.hasEnded &&
+          onBookmarkToggle: (widget.enableBookmarks &&
+                  !lesson.hasEnded &&
                   !isLocked &&
                   !lesson.isScheduled &&
                   bookmarksEnabled)
@@ -217,13 +234,15 @@ class _LessonDetailOrchestratorState
                   }
                 }
               : null,
-          onMarkAsCompleted: (!lesson.hasEnded &&
+          onMarkAsCompleted: (widget.enableCompletion &&
+                  !lesson.hasEnded &&
                   !isLocked &&
                   !lesson.isScheduled &&
                   supportsManualCompletion)
               ? _markAsCompleted
               : null,
-          onDownload: (!lesson.hasEnded &&
+          onDownload: (widget.enableDownloads &&
+                  !lesson.hasEnded &&
                   !isLocked &&
                   !lesson.isScheduled &&
                   canDownload &&
@@ -243,7 +262,8 @@ class _LessonDetailOrchestratorState
                       lesson.type != LessonType.liveStream)),
           child: _buildLessonContent(context),
         ),
-        if (!lesson.hasEnded &&
+        if (widget.enableHelpdesk &&
+            !lesson.hasEnded &&
             !isLocked &&
             !lesson.isScheduled &&
             lesson.isComplete &&

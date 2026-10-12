@@ -1377,6 +1377,7 @@
   "storeNoContentAvailable": "உள்ளடக்கம் எதுவும் இல்லை",
   "storeFailedToLoadContents": "உள்ளடக்கங்களை ஏற்றுவதில் தோல்வி",
   "storeBuyToUnlock": "திறக்க வாங்கவும்",
+  "storeFreePreview": "இலவச முன்னோட்டம்",
   "storeDurationYears": "{count, plural, =1{1 ஆண்டு} other{{count} ஆண்டுகள்}}",
   "@storeDurationYears": {
     "placeholders": {

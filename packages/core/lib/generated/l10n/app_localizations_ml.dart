@@ -3012,6 +3012,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get storeBuyToUnlock => 'അൺലോക്ക് ചെയ്യാൻ വാങ്ങുക';
 
   @override
+  String get storeFreePreview => 'സൗജന്യ പ്രിവ്യൂ';
+
+  @override
   String storeDurationYears(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

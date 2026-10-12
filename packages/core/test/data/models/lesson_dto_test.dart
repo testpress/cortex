@@ -752,5 +752,88 @@ void main() {
         },
       );
     });
+
+    group('Free preview logic', () {
+      test('identifies preview when has_free_preview is true', () {
+        final dto = LessonDto.fromJson({
+          'id': '101',
+          'title': 'Sample Preview Lesson',
+          'has_free_preview': true,
+          'is_locked': true,
+        });
+
+        expect(dto.hasFreePreview, true);
+        expect(dto.isLocked, true);
+        expect(dto.isFreePreview, true);
+      });
+
+      test('identifies preview when backend field free_preview is true', () {
+        final dto = LessonDto.fromJson({
+          'id': '102',
+          'title': 'Unlocked Sample Lesson',
+          'free_preview': true,
+        });
+
+        expect(dto.hasFreePreview, true);
+        expect(dto.isFreePreview, true);
+      });
+
+      test(
+        'identifies preview from camelCase hasFreePreview or free_preview',
+        () {
+          final dto1 = LessonDto.fromJson({
+            'id': '103',
+            'title': 'Camel Case Preview',
+            'hasFreePreview': true,
+            'isLocked': true,
+          });
+          expect(dto1.hasFreePreview, true);
+          expect(dto1.isFreePreview, true);
+
+          final dto2 = LessonDto.fromJson({
+            'id': '104',
+            'title': 'Snake Case free_preview',
+            'free_preview': true,
+            'is_locked': true,
+          });
+          expect(dto2.hasFreePreview, true);
+          expect(dto2.isFreePreview, true);
+        },
+      );
+
+      test(
+        'returns false for isFreePreview when locked without preview flags',
+        () {
+          final dto = LessonDto.fromJson({
+            'id': '105',
+            'title': 'Locked Content',
+            'is_locked': true,
+          });
+
+          expect(dto.hasFreePreview, false);
+          expect(dto.isLocked, true);
+          expect(dto.isFreePreview, false);
+        },
+      );
+
+      test('mergeWith preserves hasFreePreview flag', () {
+        final base = LessonDto.fromJson({
+          'id': '106',
+          'title': 'Basic',
+          'has_free_preview': false,
+          'is_locked': true,
+        });
+        final detailed = LessonDto.fromJson({
+          'id': '106',
+          'title': 'Detailed',
+          'has_free_preview': true,
+          'is_locked': true,
+        });
+
+        final merged = base.mergeWith(detailed);
+        expect(merged.hasFreePreview, true);
+        expect(merged.isFreePreview, true);
+      });
+    });
   });
 }
