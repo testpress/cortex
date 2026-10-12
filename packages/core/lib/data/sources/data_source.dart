@@ -19,6 +19,12 @@ abstract class DataSource {
   /// Fetch chapters for a specific course, optionally filtered by parentId.
   Future<List<ChapterDto>> getChapters(String courseId, {String? parentId});
 
+  /// Fetch all chapters for a course tree (unfiltered by parentId).
+  Future<List<ChapterDto>> getCourseChapters(String courseId);
+
+  /// Fetch contents for a specific chapter in a course.
+  Future<List<LessonDto>> getChapterContents(String courseId, String chapterId);
+
   /// Fetch full metadata for a single chapter by slug.
   Future<ChapterDto> getChapterDetail(String slug);
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
@@ -224,4 +225,34 @@ void refreshStoreAfterPurchase(WidgetRef ref, {String? productSlug}) {
     ref.invalidate(productDetailProvider(productSlug));
   }
   ref.read(courseListProvider.notifier).refresh();
+}
+
+// ── Store Preview Providers ───────────────────────────────────────────────
+
+@riverpod
+FutureOr<List<ChapterDto>> storeCourseChapters(
+  StoreCourseChaptersRef ref,
+  String courseId, [
+  String? slug,
+]) {
+  final repo = ref.watch(storeRepositoryProvider);
+  final cached = repo.getCachedCourseChapters(courseId);
+  if (cached != null) {
+    return cached;
+  }
+  return repo.fetchCourseChapters(courseId, slug);
+}
+
+@riverpod
+FutureOr<List<LessonDto>> storeChapterContents(
+  StoreChapterContentsRef ref,
+  String courseId,
+  String chapterId,
+) {
+  final repo = ref.watch(storeRepositoryProvider);
+  final cached = repo.getCachedChapterContents(courseId, chapterId);
+  if (cached != null) {
+    return cached;
+  }
+  return repo.fetchChapterContents(courseId, chapterId);
 }

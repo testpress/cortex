@@ -204,6 +204,19 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<List<ChapterDto>> getCourseChapters(String courseId) async {
+    return getChapters(courseId);
+  }
+
+  @override
+  Future<List<LessonDto>> getChapterContents(
+    String courseId,
+    String chapterId,
+  ) async {
+    return getLessons(chapterId);
+  }
+
+  @override
   Future<ChapterDto> getChapterDetail(String slug) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return const ChapterDto(

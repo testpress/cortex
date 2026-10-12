@@ -120,6 +120,47 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<List<ChapterDto>> getCourseChapters(String courseId) async {
+    return performNetworkRequest(
+      _dio.get(ApiEndpoints.courseChapters(courseId)),
+      fromJson: (data) {
+        dynamic list;
+        if (data is Map<String, dynamic>) {
+          final results = data['results'];
+          if (results is List) {
+            list = results;
+          } else if (results is Map && results['chapters'] is List) {
+            list = results['chapters'];
+          } else if (data['chapters'] is List) {
+            list = data['chapters'];
+          }
+        } else if (data is List) {
+          list = data;
+        }
+        return (list as List<dynamic>?)
+                ?.map((e) => ChapterDto.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [];
+      },
+    );
+  }
+
+  @override
+  Future<List<LessonDto>> getChapterContents(
+    String courseId,
+    String chapterId,
+  ) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.courseContents(courseId),
+        queryParameters: {'chapter': chapterId},
+      ),
+      fromJson: (data) =>
+          CurriculumParser.mapLessons(data, chapterId: chapterId),
+    );
+  }
+
+  @override
   Future<ChapterDto> getChapterDetail(String slug) async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.chapterDetail(slug)),

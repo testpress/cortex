@@ -1129,6 +1129,24 @@
     }
   },
   "storeNoContentAvailable": "لا يوجد محتوى متاح",
+  "storeFailedToLoadContents": "فشل تحميل المحتوى",
+  "storeBuyToUnlock": "اشترِ لفتح القفل",
+  "storeDurationYears": "{count, plural, =1{سنة واحدة} =2{سنتان} few{{count} سنوات} many{{count} سنة} other{{count} سنة}}",
+  "@storeDurationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storeDurationDays": "{count, plural, =1{يوم واحد} =2{يومان} few{{count} أيام} many{{count} يوماً} other{{count} يوم}}",
+  "@storeDurationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "paymentProcessing": "جاري معالجة الدفع...",
   "paymentSuccessful": "اكتمل الدفع بنجاح!",
   "paymentSuccessDescription": "تم تأكيد تسجيلك بنجاح.",

@@ -3005,6 +3005,35 @@ class AppLocalizationsMl extends AppLocalizations {
   String get storeNoContentAvailable => 'ഉള്ളടക്കം ലഭ്യമല്ല';
 
   @override
+  String get storeFailedToLoadContents =>
+      'ഉള്ളടക്കം ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
+  String get storeBuyToUnlock => 'അൺലോക്ക് ചെയ്യാൻ വാങ്ങുക';
+
+  @override
+  String storeDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count വർഷങ്ങൾ',
+      one: '1 വർഷം',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ദിവസങ്ങൾ',
+      one: '1 ദിവസം',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get paymentProcessing =>
       'നിങ്ങളുടെ പേയ്മെൻ്റ് പ്രോസസ്സ് ചെയ്യുന്നു...';
 

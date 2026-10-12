@@ -37,6 +37,8 @@ export 'screens/store/product_detail_screen.dart';
 
 export 'store_constants.dart';
 export 'providers/store_providers.dart';
+export 'widgets/store/store_chapter_tile.dart';
+export 'widgets/store/store_content_tile.dart';
 
 export 'providers/info_providers.dart';
 export 'screens/info/info_page.dart';

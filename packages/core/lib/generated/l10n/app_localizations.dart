@@ -5309,6 +5309,30 @@ abstract class AppLocalizations {
   /// **'No content available'**
   String get storeNoContentAvailable;
 
+  /// No description provided for @storeFailedToLoadContents.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load contents'**
+  String get storeFailedToLoadContents;
+
+  /// No description provided for @storeBuyToUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy to Unlock'**
+  String get storeBuyToUnlock;
+
+  /// No description provided for @storeDurationYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 year} other{{count} years}}'**
+  String storeDurationYears(int count);
+
+  /// No description provided for @storeDurationDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String storeDurationDays(int count);
+
   /// No description provided for @paymentProcessing.
   ///
   /// In en, this message translates to:

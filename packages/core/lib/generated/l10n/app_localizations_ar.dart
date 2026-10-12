@@ -2962,6 +2962,40 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storeNoContentAvailable => 'لا يوجد محتوى متاح';
 
   @override
+  String get storeFailedToLoadContents => 'فشل تحميل المحتوى';
+
+  @override
+  String get storeBuyToUnlock => 'اشترِ لفتح القفل';
+
+  @override
+  String storeDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سنة',
+      many: '$count سنة',
+      few: '$count سنوات',
+      two: 'سنتان',
+      one: 'سنة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يوماً',
+      few: '$count أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get paymentProcessing => 'جاري معالجة الدفع...';
 
   @override

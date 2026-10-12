@@ -1543,6 +1543,24 @@
     }
   },
   "storeNoContentAvailable": "No content available",
+  "storeFailedToLoadContents": "Failed to load contents",
+  "storeBuyToUnlock": "Buy to Unlock",
+  "storeDurationYears": "{count, plural, =1{1 year} other{{count} years}}",
+  "@storeDurationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storeDurationDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@storeDurationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "paymentProcessing": "Processing your payment...",
   "paymentSuccessful": "Payment Successful!",
   "paymentSuccessDescription": "Your enrollment has been confirmed successfully.",

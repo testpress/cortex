@@ -3003,6 +3003,34 @@ class AppLocalizationsTa extends AppLocalizations {
   String get storeNoContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
 
   @override
+  String get storeFailedToLoadContents => 'உள்ளடக்கங்களை ஏற்றுவதில் தோல்வி';
+
+  @override
+  String get storeBuyToUnlock => 'திறக்க வாங்கவும்';
+
+  @override
+  String storeDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ஆண்டுகள்',
+      one: '1 ஆண்டு',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count நாட்கள்',
+      one: '1 நாள்',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get paymentProcessing => 'உங்கள் கட்டணத்தை செயலாக்குகிறது...';
 
   @override

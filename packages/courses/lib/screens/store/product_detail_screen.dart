@@ -175,8 +175,64 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget _buildCourseDetails(BuildContext context, ProductCourseDto course) {
-    return ProductExpandableCourseCard(course: course);
+  Widget _buildCourseDetails(
+    BuildContext context,
+    ProductCourseDto course,
+    VoidCallback onBuyTap,
+  ) {
+    return ProductExpandableCourseCard(
+      course: course,
+      onBuyTap: onBuyTap,
+    );
+  }
+
+  void _initiatePurchase({
+    required ProductDto product,
+    required List<PlanDetailDto> allPlanDetails,
+    required OrderDto? discountOrder,
+  }) async {
+    if (allPlanDetails.isNotEmpty && !_hasChosenPlan) {
+      setState(() {
+        _isSubscriptionSheetOpen = true;
+      });
+      return;
+    }
+
+    final dataSource = ref.read(dataSourceProvider);
+
+    final existingOrderId = ref
+        .read(productDiscountNotifierProvider(product.slug).notifier)
+        .orderId;
+
+    if (!mounted) return;
+    final result = await PaymentProcessingScreen.start(
+      context,
+      () => discountOrder != null
+          ? (discountOrder.status == 'Completed'
+              ? Future.value(discountOrder)
+              : ref
+                  .read(storeRepositoryProvider)
+                  .confirmOrder(discountOrder.id, {}))
+          : (existingOrderId != null
+              ? ref
+                  .read(storeRepositoryProvider)
+                  .confirmOrder(existingOrderId, {})
+              : ref.read(storeRepositoryProvider).createAndConfirmOrder(
+                    product.slug,
+                    planDetailId: _selectedPlanDetailId,
+                  )),
+      dataSource,
+    );
+
+    if (!mounted) return;
+    if (result?.status == PaymentResultStatus.success) {
+      refreshStoreAfterPurchase(ref, productSlug: product.slug);
+
+      final redirect = result?.redirectRoute;
+      if (redirect != null && mounted) {
+        context.go(redirect);
+      }
+    }
   }
 
   @override
@@ -232,8 +288,29 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ? selectedPlanDetail.durationInDays
         : (matchingPrices.length == 1 ? matchingPrices.first.validity : null);
 
+    final selectedPlan = selectedPlanDetail != null
+        ? product.plans
+            .where(
+                (p) => p.planDetails.any((d) => d.id == selectedPlanDetail.id))
+            .firstOrNull
+        : null;
+
+    final planCourseIds = {
+      for (final plan in product.plans) ...plan.courseIds,
+    };
+    final baseCurriculumCourses = product.coursesDetails
+        .where((course) => !planCourseIds.contains(course.id))
+        .toList();
+    final curriculumCourses = baseCurriculumCourses.isNotEmpty
+        ? baseCurriculumCourses
+        : (selectedPlan != null
+            ? product.coursesDetails
+                .where((c) => selectedPlan.courseIds.contains(c.id))
+                .toList()
+            : product.coursesDetails);
+
     final hasDescription = product.descriptionHtml.isNotEmpty;
-    final hasCourse = product.coursesDetails.isNotEmpty;
+    final hasCourse = curriculumCourses.isNotEmpty;
     final showTabs = hasDescription && hasCourse;
 
     return Stack(
@@ -511,9 +588,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
-                                      children: product.coursesDetails
+                                      children: curriculumCourses
                                           .map((course) => _buildCourseDetails(
-                                              context, course))
+                                                context,
+                                                course,
+                                                () => _initiatePurchase(
+                                                  product: product,
+                                                  allPlanDetails:
+                                                      allPlanDetails,
+                                                  discountOrder: discountOrder,
+                                                ),
+                                              ))
                                           .toList(),
                                     ),
                                 ],
@@ -605,59 +690,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         fullWidth: true,
                         backgroundColor: design.colors.accent2,
                         loading: false,
-                        onPressed: (allPlanDetails.isNotEmpty &&
-                                !_hasChosenPlan)
-                            ? () {
-                                setState(() {
-                                  _isSubscriptionSheetOpen = true;
-                                });
-                              }
-                            : () async {
-                                final dataSource = ref.read(dataSourceProvider);
-
-                                final existingOrderId = ref
-                                    .read(productDiscountNotifierProvider(
-                                            product.slug)
-                                        .notifier)
-                                    .orderId;
-
-                                if (!context.mounted) return;
-                                final result =
-                                    await PaymentProcessingScreen.start(
-                                  context,
-                                  () => discountOrder != null
-                                      ? (discountOrder.status == 'Completed'
-                                          ? Future.value(discountOrder)
-                                          : ref
-                                              .read(storeRepositoryProvider)
-                                              .confirmOrder(
-                                                  discountOrder.id, {}))
-                                      : (existingOrderId != null
-                                          ? ref
-                                              .read(storeRepositoryProvider)
-                                              .confirmOrder(existingOrderId, {})
-                                          : ref
-                                              .read(storeRepositoryProvider)
-                                              .createAndConfirmOrder(
-                                                product.slug,
-                                                planDetailId:
-                                                    _selectedPlanDetailId,
-                                              )),
-                                  dataSource,
-                                );
-
-                                if (!context.mounted) return;
-                                if (result?.status ==
-                                    PaymentResultStatus.success) {
-                                  refreshStoreAfterPurchase(ref,
-                                      productSlug: product.slug);
-
-                                  final redirect = result?.redirectRoute;
-                                  if (redirect != null && context.mounted) {
-                                    context.go(redirect);
-                                  }
-                                }
-                              },
+                        onPressed: () => _initiatePurchase(
+                          product: product,
+                          allPlanDetails: allPlanDetails,
+                          discountOrder: discountOrder,
+                        ),
                       ),
                     ],
                   ),

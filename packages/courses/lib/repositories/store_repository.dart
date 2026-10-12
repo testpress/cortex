@@ -18,13 +18,15 @@ class StoreRepository {
   // ── In-memory caches ──────────────────────────────────────────────────────
 
   static const int _maxCacheSize = 20;
+  static const int _maxCurriculumCacheSize = 200;
   final Map<String, PaginatedResponseDto<ProductDto>> _productCache = {};
   final Map<String, List<ProductCategoryDto>> _categoryCache = {};
+  final Map<String, List<ChapterDto>> _courseChaptersCache = {};
+  final Map<String, List<LessonDto>> _chapterContentsCache = {};
 
-  void _evictCache<T>(Map<String, T> cache) {
-    if (cache.length > _maxCacheSize) {
-      final keysToRemove =
-          cache.keys.take(cache.length - _maxCacheSize).toList();
+  void _evictCache<T>(Map<String, T> cache, [int maxSize = _maxCacheSize]) {
+    if (cache.length > maxSize) {
+      final keysToRemove = cache.keys.take(cache.length - maxSize).toList();
       for (final key in keysToRemove) {
         cache.remove(key);
       }
@@ -150,12 +152,98 @@ class StoreRepository {
     }
   }
 
+  // ── Curriculum (Chapters & Contents) ──────────────────────────────────────
+
+  /// Returns cached chapters for [courseId] synchronously if available.
+  List<ChapterDto>? getCachedCourseChapters(String courseId) =>
+      _courseChaptersCache[courseId];
+
+  /// Returns cached contents for [chapterId] in [courseId] synchronously if available.
+  List<LessonDto>? getCachedChapterContents(
+    String courseId,
+    String chapterId,
+  ) =>
+      _chapterContentsCache['$courseId:$chapterId'];
+
+  /// Returns cached chapters for [courseId] if available, otherwise fetches
+  /// from the network, caches, and returns them.
+  Future<List<ChapterDto>> fetchCourseChapters(
+    String courseId, [
+    String? slug,
+  ]) async {
+    final cacheKey = courseId;
+    if (_courseChaptersCache.containsKey(cacheKey)) {
+      return _courseChaptersCache[cacheKey]!;
+    }
+
+    try {
+      var chapters = await _source.getCourseChapters(courseId);
+      if (chapters.isEmpty &&
+          slug != null &&
+          slug.isNotEmpty &&
+          slug != courseId) {
+        chapters = await _source.getCourseChapters(slug);
+      }
+
+      _courseChaptersCache[cacheKey] = chapters;
+      _evictCache(_courseChaptersCache, _maxCurriculumCacheSize);
+      return chapters;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      final cached = _courseChaptersCache[cacheKey];
+      if (cached != null) {
+        return cached;
+      }
+      rethrow;
+    }
+  }
+
+  /// Returns cached contents for [chapterId] in [courseId] if available,
+  /// otherwise fetches from the network, caches, and returns them.
+  Future<List<LessonDto>> fetchChapterContents(
+    String courseId,
+    String chapterId,
+  ) async {
+    final cacheKey = '$courseId:$chapterId';
+    if (_chapterContentsCache.containsKey(cacheKey)) {
+      return _chapterContentsCache[cacheKey]!;
+    }
+
+    try {
+      final contents = await _source.getChapterContents(courseId, chapterId);
+      _chapterContentsCache[cacheKey] = contents;
+      _evictCache(_chapterContentsCache, _maxCurriculumCacheSize);
+      return contents;
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      final cached = _chapterContentsCache[cacheKey];
+      if (cached != null) {
+        return cached;
+      }
+      rethrow;
+    }
+  }
+
   // ── Cache management ──────────────────────────────────────────────────────
 
-  /// Clears all cached products and categories.
+  /// Clears all cached products, categories, and curriculum data.
   void clearAll() {
     _productCache.clear();
     _categoryCache.clear();
+    _courseChaptersCache.clear();
+    _chapterContentsCache.clear();
+  }
+
+  /// Clears cached curriculum data. If [courseId] is provided, clears only
+  /// that course's chapters and chapter contents.
+  void clearCurriculum({String? courseId}) {
+    if (courseId != null) {
+      _courseChaptersCache.remove(courseId);
+      _chapterContentsCache.removeWhere((k, _) => k.startsWith('$courseId:'));
+    } else {
+      _courseChaptersCache.clear();
+      _chapterContentsCache.clear();
+    }
   }
 
   /// Clears cached products for a specific query.

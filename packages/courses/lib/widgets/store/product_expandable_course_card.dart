@@ -1,25 +1,40 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import '../../providers/store_providers.dart';
+import 'store_chapter_tile.dart';
 
-class ProductExpandableCourseCard extends StatefulWidget {
+class ProductExpandableCourseCard extends ConsumerStatefulWidget {
   final ProductCourseDto course;
+  final VoidCallback? onBuyTap;
 
-  const ProductExpandableCourseCard({super.key, required this.course});
+  const ProductExpandableCourseCard({
+    super.key,
+    required this.course,
+    this.onBuyTap,
+  });
 
   @override
-  State<ProductExpandableCourseCard> createState() =>
+  ConsumerState<ProductExpandableCourseCard> createState() =>
       _ProductExpandableCourseCardState();
 }
 
 class _ProductExpandableCourseCardState
-    extends State<ProductExpandableCourseCard> {
+    extends ConsumerState<ProductExpandableCourseCard> {
   bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final course = widget.course;
+
+    final chaptersAsync = _isExpanded
+        ? ref.watch(storeCourseChaptersProvider(
+            course.id.toString(),
+            course.slug,
+          ))
+        : null;
 
     final List<String> stats = [];
     if (course.chaptersCount > 0) {
@@ -85,32 +100,123 @@ class _ProductExpandableCourseCardState
                 right: design.spacing.md,
                 bottom: design.spacing.md,
               ),
-              child: stats.isNotEmpty
-                  ? Wrap(
-                      spacing: design.spacing.md,
-                      runSpacing: design.spacing.xs,
-                      children: stats
-                          .map((stat) => Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(LucideIcons.checkCircle2,
-                                      size: design.iconSize.sm,
-                                      color: design.colors.primary),
-                                  SizedBox(width: design.spacing.xs),
-                                  AppText.cardSubtitle(stat),
-                                ],
-                              ))
-                          .toList(),
-                    )
-                  : AppText.cardCaption(
-                      L10n.of(context).storeNoContentAvailable),
+              child:
+                  _buildExpandedContent(context, design, chaptersAsync, stats),
             ),
             crossFadeState: _isExpanded
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
-            duration: MotionPreferences.shouldAnimate(context)
-                ? design.motion.fast
-                : Duration.zero,
+            duration: MotionPreferences.duration(context, design.motion.normal),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpandedContent(
+    BuildContext context,
+    dynamic design,
+    AsyncValue<List<ChapterDto>>? chaptersAsync,
+    List<String> stats,
+  ) {
+    if (chaptersAsync == null || chaptersAsync.isLoading) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: List.generate(
+          3,
+          (_) => _buildSkeletonChapter(design),
+        ),
+      );
+    }
+
+    if (chaptersAsync.hasError) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
+        child: AppText.cardCaption(
+          L10n.of(context).storeNoContentAvailable,
+          color: design.colors.textSecondary,
+        ),
+      );
+    }
+
+    final allChapters = chaptersAsync.value ?? [];
+    if (allChapters.isEmpty) {
+      if (stats.isNotEmpty) {
+        return Wrap(
+          spacing: design.spacing.md,
+          runSpacing: design.spacing.xs,
+          children: stats
+              .map((stat) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(LucideIcons.checkCircle2,
+                          size: design.iconSize.sm,
+                          color: design.colors.primary),
+                      SizedBox(width: design.spacing.xs),
+                      AppText.cardSubtitle(stat),
+                    ],
+                  ))
+              .toList(),
+        );
+      }
+      return AppText.cardCaption(L10n.of(context).storeNoContentAvailable);
+    }
+
+    final rootChapters = allChapters
+        .where((c) => c.parentId == null || c.parentId!.isEmpty)
+        .toList();
+    final displayChapters =
+        rootChapters.isNotEmpty ? rootChapters : allChapters;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: displayChapters
+          .map(
+            (chapter) => StoreChapterTile(
+              courseId: widget.course.id.toString(),
+              chapter: chapter,
+              allChapters: allChapters,
+              onBuyTap: widget.onBuyTap,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildSkeletonChapter(dynamic design) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: design.spacing.xs,
+        horizontal: design.spacing.xs,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(
+              color: design.colors.skeleton,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          SizedBox(width: design.spacing.sm),
+          Expanded(
+            child: Container(
+              height: 14,
+              decoration: BoxDecoration(
+                color: design.colors.skeleton,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+          SizedBox(width: design.spacing.md),
+          Container(
+            width: 40,
+            height: 12,
+            decoration: BoxDecoration(
+              color: design.colors.skeleton,
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
         ],
       ),
