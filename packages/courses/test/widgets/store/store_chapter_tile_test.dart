@@ -96,6 +96,7 @@ void main() {
   );
 
   final allChapters = [rootChapter, subFolder];
+  final childrenMap = StoreChapterTile.buildChildrenMap(allChapters);
 
   testWidgets('expands parent chapter to reveal sub-folder', (tester) async {
     await tester.pumpWidget(
@@ -104,7 +105,7 @@ void main() {
           child: StoreChapterTile(
             courseId: '372',
             chapter: rootChapter,
-            allChapters: allChapters,
+            childrenByParentId: childrenMap,
           ),
         ),
         overrides: [
@@ -135,7 +136,7 @@ void main() {
           child: StoreChapterTile(
             courseId: '372',
             chapter: rootChapter,
-            allChapters: allChapters,
+            childrenByParentId: childrenMap,
           ),
         ),
         overrides: [
@@ -180,7 +181,7 @@ void main() {
           child: StoreChapterTile(
             courseId: '372',
             chapter: rootChapter,
-            allChapters: allChapters,
+            childrenByParentId: childrenMap,
           ),
         ),
         overrides: [
@@ -224,7 +225,7 @@ void main() {
           child: StoreChapterTile(
             courseId: '372',
             chapter: rootChapter,
-            allChapters: allChapters,
+            childrenByParentId: childrenMap,
             onBuyTap: () => buyTapped = true,
           ),
         ),
@@ -260,7 +261,7 @@ void main() {
           child: StoreChapterTile(
             courseId: '372',
             chapter: rootChapter,
-            allChapters: allChapters,
+            childrenByParentId: childrenMap,
           ),
         ),
         overrides: [

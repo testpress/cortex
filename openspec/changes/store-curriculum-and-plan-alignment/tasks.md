@@ -16,7 +16,8 @@
 - [x] 3.1 Implement auto-disposing in-memory `storeCourseChaptersProvider` in `store_providers.dart`.
 - [x] 3.2 Update `ProductExpandableCourseCard` to watch `storeCourseChaptersProvider` when expanded.
 - [x] 3.3 Render chapter tree list tiles with expandable caret icons and skeleton shimmer loading state.
-- [x] 3.4 Render nested chapter lesson items with content type icons (video, exam, notes, attachment) and lock badge.
+- [x] 3.5 Refactor `StoreChapterTile` to remove redundant `allChapters` parameter and rely directly on `childrenByParentId`.
+- [x] 3.6 Unify duplicate chapter skeleton between `product_expandable_course_card.dart` and `store_chapter_tile.dart` using design tokens and named constants.
 
 ## 4. Testing & Verification
 

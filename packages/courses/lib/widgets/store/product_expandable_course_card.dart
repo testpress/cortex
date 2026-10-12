@@ -111,12 +111,9 @@ class _ProductExpandableCourseCardState
     List<String> stats,
   ) {
     if (chaptersAsync == null || chaptersAsync.isLoading) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(
-          3,
-          (_) => _buildSkeletonChapter(design),
-        ),
+      return const StoreChapterContentsSkeleton(
+        count: 3,
+        showTrailing: true,
       );
     }
 
@@ -172,46 +169,6 @@ class _ProductExpandableCourseCardState
             ),
           )
           .toList(),
-    );
-  }
-
-  Widget _buildSkeletonChapter(DesignConfig design) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: design.spacing.xs,
-        horizontal: design.spacing.xs,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              color: design.colors.skeleton,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          SizedBox(width: design.spacing.sm),
-          Expanded(
-            child: Container(
-              height: 14,
-              decoration: BoxDecoration(
-                color: design.colors.skeleton,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          SizedBox(width: design.spacing.md),
-          Container(
-            width: 40,
-            height: 12,
-            decoration: BoxDecoration(
-              color: design.colors.skeleton,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

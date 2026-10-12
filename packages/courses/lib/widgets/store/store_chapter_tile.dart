@@ -9,7 +9,6 @@ import 'store_content_tile.dart';
 class StoreChapterTile extends ConsumerStatefulWidget {
   final String courseId;
   final ChapterDto chapter;
-  final List<ChapterDto>? allChapters;
   final Map<String, List<ChapterDto>>? childrenByParentId;
   final int depth;
   final VoidCallback? onBuyTap;
@@ -18,7 +17,6 @@ class StoreChapterTile extends ConsumerStatefulWidget {
     super.key,
     required this.courseId,
     required this.chapter,
-    this.allChapters,
     this.childrenByParentId,
     this.depth = 0,
     this.onBuyTap,
@@ -44,28 +42,9 @@ class StoreChapterTile extends ConsumerStatefulWidget {
 
 class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
   bool _isExpanded = false;
-  late Map<String, List<ChapterDto>> _childrenMap;
 
-  @override
-  void initState() {
-    super.initState();
-    _childrenMap = widget.childrenByParentId ??
-        (widget.allChapters != null
-            ? StoreChapterTile.buildChildrenMap(widget.allChapters!)
-            : const {});
-  }
-
-  @override
-  void didUpdateWidget(StoreChapterTile oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.childrenByParentId != oldWidget.childrenByParentId ||
-        widget.allChapters != oldWidget.allChapters) {
-      _childrenMap = widget.childrenByParentId ??
-          (widget.allChapters != null
-              ? StoreChapterTile.buildChildrenMap(widget.allChapters!)
-              : const {});
-    }
-  }
+  Map<String, List<ChapterDto>> get _childrenMap =>
+      widget.childrenByParentId ?? const {};
 
   @override
   Widget build(BuildContext context) {
@@ -205,16 +184,22 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
   }
 }
 
-/// Height of skeleton line placeholders.
-const double _kSkeletonLineHeight = 14.0;
+/// Dimensions for skeleton placeholders.
+const double _kSkeletonLineHeight = 16.0;
+const double _kSkeletonBadgeWidth = 40.0;
+const double _kSkeletonBadgeHeight = 12.0;
 
-/// Loading skeleton for chapter contents/lessons.
+/// Loading skeleton for chapter tree items and chapter contents/lessons.
 class StoreChapterContentsSkeleton extends StatelessWidget {
   final int depth;
+  final int count;
+  final bool showTrailing;
 
   const StoreChapterContentsSkeleton({
     super.key,
-    required this.depth,
+    this.depth = 0,
+    this.count = 2,
+    this.showTrailing = false,
   });
 
   @override
@@ -227,10 +212,14 @@ class StoreChapterContentsSkeleton extends StatelessWidget {
         bottom: design.spacing.xs,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: List.generate(
-          2,
+          count,
           (_) => Padding(
-            padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
+            padding: EdgeInsets.symmetric(
+              vertical: design.spacing.xs,
+              horizontal: design.spacing.xs,
+            ),
             child: Row(
               children: [
                 Container(
@@ -251,6 +240,17 @@ class StoreChapterContentsSkeleton extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (showTrailing) ...[
+                  SizedBox(width: design.spacing.md),
+                  Container(
+                    width: _kSkeletonBadgeWidth,
+                    height: _kSkeletonBadgeHeight,
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(design.radius.sm),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
