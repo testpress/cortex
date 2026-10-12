@@ -135,17 +135,24 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
       loading: () => StoreChapterContentsSkeleton(depth: widget.depth + 1),
       error: (err, _) => Padding(
         padding: EdgeInsets.only(
-          left: ((widget.depth + 1) * design.spacing.md).toDouble(),
+          left: _titleAlignedIndent(design),
           top: design.spacing.xs,
           bottom: design.spacing.xs,
         ),
-        child: AppText.caption(
+        child: AppText.bodySmall(
           l10n.storeFailedToLoadContents,
           color: design.colors.textSecondary,
         ),
       ),
       data: (contents) => _buildContentsColumn(context, design, contents),
     );
+  }
+
+  double _titleAlignedIndent(DesignConfig design) {
+    return (widget.depth * design.spacing.md +
+            design.iconSize.sm +
+            design.spacing.sm)
+        .toDouble();
   }
 
   Widget _buildContentsColumn(
@@ -157,11 +164,11 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
     if (contents.isEmpty) {
       return Padding(
         padding: EdgeInsets.only(
-          left: ((widget.depth + 1) * design.spacing.md).toDouble(),
+          left: _titleAlignedIndent(design),
           top: design.spacing.xs,
           bottom: design.spacing.xs,
         ),
-        child: AppText.caption(
+        child: AppText.bodySmall(
           l10n.storeNoContentAvailable,
           color: design.colors.textSecondary,
         ),

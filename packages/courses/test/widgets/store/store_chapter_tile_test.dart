@@ -299,4 +299,51 @@ void main() {
 
     handle.dispose();
   });
+
+  testWidgets(
+      'leaf chapter with no contents shows empty message aligned with parent title',
+      (tester) async {
+    const emptyLeafChapter = ChapterDto(
+      id: 'ch-empty',
+      courseId: '372',
+      title: 'Empty Chapter',
+      lessonCount: 0,
+      assessmentCount: 0,
+      orderIndex: 0,
+      isLeaf: true,
+    );
+    final emptyMap = StoreChapterTile.buildChildrenMap([emptyLeafChapter]);
+
+    await tester.pumpWidget(
+      buildTestWidget(
+        child: SingleChildScrollView(
+          child: StoreChapterTile(
+            courseId: '372',
+            chapter: emptyLeafChapter,
+            childrenByParentId: emptyMap,
+          ),
+        ),
+        overrides: [
+          dataSourceProvider.overrideWithValue(FakeTestDataSource()),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Expand empty chapter
+    await tester.tap(find.text('Empty Chapter'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('No content available'), findsOneWidget);
+
+    // Verify left alignment matches parent title: depth (0) * 16 + icon (16) + gap (8) = 24
+    final paddingFinder = find
+        .ancestor(
+          of: find.text('No content available'),
+          matching: find.byType(Padding),
+        )
+        .first;
+    final paddingWidget = tester.widget<Padding>(paddingFinder);
+    expect((paddingWidget.padding as EdgeInsets).left, 24.0);
+  });
 }
