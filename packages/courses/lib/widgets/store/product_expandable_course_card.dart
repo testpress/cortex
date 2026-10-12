@@ -30,10 +30,7 @@ class _ProductExpandableCourseCardState
     final course = widget.course;
 
     final chaptersAsync = _isExpanded
-        ? ref.watch(storeCourseChaptersProvider(
-            course.id.toString(),
-            course.slug,
-          ))
+        ? ref.watch(storeCourseChaptersProvider(course.id.toString()))
         : null;
 
     final List<String> stats = [];
@@ -92,9 +89,8 @@ class _ProductExpandableCourseCardState
               ),
             ),
           ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox(width: double.infinity),
-            secondChild: Padding(
+          if (_isExpanded)
+            Padding(
               padding: EdgeInsets.only(
                 left: design.spacing.md,
                 right: design.spacing.md,
@@ -103,11 +99,6 @@ class _ProductExpandableCourseCardState
               child:
                   _buildExpandedContent(context, design, chaptersAsync, stats),
             ),
-            crossFadeState: _isExpanded
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            duration: MotionPreferences.duration(context, design.motion.normal),
-          ),
         ],
       ),
     );
@@ -115,7 +106,7 @@ class _ProductExpandableCourseCardState
 
   Widget _buildExpandedContent(
     BuildContext context,
-    dynamic design,
+    DesignConfig design,
     AsyncValue<List<ChapterDto>>? chaptersAsync,
     List<String> stats,
   ) {
@@ -167,6 +158,7 @@ class _ProductExpandableCourseCardState
         .toList();
     final displayChapters =
         rootChapters.isNotEmpty ? rootChapters : allChapters;
+    final childrenMap = StoreChapterTile.buildChildrenMap(allChapters);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -175,7 +167,7 @@ class _ProductExpandableCourseCardState
             (chapter) => StoreChapterTile(
               courseId: widget.course.id.toString(),
               chapter: chapter,
-              allChapters: allChapters,
+              childrenByParentId: childrenMap,
               onBuyTap: widget.onBuyTap,
             ),
           )
@@ -183,7 +175,7 @@ class _ProductExpandableCourseCardState
     );
   }
 
-  Widget _buildSkeletonChapter(dynamic design) {
+  Widget _buildSkeletonChapter(DesignConfig design) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: design.spacing.xs,

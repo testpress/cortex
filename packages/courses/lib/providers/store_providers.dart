@@ -232,15 +232,10 @@ void refreshStoreAfterPurchase(WidgetRef ref, {String? productSlug}) {
 @riverpod
 FutureOr<List<ChapterDto>> storeCourseChapters(
   StoreCourseChaptersRef ref,
-  String courseId, [
-  String? slug,
-]) {
+  String courseId,
+) {
   final repo = ref.watch(storeRepositoryProvider);
-  final cached = repo.getCachedCourseChapters(courseId);
-  if (cached != null) {
-    return cached;
-  }
-  return repo.fetchCourseChapters(courseId, slug);
+  return repo.fetchCourseChapters(courseId);
 }
 
 @riverpod
@@ -250,9 +245,5 @@ FutureOr<List<LessonDto>> storeChapterContents(
   String chapterId,
 ) {
   final repo = ref.watch(storeRepositoryProvider);
-  final cached = repo.getCachedChapterContents(courseId, chapterId);
-  if (cached != null) {
-    return cached;
-  }
   return repo.fetchChapterContents(courseId, chapterId);
 }

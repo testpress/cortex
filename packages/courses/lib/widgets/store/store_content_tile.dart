@@ -2,6 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
+/// Minimum interactive touch target dimension (48dp) per WCAG 2.5.5 / Android & iOS standards.
+const double kMinTouchTargetSize = 48.0;
+
 /// Renders an individual lesson/exam item in the store curriculum tree.
 class StoreContentTile extends StatelessWidget {
   final LessonDto content;
@@ -39,12 +42,12 @@ class StoreContentTile extends StatelessWidget {
     final l10n = L10n.of(context);
 
     final badgeWidget = Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.sm,
+        vertical: design.spacing.xs,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(design.radius.sm),
         border: Border.all(
           color: design.colors.border,
         ),
@@ -71,13 +74,13 @@ class StoreContentTile extends StatelessWidget {
       badge = AppSemantics.button(
         label: l10n.storeBuyToUnlock,
         onTap: onBuyTap,
-        child: GestureDetector(
+        child: AppFocusable(
           onTap: onBuyTap,
-          behavior: HitTestBehavior.opaque,
+          borderRadius: BorderRadius.circular(design.radius.sm),
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              minHeight: 48,
-              minWidth: 48,
+              minHeight: kMinTouchTargetSize,
+              minWidth: kMinTouchTargetSize,
             ),
             child: Center(
               child: badgeWidget,
@@ -90,7 +93,9 @@ class StoreContentTile extends StatelessWidget {
     }
 
     return AppSemantics.container(
-      label: '${content.title}, ${l10n.storeBuyToUnlock}',
+      label: onBuyTap != null
+          ? content.title
+          : '${content.title}, ${l10n.storeBuyToUnlock}',
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: onBuyTap != null ? design.spacing.xs : design.spacing.sm,

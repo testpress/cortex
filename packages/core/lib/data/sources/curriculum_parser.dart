@@ -206,4 +206,28 @@ class CurriculumParser {
             .toList() ??
         [];
   }
+
+  /// Extracts and maps course chapters from nested, paginated, or flat API response shapes.
+  static List<ChapterDto> mapChapters(dynamic data) {
+    dynamic list;
+    if (data is Map) {
+      final results = data['results'];
+      if (results is List) {
+        list = results;
+      } else if (results is Map && results['chapters'] is List) {
+        list = results['chapters'];
+      } else if (data['chapters'] is List) {
+        list = data['chapters'];
+      }
+    } else if (data is List) {
+      list = data;
+    }
+
+    if (list is! List) return [];
+
+    return list
+        .whereType<Map>()
+        .map((e) => ChapterDto.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
 }

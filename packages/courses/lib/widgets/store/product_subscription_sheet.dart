@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'store_content_tile.dart';
 
 class ProductSubscriptionSheet extends ConsumerStatefulWidget {
   final ProductDto product;
@@ -89,13 +90,13 @@ class _ProductSubscriptionSheetState
                     ),
                     AppSemantics.button(
                       label: L10n.of(context).labelClose,
-                      child: GestureDetector(
+                      child: AppFocusable(
                         onTap: widget.onClose,
-                        behavior: HitTestBehavior.opaque,
+                        borderRadius: BorderRadius.circular(design.radius.sm),
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
-                            minWidth: 48,
-                            minHeight: 48,
+                            minWidth: kMinTouchTargetSize,
+                            minHeight: kMinTouchTargetSize,
                           ),
                           child: Center(
                             child: Icon(
@@ -192,7 +193,7 @@ class _ProductSubscriptionSheetState
                                       return AppSemantics.button(
                                         label:
                                             '$durationText. ₹${detail.price}',
-                                        child: GestureDetector(
+                                        child: AppFocusable(
                                           onTap: () {
                                             setState(() {
                                               _selectedPlanDetailId = detail.id;
@@ -201,7 +202,8 @@ class _ProductSubscriptionSheetState
                                                 ?.call(detail.id);
                                             widget.onClose();
                                           },
-                                          behavior: HitTestBehavior.opaque,
+                                          borderRadius: BorderRadius.circular(
+                                              design.radius.sm),
                                           child: Container(
                                             margin: EdgeInsets.only(
                                                 top: design.spacing.xs),
@@ -283,7 +285,7 @@ class _ProductSubscriptionSheetState
 
                               return AppSemantics.button(
                                 label: '$durationText. ₹${detail.price}',
-                                child: GestureDetector(
+                                child: AppFocusable(
                                   onTap: () {
                                     setState(() {
                                       _selectedPlanDetailId = detail.id;
@@ -291,7 +293,8 @@ class _ProductSubscriptionSheetState
                                     widget.onPlanSelected?.call(detail.id);
                                     widget.onClose();
                                   },
-                                  behavior: HitTestBehavior.opaque,
+                                  borderRadius:
+                                      BorderRadius.circular(design.radius.sm),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
                                       vertical: design.spacing.md,

@@ -196,4 +196,72 @@ void main() {
       expect(lessons.firstWhere((l) => l.id == '202').isLocked, false);
     });
   });
+
+  group('CurriculumParser mapChapters response shapes tests', () {
+    test('parses paginated results format: {results: [...]}', () {
+      final payload = {
+        'results': [
+          {'id': 10, 'name': 'Physics Chapter 1', 'course_id': 100},
+          {'id': 11, 'name': 'Physics Chapter 2', 'course_id': 100},
+        ],
+      };
+
+      final chapters = CurriculumParser.mapChapters(payload);
+      expect(chapters.length, 2);
+      expect(chapters[0].id, '10');
+      expect(chapters[0].title, 'Physics Chapter 1');
+      expect(chapters[1].id, '11');
+      expect(chapters[1].title, 'Physics Chapter 2');
+    });
+
+    test(
+      'parses nested results chapters format: {results: {chapters: [...]}}',
+      () {
+        final payload = {
+          'results': {
+            'chapters': [
+              {'id': 20, 'title': 'Chemistry Intro', 'course_id': 200},
+            ],
+          },
+        };
+
+        final chapters = CurriculumParser.mapChapters(payload);
+        expect(chapters.length, 1);
+        expect(chapters[0].id, '20');
+        expect(chapters[0].title, 'Chemistry Intro');
+      },
+    );
+
+    test('parses root chapters object format: {chapters: [...]}', () {
+      final payload = {
+        'chapters': [
+          {'id': 30, 'name': 'Biology Intro', 'course_id': 300},
+        ],
+      };
+
+      final chapters = CurriculumParser.mapChapters(payload);
+      expect(chapters.length, 1);
+      expect(chapters[0].id, '30');
+      expect(chapters[0].title, 'Biology Intro');
+    });
+
+    test('parses flat list format: [...]', () {
+      final payload = [
+        {'id': 40, 'name': 'Math Module 1', 'course_id': 400},
+        {'id': 41, 'name': 'Math Module 2', 'course_id': 400},
+      ];
+
+      final chapters = CurriculumParser.mapChapters(payload);
+      expect(chapters.length, 2);
+      expect(chapters[0].id, '40');
+      expect(chapters[1].id, '41');
+    });
+
+    test('returns empty list for null or non-list payloads', () {
+      expect(CurriculumParser.mapChapters(null), isEmpty);
+      expect(CurriculumParser.mapChapters({}), isEmpty);
+      expect(CurriculumParser.mapChapters('invalid'), isEmpty);
+      expect(CurriculumParser.mapChapters({'results': 'invalid'}), isEmpty);
+    });
+  });
 }

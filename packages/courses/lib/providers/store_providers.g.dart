@@ -332,7 +332,7 @@ class _ProductInstallmentPlansProviderElement
 }
 
 String _$storeCourseChaptersHash() =>
-    r'8a03b2de1f54ca982b88777d860e9d2c47c26980';
+    r'b58ce667cca8da9e153ebbf03a2750ff49cf4d46';
 
 /// See also [storeCourseChapters].
 @ProviderFor(storeCourseChapters)
@@ -345,12 +345,10 @@ class StoreCourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
 
   /// See also [storeCourseChapters].
   StoreCourseChaptersProvider call(
-    String courseId, [
-    String? slug,
-  ]) {
+    String courseId,
+  ) {
     return StoreCourseChaptersProvider(
       courseId,
-      slug,
     );
   }
 
@@ -360,7 +358,6 @@ class StoreCourseChaptersFamily extends Family<AsyncValue<List<ChapterDto>>> {
   ) {
     return call(
       provider.courseId,
-      provider.slug,
     );
   }
 
@@ -384,13 +381,11 @@ class StoreCourseChaptersProvider
     extends AutoDisposeFutureProvider<List<ChapterDto>> {
   /// See also [storeCourseChapters].
   StoreCourseChaptersProvider(
-    String courseId, [
-    String? slug,
-  ]) : this._internal(
+    String courseId,
+  ) : this._internal(
           (ref) => storeCourseChapters(
             ref as StoreCourseChaptersRef,
             courseId,
-            slug,
           ),
           from: storeCourseChaptersProvider,
           name: r'storeCourseChaptersProvider',
@@ -402,7 +397,6 @@ class StoreCourseChaptersProvider
           allTransitiveDependencies:
               StoreCourseChaptersFamily._allTransitiveDependencies,
           courseId: courseId,
-          slug: slug,
         );
 
   StoreCourseChaptersProvider._internal(
@@ -413,11 +407,9 @@ class StoreCourseChaptersProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.courseId,
-    required this.slug,
   }) : super.internal();
 
   final String courseId;
-  final String? slug;
 
   @override
   Override overrideWith(
@@ -433,7 +425,6 @@ class StoreCourseChaptersProvider
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         courseId: courseId,
-        slug: slug,
       ),
     );
   }
@@ -445,16 +436,13 @@ class StoreCourseChaptersProvider
 
   @override
   bool operator ==(Object other) {
-    return other is StoreCourseChaptersProvider &&
-        other.courseId == courseId &&
-        other.slug == slug;
+    return other is StoreCourseChaptersProvider && other.courseId == courseId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, courseId.hashCode);
-    hash = _SystemHash.combine(hash, slug.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -465,9 +453,6 @@ class StoreCourseChaptersProvider
 mixin StoreCourseChaptersRef on AutoDisposeFutureProviderRef<List<ChapterDto>> {
   /// The parameter `courseId` of this provider.
   String get courseId;
-
-  /// The parameter `slug` of this provider.
-  String? get slug;
 }
 
 class _StoreCourseChaptersProviderElement
@@ -477,12 +462,10 @@ class _StoreCourseChaptersProviderElement
 
   @override
   String get courseId => (origin as StoreCourseChaptersProvider).courseId;
-  @override
-  String? get slug => (origin as StoreCourseChaptersProvider).slug;
 }
 
 String _$storeChapterContentsHash() =>
-    r'ed9108a8d8d6f453808e765bd71759b69036d50f';
+    r'57cb466be0cf3b25e872b125ea7ec3eba769ad65';
 
 /// See also [storeChapterContents].
 @ProviderFor(storeChapterContents)

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:core/data/data.dart';
 
 /// Repository for the Store / Store feature.
@@ -167,48 +168,53 @@ class StoreRepository {
 
   /// Returns cached chapters for [courseId] if available, otherwise fetches
   /// from the network, caches, and returns them.
-  Future<List<ChapterDto>> fetchCourseChapters(
-    String courseId, [
-    String? slug,
-  ]) async {
+  FutureOr<List<ChapterDto>> fetchCourseChapters(
+    String courseId, {
+    bool forceRefresh = false,
+  }) {
     final cacheKey = courseId;
-    if (_courseChaptersCache.containsKey(cacheKey)) {
+    if (!forceRefresh && _courseChaptersCache.containsKey(cacheKey)) {
       return _courseChaptersCache[cacheKey]!;
     }
 
-    try {
-      var chapters = await _source.getCourseChapters(courseId);
-      if (chapters.isEmpty &&
-          slug != null &&
-          slug.isNotEmpty &&
-          slug != courseId) {
-        chapters = await _source.getCourseChapters(slug);
-      }
+    return _fetchCourseChaptersFromNetwork(courseId);
+  }
 
+  Future<List<ChapterDto>> _fetchCourseChaptersFromNetwork(
+    String courseId,
+  ) async {
+    final cacheKey = courseId;
+    try {
+      final chapters = await _source.getCourseChapters(courseId);
       _courseChaptersCache[cacheKey] = chapters;
       _evictCache(_courseChaptersCache, _maxCurriculumCacheSize);
       return chapters;
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
-      final cached = _courseChaptersCache[cacheKey];
-      if (cached != null) {
-        return cached;
-      }
       rethrow;
     }
   }
 
   /// Returns cached contents for [chapterId] in [courseId] if available,
   /// otherwise fetches from the network, caches, and returns them.
-  Future<List<LessonDto>> fetchChapterContents(
+  FutureOr<List<LessonDto>> fetchChapterContents(
+    String courseId,
+    String chapterId, {
+    bool forceRefresh = false,
+  }) {
+    final cacheKey = '$courseId:$chapterId';
+    if (!forceRefresh && _chapterContentsCache.containsKey(cacheKey)) {
+      return _chapterContentsCache[cacheKey]!;
+    }
+
+    return _fetchChapterContentsFromNetwork(courseId, chapterId);
+  }
+
+  Future<List<LessonDto>> _fetchChapterContentsFromNetwork(
     String courseId,
     String chapterId,
   ) async {
     final cacheKey = '$courseId:$chapterId';
-    if (_chapterContentsCache.containsKey(cacheKey)) {
-      return _chapterContentsCache[cacheKey]!;
-    }
-
     try {
       final contents = await _source.getChapterContents(courseId, chapterId);
       _chapterContentsCache[cacheKey] = contents;
@@ -216,10 +222,6 @@ class StoreRepository {
       return contents;
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
-      final cached = _chapterContentsCache[cacheKey];
-      if (cached != null) {
-        return cached;
-      }
       rethrow;
     }
   }

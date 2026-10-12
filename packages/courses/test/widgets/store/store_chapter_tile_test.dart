@@ -249,4 +249,53 @@ void main() {
 
     expect(buyTapped, isTrue);
   });
+
+  testWidgets('chapter header exposes expanded and collapsed semantics',
+      (tester) async {
+    final handle = tester.ensureSemantics();
+
+    await tester.pumpWidget(
+      buildTestWidget(
+        child: SingleChildScrollView(
+          child: StoreChapterTile(
+            courseId: '372',
+            chapter: rootChapter,
+            allChapters: allChapters,
+          ),
+        ),
+        overrides: [
+          dataSourceProvider.overrideWithValue(FakeTestDataSource()),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Initially collapsed
+    final headerFinder = find.bySemanticsLabel(RegExp(r'^Chapter 1: Physics'));
+    expect(headerFinder, findsOneWidget);
+    expect(
+      tester
+          .getSemantics(headerFinder)
+          .flagsCollection
+          .isExpanded
+          .toBoolOrNull(),
+      isFalse,
+    );
+
+    // Tap to expand
+    await tester.tap(find.text('Chapter 1: Physics'));
+    await tester.pumpAndSettle();
+
+    // Now expanded
+    expect(
+      tester
+          .getSemantics(headerFinder)
+          .flagsCollection
+          .isExpanded
+          .toBoolOrNull(),
+      isTrue,
+    );
+
+    handle.dispose();
+  });
 }

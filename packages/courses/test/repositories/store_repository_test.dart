@@ -95,6 +95,24 @@ void main() {
       expect(dataSource.getChapterContentsCallCount, 1);
     });
 
+    test('forceRefresh bypasses cache for course chapters and chapter contents',
+        () async {
+      await repository.fetchCourseChapters('course-1');
+      expect(dataSource.getCourseChaptersCallCount, 1);
+
+      // forceRefresh = true re-queries
+      await repository.fetchCourseChapters('course-1', forceRefresh: true);
+      expect(dataSource.getCourseChaptersCallCount, 2);
+
+      await repository.fetchChapterContents('course-1', 'ch-1');
+      expect(dataSource.getChapterContentsCallCount, 1);
+
+      // forceRefresh = true re-queries
+      await repository.fetchChapterContents('course-1', 'ch-1',
+          forceRefresh: true);
+      expect(dataSource.getChapterContentsCallCount, 2);
+    });
+
     test('clearCurriculum clears curriculum caches', () async {
       await repository.fetchChapterContents('course-1', 'ch-1');
       expect(dataSource.getChapterContentsCallCount, 1);

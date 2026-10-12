@@ -9,7 +9,8 @@ import 'store_content_tile.dart';
 class StoreChapterTile extends ConsumerStatefulWidget {
   final String courseId;
   final ChapterDto chapter;
-  final List<ChapterDto> allChapters;
+  final List<ChapterDto>? allChapters;
+  final Map<String, List<ChapterDto>>? childrenByParentId;
   final int depth;
   final VoidCallback? onBuyTap;
 
@@ -17,10 +18,25 @@ class StoreChapterTile extends ConsumerStatefulWidget {
     super.key,
     required this.courseId,
     required this.chapter,
-    required this.allChapters,
+    this.allChapters,
+    this.childrenByParentId,
     this.depth = 0,
     this.onBuyTap,
   });
+
+  /// Builds a parentId -> `List<ChapterDto>` map once for O(1) child lookups.
+  static Map<String, List<ChapterDto>> buildChildrenMap(
+    List<ChapterDto> chapters,
+  ) {
+    final map = <String, List<ChapterDto>>{};
+    for (final c in chapters) {
+      final pid = c.parentId;
+      if (pid != null && pid.isNotEmpty) {
+        (map[pid] ??= []).add(c);
+      }
+    }
+    return map;
+  }
 
   @override
   ConsumerState<StoreChapterTile> createState() => _StoreChapterTileState();
@@ -28,15 +44,36 @@ class StoreChapterTile extends ConsumerStatefulWidget {
 
 class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
   bool _isExpanded = false;
+  late Map<String, List<ChapterDto>> _childrenMap;
+
+  @override
+  void initState() {
+    super.initState();
+    _childrenMap = widget.childrenByParentId ??
+        (widget.allChapters != null
+            ? StoreChapterTile.buildChildrenMap(widget.allChapters!)
+            : const {});
+  }
+
+  @override
+  void didUpdateWidget(StoreChapterTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.childrenByParentId != oldWidget.childrenByParentId ||
+        widget.allChapters != oldWidget.allChapters) {
+      _childrenMap = widget.childrenByParentId ??
+          (widget.allChapters != null
+              ? StoreChapterTile.buildChildrenMap(widget.allChapters!)
+              : const {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final chapter = widget.chapter;
 
-    // Find children chapters if this is a parent folder
-    final childChapters =
-        widget.allChapters.where((c) => c.parentId == chapter.id).toList();
+    // Find children chapters via pre-built map (O(1))
+    final childChapters = _childrenMap[chapter.id] ?? const [];
     final hasChildren = childChapters.isNotEmpty;
     final isLeaf = chapter.isLeaf && !hasChildren;
 
@@ -44,42 +81,46 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Chapter Header Tile
-        AppSemantics.button(
-          label: chapter.title,
-          child: AppFocusable(
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            borderRadius: BorderRadius.circular(design.radius.sm),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 48),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: (widget.depth * design.spacing.md).toDouble(),
-                  top: design.spacing.md,
-                  bottom: design.spacing.sm,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      _isExpanded
-                          ? LucideIcons.chevronDown
-                          : LucideIcons.chevronRight,
-                      size: design.iconSize.sm,
-                      color: design.colors.textPrimary,
-                    ),
-                    SizedBox(width: design.spacing.sm),
-                    Expanded(
-                      child: AppText.cardTitle(
-                        chapter.title,
+        Semantics(
+          expanded: _isExpanded,
+          child: AppSemantics.button(
+            label: chapter.title,
+            child: AppFocusable(
+              onTap: () {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              },
+              borderRadius: BorderRadius.circular(design.radius.sm),
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(minHeight: kMinTouchTargetSize),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: (widget.depth * design.spacing.md).toDouble(),
+                    top: design.spacing.md,
+                    bottom: design.spacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _isExpanded
+                            ? LucideIcons.chevronDown
+                            : LucideIcons.chevronRight,
+                        size: design.iconSize.sm,
                         color: design.colors.textPrimary,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: design.spacing.sm),
+                      Expanded(
+                        child: AppText.cardTitle(
+                          chapter.title,
+                          color: design.colors.textPrimary,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -93,7 +134,7 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
               (child) => StoreChapterTile(
                 courseId: widget.courseId,
                 chapter: child,
-                allChapters: widget.allChapters,
+                childrenByParentId: _childrenMap,
                 depth: widget.depth + 1,
                 onBuyTap: widget.onBuyTap,
               ),
@@ -105,50 +146,14 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
     );
   }
 
-  Widget _buildContentsList(BuildContext context, dynamic design) {
+  Widget _buildContentsList(BuildContext context, DesignConfig design) {
     final l10n = L10n.of(context);
     final contentsAsync = ref.watch(
       storeChapterContentsProvider(widget.courseId, widget.chapter.id),
     );
 
     return contentsAsync.when(
-      loading: () => Padding(
-        padding: EdgeInsets.only(
-          left: ((widget.depth + 1) * design.spacing.md).toDouble(),
-          top: design.spacing.xs,
-          bottom: design.spacing.xs,
-        ),
-        child: Column(
-          children: List.generate(
-            2,
-            (_) => Padding(
-              padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
-              child: Row(
-                children: [
-                  Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: design.colors.skeleton,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  SizedBox(width: design.spacing.sm),
-                  Expanded(
-                    child: Container(
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: design.colors.skeleton,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      loading: () => StoreChapterContentsSkeleton(depth: widget.depth + 1),
       error: (err, _) => Padding(
         padding: EdgeInsets.only(
           left: ((widget.depth + 1) * design.spacing.md).toDouble(),
@@ -166,7 +171,7 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
 
   Widget _buildContentsColumn(
     BuildContext context,
-    dynamic design,
+    DesignConfig design,
     List<LessonDto> contents,
   ) {
     final l10n = L10n.of(context);
@@ -196,6 +201,58 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// Loading skeleton for chapter contents/lessons.
+class StoreChapterContentsSkeleton extends StatelessWidget {
+  final int depth;
+
+  const StoreChapterContentsSkeleton({
+    super.key,
+    required this.depth,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    return Padding(
+      padding: EdgeInsets.only(
+        left: (depth * design.spacing.md).toDouble(),
+        top: design.spacing.xs,
+        bottom: design.spacing.xs,
+      ),
+      child: Column(
+        children: List.generate(
+          2,
+          (_) => Padding(
+            padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
+            child: Row(
+              children: [
+                Container(
+                  width: design.spacing.md,
+                  height: design.spacing.md,
+                  decoration: BoxDecoration(
+                    color: design.colors.skeleton,
+                    borderRadius: BorderRadius.circular(design.radius.sm),
+                  ),
+                ),
+                SizedBox(width: design.spacing.sm),
+                Expanded(
+                  child: Container(
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: design.colors.skeleton,
+                      borderRadius: BorderRadius.circular(design.radius.sm),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
