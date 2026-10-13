@@ -41,7 +41,7 @@ void main() {
     duration: '10 min',
     progressStatus: LessonProgressStatus.notStarted,
     isLocked: false,
-    hasFreePreview: true,
+    isFreePreview: true,
     orderIndex: 0,
   );
 
@@ -53,7 +53,7 @@ void main() {
     duration: '15 min',
     progressStatus: LessonProgressStatus.notStarted,
     isLocked: true,
-    hasFreePreview: true,
+    isFreePreview: true,
     orderIndex: 1,
   );
 
@@ -85,7 +85,7 @@ void main() {
       expect(find.text('Buy to Unlock'), findsNothing);
     });
 
-    testWidgets('renders "Free Preview" badge when hasFreePreview is true',
+    testWidgets('renders "Free Preview" badge when isFreePreview is true',
         (tester) async {
       await tester.pumpWidget(
         buildTestWidget(
@@ -211,6 +211,43 @@ void main() {
 
       expect(constrainedBox.constraints.minHeight, greaterThanOrEqualTo(48.0));
       expect(constrainedBox.constraints.minWidth, greaterThanOrEqualTo(48.0));
+    });
+
+    testWidgets('Free Preview badge size matches Buy to Unlock badge size',
+        (tester) async {
+      await tester.pumpWidget(
+        buildTestWidget(
+          child: const Column(
+            children: [
+              StoreContentTile(content: freeLesson),
+              StoreContentTile(content: lockedLesson),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final previewBadgeFinder = find
+          .ancestor(
+            of: find.text('Free Preview'),
+            matching: find.byType(Container),
+          )
+          .first;
+      final lockedBadgeFinder = find
+          .ancestor(
+            of: find.text('Buy to Unlock'),
+            matching: find.byType(Container),
+          )
+          .first;
+
+      final previewSize = tester.getSize(previewBadgeFinder);
+      final lockedSize = tester.getSize(lockedBadgeFinder);
+
+      expect(
+        (previewSize.width - lockedSize.width).abs(),
+        lessThanOrEqualTo(4.0),
+      );
+      expect(previewSize.height, equals(lockedSize.height));
     });
   });
 }

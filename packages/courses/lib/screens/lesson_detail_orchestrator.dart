@@ -208,7 +208,7 @@ class _LessonDetailOrchestratorState
     final isCompleted = _alreadyMarkedComplete ||
         lesson.progressStatus == LessonProgressStatus.completed;
 
-    final isLocked = lesson.isLocked;
+    final isLocked = lesson.isLocked && !lesson.isFreePreview;
 
     return Stack(
       children: [
@@ -361,7 +361,8 @@ class _LessonDetailOrchestratorState
       );
     }
 
-    if (lesson.isLocked) {
+    final isLocked = lesson.isLocked && !lesson.isFreePreview;
+    if (isLocked) {
       return ContentNoticeView(
         icon: LucideIcons.lock,
         title: L10n.of(context).errorAccessDeniedTitle,
@@ -417,6 +418,7 @@ class _LessonDetailOrchestratorState
       case LessonType.video:
         return VideoLessonViewer(
           lesson: lesson,
+          enableHelpdesk: widget.enableHelpdesk,
           onComplete: _markAsCompleted,
           footerBuilder: (context) => LessonDetailShell.buildStaticFooter(
             context,
@@ -459,6 +461,7 @@ class _LessonDetailOrchestratorState
             lesson.showRecordedVideo) {
           return VideoLessonViewer(
             lesson: lesson,
+            enableHelpdesk: widget.enableHelpdesk,
             onComplete: _markAsCompleted,
             onOpenMcqFilterSheet: () => _isMcqFilterSheetOpen.value = true,
             mcqDifficulty: _mcqDifficulty,

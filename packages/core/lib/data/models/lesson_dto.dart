@@ -90,10 +90,7 @@ class LessonDto {
   final String? password;
   final String? accessToken;
   final String? transcodingStatus;
-  final bool hasFreePreview;
-
-  /// Whether the lesson is available as a free preview.
-  bool get isFreePreview => hasFreePreview;
+  final bool isFreePreview;
 
   /// Whether video transcoding is completed (or not set).
   bool get isTranscodingCompleted =>
@@ -219,7 +216,7 @@ class LessonDto {
     this.password,
     this.accessToken,
     this.transcodingStatus,
-    this.hasFreePreview = false,
+    this.isFreePreview = false,
   });
 
   LessonDto copyWith({
@@ -282,7 +279,7 @@ class LessonDto {
     String? password,
     String? accessToken,
     String? transcodingStatus,
-    bool? hasFreePreview,
+    bool? isFreePreview,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -345,7 +342,7 @@ class LessonDto {
       password: password ?? this.password,
       accessToken: accessToken ?? this.accessToken,
       transcodingStatus: transcodingStatus ?? this.transcodingStatus,
-      hasFreePreview: hasFreePreview ?? this.hasFreePreview,
+      isFreePreview: isFreePreview ?? this.isFreePreview,
     );
   }
 
@@ -436,7 +433,7 @@ class LessonDto {
       allowRetake: allowRetake && other.allowRetake,
       maxRetakes: maxRetakes != -1 ? maxRetakes : other.maxRetakes,
       isLocked: isLocked,
-      hasFreePreview: hasFreePreview || other.hasFreePreview,
+      isFreePreview: isFreePreview,
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,
@@ -853,12 +850,7 @@ class LessonDto {
         return parsed;
       })(),
       isLocked: (json['is_locked'] ?? json['isLocked']) as bool? ?? false,
-      hasFreePreview:
-          (json['free_preview'] ??
-                  json['has_free_preview'] ??
-                  json['hasFreePreview'])
-              as bool? ??
-          false,
+      isFreePreview: json['free_preview'] as bool? ?? false,
       orderIndex:
           (json['order'] as num?)?.toInt() ??
           (json['orderIndex'] as num?)?.toInt() ??
@@ -1040,7 +1032,7 @@ class LessonDto {
       'chapterSlug': chapterSlug,
       'allowDownload': allowDownload,
       'watermarkBeforeDownload': watermarkBeforeDownload,
-      'hasFreePreview': hasFreePreview,
+      'isFreePreview': isFreePreview,
       'exam': exam?.toJson(),
     };
   }

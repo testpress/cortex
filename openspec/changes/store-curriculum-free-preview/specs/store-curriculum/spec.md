@@ -36,6 +36,18 @@ The system SHALL allow non-enrolled users to launch and view free preview lesson
 - **WHEN** user views a preview lesson launched from the store
 - **THEN** the system omits bookmarks, "mark as completed", offline downloads, and helpdesk ask doubt capabilities to keep the preview focused and avoid permission errors on un-enrolled content
 
+#### Scenario: Deep-link non-preview lesson with preview flag
+- **WHEN** a lesson that is not a free preview is opened with `preview=true`
+- **THEN** the system ignores the preview parameter and retains learner actions to prevent accidental loss of capabilities
+
+#### Scenario: Preview lesson with locked state in payload
+- **WHEN** user opens a free preview lesson that has `isLocked: true` from backend curriculum payload
+- **THEN** the system bypasses the access denied lock screen and renders the lesson content viewer
+
+#### Scenario: Detail payload resolves without preview flag
+- **WHEN** a free preview lesson is opened and its full detail payload resolves without the preview flag
+- **THEN** the system retains the preview flag from the curriculum extra or cached lesson, maintaining preview restrictions and avoiding re-locking the content
+
 #### Scenario: User taps locked lesson
 - **WHEN** user taps on a lesson tile or badge marked as locked
 - **THEN** the system opens the purchase plan selection sheet

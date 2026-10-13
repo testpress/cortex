@@ -20,7 +20,7 @@ Currently in the Store tab, non-enrolled users browsing a course's curriculum se
 
 ### Decision 1: Explicit Callback Plumbing and Router Navigation
 - **Choice:** Thread `onPreviewTap(LessonDto lesson)` through widget constructors (`StoreContentTile`, `StoreChapterTile`, `ProductExpandableCourseCard`) up to `ProductDetailScreen`, then navigate using `LessonRouter.navigateToLesson(..., isPreview: true)`.
-- **Rationale:** Keeps presentational curriculum widgets decoupled from routing, while ensuring `ProductDetailScreen` routes through `LessonRouter` so that `lessonDetailProvider` fetches the complete lesson content. Passing `isPreview: true` injects `preview=true` into route query parameters, allowing `study_routes` to nullify `onNext` and `onPrevious` to prevent users from advancing into un-enrolled lessons or triggering auto-play trap.
+- **Rationale:** Keeps presentational curriculum widgets decoupled from routing, while ensuring `ProductDetailScreen` routes through `LessonRouter` so that `lessonDetailProvider` fetches the complete lesson content. Passing `isPreview: true` injects `preview=true` into route query parameters, allowing `study_routes` (combined with `activeLesson.isFreePreview`) to nullify `onNext`, `onPrevious`, and student capabilities, preventing users from advancing into un-enrolled lessons while ensuring non-preview lessons never silently lose actions if deep-linked.
 
 ### Decision 2: Dual Badge Rendering in `StoreContentTile`
 - **Choice:** Conditionally render either:
@@ -28,13 +28,25 @@ Currently in the Store tab, non-enrolled users browsing a course's curriculum se
   - Locked Content: Accent2 tint with `LucideIcons.lock` and label "Buy to Unlock", invoking `onBuyTap`.
 - **Rationale:** Visual clarity for prospective buyers, directly indicating that this item is playable immediately without payment.
 
-### Decision 3: Fallback Logic for Preview Determination in `LessonDto`
-- **Choice:** Define preview availability using `hasFreePreview || !isLocked`.
-- **Rationale:** Handles both older curriculum payloads (where previewable lessons are returned with `is_locked: false`) and modern payloads with an explicit `has_free_preview` field.
+### Decision 3: Single Preview Property in `LessonDto`
+- **Choice:** Define preview availability using a single field `isFreePreview` on `LessonDto` (parsing backend `free_preview` / `has_free_preview`).
+- **Rationale:** Avoids redundant `hasFreePreview` vs `isFreePreview` dual naming, aligning with other boolean fields in `LessonDto` (`isLocked`, `isRunning`, `isUpcoming`, `isScheduled`).
 
 ### Decision 4: Inversion of Control via Capability Props on `LessonDetailOrchestrator`
 - **Choice:** Add optional capability flags to `LessonDetailOrchestrator` (`enableBookmarks`, `enableCompletion`, `enableDownloads`, `enableHelpdesk`, all defaulting to `true`).
 - **Rationale:** Keeps `LessonDetailOrchestrator` presentational and decoupled from business rules or "preview" concepts, mirroring `LessonDetailShell`. In `study_routes.dart`, when `preview=true` is present, pass `false` for these flags to hide student-only actions.
+
+### Decision 5: Bypassing Lock Evaluation for Free Previews in `LessonDetailOrchestrator`
+- **Choice:** Resolve locked state in `LessonDetailOrchestrator` as `final isLocked = lesson.isLocked && !lesson.isFreePreview;`.
+- **Rationale:** For unpurchased courses, the backend curriculum API populates `locked_contents` with all un-enrolled lesson IDs. If a lesson also has `free_preview: true`, evaluating `isLocked` blindly causes the orchestrator to render the sequential lock screen ("Access Denied: Complete previous content to unlock") instead of playing the preview content.
+
+### Decision 6: Architectural Scope Boundary of Preview UI Restrictions
+- **Choice:** Preview mode UI capability restrictions are enforced on lesson routes handled by `LessonDetailOrchestrator` (`video`, `pdf`, `notes`, `attachment`, `embedContent`, `liveStream`, `assignment`). Exam content types (`test`, `assessment`) route to `ExamPrescreen` and defer attempt authorization to the backend exam attempt API (which returns 403 for un-enrolled users).
+- **Rationale:** Exams have independent lifecycle engines that lack lesson-level actions (bookmarks, mark-as-completed, sequential next/previous).
+
+### Decision 7: Preserving Preview Flag Across Detail Loading and Merging
+- **Choice:** Maintain `isFreePreview` in `LessonDto.mergeWith` using `isDetailFetched ? isFreePreview : (isFreePreview || other.isFreePreview)` and carry forward `extraLesson.isFreePreview` in `study_routes.dart` when `lessonDetailProvider` resolves.
+- **Rationale:** Detail fetch responses with `isDetailFetched: true` act as the authoritative source of truth (honoring administrative revocations where `free_preview: false`), while summary and cached curriculum merges retain preview eligibility via the OR fallback.
 
 ## Risks / Trade-offs
 

@@ -80,6 +80,29 @@ void main() {
 
       expect(find.text('Ask Doubt'), findsOneWidget);
     });
+
+    testWidgets(
+        'hides Ask Doubt tab when enableHelpdesk is false even if settings enabled',
+        (tester) async {
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+      });
+
+      await tester.pumpWidget(
+        wrap(
+          const VideoLessonViewer(
+            lesson: testLesson,
+            enableHelpdesk: false,
+          ),
+          overrides: [
+            instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+          ],
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Ask Doubt'), findsNothing);
+    });
   });
 
   group('VideoLessonViewer Transcoding Processing', () {

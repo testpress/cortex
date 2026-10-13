@@ -36,7 +36,7 @@ class FakeTestDataSource extends MockDataSource {
           duration: '10 min',
           progressStatus: LessonProgressStatus.notStarted,
           isLocked: false,
-          hasFreePreview: true,
+          isFreePreview: true,
           orderIndex: 1,
         ),
       ];

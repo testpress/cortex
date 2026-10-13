@@ -51,16 +51,24 @@ class StudyRoutes {
           parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) {
             final id = state.pathParameters['id']!;
-            final isPreview = state.uri.queryParameters['preview'] == 'true';
             final extraLesson = state.extra is LessonDto
                 ? state.extra as LessonDto
                 : null;
             return Consumer(
               builder: (context, ref, child) {
                 final lessonAsync = ref.watch(lessonDetailProvider(id));
-                final activeLesson = lessonAsync.valueOrNull ?? extraLesson;
+                final detailLesson = lessonAsync.valueOrNull;
+                final activeLesson = detailLesson != null
+                    ? (extraLesson?.isFreePreview == true &&
+                              !detailLesson.isFreePreview
+                          ? detailLesson.copyWith(isFreePreview: true)
+                          : detailLesson)
+                    : extraLesson;
 
                 if (activeLesson != null) {
+                  final isPreview =
+                      state.uri.queryParameters['preview'] == 'true' &&
+                      activeLesson.isFreePreview;
                   return _LessonRedirector(
                     lesson: activeLesson,
                     child: LessonDetailOrchestrator(

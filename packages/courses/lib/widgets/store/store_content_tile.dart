@@ -55,7 +55,9 @@ class StoreContentTile extends StatelessWidget {
 
     final badgeWidget = Container(
       padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.sm,
+        horizontal: isPreview
+            ? (design.spacing.sm + design.spacing.xs)
+            : design.spacing.sm,
         vertical: design.spacing.xs,
       ),
       decoration: BoxDecoration(
