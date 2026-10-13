@@ -50,7 +50,7 @@ class AppPdfViewer extends ConsumerStatefulWidget {
 }
 
 class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   late PdfViewerController _controller;
 
   String? _error;
@@ -73,8 +73,15 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initController();
     _load();
+  }
+
+  @override
+  void didHaveMemoryPressure() {
+    PaintingBinding.instance.imageCache.clear();
+    PaintingBinding.instance.imageCache.clearLiveImages();
   }
 
   void _initController() {
@@ -94,6 +101,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.removeListener(_trackProgress);
     super.dispose();
   }
@@ -171,14 +179,15 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
     final design = Design.of(context);
     final params = PdfViewerParams(
       backgroundColor: design.colors.surface,
-      limitRenderingCache: false,
-      verticalCacheExtent: 4.0,
-      maxImageBytesCachedOnMemory: 256 * 1024 * 1024,
-      onePassRenderingSizeThreshold: 3500,
+      limitRenderingCache: true,
+      verticalCacheExtent: 0.5,
+      horizontalCacheExtent: 0.5,
+      maxImageBytesCachedOnMemory: 48 * 1024 * 1024,
+      onePassRenderingSizeThreshold: 1000,
       behaviorControlParams: const PdfViewerBehaviorControlParams(
-        trailingPageLoadingDelay: Duration.zero,
-        pageImageCachingDelay: Duration.zero,
-        partialImageLoadingDelay: Duration.zero,
+        trailingPageLoadingDelay: Duration(milliseconds: 250),
+        pageImageCachingDelay: Duration(milliseconds: 200),
+        partialImageLoadingDelay: Duration(milliseconds: 150),
       ),
       onViewerReady: (document, controller) {
         _onViewerReady(id, document);
@@ -355,9 +364,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
         _isLoading = false;
       });
     }
-
-    // Progressively stream and decode subsequent pages in background so scrolling is instant without white flashes
-    unawaited(document.loadPagesProgressively());
   }
 
   void _trackProgress() {
