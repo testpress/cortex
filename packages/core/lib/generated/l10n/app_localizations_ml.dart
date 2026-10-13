@@ -3412,7 +3412,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiChatHistoryTitle => 'ചാറ്റ് ചരിത്രം';
 
   @override
-  String get aiComposerPlaceholder => 'എന്തും ചോദിക്കൂ...';
+  String get aiComposerPlaceholder => 'AI പിന്തുണയോട് ചോദിക്കുക';
 
   @override
   String get aiComposerAttachImage => 'ചിത്രം ചേർക്കുക';
@@ -3422,6 +3422,35 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'സന്ദേശം അയക്കുക';
+
+  @override
+  String get aiAssistantLabel => 'AI അസിസ്റ്റന്റ്';
+
+  @override
+  String get aiGenerationError =>
+      'പ്രതികരണം സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get aiTryAgain => 'വീണ്ടും ശ്രമിക്കുക';
+
+  @override
+  String get aiCopyMessageSemantic => 'സന്ദേശം പകർത്തുക';
+
+  @override
+  String get aiMoreActionsSemantic => 'കൂടുതൽ പ്രവർത്തനങ്ങൾ';
+
+  @override
+  String get aiMessageSendFailed => 'സന്ദേശം അയക്കാൻ കഴിഞ്ഞില്ല. ';
+
+  @override
+  String get aiRetrySendMessageSemantic =>
+      'സന്ദേശം വീണ്ടും അയക്കാൻ ടാപ്പ് ചെയ്യുക';
+
+  @override
+  String get aiTapToRetry => 'വീണ്ടും ശ്രമിക്കാൻ ടാപ്പ് ചെയ്യുക';
+
+  @override
+  String get aiMessageSending => 'അയയ്ക്കുന്നു...';
 
   @override
   String get announcementsQuickLinks => 'ദ്രുത ലിങ്കുകൾ';

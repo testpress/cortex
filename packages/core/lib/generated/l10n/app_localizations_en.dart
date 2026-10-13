@@ -3358,7 +3358,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatHistoryTitle => 'Chat History';
 
   @override
-  String get aiComposerPlaceholder => 'Ask anything...';
+  String get aiComposerPlaceholder => 'Ask AI support';
 
   @override
   String get aiComposerAttachImage => 'Attach image';
@@ -3368,6 +3368,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'Send message';
+
+  @override
+  String get aiAssistantLabel => 'AI Assistant';
+
+  @override
+  String get aiGenerationError =>
+      'Couldn\'t generate a response. Please try again.';
+
+  @override
+  String get aiTryAgain => 'Try again';
+
+  @override
+  String get aiCopyMessageSemantic => 'Copy message';
+
+  @override
+  String get aiMoreActionsSemantic => 'More actions';
+
+  @override
+  String get aiMessageSendFailed => 'Couldn\'t send message. ';
+
+  @override
+  String get aiRetrySendMessageSemantic => 'Tap to retry sending message';
+
+  @override
+  String get aiTapToRetry => 'Tap to retry';
+
+  @override
+  String get aiMessageSending => 'Sending...';
 
   @override
   String get announcementsQuickLinks => 'Quick Links';

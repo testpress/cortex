@@ -194,3 +194,53 @@ It normalizes the dot product, so only *direction* matters — not magnitude.
     ],
   ),
 ];
+
+/// Mock generic AI response generator for UI testing and verification.
+String generateMockAiResponse(String prompt) {
+  final cleanPrompt = prompt.trim();
+  final lower = cleanPrompt.toLowerCase();
+
+  if (lower.contains('quantum')) {
+    return '''## Quantum Computing Overview
+
+Quantum computing uses **qubits** to process complex problems exponentially faster than classical computers.
+
+### Core Principles
+- **Superposition:** Qubits exist in multiple states simultaneously.
+- **Entanglement:** Linked qubits share state across distance.
+
+Would you like to explore algorithms or physical implementations?''';
+  }
+
+  if (lower.contains('flutter') || lower.contains('monorepo')) {
+    return '''## Flutter Architecture
+
+This project follows an **SDK-first monorepo** pattern:
+- **`packages/core`**: Neutral UI primitives and design system.
+- **`packages/courses`** & **`packages/exams`**: Domain packages.
+- **`app/`**: Thin consumer shell.
+
+All UI components strictly adhere to neutral design tokens.''';
+  }
+
+  return '''I understand your question about "$cleanPrompt". Let me explain step by step:
+
+**Step 1:** First, we need to identify the key concepts.
+
+**Step 2:** Apply the relevant formula or principle.
+
+**Step 3:** Solve systematically.
+
+Would you like me to explain any specific step in more detail?''';
+}
+
+/// Helpers for testing failure and retry states during UI verification
+bool isMockSendErrorTrigger(String text) {
+  final clean = text.trim().toLowerCase();
+  return clean == 'send error' || clean == 'error';
+}
+
+bool isMockGenerationErrorTrigger(String text) {
+  final clean = text.trim().toLowerCase();
+  return clean == 'generation error' || clean == 'fail';
+}

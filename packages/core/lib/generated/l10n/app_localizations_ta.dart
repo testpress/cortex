@@ -3410,7 +3410,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiChatHistoryTitle => 'அரட்டை வரலாறு';
 
   @override
-  String get aiComposerPlaceholder => 'எது வேண்டுமானாலும் கேளுங்கள்...';
+  String get aiComposerPlaceholder => 'AI ஆதரவிடம் கேளுங்கள்';
 
   @override
   String get aiComposerAttachImage => 'படத்தை இணைக்கவும்';
@@ -3420,6 +3420,34 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'செய்தி அனுப்பவும்';
+
+  @override
+  String get aiAssistantLabel => 'AI உதவியாளர்';
+
+  @override
+  String get aiGenerationError =>
+      'பதிலை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get aiTryAgain => 'மீண்டும் முயற்சி செய்';
+
+  @override
+  String get aiCopyMessageSemantic => 'செய்தியை நகலெடு';
+
+  @override
+  String get aiMoreActionsSemantic => 'கூடுதல் செயல்கள்';
+
+  @override
+  String get aiMessageSendFailed => 'செய்தியை அனுப்ப முடியவில்லை. ';
+
+  @override
+  String get aiRetrySendMessageSemantic => 'செய்தியை மீண்டும் அனுப்ப தட்டவும்';
+
+  @override
+  String get aiTapToRetry => 'மீண்டும் முயற்சிக்க தட்டவும்';
+
+  @override
+  String get aiMessageSending => 'அனுப்பப்படுகிறது...';
 
   @override
   String get announcementsQuickLinks => 'விரைவு இணைப்புகள்';

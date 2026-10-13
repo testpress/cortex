@@ -1,17 +1,23 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core.dart';
 
-class AiComposer extends ConsumerStatefulWidget {
-  const AiComposer({super.key, this.onSend});
+class AiComposer extends StatefulWidget {
+  const AiComposer({
+    super.key,
+    this.onSend,
+    this.enabled = true,
+    this.hintText,
+  });
 
   final ValueChanged<String>? onSend;
+  final bool enabled;
+  final String? hintText;
 
   @override
-  ConsumerState<AiComposer> createState() => _AiComposerState();
+  State<AiComposer> createState() => _AiComposerState();
 }
 
-class _AiComposerState extends ConsumerState<AiComposer> {
+class _AiComposerState extends State<AiComposer> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
   late final ScrollController _textScrollController;
@@ -33,6 +39,7 @@ class _AiComposerState extends ConsumerState<AiComposer> {
   }
 
   void _submit() {
+    if (!widget.enabled) return;
     final text = _controller.text.trim();
     if (text.isNotEmpty) {
       widget.onSend?.call(text);
@@ -45,108 +52,93 @@ class _AiComposerState extends ConsumerState<AiComposer> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final placeholder = widget.hintText ?? l10n.aiComposerPlaceholder;
+    final hasText = _controller.text.trim().isNotEmpty && widget.enabled;
 
     return Container(
       decoration: BoxDecoration(
         color: design.colors.card,
-        borderRadius: design.radius.card,
-        border: Border.all(color: design.colors.border),
+        borderRadius: design.radius.pill,
+        border: Border.all(
+          color: design.colors.border.withValues(alpha: 0.6),
+          width: 1.0,
+        ),
       ),
-      padding: EdgeInsets.only(
-        left: design.spacing.sm,
-        right: design.spacing.sm,
-        top: design.spacing.sm,
-        bottom: design.spacing.xs,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
+          Expanded(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 100.0),
-              child: RawScrollbar(
-                controller: _textScrollController,
-                thumbColor: design.colors.textTertiary.withValues(alpha: 0.5),
-                thickness: 4.0,
-                radius: const Radius.circular(2.0),
-                thumbVisibility: true,
-                child: Stack(
-                  children: [
-                    if (_controller.text.isEmpty)
-                      AppText.body(
-                        l10n.aiComposerPlaceholder,
-                        color: design.colors.textTertiary,
-                      ),
-                    EditableText(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      scrollController: _textScrollController,
-                      style: design.typography.body.copyWith(
-                        color: design.colors.textPrimary,
-                      ),
-                      cursorColor: design.colors.primary,
-                      backgroundCursorColor: const Color(0xFF000000),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      onChanged: (text) {
-                        setState(() {});
-                      },
+              constraints: const BoxConstraints(
+                minHeight: 40.0,
+                maxHeight: 120.0,
+              ),
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  if (_controller.text.isEmpty)
+                    AppText.body(
+                      placeholder,
+                      color: design.colors.textTertiary,
                     ),
-                  ],
-                ),
+                  EditableText(
+                    controller: _controller,
+                    focusNode: _focusNode,
+                    scrollController: _textScrollController,
+                    readOnly: !widget.enabled,
+                    style: design.typography.body.copyWith(
+                      color: widget.enabled
+                          ? design.colors.textPrimary
+                          : design.colors.textTertiary,
+                    ),
+                    cursorColor: design.colors.primary,
+                    backgroundCursorColor: const Color(0xFF000000),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 4,
+                    minLines: 1,
+                    onChanged: (_) {
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(height: design.spacing.xs / 2),
-          Row(
-            children: [
-              AppIconButton(
-                icon: LucideIcons.image,
-                onTap: () {},
-                accessibilityLabel: l10n.aiComposerAttachImage,
-                color: design.colors.textSecondary,
-                size: 20,
-              ),
-              AppIconButton(
-                icon: LucideIcons.camera,
-                onTap: () {},
-                accessibilityLabel: l10n.aiComposerTakePhoto,
-                color: design.colors.textSecondary,
-                size: 20,
-              ),
-              const Spacer(),
-              AppSemantics.button(
-                label: l10n.aiComposerSendMessage,
-                onTap: _submit,
-                child: GestureDetector(
-                  onTap: _submit,
-                  behavior: HitTestBehavior.opaque,
-                  child: SizedBox(
-                    width: 48.0,
-                    height: 48.0,
+          const SizedBox(width: 8.0),
+          AppSemantics.button(
+            label: l10n.aiComposerSendMessage,
+            enabled: hasText,
+            onTap: hasText ? _submit : null,
+            child: GestureDetector(
+              onTap: hasText ? _submit : null,
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox(
+                width: 48.0,
+                height: 48.0,
+                child: Center(
+                  child: Container(
+                    width: 32.0,
+                    height: 32.0,
+                    decoration: BoxDecoration(
+                      color: hasText
+                          ? design.colors.primary
+                          : design.colors.primary.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
                     child: Center(
-                      child: Container(
-                        width: 36.0,
-                        height: 36.0,
-                        decoration: BoxDecoration(
-                          color: design.colors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            LucideIcons.send,
-                            color: design.colors.textInverse,
-                            size: 16.0,
-                          ),
-                        ),
+                      child: Icon(
+                        LucideIcons.arrowUp,
+                        color: hasText
+                            ? design.colors.textInverse
+                            : design.colors.primary.withValues(alpha: 0.4),
+                        size: 18.0,
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
