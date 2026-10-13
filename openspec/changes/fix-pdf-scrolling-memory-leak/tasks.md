@@ -4,11 +4,10 @@
   - Set `limitRenderingCache: true`
   - Set `verticalCacheExtent: 0.5` and `horizontalCacheExtent: 0.5`
   - Set `maxImageBytesCachedOnMemory: 48 * 1024 * 1024` (48 MB)
-  - Set `onePassRenderingSizeThreshold: 1000`
+  - Set `onePassRenderingSizeThreshold: 1500`
   - Set `behaviorControlParams` with debouncing (`trailingPageLoadingDelay: 250ms`, `pageImageCachingDelay: 200ms`, `partialImageLoadingDelay: 150ms`)
 - [x] 1.2 Remove eager `document.loadPagesProgressively()` call in `_onViewerReady`
-- [x] 1.3 Add `WidgetsBindingObserver` to purge image caches on `didHaveMemoryPressure()`
-- [x] 1.4 Ensure observer and controller listener removal in `dispose`
+- [x] 1.3 Ensure controller listener removal in `dispose`
 
 ## 2. Verification and Testing
 

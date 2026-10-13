@@ -50,7 +50,7 @@ class AppPdfViewer extends ConsumerStatefulWidget {
 }
 
 class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+    with AutomaticKeepAliveClientMixin {
   late PdfViewerController _controller;
 
   String? _error;
@@ -73,15 +73,8 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _initController();
     _load();
-  }
-
-  @override
-  void didHaveMemoryPressure() {
-    PaintingBinding.instance.imageCache.clear();
-    PaintingBinding.instance.imageCache.clearLiveImages();
   }
 
   void _initController() {
@@ -101,7 +94,6 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _controller.removeListener(_trackProgress);
     super.dispose();
   }
@@ -183,7 +175,7 @@ class _AppPdfViewerState extends ConsumerState<AppPdfViewer>
       verticalCacheExtent: 0.5,
       horizontalCacheExtent: 0.5,
       maxImageBytesCachedOnMemory: 48 * 1024 * 1024,
-      onePassRenderingSizeThreshold: 1000,
+      onePassRenderingSizeThreshold: 1500,
       behaviorControlParams: const PdfViewerBehaviorControlParams(
         trailingPageLoadingDelay: Duration(milliseconds: 250),
         pageImageCachingDelay: Duration(milliseconds: 200),

@@ -6,16 +6,15 @@ Continuous scrolling through high-resolution slide PDFs on Android causes unboun
 
 - Enable PDFium native image cache bounding (`limitRenderingCache: true`) in `PdfViewerParams` so native raster buffers are released as pages scroll out of view.
 - Reduce `verticalCacheExtent` and `horizontalCacheExtent` to `0.5` viewport heights to pre-render only immediately adjacent content.
-- Lower `onePassRenderingSizeThreshold` from 3500 to 1000 to tile high-res slides rather than allocating giant monolithic textures.
+- Lower `onePassRenderingSizeThreshold` from 3500 to 1500 to tile high-res slides rather than allocating giant monolithic textures.
 - Set `maxImageBytesCachedOnMemory` to 48 MB.
 - Introduce debounce delays in `behaviorControlParams` (`trailingPageLoadingDelay: 250ms`, `pageImageCachingDelay: 200ms`, `partialImageLoadingDelay: 150ms`) to skip intermediate decodes during rapid flinging.
 - Remove eager background `document.loadPagesProgressively()` invocation from `_onViewerReady`.
-- Register `WidgetsBindingObserver.didHaveMemoryPressure()` to proactively clear Flutter's image and live texture caches upon OS memory pressure warnings.
 
 ## Capabilities
 
 ### Modified Capabilities
-- `lesson-pdf-playback`: Add requirement for memory-bounded PDF rendering, tiled high-res presentation rendering, scroll throttling, and proactive memory pressure handling.
+- `lesson-pdf-playback`: Add requirement for memory-bounded PDF rendering, tiled high-res presentation rendering, and scroll throttling.
 
 ## Impact
 
