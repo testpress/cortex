@@ -2,7 +2,7 @@
 
 - [x] 1.1 Add `storeFreePreview` localization string to `packages/core/lib/l10n/`
 - [x] 1.2 Unify preview availability in `LessonDto` to a single field `isFreePreview`
-- [x] 1.3 Retain `isFreePreview` in `LessonDto.mergeWith` when merging with cached DTO (`isDetailFetched` guard allowing revocation)
+- [x] 1.3 Retain `isFreePreview` in `LessonDto.mergeWith` (caller precedence)
 
 ## 2. Store Curriculum UI Components
 
@@ -30,5 +30,5 @@
 - [x] 4.4 Update unit and route tests for `LessonRouter` and `study_routes` preview behavior
 - [x] 4.5 Add test coverage in `LessonDetailOrchestrator` and `study_routes` for disabled capabilities in preview mode
 - [x] 4.6 Add widget test in `LessonDetailOrchestrator` verifying content viewer renders when `isLocked: true` and `hasFreePreview: true`
-- [x] 4.7 Add tests verifying detail DTO without preview flag retains preview state in `mergeWith` and `study_routes.dart`
+- [x] 4.7 Add tests verifying `isFreePreview` propagation in `mergeWith` and `study_routes.dart`
 - [x] 4.8 Add test verifying Ask Doubt tab is hidden in `VideoLessonViewer` when `enableHelpdesk` is false

@@ -29,7 +29,7 @@ Currently in the Store tab, non-enrolled users browsing a course's curriculum se
 - **Rationale:** Visual clarity for prospective buyers, directly indicating that this item is playable immediately without payment.
 
 ### Decision 3: Single Preview Property in `LessonDto`
-- **Choice:** Define preview availability using a single field `isFreePreview` on `LessonDto` (parsing backend `free_preview` / `has_free_preview`).
+- **Choice:** Define preview availability using a single field `isFreePreview` on `LessonDto` (parsing backend `free_preview`).
 - **Rationale:** Avoids redundant `hasFreePreview` vs `isFreePreview` dual naming, aligning with other boolean fields in `LessonDto` (`isLocked`, `isRunning`, `isUpcoming`, `isScheduled`).
 
 ### Decision 4: Inversion of Control via Capability Props on `LessonDetailOrchestrator`
@@ -43,10 +43,6 @@ Currently in the Store tab, non-enrolled users browsing a course's curriculum se
 ### Decision 6: Architectural Scope Boundary of Preview UI Restrictions
 - **Choice:** Preview mode UI capability restrictions are enforced on lesson routes handled by `LessonDetailOrchestrator` (`video`, `pdf`, `notes`, `attachment`, `embedContent`, `liveStream`, `assignment`). Exam content types (`test`, `assessment`) route to `ExamPrescreen` and defer attempt authorization to the backend exam attempt API (which returns 403 for un-enrolled users).
 - **Rationale:** Exams have independent lifecycle engines that lack lesson-level actions (bookmarks, mark-as-completed, sequential next/previous).
-
-### Decision 7: Preserving Preview Flag Across Detail Loading and Merging
-- **Choice:** Maintain `isFreePreview` in `LessonDto.mergeWith` using `isDetailFetched ? isFreePreview : (isFreePreview || other.isFreePreview)` and carry forward `extraLesson.isFreePreview` in `study_routes.dart` when `lessonDetailProvider` resolves.
-- **Rationale:** Detail fetch responses with `isDetailFetched: true` act as the authoritative source of truth (honoring administrative revocations where `free_preview: false`), while summary and cached curriculum merges retain preview eligibility via the OR fallback.
 
 ## Risks / Trade-offs
 
