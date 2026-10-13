@@ -57,9 +57,18 @@ class StudyRoutes {
             return Consumer(
               builder: (context, ref, child) {
                 final lessonAsync = ref.watch(lessonDetailProvider(id));
-                final activeLesson = lessonAsync.valueOrNull ?? extraLesson;
+                final detailLesson = lessonAsync.valueOrNull;
+                final activeLesson = detailLesson != null
+                    ? (extraLesson?.isFreePreview == true &&
+                              !detailLesson.isFreePreview
+                          ? detailLesson.copyWith(isFreePreview: true)
+                          : detailLesson)
+                    : extraLesson;
 
                 if (activeLesson != null) {
+                  final isPreview =
+                      state.uri.queryParameters['preview'] == 'true' &&
+                      activeLesson.isFreePreview;
                   return _LessonRedirector(
                     lesson: activeLesson,
                     child: LessonDetailOrchestrator(
@@ -72,12 +81,17 @@ class StudyRoutes {
                         await repo.refreshLesson(id);
                         ref.invalidate(lessonDetailProvider(id));
                       },
-                      onNext: activeLesson.nextContentId != null
+                      enableBookmarks: !isPreview,
+                      enableCompletion: !isPreview,
+                      enableDownloads: !isPreview,
+                      enableHelpdesk: !isPreview,
+                      onNext: (!isPreview && activeLesson.nextContentId != null)
                           ? () => context.pushReplacement(
                               '/study/lesson/${activeLesson.nextContentId}',
                             )
                           : null,
-                      onPrevious: activeLesson.previousContentId != null
+                      onPrevious:
+                          (!isPreview && activeLesson.previousContentId != null)
                           ? () => context.pushReplacement(
                               '/study/lesson/${activeLesson.previousContentId}',
                             )

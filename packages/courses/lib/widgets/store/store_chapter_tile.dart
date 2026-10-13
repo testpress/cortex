@@ -12,6 +12,7 @@ class StoreChapterTile extends ConsumerStatefulWidget {
   final Map<String, List<ChapterDto>>? childrenByParentId;
   final int depth;
   final VoidCallback? onBuyTap;
+  final ValueChanged<LessonDto>? onPreviewTap;
 
   const StoreChapterTile({
     super.key,
@@ -20,6 +21,7 @@ class StoreChapterTile extends ConsumerStatefulWidget {
     this.childrenByParentId,
     this.depth = 0,
     this.onBuyTap,
+    this.onPreviewTap,
   });
 
   /// Builds a parentId -> `List<ChapterDto>` map once for O(1) child lookups.
@@ -116,6 +118,7 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
                 childrenByParentId: _childrenMap,
                 depth: widget.depth + 1,
                 onBuyTap: widget.onBuyTap,
+                onPreviewTap: widget.onPreviewTap,
               ),
             )
           else
@@ -184,6 +187,7 @@ class _StoreChapterTileState extends ConsumerState<StoreChapterTile> {
           child: StoreContentTile(
             content: c,
             onBuyTap: widget.onBuyTap,
+            onPreviewTap: widget.onPreviewTap,
           ),
         );
       }).toList(),

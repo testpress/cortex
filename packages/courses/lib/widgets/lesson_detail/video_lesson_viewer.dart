@@ -13,6 +13,7 @@ class VideoLessonViewer extends ConsumerStatefulWidget {
   const VideoLessonViewer({
     super.key,
     required this.lesson,
+    this.enableHelpdesk = true,
     this.onComplete,
     this.footerBuilder,
     this.onOpenMcqFilterSheet,
@@ -21,6 +22,7 @@ class VideoLessonViewer extends ConsumerStatefulWidget {
   });
 
   final LessonDto lesson;
+  final bool enableHelpdesk;
   final VoidCallback? onComplete;
   final WidgetBuilder? footerBuilder;
   final VoidCallback? onOpenMcqFilterSheet;
@@ -245,7 +247,7 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
     if (lesson.enableTranscript) {
       tabs.add(VideoLessonTab.transcript);
     }
-    if (helpdeskEnabled) {
+    if (helpdeskEnabled && widget.enableHelpdesk) {
       tabs.add(VideoLessonTab.askDoubt);
     }
 

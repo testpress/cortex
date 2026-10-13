@@ -2968,6 +2968,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storeBuyToUnlock => 'اشترِ لفتح القفل';
 
   @override
+  String get storeFreePreview => 'معاينة مجانية';
+
+  @override
   String storeDurationYears(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

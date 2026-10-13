@@ -183,6 +183,19 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     return ProductExpandableCourseCard(
       course: course,
       onBuyTap: onBuyTap,
+      onPreviewTap: (lesson) {
+        final previewLesson =
+            lesson.courseId == null || lesson.courseId!.isEmpty
+                ? lesson.copyWith(courseId: course.id.toString())
+                : lesson;
+        LessonRouter.navigateToLesson(
+          context,
+          id: previewLesson.id,
+          type: previewLesson.type,
+          extra: previewLesson,
+          isPreview: true,
+        );
+      },
     );
   }
 

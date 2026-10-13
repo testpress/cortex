@@ -257,5 +257,182 @@ void main() {
         expect(find.byType(ExamPrescreen), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'omits onNext and onPrevious in LessonDetailOrchestrator when preview=true',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/study/lesson/101?preview=true',
+          routes: StudyRoutes.routes(rootNavigatorKey),
+        );
+
+        const videoLesson = LessonDto(
+          id: '101',
+          chapterId: 'chap-1',
+          title: 'Sample Video Lesson',
+          type: LessonType.video,
+          duration: '00:10:00',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: false,
+          isFreePreview: true,
+          uuid: 'vid-uuid-101',
+          nextContentId: '102',
+          previousContentId: '100',
+          orderIndex: 0,
+        );
+
+        await tester.pumpWidget(
+          createTestApp(
+            router: router,
+            overrides: [
+              lessonDetailProvider(
+                '101',
+              ).overrideWith((ref) => Stream.value(videoLesson)),
+            ],
+          ),
+        );
+
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        final orchestratorFinder = find.byType(LessonDetailOrchestrator);
+        expect(orchestratorFinder, findsOneWidget);
+        final orchestrator = tester.widget<LessonDetailOrchestrator>(
+          orchestratorFinder,
+        );
+        expect(orchestrator.onNext, isNull);
+        expect(orchestrator.onPrevious, isNull);
+        expect(orchestrator.enableBookmarks, isFalse);
+        expect(orchestrator.enableCompletion, isFalse);
+        expect(orchestrator.enableDownloads, isFalse);
+        expect(orchestrator.enableHelpdesk, isFalse);
+      },
+    );
+
+    testWidgets('ignores preview=true when lesson is not a free preview', (
+      tester,
+    ) async {
+      final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+      final router = GoRouter(
+        navigatorKey: rootNavigatorKey,
+        initialLocation: '/study/lesson/101?preview=true',
+        routes: StudyRoutes.routes(rootNavigatorKey),
+      );
+
+      const paidVideoLesson = LessonDto(
+        id: '101',
+        chapterId: 'chap-1',
+        title: 'Sample Video Lesson',
+        type: LessonType.video,
+        duration: '00:10:00',
+        progressStatus: LessonProgressStatus.notStarted,
+        isLocked: false,
+        isFreePreview: false,
+        uuid: 'vid-uuid-101',
+        nextContentId: '102',
+        previousContentId: '100',
+        orderIndex: 0,
+      );
+
+      await tester.pumpWidget(
+        createTestApp(
+          router: router,
+          overrides: [
+            lessonDetailProvider(
+              '101',
+            ).overrideWith((ref) => Stream.value(paidVideoLesson)),
+          ],
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final orchestratorFinder = find.byType(LessonDetailOrchestrator);
+      expect(orchestratorFinder, findsOneWidget);
+      final orchestrator = tester.widget<LessonDetailOrchestrator>(
+        orchestratorFinder,
+      );
+      expect(orchestrator.onNext, isNotNull);
+      expect(orchestrator.onPrevious, isNotNull);
+      expect(orchestrator.enableBookmarks, isTrue);
+      expect(orchestrator.enableCompletion, isTrue);
+      expect(orchestrator.enableDownloads, isTrue);
+      expect(orchestrator.enableHelpdesk, isTrue);
+    });
+
+    testWidgets(
+      'retains preview mode when detail payload resolves without preview flag',
+      (tester) async {
+        final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+        final router = GoRouter(
+          navigatorKey: rootNavigatorKey,
+          initialLocation: '/',
+          routes: [
+            GoRoute(path: '/', builder: (context, state) => const SizedBox()),
+            ...StudyRoutes.routes(rootNavigatorKey),
+          ],
+        );
+
+        const extraPreviewLesson = LessonDto(
+          id: '101',
+          chapterId: 'chap-1',
+          title: 'Curriculum Preview Lesson',
+          type: LessonType.video,
+          duration: '00:10:00',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: false,
+          isFreePreview: true,
+          nextContentId: '102',
+          previousContentId: '100',
+          orderIndex: 0,
+        );
+
+        const detailWithoutPreviewFlag = LessonDto(
+          id: '101',
+          chapterId: 'chap-1',
+          title: 'Curriculum Preview Lesson Detailed',
+          type: LessonType.video,
+          duration: '00:10:00',
+          progressStatus: LessonProgressStatus.notStarted,
+          isLocked: true,
+          isFreePreview: false,
+          uuid: 'vid-uuid-101',
+          nextContentId: '102',
+          previousContentId: '100',
+          orderIndex: 0,
+        );
+
+        await tester.pumpWidget(
+          createTestApp(
+            router: router,
+            overrides: [
+              lessonDetailProvider(
+                '101',
+              ).overrideWith((ref) => Stream.value(detailWithoutPreviewFlag)),
+            ],
+          ),
+        );
+
+        router.go('/study/lesson/101?preview=true', extra: extraPreviewLesson);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+
+        final orchestratorFinder = find.byType(LessonDetailOrchestrator);
+        expect(orchestratorFinder, findsOneWidget);
+        final orchestrator = tester.widget<LessonDetailOrchestrator>(
+          orchestratorFinder,
+        );
+        expect(orchestrator.lesson.isFreePreview, isTrue);
+        expect(orchestrator.onNext, isNull);
+        expect(orchestrator.onPrevious, isNull);
+        expect(orchestrator.enableBookmarks, isFalse);
+        expect(orchestrator.enableCompletion, isFalse);
+        expect(orchestrator.enableDownloads, isFalse);
+        expect(orchestrator.enableHelpdesk, isFalse);
+      },
+    );
   });
 }

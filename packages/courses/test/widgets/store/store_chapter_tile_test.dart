@@ -36,6 +36,7 @@ class FakeTestDataSource extends MockDataSource {
           duration: '10 min',
           progressStatus: LessonProgressStatus.notStarted,
           isLocked: false,
+          isFreePreview: true,
           orderIndex: 1,
         ),
       ];
@@ -154,10 +155,11 @@ void main() {
     await tester.tap(find.text('Videos'));
     await tester.pumpAndSettle();
 
-    // Verify contents are rendered
+    // Verify contents are rendered with locked and free preview badges
     expect(find.text('REP.MED26-WAVES-PART-1'), findsOneWidget);
     expect(find.text('Waves Intro Demo'), findsOneWidget);
-    expect(find.text('Buy to Unlock'), findsNWidgets(2));
+    expect(find.text('Buy to Unlock'), findsOneWidget);
+    expect(find.text('Free Preview'), findsOneWidget);
 
     // Verify AppSemantics.container wraps content tiles
     expect(
@@ -166,6 +168,15 @@ void main() {
             widget is Semantics &&
             widget.container == true &&
             widget.properties.label == 'REP.MED26-WAVES-PART-1, Buy to Unlock',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.container == true &&
+            widget.properties.label == 'Waves Intro Demo, Free Preview',
       ),
       findsOneWidget,
     );
@@ -249,6 +260,43 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(buyTapped, isTrue);
+  });
+
+  testWidgets('tapping Free Preview triggers onPreviewTap callback',
+      (tester) async {
+    LessonDto? previewLesson;
+    await tester.pumpWidget(
+      buildTestWidget(
+        child: SingleChildScrollView(
+          child: StoreChapterTile(
+            courseId: '372',
+            chapter: rootChapter,
+            childrenByParentId: childrenMap,
+            onPreviewTap: (lesson) => previewLesson = lesson,
+          ),
+        ),
+        overrides: [
+          dataSourceProvider.overrideWithValue(FakeTestDataSource()),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Expand root chapter
+    await tester.tap(find.text('Chapter 1: Physics'));
+    await tester.pumpAndSettle();
+
+    // Expand Videos
+    await tester.tap(find.text('Videos'));
+    await tester.pumpAndSettle();
+
+    // Tap Free Preview
+    await tester.tap(find.text('Free Preview').first);
+    await tester.pumpAndSettle();
+
+    expect(previewLesson, isNotNull);
+    expect(previewLesson!.id, '102');
+    expect(previewLesson!.title, 'Waves Intro Demo');
   });
 
   testWidgets('chapter header exposes expanded and collapsed semantics',

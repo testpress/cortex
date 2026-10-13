@@ -752,5 +752,77 @@ void main() {
         },
       );
     });
+
+    group('Free preview logic', () {
+      test('identifies preview when backend field free_preview is true', () {
+        final dto = LessonDto.fromJson({
+          'id': '102',
+          'title': 'Unlocked Sample Lesson',
+          'free_preview': true,
+        });
+
+        expect(dto.isFreePreview, true);
+      });
+
+      test(
+        'returns false for isFreePreview when free_preview is false or omitted',
+        () {
+          final dtoFalse = LessonDto.fromJson({
+            'id': '104',
+            'title': 'Locked Content with free_preview false',
+            'free_preview': false,
+            'is_locked': true,
+          });
+          expect(dtoFalse.isFreePreview, false);
+
+          final dtoOmitted = LessonDto.fromJson({
+            'id': '105',
+            'title': 'Locked Content without free_preview',
+            'is_locked': true,
+          });
+
+          expect(dtoOmitted.isLocked, true);
+          expect(dtoOmitted.isFreePreview, false);
+        },
+      );
+
+      test(
+        'mergeWith prefers newer isFreePreview flag, allowing revocation',
+        () {
+          final cachedWithPreview = LessonDto.fromJson({
+            'id': '106',
+            'title': 'Cached Lesson',
+            'free_preview': true,
+            'is_locked': true,
+          });
+          final updatedRevoked = LessonDto.fromJson({
+            'id': '106',
+            'title': 'Updated Lesson with Revoked Preview',
+            'free_preview': false,
+            'is_locked': true,
+          });
+
+          // Caller is the newer DTO (updated.mergeWith(cached))
+          final mergedRevocation = updatedRevoked.mergeWith(cachedWithPreview);
+          expect(mergedRevocation.isFreePreview, false);
+
+          final updatedGranted = LessonDto.fromJson({
+            'id': '107',
+            'title': 'Updated Lesson with Granted Preview',
+            'free_preview': true,
+            'is_locked': true,
+          });
+          final cachedWithoutPreview = LessonDto.fromJson({
+            'id': '107',
+            'title': 'Cached Lesson without Preview',
+            'free_preview': false,
+            'is_locked': true,
+          });
+
+          final mergedGranted = updatedGranted.mergeWith(cachedWithoutPreview);
+          expect(mergedGranted.isFreePreview, true);
+        },
+      );
+    });
   });
 }

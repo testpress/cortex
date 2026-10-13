@@ -1131,6 +1131,7 @@
   "storeNoContentAvailable": "لا يوجد محتوى متاح",
   "storeFailedToLoadContents": "فشل تحميل المحتوى",
   "storeBuyToUnlock": "اشترِ لفتح القفل",
+  "storeFreePreview": "معاينة مجانية",
   "storeDurationYears": "{count, plural, =1{سنة واحدة} =2{سنتان} few{{count} سنوات} many{{count} سنة} other{{count} سنة}}",
   "@storeDurationYears": {
     "placeholders": {

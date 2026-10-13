@@ -8,6 +8,7 @@ import 'package:courses/widgets/lesson_detail/ask_doubt_fab.dart';
 import 'package:courses/widgets/lesson_detail/lesson_detail_skeleton.dart';
 import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
 import 'package:courses/widgets/lesson_detail/video_conference_viewer.dart';
+import 'package:courses/widgets/lesson_detail/video_lesson_viewer.dart';
 
 void main() {
   Widget wrap(Widget child, {List<Override> overrides = const []}) {
@@ -219,6 +220,39 @@ void main() {
       await tester.pump();
       expect(prevClicked, isTrue);
     });
+
+    testWidgets(
+      'renders content viewer when isLocked is true but isFreePreview is true',
+      (tester) async {
+        const previewLockedLesson = LessonDto(
+          id: '104',
+          chapterId: 'chapter-1',
+          title: 'Preview Video with Lock Flag',
+          type: LessonType.video,
+          progressStatus: LessonProgressStatus.notStarted,
+          duration: '10 min',
+          orderIndex: 4,
+          hasEnded: false,
+          isLocked: true,
+          isFreePreview: true,
+          uuid: 'preview-uuid-123',
+          isDetailFetched: true,
+        );
+
+        await tester.pumpWidget(wrap(
+          const LessonDetailOrchestrator(lesson: previewLockedLesson),
+        ));
+        await tester.pumpAndSettle();
+
+        // Should NOT render locked notice
+        expect(find.byIcon(LucideIcons.lock), findsNothing);
+        expect(find.text('Access Denied'), findsNothing);
+        expect(find.text('Complete previous content to unlock'), findsNothing);
+
+        // Should render VideoLessonViewer
+        expect(find.byType(VideoLessonViewer), findsOneWidget);
+      },
+    );
   });
 
   group('LessonDetailOrchestrator Scheduled Content', () {
@@ -350,6 +384,83 @@ void main() {
 
       expect(find.byType(ContentNoticeView), findsNothing);
       expect(find.byType(VideoConferenceViewer), findsOneWidget);
+    });
+  });
+
+  group('LessonDetailOrchestrator Capabilities', () {
+    const activePdfLesson = LessonDto(
+      id: '202',
+      chapterId: 'chapter-1',
+      title: 'Active PDF Lesson',
+      type: LessonType.pdf,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '10 min',
+      orderIndex: 1,
+      hasEnded: false,
+      isLocked: false,
+      isDetailFetched: true,
+      contentUrl: 'https://example.com/test.pdf',
+    );
+
+    testWidgets(
+        'omits bookmarks, completion, and doubt FAB when capabilities disabled',
+        (tester) async {
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+        'is_bookmarks_enabled': true,
+      });
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: activePdfLesson,
+          enableBookmarks: false,
+          enableCompletion: false,
+          enableHelpdesk: false,
+        ),
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+        ],
+      ));
+      await tester.pump();
+
+      expect(find.byType(AskDoubtFab), findsNothing);
+      expect(find.byIcon(LucideIcons.bookmark), findsNothing);
+      expect(find.text('Mark as completed'), findsNothing);
+    });
+
+    testWidgets(
+        'forwards enableHelpdesk: false to VideoLessonViewer hiding Ask Doubt tab',
+        (tester) async {
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+      });
+
+      const videoLesson = LessonDto(
+        id: '201',
+        chapterId: 'chapter-1',
+        title: 'Video Lesson',
+        type: LessonType.video,
+        progressStatus: LessonProgressStatus.notStarted,
+        duration: '10 min',
+        orderIndex: 1,
+        hasEnded: false,
+        isLocked: false,
+        isDetailFetched: true,
+        uuid: 'test-uuid-201',
+      );
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: videoLesson,
+          enableHelpdesk: false,
+        ),
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+        ],
+      ));
+      await tester.pump();
+
+      expect(find.text('Ask Doubt'), findsNothing);
     });
   });
 }

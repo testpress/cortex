@@ -90,6 +90,7 @@ class LessonDto {
   final String? password;
   final String? accessToken;
   final String? transcodingStatus;
+  final bool isFreePreview;
 
   /// Whether video transcoding is completed (or not set).
   bool get isTranscodingCompleted =>
@@ -215,6 +216,7 @@ class LessonDto {
     this.password,
     this.accessToken,
     this.transcodingStatus,
+    this.isFreePreview = false,
   });
 
   LessonDto copyWith({
@@ -277,6 +279,7 @@ class LessonDto {
     String? password,
     String? accessToken,
     String? transcodingStatus,
+    bool? isFreePreview,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -339,6 +342,7 @@ class LessonDto {
       password: password ?? this.password,
       accessToken: accessToken ?? this.accessToken,
       transcodingStatus: transcodingStatus ?? this.transcodingStatus,
+      isFreePreview: isFreePreview ?? this.isFreePreview,
     );
   }
 
@@ -429,6 +433,7 @@ class LessonDto {
       allowRetake: allowRetake && other.allowRetake,
       maxRetakes: maxRetakes != -1 ? maxRetakes : other.maxRetakes,
       isLocked: isLocked,
+      isFreePreview: isFreePreview,
       progressStatus: progressStatus != LessonProgressStatus.notStarted
           ? progressStatus
           : other.progressStatus,
@@ -845,6 +850,7 @@ class LessonDto {
         return parsed;
       })(),
       isLocked: (json['is_locked'] ?? json['isLocked']) as bool? ?? false,
+      isFreePreview: json['free_preview'] as bool? ?? false,
       orderIndex:
           (json['order'] as num?)?.toInt() ??
           (json['orderIndex'] as num?)?.toInt() ??
@@ -1026,6 +1032,7 @@ class LessonDto {
       'chapterSlug': chapterSlug,
       'allowDownload': allowDownload,
       'watermarkBeforeDownload': watermarkBeforeDownload,
+      'isFreePreview': isFreePreview,
       'exam': exam?.toJson(),
     };
   }
