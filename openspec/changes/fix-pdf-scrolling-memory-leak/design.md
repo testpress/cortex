@@ -44,5 +44,7 @@ When reading image-dense slide exports or multi-page course materials on Android
 
 ## Risks / Trade-offs
 
+- **[Cache eviction re-decode overhead]**: Enabling `limitRenderingCache: true` instructs PDFium to aggressively release decompressed bitmap caches for off-screen pages.
+  → *Trade-off*: Rapid back-and-forth scrolling may incur occasional CPU re-decode overhead as pages re-enter the viewport, but this is an intentional compromise that prevents fatal native OOM terminations (`lmkd` SIGKILL).
 - **[Page rendering on fast fling]**: Debounce delays mean pages during high-speed flings show preview frames until scroll deceleration.
   → *Mitigation*: Standard reading speeds remain seamless and crisp while preventing fatal OS process termination.

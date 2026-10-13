@@ -2,6 +2,8 @@
 
 This document provides empirical verification and device memory benchmarks for change `fix-pdf-scrolling-memory-leak`.
 
+> **Note:** The telemetry logs below were captured using temporary local debug instrumentation that was removed prior to commit to avoid console noise in production.
+
 ---
 
 ## 1. Static Analysis & Unit Tests
@@ -26,7 +28,7 @@ $ cd packages/courses && flutter test test/widgets/pdf_viewer_test.dart
 ## 2. On-Device Memory Profiling
 
 ### Test Environment
-- **Device**: Physical Android Tablet (TB310FU, Android 13)
+- **Primary Device**: Physical Android Tablet (TB310FU, 4 GB RAM, Android 13)
 - **Document Under Test**: 45-page high-resolution slide deck (`GRAVITATION LIVE PART - 02 PDF.pdf`, raster-dense presentation export)
 - **Interaction Profile**: Continuous scrolling from page 1 to 45, followed by aggressive bidirectional flinging and jumping between pages 45 and 1 multiple times.
 
@@ -38,10 +40,10 @@ $ cd packages/courses && flutter test test/widgets/pdf_viewer_test.dart
 |---|---|---|---|
 | **Peak Process RSS** | **2,196.4 MB** | **456.8 MB** | **-79.2% (-1.74 GB)** |
 | **Rapid Reverse Scroll RSS** | Climbed from 709 MB to 2,196 MB | Remained stable between 360–430 MB | **No texture pileup** |
-| **Document Exit RSS** | N/A (Process killed by OS) | **374.2 MB** (Cleanly disposed) | **Zero lingering heap** |
+| **Document Exit RSS** | N/A (Process killed by OS) | **374.2 MB** | **Cleanly disposed** |
 | **Consecutive Documents** | Terminated on 1st document | Loaded 3 heavy slide decks back-to-back | **Stable baseline (~600–700 MB total app RSS)** |
-| **Android LMK Signals** | Repeated `TRIM_MEMORY` warnings | **0 warnings fired** | **Zero OS pressure** |
-| **Stability Outcome** | **Fatal SIGKILL by `lmkd`** | **Zero crashes, completely smooth** | **PASS** |
+| **Android LMK Signals** | Repeated `TRIM_MEMORY` warnings | No observed `TRIM_MEMORY` in logcat | **Process never entered critical threshold** |
+| **Stability Outcome** | **Fatal SIGKILL by `lmkd`** | **No lmkd kill, smooth rendering** | **PASS** |
 
 ---
 
@@ -77,6 +79,6 @@ I/flutter ( 5130): [PDF_DEBUG] [DISPOSE] AppPdfViewer dispose() called cleanly |
 
 ## 3. Key Findings
 
-1. **Root Cause Confirmation**: The crashes were caused by a texture accumulation storm during rapid reverse scrolling: PDFium allocated monolithic uncompressed single-pass textures for each slide export faster than off-screen textures could be collected.
-2. **Effectiveness of Tiling (`onePassRenderingSizeThreshold: 1500`)**: Lowering the threshold forces `pdfrx` to slice high-res slides into visible screen tiles rather than holding multiple full-size multi-megapixel bitmaps in RAM.
+1. **Likely Contributing Factors**: Rapid reverse scrolling triggered native texture pileup: PDFium allocated monolithic uncompressed single-pass textures for each slide export faster than off-screen textures could be collected.
+2. **Effectiveness of Tiling (`onePassRenderingSizeThreshold: 1500`)**: Lowering the threshold forces `pdfrx` to slice high-res slides into visible screen tiles rather than holding multiple full-size multi-megapixel bitmaps in RAM, while preserving seamless single-pass rendering for standard portrait text pages.
 3. **Effectiveness of Throttling**: Restoring 150–250ms debounce delays in `behaviorControlParams` prevents the engine from decoding intermediate pages skipped during velocity flings.
