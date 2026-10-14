@@ -14,6 +14,14 @@ The system SHALL capture any network request that throws an unhandled exception 
 - **WHEN** a network request fails because the device has no internet connectivity (`ApiErrorType.noInternet`)
 - **THEN** the error is **NOT** reported to Sentry, because offline connectivity loss is expected client behaviour and not a bug.
 
+#### Scenario: Client HTTP errors (4xx)
+- **WHEN** a network request fails with an HTTP 4xx status code (such as 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 422 Unprocessable Entity, 429 Too Many Requests)
+- **THEN** the error is **NOT** reported to Sentry, because 4xx responses represent expected client-side states and user actions, not application bugs or server failures.
+
+#### Scenario: Enforce student profile data redirect (302)
+- **WHEN** a network request receives an HTTP 302 redirect to `/settings/force/` (`ApiErrorType.enforceStudentData`)
+- **THEN** the error is **NOT** reported to Sentry, because mandatory profile completion is an expected user-flow redirect handled by the UI router and not an application error.
+
 ### Requirement: Isolate Background Sync Crash Tracking
 The system SHALL initialize Sentry explicitly inside any Workmanager background isolates to ensure that crashes during offline syncs are captured correctly.
 

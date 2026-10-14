@@ -52,6 +52,15 @@ class ApiException implements Exception {
     this.error,
   });
 
+  /// Whether this exception represents an HTTP 4xx client-side error.
+  bool get isClientError =>
+      (statusCode != null && statusCode! >= 400 && statusCode! < 500) ||
+      type == ApiErrorType.badRequest ||
+      type == ApiErrorType.unauthorized ||
+      type == ApiErrorType.forbidden ||
+      type == ApiErrorType.notFound ||
+      type == ApiErrorType.rateLimited;
+
   factory ApiException.fromDioException(DioException error) {
     if (error.type == DioExceptionType.connectionError) {
       return ApiException(

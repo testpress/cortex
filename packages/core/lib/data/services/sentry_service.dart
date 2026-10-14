@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter/widgets.dart';
@@ -46,6 +47,14 @@ class SentryService {
         // Differentiate between dev and prod environments
         const isDebug = bool.fromEnvironment('dart.vm.product') == false;
         options.environment = isDebug ? 'development' : 'production';
+
+        // Filter out expected client conditions (offline, 4xx client errors)
+        options.beforeSend = (event, hint) {
+          if (shouldIgnoreException(event.throwable)) {
+            return null;
+          }
+          return event;
+        };
       });
 
       Sentry.configureScope((scope) {
@@ -57,14 +66,37 @@ class SentryService {
     }
   }
 
+  /// Determines if an exception represents an expected client condition
+  /// (such as offline connectivity, 4xx HTTP responses, or 302 profile update enforcement)
+  /// that should not be reported to Sentry as an issue.
+  static bool shouldIgnoreException(dynamic exception) {
+    if (exception is ApiException) {
+      return exception.type == ApiErrorType.noInternet ||
+          exception.statusCode == 302 ||
+          exception.type == ApiErrorType.enforceStudentData ||
+          exception.isClientError;
+    }
+    if (exception is DioException) {
+      if (exception.type == DioExceptionType.connectionError) {
+        return true;
+      }
+      final statusCode = exception.response?.statusCode;
+      if (statusCode != null &&
+          ((statusCode >= 400 && statusCode < 500) || statusCode == 302)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /// Attaches the Sentry network error handler to the global [onNetworkErrorCapture] hook.
   void attachNetworkErrorHandler() {
     onNetworkErrorCapture = (error, stackTrace) {
-      if (error is ApiException) {
-        if (error.type == ApiErrorType.noInternet) {
-          return;
-        }
+      if (shouldIgnoreException(error)) {
+        return;
+      }
 
+      if (error is ApiException) {
         String? responseData;
         if (error.data != null) {
           try {
@@ -121,6 +153,10 @@ class SentryService {
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
   }) async {
+    if (shouldIgnoreException(exception)) {
+      return;
+    }
+
     await Sentry.captureException(
       exception,
       stackTrace: stackTrace,
