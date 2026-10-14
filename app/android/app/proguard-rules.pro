@@ -6,10 +6,8 @@
 -dontwarn com.android.billingclient.api.**
 -dontwarn com.google.android.play.core.**
 -dontwarn com.google.zxing.**
--dontwarn com.microsoft.intune.mam.**
 -dontwarn com.scwang.smart.refresh.**
 -dontwarn com.symbol.emdk.**
--dontwarn com.zipow.cnthirdparty.**
 -dontwarn io.noties.markwon.**
 -dontwarn io.noties.prism4j.**
 -dontwarn java.awt.**
@@ -18,6 +16,10 @@
 -dontwarn org.commonmark.**
 -dontwarn retrofit2.**
 -dontwarn us.zoom.**
+
+# Zoom: optional Intune / China-login deps
+-dontwarn com.microsoft.intune.mam.**
+-dontwarn com.zipow.cnthirdparty.**
 
 # Keep Zoom SDK classes, reflection bridges, and plugins
 -keep class us.zoom.** { *; }
