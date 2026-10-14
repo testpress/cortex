@@ -17,4 +17,4 @@ In Android release builds, R8 code shrinking and minification strips unused clas
 ## Impact
 
 - `app/android/app/proguard-rules.pro`: Keeps Zoom SDK classes and native methods in release builds.
-- Resolves Sentry crashes `CORTEX-S8` and `CORTEX-QQ`.
+- Resolves Sentry crash `CORTEX-S8`.
