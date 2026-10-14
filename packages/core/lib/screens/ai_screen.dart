@@ -50,11 +50,15 @@ class _AiScreenState extends State<AiScreen> {
   late final List<AiChatMessageItem> _messages;
   late final ScrollController _scrollController;
   bool _isGenerating = false;
+  int _messageCounter = 0;
+
+  String _nextId() => 'msg_${++_messageCounter}';
 
   @override
   void initState() {
     super.initState();
     _messages = List.of(widget.initialMessages);
+    _messageCounter = _messages.length;
     _scrollController = ScrollController();
   }
 
@@ -102,7 +106,7 @@ class _AiScreenState extends State<AiScreen> {
 
     final isSendErrorTrigger = isMockSendErrorTrigger(cleanText);
     final isGenErrorTrigger = isMockGenerationErrorTrigger(cleanText);
-    final messageId = DateTime.now().microsecondsSinceEpoch.toString();
+    final messageId = _nextId();
 
     final userMessage = AiChatMessageItem(
       id: messageId,
@@ -141,7 +145,7 @@ class _AiScreenState extends State<AiScreen> {
         }
         _messages.add(
           AiChatMessageItem(
-            id: (DateTime.now().microsecondsSinceEpoch + 1).toString(),
+            id: _nextId(),
             text: isGenErrorTrigger ? '' : generateMockAiResponse(cleanText),
             isUser: false,
             timestamp: DateTime.now(),
@@ -154,6 +158,8 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   void _handleRetry(String messageId) {
+    if (_isGenerating) return;
+
     final index = _messages.indexWhere((m) => m.id == messageId);
     if (index == -1) return;
 
@@ -189,7 +195,7 @@ class _AiScreenState extends State<AiScreen> {
           }
           _messages.add(
             AiChatMessageItem(
-              id: (DateTime.now().microsecondsSinceEpoch + 1).toString(),
+              id: _nextId(),
               text: generateMockAiResponse(message.text),
               isUser: false,
               timestamp: DateTime.now(),
@@ -199,6 +205,15 @@ class _AiScreenState extends State<AiScreen> {
         _scrollToBottom();
       });
     } else if (message.hasGenerationError) {
+      // Find the user prompt that preceded this assistant response
+      String prompt = '';
+      for (int i = index - 1; i >= 0; i--) {
+        if (_messages[i].isUser) {
+          prompt = _messages[i].text;
+          break;
+        }
+      }
+
       // Retry AI generation
       setState(() {
         _isGenerating = true;
@@ -210,7 +225,9 @@ class _AiScreenState extends State<AiScreen> {
           _isGenerating = false;
           _messages[index] = AiChatMessageItem(
             id: message.id,
-            text: generateMockAiResponse(message.text),
+            text: generateMockAiResponse(
+              prompt.isNotEmpty ? prompt : message.text,
+            ),
             isUser: false,
             timestamp: DateTime.now(),
             hasGenerationError: false,
@@ -228,6 +245,7 @@ class _AiScreenState extends State<AiScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
 
     return Container(
       color: design.colors.card,
@@ -241,34 +259,40 @@ class _AiScreenState extends State<AiScreen> {
                 : Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 768.0),
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: design.spacing.screenPadding,
-                          vertical: design.spacing.md,
-                        ),
+                      child: AppSemantics.scrollableList(
                         itemCount: _messages.length,
-                        itemBuilder: (context, index) {
-                          final item = _messages[index];
-                          if (item.isUser) {
-                            return AiUserMessageBubble(
+                        label: l10n.aiSupportTitle,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.screenPadding,
+                            vertical: design.spacing.md,
+                          ),
+                          itemCount: _messages.length,
+                          itemBuilder: (context, index) {
+                            final item = _messages[index];
+                            if (item.isUser) {
+                              return AiUserMessageBubble(
+                                message: item.text,
+                                timestamp: DateFormatter.formatTime(
+                                  item.timestamp,
+                                ),
+                                isSending: item.isSending,
+                                hasSendError: item.hasSendError,
+                                onRetry: () => _handleRetry(item.id),
+                              );
+                            }
+                            return AiAssistantCard(
                               message: item.text,
                               timestamp: DateFormatter.formatTime(
                                 item.timestamp,
                               ),
-                              isSending: item.isSending,
-                              hasSendError: item.hasSendError,
+                              hasGenerationError: item.hasGenerationError,
                               onRetry: () => _handleRetry(item.id),
+                              onCopy: () => _handleCopy(item.text),
                             );
-                          }
-                          return AiAssistantCard(
-                            message: item.text,
-                            timestamp: DateFormatter.formatTime(item.timestamp),
-                            hasGenerationError: item.hasGenerationError,
-                            onRetry: () => _handleRetry(item.id),
-                            onCopy: () => _handleCopy(item.text),
-                          );
-                        },
+                          },
+                        ),
                       ),
                     ),
                   ),

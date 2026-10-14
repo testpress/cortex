@@ -13,12 +13,7 @@ class AiChatHeader extends StatelessWidget {
     final l10n = L10n.of(context);
 
     return Container(
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        border: Border(
-          bottom: BorderSide(color: design.colors.divider, width: 1.0),
-        ),
-      ),
+      color: design.colors.card,
       child: SafeArea(
         bottom: false,
         child: Padding(

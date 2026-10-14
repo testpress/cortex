@@ -41,6 +41,11 @@ Break down the screen into modular, testable UI components:
 - `_AiAssistantCard`: Left-aligned card rendering Markdown via `AppMarkdown`, action row, and generation error states.
 - `AiComposer`: Pill-shaped input container with dynamic send button states.
 
+### Decision 4: Local StatefulWidget State for Mock Milestone
+Retain mutable conversation state (`_messages`, `_isGenerating`) and simulated responses directly in `_AiScreenState` with direct mock data imports from `ai_chat_mock_data.dart`.
+- *Rationale*: Appropriate for a mock-only UI verification milestone to validate layouts, scroll dynamics, and error flows without premature abstractions.
+- *Follow-up*: Formal `@riverpod` provider/controller architecture with DataSource and Repository layering will be implemented in the subsequent API integration change.
+
 ## Risks / Trade-offs
 
 - [Risk] Bottom composer overlapping virtual keyboard on mobile.

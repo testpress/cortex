@@ -238,6 +238,98 @@ void main() {
     },
   );
 
+  testWidgets(
+    'retrying generation error recovers preceding user prompt and generates response',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final editable = find.byType(EditableText);
+      await tester.enterText(editable, 'fail');
+      await tester.pump();
+
+      await tester.tap(find.byIcon(LucideIcons.arrowUp));
+      await tester.pump();
+
+      await tester.pump(const Duration(milliseconds: 1300));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text("Couldn't generate a response. Please try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Try again'), findsOneWidget);
+
+      await tester.tap(find.text('Try again'));
+      await tester.pump();
+
+      await tester.pump(const Duration(milliseconds: 1300));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text("Couldn't generate a response. Please try again."),
+        findsNothing,
+      );
+      expect(find.byType(AppMarkdown), findsOneWidget);
+      expect(
+        find.textContaining('I understand your question about "fail"'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('retry is ignored while another generation is in flight', (
+    tester,
+  ) async {
+    final fixedTime = DateTime(2026, 10, 13, 14, 36);
+    await tester.pumpWidget(
+      buildSubject(
+        initialMessages: [
+          AiChatMessageItem(
+            id: '1',
+            text: 'First question',
+            isUser: true,
+            timestamp: fixedTime,
+          ),
+          AiChatMessageItem(
+            id: '2',
+            text: '',
+            isUser: false,
+            timestamp: fixedTime,
+            hasGenerationError: true,
+          ),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final editable = find.byType(EditableText);
+    await tester.enterText(editable, 'Second question');
+    await tester.pump();
+    await tester.tap(find.byIcon(LucideIcons.arrowUp));
+    await tester.pump();
+
+    expect(find.text('Sending...'), findsOneWidget);
+
+    // Tap retry on the existing error card while generation is in-flight
+    await tester.tap(find.text('Try again'));
+    await tester.pump();
+
+    // Fast-forward second message completion
+    await tester.pump(const Duration(milliseconds: 1300));
+    await tester.pumpAndSettle();
+
+    // First message error card was NOT retried concurrently
+    expect(
+      find.text("Couldn't generate a response. Please try again."),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('I understand your question about "Second question"'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('invokes custom onBack and onOpenHistory navigation callbacks', (
     tester,
   ) async {
@@ -327,4 +419,32 @@ void main() {
     final listSize = tester.getSize(listViewFinder);
     expect(listSize.width, lessThanOrEqualTo(768.0));
   });
+
+  testWidgets(
+    'wraps message list in AppSemantics.scrollableList with item count',
+    (tester) async {
+      final fixedTime = DateTime(2026, 10, 13, 14, 36);
+      await tester.pumpWidget(
+        buildSubject(
+          initialMessages: [
+            AiChatMessageItem(
+              id: '1',
+              text: 'Hello',
+              isUser: true,
+              timestamp: fixedTime,
+            ),
+            AiChatMessageItem(
+              id: '2',
+              text: 'World',
+              isUser: false,
+              timestamp: fixedTime,
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('AI Chat, 2 items'), findsOneWidget);
+    },
+  );
 }

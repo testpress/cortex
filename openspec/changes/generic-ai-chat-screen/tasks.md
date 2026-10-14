@@ -16,6 +16,7 @@
 
 - [x] 3.1 Ensure all interactive buttons have `AppSemantics.button` labels and minimum 48dp touch targets.
 - [x] 3.2 Verify all styling derives strictly from `Design.of(context)` tokens with zero Material/Cupertino widget dependencies.
+- [x] 3.3 Wrap message list with `AppSemantics.scrollableList` with itemCount and localized label.
 
 ## 4. Verification & Widget Tests
 
@@ -29,3 +30,6 @@
 - [x] 5.2 Wire interactive simulation in `AiScreen` using mock data (sending message, delayed markdown reply, auto-scroll).
 - [x] 5.3 Support error simulation triggers ("error" / "fail") with actionable retry flows for send error and generation failure.
 - [x] 5.4 Update widget tests to verify interactive mock flows and run analyzer.
+- [x] 5.5 Fix generation error retry to look up the preceding user prompt instead of retrying an empty string.
+- [x] 5.6 Prevent concurrent retry execution when _isGenerating is true.
+- [x] 5.7 Use monotonic auto-incrementing counter for unique mock message IDs.

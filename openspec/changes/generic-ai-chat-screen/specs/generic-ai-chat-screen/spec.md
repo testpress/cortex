@@ -43,6 +43,14 @@ The system SHALL display an actionable error card when AI response generation fa
 - **WHEN** AI generation fails for an accepted message
 - **THEN** the system renders an "AI Assistant" card with "Couldn't generate a response. Please try again." and a "Try again" action button.
 
+#### Scenario: Retrying failed generation
+- **WHEN** the user triggers retry on a failed assistant generation card
+- **THEN** the system retrieves the preceding user prompt and regenerates the response using that prompt.
+
+#### Scenario: Retrying while generation is in flight
+- **WHEN** AI response generation is already in flight
+- **THEN** the system ignores retry triggers to prevent race conditions and interleaved responses.
+
 ### Requirement: Bottom Composer Bar
 The system SHALL provide a pill-shaped input bar with an adaptive circular send button.
 
