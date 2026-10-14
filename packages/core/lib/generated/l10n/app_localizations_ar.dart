@@ -3363,7 +3363,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiChatHistoryTitle => 'سجل المحادثات';
 
   @override
-  String get aiComposerPlaceholder => 'اسأل عن أي شيء...';
+  String get aiComposerPlaceholder => 'اسأل دعم الذكاء الاصطناعي';
 
   @override
   String get aiComposerAttachImage => 'إرفاق صورة';
@@ -3373,6 +3373,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiComposerSendMessage => 'إرسال رسالة';
+
+  @override
+  String get aiAssistantLabel => 'مساعد الذكاء الاصطناعي';
+
+  @override
+  String get aiGenerationError =>
+      'تعذر إنشاء استجابة. يُرجى المحاولة مرة أخرى.';
+
+  @override
+  String get aiTryAgain => 'إعادة المحاولة';
+
+  @override
+  String get aiCopyMessageSemantic => 'نسخ الرسالة';
+
+  @override
+  String get aiMoreActionsSemantic => 'مزيد من الإجراءات';
+
+  @override
+  String get aiMessageSendFailed => 'تعذر إرسال الرسالة. ';
+
+  @override
+  String get aiRetrySendMessageSemantic => 'انقر لإعادة إرسال الرسالة';
+
+  @override
+  String get aiTapToRetry => 'انقر لإعادة المحاولة';
+
+  @override
+  String get aiMessageSending => 'جارٍ الإرسال...';
 
   @override
   String get announcementsQuickLinks => 'روابط سريعة';

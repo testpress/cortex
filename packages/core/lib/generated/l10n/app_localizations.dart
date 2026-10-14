@@ -6026,7 +6026,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiComposerPlaceholder.
   ///
   /// In en, this message translates to:
-  /// **'Ask anything...'**
+  /// **'Ask AI support'**
   String get aiComposerPlaceholder;
 
   /// No description provided for @aiComposerAttachImage.
@@ -6046,6 +6046,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send message'**
   String get aiComposerSendMessage;
+
+  /// No description provided for @aiAssistantLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get aiAssistantLabel;
+
+  /// No description provided for @aiGenerationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t generate a response. Please try again.'**
+  String get aiGenerationError;
+
+  /// No description provided for @aiTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get aiTryAgain;
+
+  /// No description provided for @aiCopyMessageSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy message'**
+  String get aiCopyMessageSemantic;
+
+  /// No description provided for @aiMoreActionsSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get aiMoreActionsSemantic;
+
+  /// No description provided for @aiMessageSendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send message. '**
+  String get aiMessageSendFailed;
+
+  /// No description provided for @aiRetrySendMessageSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to retry sending message'**
+  String get aiRetrySendMessageSemantic;
+
+  /// No description provided for @aiTapToRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to retry'**
+  String get aiTapToRetry;
+
+  /// No description provided for @aiMessageSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get aiMessageSending;
 
   /// No description provided for @announcementsQuickLinks.
   ///

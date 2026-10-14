@@ -25,6 +25,10 @@ class DateFormatter {
     }
   }
 
+  static String formatTime(DateTime date) {
+    return DateFormat('HH:mm').format(date);
+  }
+
   static String formatFullDate(DateTime date) {
     return DateFormat('dd MMM yyyy').format(date);
   }
