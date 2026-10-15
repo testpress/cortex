@@ -6,49 +6,6 @@ part of 'learnlens_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$learnLensNetworkClientHash() =>
-    r'4b64098957ad78508b934b69fe9c2c143ea6736c';
-
-/// Provider for the singleton [LearnLensNetworkClient] instance.
-///
-/// Copied from [learnLensNetworkClient].
-@ProviderFor(learnLensNetworkClient)
-final learnLensNetworkClientProvider =
-    AutoDisposeProvider<LearnLensNetworkClient>.internal(
-  learnLensNetworkClient,
-  name: r'learnLensNetworkClientProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$learnLensNetworkClientHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LearnLensNetworkClientRef
-    = AutoDisposeProviderRef<LearnLensNetworkClient>;
-String _$learnLensRepositoryHash() =>
-    r'9a60f3811621aa27f55124e1676bc71f4e76314b';
-
-/// Provider for the singleton [LearnLensRepository] instance.
-///
-/// Copied from [learnLensRepository].
-@ProviderFor(learnLensRepository)
-final learnLensRepositoryProvider =
-    AutoDisposeProvider<LearnLensRepository>.internal(
-  learnLensRepository,
-  name: r'learnLensRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$learnLensRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LearnLensRepositoryRef = AutoDisposeProviderRef<LearnLensRepository>;
 String _$learnlensSessionHash() => r'87b48bec25c73cecfaee219958172cbcf2bc9646';
 
 /// Copied from Dart SDK
