@@ -19,6 +19,10 @@ The system SHALL manage LearnLens session tokens in `packages/core` supporting b
 - **WHEN** the authenticated user logs out or switches accounts
 - **THEN** all cached session tokens SHALL be purged immediately.
 
+#### Scenario: In-flight invalidation on session clear
+- **WHEN** a content or organization session is cleared while a session creation request is in-flight
+- **THEN** the session manager SHALL abort writing the completed response to cache and throw a `session_cleared` exception.
+
 ### Requirement: HTTP 401 Session Renewal & Interceptor
 The system SHALL provide an interceptor that attaches the `X-Session-Token` header to outgoing requests and attempts a single token renewal on HTTP 401 responses for managed sessions.
 
