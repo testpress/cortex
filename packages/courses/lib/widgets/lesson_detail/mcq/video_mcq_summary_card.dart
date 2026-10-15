@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
 
 class VideoMcqSummaryCard extends StatelessWidget {
   final List<LearnLensQuizQuestionDto> questions;

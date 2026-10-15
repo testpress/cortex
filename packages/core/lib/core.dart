@@ -85,6 +85,9 @@ export 'motion/accessibility_motion.dart';
 export 'network/dio_provider.dart';
 export 'network/file_downloader.dart';
 export 'network/network_utils.dart';
+export 'network/learnlens_network_client.dart';
+export 'network/learnlens_session_manager.dart';
+export 'data/exceptions/learnlens_exception.dart';
 
 // Utils
 export 'utils/color_utils.dart';

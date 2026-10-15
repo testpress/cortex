@@ -141,4 +141,6 @@ class ApiEndpoints {
 
   static String createAiSession(int contentId) =>
       '/api/v3/contents/$contentId/ai-sessions/create/';
+  static const String genericAiChatSessionCreate =
+      '/api/v3/ai-chat/sessions/create/';
 }

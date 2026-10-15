@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
 
 class VideoMcqStepperCard extends StatelessWidget {
   final LearnLensQuizQuestionDto question;

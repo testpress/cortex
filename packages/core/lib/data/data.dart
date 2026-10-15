@@ -66,6 +66,7 @@ export 'sources/institute_settings_local_data_source.dart';
 
 // Exceptions
 export 'exceptions/api_exception.dart';
+export 'exceptions/learnlens_exception.dart';
 
 // Network Endpoints
 export '../network/api_endpoints.dart';
@@ -77,6 +78,7 @@ export 'repositories/doubt_repository.dart';
 export 'repositories/live_classes_repository.dart';
 export 'repositories/repository_providers.dart';
 export 'repositories/institute_settings_repository.dart';
+export 'repositories/learnlens_repository.dart';
 export 'repositories/qotd_repository.dart';
 export 'providers/bookmark_provider.dart';
 export 'providers/announcements_provider.dart';
