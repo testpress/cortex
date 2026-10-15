@@ -187,6 +187,43 @@ void main() {
     );
 
     test(
+      'getContentSession: clearContentSession during in-flight request prevents writing stale session to cache',
+      () async {
+        final delayedCompleter = Completer<ResponseBody>();
+        final delayedDio = Dio(
+          BaseOptions(baseUrl: 'https://testpress.example'),
+        );
+        delayedDio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          return delayedCompleter.future;
+        });
+
+        final manager = LearnLensSessionManager(dio: delayedDio);
+
+        final future = manager.getContentSession(99);
+
+        // Clear specific content session while request is in flight
+        manager.clearContentSession(99);
+
+        delayedCompleter.complete(
+          ResponseBody.fromString(
+            '{"session_token": "stale-content-99-token", "expiresAt": ${DateTime.now().millisecondsSinceEpoch + 3600000}, "base_url": "https://learnlens.example"}',
+            201,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          ),
+        );
+
+        try {
+          await future;
+        } catch (_) {}
+
+        // Stale session MUST NOT be written back into content cache
+        expect(manager.getCachedContentSession(99), isNull);
+      },
+    );
+
+    test(
       'offline network error does not leak unhandled async completer error',
       () async {
         final offlineDio = Dio(

@@ -152,6 +152,7 @@ class LearnLensSessionManager {
 
   /// Clears a specific content-scoped session.
   void clearContentSession(int contentId) {
+    _sessionGeneration++;
     _contentSessions.remove(contentId);
     _contentCompleters.remove(contentId);
   }
