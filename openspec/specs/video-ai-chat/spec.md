@@ -2,15 +2,13 @@
 
 ## Purpose
 TBD - created by archiving change video-ai-chat-mcq. Update Purpose after archive.
-
 ## Requirements
-
 ### Requirement: AI Chat Session Authentication
-The system SHALL authenticate with the LearnLens API by passing an X-Session-Token generated via the `/ai-sessions/create/` endpoint.
+The system SHALL authenticate with the LearnLens API by delegating lesson session acquisition and request execution to the centralized LearnLens data layer in `packages/core`.
 
-#### Scenario: AI Session Initialization
+#### Scenario: Video Lesson AI Session Delegation
 - **WHEN** the user opens an AI-enabled video lesson
-- **THEN** the system calls the session creation endpoint and caches the returned session token.
+- **THEN** `packages/courses` SHALL delegate session creation and token lifecycle to `packages/core`'s `LearnLensSessionManager` and `LearnLensRepository`.
 
 ### Requirement: Submitting AI Chat Queries
 The system SHALL allow users to submit queries and display markdown-formatted responses.
@@ -56,3 +54,4 @@ The system SHALL ensure all interactive elements in the AI Chat tab are reachabl
 - **WHEN** a screen reader reads chat messages
 - **THEN** sender labels ("AI", "You") SHALL be announced in the device's active locale
 - **AND** the message semantic label SHALL use localized ARB strings
+
