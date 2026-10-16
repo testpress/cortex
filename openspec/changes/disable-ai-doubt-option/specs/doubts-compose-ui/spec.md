@@ -23,3 +23,9 @@ The system SHALL provide a screen for users to compose and submit new academic d
 - **WHEN** the user taps submit on a valid doubt
 - **THEN** the system SHALL NOT present the submission options sheet
 - **AND** the system SHALL submit the doubt directly with query type Mentor
+
+#### Scenario: Submitting with isAskAi flag when AI doubts are disabled
+- **GIVEN** `enableAiDoubt` is false
+- **WHEN** the form is opened with `isAskAi` set to true
+- **THEN** the system SHALL override the AI target and submit the doubt directly with query type Mentor
+

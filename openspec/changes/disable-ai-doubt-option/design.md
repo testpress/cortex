@@ -24,20 +24,24 @@ Cortex employs compile-time configuration JSONs (`config/<tenant>.json`) populat
 - **Choice**: Use a compile-time `--dart-define` flag (`AppConfig.enableAiDoubt`) populated from `config/elearn_brilliantpala.json`.
 - **Rationale**: Follows the existing architecture for white-label/tenant UI feature toggles (`SHOW_EXAM_TAB`, `SHOW_PROFILE_TAB`, `SHOW_CERTIFICATE`). This avoids adding new non-standard backend fields unless the API server explicitly provides tenant settings for helpdesk AI.
 - **Alternative considered**: Tenant detection via `AppConfig.apiBaseUrl.contains('brilliant')`. A compile-time boolean is cleaner, declarative, and easily reusable by any other institute in the future.
+- **Test Override Divergence**: Other `AppConfig` flags are plain `static const bool`. To allow widget and unit tests to verify both enabled and disabled states within the same test suite process, `AppConfig.enableAiDoubt` is backed by `@visibleForTesting static bool? enableAiDoubtOverride`. This intentionally diverges from the pure `const` pattern solely to support testability while maintaining `const` defaults in production builds.
 
 ### Decision 2: Submission UX when AI doubt is disabled
-- **Choice**: In `AskDoubtFormScreen`, when `!AppConfig.enableAiDoubt`, tapping Submit calls `_submitDoubt(DoubtQueryType.mentor)` immediately without showing `_SubmitOptionsSheet`.
+- **Choice**: In `AskDoubtFormScreen`, when `!AppConfig.enableAiDoubt`, tapping Submit calls `_submitDoubt(DoubtQueryType.mentor)` immediately without showing `_SubmitOptionsSheet`. Any incoming `isAskAi: true` parameter (e.g. from deep links) is also overridden to mentor.
 - **Rationale**: When there is only one destination (Mentor), popping up a sheet with a single choice or forcing the user to pick an option is poor UX. Bypassing the sheet creates a direct, seamless submit flow.
 
 ### Decision 3: Filter chips in DoubtsListScreen
-- **Choice**: Omit the entire filter chip bar when `AppConfig.enableAiDoubt` is `false`.
-- **Rationale**: When AI doubts are disabled, all doubts belong to mentors. Displaying filter chips like "All" and "Mentor" is redundant because both filters show identical results. Removing the bar reclaims vertical space and eliminates visual noise.
+- **Choice**: Omit the entire filter chip bar when `AppConfig.enableAiDoubt` is `false`, and reset/ignore any active filter to `null` ("All").
+- **Rationale**: When AI doubts are disabled, all new doubts belong to mentors. Displaying filter chips like "All" and "Mentor" is redundant because both filters show identical results. Removing the bar reclaims vertical space and eliminates visual noise. Resetting to `null` ensures deep links or persisted filter states cannot trap the user in a hidden filter.
 
-### Decision 4: Follow-up comment section on AI doubts
-- **Choice**: In `DoubtDetailScreen`, suppress `_DoubtReplyComposer` when `doubt.queryType == DoubtQueryType.ai` (when `!AppConfig.enableAiDoubt` or for all AI doubts).
-- **Rationale**: Helpdesk AI doubts are one-shot queries and do not support continuous conversational interactions from the bot. Hiding the comment bar prevents user confusion and dead-end submissions, directing students to the dedicated AI chat instead.
+### Decision 4: Follow-up comment section on historical AI doubts (MVP Scope)
+- **Choice**: Keep reply composer active for existing AI doubts for the initial MVP.
+- **Rationale**: Based on product alignment, existing AI doubts and ongoing comment interactions remain accessible and usable by students for the MVP release. Only creating *new* AI doubts in Cortex is disabled.
 
 ## Risks / Trade-offs
 
-- **[Risk] Existing AI doubts in history**: If a student already has doubts submitted as AI doubts, omitting the "AI" chip means they view them under the "All" tab.
-  - *Mitigation*: The "All" tab continues to display all doubts regardless of type, and individual doubt cards still render their proper status/author badges.
+- **[Risk] Existing AI doubts in history**: If a student already has doubts submitted as AI doubts, omitting the filter chip bar means they view them under the "All" list.
+  - *Mitigation*: The "All" list continues to display all doubts regardless of type, and individual doubt cards still render their proper status/author badges.
+- **[Trade-off] Mutable test override in AppConfig**: `enableAiDoubtOverride` introduces mutable state into an otherwise constant configuration class.
+  - *Mitigation*: The field is explicitly annotated with `@visibleForTesting` and is strictly checked with `kDebugMode` / test teardowns, leaving zero runtime overhead or mutability in release builds.
+

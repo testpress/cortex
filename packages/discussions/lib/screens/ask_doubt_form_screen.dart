@@ -142,7 +142,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                         children: [
                           if (widget.chapterContentId != null ||
                               widget.questionId != null ||
-                              widget.isAskAi) ...[
+                              (widget.isAskAi && AppConfig.enableAiDoubt)) ...[
                             _contextLinkBadge(design, l10n),
                             const SizedBox(height: 16),
                           ],
@@ -231,7 +231,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
 
   Widget _contextLinkBadge(DesignConfig design, AppLocalizations l10n) {
     final isQuestion = widget.questionId != null;
-    final icon = widget.isAskAi
+    final icon = (widget.isAskAi && AppConfig.enableAiDoubt)
         ? LucideIcons.sparkles
         : (isQuestion
               ? LucideIcons.helpCircle
@@ -331,10 +331,10 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                 fullWidth: true,
                 onPressed: canSubmit
                     ? () {
-                        if (widget.isAskAi) {
-                          _submitDoubt(DoubtQueryType.ai);
-                        } else if (!AppConfig.enableAiDoubt) {
+                        if (!AppConfig.enableAiDoubt) {
                           _submitDoubt(DoubtQueryType.mentor);
+                        } else if (widget.isAskAi) {
+                          _submitDoubt(DoubtQueryType.ai);
                         } else {
                           setState(() => _isSubmitSheetOpen = true);
                         }

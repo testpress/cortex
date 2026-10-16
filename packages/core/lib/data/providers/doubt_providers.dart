@@ -25,7 +25,9 @@ class DoubtTypeFilter extends _$DoubtTypeFilter {
 @riverpod
 Stream<List<DoubtDto>> doubtsList(DoubtsListRef ref) async* {
   final repository = await ref.watch(doubtRepositoryProvider.future);
-  final filter = ref.watch(doubtTypeFilterProvider);
+  final filter = AppConfig.enableAiDoubt
+      ? ref.watch(doubtTypeFilterProvider)
+      : null;
   yield* repository.watchDoubts(queryType: filter);
 }
 
@@ -58,7 +60,9 @@ class DoubtsSync extends _$DoubtsSync {
 
   @override
   Future<({bool hasMore, bool isLoadingMore})> build() async {
-    final filter = ref.watch(doubtTypeFilterProvider);
+    final filter = AppConfig.enableAiDoubt
+        ? ref.watch(doubtTypeFilterProvider)
+        : null;
     final repo = await ref.watch(doubtRepositoryProvider.future);
     final response = await repo.syncDoubts(page: 1, queryType: filter);
     _nextPage = 2;
@@ -71,7 +75,9 @@ class DoubtsSync extends _$DoubtsSync {
 
     state = AsyncData((hasMore: current.hasMore, isLoadingMore: true));
     try {
-      final filter = ref.read(doubtTypeFilterProvider);
+      final filter = AppConfig.enableAiDoubt
+          ? ref.read(doubtTypeFilterProvider)
+          : null;
       final repo = await ref.read(doubtRepositoryProvider.future);
       final response = await repo.syncDoubts(
         page: _nextPage,

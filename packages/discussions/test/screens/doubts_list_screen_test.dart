@@ -10,7 +10,10 @@ void main() {
     AppConfig.enableAiDoubtOverride = null;
   });
 
-  Widget buildScreen() {
+  Widget buildScreen({
+    DoubtQueryType? initialFilter,
+    void Function(WidgetRef)? onRef,
+  }) {
     return ProviderScope(
       overrides: [
         doubtsListProvider.overrideWith(
@@ -25,7 +28,18 @@ void main() {
           child: MaterialApp(
             locale: const Locale('en'),
             localizationsDelegates: LocalizationProvider.delegates,
-            home: const DoubtsListScreen(),
+            home: Column(
+              children: [
+                Expanded(child: DoubtsListScreen(initialFilter: initialFilter)),
+                if (onRef != null)
+                  Consumer(
+                    builder: (context, ref, _) {
+                      onRef(ref);
+                      return const SizedBox.shrink();
+                    },
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -60,6 +74,45 @@ void main() {
         expect(find.text('Mentor'), findsNothing);
       },
     );
+
+    testWidgets(
+      'resets doubtTypeFilterProvider to null when enableAiDoubt is false even if initialFilter was provided',
+      (tester) async {
+        AppConfig.enableAiDoubtOverride = false;
+        DoubtQueryType? observedFilter = DoubtQueryType.ai;
+
+        await tester.pumpWidget(
+          buildScreen(
+            initialFilter: DoubtQueryType.ai,
+            onRef: (ref) {
+              observedFilter = ref.watch(doubtTypeFilterProvider);
+            },
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(observedFilter, isNull);
+      },
+    );
+
+    testWidgets('preserves initialFilter when enableAiDoubt is true', (
+      tester,
+    ) async {
+      AppConfig.enableAiDoubtOverride = true;
+      DoubtQueryType? observedFilter;
+
+      await tester.pumpWidget(
+        buildScreen(
+          initialFilter: DoubtQueryType.ai,
+          onRef: (ref) {
+            observedFilter = ref.watch(doubtTypeFilterProvider);
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(observedFilter, DoubtQueryType.ai);
+    });
   });
 }
 

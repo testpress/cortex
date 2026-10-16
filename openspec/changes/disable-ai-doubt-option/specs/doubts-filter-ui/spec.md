@@ -12,3 +12,9 @@ The UI SHALL provide a way to filter the doubts list between "ALL", "AI", and "M
 - **GIVEN** `enableAiDoubt` is false
 - **WHEN** the user views the doubts list
 - **THEN** the filter chips bar SHALL be omitted completely from the screen
+
+#### Scenario: Filter state ignored and reset when AI doubts are disabled
+- **GIVEN** `enableAiDoubt` is false
+- **WHEN** the user opens the doubts list (even with an initial filter or deep link)
+- **THEN** the active query filter SHALL be reset to `null` (All) so no hidden filter restricts the doubts list
+

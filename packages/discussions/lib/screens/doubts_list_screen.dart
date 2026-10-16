@@ -26,13 +26,17 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialFilter != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!AppConfig.enableAiDoubt) {
+        if (ref.read(doubtTypeFilterProvider) != null) {
+          ref.read(doubtTypeFilterProvider.notifier).setFilter(null);
+        }
+      } else if (widget.initialFilter != null) {
         ref
             .read(doubtTypeFilterProvider.notifier)
             .setFilter(widget.initialFilter);
-      });
-    }
+      }
+    });
   }
 
   @override

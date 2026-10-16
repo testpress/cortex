@@ -37,7 +37,7 @@ void main() {
     AppConfig.enableAiDoubtOverride = null;
   });
 
-  Widget buildScreen() {
+  Widget buildScreen({bool isAskAi = false}) {
     return ProviderScope(
       overrides: [
         doubtRepositoryProvider.overrideWith((ref) async => fakeRepo),
@@ -60,7 +60,7 @@ void main() {
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const AskDoubtFormScreen(),
+                        builder: (_) => AskDoubtFormScreen(isAskAi: isAskAi),
                       ),
                     ),
                     child: const Text('Open Form'),
@@ -174,5 +174,61 @@ void main() {
       // Flush toast timer
       await tester.pump(const Duration(seconds: 3));
     });
+
+    testWidgets(
+      'submits directly to mentor even if isAskAi is true when enableAiDoubt is false',
+      (tester) async {
+        tester.view.physicalSize = const Size(800, 1600);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        AppConfig.enableAiDoubtOverride = false;
+
+        await tester.pumpWidget(buildScreen(isAskAi: true));
+        await tester.pumpAndSettle();
+
+        // Open screen
+        await tester.tap(find.text('Open Form'));
+        await tester.pumpAndSettle();
+
+        // Enter title
+        await tester.enterText(
+          find.byType(AppTextField),
+          'Direct Mentor Doubt With isAskAi',
+        );
+        await tester.pumpAndSettle();
+
+        // Enter quill description
+        final editorField = tester.widget<ForumEditorField>(
+          find.byType(ForumEditorField),
+        );
+        editorField.controller.document.insert(0, 'Detailed question text');
+        await tester.pumpAndSettle();
+
+        // Select topic
+        final topicChip = find.text('General');
+        expect(topicChip, findsOneWidget);
+        await tester.tap(topicChip);
+        await tester.pumpAndSettle();
+
+        // Tap Next button
+        final nextButton = find.widgetWithText(AppButton, 'Next');
+        await tester.tap(nextButton);
+        await tester.pumpAndSettle();
+
+        // Options sheet should NOT be shown
+        expect(find.text('How would you like to ask?'), findsNothing);
+        expect(find.text('Ask AI'), findsNothing);
+
+        // Verify direct submission to mentor
+        expect(fakeRepo.lastCreatedQueryType, DoubtQueryType.mentor);
+
+        // Flush toast timer
+        await tester.pump(const Duration(seconds: 3));
+      },
+    );
   });
 }
