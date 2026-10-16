@@ -400,6 +400,9 @@ void main() {
         overrides: [
           cachedAuthFlagProvider.overrideWithValue(true),
           authProvider.overrideWith(_AuthLoading.new),
+          settingsInitializationProvider.overrideWith(
+            (ref) => Completer<void>().future,
+          ),
           instituteSettingsProvider.overrideWith((ref) => null),
         ],
       );
@@ -412,5 +415,32 @@ void main() {
       );
       expect(location, '/study/assessment/123');
     });
+  });
+
+  group('NavTab.active AI tab visibility', () {
+    test(
+      'includes NavTab.ai when enableAiChatbot is true in InstituteSettings',
+      () {
+        final settings = InstituteSettings.fromJson({
+          'domain_url': 'https://test.com',
+          'enable_ai_chatbot': true,
+        });
+        final active = NavTab.active(settings);
+        expect(active.contains(NavTab.ai), isTrue);
+      },
+    );
+
+    test(
+      'excludes NavTab.ai when enableAiChatbot is false or settings is null',
+      () {
+        expect(NavTab.active(null).contains(NavTab.ai), isFalse);
+
+        final settings = InstituteSettings.fromJson({
+          'domain_url': 'https://test.com',
+          'enable_ai_chatbot': false,
+        });
+        expect(NavTab.active(settings).contains(NavTab.ai), isFalse);
+      },
+    );
   });
 }

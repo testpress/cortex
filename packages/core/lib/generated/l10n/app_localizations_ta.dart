@@ -3410,6 +3410,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiChatHistoryTitle => 'அரட்டை வரலாறு';
 
   @override
+  String get aiNoChatHistory => 'இன்னும் உரையாடல்கள் இல்லை';
+
+  @override
+  String get aiInitErrorBanner =>
+      'AI உதவியாளருடன் இணைக்க முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
+
+  @override
   String get aiComposerPlaceholder => 'AI ஆதரவிடம் கேளுங்கள்';
 
   @override

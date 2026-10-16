@@ -26,7 +26,7 @@ class DateFormatter {
   }
 
   static String formatTime(DateTime date) {
-    return DateFormat('HH:mm').format(date);
+    return DateFormat('HH:mm').format(date.toLocal());
   }
 
   static String formatFullDate(DateTime date) {

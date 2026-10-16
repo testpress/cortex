@@ -37,8 +37,10 @@ class LearnLensSessionManager {
   AiChatPolicyDto? get policy => _cachedSession?.policy;
 
   /// Whether a valid, non-expired generic session is currently cached.
-  bool get hasValidSession =>
-      _cachedSession != null && !_cachedSession!.isExpired;
+  bool get hasValidSession {
+    final valid = _cachedSession != null && !_cachedSession!.isExpired;
+    return valid;
+  }
 
   /// Retrieves a valid organization-scoped Generic AI Chat session.
   ///
@@ -46,12 +48,19 @@ class LearnLensSessionManager {
   /// the cached session is returned immediately.
   /// Otherwise, a new session is requested from Testpress via `POST /api/v3/ai-chat/sessions/create/`.
   Future<AiChatSessionDto> getSession({bool forceRefresh = false}) async {
-    if (!forceRefresh && _cachedSession != null && !_cachedSession!.isExpired) {
-      return _cachedSession!;
-    }
-
+    // 1. If an acquisition/refresh is already in flight, coordinate all callers
+    // through the shared future so no caller proceeds with an invalid/transitional state.
     if (_refreshCompleter != null) {
       return _refreshCompleter!.future;
+    }
+
+    // 2. If forceRefresh is requested, invalidate the cached session immediately
+    // so subsequent or concurrent callers cannot use the rejected token.
+    if (forceRefresh) {
+      _cachedSession = null;
+    } else if (_cachedSession != null && !_cachedSession!.isExpired) {
+      // 3. Return cached session only when not force-refreshing and token is valid.
+      return _cachedSession!;
     }
 
     final currentGeneration = _sessionGeneration;
@@ -60,10 +69,7 @@ class LearnLensSessionManager {
     _refreshCompleter = completer;
 
     try {
-      final response = await _dio.post(
-        ApiEndpoints.genericAiChatSessionCreate,
-        data: const <String, dynamic>{},
-      );
+      final response = await _dio.post(ApiEndpoints.genericAiChatSessionCreate);
 
       final newSession = AiChatSessionDto.fromJson(
         response.data as Map<String, dynamic>,
@@ -99,12 +105,18 @@ class LearnLensSessionManager {
     bool forceRefresh = false,
   }) async {
     final cached = _contentSessions[contentId];
-    if (!forceRefresh && cached != null && !cached.isExpired) {
-      return cached;
-    }
 
+    // 1. If an acquisition/refresh for this contentId is already in flight, coordinate callers.
     if (_contentCompleters.containsKey(contentId)) {
       return _contentCompleters[contentId]!.future;
+    }
+
+    // 2. If forceRefresh, invalidate cached content session immediately.
+    if (forceRefresh) {
+      _contentSessions.remove(contentId);
+    } else if (cached != null && !cached.isExpired) {
+      // 3. Return cached session only when not force-refreshing and token is valid.
+      return cached;
     }
 
     final currentGeneration = _sessionGeneration;
@@ -113,10 +125,7 @@ class LearnLensSessionManager {
     _contentCompleters[contentId] = completer;
 
     try {
-      final response = await _dio.post(
-        ApiEndpoints.createAiSession(contentId),
-        data: const <String, dynamic>{},
-      );
+      final response = await _dio.post(ApiEndpoints.createAiSession(contentId));
 
       final rawData = response.data as Map<String, dynamic>;
       final session = AiChatSessionDto.fromContentSession(rawData);
@@ -199,6 +208,7 @@ class LearnLensSessionInterceptor extends Interceptor {
       }
 
       final contentId = options.extra['content_id'] as int?;
+
       final session = contentId != null
           ? await sessionManager.getContentSession(contentId)
           : await sessionManager.getSession();
@@ -228,7 +238,8 @@ class LearnLensSessionInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    final is401 = err.response?.statusCode == 401;
+    final statusCode = err.response?.statusCode;
+    final is401 = statusCode == 401;
     final isRetry = err.requestOptions.extra['is_session_retry'] == true;
     final isCallerSupplied =
         err.requestOptions.extra['caller_supplied_token'] == true;
@@ -281,11 +292,30 @@ class LearnLensSessionInterceptor extends Interceptor {
 final learnLensSessionManagerProvider = Provider<LearnLensSessionManager>((
   ref,
 ) {
-  // Re-create & clear when userId changes or logs out
-  ref.watch(userIdProvider);
-
   final dio = ref.watch(dioProvider);
   final manager = LearnLensSessionManager(dio: dio);
+
+  // Keep the cache through userIdProvider's initial loading -> data transition.
+  // Rebuilding this provider on that transition would discard a session acquired
+  // during app startup and make the next LearnLens request create it again.
+  var hasResolvedUserId = false;
+  String? activeUserId;
+  ref.listen<AsyncValue<String?>>(userIdProvider, (previous, next) {
+    if (!next.hasValue) return;
+
+    final nextUserId = next.valueOrNull;
+    if (!hasResolvedUserId) {
+      hasResolvedUserId = true;
+      activeUserId = nextUserId;
+      return;
+    }
+
+    if (activeUserId != nextUserId) {
+      manager.clearAllSessions();
+      activeUserId = nextUserId;
+    }
+  }, fireImmediately: true);
+
   ref.onDispose(manager.clearAllSessions);
   return manager;
 });

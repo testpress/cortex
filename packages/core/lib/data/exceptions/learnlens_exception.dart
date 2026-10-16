@@ -25,6 +25,15 @@ class LearnLensException extends ApiException {
       (originalError != null &&
           originalError.toString().toLowerCase().contains('cancel'));
 
+  bool get isQuotaOrRateLimit =>
+      statusCode == 429 ||
+      type == ApiErrorType.rateLimited ||
+      retryAt != null ||
+      (code != null &&
+          (code!.contains('quota') ||
+              code!.contains('limit') ||
+              code == 'too_many_requests'));
+
   @override
   String toString() =>
       'LearnLensException(statusCode: $statusCode, code: $code, message: $message)';

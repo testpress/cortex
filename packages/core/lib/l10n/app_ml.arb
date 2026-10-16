@@ -1286,6 +1286,8 @@
   "aiNewChatHeader": "പുതിയ ചാറ്റ്",
   "aiComposerGreeting": "ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?",
   "aiChatHistoryTitle": "ചാറ്റ് ചരിത്രം",
+  "aiNoChatHistory": "ഇതുവരെ സംഭാഷണങ്ങളൊന്നുമില്ല",
+  "aiInitErrorBanner": "AI അസിസ്റ്റന്റുമായി ബന്ധിപ്പിക്കാൻ കഴിഞ്ഞില്ല. കണക്ഷൻ പരിശോധിക്കുക.",
   "aiComposerPlaceholder": "AI പിന്തുണയോട് ചോദിക്കുക",
   "aiComposerAttachImage": "ചിത്രം ചേർക്കുക",
   "aiComposerTakePhoto": "ഫോട്ടോ എടുക്കുക",

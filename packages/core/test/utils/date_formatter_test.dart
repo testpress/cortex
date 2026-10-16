@@ -85,6 +85,14 @@ void main() {
     });
   });
 
+  group('DateFormatter.formatTime', () {
+    test('should format time as HH:mm in local timezone', () {
+      final utcDate = DateTime.utc(2026, 8, 10, 12, 30);
+      final expected = DateFormat('HH:mm').format(utcDate.toLocal());
+      expect(DateFormatter.formatTime(utcDate), expected);
+    });
+  });
+
   group('DateFormatter.formatFullDate', () {
     test('should format dates as dd MMM yyyy', () {
       final date = DateTime(2026, 8, 10);

@@ -54,10 +54,10 @@ class LearnLensNetworkClient {
 
   Future<String> _resolveBaseUrl() async {
     final session = await _sessionManager.getSession();
-    if (session.baseUrl.isNotEmpty) {
-      return session.baseUrl;
-    }
-    return _defaultLearnLensBaseUrl;
+    final url = session.baseUrl.isNotEmpty
+        ? session.baseUrl
+        : _defaultLearnLensBaseUrl;
+    return url;
   }
 
   static LearnLensException parseDioException(DioException e) {
@@ -69,25 +69,68 @@ class LearnLensNetworkClient {
         originalError: e,
       );
     }
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return LearnLensException(
+        message: 'Connection timed out',
+        type: ApiErrorType.timeout,
+        statusCode: e.response?.statusCode,
+        originalError: e,
+      );
+    }
+    if (e.type == DioExceptionType.connectionError) {
+      return LearnLensException(
+        message: 'No internet connection',
+        type: ApiErrorType.noInternet,
+        statusCode: e.response?.statusCode,
+        originalError: e,
+      );
+    }
+
+    final statusCode = e.response?.statusCode;
+    final ApiErrorType type;
+    if (statusCode == 429) {
+      type = ApiErrorType.rateLimited;
+    } else if (statusCode == 403) {
+      type = ApiErrorType.forbidden;
+    } else if (statusCode == 404) {
+      type = ApiErrorType.notFound;
+    } else if (statusCode != null && statusCode >= 500) {
+      type = ApiErrorType.serverError;
+    } else {
+      type = ApiErrorType.unknown;
+    }
+
+    String resolveMessage(String? raw) {
+      if (raw == null) return 'Something went wrong. Please try again.';
+      final lower = raw.toLowerCase();
+      if (lower.contains('session expired') ||
+          lower.contains('token expired') ||
+          lower.contains('unauthorized')) {
+        return 'Unable to connect to AI assistant. Please try again.';
+      }
+      return raw;
+    }
+
     final data = e.response?.data;
     if (data is Map<String, dynamic> && data.containsKey('detail')) {
       final quota = AiChatQuotaErrorDto.fromDetail(data['detail']);
       return LearnLensException(
-        message: quota.message,
+        message: resolveMessage(quota.message),
         code: quota.code,
-        statusCode: e.response?.statusCode,
+        statusCode: statusCode,
         limit: quota.limit,
         retryAt: quota.retryAt,
         originalError: e,
-        type: e.response?.statusCode == 429
-            ? ApiErrorType.rateLimited
-            : ApiErrorType.unknown,
+        type: type,
       );
     }
     return LearnLensException(
-      message: e.message ?? 'Network request failed',
-      statusCode: e.response?.statusCode,
+      message: resolveMessage(e.message),
+      statusCode: statusCode,
       originalError: e,
+      type: type,
     );
   }
 
@@ -113,9 +156,10 @@ class LearnLensNetworkClient {
           if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
         },
       );
-      return AiConversationListDto.fromJson(
+      final list = AiConversationListDto.fromJson(
         response.data as Map<String, dynamic>,
       );
+      return list;
     });
   }
 
@@ -132,9 +176,10 @@ class LearnLensNetworkClient {
         data: {'request_id': requestId, 'query': query},
         cancelToken: cancelToken,
       );
-      return AiChatTurnResponseDto.fromJson(
+      final turn = AiChatTurnResponseDto.fromJson(
         response.data as Map<String, dynamic>,
       );
+      return turn;
     });
   }
 
@@ -152,9 +197,10 @@ class LearnLensNetworkClient {
         data: {'request_id': requestId, 'query': query},
         cancelToken: cancelToken,
       );
-      return AiChatTurnResponseDto.fromJson(
+      final turn = AiChatTurnResponseDto.fromJson(
         response.data as Map<String, dynamic>,
       );
+      return turn;
     });
   }
 
@@ -169,7 +215,10 @@ class LearnLensNetworkClient {
         '$baseUrl/chats/$chatId/',
         cancelToken: cancelToken,
       );
-      return AiConversationDto.fromJson(response.data as Map<String, dynamic>);
+      final conv = AiConversationDto.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+      return conv;
     });
   }
 
@@ -190,7 +239,10 @@ class LearnLensNetworkClient {
         },
         cancelToken: cancelToken,
       );
-      return AiMessageListDto.fromJson(response.data as Map<String, dynamic>);
+      final msgList = AiMessageListDto.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+      return msgList;
     });
   }
 
@@ -201,11 +253,13 @@ class LearnLensNetworkClient {
     required String query,
     required String conversationId,
     String? sessionToken,
+    int? contentId,
     String? learnerId,
   }) async {
     return _guard(() async {
       final userId = learnerId ?? (await _getUserId?.call());
       final options = Options(
+        extra: {'content_id': ?contentId},
         headers: {
           if (sessionToken != null && sessionToken.isNotEmpty)
             LearnLensSessionInterceptor.sessionTokenHeader: sessionToken,
@@ -232,6 +286,7 @@ class LearnLensNetworkClient {
     required String orgUuid,
     required String assetId,
     String? sessionToken,
+    int? contentId,
     String difficulty = 'medium',
     int questionCount = 5,
     String? learnerId,
@@ -239,6 +294,7 @@ class LearnLensNetworkClient {
     return _guard(() async {
       final userId = learnerId ?? (await _getUserId?.call());
       final options = Options(
+        extra: {'content_id': ?contentId},
         headers: {
           if (sessionToken != null && sessionToken.isNotEmpty)
             LearnLensSessionInterceptor.sessionTokenHeader: sessionToken,

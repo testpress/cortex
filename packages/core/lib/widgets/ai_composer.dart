@@ -56,83 +56,97 @@ class _AiComposerState extends State<AiComposer> {
     final hasText = _controller.text.trim().isNotEmpty && widget.enabled;
 
     return Container(
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: design.colors.card,
-        borderRadius: design.radius.pill,
+        borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
           color: design.colors.border.withValues(alpha: 0.6),
           width: 1.0,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 6.0, 6.0, 6.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                minHeight: 40.0,
+                minHeight: 36.0,
                 maxHeight: 120.0,
               ),
               child: Stack(
                 alignment: Alignment.centerLeft,
                 children: [
                   if (_controller.text.isEmpty)
-                    AppText.body(
-                      placeholder,
-                      color: design.colors.textTertiary,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: AppText.body(
+                        placeholder,
+                        color: design.colors.textTertiary,
+                      ),
                     ),
-                  EditableText(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    scrollController: _textScrollController,
-                    readOnly: !widget.enabled,
-                    style: design.typography.body.copyWith(
-                      color: widget.enabled
-                          ? design.colors.textPrimary
-                          : design.colors.textTertiary,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: EditableText(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      scrollController: _textScrollController,
+                      readOnly: !widget.enabled,
+                      style: design.typography.body.copyWith(
+                        color: widget.enabled
+                            ? design.colors.textPrimary
+                            : design.colors.textTertiary,
+                        height: 1.4,
+                      ),
+                      cursorColor: design.colors.primary,
+                      cursorWidth: 2.0,
+                      cursorHeight: 18.0,
+                      cursorRadius: const Radius.circular(1.0),
+                      backgroundCursorColor: const Color(0xFF000000),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 4,
+                      minLines: 1,
+                      onChanged: (_) {
+                        setState(() {});
+                      },
                     ),
-                    cursorColor: design.colors.primary,
-                    backgroundCursorColor: const Color(0xFF000000),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 4,
-                    minLines: 1,
-                    onChanged: (_) {
-                      setState(() {});
-                    },
                   ),
                 ],
               ),
             ),
           ),
           const SizedBox(width: 8.0),
-          AppSemantics.button(
-            label: l10n.aiComposerSendMessage,
-            enabled: hasText,
-            onTap: hasText ? _submit : null,
-            child: GestureDetector(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 2.0),
+            child: AppSemantics.button(
+              label: l10n.aiComposerSendMessage,
+              enabled: hasText,
               onTap: hasText ? _submit : null,
-              behavior: HitTestBehavior.opaque,
-              child: SizedBox(
-                width: 48.0,
-                height: 48.0,
-                child: Center(
-                  child: Container(
-                    width: 32.0,
-                    height: 32.0,
-                    decoration: BoxDecoration(
-                      color: hasText
-                          ? design.colors.primary
-                          : design.colors.primary.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        LucideIcons.arrowUp,
+              child: GestureDetector(
+                onTap: hasText ? _submit : null,
+                behavior: HitTestBehavior.opaque,
+                child: SizedBox(
+                  width: 36.0,
+                  height: 36.0,
+                  child: Center(
+                    child: Container(
+                      width: 32.0,
+                      height: 32.0,
+                      decoration: BoxDecoration(
                         color: hasText
-                            ? design.colors.textInverse
-                            : design.colors.primary.withValues(alpha: 0.4),
-                        size: 18.0,
+                            ? design.colors.primary
+                            : design.colors.primary.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          LucideIcons.arrowUp,
+                          color: hasText
+                              ? design.colors.textInverse
+                              : design.colors.primary.withValues(alpha: 0.4),
+                          size: 18.0,
+                        ),
                       ),
                     ),
                   ),

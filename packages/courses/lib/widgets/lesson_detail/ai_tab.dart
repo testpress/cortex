@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../providers/learnlens_provider.dart';
 
 class AITab extends ConsumerStatefulWidget {
   final LessonDto lesson;
@@ -106,10 +105,6 @@ class _AITabState extends ConsumerState<AITab>
     _scrollToBottom(design);
 
     final contentId = int.tryParse(widget.lesson.id) ?? 0;
-    final sessionMap =
-        await ref.read(learnlensSessionProvider(contentId).future);
-
-    final sessionToken = sessionMap?['session_token'] as String? ?? '';
     final settings = ref.read(instituteSettingsProvider);
     final orgUuid = (settings?.learnlensEnabled == true)
         ? (settings?.learnlensOrgID ?? '')
@@ -118,7 +113,7 @@ class _AITabState extends ConsumerState<AITab>
         widget.lesson.uuid ??
         widget.lesson.id;
 
-    if (sessionToken.isEmpty) {
+    if (contentId <= 0) {
       setState(() {
         if (_messages.isNotEmpty && _messages.last.isLoading) {
           _messages.removeLast();
@@ -139,7 +134,7 @@ class _AITabState extends ConsumerState<AITab>
       final chatResponse = await repository.submitChat(
         orgUuid: orgUuid,
         assetId: assetId,
-        sessionToken: sessionToken,
+        contentId: contentId,
         query: query,
         conversationId: _conversationId,
       );

@@ -89,7 +89,7 @@ enum NavTab {
         NavTab.info => AppConfig.showInfoTab,
         NavTab.store => settings?.storeEnabled ?? false,
         NavTab.profile => AppConfig.showProfileTab,
-        NavTab.ai => AppConfig.showAiTab,
+        NavTab.ai => settings?.enableAiChatbot ?? false,
         _ => true,
       };
     }).toList();

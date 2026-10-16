@@ -6023,6 +6023,18 @@ abstract class AppLocalizations {
   /// **'Chat History'**
   String get aiChatHistoryTitle;
 
+  /// No description provided for @aiNoChatHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet'**
+  String get aiNoChatHistory;
+
+  /// No description provided for @aiInitErrorBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to connect to AI assistant. Check your connection.'**
+  String get aiInitErrorBanner;
+
   /// No description provided for @aiComposerPlaceholder.
   ///
   /// In en, this message translates to:

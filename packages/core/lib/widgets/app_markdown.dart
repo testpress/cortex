@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_smooth_markdown/flutter_smooth_markdown.dart';
 import '../design/design_provider.dart';
 
@@ -94,6 +95,44 @@ class AppMarkdown extends StatelessWidget {
         tableCellPadding: EdgeInsets.all(design.spacing.sm),
         tableHeaderDecoration: BoxDecoration(color: design.colors.surface),
         tableBorder: TableBorder.all(color: design.colors.border, width: 1.0),
+      ),
+      builderRegistry: _scrollableMathRegistry,
+    );
+  }
+}
+
+final BuilderRegistry _scrollableMathRegistry = BuilderRegistry()
+  ..register('block_math', const _ScrollableBlockMathBuilder());
+
+class _ScrollableBlockMathBuilder extends MarkdownWidgetBuilder {
+  const _ScrollableBlockMathBuilder();
+
+  @override
+  bool canBuild(MarkdownNode node) => node is BlockMathNode;
+
+  @override
+  Widget build(
+    MarkdownNode node,
+    MarkdownStyleSheet styleSheet,
+    MarkdownRenderContext context,
+  ) {
+    final mathNode = node as BlockMathNode;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        clipBehavior: Clip.antiAlias,
+        child: Math.tex(
+          mathNode.latex,
+          textStyle: styleSheet.textStyle,
+          mathStyle: MathStyle.display,
+          options: MathOptions(
+            fontSize: (styleSheet.textStyle?.fontSize ?? 16) * 1.25,
+            color: styleSheet.textStyle?.color ?? const Color(0xFF000000),
+          ),
+        ),
       ),
     );
   }

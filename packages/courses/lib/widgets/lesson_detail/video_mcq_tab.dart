@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
-import '../../providers/learnlens_provider.dart';
 import 'mcq/video_mcq_initial_card.dart';
 import 'mcq/video_mcq_palette_sheet.dart';
 import 'mcq/video_mcq_stepper_card.dart';
@@ -56,10 +55,6 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
     });
 
     final contentId = int.tryParse(widget.lesson.id) ?? 0;
-    final sessionMap =
-        await ref.read(learnlensSessionProvider(contentId).future);
-
-    final sessionToken = sessionMap?['session_token'] as String? ?? '';
     final settings = ref.read(instituteSettingsProvider);
     final orgUuid = (settings?.learnlensEnabled == true)
         ? (settings?.learnlensOrgID ?? '')
@@ -68,7 +63,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
         widget.lesson.uuid ??
         widget.lesson.id;
 
-    if (sessionToken.isEmpty) {
+    if (contentId <= 0) {
       setState(() {
         _isLoading = false;
         _errorMessage = L10n.of(context).videoMcqSessionError;
@@ -81,7 +76,7 @@ class _VideoMcqTabState extends ConsumerState<VideoMcqTab>
       final quizResponse = await repository.fetchQuiz(
         orgUuid: orgUuid,
         assetId: assetId,
-        sessionToken: sessionToken,
+        contentId: contentId,
         difficulty: widget.difficulty,
         questionCount: widget.questionCount,
       );

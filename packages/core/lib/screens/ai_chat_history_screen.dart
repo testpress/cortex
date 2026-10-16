@@ -1,15 +1,54 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core.dart';
-import '../data/ai_chat_mock_data.dart';
 
-class AiChatHistoryScreen extends ConsumerWidget {
+class AiChatHistoryScreen extends ConsumerStatefulWidget {
   const AiChatHistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AiChatHistoryScreen> createState() =>
+      _AiChatHistoryScreenState();
+}
+
+class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(genericAiChatProvider.notifier).loadConversations(refresh: true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.maxScrollExtent <= 0 || position.pixels <= 0) return;
+
+    if (position.pixels >= position.maxScrollExtent - 200) {
+      final state = ref.read(genericAiChatProvider);
+      if (!state.isLoadingHistory && state.hasMoreHistory) {
+        ref.read(genericAiChatProvider.notifier).loadConversations();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final chatState = ref.watch(genericAiChatProvider);
+    final history = chatState.conversationHistory;
 
     return Container(
       color: design.colors.card,
@@ -19,42 +58,126 @@ class AiChatHistoryScreen extends ConsumerWidget {
           AppHeader(
             title: l10n.aiChatHistoryTitle,
             leading: AppBackButton(onTap: () => context.pop()),
+            contentPadding: EdgeInsetsDirectional.fromSTEB(
+              design.spacing.xs,
+              design.spacing.md,
+              design.spacing.md,
+              design.spacing.md,
+            ),
+            showDivider: false,
+            actions: [
+              AppIconButton(
+                icon: LucideIcons.plus,
+                size: 22.0,
+                color: design.colors.textPrimary,
+                accessibilityLabel: l10n.aiStartNewChat,
+                onTap: () {
+                  ref.read(genericAiChatProvider.notifier).startNewChat();
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/ai');
+                  }
+                },
+              ),
+            ],
           ),
-          Expanded(
-            child: AppSemantics.scrollableList(
-              itemCount: mockChatSessions.length,
-              label: l10n.aiChatHistoryTitle,
-              child: AppScroll(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.md,
-                  vertical: design.spacing.lg,
+          if (chatState.hasHistoryError && history.isEmpty)
+            Expanded(
+              child: AppErrorView(
+                error: chatState.historyError,
+                backgroundColor: design.colors.card,
+                onRetry: () => ref
+                    .read(genericAiChatProvider.notifier)
+                    .loadConversations(refresh: true),
+              ),
+            )
+          else if (chatState.isLoadingHistory && history.isEmpty)
+            const Expanded(child: Center(child: AppLoadingIndicator()))
+          else if (history.isEmpty)
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(design.spacing.xl),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        LucideIcons.history,
+                        size: 48.0,
+                        color: design.colors.textTertiary,
+                      ),
+                      SizedBox(height: design.spacing.md),
+                      AppText.body(
+                        l10n.aiNoChatHistory,
+                        color: design.colors.textSecondary,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
-                children: [
-                  ...mockChatSessions.map((session) {
-                    final isLast = session == mockChatSessions.last;
-                    final lastHumanMessage = session.messages
-                        .lastWhere((msg) => msg.role == MessageRole.user)
-                        .content;
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _HistoryItem(
-                          sessionId: session.id,
-                          title: session.title,
-                          lastMessage: lastHumanMessage,
-                          timestamp: DateFormatter.formatTimeAgo(
-                            session.modifiedAt,
+              ),
+            )
+          else
+            Expanded(
+              child: AppSemantics.scrollableList(
+                itemCount: history.length,
+                label: l10n.aiChatHistoryTitle,
+                child: AppScroll(
+                  controller: _scrollController,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.lg,
+                  ),
+                  children: [
+                    ...history.map((session) {
+                      final isLast = session == history.last;
+                      final displayTitle = session.title.trim().isNotEmpty
+                          ? session.title
+                          : 'New Chat';
+                      final timestamp = session.updatedAt != null
+                          ? DateFormatter.formatTimeAgo(session.updatedAt!)
+                          : '';
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _HistoryItem(
+                            sessionId: session.chatId,
+                            title: displayTitle,
+                            timestamp: timestamp,
+                            onTap: () {
+                              ref
+                                  .read(genericAiChatProvider.notifier)
+                                  .selectConversation(session.chatId);
+                              context.pop();
+                            },
+                          ),
+                          if (!isLast) SizedBox(height: design.spacing.xs),
+                        ],
+                      );
+                    }),
+                    if (chatState.isLoadingHistory)
+                      Padding(
+                        padding: EdgeInsets.all(design.spacing.md),
+                        child: const Center(child: AppLoadingIndicator()),
+                      ),
+                    if (chatState.hasHistoryError)
+                      Padding(
+                        padding: EdgeInsets.all(design.spacing.md),
+                        child: Center(
+                          child: AppButton.secondary(
+                            label: l10n.labelRetry,
+                            onPressed: () => ref
+                                .read(genericAiChatProvider.notifier)
+                                .loadConversations(),
                           ),
                         ),
-                        if (!isLast) SizedBox(height: design.spacing.xs),
-                      ],
-                    );
-                  }),
-                ],
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -65,26 +188,27 @@ class _HistoryItem extends StatelessWidget {
   const _HistoryItem({
     required this.sessionId,
     required this.title,
-    this.lastMessage,
     required this.timestamp,
+    this.onTap,
   });
 
   final String sessionId;
   final String title;
-  final String? lastMessage;
   final String timestamp;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final handleTap = onTap ?? () => context.push('/ai/chat?id=$sessionId');
 
     return AppSemantics.button(
       label: l10n.openChatSession(title),
-      onTap: () => context.push('/ai/chat?id=$sessionId'),
+      onTap: handleTap,
       child: AppCard(
         padding: EdgeInsets.all(design.spacing.md),
-        onTap: () => context.push('/ai/chat?id=$sessionId'),
+        onTap: handleTap,
         child: Row(
           children: [
             SizedBox(width: design.spacing.sm),
@@ -98,15 +222,7 @@ class _HistoryItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: design.spacing.xs),
-                  if (lastMessage != null) ...[
-                    AppText.cardSubtitle(
-                      lastMessage!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: design.spacing.xs),
-                  ],
-                  AppText.cardCaption(timestamp),
+                  if (timestamp.isNotEmpty) AppText.cardCaption(timestamp),
                 ],
               ),
             ),
