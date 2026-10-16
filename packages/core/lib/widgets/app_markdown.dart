@@ -102,7 +102,21 @@ class AppMarkdown extends StatelessWidget {
 }
 
 final BuilderRegistry _scrollableMathRegistry = BuilderRegistry()
-  ..register('block_math', const _ScrollableBlockMathBuilder());
+  ..register('block_math', const _ScrollableBlockMathBuilder())
+  ..register('inline_math', const _InlineMathBuilder());
+
+String _sanitizeLatex(String latex) {
+  return latex.replaceAll(RegExp(r'(?<!\\)#'), r'\#');
+}
+
+Widget _fallbackMathWidget(String latex, TextStyle? style) {
+  var clean = latex.trim();
+  // Strip \ce{...} if present so raw chemistry formula renders legibly
+  if (clean.startsWith(r'\ce{') && clean.endsWith('}')) {
+    clean = clean.substring(4, clean.length - 1);
+  }
+  return Text(clean, style: style);
+}
 
 class _ScrollableBlockMathBuilder extends MarkdownWidgetBuilder {
   const _ScrollableBlockMathBuilder();
@@ -117,6 +131,7 @@ class _ScrollableBlockMathBuilder extends MarkdownWidgetBuilder {
     MarkdownRenderContext context,
   ) {
     final mathNode = node as BlockMathNode;
+    final sanitizedLatex = _sanitizeLatex(mathNode.latex);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -125,15 +140,46 @@ class _ScrollableBlockMathBuilder extends MarkdownWidgetBuilder {
         physics: const BouncingScrollPhysics(),
         clipBehavior: Clip.antiAlias,
         child: Math.tex(
-          mathNode.latex,
+          sanitizedLatex,
           textStyle: styleSheet.textStyle,
           mathStyle: MathStyle.display,
           options: MathOptions(
             fontSize: (styleSheet.textStyle?.fontSize ?? 16) * 1.25,
             color: styleSheet.textStyle?.color ?? const Color(0xFF000000),
           ),
+          onErrorFallback: (_) =>
+              _fallbackMathWidget(mathNode.latex, styleSheet.textStyle),
         ),
       ),
+    );
+  }
+}
+
+class _InlineMathBuilder extends MarkdownWidgetBuilder {
+  const _InlineMathBuilder();
+
+  @override
+  bool canBuild(MarkdownNode node) => node is InlineMathNode;
+
+  @override
+  Widget build(
+    MarkdownNode node,
+    MarkdownStyleSheet styleSheet,
+    MarkdownRenderContext context,
+  ) {
+    final mathNode = node as InlineMathNode;
+    final sanitizedLatex = _sanitizeLatex(mathNode.latex);
+
+    return Math.tex(
+      sanitizedLatex,
+      textStyle: styleSheet.textStyle,
+      mathStyle: MathStyle.text,
+      options: MathOptions(
+        fontSize: styleSheet.textStyle?.fontSize ?? 16,
+        color: styleSheet.textStyle?.color ?? const Color(0xFF000000),
+      ),
+      onErrorFallback: (_) =>
+          _fallbackMathWidget(mathNode.latex, styleSheet.textStyle),
     );
   }
 }

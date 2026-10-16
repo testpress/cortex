@@ -38,12 +38,21 @@ class _AiComposerState extends State<AiComposer> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(AiComposer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.enabled && !widget.enabled) {
+      _focusNode.unfocus();
+    }
+  }
+
   void _submit() {
     if (!widget.enabled) return;
     final text = _controller.text.trim();
     if (text.isNotEmpty) {
       widget.onSend?.call(text);
       _controller.clear();
+      _focusNode.unfocus();
       setState(() {});
     }
   }
@@ -78,17 +87,10 @@ class _AiComposerState extends State<AiComposer> {
               child: Stack(
                 alignment: Alignment.centerLeft,
                 children: [
-                  if (_controller.text.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: AppText.body(
-                        placeholder,
-                        color: design.colors.textTertiary,
-                      ),
-                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: EditableText(
+                      key: const ValueKey('ai_composer_editable_text'),
                       controller: _controller,
                       focusNode: _focusNode,
                       scrollController: _textScrollController,
@@ -111,6 +113,23 @@ class _AiComposerState extends State<AiComposer> {
                         setState(() {});
                       },
                     ),
+                  ),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _controller,
+                    builder: (context, value, _) {
+                      if (value.text.isNotEmpty) {
+                        return const SizedBox.shrink();
+                      }
+                      return IgnorePointer(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: AppText.body(
+                            placeholder,
+                            color: design.colors.textTertiary,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

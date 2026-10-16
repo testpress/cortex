@@ -817,4 +817,30 @@ void main() {
       expect(find.byKey(const ValueKey('chat-thread-1')), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'composer retains focus and preserves EditableTextState across first char and clearing',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final editable = find.byType(EditableText);
+      expect(editable, findsOneWidget);
+
+      await tester.tap(editable);
+      await tester.pump();
+
+      final stateBefore = tester.state(editable);
+
+      // Enter first letter (isEmpty: true -> false)
+      await tester.enterText(editable, 'a');
+      await tester.pump();
+      expect(tester.state(editable), same(stateBefore));
+
+      // Clear letter (isEmpty: false -> true)
+      await tester.enterText(editable, '');
+      await tester.pump();
+      expect(tester.state(editable), same(stateBefore));
+    },
+  );
 }

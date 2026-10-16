@@ -104,21 +104,24 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                             ),
                           ),
                         ),
-                        AppIconButton(
-                          icon: LucideIcons.plus,
-                          size: 22.0,
-                          color: design.colors.textPrimary,
-                          accessibilityLabel: l10n.aiStartNewChat,
-                          onTap: () {
-                            ref
-                                .read(genericAiChatProvider.notifier)
-                                .startNewChat();
-                            if (context.canPop()) {
-                              context.pop();
-                            } else {
-                              context.go('/ai');
-                            }
-                          },
+                        Transform.translate(
+                          offset: const Offset(10.0, 0.0),
+                          child: AppIconButton(
+                            icon: LucideIcons.plus,
+                            size: 22.0,
+                            color: design.colors.textPrimary,
+                            accessibilityLabel: l10n.aiStartNewChat,
+                            onTap: () {
+                              ref
+                                  .read(genericAiChatProvider.notifier)
+                                  .startNewChat();
+                              if (context.canPop()) {
+                                context.pop();
+                              } else {
+                                context.go('/ai');
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -212,7 +215,7 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                                   context.pop();
                                 },
                               ),
-                              if (!isLast) SizedBox(height: design.spacing.xs),
+                              if (!isLast) SizedBox(height: design.spacing.sm),
                             ],
                           );
                         }),
