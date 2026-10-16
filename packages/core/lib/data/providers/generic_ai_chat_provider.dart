@@ -44,9 +44,9 @@ class GenericAiChatMessage {
     bool? isSending,
     bool? hasSendError,
     bool? hasGenerationError,
-    String? errorMessage,
-    String? errorCode,
-    String? requestId,
+    Object? errorMessage = _sentinel,
+    Object? errorCode = _sentinel,
+    Object? requestId = _sentinel,
   }) {
     return GenericAiChatMessage(
       id: id ?? this.id,
@@ -56,9 +56,11 @@ class GenericAiChatMessage {
       isSending: isSending ?? this.isSending,
       hasSendError: hasSendError ?? this.hasSendError,
       hasGenerationError: hasGenerationError ?? this.hasGenerationError,
-      errorMessage: errorMessage ?? this.errorMessage,
-      errorCode: errorCode ?? this.errorCode,
-      requestId: requestId ?? this.requestId,
+      errorMessage: errorMessage == _sentinel
+          ? this.errorMessage
+          : errorMessage as String?,
+      errorCode: errorCode == _sentinel ? this.errorCode : errorCode as String?,
+      requestId: requestId == _sentinel ? this.requestId : requestId as String?,
     );
   }
 

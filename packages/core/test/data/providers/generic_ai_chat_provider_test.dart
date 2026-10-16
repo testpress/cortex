@@ -844,5 +844,38 @@ void main() {
         expect(state.isGenerating, isFalse);
       },
     );
+
+    test(
+      'GenericAiChatMessage.copyWith clears nullable error fields when null',
+      () {
+        final message = GenericAiChatMessage(
+          id: 'msg_1',
+          text: 'hello',
+          isUser: true,
+          timestamp: DateTime.now(),
+          errorMessage: 'Some error',
+          errorCode: 'some_code',
+          requestId: 'req_123',
+        );
+
+        final cleared = message.copyWith(
+          errorMessage: null,
+          errorCode: null,
+          requestId: null,
+        );
+
+        expect(cleared.errorMessage, isNull);
+        expect(cleared.errorCode, isNull);
+        expect(cleared.requestId, isNull);
+        expect(cleared.id, 'msg_1');
+        expect(cleared.text, 'hello');
+
+        final preserved = message.copyWith(text: 'updated text');
+        expect(preserved.errorMessage, 'Some error');
+        expect(preserved.errorCode, 'some_code');
+        expect(preserved.requestId, 'req_123');
+        expect(preserved.text, 'updated text');
+      },
+    );
   });
 }
