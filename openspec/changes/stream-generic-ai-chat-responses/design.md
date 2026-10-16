@@ -45,3 +45,6 @@ The existing `_operationToken` invalidates stale streams when the user switches 
   -> *Mitigation*: Events are ignored via the operation token; the subscription is cancelled on notifier disposal.
 - [Risk] A `done` event with status `processing` (replay) has no text.
   -> *Mitigation*: Reuses existing status polling and message reconciliation.
+
+### Review follow-up
+The generating caption owns the accessible status; the dots are decorative. The pulse uses the very-slow motion token and stops when reduced motion is enabled. Submission targets remain pinned only while replay may be necessary; terminal completion/failure and conversation reset already remove them. Keep platform streaming selection unchanged: a build flag is outside the current requirements.

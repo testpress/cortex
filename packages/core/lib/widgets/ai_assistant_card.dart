@@ -114,8 +114,7 @@ class AiAssistantCard extends StatelessWidget {
                           ),
                         )
                       : isGenerating && message.isEmpty
-                      ? AppSemantics.container(
-                          label: l10n.aiGeneratingResponse,
+                      ? ExcludeSemantics(
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: design.spacing.xs,
@@ -209,24 +208,19 @@ class _GeneratingIndicator extends StatefulWidget {
 
 class _GeneratingIndicatorState extends State<_GeneratingIndicator>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  bool _started = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-  }
+  late final AnimationController _controller = AnimationController(vsync: this);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_started) return;
-    _started = true;
-    if (MotionPreferences.shouldAnimate(context)) {
+    final duration = MotionPreferences.duration(
+      context,
+      Design.of(context).motion.verySlow,
+    );
+    if (duration == Duration.zero) {
+      _controller.stop();
+    } else if (!_controller.isAnimating || _controller.duration != duration) {
+      _controller.duration = duration;
       _controller.repeat();
     }
   }
@@ -254,8 +248,8 @@ class _GeneratingIndicatorState extends State<_GeneratingIndicator>
                 ? (0.35 + 0.65 * (1 - (phase * 2 - 1).abs()))
                 : 1.0;
             return Container(
-              width: 8.0,
-              height: 8.0,
+              width: design.spacing.sm,
+              height: design.spacing.sm,
               margin: EdgeInsets.symmetric(horizontal: design.spacing.xs / 2),
               decoration: BoxDecoration(
                 color: design.colors.textSecondary.withValues(alpha: pulse),

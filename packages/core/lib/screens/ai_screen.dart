@@ -96,12 +96,14 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
   /// Whether the list is scrolled close enough to the end that streamed text
   /// should keep the newest content in view.
+  static const double _autoScrollProximity = 96.0;
+
   bool _isNearBottom() {
     if (!_scrollController.hasClients) return true;
     if (_scrollController.positions.length != 1) return false;
     final position = _scrollController.position;
     if (!position.hasContentDimensions) return true;
-    return position.maxScrollExtent - position.pixels < 96.0;
+    return position.maxScrollExtent - position.pixels < _autoScrollProximity;
   }
 
   void _clampScrollBounds() {

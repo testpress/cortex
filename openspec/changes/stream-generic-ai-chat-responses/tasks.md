@@ -30,3 +30,11 @@
 - [x] 5.2 Network client tests: streaming request contract, event parsing, pre-stream error normalization.
 - [x] 5.3 Provider tests: progressive rendering, completion, generation failure, error event recovery, disconnect recovery, retry route pinning, conversation switching, duplicate submission guard.
 - [x] 5.4 Screen test: generating indicator and progressive text rendering.
+
+## 6. Review follow-up
+
+- [x] 6.1 Use design tokens for the typing indicator and respond to runtime motion changes.
+- [x] 6.2 Expose a single generating status and name the auto-scroll proximity threshold.
+- [ ] 6.3 Verify indicator accessibility and runtime motion behavior; run chat regression tests.
+
+Review validation: 24 card/screen tests passed. Provider run passed 38 tests; the existing Web JSON-path test timed out after 30 seconds. Full validation and archive remain pending that investigation.
