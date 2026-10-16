@@ -46,4 +46,21 @@ Reactants -> Products # comment
 
     expect(find.textContaining('Parser Error'), findsNothing);
   });
+
+  testWidgets(
+    'AppMarkdown catches line break followed by # via fallback without parser error',
+    (tester) async {
+      const rawMarkdown = '''
+\$\$
+a = b \\\\
+# line break then hash
+\$\$
+''';
+
+      await tester.pumpWidget(buildSubject(rawMarkdown));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Parser Error'), findsNothing);
+    },
+  );
 }

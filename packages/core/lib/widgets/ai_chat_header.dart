@@ -22,9 +22,13 @@ class AiChatHeader extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: _maxContentWidth),
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.screenPadding,
-                vertical: design.spacing.sm,
+              padding: EdgeInsetsDirectional.only(
+                start: design.spacing.screenPadding,
+                end:
+                    design.spacing.screenPadding -
+                    (design.spacing.sm + design.spacing.xs),
+                top: design.spacing.sm,
+                bottom: design.spacing.sm,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,15 +65,12 @@ class AiChatHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Transform.translate(
-                    offset: const Offset(10.0, 0.0),
-                    child: AppIconButton(
-                      icon: LucideIcons.menu,
-                      size: 22.0,
-                      color: design.colors.textPrimary,
-                      accessibilityLabel: l10n.aiChatHistoryTitle,
-                      onTap: onMenu,
-                    ),
+                  AppIconButton(
+                    icon: LucideIcons.menu,
+                    size: 22.0,
+                    color: design.colors.textPrimary,
+                    accessibilityLabel: l10n.aiChatHistoryTitle,
+                    onTap: onMenu,
                   ),
                 ],
               ),

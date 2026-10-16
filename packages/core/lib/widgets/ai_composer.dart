@@ -74,7 +74,7 @@ class _AiComposerState extends State<AiComposer> {
           width: 1.0,
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 0.0),
+      padding: EdgeInsetsDirectional.only(start: design.spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -88,7 +88,7 @@ class _AiComposerState extends State<AiComposer> {
                 alignment: Alignment.centerLeft,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
                     child: EditableText(
                       key: const ValueKey('ai_composer_editable_text'),
                       controller: _controller,
@@ -122,7 +122,9 @@ class _AiComposerState extends State<AiComposer> {
                       }
                       return IgnorePointer(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          padding: EdgeInsets.symmetric(
+                            vertical: design.spacing.sm,
+                          ),
                           child: AppText.body(
                             placeholder,
                             color: design.colors.textTertiary,
@@ -135,7 +137,7 @@ class _AiComposerState extends State<AiComposer> {
               ),
             ),
           ),
-          const SizedBox(width: 8.0),
+          SizedBox(width: design.spacing.sm),
           AppSemantics.button(
             label: l10n.aiComposerSendMessage,
             enabled: hasText,

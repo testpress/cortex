@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_smooth_markdown/flutter_smooth_markdown.dart';
 import '../design/design_provider.dart';
+import 'app_text.dart';
 
 /// Platform-neutral Markdown widget aligned with the design system.
 ///
@@ -106,7 +107,14 @@ final BuilderRegistry _scrollableMathRegistry = BuilderRegistry()
   ..register('inline_math', const _InlineMathBuilder());
 
 String _sanitizeLatex(String latex) {
-  return latex.replaceAll(RegExp(r'(?<!\\)#'), r'\#');
+  return latex.replaceAllMapped(RegExp(r'(\\*)#'), (match) {
+    final slashes = match.group(1)!;
+    // An even number of backslashes (0, 2, 4...) means '#' itself is unescaped
+    if (slashes.length.isEven) {
+      return '$slashes\\#';
+    }
+    return match.group(0)!;
+  });
 }
 
 Widget _fallbackMathWidget(String latex, TextStyle? style) {
@@ -115,7 +123,7 @@ Widget _fallbackMathWidget(String latex, TextStyle? style) {
   if (clean.startsWith(r'\ce{') && clean.endsWith('}')) {
     clean = clean.substring(4, clean.length - 1);
   }
-  return Text(clean, style: style);
+  return AppText(clean, style: style);
 }
 
 class _ScrollableBlockMathBuilder extends MarkdownWidgetBuilder {

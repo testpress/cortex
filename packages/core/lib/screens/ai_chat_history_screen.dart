@@ -65,9 +65,13 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: _maxContentWidth),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.screenPadding,
-                      vertical: design.spacing.sm,
+                    padding: EdgeInsetsDirectional.only(
+                      start: design.spacing.screenPadding,
+                      end:
+                          design.spacing.screenPadding -
+                          (design.spacing.sm + design.spacing.xs),
+                      top: design.spacing.sm,
+                      bottom: design.spacing.sm,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,24 +108,21 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                             ),
                           ),
                         ),
-                        Transform.translate(
-                          offset: const Offset(10.0, 0.0),
-                          child: AppIconButton(
-                            icon: LucideIcons.plus,
-                            size: 22.0,
-                            color: design.colors.textPrimary,
-                            accessibilityLabel: l10n.aiStartNewChat,
-                            onTap: () {
-                              ref
-                                  .read(genericAiChatProvider.notifier)
-                                  .startNewChat();
-                              if (context.canPop()) {
-                                context.pop();
-                              } else {
-                                context.go('/ai');
-                              }
-                            },
-                          ),
+                        AppIconButton(
+                          icon: LucideIcons.plus,
+                          size: 22.0,
+                          color: design.colors.textPrimary,
+                          accessibilityLabel: l10n.aiStartNewChat,
+                          onTap: () {
+                            ref
+                                .read(genericAiChatProvider.notifier)
+                                .startNewChat();
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              context.go('/ai');
+                            }
+                          },
                         ),
                       ],
                     ),
