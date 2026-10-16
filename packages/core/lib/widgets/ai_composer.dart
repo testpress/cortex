@@ -65,9 +65,9 @@ class _AiComposerState extends State<AiComposer> {
           width: 1.0,
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(16.0, 6.0, 6.0, 6.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 4.0, 4.0, 4.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: ConstrainedBox(
@@ -117,36 +117,33 @@ class _AiComposerState extends State<AiComposer> {
             ),
           ),
           const SizedBox(width: 8.0),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 2.0),
-            child: AppSemantics.button(
-              label: l10n.aiComposerSendMessage,
-              enabled: hasText,
+          AppSemantics.button(
+            label: l10n.aiComposerSendMessage,
+            enabled: hasText,
+            onTap: hasText ? _submit : null,
+            child: GestureDetector(
               onTap: hasText ? _submit : null,
-              child: GestureDetector(
-                onTap: hasText ? _submit : null,
-                behavior: HitTestBehavior.opaque,
-                child: SizedBox(
-                  width: 36.0,
-                  height: 36.0,
-                  child: Center(
-                    child: Container(
-                      width: 32.0,
-                      height: 32.0,
-                      decoration: BoxDecoration(
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox(
+                width: 36.0,
+                height: 36.0,
+                child: Center(
+                  child: Container(
+                    width: 32.0,
+                    height: 32.0,
+                    decoration: BoxDecoration(
+                      color: hasText
+                          ? design.colors.primary
+                          : design.colors.primary.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.arrowUp,
                         color: hasText
-                            ? design.colors.primary
-                            : design.colors.primary.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          LucideIcons.arrowUp,
-                          color: hasText
-                              ? design.colors.textInverse
-                              : design.colors.primary.withValues(alpha: 0.4),
-                          size: 18.0,
-                        ),
+                            ? design.colors.textInverse
+                            : design.colors.primary.withValues(alpha: 0.4),
+                        size: 18.0,
                       ),
                     ),
                   ),

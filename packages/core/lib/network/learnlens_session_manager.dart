@@ -239,12 +239,20 @@ class LearnLensSessionInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode;
-    final is401 = statusCode == 401;
     final isRetry = err.requestOptions.extra['is_session_retry'] == true;
     final isCallerSupplied =
         err.requestOptions.extra['caller_supplied_token'] == true;
 
-    if (is401 && !isRetry && !isCallerSupplied) {
+    final data = err.response?.data;
+    final detail = data is Map<String, dynamic>
+        ? data['detail']?.toString().toLowerCase()
+        : null;
+    final isInvalidSessionToken =
+        detail != null && detail.contains('invalid session token');
+
+    final isSessionAuthFailure = (statusCode == 401 || isInvalidSessionToken);
+
+    if (isSessionAuthFailure && !isRetry && !isCallerSupplied) {
       AiChatSessionDto newSession;
       try {
         final contentId = err.requestOptions.extra['content_id'] as int?;

@@ -44,8 +44,8 @@ class GenericAiChatMessage {
     bool? isSending,
     bool? hasSendError,
     bool? hasGenerationError,
-    String? errorMessage,
-    String? errorCode,
+    Object? errorMessage = _sentinel,
+    Object? errorCode = _sentinel,
     String? requestId,
   }) {
     return GenericAiChatMessage(
@@ -56,8 +56,10 @@ class GenericAiChatMessage {
       isSending: isSending ?? this.isSending,
       hasSendError: hasSendError ?? this.hasSendError,
       hasGenerationError: hasGenerationError ?? this.hasGenerationError,
-      errorMessage: errorMessage ?? this.errorMessage,
-      errorCode: errorCode ?? this.errorCode,
+      errorMessage: errorMessage == _sentinel
+          ? this.errorMessage
+          : errorMessage as String?,
+      errorCode: errorCode == _sentinel ? this.errorCode : errorCode as String?,
       requestId: requestId ?? this.requestId,
     );
   }
@@ -511,7 +513,10 @@ class GenericAiChat extends _$GenericAiChat {
 
             state = state.copyWith(messages: reconciled, isGenerating: false);
           }
-        } catch (_) {
+        } catch (e) {
+          debugPrint(
+            '[GenericAiChat] Transient error during status polling: $e',
+          );
           // Continue sequential polling on transient error until max timeout or user navigation
           if (token == _operationToken) {
             scheduleNextPoll();
@@ -569,7 +574,8 @@ class GenericAiChat extends _$GenericAiChat {
         hasHistoryError: false,
         historyError: null,
       );
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('[GenericAiChat] Failed to load conversations: $e\n$stack');
       state = state.copyWith(
         isLoadingHistory: false,
         hasHistoryError: true,
@@ -617,7 +623,10 @@ class GenericAiChat extends _$GenericAiChat {
         hasMessagesError: false,
         messagesError: null,
       );
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint(
+        '[GenericAiChat] Failed to load messages for chat $chatId: $e\n$stack',
+      );
       if (token == _operationToken) {
         state = state.copyWith(
           isLoadingMessages: false,

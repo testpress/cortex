@@ -107,6 +107,8 @@ class LearnLensNetworkClient {
       final lower = raw.toLowerCase();
       if (lower.contains('session expired') ||
           lower.contains('token expired') ||
+          lower.contains('invalid session token') ||
+          lower.contains('invalid token') ||
           lower.contains('unauthorized')) {
         return 'Unable to connect to AI assistant. Please try again.';
       }

@@ -58,6 +58,14 @@ Build `AiChatHistorySheet` accessible from the header's menu icon:
   2. **Single Universal Binary**: Driving visibility through `InstituteSettings` allows instant toggling and rollout of AI chat per institute without requiring app re-compilation or flavor proliferation.
   3. **Architectural Distinction**: While compile-time `AppConfig` flags remain the convention for structural app flavors (e.g., `SHOW_PROFILE_TAB`, `SHOW_EXAM_TAB`), AI features are licensed backend capabilities and intentionally governed by dynamic remote institute policy.
 
+### Decision 6: In-Memory State & Session Persistence Rationale
+- **Context & Change**: `conversationHistory` and active chat `messages` live strictly in Riverpod provider memory (`GenericAiChatState`) and are not cached behind a local offline database (e.g., SQLite / Hive).
+- **Rationale**:
+  1. **Backend as Single Source of Truth**: LearnLens server infrastructure retains full conversation context, multi-turn history, and message ordering. The client acts as a live, synchronized presentation layer.
+  2. **Live-Only AI Chat Utility**: Conversational AI generation inherently requires active server connectivity with the remote model. Persisting chat turns locally for offline reading provides negligible practical value while introducing stale cache invalidation and multi-device synchronization issues.
+  3. **Privacy & Security**: Keeping conversation history ephemeral in client memory prevents unencrypted, student-generated academic queries and LLM outputs from lingering on shared or public mobile devices upon logout or app termination.
+
+
 
 ## Risks / Trade-offs
 
