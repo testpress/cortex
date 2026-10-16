@@ -1542,6 +1542,7 @@
   "aiRetrySendMessageSemantic": "செய்தியை மீண்டும் அனுப்ப தட்டவும்",
   "aiTapToRetry": "மீண்டும் முயற்சிக்க தட்டவும்",
   "aiMessageSending": "அனுப்பப்படுகிறது...",
+  "aiGeneratingResponse": "பதில் உருவாக்கப்படுகிறது...",
   "announcementsQuickLinks": "விரைவு இணைப்புகள்",
   "announcementsFilterByCategory": "வகை வாரியாக வடிகட்டு",
   "announcementsAllPosts": "அனைத்து பதிவுகள்",

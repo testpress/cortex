@@ -34,6 +34,7 @@ class AiScreen extends ConsumerStatefulWidget {
 class _AiScreenState extends ConsumerState<AiScreen> {
   late final ScrollController _scrollController;
   int _lastMessageCount = 0;
+  int _lastStreamingTextLength = 0;
   double _lastBottomInset = 0;
   String? _activeChatId;
 
@@ -91,6 +92,16 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         if (mounted) _clampScrollBounds();
       });
     });
+  }
+
+  /// Whether the list is scrolled close enough to the end that streamed text
+  /// should keep the newest content in view.
+  bool _isNearBottom() {
+    if (!_scrollController.hasClients) return true;
+    if (_scrollController.positions.length != 1) return false;
+    final position = _scrollController.position;
+    if (!position.hasContentDimensions) return true;
+    return position.maxScrollExtent - position.pixels < 96.0;
   }
 
   void _clampScrollBounds() {
@@ -168,7 +179,16 @@ class _AiScreenState extends ConsumerState<AiScreen> {
     } else if (displayMessages.length != _lastMessageCount) {
       final isFirstLoad = _lastMessageCount == 0;
       _lastMessageCount = displayMessages.length;
+      _lastStreamingTextLength = 0;
       _scrollToBottom(animate: !isFirstLoad);
+    } else if (displayMessages.isNotEmpty &&
+        displayMessages.last.isStreaming &&
+        displayMessages.last.text.length != _lastStreamingTextLength) {
+      // Follow streamed text as it grows, unless the user scrolled up to read.
+      _lastStreamingTextLength = displayMessages.last.text.length;
+      if (_isNearBottom()) {
+        _scrollToBottom(animate: false);
+      }
     }
 
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
@@ -328,6 +348,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                                 timestamp: DateFormatter.formatTime(
                                   item.timestamp,
                                 ),
+                                isGenerating: item.isStreaming,
                                 hasGenerationError: item.hasGenerationError,
                                 onRetry: () => _handleRetry(item.id, false),
                                 onCopy: () => _handleCopy(item.text),

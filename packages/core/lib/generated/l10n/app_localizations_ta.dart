@@ -3457,6 +3457,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiMessageSending => 'அனுப்பப்படுகிறது...';
 
   @override
+  String get aiGeneratingResponse => 'பதில் உருவாக்கப்படுகிறது...';
+
+  @override
   String get announcementsQuickLinks => 'விரைவு இணைப்புகள்';
 
   @override
