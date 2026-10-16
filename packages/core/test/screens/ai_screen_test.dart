@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +19,68 @@ class _TestLearnLensRepository implements LearnLensRepository {
 
   bool shouldFailSend = true;
 
+  /// When set, scripts the events of streamed submissions.
+  Stream<AiChatStreamEvent> Function(
+    String requestId,
+    String query,
+    String? chatId,
+  )?
+  streamFactory;
+
   @override
   AiChatPolicyDto? get policy =>
       const AiChatPolicyDto(maxMessageCharacters: 4000);
+
+  @override
+  Stream<AiChatStreamEvent> streamConversation({
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    if (streamFactory != null) return streamFactory!(requestId, query, null);
+    return _synthesizeStream(
+      () => startConversation(requestId: requestId, query: query),
+    );
+  }
+
+  @override
+  Stream<AiChatStreamEvent> streamFollowUpMessage({
+    required String chatId,
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    if (streamFactory != null) return streamFactory!(requestId, query, chatId);
+    return _synthesizeStream(
+      () => sendFollowUpMessage(
+        chatId: chatId,
+        requestId: requestId,
+        query: query,
+      ),
+    );
+  }
+
+  Stream<AiChatStreamEvent> _synthesizeStream(
+    Future<AiChatTurnResponseDto> Function() call,
+  ) async* {
+    final turn = await call();
+    final gen = turn.generation;
+    yield AiChatStreamEvent.accepted(
+      AiChatTurnResponseDto(
+        answer: null,
+        chatId: turn.chatId,
+        title: turn.title,
+        generation: AiGenerationDto(
+          generationId: gen.generationId,
+          requestId: gen.requestId,
+          userMessageId: gen.userMessageId,
+          status: 'processing',
+          createdAt: gen.createdAt,
+        ),
+      ),
+    );
+    yield AiChatStreamEvent.done(turn);
+  }
 
   bool failEnsureSession = false;
 
@@ -841,6 +902,172 @@ void main() {
       await tester.enterText(editable, '');
       await tester.pump();
       expect(tester.state(editable), same(stateBefore));
+    },
+  );
+
+  testWidgets(
+    'streams assistant answer progressively with a generating indicator and final replacement',
+    (tester) async {
+      final controller = StreamController<AiChatStreamEvent>();
+      String? requestId;
+      final repo = _TestLearnLensRepository()
+        ..streamFactory = (id, query, chatId) {
+          requestId = id;
+          return controller.stream;
+        };
+
+      await tester.pumpWidget(buildSubject(repository: repo));
+      await tester.pumpAndSettle();
+
+      final editable = find.byKey(const ValueKey('ai_composer_editable_text'));
+      await tester.enterText(editable, 'Explain gravity');
+      await tester.pump();
+      await tester.tap(find.byIcon(LucideIcons.arrowUp));
+      await tester.pump();
+
+      // The user's message is visible immediately while the stream opens.
+      expect(find.text('Explain gravity'), findsOneWidget);
+      expect(find.text('Sending...'), findsOneWidget);
+      expect(find.byType(AiAssistantCard), findsNothing);
+
+      AiGenerationDto generation(String status, {String? assistantId}) {
+        return AiGenerationDto(
+          generationId: 'gen-ui',
+          requestId: requestId!,
+          userMessageId: 'usr-ui',
+          assistantMessageId: assistantId,
+          status: status,
+          createdAt: DateTime.now().toUtc(),
+        );
+      }
+
+      controller.add(
+        AiChatStreamEvent.accepted(
+          AiChatTurnResponseDto(
+            chatId: 'chat-ui',
+            title: 'Gravity',
+            generation: generation('processing'),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Provisional assistant card shows the generating indicator.
+      expect(find.text('Sending...'), findsNothing);
+      expect(find.byType(AiAssistantCard), findsOneWidget);
+      expect(find.text('Generating response...'), findsOneWidget);
+      expect(find.byType(AppMarkdown), findsNothing);
+      expect(find.byIcon(LucideIcons.copy), findsNothing);
+
+      controller.add(const AiChatStreamEvent.delta('Gravity pulls '));
+      await tester.pump();
+      expect(find.byType(AppMarkdown), findsOneWidget);
+      expect(find.textContaining('Gravity pulls'), findsOneWidget);
+      // Still generating: no copy action yet.
+      expect(find.byIcon(LucideIcons.copy), findsNothing);
+
+      controller.add(const AiChatStreamEvent.delta('objects together.'));
+      await tester.pump();
+      expect(
+        find.textContaining('Gravity pulls objects together.'),
+        findsOneWidget,
+      );
+
+      controller.add(
+        AiChatStreamEvent.done(
+          AiChatTurnResponseDto(
+            chatId: 'chat-ui',
+            title: 'Gravity',
+            answer: 'Gravity pulls objects together.',
+            generation: generation('completed', assistantId: 'ast-ui'),
+          ),
+        ),
+      );
+      await controller.close();
+      await tester.pumpAndSettle();
+
+      // Authoritative answer shown once, generating indicator gone, actions back.
+      expect(find.byType(AiAssistantCard), findsOneWidget);
+      expect(
+        find.textContaining('Gravity pulls objects together.'),
+        findsOneWidget,
+      );
+      expect(find.text('Generating response...'), findsNothing);
+      expect(find.byIcon(LucideIcons.copy), findsOneWidget);
+
+      // Composer is unlocked again.
+      final composer = tester.widget<AiComposer>(find.byType(AiComposer));
+      expect(composer.enabled, isTrue);
+    },
+  );
+
+  testWidgets(
+    'streamed generation failure shows the failure card and unlocks the composer',
+    (tester) async {
+      final controller = StreamController<AiChatStreamEvent>();
+      String? requestId;
+      final repo = _TestLearnLensRepository()
+        ..streamFactory = (id, query, chatId) {
+          requestId = id;
+          return controller.stream;
+        };
+
+      await tester.pumpWidget(buildSubject(repository: repo));
+      await tester.pumpAndSettle();
+
+      final editable = find.byKey(const ValueKey('ai_composer_editable_text'));
+      await tester.enterText(editable, 'Break it');
+      await tester.pump();
+      await tester.tap(find.byIcon(LucideIcons.arrowUp));
+      await tester.pump();
+
+      AiGenerationDto generation(String status) {
+        return AiGenerationDto(
+          generationId: 'gen-fail-ui',
+          requestId: requestId!,
+          userMessageId: 'usr-fail-ui',
+          status: status,
+          errorMessage: 'Unable to generate a response.',
+          createdAt: DateTime.now().toUtc(),
+        );
+      }
+
+      controller.add(
+        AiChatStreamEvent.accepted(
+          AiChatTurnResponseDto(
+            chatId: 'chat-fail-ui',
+            title: 'Break it',
+            generation: generation('processing'),
+          ),
+        ),
+      );
+      controller.add(const AiChatStreamEvent.delta('partial text'));
+      await tester.pump();
+      expect(find.textContaining('partial text'), findsOneWidget);
+
+      controller.add(
+        AiChatStreamEvent.done(
+          AiChatTurnResponseDto(
+            chatId: 'chat-fail-ui',
+            title: 'Break it',
+            generation: generation('failed'),
+          ),
+        ),
+      );
+      await controller.close();
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('partial text'), findsNothing);
+      expect(find.text('Break it'), findsOneWidget);
+      expect(
+        find.text("Couldn't generate a response. Please try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Try again'), findsOneWidget);
+      expect(find.text('Generating response...'), findsNothing);
+
+      final composer = tester.widget<AiComposer>(find.byType(AiComposer));
+      expect(composer.enabled, isTrue);
     },
   );
 }

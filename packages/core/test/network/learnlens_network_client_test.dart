@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/data/repositories/learnlens_repository.dart';
@@ -220,6 +223,348 @@ void main() {
         );
       },
     );
+  });
+
+  group('LearnLensNetworkClient streaming', () {
+    late Dio streamDio;
+    late LearnLensSessionManager sessionManager;
+    late LearnLensNetworkClient client;
+    late List<RequestOptions> capturedRequests;
+
+    ResponseBody sseResponse(List<String> chunks, {int statusCode = 200}) {
+      return ResponseBody(
+        Stream.fromIterable(
+          chunks.map((c) => Uint8List.fromList(utf8.encode(c))),
+        ),
+        statusCode,
+        headers: {
+          Headers.contentTypeHeader: ['text/event-stream; charset=utf-8'],
+          'cache-control': ['no-cache'],
+        },
+      );
+    }
+
+    ResponseBody jsonResponse(String body, int statusCode) {
+      return ResponseBody.fromString(
+        body,
+        statusCode,
+        headers: {
+          Headers.contentTypeHeader: [Headers.jsonContentType],
+        },
+      );
+    }
+
+    void useHandler(Future<ResponseBody> Function(RequestOptions) handler) {
+      streamDio.httpClientAdapter = _MockHttpClientAdapter((options) {
+        capturedRequests.add(options);
+        return handler(options);
+      });
+    }
+
+    setUp(() {
+      capturedRequests = [];
+      final testSession = AiChatSessionDto(
+        sessionToken: 'stream-session-token',
+        expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        expiresAtMs: DateTime.now().millisecondsSinceEpoch + 3600000,
+        baseUrl: 'https://learnlens.example/api/v2/org1/generic',
+        policy: const AiChatPolicyDto(),
+      );
+      sessionManager = LearnLensSessionManager(
+        dio: Dio(BaseOptions(baseUrl: 'https://testpress.example')),
+        initialSession: testSession,
+      );
+      streamDio = Dio();
+      client = LearnLensNetworkClient(
+        dio: streamDio,
+        sessionManager: sessionManager,
+      );
+    });
+
+    const acceptedData =
+        '{"answer": null, "chat_id": "chat-s1", "title": "What is F?", '
+        '"generation": {"generation_id": "gen-s1", "request_id": "req-s1", '
+        '"user_message_id": "usr-s1", "assistant_message_id": null, '
+        '"status": "processing", "created_at": "2026-10-12T12:00:00Z"}}';
+    const doneData =
+        '{"answer": "F = ma", "chat_id": "chat-s1", "title": "Newton", '
+        '"generation": {"generation_id": "gen-s1", "request_id": "req-s1", '
+        '"user_message_id": "usr-s1", "assistant_message_id": "ast-s1", '
+        '"status": "completed", "created_at": "2026-10-12T12:00:00Z", '
+        '"finished_at": "2026-10-12T12:00:05Z"}}';
+
+    test(
+      'streamConversation POSTs /chats/stream/ with SSE headers and emits parsed events from fragmented chunks',
+      () async {
+        useHandler((options) async {
+          return sseResponse([
+            ': keep-alive\n\n',
+            'event: accepted\ndata: $acceptedData\n\n',
+            'event: delta\ndata: {"text": "F = ',
+            'm',
+            'a"}\n\nevent: del',
+            'ta\ndata: {"text": " → ∑F"}\n\n',
+            'event: done\ndata: $doneData\n\n',
+          ]);
+        });
+
+        final events = await client
+            .streamConversation(requestId: 'req-s1', query: 'What is F?')
+            .toList();
+
+        final req = capturedRequests.single;
+        expect(req.method, 'POST');
+        expect(
+          req.uri.toString(),
+          'https://learnlens.example/api/v2/org1/generic/chats/stream/',
+        );
+        expect(req.headers['Accept'], 'text/event-stream');
+        expect(req.headers['X-Session-Token'], 'stream-session-token');
+        expect(req.responseType, ResponseType.stream);
+        expect(req.data, {'request_id': 'req-s1', 'query': 'What is F?'});
+
+        expect(events.map((e) => e.type), [
+          AiChatStreamEventType.accepted,
+          AiChatStreamEventType.delta,
+          AiChatStreamEventType.delta,
+          AiChatStreamEventType.done,
+        ]);
+        expect(events[0].turn!.chatId, 'chat-s1');
+        expect(events[0].turn!.generation.isProcessing, isTrue);
+        expect(events[1].text, 'F = ma');
+        expect(events[2].text, ' → ∑F');
+        expect(events[3].turn!.answer, 'F = ma');
+        expect(events[3].turn!.generation.assistantMessageId, 'ast-s1');
+      },
+    );
+
+    test(
+      'streamFollowUpMessage POSTs /chats/<chat_id>/messages/stream/',
+      () async {
+        useHandler((options) async {
+          return sseResponse([
+            'event: accepted\ndata: $acceptedData\n\n',
+            'event: done\ndata: $doneData\n\n',
+          ]);
+        });
+
+        final events = await client
+            .streamFollowUpMessage(
+              chatId: 'chat-s1',
+              requestId: 'req-s2',
+              query: 'Example?',
+            )
+            .toList();
+
+        expect(
+          capturedRequests.single.uri.toString(),
+          'https://learnlens.example/api/v2/org1/generic/chats/chat-s1/messages/stream/',
+        );
+        expect(capturedRequests.single.data['request_id'], 'req-s2');
+        expect(events.length, 2);
+        expect(events.last.isDone, isTrue);
+      },
+    );
+
+    test('stops after a terminal error event', () async {
+      useHandler((options) async {
+        return sseResponse([
+          'event: accepted\ndata: $acceptedData\n\n',
+          'event: error\ndata: {"code":"stream_failed","message":"The response stream could not be completed."}\n\n',
+          'event: delta\ndata: {"text": "should not be emitted"}\n\n',
+        ]);
+      });
+
+      final events = await client
+          .streamConversation(requestId: 'req-s1', query: 'Q')
+          .toList();
+
+      expect(events.length, 2);
+      expect(events.last.isError, isTrue);
+      expect(events.last.errorCode, 'stream_failed');
+    });
+
+    test(
+      'completes without a terminal event when the connection closes early',
+      () async {
+        useHandler((options) async {
+          return sseResponse([
+            'event: accepted\ndata: $acceptedData\n\n',
+            'event: delta\ndata: {"text": "partial"}\n\n',
+          ]);
+        });
+
+        final events = await client
+            .streamConversation(requestId: 'req-s1', query: 'Q')
+            .toList();
+
+        expect(events.length, 2);
+        expect(events.last.isDelta, isTrue);
+      },
+    );
+
+    test(
+      'normalizes a 429 JSON error received before streaming starts',
+      () async {
+        useHandler((options) async {
+          return jsonResponse(
+            '{"detail":{"code":"hourly_message_limit","message":"Rate limited","limit":20,"retry_at":"2026-10-12T13:00:00Z"}}',
+            429,
+          );
+        });
+
+        expect(
+          client.streamConversation(requestId: 'req-s1', query: 'Q').toList(),
+          throwsA(
+            isA<LearnLensException>()
+                .having((e) => e.statusCode, 'statusCode', 429)
+                .having((e) => e.code, 'code', 'hourly_message_limit')
+                .having((e) => e.limit, 'limit', 20)
+                .having((e) => e.retryAt, 'retryAt', isNotNull)
+                .having((e) => e.isQuotaOrRateLimit, 'isQuota', isTrue),
+          ),
+        );
+      },
+    );
+
+    test('normalizes a 409 generation_in_progress error', () async {
+      useHandler((options) async {
+        return jsonResponse(
+          '{"detail":{"code":"generation_in_progress","message":"Another message is being answered."}}',
+          409,
+        );
+      });
+
+      expect(
+        client
+            .streamFollowUpMessage(
+              chatId: 'chat-s1',
+              requestId: 'req-s3',
+              query: 'Q',
+            )
+            .toList(),
+        throwsA(
+          isA<LearnLensException>()
+              .having((e) => e.statusCode, 'statusCode', 409)
+              .having((e) => e.code, 'code', 'generation_in_progress'),
+        ),
+      );
+    });
+
+    test(
+      'normalizes a 422 validation array error with a readable message',
+      () async {
+        useHandler((options) async {
+          return jsonResponse(
+            '{"detail":[{"type":"missing","loc":["body","request_id"],"msg":"Field required"}]}',
+            422,
+          );
+        });
+
+        expect(
+          client.streamConversation(requestId: 'req-s1', query: 'Q').toList(),
+          throwsA(
+            isA<LearnLensException>()
+                .having((e) => e.statusCode, 'statusCode', 422)
+                .having((e) => e.code, 'code', 'validation_error')
+                .having(
+                  (e) => e.message,
+                  'message',
+                  contains('Field required'),
+                ),
+          ),
+        );
+      },
+    );
+
+    test(
+      'falls back to a single done event when the server returns JSON',
+      () async {
+        useHandler((options) async => jsonResponse(doneData, 200));
+
+        final events = await client
+            .streamConversation(requestId: 'req-s1', query: 'Q')
+            .toList();
+
+        expect(events.length, 1);
+        expect(events.single.isDone, isTrue);
+        expect(events.single.turn!.answer, 'F = ma');
+      },
+    );
+
+    test('surfaces malformed event JSON as a LearnLensException', () async {
+      useHandler((options) async {
+        return sseResponse([
+          'event: accepted\ndata: $acceptedData\n\n',
+          'event: delta\ndata: {not json}\n\n',
+        ]);
+      });
+
+      final received = <AiChatStreamEvent>[];
+      Object? error;
+      try {
+        await for (final event in client.streamConversation(
+          requestId: 'req-s1',
+          query: 'Q',
+        )) {
+          received.add(event);
+        }
+      } catch (e) {
+        error = e;
+      }
+
+      expect(received.length, 1);
+      expect(
+        error,
+        isA<LearnLensException>().having(
+          (e) => e.code,
+          'code',
+          'malformed_stream_event',
+        ),
+      );
+    });
+
+    test('rejects an unexpected non-JSON, non-SSE body', () async {
+      useHandler((options) async {
+        return ResponseBody.fromString(
+          '<html>gateway</html>',
+          200,
+          headers: {
+            Headers.contentTypeHeader: ['text/html'],
+          },
+        );
+      });
+
+      expect(
+        client.streamConversation(requestId: 'req-s1', query: 'Q').toList(),
+        throwsA(
+          isA<LearnLensException>().having(
+            (e) => e.code,
+            'code',
+            'malformed_stream',
+          ),
+        ),
+      );
+    });
+
+    test('repository validates the query before opening a stream', () {
+      final repository = LearnLensRepository(
+        client: client,
+        sessionManager: sessionManager,
+      );
+
+      expect(
+        () => repository.streamConversation(requestId: 'req-x', query: '   '),
+        throwsA(
+          isA<LearnLensException>().having(
+            (e) => e.code,
+            'code',
+            'invalid_message',
+          ),
+        ),
+      );
+      expect(capturedRequests, isEmpty);
+    });
   });
 
   group('LearnLensRepository', () {

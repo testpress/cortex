@@ -273,4 +273,85 @@ void main() {
       expect(error.message, 'Field required (body.request_id)');
     });
   });
+
+  _streamEventTests();
+}
+
+void _streamEventTests() {
+  group('AiChatStreamEvent', () {
+    test('maps accepted and done payloads to turn responses', () {
+      final accepted = AiChatStreamEvent.fromJson('accepted', {
+        'answer': null,
+        'chat_id': 'chat-1',
+        'title': 'Provisional',
+        'generation': {
+          'generation_id': 'gen-1',
+          'request_id': 'req-1',
+          'user_message_id': 'usr-1',
+          'status': 'processing',
+          'created_at': '2026-10-12T12:00:00Z',
+        },
+      });
+
+      expect(accepted, isNotNull);
+      expect(accepted!.isAccepted, isTrue);
+      expect(accepted.turn!.chatId, 'chat-1');
+      expect(accepted.turn!.generation.isProcessing, isTrue);
+
+      final done = AiChatStreamEvent.fromJson('done', {
+        'answer': 'F = ma',
+        'chat_id': 'chat-1',
+        'title': 'Final',
+        'generation': {
+          'generation_id': 'gen-1',
+          'request_id': 'req-1',
+          'user_message_id': 'usr-1',
+          'assistant_message_id': 'ast-1',
+          'status': 'completed',
+          'created_at': '2026-10-12T12:00:00Z',
+          'finished_at': '2026-10-12T12:00:05Z',
+        },
+      });
+
+      expect(done!.isDone, isTrue);
+      expect(done.isTerminal, isTrue);
+      expect(done.turn!.answer, 'F = ma');
+      expect(done.turn!.generation.assistantMessageId, 'ast-1');
+    });
+
+    test('maps delta text and error payloads', () {
+      final delta = AiChatStreamEvent.fromJson('delta', {'text': 'piece'});
+      expect(delta!.isDelta, isTrue);
+      expect(delta.text, 'piece');
+      expect(delta.isTerminal, isFalse);
+
+      final error = AiChatStreamEvent.fromJson('error', {
+        'code': 'stream_failed',
+        'message': 'The response stream could not be completed.',
+      });
+      expect(error!.isError, isTrue);
+      expect(error.isTerminal, isTrue);
+      expect(error.errorCode, 'stream_failed');
+      expect(error.errorMessage, 'The response stream could not be completed.');
+    });
+
+    test('returns null for unknown event names', () {
+      expect(AiChatStreamEvent.fromJson('heartbeat', {}), isNull);
+    });
+
+    test('throws FormatException for malformed payload shapes', () {
+      expect(
+        () => AiChatStreamEvent.fromJson('delta', 'not an object'),
+        throwsFormatException,
+      );
+      expect(
+        () => AiChatStreamEvent.fromJson('delta', {'text': 42}),
+        throwsFormatException,
+      );
+      expect(
+        () => AiChatStreamEvent.fromJson('done', ['array']),
+        throwsFormatException,
+      );
+    });
+  });
 }

@@ -3410,6 +3410,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiMessageSending => 'جارٍ الإرسال...';
 
   @override
+  String get aiGeneratingResponse => 'جارٍ إنشاء الرد...';
+
+  @override
   String get announcementsQuickLinks => 'روابط سريعة';
 
   @override

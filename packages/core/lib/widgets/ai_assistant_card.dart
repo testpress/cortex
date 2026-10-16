@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
 import '../core.dart';
 
 class AiAssistantCard extends StatelessWidget {
@@ -7,6 +8,7 @@ class AiAssistantCard extends StatelessWidget {
     super.key,
     required this.message,
     required this.timestamp,
+    this.isGenerating = false,
     this.hasGenerationError = false,
     this.onRetry,
     this.onCopy,
@@ -14,6 +16,10 @@ class AiAssistantCard extends StatelessWidget {
 
   final String message;
   final String timestamp;
+
+  /// True while the answer is still being streamed. An empty [message] shows
+  /// a typing indicator; partial text is rendered as it arrives.
+  final bool isGenerating;
   final bool hasGenerationError;
   final VoidCallback? onRetry;
   final VoidCallback? onCopy;
@@ -107,10 +113,27 @@ class AiAssistantCard extends StatelessWidget {
                             ),
                           ),
                         )
+                      : isGenerating && message.isEmpty
+                      ? ExcludeSemantics(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: design.spacing.xs,
+                            ),
+                            child: const _GeneratingIndicator(),
+                          ),
+                        )
                       : AppMarkdown(data: message),
                 ),
                 SizedBox(height: design.spacing.xs),
-                if (hasGenerationError) ...[
+                if (isGenerating && !hasGenerationError) ...[
+                  Padding(
+                    padding: EdgeInsets.only(left: design.spacing.xs),
+                    child: AppText.caption(
+                      l10n.aiGeneratingResponse,
+                      color: design.colors.textTertiary,
+                    ),
+                  ),
+                ] else if (hasGenerationError) ...[
                   SizedBox(
                     width: resolvedCardWidth,
                     child: Column(
@@ -171,6 +194,71 @@ class AiAssistantCard extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+/// Three pulsing dots shown while the assistant answer has not produced text.
+class _GeneratingIndicator extends StatefulWidget {
+  const _GeneratingIndicator();
+
+  @override
+  State<_GeneratingIndicator> createState() => _GeneratingIndicatorState();
+}
+
+class _GeneratingIndicatorState extends State<_GeneratingIndicator>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(vsync: this);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final duration = MotionPreferences.duration(
+      context,
+      Design.of(context).motion.verySlow,
+    );
+    if (duration == Duration.zero) {
+      _controller.stop();
+    } else if (!_controller.isAnimating || _controller.duration != duration) {
+      _controller.duration = duration;
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final animate = MotionPreferences.shouldAnimate(context);
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) {
+            // Stagger each dot by a third of the cycle.
+            final phase = (_controller.value - index / 3) % 1.0;
+            final pulse = animate
+                ? (0.35 + 0.65 * (1 - (phase * 2 - 1).abs()))
+                : 1.0;
+            return Container(
+              width: design.spacing.sm,
+              height: design.spacing.sm,
+              margin: EdgeInsets.symmetric(horizontal: design.spacing.xs / 2),
+              decoration: BoxDecoration(
+                color: design.colors.textSecondary.withValues(alpha: pulse),
+                shape: BoxShape.circle,
+              ),
+            );
+          }),
+        );
+      },
     );
   }
 }

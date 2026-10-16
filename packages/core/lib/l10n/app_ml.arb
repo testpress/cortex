@@ -1301,6 +1301,7 @@
   "aiRetrySendMessageSemantic": "സന്ദേശം വീണ്ടും അയക്കാൻ ടാപ്പ് ചെയ്യുക",
   "aiTapToRetry": "വീണ്ടും ശ്രമിക്കാൻ ടാപ്പ് ചെയ്യുക",
   "aiMessageSending": "അയയ്ക്കുന്നു...",
+  "aiGeneratingResponse": "മറുപടി തയ്യാറാക്കുന്നു...",
   "announcementsQuickLinks": "ദ്രുത ലിങ്കുകൾ",
   "announcementsFilterByCategory": "വിഭാഗം അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക",
   "announcementsAllPosts": "എല്ലാ പോസ്റ്റുകളും",

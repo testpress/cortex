@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../network/learnlens_network_client.dart';
@@ -108,6 +109,38 @@ class LearnLensRepository {
   }) async {
     _validateQuery(query);
     return _client.sendFollowUpMessage(
+      chatId: chatId,
+      requestId: requestId,
+      query: query,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Starts a new conversation over the SSE route and emits turn events as
+  /// they arrive. See [LearnLensNetworkClient.streamConversation].
+  Stream<AiChatStreamEvent> streamConversation({
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    _validateQuery(query);
+    return _client.streamConversation(
+      requestId: requestId,
+      query: query,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Sends a follow-up over the SSE route and emits turn events as they
+  /// arrive. See [LearnLensNetworkClient.streamFollowUpMessage].
+  Stream<AiChatStreamEvent> streamFollowUpMessage({
+    required String chatId,
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    _validateQuery(query);
+    return _client.streamFollowUpMessage(
       chatId: chatId,
       requestId: requestId,
       query: query,

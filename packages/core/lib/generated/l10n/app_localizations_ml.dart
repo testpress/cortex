@@ -3460,6 +3460,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiMessageSending => 'അയയ്ക്കുന്നു...';
 
   @override
+  String get aiGeneratingResponse => 'മറുപടി തയ്യാറാക്കുന്നു...';
+
+  @override
   String get announcementsQuickLinks => 'ദ്രുത ലിങ്കുകൾ';
 
   @override

@@ -1732,6 +1732,7 @@
   "aiRetrySendMessageSemantic": "Tap to retry sending message",
   "aiTapToRetry": "Tap to retry",
   "aiMessageSending": "Sending...",
+  "aiGeneratingResponse": "Generating response...",
   "announcementsQuickLinks": "Quick Links",
   "announcementsFilterByCategory": "Filter by Category",
   "announcementsAllPosts": "All Posts",
