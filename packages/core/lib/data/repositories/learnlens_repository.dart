@@ -23,6 +23,12 @@ class LearnLensRepository {
   /// The active usage policy from the session manager.
   AiChatPolicyDto? get policy => _sessionManager.policy;
 
+  /// Ensures an organization-scoped session is ready before the generic chat UI
+  /// needs to make its first request.
+  Future<void> ensureGenericChatSession() async {
+    await _sessionManager.getSession();
+  }
+
   /// Creates or retrieves a session for a specific video lesson content.
   Future<Map<String, dynamic>> createSession(int contentId) async {
     final session = await _sessionManager.getContentSession(contentId);
@@ -36,7 +42,8 @@ class LearnLensRepository {
   Future<LearnLensChatResponseDto> submitChat({
     required String orgUuid,
     required String assetId,
-    required String sessionToken,
+    String? sessionToken,
+    int? contentId,
     required String query,
     required String conversationId,
   }) async {
@@ -45,6 +52,7 @@ class LearnLensRepository {
       orgUuid: orgUuid,
       assetId: assetId,
       sessionToken: sessionToken,
+      contentId: contentId,
       query: query,
       conversationId: conversationId,
     );
@@ -54,7 +62,8 @@ class LearnLensRepository {
   Future<LearnLensQuizResponseDto> fetchQuiz({
     required String orgUuid,
     required String assetId,
-    required String sessionToken,
+    String? sessionToken,
+    int? contentId,
     String difficulty = 'medium',
     int questionCount = 5,
   }) async {
@@ -62,6 +71,7 @@ class LearnLensRepository {
       orgUuid: orgUuid,
       assetId: assetId,
       sessionToken: sessionToken,
+      contentId: contentId,
       difficulty: difficulty,
       questionCount: questionCount,
     );

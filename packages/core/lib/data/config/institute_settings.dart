@@ -74,6 +74,8 @@ class InstituteSettings {
   //LearnLens AI
   final bool learnlensEnabled;
   final String? learnlensOrgID;
+  final bool enableAiChatbot;
+  bool get enableAiTab => enableAiChatbot;
 
   final bool disableStudentReport;
   final bool qotdEnabled;
@@ -117,6 +119,7 @@ class InstituteSettings {
     required this.qotdEnabled,
     this.forceStudentData = false,
     this.learnlensOrgID,
+    this.enableAiChatbot = false,
     this.videoWatermarkType,
     this.videoWatermarkPosition,
   });
@@ -188,6 +191,7 @@ class InstituteSettings {
       currentPaymentApp: json['current_payment_app'] as String? ?? '',
       learnlensEnabled: json['learnlens_enabled'] as bool? ?? false,
       learnlensOrgID: json['learnlens_organization_id'] as String?,
+      enableAiChatbot: json['enable_ai_chatbot'] as bool? ?? false,
       disableStudentReport: json['disable_student_report'] as bool? ?? false,
       qotdEnabled: json['qotd_enabled'] as bool? ?? false,
 
@@ -253,6 +257,7 @@ class InstituteSettings {
       'current_payment_app': currentPaymentApp,
       'learnlens_enabled': learnlensEnabled,
       'learnlens_organization_id': learnlensOrgID,
+      'enable_ai_chatbot': enableAiChatbot,
       'disable_student_report': disableStudentReport,
       'qotd_enabled': qotdEnabled,
       'video_watermark_type': switch (videoWatermarkType) {

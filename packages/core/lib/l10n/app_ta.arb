@@ -1527,6 +1527,8 @@
   "aiNewChatHeader": "புதிய அரட்டை",
   "aiComposerGreeting": "இன்று நான் உங்களுக்கு எவ்வாறு உதவ முடியும்?",
   "aiChatHistoryTitle": "அரட்டை வரலாறு",
+  "aiNoChatHistory": "இன்னும் உரையாடல்கள் இல்லை",
+  "aiInitErrorBanner": "AI உதவியாளருடன் இணைக்க முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.",
   "aiComposerPlaceholder": "AI ஆதரவிடம் கேளுங்கள்",
   "aiComposerAttachImage": "படத்தை இணைக்கவும்",
   "aiComposerTakePhoto": "புகைப்படம் எடுக்கவும்",

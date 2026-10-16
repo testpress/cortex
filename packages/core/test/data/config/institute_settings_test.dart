@@ -33,5 +33,17 @@ void main() {
 
       expect(settings.forceStudentData, isTrue);
     });
+
+    test('parses enable_ai_chatbot correctly and defaults to false', () {
+      final jsonDefault = {'name': 'Test Institute'};
+      expect(InstituteSettings.fromJson(jsonDefault).enableAiChatbot, isFalse);
+      expect(InstituteSettings.fromJson(jsonDefault).enableAiTab, isFalse);
+
+      final jsonEnabled = {'name': 'Test Institute', 'enable_ai_chatbot': true};
+      final settings = InstituteSettings.fromJson(jsonEnabled);
+      expect(settings.enableAiChatbot, isTrue);
+      expect(settings.enableAiTab, isTrue);
+      expect(settings.toJson()['enable_ai_chatbot'], isTrue);
+    });
   });
 }

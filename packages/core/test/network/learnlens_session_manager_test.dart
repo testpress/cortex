@@ -96,6 +96,31 @@ void main() {
       },
     );
 
+    test(
+      'normal getSession awaits in-flight forceRefresh and returns new session',
+      () async {
+        final manager = LearnLensSessionManager(dio: mockDio);
+
+        // Seed initial cached session
+        await manager.getSession();
+        expect(requestCount, 1);
+        expect(manager.currentSession?.sessionToken, 'session-token-1');
+
+        mockResponseData!['session_token'] = 'session-token-2';
+
+        // Trigger forceRefresh, and concurrently call normal getSession()
+        final futureForce = manager.getSession(forceRefresh: true);
+        final futureNormal = manager.getSession(forceRefresh: false);
+
+        final results = await Future.wait([futureForce, futureNormal]);
+
+        expect(requestCount, 2);
+        // Both calls must receive the newly refreshed token, not the stale one!
+        expect(results[0].sessionToken, 'session-token-2');
+        expect(results[1].sessionToken, 'session-token-2');
+      },
+    );
+
     test('clearSession resets in-memory cached state', () async {
       final manager = LearnLensSessionManager(dio: mockDio);
 
@@ -351,6 +376,67 @@ void main() {
     );
 
     test(
+      'intercepts 401 for content session, refreshes content session, and retries successfully',
+      () async {
+        int contentCreateCount = 0;
+        int learnLensRequestCount = 0;
+
+        mockDio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          if (options.path.contains('/contents/42/ai-sessions/create/')) {
+            contentCreateCount++;
+            return ResponseBody.fromString(
+              '{"token":"content-token-$contentCreateCount"}',
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+          return ResponseBody.fromString('Not found', 404);
+        });
+
+        learnLensDio.httpClientAdapter = _MockHttpClientAdapter((
+          options,
+        ) async {
+          learnLensRequestCount++;
+          final sessionToken = options.headers['X-Session-Token'];
+
+          if (sessionToken == 'content-token-1') {
+            return ResponseBody.fromString(
+              '{"detail": "Session expired"}',
+              401,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+
+          expect(sessionToken, 'content-token-2');
+          return ResponseBody.fromString(
+            '{"answer":"ok"}',
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+        final response = await learnLensDio.post(
+          '/assets/asset-1/chat/',
+          options: Options(extra: {'content_id': 42}),
+        );
+
+        expect(response.statusCode, 200);
+        expect(learnLensRequestCount, 2);
+        expect(contentCreateCount, 2);
+        expect(
+          sessionManager.getCachedContentSession(42)?.sessionToken,
+          'content-token-2',
+        );
+      },
+    );
+
+    test(
       'does not retry 401 when caller provides an explicit session token',
       () async {
         int learnLensRequestCount = 0;
@@ -552,7 +638,7 @@ void main() {
     });
 
     test(
-      'disposes and purges cached session when userIdProvider changes or emits null on logout',
+      'retains a session through initial user loading, then purges it on logout or account switch',
       () async {
         final userController = StreamController<String?>.broadcast();
         addTearDown(userController.close);
@@ -565,10 +651,8 @@ void main() {
         );
         addTearDown(container.dispose);
 
-        // 1. Initial user login: User A ('user_1')
-        userController.add('user_1');
-        await Future<void>.delayed(Duration.zero);
-
+        // Acquire a session while the asynchronous user ID is still loading.
+        // Resolving the initial user must not replace the manager or lose it.
         final managerUserA = container.read(learnLensSessionManagerProvider);
         final sessionUserA = await managerUserA.getSession();
 
@@ -576,24 +660,34 @@ void main() {
         expect(managerUserA.hasValidSession, isTrue);
         expect(sessionCreateCount, 1);
 
-        // 2. User A logs out (userId becomes null)
+        userController.add('user_1');
+        await Future<void>.delayed(Duration.zero);
+
+        final managerAfterInitialLoad = container.read(
+          learnLensSessionManagerProvider,
+        );
+        expect(identical(managerUserA, managerAfterInitialLoad), isTrue);
+        expect(managerAfterInitialLoad.hasValidSession, isTrue);
+        expect(sessionCreateCount, 1);
+
+        // A logout clears the cached session without replacing the manager.
         userController.add(null);
         await Future<void>.delayed(Duration.zero);
 
-        // Session manager provider should have been recreated / cleared
         final managerAfterLogout = container.read(
           learnLensSessionManagerProvider,
         );
-        expect(identical(managerUserA, managerAfterLogout), isFalse);
+        expect(identical(managerUserA, managerAfterLogout), isTrue);
         expect(managerAfterLogout.hasValidSession, isFalse);
 
-        // 3. User B logs in ('user_2')
+        // A different user receives a newly acquired session.
         userController.add('user_2');
         await Future<void>.delayed(Duration.zero);
 
         final managerUserB = container.read(learnLensSessionManagerProvider);
         final sessionUserB = await managerUserB.getSession();
 
+        expect(identical(managerUserA, managerUserB), isTrue);
         expect(sessionUserB.sessionToken, 'token-user-2');
         expect(managerUserB.hasValidSession, isTrue);
         expect(sessionCreateCount, 2);

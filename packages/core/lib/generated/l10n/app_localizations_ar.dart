@@ -3363,6 +3363,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiChatHistoryTitle => 'سجل المحادثات';
 
   @override
+  String get aiNoChatHistory => 'لا توجد محادثات بعد';
+
+  @override
+  String get aiInitErrorBanner =>
+      'تعذر الاتصال بمساعد الذكاء الاصطناعي. تحقق من اتصالك.';
+
+  @override
   String get aiComposerPlaceholder => 'اسأل دعم الذكاء الاصطناعي';
 
   @override

@@ -3358,6 +3358,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatHistoryTitle => 'Chat History';
 
   @override
+  String get aiNoChatHistory => 'No conversations yet';
+
+  @override
+  String get aiInitErrorBanner =>
+      'Unable to connect to AI assistant. Check your connection.';
+
+  @override
   String get aiComposerPlaceholder => 'Ask AI support';
 
   @override

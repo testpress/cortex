@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_smooth_markdown/flutter_smooth_markdown.dart';
 import '../design/design_provider.dart';
+import 'app_text.dart';
 
 /// Platform-neutral Markdown widget aligned with the design system.
 ///
@@ -95,6 +97,97 @@ class AppMarkdown extends StatelessWidget {
         tableHeaderDecoration: BoxDecoration(color: design.colors.surface),
         tableBorder: TableBorder.all(color: design.colors.border, width: 1.0),
       ),
+      builderRegistry: _scrollableMathRegistry,
+    );
+  }
+}
+
+final BuilderRegistry _scrollableMathRegistry = BuilderRegistry()
+  ..register('block_math', const _ScrollableBlockMathBuilder())
+  ..register('inline_math', const _InlineMathBuilder());
+
+String _sanitizeLatex(String latex) {
+  return latex.replaceAllMapped(RegExp(r'(\\*)#'), (match) {
+    final slashes = match.group(1)!;
+    // An even number of backslashes (0, 2, 4...) means '#' itself is unescaped
+    if (slashes.length.isEven) {
+      return '$slashes\\#';
+    }
+    return match.group(0)!;
+  });
+}
+
+Widget _fallbackMathWidget(String latex, TextStyle? style) {
+  var clean = latex.trim();
+  // Strip \ce{...} if present so raw chemistry formula renders legibly
+  if (clean.startsWith(r'\ce{') && clean.endsWith('}')) {
+    clean = clean.substring(4, clean.length - 1);
+  }
+  return AppText(clean, style: style);
+}
+
+class _ScrollableBlockMathBuilder extends MarkdownWidgetBuilder {
+  const _ScrollableBlockMathBuilder();
+
+  @override
+  bool canBuild(MarkdownNode node) => node is BlockMathNode;
+
+  @override
+  Widget build(
+    MarkdownNode node,
+    MarkdownStyleSheet styleSheet,
+    MarkdownRenderContext context,
+  ) {
+    final mathNode = node as BlockMathNode;
+    final sanitizedLatex = _sanitizeLatex(mathNode.latex);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        clipBehavior: Clip.antiAlias,
+        child: Math.tex(
+          sanitizedLatex,
+          textStyle: styleSheet.textStyle,
+          mathStyle: MathStyle.display,
+          options: MathOptions(
+            fontSize: (styleSheet.textStyle?.fontSize ?? 16) * 1.25,
+            color: styleSheet.textStyle?.color ?? const Color(0xFF000000),
+          ),
+          onErrorFallback: (_) =>
+              _fallbackMathWidget(mathNode.latex, styleSheet.textStyle),
+        ),
+      ),
+    );
+  }
+}
+
+class _InlineMathBuilder extends MarkdownWidgetBuilder {
+  const _InlineMathBuilder();
+
+  @override
+  bool canBuild(MarkdownNode node) => node is InlineMathNode;
+
+  @override
+  Widget build(
+    MarkdownNode node,
+    MarkdownStyleSheet styleSheet,
+    MarkdownRenderContext context,
+  ) {
+    final mathNode = node as InlineMathNode;
+    final sanitizedLatex = _sanitizeLatex(mathNode.latex);
+
+    return Math.tex(
+      sanitizedLatex,
+      textStyle: styleSheet.textStyle,
+      mathStyle: MathStyle.text,
+      options: MathOptions(
+        fontSize: styleSheet.textStyle?.fontSize ?? 16,
+        color: styleSheet.textStyle?.color ?? const Color(0xFF000000),
+      ),
+      onErrorFallback: (_) =>
+          _fallbackMathWidget(mathNode.latex, styleSheet.textStyle),
     );
   }
 }

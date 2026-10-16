@@ -1286,6 +1286,8 @@
   "aiNewChatHeader": "محادثة جديدة",
   "aiComposerGreeting": "كيف يمكنني مساعدتك اليوم؟",
   "aiChatHistoryTitle": "سجل المحادثات",
+  "aiNoChatHistory": "لا توجد محادثات بعد",
+  "aiInitErrorBanner": "تعذر الاتصال بمساعد الذكاء الاصطناعي. تحقق من اتصالك.",
   "aiComposerPlaceholder": "اسأل دعم الذكاء الاصطناعي",
   "aiComposerAttachImage": "إرفاق صورة",
   "aiComposerTakePhoto": "التقاط صورة",

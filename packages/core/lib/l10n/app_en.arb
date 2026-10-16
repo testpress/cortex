@@ -1717,6 +1717,8 @@
   "aiNewChatHeader": "New Chat",
   "aiComposerGreeting": "How can I help you today?",
   "aiChatHistoryTitle": "Chat History",
+  "aiNoChatHistory": "No conversations yet",
+  "aiInitErrorBanner": "Unable to connect to AI assistant. Check your connection.",
   "aiComposerPlaceholder": "Ask AI support",
   "aiComposerAttachImage": "Attach image",
   "aiComposerTakePhoto": "Take photo",

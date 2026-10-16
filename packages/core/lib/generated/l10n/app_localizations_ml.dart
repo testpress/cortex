@@ -3412,6 +3412,13 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiChatHistoryTitle => 'ചാറ്റ് ചരിത്രം';
 
   @override
+  String get aiNoChatHistory => 'ഇതുവരെ സംഭാഷണങ്ങളൊന്നുമില്ല';
+
+  @override
+  String get aiInitErrorBanner =>
+      'AI അസിസ്റ്റന്റുമായി ബന്ധിപ്പിക്കാൻ കഴിഞ്ഞില്ല. കണക്ഷൻ പരിശോധിക്കുക.';
+
+  @override
   String get aiComposerPlaceholder => 'AI പിന്തുണയോട് ചോദിക്കുക';
 
   @override

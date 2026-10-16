@@ -38,12 +38,21 @@ class _AiComposerState extends State<AiComposer> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(AiComposer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.enabled && !widget.enabled) {
+      _focusNode.unfocus();
+    }
+  }
+
   void _submit() {
     if (!widget.enabled) return;
     final text = _controller.text.trim();
     if (text.isNotEmpty) {
       widget.onSend?.call(text);
       _controller.clear();
+      _focusNode.unfocus();
       setState(() {});
     }
   }
@@ -56,56 +65,79 @@ class _AiComposerState extends State<AiComposer> {
     final hasText = _controller.text.trim().isNotEmpty && widget.enabled;
 
     return Container(
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: design.colors.card,
-        borderRadius: design.radius.pill,
+        borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
           color: design.colors.border.withValues(alpha: 0.6),
           width: 1.0,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      padding: EdgeInsetsDirectional.only(start: design.spacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                minHeight: 40.0,
+                minHeight: 36.0,
                 maxHeight: 120.0,
               ),
               child: Stack(
                 alignment: Alignment.centerLeft,
                 children: [
-                  if (_controller.text.isEmpty)
-                    AppText.body(
-                      placeholder,
-                      color: design.colors.textTertiary,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
+                    child: EditableText(
+                      key: const ValueKey('ai_composer_editable_text'),
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      scrollController: _textScrollController,
+                      readOnly: !widget.enabled,
+                      style: design.typography.body.copyWith(
+                        color: widget.enabled
+                            ? design.colors.textPrimary
+                            : design.colors.textTertiary,
+                        height: 1.4,
+                      ),
+                      cursorColor: design.colors.primary,
+                      cursorWidth: 2.0,
+                      cursorHeight: 18.0,
+                      cursorRadius: const Radius.circular(1.0),
+                      backgroundCursorColor: const Color(0xFF000000),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 4,
+                      minLines: 1,
+                      onChanged: (_) {
+                        setState(() {});
+                      },
                     ),
-                  EditableText(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    scrollController: _textScrollController,
-                    readOnly: !widget.enabled,
-                    style: design.typography.body.copyWith(
-                      color: widget.enabled
-                          ? design.colors.textPrimary
-                          : design.colors.textTertiary,
-                    ),
-                    cursorColor: design.colors.primary,
-                    backgroundCursorColor: const Color(0xFF000000),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 4,
-                    minLines: 1,
-                    onChanged: (_) {
-                      setState(() {});
+                  ),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _controller,
+                    builder: (context, value, _) {
+                      if (value.text.isNotEmpty) {
+                        return const SizedBox.shrink();
+                      }
+                      return IgnorePointer(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: design.spacing.sm,
+                          ),
+                          child: AppText.body(
+                            placeholder,
+                            color: design.colors.textTertiary,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(width: 8.0),
+          SizedBox(width: design.spacing.sm),
           AppSemantics.button(
             label: l10n.aiComposerSendMessage,
             enabled: hasText,

@@ -52,6 +52,57 @@ void main() {
       );
       expect(exception.isCancelled, isTrue);
     });
+
+    test(
+      'isQuotaOrRateLimit returns true only for quota/rate limit errors',
+      () {
+        expect(
+          const LearnLensException(
+            message: 'Too many requests',
+            statusCode: 429,
+          ).isQuotaOrRateLimit,
+          isTrue,
+        );
+        expect(
+          const LearnLensException(
+            message: 'Rate limit',
+            type: ApiErrorType.rateLimited,
+          ).isQuotaOrRateLimit,
+          isTrue,
+        );
+        expect(
+          LearnLensException(
+            message: 'Quota exceeded',
+            retryAt: DateTime.now(),
+          ).isQuotaOrRateLimit,
+          isTrue,
+        );
+        expect(
+          const LearnLensException(
+            message: 'Quota reached',
+            code: 'hourly_message_limit',
+          ).isQuotaOrRateLimit,
+          isTrue,
+        );
+
+        // Non-quota errors return false
+        expect(
+          const LearnLensException(
+            message: 'Invalid session token',
+            code: 'session_missing_or_expired',
+            statusCode: 401,
+          ).isQuotaOrRateLimit,
+          isFalse,
+        );
+        expect(
+          const LearnLensException(
+            message: 'Internal error',
+            statusCode: 500,
+          ).isQuotaOrRateLimit,
+          isFalse,
+        );
+      },
+    );
   });
 
   group('LearnLensNetworkClient.parseDioException', () {
@@ -117,6 +168,32 @@ void main() {
         expect(exception.statusCode, 500);
         expect(exception.message, 'Internal server error');
         expect(exception.code, isNull);
+      },
+    );
+
+    test(
+      'maps 401 with Session expired detail to serverError and sanitizes message',
+      () {
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: ''),
+          type: DioExceptionType.badResponse,
+          response: Response(
+            requestOptions: RequestOptions(path: ''),
+            statusCode: 401,
+            data: {'detail': 'Session expired.'},
+          ),
+        );
+
+        final exception = LearnLensNetworkClient.parseDioException(
+          dioException,
+        );
+
+        expect(exception.statusCode, 401);
+        expect(exception.type, ApiErrorType.unknown);
+        expect(
+          exception.message,
+          'Unable to connect to AI assistant. Please try again.',
+        );
       },
     );
   });
