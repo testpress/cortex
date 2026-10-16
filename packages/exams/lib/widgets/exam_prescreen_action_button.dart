@@ -60,8 +60,6 @@ class ExamPrescreenActionButton extends StatelessWidget {
                 AppButton.secondary(
                   label: l10n.retakeExamOnline,
                   onPressed: isButtonEnabled ? onTap : null,
-                  borderColor: design.colors.primary,
-                  foregroundColor: design.colors.primary,
                   fullWidth: true,
                 ),
               ],
@@ -74,8 +72,6 @@ class ExamPrescreenActionButton extends StatelessWidget {
                 child: AppButton.secondary(
                   label: l10n.retakeExamOnline,
                   onPressed: isButtonEnabled ? onTap : null,
-                  borderColor: design.colors.primary,
-                  foregroundColor: design.colors.primary,
                   fullWidth: true,
                 ),
               ),

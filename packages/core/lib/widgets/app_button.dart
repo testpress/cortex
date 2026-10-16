@@ -97,13 +97,13 @@ class AppButton extends StatelessWidget {
                   : design.colors.onPrimary)
             : (isDisabled
                   ? design.colors.textTertiary
-                  : design.colors.primary));
+                  : design.colors.textPrimary));
 
     final effectiveBorderColor =
         borderColor ??
         (variant == AppButtonVariant.secondary
-            ? (isDisabled ? design.colors.border : design.colors.primary)
-            : const Color(0x00000000)); // Transparent
+            ? design.colors.border
+            : design.colors.transparent);
 
     void handleTap() {
       if (onNavigate != null) {

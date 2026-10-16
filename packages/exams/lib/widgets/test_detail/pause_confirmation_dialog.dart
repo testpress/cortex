@@ -27,7 +27,7 @@ class PauseConfirmationDialog extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: design.colors.surface,
+          color: design.colors.card,
           borderRadius: BorderRadius.circular(design.radius.xl),
           boxShadow: [
             BoxShadow(
@@ -37,7 +37,12 @@ class PauseConfirmationDialog extends StatelessWidget {
             ),
           ],
         ),
-        padding: EdgeInsets.all(design.spacing.xl),
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.md,
+          design.spacing.xl,
+          design.spacing.md,
+          design.spacing.md,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -56,38 +61,56 @@ class PauseConfirmationDialog extends StatelessWidget {
               textAlign: TextAlign.center,
               color: design.colors.textSecondary,
             ),
-            SizedBox(height: design.spacing.xl),
+            SizedBox(height: design.spacing.lg),
             Row(
               children: [
-                AppButton(
-                  label: l10n.labelCancel,
-                  onPressed: onCancel,
-                  variant: AppButtonVariant.secondary,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm,
-                  ),
-                ),
-                const Spacer(),
-                if (!disablePause) ...[
-                  AppButton(
-                    label: 'Pause',
-                    onPressed: onPause,
+                Expanded(
+                  child: AppButton.secondary(
+                    label: l10n.labelCancel,
+                    fullWidth: true,
+                    onPressed: onCancel,
+                    backgroundColor: design.colors.surfaceVariant.withValues(
+                      alpha: 0.5,
+                    ),
+                    foregroundColor: design.colors.textPrimary,
+                    borderColor: design.colors.transparent,
                     padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.md,
+                      horizontal: design.spacing.sm,
                       vertical: design.spacing.sm,
                     ),
                   ),
+                ),
+                if (!disablePause) ...[
                   SizedBox(width: design.spacing.sm),
+                  Expanded(
+                    child: AppButton.secondary(
+                      label: 'Pause',
+                      fullWidth: true,
+                      onPressed: onPause,
+                      backgroundColor: design.colors.accent2.withValues(
+                        alpha: 0.1,
+                      ),
+                      foregroundColor: design.colors.accent2,
+                      borderColor: design.colors.transparent,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.sm,
+                        vertical: design.spacing.sm,
+                      ),
+                    ),
+                  ),
                 ],
-                AppButton(
-                  label: 'End',
-                  backgroundColor: design.colors.error,
-                  foregroundColor: design.colors.onError,
-                  onPressed: onEnd,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm,
+                SizedBox(width: design.spacing.sm),
+                Expanded(
+                  child: AppButton(
+                    label: 'End',
+                    fullWidth: true,
+                    backgroundColor: design.colors.error,
+                    foregroundColor: design.colors.onError,
+                    onPressed: onEnd,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                      vertical: design.spacing.sm,
+                    ),
                   ),
                 ),
               ],
