@@ -91,38 +91,39 @@ class _DoubtsListScreenState extends ConsumerState<DoubtsListScreen> {
                         backgroundColor: design.colors.surfaceVariant,
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.md,
-                        vertical: design.spacing.sm,
+                    if (AppConfig.enableAiDoubt)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: design.spacing.md,
+                          vertical: design.spacing.sm,
+                        ),
+                        height: 48,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: doubtFilterOptions.length,
+                          separatorBuilder: (_, _) =>
+                              SizedBox(width: design.spacing.sm),
+                          itemBuilder: (context, index) {
+                            final option = doubtFilterOptions[index];
+                            return _ChipButton(
+                              label: option.label,
+                              isSelected: activeFilter == option.type,
+                              onTap: () {
+                                ref
+                                    .read(doubtTypeFilterProvider.notifier)
+                                    .setFilter(option.type);
+                                if (_searchQuery != null &&
+                                    _searchQuery!.isNotEmpty) {
+                                  setState(() {
+                                    _searchQuery = null;
+                                    _searchController.clear();
+                                  });
+                                }
+                              },
+                            );
+                          },
+                        ),
                       ),
-                      height: 48,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: doubtFilterOptions.length,
-                        separatorBuilder: (_, _) =>
-                            SizedBox(width: design.spacing.sm),
-                        itemBuilder: (context, index) {
-                          final option = doubtFilterOptions[index];
-                          return _ChipButton(
-                            label: option.label,
-                            isSelected: activeFilter == option.type,
-                            onTap: () {
-                              ref
-                                  .read(doubtTypeFilterProvider.notifier)
-                                  .setFilter(option.type);
-                              if (_searchQuery != null &&
-                                  _searchQuery!.isNotEmpty) {
-                                setState(() {
-                                  _searchQuery = null;
-                                  _searchController.clear();
-                                });
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ),
                   ],
                 ),
               ),

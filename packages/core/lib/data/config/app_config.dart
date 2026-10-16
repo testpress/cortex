@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
   AppConfig._();
 
@@ -120,6 +122,17 @@ class AppConfig {
     'SHOW_CERTIFICATE',
     defaultValue: false,
   );
+
+  static const bool _enableAiDoubtFromEnv = bool.fromEnvironment(
+    'ENABLE_AI_DOUBT',
+    defaultValue: true,
+  );
+
+  @visibleForTesting
+  static bool? enableAiDoubtOverride;
+
+  static bool get enableAiDoubt =>
+      enableAiDoubtOverride ?? _enableAiDoubtFromEnv;
 
   static bool get showExamResults {
     return apiBaseUrl.contains('brilliantpalalms.testpress.in');

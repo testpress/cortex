@@ -333,6 +333,8 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
                     ? () {
                         if (widget.isAskAi) {
                           _submitDoubt(DoubtQueryType.ai);
+                        } else if (!AppConfig.enableAiDoubt) {
+                          _submitDoubt(DoubtQueryType.mentor);
                         } else {
                           setState(() => _isSubmitSheetOpen = true);
                         }
