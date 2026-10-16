@@ -7,6 +7,8 @@ The system SHALL present a direct, focused conversational AI chat interface conn
 - **WHEN** the user opens the root AI screen
 - **THEN** the system SHALL display the direct chat interface with a clean empty canvas and composer ready for interaction.
 
+## ADDED Requirements
+
 ### Requirement: Composer Submission Keyboard Dismissal
 The system SHALL dismiss the software keyboard upon message submission to prevent unexpected keyboard popups when generation completes.
 

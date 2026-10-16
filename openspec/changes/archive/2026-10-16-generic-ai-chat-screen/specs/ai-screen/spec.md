@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Direct Chat Interface
 The system SHALL display the dedicated AI chat interface directly upon navigating to the AI screen.

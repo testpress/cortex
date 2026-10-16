@@ -3,10 +3,10 @@
 ## Purpose
 Revamped root screen focusing on onboarding and navigation to immersive experiences.
 ## Requirements
-### Requirement: Onboarding Welcome Screen
-The system SHALL display an AI onboarding welcome screen with an action to start a new chat.
+### Requirement: Direct Chat Interface
+The system SHALL display the dedicated AI chat interface directly upon navigating to the AI screen.
 
-#### Scenario: Start new chat from welcome screen
-- **WHEN** the user taps the start new chat button
-- **THEN** the system navigates the user to the immersive chat interface.
+#### Scenario: Direct access to chat interface
+- **WHEN** the user navigates to the AI screen
+- **THEN** the system displays the dedicated conversational chat interface ready for input.
 
