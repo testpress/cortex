@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import '../core.dart';
 
 class AiChatHeader extends StatelessWidget {
+  static const double _maxContentWidth = 768.0;
+
   const AiChatHeader({super.key, required this.onBack, required this.onMenu});
 
   final VoidCallback onBack;
@@ -16,51 +18,62 @@ class AiChatHeader extends StatelessWidget {
       color: design.colors.card,
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.md,
-            vertical: design.spacing.sm,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppSemantics.button(
-                label: l10n.commonBackSemantic,
-                onTap: onBack,
-                child: GestureDetector(
-                  onTap: onBack,
-                  behavior: HitTestBehavior.opaque,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: 48.0,
-                      minHeight: 48.0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.arrowLeft,
-                          color: design.colors.textPrimary,
-                          size: 20.0,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.screenPadding,
+                vertical: design.spacing.sm,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppSemantics.button(
+                    label: l10n.commonBackSemantic,
+                    onTap: onBack,
+                    child: GestureDetector(
+                      onTap: onBack,
+                      behavior: HitTestBehavior.opaque,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 48.0,
+                          minHeight: 48.0,
                         ),
-                        SizedBox(width: design.spacing.xs),
-                        AppText.title(
-                          l10n.commonBackSemantic,
-                          color: design.colors.textPrimary,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2.0),
+                              child: Icon(
+                                LucideIcons.arrowLeft,
+                                color: design.colors.textPrimary,
+                                size: 20.0,
+                              ),
+                            ),
+                            SizedBox(width: design.spacing.xs),
+                            AppText.title(
+                              l10n.commonBackSemantic,
+                              color: design.colors.textPrimary,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  Transform.translate(
+                    offset: const Offset(10.0, 0.0),
+                    child: AppIconButton(
+                      icon: LucideIcons.menu,
+                      size: 22.0,
+                      color: design.colors.textPrimary,
+                      accessibilityLabel: l10n.aiChatHistoryTitle,
+                      onTap: onMenu,
+                    ),
+                  ),
+                ],
               ),
-              AppIconButton(
-                icon: LucideIcons.menu,
-                size: 22.0,
-                color: design.colors.textPrimary,
-                accessibilityLabel: l10n.aiChatHistoryTitle,
-                onTap: onMenu,
-              ),
-            ],
+            ),
           ),
         ),
       ),

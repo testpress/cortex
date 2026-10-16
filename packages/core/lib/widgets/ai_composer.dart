@@ -65,7 +65,7 @@ class _AiComposerState extends State<AiComposer> {
           width: 1.0,
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(16.0, 4.0, 4.0, 4.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 0.0, 0.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -125,8 +125,8 @@ class _AiComposerState extends State<AiComposer> {
               onTap: hasText ? _submit : null,
               behavior: HitTestBehavior.opaque,
               child: SizedBox(
-                width: 36.0,
-                height: 36.0,
+                width: 48.0,
+                height: 48.0,
                 child: Center(
                   child: Container(
                     width: 32.0,
