@@ -24,7 +24,7 @@ class AiScreen extends ConsumerStatefulWidget {
   final VoidCallback? onBack;
 
   /// Optional menu/history navigation callback.
-  /// If null, opens the built-in [AiChatHistorySheet].
+  /// If null, opens the [AiChatHistoryScreen] drawer.
   final VoidCallback? onOpenHistory;
 
   @override
@@ -32,7 +32,11 @@ class AiScreen extends ConsumerStatefulWidget {
 }
 
 class _AiScreenState extends ConsumerState<AiScreen> {
+  static const double _maxContentWidth = 768.0;
+
   late final ScrollController _scrollController;
+  late final TextEditingController _composerController;
+  late final FocusNode _composerFocusNode;
   int _lastMessageCount = 0;
   int _lastStreamingTextLength = 0;
   double _lastBottomInset = 0;
@@ -42,6 +46,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _composerController = TextEditingController();
+    _composerFocusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref.read(genericAiChatProvider.notifier).initialize().ignore();
@@ -56,6 +62,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _composerController.dispose();
+    _composerFocusNode.dispose();
     super.dispose();
   }
 
@@ -133,11 +141,25 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   }
 
   void _handleMenu() {
+    _composerFocusNode.unfocus();
     if (widget.onOpenHistory != null) {
       widget.onOpenHistory!();
     } else {
       context.push('/ai/history');
     }
+  }
+
+  void _handleNewChat() {
+    ref.read(genericAiChatProvider.notifier).startNewChat();
+  }
+
+  /// Prefills the composer with a starter prompt for the student to finish.
+  void _handleSuggestion(String prompt) {
+    _composerController.value = TextEditingValue(
+      text: prompt,
+      selection: TextSelection.collapsed(offset: prompt.length),
+    );
+    _composerFocusNode.requestFocus();
   }
 
   void _handleSend(String text) {
@@ -210,8 +232,30 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         chatState.hasActiveRateLimit ||
         chatState.hasMessagesError;
 
+    final showEmptyState =
+        displayMessages.isEmpty &&
+        !chatState.isLoadingMessages &&
+        !chatState.hasMessagesError;
+
+    final canvasColor = aiChatCanvasColor(design);
+
+    final quotaBanner =
+        chatState.quotaError != null && chatState.hasActiveRateLimit
+        ? _AiNoticeBanner(message: chatState.quotaError!)
+        : null;
+
+    Widget buildComposer({VoidCallback? onNewChat}) {
+      return AiComposer(
+        enabled: !isInputBlocked,
+        onSend: _handleSend,
+        controller: _composerController,
+        focusNode: _composerFocusNode,
+        onNewChat: onNewChat,
+      );
+    }
+
     return Container(
-      color: design.colors.card,
+      color: canvasColor,
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -221,65 +265,17 @@ class _AiScreenState extends ConsumerState<AiScreen> {
           if (chatState.hasInitError)
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.screenPadding,
+                horizontal: design.spacing.md,
                 vertical: design.spacing.xs,
               ),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 768.0),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.md,
-                      vertical: design.spacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: design.colors.warning.withValues(alpha: 0.12),
-                      borderRadius: design.radius.card,
-                      border: Border.all(
-                        color: design.colors.warning.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          LucideIcons.alertTriangle,
-                          size: 16.0,
-                          color: design.colors.warning,
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        Expanded(
-                          child: AppText.labelSmall(
-                            l10n.aiInitErrorBanner,
-                            color: design.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        AppSemantics.button(
-                          label: l10n.labelRetry,
-                          onTap: () => ref
-                              .read(genericAiChatProvider.notifier)
-                              .initialize(),
-                          child: GestureDetector(
-                            onTap: () => ref
-                                .read(genericAiChatProvider.notifier)
-                                .initialize(),
-                            behavior: HitTestBehavior.opaque,
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                minWidth: 48.0,
-                                minHeight: 48.0,
-                              ),
-                              child: Center(
-                                child: AppText.labelBold(
-                                  l10n.labelRetry,
-                                  color: design.colors.primary,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+                  child: _AiNoticeBanner(
+                    message: l10n.aiInitErrorBanner,
+                    actionLabel: l10n.labelRetry,
+                    onAction: () =>
+                        ref.read(genericAiChatProvider.notifier).initialize(),
                   ),
                 ),
               ),
@@ -293,7 +289,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                 ? Center(
                     child: AppErrorView(
                       error: chatState.messagesError,
-                      backgroundColor: design.colors.card,
+                      backgroundColor: canvasColor,
                       onRetry: () {
                         if (chatState.currentChatId != null) {
                           ref
@@ -304,10 +300,20 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                     ),
                   )
                 : displayMessages.isEmpty
-                ? const SizedBox.expand()
+                ? SafeArea(
+                    top: false,
+                    bottom: bottomInset == 0,
+                    child: _AiEmptyState(
+                      notice: quotaBanner,
+                      composer: buildComposer(),
+                      onSuggestion: isInputBlocked ? null : _handleSuggestion,
+                    ),
+                  )
                 : Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 768.0),
+                      constraints: const BoxConstraints(
+                        maxWidth: _maxContentWidth,
+                      ),
                       child: AppSemantics.scrollableList(
                         itemCount: displayMessages.length,
                         label: l10n.aiSupportTitle,
@@ -328,8 +334,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                             ),
                             controller: _scrollController,
                             padding: EdgeInsets.symmetric(
-                              horizontal: design.spacing.screenPadding,
-                              vertical: design.spacing.md,
+                              horizontal: design.spacing.md,
+                              vertical: design.spacing.sm * 1.5,
                             ),
                             itemCount: displayMessages.length,
                             itemBuilder: (context, index) {
@@ -363,69 +369,255 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                   ),
           ),
 
-          // Quota / Rate-limit warning banner if active
-          if (chatState.quotaError != null && chatState.hasActiveRateLimit)
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 768.0),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.screenPadding,
-                    vertical: design.spacing.xs,
-                  ),
-                  child: Container(
+          if (!showEmptyState) ...[
+            // Quota / Rate-limit warning banner if active
+            if (quotaBanner != null)
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+                  child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.md,
-                      vertical: design.spacing.xs + 2,
+                      vertical: design.spacing.xs,
                     ),
-                    decoration: BoxDecoration(
-                      color: design.colors.warning.withValues(alpha: 0.12),
-                      borderRadius: design.radius.card,
-                      border: Border.all(
-                        color: design.colors.warning.withValues(alpha: 0.3),
+                    child: quotaBanner,
+                  ),
+                ),
+              ),
+
+            // Composer docked to bottom
+            Container(
+              decoration: BoxDecoration(
+                color: canvasColor,
+                border: Border(
+                  top: BorderSide(color: design.colors.border, width: 1.0),
+                ),
+              ),
+              child: SafeArea(
+                top: false,
+                bottom: bottomInset == 0,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: _maxContentWidth,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        // The new-chat circle sits in a 48dp touch target;
+                        // trim the inset so the circle lands on the gutter.
+                        start: design.spacing.md - design.spacing.xs * 1.5,
+                        end: design.spacing.md,
+                        top: design.spacing.sm * 1.5,
+                        bottom: design.spacing.sm * 1.5,
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          LucideIcons.alertTriangle,
-                          size: 16.0,
-                          color: design.colors.warning,
-                        ),
-                        SizedBox(width: design.spacing.xs),
-                        Expanded(
-                          child: AppText.labelSmall(
-                            chatState.quotaError!,
-                            color: design.colors.textPrimary,
-                          ),
-                        ),
-                      ],
+                      child: buildComposer(onNewChat: _handleNewChat),
                     ),
                   ),
                 ),
               ),
             ),
+          ],
+        ],
+      ),
+    );
+  }
+}
 
-          // Composer pinned to bottom
-          SafeArea(
-            top: false,
-            bottom: bottomInset == 0,
+/// Guided empty state: heading, prompt starters, and the composer.
+class _AiEmptyState extends StatelessWidget {
+  const _AiEmptyState({
+    required this.composer,
+    required this.onSuggestion,
+    this.notice,
+  });
+
+  static const double _phoneContentWidth = 340.0;
+  static const double _tabletContentWidth = 480.0;
+
+  final Widget composer;
+
+  /// Receives the starter prompt of the tapped card. Null disables the cards.
+  final ValueChanged<String>? onSuggestion;
+
+  /// Optional banner shown directly above the composer.
+  final Widget? notice;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final gap = design.spacing.sm * 1.5;
+
+    Widget card(IconData icon, Color color, String label, String prompt) {
+      return Expanded(
+        child: AiSuggestionCard(
+          icon: icon,
+          iconColor: color,
+          label: label,
+          onTap: onSuggestion == null ? null : () => onSuggestion!(prompt),
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final contentWidth =
+            constraints.maxWidth >= design.layout.tabletBreakpoint
+            ? _tabletContentWidth
+            : _phoneContentWidth;
+
+        // Reversed so the composer stays in view when the keyboard leaves
+        // less room than the content needs.
+        return SingleChildScrollView(
+          reverse: true,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 768.0),
+                constraints: BoxConstraints(
+                  maxWidth: contentWidth + design.spacing.md * 2,
+                ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.screenPadding,
-                    vertical: design.spacing.sm,
-                  ),
-                  child: AiComposer(
-                    enabled: !isInputBlocked,
-                    onSend: _handleSend,
+                  padding: EdgeInsets.all(design.spacing.md),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppSemantics.header(
+                        label: l10n.aiEmptyStateTitle,
+                        child: ExcludeSemantics(
+                          child: AppText.display(
+                            l10n.aiEmptyStateTitle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: design.spacing.xl + design.spacing.xs),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            card(
+                              LucideIcons.bookOpen,
+                              design.colors.accent4,
+                              l10n.aiSuggestionExplainConcept,
+                              l10n.aiSuggestionExplainConceptPrompt,
+                            ),
+                            SizedBox(width: gap),
+                            card(
+                              LucideIcons.calculator,
+                              design.colors.accent2,
+                              l10n.aiSuggestionSolveProblem,
+                              l10n.aiSuggestionSolveProblemPrompt,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: gap),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            card(
+                              LucideIcons.fileQuestionMark,
+                              design.colors.accent1,
+                              l10n.aiSuggestionPracticeQuestions,
+                              l10n.aiSuggestionPracticeQuestionsPrompt,
+                            ),
+                            SizedBox(width: gap),
+                            card(
+                              LucideIcons.lightbulb,
+                              design.colors.accent3,
+                              l10n.aiSuggestionStudyTips,
+                              l10n.aiSuggestionStudyTipsPrompt,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: design.spacing.lg),
+                      if (notice != null) ...[
+                        notice!,
+                        SizedBox(height: design.spacing.sm),
+                      ],
+                      composer,
+                    ],
                   ),
                 ),
               ),
             ),
           ),
+        );
+      },
+    );
+  }
+}
+
+/// Inline warning banner for connection and quota notices.
+class _AiNoticeBanner extends StatelessWidget {
+  const _AiNoticeBanner({
+    required this.message,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final actionLabel = this.actionLabel;
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: design.spacing.md,
+        vertical: actionLabel != null
+            ? design.spacing.xs
+            : design.spacing.xs + 2,
+      ),
+      decoration: BoxDecoration(
+        color: design.colors.warning.withValues(alpha: 0.12),
+        borderRadius: design.radius.card,
+        border: Border.all(color: design.colors.warning.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            LucideIcons.alertTriangle,
+            size: 16.0,
+            color: design.colors.warning,
+          ),
+          SizedBox(width: design.spacing.xs),
+          Expanded(
+            child: AppText.labelSmall(
+              message,
+              color: design.colors.textPrimary,
+            ),
+          ),
+          if (actionLabel != null) ...[
+            SizedBox(width: design.spacing.xs),
+            AppSemantics.button(
+              label: actionLabel,
+              onTap: onAction,
+              child: GestureDetector(
+                onTap: onAction,
+                behavior: HitTestBehavior.opaque,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 48.0,
+                    minHeight: 48.0,
+                  ),
+                  child: Center(
+                    child: AppText.labelBold(
+                      actionLabel,
+                      color: design.colors.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

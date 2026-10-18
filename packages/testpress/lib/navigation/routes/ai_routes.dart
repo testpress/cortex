@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 
+import '../page_transitions/overlay_transition_page.dart';
+
 class AiRoutes {
   static List<RouteBase> routes(GlobalKey<NavigatorState> rootNavigatorKey) => [
     GoRoute(
@@ -18,7 +20,11 @@ class AiRoutes {
           name: 'ai_history',
           path: 'history',
           parentNavigatorKey: rootNavigatorKey,
-          builder: (context, state) => const AiChatHistoryScreen(),
+          pageBuilder: (context, state) => overlayTransitionPage(
+            context,
+            state.pageKey,
+            const AiChatHistoryScreen(),
+          ),
         ),
       ],
     ),

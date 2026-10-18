@@ -6038,7 +6038,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiComposerPlaceholder.
   ///
   /// In en, this message translates to:
-  /// **'Ask AI support'**
+  /// **'Message'**
   String get aiComposerPlaceholder;
 
   /// No description provided for @aiComposerAttachImage.
@@ -6118,6 +6118,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generating response...'**
   String get aiGeneratingResponse;
+
+  /// No description provided for @aiEmptyStateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What can I help with?'**
+  String get aiEmptyStateTitle;
+
+  /// No description provided for @aiSuggestionExplainConcept.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain concept'**
+  String get aiSuggestionExplainConcept;
+
+  /// No description provided for @aiSuggestionSolveProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Solve problem'**
+  String get aiSuggestionSolveProblem;
+
+  /// No description provided for @aiSuggestionPracticeQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice questions'**
+  String get aiSuggestionPracticeQuestions;
+
+  /// No description provided for @aiSuggestionStudyTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Study tips'**
+  String get aiSuggestionStudyTips;
+
+  /// No description provided for @aiSuggestionExplainConceptPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain the concept of '**
+  String get aiSuggestionExplainConceptPrompt;
+
+  /// No description provided for @aiSuggestionSolveProblemPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Help me solve this problem: '**
+  String get aiSuggestionSolveProblemPrompt;
+
+  /// No description provided for @aiSuggestionPracticeQuestionsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Give me practice questions on '**
+  String get aiSuggestionPracticeQuestionsPrompt;
+
+  /// No description provided for @aiSuggestionStudyTipsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Give me study tips for '**
+  String get aiSuggestionStudyTipsPrompt;
 
   /// No description provided for @announcementsQuickLinks.
   ///

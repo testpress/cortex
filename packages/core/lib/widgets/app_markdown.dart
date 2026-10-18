@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_smooth_markdown/flutter_smooth_markdown.dart';
+
 import '../design/design_provider.dart';
 import '../utils/ai_markdown_sanitizer.dart';
 import 'app_text.dart';
@@ -15,11 +16,15 @@ class AppMarkdown extends StatefulWidget {
     required this.data,
     this.onTapLink,
     this.selectable = true,
+    this.textStyle,
   });
 
   final String data;
   final ValueChanged<String>? onTapLink;
   final bool selectable;
+
+  /// Base text style. Defaults to the compact 14px body.
+  final TextStyle? textStyle;
 
   @override
   State<AppMarkdown> createState() => _AppMarkdownState();
@@ -46,10 +51,8 @@ class _AppMarkdownState extends State<AppMarkdown> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
-    final baseStyle = design.typography.body.copyWith(
-      fontSize: 14,
-      height: 1.5,
-    );
+    final baseStyle =
+        textStyle ?? design.typography.body.copyWith(fontSize: 14, height: 1.5);
 
     return SmoothMarkdown(
       data: _sanitizedData,

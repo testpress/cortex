@@ -4,6 +4,9 @@ import 'package:flutter/widgets.dart';
 import '../core.dart';
 
 class AiAssistantCard extends StatelessWidget {
+  /// Share of the chat column a card may occupy before wrapping.
+  static const double maxWidthFactor = 0.75;
+
   const AiAssistantCard({
     super.key,
     required this.message,
@@ -28,6 +31,7 @@ class AiAssistantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     final tryAgainButton = AppSemantics.button(
       label: l10n.aiTryAgain,
@@ -38,32 +42,29 @@ class AiAssistantCard extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
           child: Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerStart,
             widthFactor: 1.0,
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.sm,
-                vertical: design.spacing.xs / 2,
+                horizontal: design.spacing.sm * 1.5,
+                vertical: design.spacing.xs * 1.5,
               ),
               decoration: BoxDecoration(
-                color: design.colors.primary.withValues(alpha: 0.12),
-                borderRadius: design.radius.card,
+                color: design.colors.surfaceVariant,
+                borderRadius: design.radius.pill,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     LucideIcons.refreshCw,
-                    color: design.colors.primary,
-                    size: 12.0,
+                    color: design.colors.onSurface,
+                    size: 14.0,
                   ),
-                  SizedBox(width: design.spacing.xs / 2),
+                  SizedBox(width: design.spacing.xs * 1.5),
                   AppText.labelSmall(
                     l10n.aiTryAgain,
-                    color: design.colors.primary,
-                    style: design.typography.labelSmall.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    color: design.colors.onSurface,
                   ),
                 ],
               ),
@@ -74,12 +75,12 @@ class AiAssistantCard extends StatelessWidget {
     );
 
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerStart,
       child: Padding(
         padding: EdgeInsets.only(bottom: design.spacing.md),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final maxCardWidth = constraints.maxWidth * 0.88;
+            final maxCardWidth = constraints.maxWidth * maxWidthFactor;
             final resolvedCardWidth = maxCardWidth > 680.0
                 ? 680.0
                 : maxCardWidth;
@@ -89,29 +90,59 @@ class AiAssistantCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  constraints: BoxConstraints(
-                    maxWidth: resolvedCardWidth,
-                    minHeight: hasGenerationError ? 120.0 : 0.0,
+                  constraints: BoxConstraints(maxWidth: resolvedCardWidth),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.sm * 1.5,
                   ),
-                  padding: EdgeInsets.all(design.spacing.md),
                   decoration: BoxDecoration(
                     color: design.colors.card,
-                    borderRadius: design.radius.card,
-                    border: Border.all(
-                      color: design.colors.border.withValues(alpha: 0.6),
-                      width: 1.0,
+                    // The tightened top-start corner points at the sender side.
+                    borderRadius: BorderRadiusDirectional.only(
+                      topStart: Radius.circular(design.radius.md),
+                      topEnd: Radius.circular(design.radius.xl),
+                      bottomStart: Radius.circular(design.radius.xl),
+                      bottomEnd: Radius.circular(design.radius.xl),
                     ),
+                    border: Border.all(color: design.colors.border, width: 1.0),
                   ),
                   child: hasGenerationError
-                      ? Align(
-                          alignment: Alignment.topLeft,
-                          child: AppText.caption(
-                            l10n.aiAssistantLabel,
-                            color: design.colors.textSecondary,
-                            style: design.typography.caption.copyWith(
-                              fontWeight: FontWeight.w600,
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AppText.caption(
+                              l10n.aiAssistantLabel,
+                              color: design.colors.textSecondary,
+                              style: design.typography.caption.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
+                            SizedBox(height: design.spacing.xs),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: design.spacing.xs / 2,
+                                  ),
+                                  child: Icon(
+                                    LucideIcons.alertCircle,
+                                    color: design.colors.error,
+                                    size: design.iconSize.sm,
+                                  ),
+                                ),
+                                SizedBox(width: design.spacing.xs * 1.5),
+                                Flexible(
+                                  child: AppText.bodySmall(
+                                    l10n.aiGenerationError,
+                                    color: design.colors.error,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         )
                       : isGenerating && message.isEmpty
                       ? ExcludeSemantics(
@@ -122,71 +153,52 @@ class AiAssistantCard extends StatelessWidget {
                             child: const _GeneratingIndicator(),
                           ),
                         )
-                      : AppMarkdown(data: message),
+                      : AppMarkdown(
+                          data: message,
+                          textStyle: design.typography.body,
+                        ),
                 ),
-                SizedBox(height: design.spacing.xs),
-                if (isGenerating && !hasGenerationError) ...[
+                if (hasGenerationError)
+                  tryAgainButton
+                else if (isGenerating)
                   Padding(
-                    padding: EdgeInsets.only(left: design.spacing.xs),
+                    padding: EdgeInsetsDirectional.only(
+                      start: design.spacing.xs,
+                      top: design.spacing.xs * 1.5,
+                    ),
                     child: AppText.caption(
                       l10n.aiGeneratingResponse,
-                      color: design.colors.textTertiary,
+                      color: design.colors.textSecondary,
+                    ),
+                  )
+                else ...[
+                  // The copy glyph sits in a 48dp touch target; pull the
+                  // target toward the card edge so the glyph keeps a 12dp inset.
+                  Transform.translate(
+                    offset: Offset(
+                      isRtl ? design.spacing.xs : -design.spacing.xs,
+                      0,
+                    ),
+                    child: AppIconButton(
+                      icon: LucideIcons.copy,
+                      size: design.iconSize.sm,
+                      color: design.colors.onSurfaceVariant,
+                      accessibilityLabel: l10n.aiCopyMessageSemantic,
+                      onTap:
+                          onCopy ??
+                          () {
+                            Clipboard.setData(ClipboardData(text: message));
+                          },
                     ),
                   ),
-                ] else if (hasGenerationError) ...[
-                  SizedBox(
-                    width: resolvedCardWidth,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              LucideIcons.alertCircle,
-                              color: design.colors.error,
-                              size: 14.0,
-                            ),
-                            SizedBox(width: design.spacing.xs / 2),
-                            Flexible(
-                              child: AppText.caption(
-                                l10n.aiGenerationError,
-                                color: design.colors.error,
-                                style: design.typography.caption.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: design.spacing.xs),
-                        tryAgainButton,
-                      ],
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: design.spacing.xs,
                     ),
-                  ),
-                ] else ...[
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AppIconButton(
-                        icon: LucideIcons.copy,
-                        size: 18.0,
-                        color: design.colors.textSecondary,
-                        accessibilityLabel: l10n.aiCopyMessageSemantic,
-                        onTap:
-                            onCopy ??
-                            () {
-                              Clipboard.setData(ClipboardData(text: message));
-                            },
-                      ),
-                      SizedBox(width: design.spacing.xs),
-                      AppText.caption(
-                        timestamp,
-                        color: design.colors.textTertiary,
-                      ),
-                    ],
+                    child: AppText.caption(
+                      timestamp,
+                      color: design.colors.textSecondary,
+                    ),
                   ),
                 ],
               ],

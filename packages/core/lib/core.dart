@@ -49,6 +49,8 @@ export 'widgets/bookmark_folders_sheet.dart';
 export 'widgets/app_toast.dart';
 export 'widgets/session_expired_dialog.dart';
 export 'widgets/app_confirmation_dialog.dart';
+export 'widgets/ai_chat_canvas.dart';
+export 'widgets/ai_suggestion_card.dart';
 export 'widgets/ai_composer.dart';
 export 'widgets/ai_chat_header.dart';
 export 'widgets/ai_user_message_bubble.dart';

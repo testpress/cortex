@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+
 import '../core.dart';
 
 class AiChatHeader extends StatelessWidget {
@@ -15,7 +16,7 @@ class AiChatHeader extends StatelessWidget {
     final l10n = L10n.of(context);
 
     return Container(
-      color: design.colors.card,
+      color: aiChatCanvasColor(design),
       child: SafeArea(
         bottom: false,
         child: Center(
@@ -23,10 +24,10 @@ class AiChatHeader extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: _maxContentWidth),
             child: Padding(
               padding: EdgeInsetsDirectional.only(
-                start: design.spacing.screenPadding,
-                end:
-                    design.spacing.screenPadding -
-                    (design.spacing.sm + design.spacing.xs),
+                start: design.spacing.md,
+                // The menu icon sits in a 48dp touch target; trim the inset so
+                // the glyph itself lands on the content edge.
+                end: design.spacing.md - design.spacing.xs,
                 top: design.spacing.sm,
                 bottom: design.spacing.sm,
               ),
@@ -47,18 +48,18 @@ class AiChatHeader extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2.0),
-                              child: Icon(
-                                LucideIcons.arrowLeft,
-                                color: design.colors.textPrimary,
-                                size: 20.0,
-                              ),
+                            Icon(
+                              LucideIcons.arrowLeft,
+                              color: design.colors.onSurface,
+                              size: design.iconSize.md,
                             ),
-                            SizedBox(width: design.spacing.xs),
-                            AppText.title(
+                            SizedBox(width: design.spacing.sm),
+                            AppText.base(
                               l10n.commonBackSemantic,
-                              color: design.colors.textPrimary,
+                              color: design.colors.onSurface,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
@@ -68,7 +69,7 @@ class AiChatHeader extends StatelessWidget {
                   AppIconButton(
                     icon: LucideIcons.menu,
                     size: 22.0,
-                    color: design.colors.textPrimary,
+                    color: design.colors.onSurface,
                     accessibilityLabel: l10n.aiChatHistoryTitle,
                     onTap: onMenu,
                   ),

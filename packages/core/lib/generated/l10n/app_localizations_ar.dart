@@ -3370,7 +3370,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذر الاتصال بمساعد الذكاء الاصطناعي. تحقق من اتصالك.';
 
   @override
-  String get aiComposerPlaceholder => 'اسأل دعم الذكاء الاصطناعي';
+  String get aiComposerPlaceholder => 'رسالة';
 
   @override
   String get aiComposerAttachImage => 'إرفاق صورة';
@@ -3411,6 +3411,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiGeneratingResponse => 'جارٍ إنشاء الرد...';
+
+  @override
+  String get aiEmptyStateTitle => 'بماذا يمكنني مساعدتك؟';
+
+  @override
+  String get aiSuggestionExplainConcept => 'شرح مفهوم';
+
+  @override
+  String get aiSuggestionSolveProblem => 'حل مسألة';
+
+  @override
+  String get aiSuggestionPracticeQuestions => 'أسئلة تدريبية';
+
+  @override
+  String get aiSuggestionStudyTips => 'نصائح للدراسة';
+
+  @override
+  String get aiSuggestionExplainConceptPrompt => 'اشرح مفهوم ';
+
+  @override
+  String get aiSuggestionSolveProblemPrompt => 'ساعدني في حل هذه المسألة: ';
+
+  @override
+  String get aiSuggestionPracticeQuestionsPrompt => 'أعطني أسئلة تدريبية عن ';
+
+  @override
+  String get aiSuggestionStudyTipsPrompt => 'أعطني نصائح لدراسة ';
 
   @override
   String get announcementsQuickLinks => 'روابط سريعة';

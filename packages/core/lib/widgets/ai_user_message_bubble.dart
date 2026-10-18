@@ -1,7 +1,11 @@
 import 'package:flutter/widgets.dart';
+
 import '../core.dart';
 
 class AiUserMessageBubble extends StatelessWidget {
+  /// Share of the chat column a bubble may occupy before wrapping.
+  static const double maxWidthFactor = 0.75;
+
   const AiUserMessageBubble({
     super.key,
     required this.message,
@@ -23,7 +27,7 @@ class AiUserMessageBubble extends StatelessWidget {
     final l10n = L10n.of(context);
 
     return Align(
-      alignment: Alignment.centerRight,
+      alignment: AlignmentDirectional.centerEnd,
       child: Padding(
         padding: EdgeInsets.only(bottom: design.spacing.md),
         child: Column(
@@ -32,7 +36,7 @@ class AiUserMessageBubble extends StatelessWidget {
           children: [
             LayoutBuilder(
               builder: (context, constraints) {
-                final maxBubbleWidth = constraints.maxWidth * 0.8;
+                final maxBubbleWidth = constraints.maxWidth * maxWidthFactor;
                 return Container(
                   constraints: BoxConstraints(
                     maxWidth: maxBubbleWidth > 560.0 ? 560.0 : maxBubbleWidth,
@@ -43,7 +47,13 @@ class AiUserMessageBubble extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: design.colors.surfaceVariant,
-                    borderRadius: design.radius.card,
+                    // The tightened top-end corner points at the sender side.
+                    borderRadius: BorderRadiusDirectional.only(
+                      topStart: Radius.circular(design.radius.xl),
+                      topEnd: Radius.circular(design.radius.md),
+                      bottomStart: Radius.circular(design.radius.xl),
+                      bottomEnd: Radius.circular(design.radius.xl),
+                    ),
                   ),
                   child: AppText.body(
                     message,
@@ -52,19 +62,13 @@ class AiUserMessageBubble extends StatelessWidget {
                 );
               },
             ),
-            SizedBox(height: design.spacing.xs / 2),
+            SizedBox(height: design.spacing.xs * 1.5),
             if (!hasSendError)
-              Padding(
-                padding: EdgeInsets.only(right: design.spacing.xs),
-                child: AppText.caption(
-                  isSending ? l10n.aiMessageSending : timestamp,
-                  color: isSending
-                      ? design.colors.primary
-                      : design.colors.textTertiary,
-                ),
+              AppText.caption(
+                isSending ? l10n.aiMessageSending : timestamp,
+                color: design.colors.textSecondary,
               ),
             if (hasSendError) ...[
-              SizedBox(height: design.spacing.xs),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -74,9 +78,11 @@ class AiUserMessageBubble extends StatelessWidget {
                     size: 14.0,
                   ),
                   SizedBox(width: design.spacing.xs / 2),
-                  AppText.caption(
-                    l10n.aiMessageSendFailed,
-                    color: design.colors.error,
+                  Flexible(
+                    child: AppText.caption(
+                      l10n.aiMessageSendFailed,
+                      color: design.colors.error,
+                    ),
                   ),
                   AppSemantics.button(
                     label: l10n.aiRetrySendMessageSemantic,

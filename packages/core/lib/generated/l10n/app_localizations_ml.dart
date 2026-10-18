@@ -3419,7 +3419,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'AI അസിസ്റ്റന്റുമായി ബന്ധിപ്പിക്കാൻ കഴിഞ്ഞില്ല. കണക്ഷൻ പരിശോധിക്കുക.';
 
   @override
-  String get aiComposerPlaceholder => 'AI പിന്തുണയോട് ചോദിക്കുക';
+  String get aiComposerPlaceholder => 'സന്ദേശം';
 
   @override
   String get aiComposerAttachImage => 'ചിത്രം ചേർക്കുക';
@@ -3461,6 +3461,36 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get aiGeneratingResponse => 'മറുപടി തയ്യാറാക്കുന്നു...';
+
+  @override
+  String get aiEmptyStateTitle => 'എനിക്ക് എന്ത് സഹായം ചെയ്യാനാകും?';
+
+  @override
+  String get aiSuggestionExplainConcept => 'ആശയം വിശദീകരിക്കുക';
+
+  @override
+  String get aiSuggestionSolveProblem => 'പ്രശ്നം പരിഹരിക്കുക';
+
+  @override
+  String get aiSuggestionPracticeQuestions => 'പരിശീലന ചോദ്യങ്ങൾ';
+
+  @override
+  String get aiSuggestionStudyTips => 'പഠന നുറുങ്ങുകൾ';
+
+  @override
+  String get aiSuggestionExplainConceptPrompt => 'ഈ ആശയം വിശദീകരിക്കുക: ';
+
+  @override
+  String get aiSuggestionSolveProblemPrompt =>
+      'ഈ പ്രശ്നം പരിഹരിക്കാൻ സഹായിക്കുക: ';
+
+  @override
+  String get aiSuggestionPracticeQuestionsPrompt =>
+      'ഈ വിഷയത്തിൽ പരിശീലന ചോദ്യങ്ങൾ നൽകുക: ';
+
+  @override
+  String get aiSuggestionStudyTipsPrompt =>
+      'ഈ വിഷയത്തിനുള്ള പഠന നുറുങ്ങുകൾ നൽകുക: ';
 
   @override
   String get announcementsQuickLinks => 'ദ്രുത ലിങ്കുകൾ';
