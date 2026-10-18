@@ -450,16 +450,124 @@ void main() {
       expect(createData('[" info "]').isInfoCourse, isTrue);
       expect(createData('["study"]').isInfoCourse, isFalse);
     });
+
+    test(
+        'refreshLiveClass hydrates content detail in background when isChapterContent is true',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      fakeSource.liveClassToReturn = const LessonDto(
+        id: '251197',
+        chapterId: '',
+        title: 'BINOMIAL THEOREM LIVE PART-04',
+        type: LessonType.liveStream,
+        duration: '180 min',
+        progressStatus: LessonProgressStatus.notStarted,
+        isLocked: false,
+        orderIndex: 0,
+        uuid: '7TzkZaA2AYm',
+        liveStreamProvider: 'TpStreams',
+        streamStatus: 'live',
+        isChapterContent: true,
+      );
+
+      fakeSource.lessonToReturn = const LessonDto(
+        id: '251197',
+        chapterId: 'ch-971-1',
+        chapterTitle: 'Binomial Theorem',
+        title: 'BINOMIAL THEOREM LIVE PART-04',
+        type: LessonType.liveStream,
+        duration: '180 min',
+        progressStatus: LessonProgressStatus.notStarted,
+        isLocked: false,
+        orderIndex: 4,
+        chatEmbedUrl: 'https://tpstreams.com/live/chat/6Rg6enGaJ6H',
+        streamStatus: 'running',
+      );
+
+      final result = await repository.refreshLiveClass('251197');
+      expect(result.id, '251197');
+      expect(result.chatEmbedUrl, isNull);
+
+      // Wait for background tasks to complete
+      await pumpEventQueue();
+
+      expect(fakeSource.getLiveClassDetailCallCount, 1);
+      expect(fakeSource.getLessonDetailCallCount, 1);
+
+      // Verify that the lesson in local DB was updated with chatEmbedUrl
+      final updatedFromDb = await repository.getLesson('251197');
+      expect(
+        updatedFromDb?.chatEmbedUrl,
+        'https://tpstreams.com/live/chat/6Rg6enGaJ6H',
+      );
+      expect(updatedFromDb?.uuid, '7TzkZaA2AYm');
+      expect(updatedFromDb?.chapterId, 'ch-971-1');
+    });
+
+    test(
+        'refreshLiveClass skips background refreshLesson when chatEmbedUrl already exists in db',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // Pre-seed the lesson with chatEmbedUrl in local DB
+      await db.upsertLessons([
+        const LessonsTableCompanion(
+          id: Value('251197'),
+          chapterId: Value('ch-971-1'),
+          title: Value('BINOMIAL THEOREM LIVE PART-04'),
+          type: Value('liveStream'),
+          duration: Value('180 min'),
+          progressStatus: Value('notStarted'),
+          isLocked: Value(false),
+          orderIndex: Value(0),
+          chatEmbedUrl: Value('https://tpstreams.com/live/chat/6Rg6enGaJ6H'),
+        ),
+      ]);
+
+      fakeSource.liveClassToReturn = const LessonDto(
+        id: '251197',
+        chapterId: '',
+        title: 'BINOMIAL THEOREM LIVE PART-04',
+        type: LessonType.liveStream,
+        duration: '180 min',
+        progressStatus: LessonProgressStatus.notStarted,
+        isLocked: false,
+        orderIndex: 0,
+        uuid: '7TzkZaA2AYm',
+        liveStreamProvider: 'TpStreams',
+        streamStatus: 'live',
+        isChapterContent: true,
+      );
+
+      final result = await repository.refreshLiveClass('251197');
+      expect(
+        result.chatEmbedUrl,
+        'https://tpstreams.com/live/chat/6Rg6enGaJ6H',
+      );
+
+      await pumpEventQueue();
+
+      // Live class detail was called, but background refreshLesson was skipped
+      expect(fakeSource.getLiveClassDetailCallCount, 1);
+      expect(fakeSource.getLessonDetailCallCount, 0);
+    });
   });
 }
 
 class FakeProgressDataSource extends MockDataSource {
   CourseDto? detailToReturn;
   LessonDto? lessonToReturn;
+  LessonDto? liveClassToReturn;
 
   int getCourseDetailCallCount = 0;
   int getChaptersCallCount = 0;
   int getLessonDetailCallCount = 0;
+  int getLiveClassDetailCallCount = 0;
 
   @override
   Future<CourseDto> getCourseDetail(String courseId) async {
@@ -484,5 +592,14 @@ class FakeProgressDataSource extends MockDataSource {
       return lessonToReturn!;
     }
     return super.getLessonDetail(lessonId);
+  }
+
+  @override
+  Future<LessonDto> getLiveClassDetail(String id) async {
+    getLiveClassDetailCallCount++;
+    if (liveClassToReturn != null) {
+      return liveClassToReturn!;
+    }
+    return super.getLiveClassDetail(id);
   }
 }

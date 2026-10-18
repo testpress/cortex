@@ -1068,6 +1068,12 @@ class CourseRepository {
     final merged = updated.mergeWith(existing);
 
     await _db.upsertLessons([_lessonDtoToCompanion(merged)]);
+
+    final hasChatAlready = merged.chatEmbedUrl?.trim().isNotEmpty == true;
+    if (dto.isChapterContent && !hasChatAlready) {
+      refreshLesson(id).ignore();
+    }
+
     return merged;
   }
 
