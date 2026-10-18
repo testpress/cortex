@@ -250,6 +250,9 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
     if (helpdeskEnabled && widget.enableHelpdesk) {
       tabs.add(VideoLessonTab.askDoubt);
     }
+    if (lesson.commentsUrl != null && lesson.commentsUrl!.isNotEmpty) {
+      tabs.add(VideoLessonTab.comments);
+    }
 
     final bool isAiAvailable = lesson.isAiEnabled &&
         lesson.canEnableLearnlensAi &&
@@ -517,6 +520,12 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
                 _videoPlayerKey.currentState?.restorePlayback(),
           ),
         );
+      case VideoLessonTab.comments:
+        return CommentsTab(
+          commentsUrl: widget.lesson.commentsUrl!,
+          lesson: widget.lesson,
+          footerBuilder: widget.footerBuilder,
+        );
       case VideoLessonTab.aiSupport:
         return AITab(
           lesson: widget.lesson,
@@ -603,6 +612,8 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
         return Tab(text: L10n.of(context).videoLessonTabTranscript);
       case VideoLessonTab.askDoubt:
         return Tab(text: L10n.of(context).videoLessonTabAskDoubt);
+      case VideoLessonTab.comments:
+        return const Tab(text: 'Comments');
       case VideoLessonTab.aiSupport:
         return Tab(text: L10n.of(context).videoLessonTabAiSupport);
       case VideoLessonTab.aiMcq:
@@ -631,4 +642,4 @@ class _VideoLessonViewerState extends ConsumerState<VideoLessonViewer>
   }
 }
 
-enum VideoLessonTab { notes, transcript, askDoubt, aiSupport, aiMcq }
+enum VideoLessonTab { notes, transcript, askDoubt, comments, aiSupport, aiMcq }

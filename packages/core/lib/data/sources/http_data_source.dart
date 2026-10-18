@@ -1399,4 +1399,54 @@ class HttpDataSource implements DataSource {
       fromJson: (json) => AttemptDto.fromJson(json),
     );
   }
+
+  // ── Comments ─────────────────────────────────────────────────────────────
+
+  @override
+  Future<PaginatedResponseDto<CommentDto>> getComments({
+    required String commentsUrl,
+    int page = 1,
+    String order = '-created',
+  }) async {
+    return performNetworkRequest(
+      _dio.get(
+        commentsUrl,
+        queryParameters: {
+          'page': page,
+          'order': order,
+        },
+      ),
+      fromJson: (data) => PaginatedResponseDto<CommentDto>.fromJson(
+        data as Map<String, dynamic>,
+        (item) => CommentDto.fromJson(item),
+      ),
+    );
+  }
+
+  @override
+  Future<CommentDto> createComment({
+    required String commentsUrl,
+    required String comment,
+    int? parentId,
+  }) async {
+    final payload = <String, dynamic>{
+      'comment': comment,
+      if (parentId != null) 'parent_id': parentId,
+    };
+    return performNetworkRequest(
+      _dio.post(
+        commentsUrl,
+        data: payload,
+      ),
+      fromJson: (data) => CommentDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<void> deleteComment(int commentId) async {
+    await performNetworkRequest(
+      _dio.delete(ApiEndpoints.commentDetail(commentId.toString())),
+      fromJson: (_) => null,
+    );
+  }
 }

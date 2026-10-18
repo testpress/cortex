@@ -385,4 +385,23 @@ abstract class DataSource {
 
   /// Fetch overall QOTD statistics/summary.
   Future<QotdSummaryDto> getQotdSummary();
+
+  // ── Comments ─────────────────────────────────────────────────────────────
+
+  /// Fetch paginated comments for a content item.
+  Future<PaginatedResponseDto<CommentDto>> getComments({
+    required String commentsUrl,
+    int page = 1,
+    String order = '-created',
+  });
+
+  /// Submit a new comment or reply to an existing comment.
+  Future<CommentDto> createComment({
+    required String commentsUrl,
+    required String comment,
+    int? parentId,
+  });
+
+  /// Delete a comment by ID.
+  Future<void> deleteComment(int commentId);
 }

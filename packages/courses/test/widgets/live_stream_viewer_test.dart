@@ -4,10 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
+import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
 import 'package:courses/repositories/course_repository.dart';
 import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
 import 'package:courses/widgets/lesson_detail/fermion_lobby_view.dart';
+import 'package:courses/widgets/lesson_detail/comments_tab.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
@@ -351,6 +353,69 @@ void main() {
       expect(find.byType(AppWebView), findsOneWidget);
       final webView = tester.widget<AppWebView>(find.byType(AppWebView));
       expect(webView.url, malformedUrl);
+    });
+
+    testWidgets(
+        'renders both Live Chat and Comments tabs when chat and commentsUrl are present',
+        (tester) async {
+      final lessonWithBoth = testTpStreamsWithChatLesson.copyWith(
+        commentsUrl: 'https://example.com/api/v2.3/contents/4/comments/',
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          LiveStreamViewer(lesson: lessonWithBoth),
+          overrides: [
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Live Chat'), findsOneWidget);
+      expect(find.text('Comments'), findsOneWidget);
+      expect(find.byType(AppWebView), findsOneWidget);
+      expect(find.byType(CommentsTab, skipOffstage: false), findsOneWidget);
+
+      // Tap on Comments tab
+      await tester.tap(find.text('Comments'));
+      await tester.pump();
+
+      final indexedStack =
+          tester.widget<IndexedStack>(find.byType(IndexedStack));
+      expect(indexedStack.index, 1);
+      expect(find.byType(CommentsTab), findsOneWidget);
+
+      // Advance timer to let MockDataSource.getComments finish
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets(
+        'renders CommentsTab directly when commentsUrl is present but chat is absent',
+        (tester) async {
+      final lessonWithOnlyComments = testTpStreamsRunningLesson.copyWith(
+        commentsUrl: 'https://example.com/api/v2.3/contents/4/comments/',
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          LiveStreamViewer(lesson: lessonWithOnlyComments),
+          overrides: [
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Live Chat'), findsNothing);
+      expect(find.text('Comments'), findsNothing);
+      expect(find.byType(AppWebView), findsNothing);
+      expect(find.byType(CommentsTab), findsOneWidget);
+
+      // Advance timer to let MockDataSource.getComments finish
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpWidget(const SizedBox());
     });
   });
 

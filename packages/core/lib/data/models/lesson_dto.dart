@@ -91,6 +91,7 @@ class LessonDto {
   final String? accessToken;
   final String? transcodingStatus;
   final bool isFreePreview;
+  final String? commentsUrl;
 
   /// Whether video transcoding is completed (or not set).
   bool get isTranscodingCompleted =>
@@ -217,6 +218,7 @@ class LessonDto {
     this.accessToken,
     this.transcodingStatus,
     this.isFreePreview = false,
+    this.commentsUrl,
   });
 
   LessonDto copyWith({
@@ -280,6 +282,7 @@ class LessonDto {
     String? accessToken,
     String? transcodingStatus,
     bool? isFreePreview,
+    String? commentsUrl,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -343,6 +346,7 @@ class LessonDto {
       accessToken: accessToken ?? this.accessToken,
       transcodingStatus: transcodingStatus ?? this.transcodingStatus,
       isFreePreview: isFreePreview ?? this.isFreePreview,
+      commentsUrl: commentsUrl ?? this.commentsUrl,
     );
   }
 
@@ -505,6 +509,7 @@ class LessonDto {
 
         return type;
       })(),
+      commentsUrl: (commentsUrl?.isEmpty ?? true) ? other.commentsUrl : commentsUrl,
     );
   }
 
@@ -968,6 +973,7 @@ class LessonDto {
                   json['transcoding_status'] ??
                   json['transcodingStatus'])
               ?.toString(),
+      commentsUrl: getString('comments_url') ?? getString('commentsUrl'),
     );
   }
 
@@ -1033,6 +1039,7 @@ class LessonDto {
       'allowDownload': allowDownload,
       'watermarkBeforeDownload': watermarkBeforeDownload,
       'isFreePreview': isFreePreview,
+      'commentsUrl': commentsUrl,
       'exam': exam?.toJson(),
     };
   }

@@ -5,6 +5,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'custom_video_player.dart';
 import 'fermion_lobby_view.dart';
+import 'comments_tab.dart';
 import '../../providers/course_list_provider.dart';
 
 /// Viewer for live stream content.
@@ -31,6 +32,7 @@ class LiveStreamViewer extends ConsumerStatefulWidget {
 
 class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
   Timer? _refreshTimer;
+  int _selectedTabIndex = 0;
 
   @override
   void initState() {
@@ -73,6 +75,66 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
 
   bool get _isFermion => widget.lesson.isFermion;
 
+  Widget _buildTab(BuildContext context, String label, int index) {
+    final design = Design.of(context);
+    final isSelected = _selectedTabIndex == index;
+    return AppSemantics.button(
+      label: label,
+      onTap: () => setState(() => _selectedTabIndex = index),
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedTabIndex = index),
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected
+                    ? design.colors.primary
+                    : design.colors.transparent,
+                width: 2,
+              ),
+            ),
+          ),
+          child: Center(
+            child: AppText.body(
+              label,
+              color: isSelected
+                  ? design.colors.primary
+                  : design.colors.textSecondary,
+              style: TextStyle(
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabBar(BuildContext context) {
+    final design = Design.of(context);
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: design.colors.card,
+        border: Border(
+          bottom: BorderSide(
+            color: design.colors.border,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(child: _buildTab(context, 'Live Chat', 0)),
+          Expanded(child: _buildTab(context, 'Comments', 1)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final lesson = widget.lesson;
@@ -101,6 +163,8 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
     // TpStreams / null provider — inline video player
     final chatEmbedUrl = lesson.chatEmbedUrl?.trim();
     final hasChat = chatEmbedUrl != null && chatEmbedUrl.isNotEmpty;
+    final hasComments =
+        lesson.commentsUrl != null && lesson.commentsUrl!.trim().isNotEmpty;
 
     String? themedChatUrl;
     if (hasChat) {
@@ -121,25 +185,65 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
       }
     }
 
+    final Widget playerWidget = AspectRatio(
+      aspectRatio: 16 / 9,
+      child: CustomVideoPlayer(
+        assetId: lesson.uuid,
+      ),
+    );
+
+    final Widget chatWidget = hasChat
+        ? AppWebView(
+            key: ValueKey('live_chat_webview_${lesson.id}'),
+            url: themedChatUrl!,
+            showHeader: false,
+            useSafeArea: false,
+          )
+        : const ColoredBox(color: Color(0xFF000000));
+
+    final Widget commentsWidget = hasComments
+        ? CommentsTab(
+            commentsUrl: lesson.commentsUrl!,
+            lesson: lesson,
+          )
+        : const SizedBox.shrink();
+
+    if (hasChat && hasComments) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          playerWidget,
+          _buildTabBar(context),
+          Expanded(
+            child: IndexedStack(
+              index: _selectedTabIndex,
+              children: [
+                chatWidget,
+                commentsWidget,
+              ],
+            ),
+          ),
+          if (footerBuilder != null) footerBuilder(context),
+        ],
+      );
+    }
+
+    if (hasComments && !hasChat) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          playerWidget,
+          Expanded(child: commentsWidget),
+          if (footerBuilder != null) footerBuilder(context),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child: CustomVideoPlayer(
-            assetId: lesson.uuid,
-          ),
-        ),
-        Expanded(
-          child: hasChat
-              ? AppWebView(
-                  key: ValueKey('live_chat_webview_${lesson.id}'),
-                  url: themedChatUrl!,
-                  showHeader: false,
-                  useSafeArea: false,
-                )
-              : const ColoredBox(color: Color(0xFF000000)),
-        ),
+        playerWidget,
+        Expanded(child: chatWidget),
         if (footerBuilder != null) footerBuilder(context),
       ],
     );

@@ -30,6 +30,7 @@ export 'providers/lesson_detail_provider.dart';
 export 'providers/live_class_detail_provider.dart';
 export 'providers/course_list_provider.dart';
 export 'providers/lesson_providers.dart';
+export 'providers/lesson_comments_provider.dart';
 export 'providers/recent_activity_provider.dart';
 export 'providers/dashboard_providers.dart';
 export 'screens/store/store_page.dart';

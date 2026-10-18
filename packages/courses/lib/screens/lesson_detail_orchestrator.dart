@@ -15,6 +15,7 @@ import '../widgets/lesson_detail/ask_doubt_fab.dart';
 import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
 import '../widgets/lesson_detail/video_mcq_filter_sheet.dart';
 import '../widgets/lesson_detail/assignment_viewer.dart';
+import '../widgets/lesson_detail/comments_tab.dart';
 import '../providers/downloads_provider.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
@@ -76,6 +77,7 @@ class _LessonDetailOrchestratorState
   bool _alreadyMarkedComplete = false;
   bool _isBookmarkSheetOpen = false;
   bool _isCreateFolderDialogOpen = false;
+  bool _isCommentsSheetOpen = false;
   final ValueNotifier<bool> _isMcqFilterSheetOpen = ValueNotifier<bool>(false);
   String _mcqDifficulty = 'medium';
   int _mcqQuestionCount = 5;
@@ -209,6 +211,7 @@ class _LessonDetailOrchestratorState
         lesson.progressStatus == LessonProgressStatus.completed;
 
     final isLocked = lesson.isLocked && !lesson.isFreePreview;
+    final design = Design.of(context);
 
     return Stack(
       children: [
@@ -253,6 +256,30 @@ class _LessonDetailOrchestratorState
           onNext: lesson.type == LessonType.assignment ? null : widget.onNext,
           onPrevious:
               lesson.type == LessonType.assignment ? null : widget.onPrevious,
+          headerActions: [
+            if (lesson.commentsUrl != null &&
+                lesson.commentsUrl!.isNotEmpty &&
+                lesson.type != LessonType.video &&
+                lesson.type != LessonType.liveStream)
+              AppSemantics.button(
+                label: 'Comments',
+                onTap: () => setState(() => _isCommentsSheetOpen = true),
+                child: AppFocusable(
+                  onTap: () => setState(() => _isCommentsSheetOpen = true),
+                  borderRadius: design.radius.pill,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.messageSquare,
+                        size: 20,
+                        color: design.colors.textPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
           stickyFooter: lesson.type != LessonType.assignment &&
               (lesson.hasEnded ||
                   isLocked ||
@@ -336,6 +363,22 @@ class _LessonDetailOrchestratorState
             lessonId: parsedLessonId,
             category: lesson.type.name,
             onClose: () => setState(() => _isCreateFolderDialogOpen = false),
+          ),
+        if (lesson.commentsUrl != null &&
+            lesson.commentsUrl!.isNotEmpty &&
+            lesson.type != LessonType.video &&
+            lesson.type != LessonType.liveStream)
+          AppBottomSheet(
+            key: const ValueKey('comments_sheet'),
+            isOpen: _isCommentsSheetOpen,
+            onClose: () => setState(() => _isCommentsSheetOpen = false),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.75,
+              child: CommentsTab(
+                commentsUrl: lesson.commentsUrl!,
+                lesson: lesson,
+              ),
+            ),
           ),
       ],
     );

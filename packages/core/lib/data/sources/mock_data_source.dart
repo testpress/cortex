@@ -2334,4 +2334,92 @@ class MockDataSource implements DataSource {
       unansweredCount: 5,
     );
   }
+
+  // ── Comments ─────────────────────────────────────────────────────────────
+
+  @override
+  Future<PaginatedResponseDto<CommentDto>> getComments({
+    required String commentsUrl,
+    int page = 1,
+    String order = '-created',
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 150));
+    return PaginatedResponseDto<CommentDto>(
+      count: _mockCommentsList.length,
+      next: null,
+      previous: null,
+      results: List.unmodifiable(_mockCommentsList),
+    );
+  }
+
+  @override
+  Future<CommentDto> createComment({
+    required String commentsUrl,
+    required String comment,
+    int? parentId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 150));
+    final newComment = CommentDto(
+      id: DateTime.now().millisecondsSinceEpoch,
+      url: 'https://tenant.testpress.in/api/v2.3/comments/${DateTime.now().millisecondsSinceEpoch}/',
+      user: CommentUserDto(
+        id: int.tryParse(mockCurrentUser.id) ?? 1,
+        username: mockCurrentUser.username ?? 'arjun_sharma',
+        displayName: mockCurrentUser.name,
+        photo: mockCurrentUser.avatar,
+      ),
+      parentId: parentId,
+      comment: comment,
+      created: DateTime.now(),
+      modified: DateTime.now(),
+      submitDate: DateTime.now(),
+      isPublic: true,
+    );
+    _mockCommentsList.add(newComment);
+    return newComment;
+  }
+
+  @override
+  Future<void> deleteComment(int commentId) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    _mockCommentsList.removeWhere((c) => c.id == commentId || c.parentId == commentId);
+  }
 }
+
+final List<CommentDto> _mockCommentsList = [
+  CommentDto(
+    id: 1052,
+    url: 'https://tenant.testpress.in/api/v2.3/comments/1052/',
+    user: const CommentUserDto(
+      id: 312,
+      username: 'alex_student',
+      displayName: 'Alex Smith',
+    ),
+    parentId: null,
+    comment: '<p>Could someone clarify why reaction rate doubles at 2:30?</p>',
+    contentObjectId: 4821,
+    contentObjectTitle: 'Introduction to Organic Chemistry',
+    created: DateTime.now().subtract(const Duration(hours: 2)),
+    modified: DateTime.now().subtract(const Duration(hours: 2)),
+    submitDate: DateTime.now().subtract(const Duration(hours: 2)),
+    isPublic: true,
+  ),
+  CommentDto(
+    id: 1053,
+    url: 'https://tenant.testpress.in/api/v2.3/comments/1053/',
+    user: const CommentUserDto(
+      id: 84,
+      username: 'prof_rao',
+      displayName: 'Prof. Rao',
+    ),
+    parentId: 1052,
+    comment: '<p>That is due to Arrhenius equation: every 10-degree rise doubles collision frequency.</p>',
+    contentObjectId: 4821,
+    contentObjectTitle: 'Introduction to Organic Chemistry',
+    created: DateTime.now().subtract(const Duration(hours: 1)),
+    modified: DateTime.now().subtract(const Duration(hours: 1)),
+    submitDate: DateTime.now().subtract(const Duration(hours: 1)),
+    acceptedAnswer: true,
+    isPublic: true,
+  ),
+];

@@ -60,6 +60,7 @@ class InstituteSettings {
   final String? forumLabel;
 
   final bool helpdeskEnabled;
+  final bool moderateComments;
 
   //Security Settings
   final bool allowScreenshotInApp;
@@ -110,6 +111,7 @@ class InstituteSettings {
     required this.forumEnabled,
     required this.forumLabel,
     required this.helpdeskEnabled,
+    this.moderateComments = false,
     required this.allowScreenshotInApp,
     required this.storeEnabled,
     required this.storeLabel,
@@ -183,6 +185,7 @@ class InstituteSettings {
       forumEnabled: json['forum_enabled'] as bool? ?? false,
       forumLabel: json['forum_label'] as String?,
       helpdeskEnabled: json['is_helpdesk_enabled'] as bool? ?? false,
+      moderateComments: json['moderate_comments'] as bool? ?? false,
 
       allowScreenshotInApp: json['allow_screenshot_in_app'] as bool? ?? false,
 
