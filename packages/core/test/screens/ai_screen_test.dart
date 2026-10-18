@@ -290,14 +290,186 @@ void main() {
     expect(find.byIcon(LucideIcons.menu), findsOneWidget);
   });
 
-  testWidgets('renders empty canvas with pinned bottom composer initially', (
+  testWidgets(
+    'renders guided empty state with heading, suggestions, and composer',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      expect(find.text('What can I help with?'), findsOneWidget);
+      expect(find.byType(AiSuggestionCard), findsNWidgets(4));
+      expect(find.text('Explain concept'), findsOneWidget);
+      expect(find.text('Solve problem'), findsOneWidget);
+      expect(find.text('Practice questions'), findsOneWidget);
+      expect(find.text('Study tips'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.bookOpen), findsOneWidget);
+      expect(find.byIcon(LucideIcons.calculator), findsOneWidget);
+      expect(find.byIcon(LucideIcons.fileQuestionMark), findsOneWidget);
+      expect(find.byIcon(LucideIcons.lightbulb), findsOneWidget);
+
+      expect(find.byType(AiComposer), findsOneWidget);
+      expect(find.text('Message'), findsOneWidget);
+      // The new-chat action only appears once a conversation exists.
+      expect(find.byIcon(LucideIcons.plus), findsNothing);
+
+      // The composer sits directly below the suggestion cards.
+      final lastCardBottom = tester
+          .getBottomLeft(find.byType(AiSuggestionCard).last)
+          .dy;
+      final composerTop = tester.getTopLeft(find.byType(AiComposer)).dy;
+      expect(composerTop, greaterThan(lastCardBottom));
+      expect(composerTop - lastCardBottom, lessThan(48.0));
+
+      for (final card in tester.widgetList(find.byType(AiSuggestionCard))) {
+        final size = tester.getSize(find.byWidget(card));
+        expect(size.height, greaterThanOrEqualTo(48.0));
+      }
+    },
+  );
+
+  testWidgets('suggestion cards in a row share the same height', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
 
-    expect(find.byType(AiComposer), findsOneWidget);
-    expect(find.text('Ask AI support'), findsOneWidget);
+    final cards = find.byType(AiSuggestionCard);
+    expect(
+      tester.getSize(cards.at(0)).height,
+      tester.getSize(cards.at(1)).height,
+    );
+    expect(
+      tester.getSize(cards.at(2)).height,
+      tester.getSize(cards.at(3)).height,
+    );
+    expect(
+      tester.getSize(cards.at(0)).width,
+      tester.getSize(cards.at(1)).width,
+    );
+  });
+
+  testWidgets(
+    'tapping a suggestion prefills and focuses the composer without sending',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Explain concept'));
+      await tester.pump();
+
+      final editable = tester.widget<EditableText>(find.byType(EditableText));
+      expect(editable.controller.text, 'Explain the concept of ');
+      expect(
+        editable.controller.selection,
+        const TextSelection.collapsed(offset: 23),
+      );
+      expect(editable.focusNode.hasFocus, isTrue);
+
+      // Nothing was sent: the empty state is still showing.
+      expect(find.text('What can I help with?'), findsOneWidget);
+      expect(find.byType(AiUserMessageBubble), findsNothing);
+      expect(find.text('Message'), findsNothing);
+
+      // The student can finish the prompt and send it.
+      await tester.enterText(
+        find.byType(EditableText),
+        'Explain the concept of inertia',
+      );
+      await tester.pump();
+      await tester.tap(find.byIcon(LucideIcons.arrowUp));
+      await tester.pump();
+
+      expect(find.text('Explain the concept of inertia'), findsOneWidget);
+      expect(find.text('What can I help with?'), findsNothing);
+
+      await tester.pump(const Duration(milliseconds: 1300));
+      await tester.pumpAndSettle();
+    },
+  );
+
+  testWidgets(
+    'empty state keeps the composer above the keyboard on a small screen',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1.0;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      final composerRect = tester.getRect(find.byType(AiComposer));
+      expect(composerRect.bottom, lessThanOrEqualTo(568.0 - 300.0));
+      expect(composerRect.top, greaterThan(0.0));
+    },
+  );
+
+  testWidgets(
+    'docks the composer with a new chat action once a conversation exists',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      container.read(genericAiChatProvider.notifier).setInitialMessages([
+        GenericAiChatMessage(
+          id: 'msg-1',
+          text: 'Hello world',
+          isUser: true,
+          timestamp: DateTime(2026, 10, 13, 14, 36),
+        ),
+      ]);
+      await tester.pumpAndSettle();
+
+      expect(find.text('What can I help with?'), findsNothing);
+      expect(find.byType(AiSuggestionCard), findsNothing);
+      expect(find.byType(AiComposer), findsOneWidget);
+      expect(find.byIcon(LucideIcons.plus), findsOneWidget);
+
+      // The composer is pinned below the message list.
+      final listBottom = tester.getBottomLeft(find.byType(ListView)).dy;
+      final composerTop = tester.getTopLeft(find.byType(AiComposer)).dy;
+      expect(composerTop, greaterThanOrEqualTo(listBottom));
+
+      // The new-chat action keeps a 48dp touch target.
+      final newChat = find.ancestor(
+        of: find.byIcon(LucideIcons.plus),
+        matching: find.byType(GestureDetector),
+      );
+      expect(newChat, findsOneWidget);
+      final newChatSize = tester.getSize(newChat);
+      expect(newChatSize.width, greaterThanOrEqualTo(48.0));
+      expect(newChatSize.height, greaterThanOrEqualTo(48.0));
+
+      await tester.tap(find.byIcon(LucideIcons.plus));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Hello world'), findsNothing);
+      expect(find.text('What can I help with?'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.plus), findsNothing);
+      expect(container.read(genericAiChatProvider).currentChatId, isNull);
+    },
+  );
+
+  testWidgets('opening history dismisses the keyboard', (tester) async {
+    await tester.pumpWidget(buildSubject(onOpenHistory: () {}));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(EditableText));
+    await tester.pump();
+    final editable = tester.widget<EditableText>(find.byType(EditableText));
+    expect(editable.focusNode.hasFocus, isTrue);
+
+    await tester.tap(find.byIcon(LucideIcons.menu));
+    await tester.pump();
+    expect(editable.focusNode.hasFocus, isFalse);
   });
 
   testWidgets('renders user message bubble with timestamp', (tester) async {
@@ -379,6 +551,11 @@ void main() {
 
       expect(find.byType(AppMarkdown), findsOneWidget);
       expect(find.byIcon(LucideIcons.copy), findsOneWidget);
+      // Copy is the only assistant action.
+      expect(find.byIcon(LucideIcons.thumbsUp), findsNothing);
+      expect(find.byIcon(LucideIcons.thumbsDown), findsNothing);
+      expect(find.byIcon(LucideIcons.volume2), findsNothing);
+      expect(find.byIcon(LucideIcons.share2), findsNothing);
       expect(find.byIcon(LucideIcons.moreHorizontal), findsNothing);
       expect(find.text('14:36'), findsOneWidget);
 
@@ -614,7 +791,7 @@ void main() {
     expect(historyCalled, isTrue);
   });
 
-  testWidgets('assistant card places copy button and timestamp inline in a row', (
+  testWidgets('assistant card places the timestamp below the copy button', (
     tester,
   ) async {
     final fixedTime = DateTime(2026, 10, 13, 14, 36);
@@ -632,12 +809,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final copyPos = tester.getTopLeft(find.byIcon(LucideIcons.copy));
-    final timestampPos = tester.getTopLeft(find.text('14:36'));
-    // Vertically aligned within the footer row (within touch target bounds)
-    expect((copyPos.dy - timestampPos.dy).abs(), lessThan(30.0));
-    // Timestamp sits horizontally to the right of the copy/more action controls
-    expect(timestampPos.dx, greaterThan(copyPos.dx));
+    final markdownRect = tester.getRect(find.byType(AppMarkdown));
+    final copyRect = tester.getRect(find.byIcon(LucideIcons.copy));
+    final timestampRect = tester.getRect(find.text('14:36'));
+    // Copy sits under the card, and the timestamp on its own line under copy.
+    expect(copyRect.top, greaterThan(markdownRect.bottom));
+    expect(timestampRect.top, greaterThanOrEqualTo(copyRect.bottom));
+    // Both hug the start edge of the card instead of sitting side by side.
+    expect(timestampRect.left, lessThan(copyRect.left));
+    expect(copyRect.left, lessThan(markdownRect.left + 16.0));
   });
 
   testWidgets('constrains chat column on wide tablet viewport', (tester) async {
@@ -861,7 +1041,7 @@ void main() {
       // Key should now reflect chat-thread-1
       expect(
         find.byKey(const ValueKey('chat-thread-1')),
-        findsNothing, // because it's empty so SizedBox.expand() is shown
+        findsNothing, // because it's empty so the empty state is shown
       );
 
       // Seed messages in thread
