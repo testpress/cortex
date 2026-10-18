@@ -977,7 +977,10 @@ class LessonDto {
                   json['transcodingStatus'])
               ?.toString(),
       isChapterContent:
-          (json['is_chapter_content'] ?? liveStream?['is_chapter_content'])
+          (json['is_chapter_content'] ??
+                  json['isChapterContent'] ??
+                  liveStream?['is_chapter_content'] ??
+                  liveStream?['isChapterContent'])
               as bool? ??
           false,
     );

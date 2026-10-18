@@ -506,6 +506,56 @@ void main() {
       expect(updatedFromDb?.uuid, '7TzkZaA2AYm');
       expect(updatedFromDb?.chapterId, 'ch-971-1');
     });
+
+    test(
+        'refreshLiveClass skips background refreshLesson when chatEmbedUrl already exists in db',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // Pre-seed the lesson with chatEmbedUrl in local DB
+      await db.upsertLessons([
+        const LessonsTableCompanion(
+          id: Value('251197'),
+          chapterId: Value('ch-971-1'),
+          title: Value('BINOMIAL THEOREM LIVE PART-04'),
+          type: Value('liveStream'),
+          duration: Value('180 min'),
+          progressStatus: Value('notStarted'),
+          isLocked: Value(false),
+          orderIndex: Value(0),
+          chatEmbedUrl: Value('https://tpstreams.com/live/chat/6Rg6enGaJ6H'),
+        ),
+      ]);
+
+      fakeSource.liveClassToReturn = const LessonDto(
+        id: '251197',
+        chapterId: '',
+        title: 'BINOMIAL THEOREM LIVE PART-04',
+        type: LessonType.liveStream,
+        duration: '180 min',
+        progressStatus: LessonProgressStatus.notStarted,
+        isLocked: false,
+        orderIndex: 0,
+        uuid: '7TzkZaA2AYm',
+        liveStreamProvider: 'TpStreams',
+        streamStatus: 'live',
+        isChapterContent: true,
+      );
+
+      final result = await repository.refreshLiveClass('251197');
+      expect(
+        result.chatEmbedUrl,
+        'https://tpstreams.com/live/chat/6Rg6enGaJ6H',
+      );
+
+      await pumpEventQueue();
+
+      // Live class detail was called, but background refreshLesson was skipped
+      expect(fakeSource.getLiveClassDetailCallCount, 1);
+      expect(fakeSource.getLessonDetailCallCount, 0);
+    });
   });
 }
 

@@ -811,6 +811,25 @@ void main() {
           expect(merged.courseId, '971');
         },
       );
+
+      test(
+        'preserves isChapterContent across toJson and fromJson roundtrip',
+        () {
+          final dto = LessonDto.fromJson({
+            'id': '251197',
+            'title': 'Sample Live Class',
+            'is_chapter_content': true,
+          });
+
+          expect(dto.isChapterContent, true);
+
+          final json = dto.toJson();
+          expect(json['isChapterContent'], true);
+
+          final roundtripped = LessonDto.fromJson(json);
+          expect(roundtripped.isChapterContent, true);
+        },
+      );
     });
 
     group('Free preview logic', () {
