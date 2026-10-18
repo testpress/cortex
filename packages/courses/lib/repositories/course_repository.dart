@@ -1068,6 +1068,11 @@ class CourseRepository {
     final merged = updated.mergeWith(existing);
 
     await _db.upsertLessons([_lessonDtoToCompanion(merged)]);
+
+    if (dto.isChapterContent) {
+      refreshLesson(id).ignore();
+    }
+
     return merged;
   }
 

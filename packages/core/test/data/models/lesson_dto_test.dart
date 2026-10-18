@@ -749,6 +749,66 @@ void main() {
             dto.contentUrl,
             'https://cortex.fermion.app/embed/live-session?token=abc',
           );
+          expect(dto.isChapterContent, true);
+        },
+      );
+
+      test(
+        'parses TpStreams live class detail and checks isChapterContent for background hydration',
+        () {
+          final json = {
+            'id': 251197,
+            'title': 'BINOMIAL THEOREM LIVE PART-04',
+            'start': '2026-10-18T15:01:00+05:30',
+            'end': null,
+            'duration': 180,
+            'status': 'live',
+            'course_id': 971,
+            'meeting_id': '6Rg6enGaJ6H',
+            'provider': 'TpStreams',
+            'is_chapter_content': true,
+            'detail_url':
+                'https://www.raysonlineportal.in/api/v3/live-classes/contents/251197/',
+            'uuid': '7TzkZaA2AYm',
+            'join_url':
+                'https://d2a0lhgw3cuuqb.cloudfront.net/live/d5e6zm/6Rg6enGaJ6H/video.m3u8',
+            'password': null,
+            'access_token': null,
+            'show_recorded_video': true,
+            'has_recording_expired': false,
+          };
+
+          final dto = LessonDto.fromJson(json);
+
+          expect(dto.type, LessonType.liveStream);
+          expect(dto.id, '251197');
+          expect(dto.isChapterContent, true);
+          expect(dto.uuid, '7TzkZaA2AYm');
+          expect(dto.chatEmbedUrl, isNull);
+
+          // Simulating merging with background content detail (which contains chatEmbedUrl)
+          final contentDetailDto = const LessonDto(
+            id: '251197',
+            chapterId: 'ch-971-1',
+            chapterTitle: 'Binomial Theorem',
+            title: 'BINOMIAL THEOREM LIVE PART-04',
+            type: LessonType.liveStream,
+            duration: '180 min',
+            progressStatus: LessonProgressStatus.notStarted,
+            isLocked: false,
+            orderIndex: 4,
+            chatEmbedUrl: 'https://tpstreams.com/live/chat/6Rg6enGaJ6H',
+            streamStatus: 'running',
+          );
+
+          final merged = contentDetailDto.mergeWith(dto);
+          expect(
+            merged.chatEmbedUrl,
+            'https://tpstreams.com/live/chat/6Rg6enGaJ6H',
+          );
+          expect(merged.uuid, '7TzkZaA2AYm');
+          expect(merged.chapterTitle, 'Binomial Theorem');
+          expect(merged.courseId, '971');
         },
       );
     });

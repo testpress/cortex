@@ -91,6 +91,7 @@ class LessonDto {
   final String? accessToken;
   final String? transcodingStatus;
   final bool isFreePreview;
+  final bool isChapterContent;
 
   /// Whether video transcoding is completed (or not set).
   bool get isTranscodingCompleted =>
@@ -217,6 +218,7 @@ class LessonDto {
     this.accessToken,
     this.transcodingStatus,
     this.isFreePreview = false,
+    this.isChapterContent = false,
   });
 
   LessonDto copyWith({
@@ -280,6 +282,7 @@ class LessonDto {
     String? accessToken,
     String? transcodingStatus,
     bool? isFreePreview,
+    bool? isChapterContent,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -343,6 +346,7 @@ class LessonDto {
       accessToken: accessToken ?? this.accessToken,
       transcodingStatus: transcodingStatus ?? this.transcodingStatus,
       isFreePreview: isFreePreview ?? this.isFreePreview,
+      isChapterContent: isChapterContent ?? this.isChapterContent,
     );
   }
 
@@ -361,6 +365,10 @@ class LessonDto {
         d == '0:00:00';
 
     return copyWith(
+      chapterId: (chapterId.isEmpty && other.chapterId.isNotEmpty)
+          ? other.chapterId
+          : chapterId,
+      isChapterContent: isChapterContent || other.isChapterContent,
       title: (title.isEmpty && other.title.isNotEmpty) ? other.title : title,
       duration: (isDurationEmpty(duration) && !isDurationEmpty(other.duration))
           ? other.duration
@@ -968,6 +976,10 @@ class LessonDto {
                   json['transcoding_status'] ??
                   json['transcodingStatus'])
               ?.toString(),
+      isChapterContent:
+          (json['is_chapter_content'] ?? liveStream?['is_chapter_content'])
+              as bool? ??
+          false,
     );
   }
 
@@ -1033,6 +1045,7 @@ class LessonDto {
       'allowDownload': allowDownload,
       'watermarkBeforeDownload': watermarkBeforeDownload,
       'isFreePreview': isFreePreview,
+      'isChapterContent': isChapterContent,
       'exam': exam?.toJson(),
     };
   }
