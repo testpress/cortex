@@ -509,7 +509,9 @@ class LessonDto {
 
         return type;
       })(),
-      commentsUrl: (commentsUrl?.isEmpty ?? true) ? other.commentsUrl : commentsUrl,
+      commentsUrl: (commentsUrl?.isEmpty ?? true)
+          ? other.commentsUrl
+          : commentsUrl,
     );
   }
 

@@ -1409,13 +1409,7 @@ class HttpDataSource implements DataSource {
     String order = '-created',
   }) async {
     return performNetworkRequest(
-      _dio.get(
-        commentsUrl,
-        queryParameters: {
-          'page': page,
-          'order': order,
-        },
-      ),
+      _dio.get(commentsUrl, queryParameters: {'page': page, 'order': order}),
       fromJson: (data) => PaginatedResponseDto<CommentDto>.fromJson(
         data as Map<String, dynamic>,
         (item) => CommentDto.fromJson(item),
@@ -1434,10 +1428,7 @@ class HttpDataSource implements DataSource {
       if (parentId != null) 'parent_id': parentId,
     };
     return performNetworkRequest(
-      _dio.post(
-        commentsUrl,
-        data: payload,
-      ),
+      _dio.post(commentsUrl, data: payload),
       fromJson: (data) => CommentDto.fromJson(data as Map<String, dynamic>),
     );
   }

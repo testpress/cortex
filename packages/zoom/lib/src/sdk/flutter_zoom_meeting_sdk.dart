@@ -13,8 +13,8 @@ class FlutterZoomMeetingSdk {
   /// mac | ios | android | windows
   /// Triggered when the SDK authentication succeeds or fails.
   Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
-      get onAuthenticationReturn =>
-          FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
+  get onAuthenticationReturn =>
+      FlutterZoomMeetingSdkPlatform.instance.onAuthenticationReturn;
 
   /// mac | ios | android | windows
   /// Triggered when the JWT token is expired. Generate a new token.
@@ -26,28 +26,27 @@ class FlutterZoomMeetingSdk {
   /// mac | ios | android | windows
   /// Triggered when the meeting status changes.
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
-      get onMeetingStatusChanged =>
-          FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
+  get onMeetingStatusChanged =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingStatusChanged;
 
   /// mac | ios | android | windows
   /// Triggered right before the meeting starts.
   Stream<
-          FlutterZoomMeetingSdkEventResponse<
-              EventMeetingParameterNotificationParams>>
-      get onMeetingParameterNotification =>
-          FlutterZoomMeetingSdkPlatform.instance.onMeetingParameterNotification;
+    FlutterZoomMeetingSdkEventResponse<EventMeetingParameterNotificationParams>
+  >
+  get onMeetingParameterNotification =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingParameterNotification;
 
   /// ios
   /// Triggered when a meeting encounters an error
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>
-      get onMeetingError =>
-          FlutterZoomMeetingSdkPlatform.instance.onMeetingError;
+  get onMeetingError => FlutterZoomMeetingSdkPlatform.instance.onMeetingError;
 
   /// ios
   /// Triggered when a meeting ends, providing the end reason.
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>
-      get onMeetingEndedReason =>
-          FlutterZoomMeetingSdkPlatform.instance.onMeetingEndedReason;
+  get onMeetingEndedReason =>
+      FlutterZoomMeetingSdkPlatform.instance.onMeetingEndedReason;
 
   // ---
 

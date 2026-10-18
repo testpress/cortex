@@ -33,7 +33,7 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   /// mac | ios | android | windows
   Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
-      get onAuthenticationReturn;
+  get onAuthenticationReturn;
 
   /// mac | ios | android | windows
   Stream<FlutterZoomMeetingSdkEventResponse> get onZoomAuthIdentityExpired;
@@ -42,21 +42,21 @@ abstract class FlutterZoomMeetingSdkPlatform extends PlatformInterface {
 
   /// mac | ios | android | windows
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
-      get onMeetingStatusChanged;
+  get onMeetingStatusChanged;
 
   /// mac | ios | android | windows
   Stream<
-          FlutterZoomMeetingSdkEventResponse<
-              EventMeetingParameterNotificationParams>>
-      get onMeetingParameterNotification;
+    FlutterZoomMeetingSdkEventResponse<EventMeetingParameterNotificationParams>
+  >
+  get onMeetingParameterNotification;
 
   /// ios
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>
-      get onMeetingError;
+  get onMeetingError;
 
   /// ios
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>
-      get onMeetingEndedReason;
+  get onMeetingEndedReason;
 
   // ---
 

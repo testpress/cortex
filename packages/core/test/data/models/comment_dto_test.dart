@@ -26,11 +26,17 @@ void main() {
       final comment = CommentDto.fromJson(json);
 
       expect(comment.id, 1052);
-      expect(comment.url, 'https://tenant.testpress.in/api/v2.3/comments/1052/');
+      expect(
+        comment.url,
+        'https://tenant.testpress.in/api/v2.3/comments/1052/',
+      );
       expect(comment.user.id, 312);
       expect(comment.user.username, 'alex_student');
       expect(comment.user.displayName, 'Alex Smith');
-      expect(comment.user.photo, 'https://media.testpress.in/photos/312_thumb.jpg');
+      expect(
+        comment.user.photo,
+        'https://media.testpress.in/photos/312_thumb.jpg',
+      );
       expect(comment.parentId, isNull);
       expect(comment.comment, contains('reaction rate'));
       expect(comment.contentObjectId, 4821);
@@ -43,28 +49,44 @@ void main() {
         CommentDto(
           id: 1,
           url: 'url_1',
-          user: const CommentUserDto(id: 1, username: 'user1', displayName: 'User 1'),
+          user: const CommentUserDto(
+            id: 1,
+            username: 'user1',
+            displayName: 'User 1',
+          ),
           parentId: null,
           comment: 'Root comment 1',
         ),
         CommentDto(
           id: 2,
           url: 'url_2',
-          user: const CommentUserDto(id: 2, username: 'user2', displayName: 'User 2'),
+          user: const CommentUserDto(
+            id: 2,
+            username: 'user2',
+            displayName: 'User 2',
+          ),
           parentId: 1,
           comment: 'Reply to comment 1',
         ),
         CommentDto(
           id: 3,
           url: 'url_3',
-          user: const CommentUserDto(id: 3, username: 'user3', displayName: 'User 3'),
+          user: const CommentUserDto(
+            id: 3,
+            username: 'user3',
+            displayName: 'User 3',
+          ),
           parentId: null,
           comment: 'Root comment 2',
         ),
         CommentDto(
           id: 4,
           url: 'url_4',
-          user: const CommentUserDto(id: 1, username: 'user1', displayName: 'User 1'),
+          user: const CommentUserDto(
+            id: 1,
+            username: 'user1',
+            displayName: 'User 1',
+          ),
           parentId: 2,
           comment: 'Nested reply to comment 2',
         ),
@@ -88,7 +110,8 @@ void main() {
         'id': 4821,
         'title': 'Introduction to Organic Chemistry',
         'content_type': 'Video',
-        'comments_url': 'https://tenant.testpress.in/api/v2.3/contents/4821/comments/',
+        'comments_url':
+            'https://tenant.testpress.in/api/v2.3/contents/4821/comments/',
         'duration': '15:00',
         'order': 1,
       };
@@ -97,7 +120,10 @@ void main() {
 
       expect(lesson.id, '4821');
       expect(lesson.title, 'Introduction to Organic Chemistry');
-      expect(lesson.commentsUrl, 'https://tenant.testpress.in/api/v2.3/contents/4821/comments/');
+      expect(
+        lesson.commentsUrl,
+        'https://tenant.testpress.in/api/v2.3/contents/4821/comments/',
+      );
     });
   });
 }

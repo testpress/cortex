@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show TextField, InputDecoration, InputBorder, Material, MaterialType;
+import 'package:flutter/material.dart'
+    show TextField, InputDecoration, InputBorder, Material, MaterialType;
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:core/core.dart';
@@ -39,7 +40,8 @@ class _CommentInputBarState extends State<CommentInputBar> {
   @override
   void didUpdateWidget(covariant CommentInputBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.replyingTo != null && oldWidget.replyingTo?.id != widget.replyingTo?.id) {
+    if (widget.replyingTo != null &&
+        oldWidget.replyingTo?.id != widget.replyingTo?.id) {
       _focusNode.requestFocus();
     }
   }
@@ -186,9 +188,13 @@ class _CommentInputBarState extends State<CommentInputBar> {
                   AppSemantics.button(
                     label: 'Send comment',
                     enabled: _canSubmit && !widget.isSubmitting,
-                    onTap: _canSubmit && !widget.isSubmitting ? _handleSubmit : null,
+                    onTap: _canSubmit && !widget.isSubmitting
+                        ? _handleSubmit
+                        : null,
                     child: AppFocusable(
-                      onTap: _canSubmit && !widget.isSubmitting ? _handleSubmit : null,
+                      onTap: _canSubmit && !widget.isSubmitting
+                          ? _handleSubmit
+                          : null,
                       borderRadius: design.radius.pill,
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(

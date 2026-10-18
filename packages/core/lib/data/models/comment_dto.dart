@@ -21,9 +21,12 @@ class CommentUserDto {
 
   factory CommentUserDto.fromJson(Map<String, dynamic> json) {
     return CommentUserDto(
-      id: json['id'] is int ? json['id'] as int : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      id: json['id'] is int
+          ? json['id'] as int
+          : int.tryParse(json['id']?.toString() ?? '') ?? 0,
       username: json['username']?.toString() ?? '',
-      displayName: json['display_name']?.toString() ??
+      displayName:
+          json['display_name']?.toString() ??
           json['username']?.toString() ??
           '',
       photo: json['photo']?.toString(),
@@ -120,7 +123,9 @@ class CommentDto {
     }
 
     return CommentDto(
-      id: json['id'] is int ? json['id'] as int : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      id: json['id'] is int
+          ? json['id'] as int
+          : int.tryParse(json['id']?.toString() ?? '') ?? 0,
       url: json['url']?.toString() ?? '',
       user: user,
       parentId: json['parent_id'] is int
@@ -135,7 +140,8 @@ class CommentDto {
       acceptedAnswer: json['accepted_answer'] as bool? ?? false,
       isPublic: json['is_public'] as bool? ?? true,
       isReportedByUser: json['is_reported_by_user'] as bool? ?? false,
-      isReportedCommentApproved: json['is_reported_comment_approved'] as bool? ?? false,
+      isReportedCommentApproved:
+          json['is_reported_comment_approved'] as bool? ?? false,
       children: const [],
     );
   }
@@ -198,7 +204,8 @@ class CommentDto {
       acceptedAnswer: acceptedAnswer ?? this.acceptedAnswer,
       isPublic: isPublic ?? this.isPublic,
       isReportedByUser: isReportedByUser ?? this.isReportedByUser,
-      isReportedCommentApproved: isReportedCommentApproved ?? this.isReportedCommentApproved,
+      isReportedCommentApproved:
+          isReportedCommentApproved ?? this.isReportedCommentApproved,
       children: children ?? this.children,
     );
   }
@@ -221,7 +228,8 @@ List<CommentDto> buildCommentTree(List<CommentDto> flatComments) {
     final parentId = comment.parentId;
     if (parentId != null && commentMap.containsKey(parentId)) {
       final parent = commentMap[parentId]!;
-      final updatedChildren = List<CommentDto>.from(parent.children ?? [])..add(current);
+      final updatedChildren = List<CommentDto>.from(parent.children ?? [])
+        ..add(current);
       commentMap[parentId] = parent.copyWith(children: updatedChildren);
     } else {
       rootComments.add(current);

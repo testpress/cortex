@@ -70,8 +70,9 @@ class InitParamsResponse implements MappableParams {
 
   factory InitParamsResponse.fromMap(Map<String, dynamic> map) {
     return InitParamsResponse(
-      statusCode:
-          map['statusCode'] != null ? (map['statusCode'] as num).toInt() : null,
+      statusCode: map['statusCode'] != null
+          ? (map['statusCode'] as num).toInt()
+          : null,
       statusLabel: map['statusLabel'] as String?,
     );
   }

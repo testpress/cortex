@@ -34,7 +34,8 @@ class CommentItemView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final currentUser = ref.watch(userProvider).valueOrNull;
-    final isAuthor = currentUser != null && currentUser.id == comment.user.id.toString();
+    final isAuthor =
+        currentUser != null && currentUser.id == comment.user.id.toString();
 
     final avatarUrl = comment.user.smallImage ??
         comment.user.mediumImage ??
@@ -44,9 +45,7 @@ class CommentItemView extends ConsumerWidget {
         ? comment.user.displayName
         : comment.user.username;
 
-    final initial = displayName.isNotEmpty
-        ? displayName[0].toUpperCase()
-        : '?';
+    final initial = displayName.isNotEmpty ? displayName[0].toUpperCase() : '?';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +60,8 @@ class CommentItemView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(design.radius.pill.topLeft.x),
+                    borderRadius:
+                        BorderRadius.circular(design.radius.pill.topLeft.x),
                     child: Container(
                       width: 32,
                       height: 32,
@@ -109,8 +109,10 @@ class CommentItemView extends ConsumerWidget {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: design.colors.warning.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(design.radius.sm),
+                                  color: design.colors.warning
+                                      .withValues(alpha: 0.15),
+                                  borderRadius:
+                                      BorderRadius.circular(design.radius.sm),
                                 ),
                                 child: AppText.caption(
                                   'Pending Moderation',

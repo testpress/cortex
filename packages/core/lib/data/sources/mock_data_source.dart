@@ -2361,7 +2361,8 @@ class MockDataSource implements DataSource {
     await Future.delayed(const Duration(milliseconds: 150));
     final newComment = CommentDto(
       id: DateTime.now().millisecondsSinceEpoch,
-      url: 'https://tenant.testpress.in/api/v2.3/comments/${DateTime.now().millisecondsSinceEpoch}/',
+      url:
+          'https://tenant.testpress.in/api/v2.3/comments/${DateTime.now().millisecondsSinceEpoch}/',
       user: CommentUserDto(
         id: int.tryParse(mockCurrentUser.id) ?? 1,
         username: mockCurrentUser.username ?? 'arjun_sharma',
@@ -2382,7 +2383,9 @@ class MockDataSource implements DataSource {
   @override
   Future<void> deleteComment(int commentId) async {
     await Future.delayed(const Duration(milliseconds: 100));
-    _mockCommentsList.removeWhere((c) => c.id == commentId || c.parentId == commentId);
+    _mockCommentsList.removeWhere(
+      (c) => c.id == commentId || c.parentId == commentId,
+    );
   }
 }
 
@@ -2413,7 +2416,8 @@ final List<CommentDto> _mockCommentsList = [
       displayName: 'Prof. Rao',
     ),
     parentId: 1052,
-    comment: '<p>That is due to Arrhenius equation: every 10-degree rise doubles collision frequency.</p>',
+    comment:
+        '<p>That is due to Arrhenius equation: every 10-degree rise doubles collision frequency.</p>',
     contentObjectId: 4821,
     contentObjectTitle: 'Introduction to Organic Chemistry',
     created: DateTime.now().subtract(const Duration(hours: 1)),

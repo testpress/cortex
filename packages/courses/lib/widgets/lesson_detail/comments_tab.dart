@@ -52,7 +52,8 @@ class _CommentsTabState extends ConsumerState<CommentsTab> {
   }
 
   Future<void> _handleSubmit(String text) async {
-    final notifier = ref.read(lessonCommentsProvider(widget.commentsUrl).notifier);
+    final notifier =
+        ref.read(lessonCommentsProvider(widget.commentsUrl).notifier);
     try {
       final comment = await notifier.postComment(text);
       if (!mounted) return;
@@ -61,7 +62,8 @@ class _CommentsTabState extends ConsumerState<CommentsTab> {
       if (settings?.moderateComments == true && !comment.isPublic) {
         AppToast.show(
           context,
-          message: 'Your comment has been submitted and is awaiting moderation.',
+          message:
+              'Your comment has been submitted and is awaiting moderation.',
         );
       }
     } catch (_) {
@@ -76,7 +78,8 @@ class _CommentsTabState extends ConsumerState<CommentsTab> {
   }
 
   Future<void> _handleDelete(int commentId) async {
-    final notifier = ref.read(lessonCommentsProvider(widget.commentsUrl).notifier);
+    final notifier =
+        ref.read(lessonCommentsProvider(widget.commentsUrl).notifier);
     try {
       await notifier.deleteComment(commentId);
       if (mounted) {
@@ -97,7 +100,8 @@ class _CommentsTabState extends ConsumerState<CommentsTab> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final commentsAsync = ref.watch(lessonCommentsProvider(widget.commentsUrl));
-    final notifier = ref.read(lessonCommentsProvider(widget.commentsUrl).notifier);
+    final notifier =
+        ref.read(lessonCommentsProvider(widget.commentsUrl).notifier);
 
     return Column(
       children: [
@@ -119,18 +123,21 @@ class _CommentsTabState extends ConsumerState<CommentsTab> {
                     horizontal: design.spacing.md,
                     vertical: design.spacing.md,
                   ),
-                  itemCount: state.treeComments.length + (state.isLoadingMore ? 1 : 0),
+                  itemCount:
+                      state.treeComments.length + (state.isLoadingMore ? 1 : 0),
                   separatorBuilder: (context, index) =>
                       SizedBox(height: design.spacing.sm),
                   itemBuilder: (context, index) {
                     if (index >= state.treeComments.length) {
                       return Padding(
-                        padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+                        padding:
+                            EdgeInsets.symmetric(vertical: design.spacing.md),
                         child: Center(
                           child: SizedBox(
                             width: design.iconSize.md,
                             height: design.iconSize.md,
-                            child: AppLoadingIndicator(size: design.iconSize.md),
+                            child:
+                                AppLoadingIndicator(size: design.iconSize.md),
                           ),
                         ),
                       );
@@ -232,7 +239,8 @@ class _CommentsTabState extends ConsumerState<CommentsTab> {
                   ],
                 ),
                 SizedBox(height: design.spacing.sm),
-                AppText.body('Loading comment content placeholder text here...'),
+                AppText.body(
+                    'Loading comment content placeholder text here...'),
               ],
             ),
           ),

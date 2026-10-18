@@ -27,14 +27,14 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   /// mac | ios | android | windows
   @override
   Stream<FlutterZoomMeetingSdkEventResponse<EventAuthenticateReturnParams>>
-      get onAuthenticationReturn => _eventStream
-          .where((e) => e['event'] == EventType.onAuthenticationReturn.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              EventAuthenticateReturnParams.fromMap,
-            ),
-          );
+  get onAuthenticationReturn => _eventStream
+      .where((e) => e['event'] == EventType.onAuthenticationReturn.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventAuthenticateReturnParams.fromMap,
+        ),
+      );
 
   /// mac | ios | android | windows
   @override
@@ -53,59 +53,58 @@ class MethodChannelFlutterZoomMeetingSdk extends FlutterZoomMeetingSdkPlatform {
   /// mac | ios | android | windows
   @override
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingStatusChangedParams>>
-      get onMeetingStatusChanged => _eventStream
-          .where((e) => e['event'] == EventType.onMeetingStatusChanged.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              EventMeetingStatusChangedParams.fromMap,
-            ),
-          );
+  get onMeetingStatusChanged => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingStatusChanged.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingStatusChangedParams.fromMap,
+        ),
+      );
 
   /// mac | ios | android | windows
   @override
   Stream<
-          FlutterZoomMeetingSdkEventResponse<
-              EventMeetingParameterNotificationParams>>
-      get onMeetingParameterNotification => _eventStream
-          .where((e) =>
-              e['event'] == EventType.onMeetingParameterNotification.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              EventMeetingParameterNotificationParams.fromMap,
-            ),
-          );
+    FlutterZoomMeetingSdkEventResponse<EventMeetingParameterNotificationParams>
+  >
+  get onMeetingParameterNotification => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingParameterNotification.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingParameterNotificationParams.fromMap,
+        ),
+      );
 
   /// ios
   @override
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingErrorParams>>
-      get onMeetingError => _eventStream
-          .where((e) => e['event'] == EventType.onMeetingError.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              EventMeetingErrorParams.fromMap,
-            ),
-          );
+  get onMeetingError => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingError.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingErrorParams.fromMap,
+        ),
+      );
 
   /// ios
   @override
   Stream<FlutterZoomMeetingSdkEventResponse<EventMeetingEndedReasonParams>>
-      get onMeetingEndedReason => _eventStream
-          .where((e) => e['event'] == EventType.onMeetingEndedReason.name)
-          .map(
-            (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
-              event,
-              EventMeetingEndedReasonParams.fromMap,
-            ),
-          );
+  get onMeetingEndedReason => _eventStream
+      .where((e) => e['event'] == EventType.onMeetingEndedReason.name)
+      .map(
+        (event) => FlutterZoomMeetingSdkEventResponse.fromMap(
+          event,
+          EventMeetingEndedReasonParams.fromMap,
+        ),
+      );
 
   // ======= Functions =======
 
   @override
   Future<FlutterZoomMeetingSdkActionResponse<InitParamsResponse>>
-      initZoom() async {
+  initZoom() async {
     final result = await methodChannel.invokeMethod('initZoom');
     final Map<String, dynamic> resultMap = Map<String, dynamic>.from(result);
     return FlutterZoomMeetingSdkActionResponse.fromMap(

@@ -268,7 +268,8 @@ class _LessonDetailOrchestratorState
                   onTap: () => setState(() => _isCommentsSheetOpen = true),
                   borderRadius: design.radius.pill,
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                    constraints:
+                        const BoxConstraints(minWidth: 48, minHeight: 48),
                     child: Center(
                       child: Icon(
                         LucideIcons.messageSquare,
