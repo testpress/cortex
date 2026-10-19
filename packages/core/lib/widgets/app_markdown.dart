@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_smooth_markdown/flutter_smooth_markdown.dart';
 import '../design/design_provider.dart';
+import '../utils/ai_markdown_sanitizer.dart';
 import 'app_text.dart';
 
 /// Platform-neutral Markdown widget aligned with the design system.
@@ -30,7 +31,7 @@ class AppMarkdown extends StatelessWidget {
     );
 
     return SmoothMarkdown(
-      data: data,
+      data: AiMarkdownSanitizer.sanitize(data),
       selectable: selectable,
       onTapLink: onTapLink,
       styleSheet: MarkdownStyleSheet.light(baseStyle: baseStyle).copyWith(
