@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_smooth_markdown/flutter_smooth_markdown.dart';
 import '../design/design_provider.dart';
+import '../utils/ai_markdown_sanitizer.dart';
 import 'app_text.dart';
 
 /// Platform-neutral Markdown widget aligned with the design system.
 ///
 /// Ensures consistent markdown rendering across the app by mapping the
 /// central typography and layout spacing tokens to [SmoothMarkdown].
-class AppMarkdown extends StatelessWidget {
+class AppMarkdown extends StatefulWidget {
   const AppMarkdown({
     super.key,
     required this.data,
@@ -21,6 +22,27 @@ class AppMarkdown extends StatelessWidget {
   final bool selectable;
 
   @override
+  State<AppMarkdown> createState() => _AppMarkdownState();
+}
+
+class _AppMarkdownState extends State<AppMarkdown> {
+  late String _sanitizedData;
+
+  @override
+  void initState() {
+    super.initState();
+    _sanitizedData = AiMarkdownSanitizer.sanitize(widget.data);
+  }
+
+  @override
+  void didUpdateWidget(covariant AppMarkdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.data != widget.data) {
+      _sanitizedData = AiMarkdownSanitizer.sanitize(widget.data);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
@@ -30,9 +52,9 @@ class AppMarkdown extends StatelessWidget {
     );
 
     return SmoothMarkdown(
-      data: data,
-      selectable: selectable,
-      onTapLink: onTapLink,
+      data: _sanitizedData,
+      selectable: widget.selectable,
+      onTapLink: widget.onTapLink,
       styleSheet: MarkdownStyleSheet.light(baseStyle: baseStyle).copyWith(
         textStyle: baseStyle,
         paragraphStyle: baseStyle,
