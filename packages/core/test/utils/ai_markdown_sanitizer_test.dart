@@ -45,11 +45,34 @@ void main() {
       );
     });
 
+    test(
+      'normalizes bracket block math inside lists and blockquotes to double dollars',
+      () {
+        const inputList = r'- Theorem: \[ a^2 + b^2 = c^2 \] in geometry.';
+        expect(
+          AiMarkdownSanitizer.sanitize(inputList),
+          '- Theorem: \n\$\$\na^2 + b^2 = c^2\n\$\$\n in geometry.',
+        );
+
+        const inputQuote = r'> Definition: \[ E = mc^2 \] by Einstein.';
+        expect(
+          AiMarkdownSanitizer.sanitize(inputQuote),
+          '> Definition: \n\$\$\nE = mc^2\n\$\$\n by Einstein.',
+        );
+      },
+    );
+
     test('normalizes paren inline math to single dollars', () {
       const input = r'The value \( x \) is variable.';
       expect(
         AiMarkdownSanitizer.sanitize(input),
         'The value \$x\$ is variable.',
+      );
+
+      const parenSubtraction = r'Calculation \(5-10\) in text.';
+      expect(
+        AiMarkdownSanitizer.sanitize(parenSubtraction),
+        'Calculation \$5-10\$ in text.',
       );
     });
 
@@ -64,6 +87,9 @@ void main() {
     test(
       'auto-closes trailing unclosed double dollars on streaming cutoff',
       () {
+        const trailingChunkOnly = '\$\$';
+        expect(AiMarkdownSanitizer.sanitize(trailingChunkOnly), '\$\$\n\$\$\n');
+
         const cutoffAfterOpening = 'Here is math:\n\$\$';
         expect(
           AiMarkdownSanitizer.sanitize(cutoffAfterOpening),
@@ -80,6 +106,27 @@ void main() {
         expect(
           AiMarkdownSanitizer.sanitize(cutoffMidFormula),
           'Here is math: \$\$ x = 5\n\$\$\n',
+        );
+      },
+    );
+
+    test(
+      'does not trigger auto-close on odd \$\$ inside inline code or code fences',
+      () {
+        const inlineCodeWithOddDollars = 'Process id is `echo \$\$` in bash.';
+        expect(
+          AiMarkdownSanitizer.sanitize(inlineCodeWithOddDollars),
+          inlineCodeWithOddDollars,
+        );
+
+        const codeFenceWithOddDollars = '''
+```bash
+echo \$\$
+```
+''';
+        expect(
+          AiMarkdownSanitizer.sanitize(codeFenceWithOddDollars),
+          codeFenceWithOddDollars,
         );
       },
     );

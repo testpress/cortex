@@ -114,4 +114,37 @@ Geometry plays a crucial role.
       expect(find.textContaining('Parser Error'), findsNothing);
     },
   );
+
+  testWidgets(
+    'AppMarkdown renders bracket block math inside lists and blockquotes without parser error',
+    (tester) async {
+      const rawMarkdown = '''
+- **Pythagorean Theorem:** \\[ a^2 + b^2 = c^2 \\]
+- Next list item
+
+> Quote: \\[ E = mc^2 \\]
+''';
+
+      await tester.pumpWidget(buildSubject(rawMarkdown));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Pythagorean Theorem:'), findsOneWidget);
+      expect(find.textContaining('Next list item'), findsOneWidget);
+      expect(find.textContaining('Quote:'), findsOneWidget);
+      expect(find.textContaining('Parser Error'), findsNothing);
+    },
+  );
+
+  testWidgets('AppMarkdown updates sanitized data when widget data updates', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(r'Initial text: \[ a = 1 \]'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Initial text:'), findsOneWidget);
+
+    await tester.pumpWidget(buildSubject(r'Updated text: \[ b = 2 \]'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Updated text:'), findsOneWidget);
+    expect(find.textContaining('Parser Error'), findsNothing);
+  });
 }
