@@ -74,6 +74,9 @@ void main() {
               pageBuilder: (context, state) => CustomTransitionPage<void>(
                 key: state.pageKey,
                 opaque: false,
+                transitionDuration: DesignConfig.defaults().motion.normal,
+                reverseTransitionDuration:
+                    DesignConfig.defaults().motion.normal,
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) => child,
                 child: const AiChatHistoryScreen(),
@@ -96,7 +99,9 @@ void main() {
     return ProviderScope(
       overrides: [learnLensRepositoryProvider.overrideWithValue(repository)],
       child: MediaQuery(
-        data: MediaQueryData(disableAnimations: reducedMotion),
+        data: MediaQueryData.fromView(
+          WidgetsBinding.instance.platformDispatcher.views.single,
+        ).copyWith(disableAnimations: reducedMotion),
         child: Builder(
           builder: (context) => DesignProvider(
             config: DesignConfig.defaults(context: context),
