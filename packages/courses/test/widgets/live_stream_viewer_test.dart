@@ -352,6 +352,36 @@ void main() {
       final webView = tester.widget<AppWebView>(find.byType(AppWebView));
       expect(webView.url, malformedUrl);
     });
+
+    testWidgets('suppresses AppWebView when TpStreams stream is completed',
+        (tester) async {
+      final completedLesson = testTpStreamsWithChatLesson.copyWith(
+        streamStatus: 'completed',
+      );
+
+      await tester.pumpWidget(
+        wrap(LiveStreamViewer(lesson: completedLesson)),
+      );
+      await tester.pump();
+
+      expect(find.byType(AppWebView), findsNothing);
+      expect(find.byType(ColoredBox), findsOneWidget);
+    });
+
+    testWidgets('suppresses AppWebView when TpStreams streamStatus is ended',
+        (tester) async {
+      final endedLesson = testTpStreamsWithChatLesson.copyWith(
+        streamStatus: 'ended',
+      );
+
+      await tester.pumpWidget(
+        wrap(LiveStreamViewer(lesson: endedLesson)),
+      );
+      await tester.pump();
+
+      expect(find.byType(AppWebView), findsNothing);
+      expect(find.byType(ColoredBox), findsOneWidget);
+    });
   });
 
   group('LiveStreamViewer Polling', () {
