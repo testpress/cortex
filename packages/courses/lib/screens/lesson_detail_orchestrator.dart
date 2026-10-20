@@ -272,7 +272,6 @@ class _LessonDetailOrchestratorState
               LessonType.pdf,
               LessonType.notes,
               LessonType.embedContent,
-              LessonType.liveStream,
               LessonType.attachment,
             ].contains(lesson.type))
           Positioned(
@@ -346,6 +345,8 @@ class _LessonDetailOrchestratorState
     final onNext = widget.onNext;
     final onPrevious = widget.onPrevious;
     final design = Design.of(context);
+    final settings = ref.watch(instituteSettingsProvider);
+    final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
 
     if (lesson.hasEnded) {
       final formattedEnd =
@@ -447,10 +448,43 @@ class _LessonDetailOrchestratorState
         return LiveStreamViewer(
           lesson: lesson,
           onComplete: _markAsCompleted,
-          footerBuilder: (context) => LessonDetailShell.buildStaticFooter(
-            context,
-            onNext: onNext,
-            onPrevious: onPrevious,
+          footerBuilder: (context, {required bool hasLiveChat}) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Suppress Ask Doubt FAB while live chat is active — the chat
+              // WebView already covers the lower half of the screen.
+              if (widget.enableHelpdesk &&
+                  !lesson.hasEnded &&
+                  !isLocked &&
+                  lesson.isComplete &&
+                  helpdeskEnabled &&
+                  !hasLiveChat)
+                Padding(
+                  padding: const EdgeInsets.only(right: 24, bottom: 8),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: AskDoubtFab(
+                      onTap: () {
+                        final uri = Uri(
+                          path: '/home/discussions/doubts/ask',
+                          queryParameters: {
+                            'chapterContentId':
+                                int.tryParse(lesson.id)?.toString() ?? '',
+                            'lessonTitle': lesson.title,
+                            'lessonType': lesson.type.name,
+                          },
+                        );
+                        context.push(uri.toString());
+                      },
+                    ),
+                  ),
+                ),
+              LessonDetailShell.buildStaticFooter(
+                context,
+                onNext: onNext,
+                onPrevious: onPrevious,
+              ),
+            ],
           ),
         );
       case LessonType.videoConference:

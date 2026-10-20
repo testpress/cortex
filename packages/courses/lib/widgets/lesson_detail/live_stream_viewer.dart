@@ -13,6 +13,12 @@ import '../../providers/course_list_provider.dart';
 /// - **Scheduled**: renders [ScheduledMessageView] with a 5-second polling timer.
 /// - **Fermion**: renders a lobby screen ([FermionLobbyView]).
 /// - **TpStreams / null**: renders the existing inline [CustomVideoPlayer].
+///
+/// The [footerBuilder] receives a `hasLiveChat` flag so callers can suppress
+/// overlapping UI (e.g. the AskDoubt FAB) while live chat is visible.
+typedef LiveStreamFooterBuilder = Widget Function(BuildContext context,
+    {required bool hasLiveChat});
+
 class LiveStreamViewer extends ConsumerStatefulWidget {
   const LiveStreamViewer({
     super.key,
@@ -23,7 +29,7 @@ class LiveStreamViewer extends ConsumerStatefulWidget {
 
   final LessonDto lesson;
   final VoidCallback? onComplete;
-  final WidgetBuilder? footerBuilder;
+  final LiveStreamFooterBuilder? footerBuilder;
 
   @override
   ConsumerState<LiveStreamViewer> createState() => _LiveStreamViewerState();
@@ -86,7 +92,7 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
             aspectRatio: 16 / 9,
             child: ScheduledMessageView(message: lesson.scheduledMessage),
           ),
-          if (footerBuilder != null) footerBuilder(context),
+          if (footerBuilder != null) footerBuilder(context, hasLiveChat: false),
         ],
       );
     }
@@ -94,13 +100,20 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
     if (_isFermion) {
       return FermionLobbyView(
         lesson: lesson,
-        footerBuilder: footerBuilder,
+        // Fermion never shows a chat WebView, so hasLiveChat is always false.
+        footerBuilder: footerBuilder != null
+            ? (ctx) => footerBuilder(ctx, hasLiveChat: false)
+            : null,
       );
     }
 
     // TpStreams / null provider — inline video player
     final chatEmbedUrl = lesson.chatEmbedUrl?.trim();
-    final hasChat = chatEmbedUrl != null && chatEmbedUrl.isNotEmpty;
+    // Suppress live chat once the stream has ended — it's irrelevant whether
+    // or not a recording is being served.
+    final hasChat = !lesson.isStreamCompleted &&
+        chatEmbedUrl != null &&
+        chatEmbedUrl.isNotEmpty;
 
     String? themedChatUrl;
     if (hasChat) {
@@ -140,7 +153,7 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
                 )
               : const ColoredBox(color: Color(0xFF000000)),
         ),
-        if (footerBuilder != null) footerBuilder(context),
+        if (footerBuilder != null) footerBuilder(context, hasLiveChat: hasChat),
       ],
     );
   }
