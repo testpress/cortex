@@ -279,14 +279,12 @@ void main() {
     );
   }
 
-  testWidgets('renders header with Back navigation and Menu icon', (
-    tester,
-  ) async {
+  testWidgets('renders landing header with only Menu icon', (tester) async {
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
 
-    expect(find.text('Back'), findsOneWidget);
-    expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
+    expect(find.text('Back'), findsNothing);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
     expect(find.byIcon(LucideIcons.menu), findsOneWidget);
   });
 
@@ -410,7 +408,7 @@ void main() {
   );
 
   testWidgets(
-    'docks the composer with a new chat action once a conversation exists',
+    'docks the composer without plus and returns via conversation Back',
     (tester) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -431,26 +429,18 @@ void main() {
       expect(find.text('What can I help with?'), findsNothing);
       expect(find.byType(AiSuggestionCard), findsNothing);
       expect(find.byType(AiComposer), findsOneWidget);
-      expect(find.byIcon(LucideIcons.plus), findsOneWidget);
+      expect(find.byIcon(LucideIcons.plus), findsNothing);
+      expect(find.text('Back'), findsOneWidget);
 
       // The composer is pinned below the message list.
       final listBottom = tester.getBottomLeft(find.byType(ListView)).dy;
       final composerTop = tester.getTopLeft(find.byType(AiComposer)).dy;
       expect(composerTop, greaterThanOrEqualTo(listBottom));
 
-      // The new-chat action keeps a 48dp touch target.
-      final newChat = find.ancestor(
-        of: find.byIcon(LucideIcons.plus),
-        matching: find.byType(GestureDetector),
-      );
-      expect(newChat, findsOneWidget);
-      final newChatSize = tester.getSize(newChat);
-      expect(newChatSize.width, greaterThanOrEqualTo(48.0));
-      expect(newChatSize.height, greaterThanOrEqualTo(48.0));
-
-      await tester.tap(find.byIcon(LucideIcons.plus));
+      await tester.tap(find.text('Back'));
       await tester.pumpAndSettle();
 
+      expect(find.text('Back'), findsNothing);
       expect(find.text('Hello world'), findsNothing);
       expect(find.text('What can I help with?'), findsOneWidget);
       expect(find.byIcon(LucideIcons.plus), findsNothing);
@@ -768,23 +758,17 @@ void main() {
     );
   });
 
-  testWidgets('invokes custom onBack and onOpenHistory navigation callbacks', (
+  testWidgets('hides landing Back and invokes onOpenHistory callback', (
     tester,
   ) async {
-    var backCalled = false;
     var historyCalled = false;
 
     await tester.pumpWidget(
-      buildSubject(
-        onBack: () => backCalled = true,
-        onOpenHistory: () => historyCalled = true,
-      ),
+      buildSubject(onOpenHistory: () => historyCalled = true),
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Back'));
-    await tester.pump();
-    expect(backCalled, isTrue);
+    expect(find.text('Back'), findsNothing);
 
     await tester.tap(find.byIcon(LucideIcons.menu));
     await tester.pump();

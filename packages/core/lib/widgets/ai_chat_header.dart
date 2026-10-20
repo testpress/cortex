@@ -5,9 +5,9 @@ import '../core.dart';
 class AiChatHeader extends StatelessWidget {
   static const double _maxContentWidth = 768.0;
 
-  const AiChatHeader({super.key, required this.onBack, required this.onMenu});
+  const AiChatHeader({super.key, this.onBack, required this.onMenu});
 
-  final VoidCallback onBack;
+  final VoidCallback? onBack;
   final VoidCallback onMenu;
 
   @override
@@ -34,38 +34,40 @@ class AiChatHeader extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppSemantics.button(
-                    label: l10n.commonBackSemantic,
-                    onTap: onBack,
-                    child: GestureDetector(
+                  if (onBack != null)
+                    AppSemantics.button(
+                      label: l10n.commonBackSemantic,
                       onTap: onBack,
-                      behavior: HitTestBehavior.opaque,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minWidth: 48.0,
-                          minHeight: 48.0,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              LucideIcons.arrowLeft,
-                              color: design.colors.onSurface,
-                              size: design.iconSize.md,
-                            ),
-                            SizedBox(width: design.spacing.sm),
-                            AppText.base(
-                              l10n.commonBackSemantic,
-                              color: design.colors.onSurface,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
+                      child: GestureDetector(
+                        onTap: onBack,
+                        behavior: HitTestBehavior.opaque,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 48.0,
+                            minHeight: 48.0,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                LucideIcons.arrowLeft,
+                                color: design.colors.onSurface,
+                                size: design.iconSize.md,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: design.spacing.sm),
+                              AppText.base(
+                                l10n.commonBackSemantic,
+                                color: design.colors.onSurface,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  if (onBack == null) const Spacer(),
                   AppIconButton(
                     icon: LucideIcons.menu,
                     size: 22.0,
