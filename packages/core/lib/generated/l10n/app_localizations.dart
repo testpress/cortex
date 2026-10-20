@@ -1410,6 +1410,18 @@ abstract class AppLocalizations {
   /// **'My report'**
   String get drawerMyReport;
 
+  /// No description provided for @drawerMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with Us'**
+  String get drawerMessages;
+
+  /// No description provided for @messagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with Us'**
+  String get messagesTitle;
+
   /// No description provided for @drawerProfile.
   ///
   /// In en, this message translates to:

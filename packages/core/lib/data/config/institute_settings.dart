@@ -61,6 +61,9 @@ class InstituteSettings {
 
   final bool helpdeskEnabled;
 
+  final bool messagesEnabled;
+  final String? messagesLabel;
+
   //Security Settings
   final bool allowScreenshotInApp;
   final VideoWatermarkType? videoWatermarkType;
@@ -122,6 +125,8 @@ class InstituteSettings {
     this.enableAiChatbot = false,
     this.videoWatermarkType,
     this.videoWatermarkPosition,
+    this.messagesEnabled = false,
+    this.messagesLabel,
   });
 
   factory InstituteSettings.fromJson(Map<String, dynamic> json) {
@@ -183,6 +188,8 @@ class InstituteSettings {
       forumEnabled: json['forum_enabled'] as bool? ?? false,
       forumLabel: json['forum_label'] as String?,
       helpdeskEnabled: json['is_helpdesk_enabled'] as bool? ?? false,
+      messagesEnabled: json['messages_enabled'] as bool? ?? false,
+      messagesLabel: json['messages_label'] as String?,
 
       allowScreenshotInApp: json['allow_screenshot_in_app'] as bool? ?? false,
 
@@ -251,6 +258,8 @@ class InstituteSettings {
       'forum_enabled': forumEnabled,
       'forum_label': forumLabel,
       'is_helpdesk_enabled': helpdeskEnabled,
+      'messages_enabled': messagesEnabled,
+      'messages_label': messagesLabel,
       'allow_screenshot_in_app': allowScreenshotInApp,
       'store_enabled': storeEnabled,
       'store_label': storeLabel,

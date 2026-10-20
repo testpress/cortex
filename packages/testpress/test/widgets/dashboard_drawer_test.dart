@@ -212,5 +212,111 @@ void main() {
         expect(find.byType(PrivacyPolicyScreen), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'displays Messages item when messagesEnabled is true and hides when false',
+      (tester) async {
+        final container = ProviderContainer(
+          overrides: [
+            isHomeDrawerOpenProvider.overrideWith((ref) => true),
+            instituteSettingsProvider.overrideWith(
+              (ref) =>
+                  InstituteSettings.fromJson(const {'messages_enabled': true}),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: DesignProvider(
+              config: DesignConfig.defaults(),
+              child: LocalizationProvider(
+                child: Builder(
+                  builder: (context) {
+                    final locale = LocalizationProvider.of(context).locale;
+                    return WidgetsApp(
+                      color: const Color(0xFF000000),
+                      locale: locale,
+                      localizationsDelegates: LocalizationProvider.delegates,
+                      pageRouteBuilder:
+                          <T>(RouteSettings settings, WidgetBuilder builder) =>
+                              PageRouteBuilder<T>(
+                                settings: settings,
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        builder(context),
+                              ),
+                      home: const DashboardDrawer(),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Chat with Us'), findsOneWidget);
+
+        // Update settings to disabled
+        container.read(instituteSettingsProvider.notifier).state =
+            InstituteSettings.fromJson(const {'messages_enabled': false});
+        await tester.pumpAndSettle();
+
+        expect(find.text('Chat with Us'), findsNothing);
+      },
+    );
+
+    testWidgets('displays custom messagesLabel in drawer when provided', (
+      tester,
+    ) async {
+      final container = ProviderContainer(
+        overrides: [
+          isHomeDrawerOpenProvider.overrideWith((ref) => true),
+          instituteSettingsProvider.overrideWith(
+            (ref) => InstituteSettings.fromJson(const {
+              'messages_enabled': true,
+              'messages_label': 'Support Center',
+            }),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: DesignProvider(
+            config: DesignConfig.defaults(),
+            child: LocalizationProvider(
+              child: Builder(
+                builder: (context) {
+                  final locale = LocalizationProvider.of(context).locale;
+                  return WidgetsApp(
+                    color: const Color(0xFF000000),
+                    locale: locale,
+                    localizationsDelegates: LocalizationProvider.delegates,
+                    pageRouteBuilder:
+                        <T>(RouteSettings settings, WidgetBuilder builder) =>
+                            PageRouteBuilder<T>(
+                              settings: settings,
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      builder(context),
+                            ),
+                    home: const DashboardDrawer(),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Support Center'), findsOneWidget);
+    });
   });
 }

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 export 'package:webview_flutter/webview_flutter.dart'
-    show NavigationDecision, NavigationRequest;
+    show NavigationDecision, NavigationRequest, WebViewController;
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:file_picker/file_picker.dart';
@@ -33,6 +33,7 @@ class AppWebView extends ConsumerStatefulWidget {
     this.useSafeArea = true,
     this.onNavigationRequest,
     this.onPageFinished,
+    this.onWebViewCreated,
   });
 
   final String url;
@@ -44,6 +45,7 @@ class AppWebView extends ConsumerStatefulWidget {
   final FutureOr<NavigationDecision> Function(NavigationRequest request)?
   onNavigationRequest;
   final void Function(String url)? onPageFinished;
+  final void Function(WebViewController controller)? onWebViewCreated;
 
   /// Helper to construct headers with auth token for secure requests.
   @visibleForTesting
@@ -244,6 +246,7 @@ class _AppWebViewState extends ConsumerState<AppWebView> {
         return <String>[];
       });
     }
+    widget.onWebViewCreated?.call(_controller);
   }
 
   Future<Map<String, String>> _buildHeaders(Uri uri, String url) async {

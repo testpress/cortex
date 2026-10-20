@@ -73,6 +73,7 @@ export 'navigation/app_route.dart';
 export 'navigation/route_names.dart';
 export 'navigation/lesson_router.dart';
 export 'package:go_router/go_router.dart';
+export 'package:url_launcher/url_launcher.dart';
 
 // Accessibility
 export 'accessibility/app_semantics.dart';

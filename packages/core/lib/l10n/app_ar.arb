@@ -246,6 +246,8 @@
   "noDownloadedExamAvailable": "لا يتوفر امتحان تم تنزيله",
   "drawerReports": "التقارير الخاصة بك",
   "drawerMyReport": "تقريري",
+  "drawerMessages": "الرسائل",
+  "messagesTitle": "الرسائل",
   "drawerProfile": "الملف الشخصي",
   "drawerSettings": "إعدادات التطبيق",
   "drawerLoginActivity": "نشاط تسجيل الدخول",

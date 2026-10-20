@@ -158,6 +158,27 @@ void main() {
         );
       },
     );
+
+    testWidgets('invokes onWebViewCreated callback with WebViewController', (
+      tester,
+    ) async {
+      WebViewController? capturedController;
+
+      await tester.pumpWidget(
+        wrap(
+          AppWebView(
+            url: 'https://example.com',
+            onWebViewCreated: (controller) {
+              capturedController = controller;
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(capturedController, isNotNull);
+      expect(capturedController, isA<WebViewController>());
+    });
   });
 }
 

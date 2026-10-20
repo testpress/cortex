@@ -719,6 +719,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerMyReport => 'My report';
 
   @override
+  String get drawerMessages => 'Chat with Us';
+
+  @override
+  String get messagesTitle => 'Chat with Us';
+
+  @override
   String get drawerProfile => 'Profile';
 
   @override
