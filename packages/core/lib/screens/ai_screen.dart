@@ -149,9 +149,10 @@ class _AiScreenState extends ConsumerState<AiScreen> {
     }
   }
 
-  void _handleNewChat() {
-    ref.read(genericAiChatProvider.notifier).startNewChat();
-  }
+  // Reserved for future attachment support in the composer.
+  // void _handleNewChat() {
+  //   ref.read(genericAiChatProvider.notifier).startNewChat();
+  // }
 
   /// Prefills the composer with a starter prompt for the student to finish.
   void _handleSuggestion(String prompt) {
@@ -244,13 +245,13 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         ? _AiNoticeBanner(message: chatState.quotaError!)
         : null;
 
-    Widget buildComposer({VoidCallback? onNewChat}) {
+    Widget buildComposer() {
       return AiComposer(
         enabled: !isInputBlocked,
         onSend: _handleSend,
         controller: _composerController,
         focusNode: _composerFocusNode,
-        onNewChat: onNewChat,
+        // onNewChat: _handleNewChat, // Reserved for future attachments.
       );
     }
 
@@ -260,7 +261,13 @@ class _AiScreenState extends ConsumerState<AiScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AiChatHeader(onBack: _handleBack, onMenu: _handleMenu),
+          AiChatHeader(
+            onBack:
+                chatState.currentChatId != null || displayMessages.isNotEmpty
+                ? _handleBack
+                : null,
+            onMenu: _handleMenu,
+          ),
 
           if (chatState.hasInitError)
             Padding(
@@ -403,14 +410,12 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                     ),
                     child: Padding(
                       padding: EdgeInsetsDirectional.only(
-                        // The new-chat circle sits in a 48dp touch target;
-                        // trim the inset so the circle lands on the gutter.
-                        start: design.spacing.md - design.spacing.xs * 1.5,
+                        start: design.spacing.md,
                         end: design.spacing.md,
                         top: design.spacing.sm * 1.5,
                         bottom: design.spacing.sm * 1.5,
                       ),
-                      child: buildComposer(onNewChat: _handleNewChat),
+                      child: buildComposer(),
                     ),
                   ),
                 ),
