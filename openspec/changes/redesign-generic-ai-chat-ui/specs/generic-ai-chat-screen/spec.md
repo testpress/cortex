@@ -70,3 +70,14 @@ The system SHALL provide a pill-shaped input bar with a "Message" placeholder an
 #### Scenario: Starting a new chat from the composer
 - **WHEN** the user taps the new-chat action next to the composer
 - **THEN** the system SHALL reset to a new conversation and show the empty state.
+
+### Requirement: Streamed Answer Scroll Following
+The chat SHALL preserve the student's reading position while streamed answers grow.
+
+#### Scenario: Following the newest answer
+- **WHEN** streamed text grows and the viewport is less than 96 logical pixels from the bottom
+- **THEN** the chat SHALL follow the new text without an animated transition.
+
+#### Scenario: Reading earlier content
+- **WHEN** streamed text grows while the student is farther from the bottom
+- **THEN** the chat SHALL preserve the scroll position rather than jump to the newest text.

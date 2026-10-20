@@ -50,3 +50,6 @@ The list endpoint returns `title` and `updated_at`. Rows show the title and `Dat
 - **[Risk]** The reference sets answers at 16dp while `AppMarkdown` defaults to 14dp for lesson content. → **Mitigation**: `AppMarkdown` gains an optional `textStyle`; only the assistant card passes the 16dp body style, so other callers are unchanged.
 - **[Risk]** Shared `AiComposer` restyle also changes the legacy immersive screen. → **Mitigation**: New parameters are optional and default to the previous behavior; only colors and metrics change there.
 - **[Trade-off]** Relative times keep the shared formatter's wording ("2 hrs ago") rather than the reference's ("2 hours ago", "Yesterday"), since `DateFormatter` is used outside the chat.
+
+### Review refinements
+Preserve the inherited near-bottom streaming follow behavior: follow deltas within 96 logical pixels of the bottom and leave earlier reading positions undisturbed. The secondary Markdown/LaTeX layout check uses the fast design duration as a settle delay, independent of reduced-motion preferences. The composer's required background cursor color uses the secondary text token.

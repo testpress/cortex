@@ -96,7 +96,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
       });
 
       // Secondary check after asynchronous Markdown/LaTeX math layout settles
-      Future.delayed(const Duration(milliseconds: 150), () {
+      Future.delayed(Design.of(context).motion.fast, () {
         if (mounted) _clampScrollBounds();
       });
     });

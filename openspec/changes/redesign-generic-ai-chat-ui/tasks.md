@@ -32,3 +32,11 @@
 - [ ] 5.3 Run the chat widget tests (left to the requester) and archive the change.
 
 Review notes: analysis is clean for `packages/core` and `packages/testpress/lib/navigation`. The empty, active, streaming, failure, history, dark, right-to-left, small-phone keyboard, and tablet states were rendered with a throwaway harness and compared against the reference images. The project test suite has not been run.
+
+## 6. Review refinements
+
+- [x] 6.1 Use design tokens for the layout-settle delay and background cursor color.
+- [x] 6.2 Document inherited near-bottom streaming scroll behavior.
+- [x] 6.3 Run the redesigned chat widget regression tests and record failures.
+
+Review validation: the chat regression run reported 42 passing tests, seven history-drawer failures and a message-widget test-loading error. Screen and composer tests completed without failures. Full passing validation and archival (5.3) remain pending; no history or message-widget implementation was changed in this review.

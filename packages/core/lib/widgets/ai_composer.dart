@@ -164,7 +164,8 @@ class _AiComposerState extends State<AiComposer> {
                               cursorWidth: 2.0,
                               cursorHeight: 20.0,
                               cursorRadius: const Radius.circular(1.0),
-                              backgroundCursorColor: const Color(0xFF000000),
+                              backgroundCursorColor:
+                                  design.colors.textSecondary,
                               keyboardType: TextInputType.multiline,
                               maxLines: 4,
                               minLines: 1,
