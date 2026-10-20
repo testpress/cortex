@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+
 import '../core.dart';
 
 class AiComposer extends StatefulWidget {
@@ -7,33 +8,57 @@ class AiComposer extends StatefulWidget {
     this.onSend,
     this.enabled = true,
     this.hintText,
+    this.controller,
+    this.focusNode,
+    this.onNewChat,
   });
 
   final ValueChanged<String>? onSend;
   final bool enabled;
   final String? hintText;
 
+  /// Optional externally owned controller, for callers that prefill the input.
+  final TextEditingController? controller;
+
+  /// Optional externally owned focus node, for callers that focus the input.
+  final FocusNode? focusNode;
+
+  /// When provided, a circular new-chat action is shown before the input.
+  ///
+  /// The 36dp circle is centered in a 48dp touch target, so callers aligning
+  /// the circle to a content edge should trim 6dp from that inset.
+  final VoidCallback? onNewChat;
+
   @override
   State<AiComposer> createState() => _AiComposerState();
 }
 
 class _AiComposerState extends State<AiComposer> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
+  static const double _touchTarget = 48.0;
+  static const double _sendButtonSize = 32.0;
+  static const double _newChatButtonSize = 36.0;
+  static const double _maxInputHeight = 120.0;
+
+  TextEditingController? _ownController;
+  FocusNode? _ownFocusNode;
   late final ScrollController _textScrollController;
+
+  TextEditingController get _controller =>
+      widget.controller ?? (_ownController ??= TextEditingController());
+
+  FocusNode get _focusNode =>
+      widget.focusNode ?? (_ownFocusNode ??= FocusNode());
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
-    _focusNode = FocusNode();
     _textScrollController = ScrollController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
+    _ownController?.dispose();
+    _ownFocusNode?.dispose();
     _textScrollController.dispose();
     super.dispose();
   }
@@ -53,7 +78,6 @@ class _AiComposerState extends State<AiComposer> {
       widget.onSend?.call(text);
       _controller.clear();
       _focusNode.unfocus();
-      setState(() {});
     }
   }
 
@@ -62,72 +86,148 @@ class _AiComposerState extends State<AiComposer> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final placeholder = widget.hintText ?? l10n.aiComposerPlaceholder;
-    final hasText = _controller.text.trim().isNotEmpty && widget.enabled;
+    final onNewChat = widget.onNewChat;
+    final textInset = design.spacing.sm + design.spacing.xs;
 
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        color: design.colors.card,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: design.colors.border.withValues(alpha: 0.6),
-          width: 1.0,
-        ),
-      ),
-      padding: EdgeInsetsDirectional.only(start: design.spacing.md),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: 36.0,
-                maxHeight: 120.0,
-              ),
-              child: Stack(
-                alignment: Alignment.centerLeft,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
-                    child: EditableText(
-                      key: const ValueKey('ai_composer_editable_text'),
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      scrollController: _textScrollController,
-                      readOnly: !widget.enabled,
-                      style: design.typography.body.copyWith(
-                        color: widget.enabled
-                            ? design.colors.textPrimary
-                            : design.colors.textTertiary,
-                        height: 1.4,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (onNewChat != null) ...[
+          AppSemantics.button(
+            label: l10n.aiStartNewChat,
+            onTap: onNewChat,
+            child: GestureDetector(
+              onTap: onNewChat,
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox(
+                width: _touchTarget,
+                height: _touchTarget,
+                child: Center(
+                  child: Container(
+                    width: _newChatButtonSize,
+                    height: _newChatButtonSize,
+                    decoration: BoxDecoration(
+                      color: design.colors.surfaceVariant,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.plus,
+                        color: design.colors.onSurface,
+                        size: design.iconSize.md,
                       ),
-                      cursorColor: design.colors.primary,
-                      cursorWidth: 2.0,
-                      cursorHeight: 18.0,
-                      cursorRadius: const Radius.circular(1.0),
-                      backgroundCursorColor: const Color(0xFF000000),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 4,
-                      minLines: 1,
-                      onChanged: (_) {
-                        setState(() {});
-                      },
                     ),
                   ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: design.spacing.xs / 2),
+        ],
+        Expanded(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: design.colors.card,
+              borderRadius: BorderRadius.circular(design.radius.xxl),
+              border: Border.all(color: design.colors.border, width: 1.0),
+            ),
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: design.spacing.md + design.spacing.xs,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: _touchTarget,
+                        maxHeight: _maxInputHeight,
+                      ),
+                      child: Stack(
+                        alignment: AlignmentDirectional.centerStart,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: textInset),
+                            child: EditableText(
+                              key: const ValueKey('ai_composer_editable_text'),
+                              controller: _controller,
+                              focusNode: _focusNode,
+                              scrollController: _textScrollController,
+                              readOnly: !widget.enabled,
+                              style: design.typography.body.copyWith(
+                                color: widget.enabled
+                                    ? design.colors.textPrimary
+                                    : design.colors.textTertiary,
+                              ),
+                              cursorColor: design.colors.primary,
+                              cursorWidth: 2.0,
+                              cursorHeight: 20.0,
+                              cursorRadius: const Radius.circular(1.0),
+                              backgroundCursorColor:
+                                  design.colors.textSecondary,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 4,
+                              minLines: 1,
+                            ),
+                          ),
+                          ValueListenableBuilder<TextEditingValue>(
+                            valueListenable: _controller,
+                            builder: (context, value, _) {
+                              if (value.text.isNotEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return IgnorePointer(
+                                child: AppText.body(
+                                  placeholder,
+                                  color: design.colors.textSecondary,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: design.spacing.xs),
                   ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _controller,
                     builder: (context, value, _) {
-                      if (value.text.isNotEmpty) {
-                        return const SizedBox.shrink();
-                      }
-                      return IgnorePointer(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: design.spacing.sm,
-                          ),
-                          child: AppText.body(
-                            placeholder,
-                            color: design.colors.textTertiary,
+                      final hasText =
+                          value.text.trim().isNotEmpty && widget.enabled;
+                      return AppSemantics.button(
+                        label: l10n.aiComposerSendMessage,
+                        enabled: hasText,
+                        onTap: hasText ? _submit : null,
+                        child: GestureDetector(
+                          onTap: hasText ? _submit : null,
+                          behavior: HitTestBehavior.opaque,
+                          child: SizedBox(
+                            width: _touchTarget,
+                            height: _touchTarget,
+                            child: Center(
+                              child: Container(
+                                width: _sendButtonSize,
+                                height: _sendButtonSize,
+                                decoration: BoxDecoration(
+                                  color: hasText
+                                      ? design.colors.textPrimary
+                                      : design.colors.textPrimary.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    LucideIcons.arrowUp,
+                                    color: design.colors.textInverse,
+                                    size: design.iconSize.sm,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -137,43 +237,8 @@ class _AiComposerState extends State<AiComposer> {
               ),
             ),
           ),
-          SizedBox(width: design.spacing.sm),
-          AppSemantics.button(
-            label: l10n.aiComposerSendMessage,
-            enabled: hasText,
-            onTap: hasText ? _submit : null,
-            child: GestureDetector(
-              onTap: hasText ? _submit : null,
-              behavior: HitTestBehavior.opaque,
-              child: SizedBox(
-                width: 48.0,
-                height: 48.0,
-                child: Center(
-                  child: Container(
-                    width: 32.0,
-                    height: 32.0,
-                    decoration: BoxDecoration(
-                      color: hasText
-                          ? design.colors.primary
-                          : design.colors.primary.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        LucideIcons.arrowUp,
-                        color: hasText
-                            ? design.colors.textInverse
-                            : design.colors.primary.withValues(alpha: 0.4),
-                        size: 18.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

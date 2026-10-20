@@ -3365,7 +3365,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unable to connect to AI assistant. Check your connection.';
 
   @override
-  String get aiComposerPlaceholder => 'Ask AI support';
+  String get aiComposerPlaceholder => 'Message';
 
   @override
   String get aiComposerAttachImage => 'Attach image';
@@ -3406,6 +3406,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiGeneratingResponse => 'Generating response...';
+
+  @override
+  String get aiEmptyStateTitle => 'What can I help with?';
+
+  @override
+  String get aiSuggestionExplainConcept => 'Explain concept';
+
+  @override
+  String get aiSuggestionSolveProblem => 'Solve problem';
+
+  @override
+  String get aiSuggestionPracticeQuestions => 'Practice questions';
+
+  @override
+  String get aiSuggestionStudyTips => 'Study tips';
+
+  @override
+  String get aiSuggestionExplainConceptPrompt => 'Explain the concept of ';
+
+  @override
+  String get aiSuggestionSolveProblemPrompt => 'Help me solve this problem: ';
+
+  @override
+  String get aiSuggestionPracticeQuestionsPrompt =>
+      'Give me practice questions on ';
+
+  @override
+  String get aiSuggestionStudyTipsPrompt => 'Give me study tips for ';
 
   @override
   String get announcementsQuickLinks => 'Quick Links';

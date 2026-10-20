@@ -1017,7 +1017,10 @@ void main() {
     });
 
     tearDown(() async {
-      if (!controller.isClosed) await controller.close();
+      if (!controller.isClosed) {
+        if (capturedRequestId == null) controller.stream.listen((_) {});
+        await controller.close();
+      }
     });
 
     test(
@@ -1644,7 +1647,9 @@ void main() {
 
         expect(fakeRepository.streamConversationCalls, 0);
         expect(fakeRepository.startConversationCalls, 1);
+        expect(fakeRepository.getStatusCalls, 0);
         final state = container.read(genericAiChatProvider);
+        expect(state.isGenerating, isFalse);
         expect(state.messages.length, 2);
         expect(state.messages[1].text, 'Answer to Hello from web');
         expect(state.messages.where((m) => m.isStreaming), isEmpty);

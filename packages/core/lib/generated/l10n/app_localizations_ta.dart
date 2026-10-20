@@ -3417,7 +3417,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'AI உதவியாளருடன் இணைக்க முடியவில்லை. உங்கள் இணைப்பைச் சரிபார்க்கவும்.';
 
   @override
-  String get aiComposerPlaceholder => 'AI ஆதரவிடம் கேளுங்கள்';
+  String get aiComposerPlaceholder => 'செய்தி';
 
   @override
   String get aiComposerAttachImage => 'படத்தை இணைக்கவும்';
@@ -3458,6 +3458,37 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get aiGeneratingResponse => 'பதில் உருவாக்கப்படுகிறது...';
+
+  @override
+  String get aiEmptyStateTitle => 'நான் எதில் உதவலாம்?';
+
+  @override
+  String get aiSuggestionExplainConcept => 'கருத்தை விளக்கு';
+
+  @override
+  String get aiSuggestionSolveProblem => 'கணக்கைத் தீர்';
+
+  @override
+  String get aiSuggestionPracticeQuestions => 'பயிற்சி வினாக்கள்';
+
+  @override
+  String get aiSuggestionStudyTips => 'படிப்பு குறிப்புகள்';
+
+  @override
+  String get aiSuggestionExplainConceptPrompt =>
+      'இந்தக் கருத்தை விளக்குங்கள்: ';
+
+  @override
+  String get aiSuggestionSolveProblemPrompt =>
+      'இந்தக் கணக்கைத் தீர்க்க உதவுங்கள்: ';
+
+  @override
+  String get aiSuggestionPracticeQuestionsPrompt =>
+      'இந்தத் தலைப்பில் பயிற்சி வினாக்களைக் கொடுங்கள்: ';
+
+  @override
+  String get aiSuggestionStudyTipsPrompt =>
+      'இந்தத் தலைப்புக்கான படிப்பு குறிப்புகளைக் கொடுங்கள்: ';
 
   @override
   String get announcementsQuickLinks => 'விரைவு இணைப்புகள்';
