@@ -530,3 +530,106 @@ class AiMessagePageResult {
   const AiMessagePageResult({required this.items, this.nextCursor})
     : hasMore = nextCursor != null && nextCursor.length > 0;
 }
+
+/// Kinds of server-sent events emitted by the LearnLens streaming routes.
+enum AiChatStreamEventType {
+  /// The turn was accepted; carries the IDs and provisional title.
+  accepted,
+
+  /// A piece of answer text to append to the provisional answer.
+  delta,
+
+  /// The stream has ended; carries the authoritative turn state.
+  done,
+
+  /// The server could not finish the stream; the saved outcome is unknown.
+  error,
+}
+
+/// One parsed event from `POST /stream/` endpoint
+class AiChatStreamEvent {
+  final AiChatStreamEventType type;
+
+  /// Turn payload for [AiChatStreamEventType.accepted] and
+  /// [AiChatStreamEventType.done].
+  final AiChatTurnResponseDto? turn;
+
+  /// Text piece for [AiChatStreamEventType.delta].
+  final String text;
+
+  /// Machine-readable code for [AiChatStreamEventType.error].
+  final String? errorCode;
+
+  /// Human-readable explanation for [AiChatStreamEventType.error].
+  final String? errorMessage;
+
+  const AiChatStreamEvent._({
+    required this.type,
+    this.turn,
+    this.text = '',
+    this.errorCode,
+    this.errorMessage,
+  });
+
+  const AiChatStreamEvent.accepted(AiChatTurnResponseDto turn)
+    : this._(type: AiChatStreamEventType.accepted, turn: turn);
+
+  const AiChatStreamEvent.delta(String text)
+    : this._(type: AiChatStreamEventType.delta, text: text);
+
+  const AiChatStreamEvent.done(AiChatTurnResponseDto turn)
+    : this._(type: AiChatStreamEventType.done, turn: turn);
+
+  const AiChatStreamEvent.error({String? code, String? message})
+    : this._(
+        type: AiChatStreamEventType.error,
+        errorCode: code,
+        errorMessage: message,
+      );
+
+  bool get isAccepted => type == AiChatStreamEventType.accepted;
+  bool get isDelta => type == AiChatStreamEventType.delta;
+  bool get isDone => type == AiChatStreamEventType.done;
+  bool get isError => type == AiChatStreamEventType.error;
+
+  /// Whether this stream event terminates the stream.
+  bool get isTerminal => isDone || isError;
+
+  /// Builds an event from an SSE `event` name and already-decoded JSON `data`.
+  ///
+  /// Returns null for unknown event names so callers can ignore them.
+  /// Throws [FormatException] when the payload shape does not match the
+  /// documented contract.
+  static AiChatStreamEvent? fromJson(String eventName, Object? data) {
+    switch (eventName) {
+      case 'accepted':
+        return AiChatStreamEvent.accepted(
+          AiChatTurnResponseDto.fromJson(_requireMap(data, eventName)),
+        );
+      case 'delta':
+        final map = _requireMap(data, eventName);
+        final text = map['text'];
+        if (text != null && text is! String) {
+          throw FormatException('delta.text must be a string');
+        }
+        return AiChatStreamEvent.delta((text as String?) ?? '');
+      case 'done':
+        return AiChatStreamEvent.done(
+          AiChatTurnResponseDto.fromJson(_requireMap(data, eventName)),
+        );
+      case 'error':
+        final map = _requireMap(data, eventName);
+        return AiChatStreamEvent.error(
+          code: map['code']?.toString(),
+          message: map['message']?.toString(),
+        );
+      default:
+        return null;
+    }
+  }
+
+  static Map<String, dynamic> _requireMap(Object? data, String eventName) {
+    if (data is Map<String, dynamic>) return data;
+    throw FormatException('$eventName payload must be a JSON object');
+  }
+}

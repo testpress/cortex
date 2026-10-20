@@ -28,6 +28,83 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   AiChatPolicyDto? get policy =>
       const AiChatPolicyDto(maxMessageCharacters: 4000);
 
+  int streamConversationCalls = 0;
+  int streamFollowUpCalls = 0;
+
+  /// When set, scripts the events of the next streamed submission.
+  Stream<AiChatStreamEvent> Function(
+    String requestId,
+    String query,
+    String? chatId,
+  )?
+  streamFactory;
+
+  @override
+  Stream<AiChatStreamEvent> streamConversation({
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    streamConversationCalls++;
+    final factory = streamFactory;
+    if (factory != null) {
+      lastRequestId = requestId;
+      lastQuery = query;
+      return factory(requestId, query, null);
+    }
+    return _synthesizeStream(
+      () => startConversation(requestId: requestId, query: query),
+    );
+  }
+
+  @override
+  Stream<AiChatStreamEvent> streamFollowUpMessage({
+    required String chatId,
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    streamFollowUpCalls++;
+    final factory = streamFactory;
+    if (factory != null) {
+      lastChatId = chatId;
+      lastRequestId = requestId;
+      lastQuery = query;
+      return factory(requestId, query, chatId);
+    }
+    return _synthesizeStream(
+      () => sendFollowUpMessage(
+        chatId: chatId,
+        requestId: requestId,
+        query: query,
+      ),
+    );
+  }
+
+  /// Mirrors the JSON turn behaviour as `accepted` + `done` events so the
+  /// existing scenarios also exercise the streaming path.
+  Stream<AiChatStreamEvent> _synthesizeStream(
+    Future<AiChatTurnResponseDto> Function() call,
+  ) async* {
+    final turn = await call();
+    final gen = turn.generation;
+    yield AiChatStreamEvent.accepted(
+      AiChatTurnResponseDto(
+        answer: null,
+        chatId: turn.chatId,
+        title: turn.title,
+        generation: AiGenerationDto(
+          generationId: gen.generationId,
+          requestId: gen.requestId,
+          userMessageId: gen.userMessageId,
+          status: 'processing',
+          createdAt: gen.createdAt,
+        ),
+      ),
+    );
+    yield AiChatStreamEvent.done(turn);
+  }
+
   Object? ensureSessionError;
 
   @override
@@ -103,6 +180,7 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   }
 
   Completer<AiConversationDto>? statusCompleter;
+  Object? getStatusError;
 
   @override
   Future<AiConversationDto> getConversationStatus({
@@ -110,6 +188,9 @@ class _FakeLearnLensRepository implements LearnLensRepository {
     CancelToken? cancelToken,
   }) async {
     getStatusCalls++;
+    if (getStatusError != null) {
+      throw getStatusError!;
+    }
     if (statusCompleter != null) {
       return statusCompleter!.future;
     }
@@ -875,6 +956,698 @@ void main() {
         expect(preserved.errorCode, 'some_code');
         expect(preserved.requestId, 'req_123');
         expect(preserved.text, 'updated text');
+      },
+    );
+  });
+
+  group('GenericAiChatNotifier - Streaming', () {
+    AiGenerationDto generation({
+      required String requestId,
+      String status = 'processing',
+      String? assistantMessageId,
+      String? errorMessage,
+    }) {
+      return AiGenerationDto(
+        generationId: 'gen-stream',
+        requestId: requestId,
+        userMessageId: 'usr-stream',
+        assistantMessageId: assistantMessageId,
+        status: status,
+        errorMessage: errorMessage,
+        createdAt: DateTime.now().toUtc(),
+        finishedAt: status == 'processing' ? null : DateTime.now().toUtc(),
+      );
+    }
+
+    AiChatTurnResponseDto turn({
+      required String requestId,
+      String chatId = 'chat-stream',
+      String title = 'Streamed title',
+      String? answer,
+      String status = 'processing',
+      String? assistantMessageId,
+      String? errorMessage,
+    }) {
+      return AiChatTurnResponseDto(
+        answer: answer,
+        chatId: chatId,
+        title: title,
+        generation: generation(
+          requestId: requestId,
+          status: status,
+          assistantMessageId: assistantMessageId,
+          errorMessage: errorMessage,
+        ),
+      );
+    }
+
+    late StreamController<AiChatStreamEvent> controller;
+    String? capturedRequestId;
+    String? capturedChatId;
+
+    setUp(() {
+      controller = StreamController<AiChatStreamEvent>();
+      capturedRequestId = null;
+      capturedChatId = null;
+      fakeRepository.streamFactory = (requestId, query, chatId) {
+        capturedRequestId = requestId;
+        capturedChatId = chatId;
+        return controller.stream;
+      };
+    });
+
+    tearDown(() async {
+      if (!controller.isClosed) await controller.close();
+    });
+
+    test(
+      'renders user message immediately, appends deltas progressively, and replaces provisional text with done.answer',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+
+        final sendFuture = notifier.sendMessage(
+          'What is Newton\'s second law?',
+        );
+
+        var state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 1);
+        expect(state.messages.single.isUser, isTrue);
+        expect(state.messages.single.isSending, isTrue);
+        expect(state.isSending, isTrue);
+        expect(state.isGenerating, isTrue);
+        expect(fakeRepository.streamConversationCalls, 1);
+        expect(capturedChatId, isNull);
+
+        final requestId = capturedRequestId!;
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        await pumpEventQueue();
+
+        state = container.read(genericAiChatProvider);
+        expect(state.currentChatId, 'chat-stream');
+        expect(state.currentTitle, 'Streamed title');
+        expect(state.isSending, isFalse);
+        expect(state.isGenerating, isTrue);
+        expect(state.messages.length, 2);
+        expect(state.messages[0].id, 'usr-stream');
+        expect(state.messages[0].isSending, isFalse);
+        expect(state.messages[1].isUser, isFalse);
+        expect(state.messages[1].isStreaming, isTrue);
+        expect(state.messages[1].text, isEmpty);
+
+        controller.add(const AiChatStreamEvent.delta('Newton\'s second law '));
+        controller.add(const AiChatStreamEvent.delta('states that F = ma.'));
+        await pumpEventQueue();
+
+        state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 2);
+        expect(
+          state.messages[1].text,
+          'Newton\'s second law states that F = ma.',
+        );
+        expect(state.messages[1].isStreaming, isTrue);
+
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              title: 'Newton\'s Second Law',
+              answer: 'Newton\'s second law states that F = ma.',
+              status: 'completed',
+              assistantMessageId: 'ast-stream',
+            ),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 2, reason: 'answer must not duplicate');
+        expect(state.messages[1].id, 'ast-stream');
+        expect(
+          state.messages[1].text,
+          'Newton\'s second law states that F = ma.',
+        );
+        expect(state.messages[1].isStreaming, isFalse);
+        expect(state.currentTitle, 'Newton\'s Second Law');
+        expect(state.isGenerating, isFalse);
+        expect(state.isSending, isFalse);
+      },
+    );
+
+    test(
+      'done.answer overrides provisional text even when deltas differ',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        controller.add(const AiChatStreamEvent.delta('partial garbage'));
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              answer: 'Authoritative answer',
+              status: 'completed',
+              assistantMessageId: 'ast-1',
+            ),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 2);
+        expect(state.messages[1].text, 'Authoritative answer');
+        expect(state.messages.where((m) => m.isStreaming), isEmpty);
+      },
+    );
+
+    test(
+      'done with status failed discards provisional text and shows the failure card',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        controller.add(const AiChatStreamEvent.delta('half an answer'));
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              status: 'failed',
+              errorMessage: 'Unable to generate a response.',
+            ),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 2);
+        expect(state.messages[0].isUser, isTrue);
+        expect(state.messages[0].hasSendError, isFalse);
+        expect(state.messages[1].hasGenerationError, isTrue);
+        expect(state.messages[1].isStreaming, isFalse);
+        expect(state.messages[1].text, isEmpty);
+        expect(
+          state.messages[1].errorMessage,
+          'Unable to generate a response.',
+        );
+        expect(state.isGenerating, isFalse);
+      },
+    );
+
+    test(
+      'done with status processing (replay) hands off to status polling',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.pollingInterval = const Duration(milliseconds: 5);
+        fakeRepository.nextStatusResponse = AiConversationDto(
+          chatId: 'chat-stream',
+          generation: generation(
+            requestId: 'ignored',
+            status: 'completed',
+            assistantMessageId: 'ast-poll',
+          ),
+        );
+
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(requestId: requestId, status: 'processing'),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        expect(container.read(genericAiChatProvider).isGenerating, isTrue);
+
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+
+        final state = container.read(genericAiChatProvider);
+        expect(fakeRepository.getStatusCalls, greaterThanOrEqualTo(1));
+        expect(fakeRepository.getMessagesCalls, 1);
+        expect(state.isGenerating, isFalse);
+        expect(state.messages.where((m) => m.isStreaming), isEmpty);
+        expect(state.messages.map((m) => m.id), ['msg-1', 'msg-2']);
+      },
+    );
+
+    test(
+      'error event after acceptance recovers the saved answer from status and history',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+
+        fakeRepository.nextStatusResponse = AiConversationDto(
+          chatId: 'chat-stream',
+          title: 'Recovered title',
+          generation: generation(
+            requestId: requestId,
+            status: 'completed',
+            assistantMessageId: 'ast-rec',
+          ),
+        );
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        controller.add(const AiChatStreamEvent.delta('partial'));
+        controller.add(
+          const AiChatStreamEvent.error(
+            code: 'stream_failed',
+            message: 'The response stream could not be completed.',
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(fakeRepository.getStatusCalls, 1);
+        expect(fakeRepository.getMessagesCalls, 1);
+        expect(state.messages.map((m) => m.id), ['msg-1', 'msg-2']);
+        expect(state.messages.where((m) => m.isStreaming), isEmpty);
+        expect(state.currentTitle, 'Recovered title');
+        expect(state.isGenerating, isFalse);
+        expect(state.isSending, isFalse);
+        // Recovery never resubmits.
+        expect(fakeRepository.streamConversationCalls, 1);
+        expect(fakeRepository.startConversationCalls, 0);
+      },
+    );
+
+    test(
+      'disconnect without done after acceptance polls while the generation is still processing',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.pollingInterval = const Duration(milliseconds: 5);
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+
+        fakeRepository.nextStatusResponse = AiConversationDto(
+          chatId: 'chat-stream',
+          generation: generation(requestId: requestId, status: 'processing'),
+        );
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        await controller.close();
+        await sendFuture;
+
+        var state = container.read(genericAiChatProvider);
+        expect(state.isGenerating, isTrue, reason: 'still waiting on server');
+        expect(state.messages.last.isStreaming, isTrue);
+        expect(fakeRepository.getStatusCalls, 1);
+
+        fakeRepository.nextStatusResponse = AiConversationDto(
+          chatId: 'chat-stream',
+          generation: generation(
+            requestId: requestId,
+            status: 'failed',
+            errorMessage: 'Timed out',
+          ),
+        );
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+
+        state = container.read(genericAiChatProvider);
+        expect(state.isGenerating, isFalse);
+        expect(state.messages.where((m) => m.isStreaming), isEmpty);
+        expect(state.messages.last.hasGenerationError, isTrue);
+        expect(state.messages.last.errorMessage, 'Timed out');
+      },
+    );
+
+    test(
+      'disconnect before acceptance marks the message for manual retry and preserves the request ID',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 1);
+        expect(state.messages.single.hasSendError, isTrue);
+        expect(state.messages.single.isSending, isFalse);
+        expect(state.messages.single.requestId, requestId);
+        expect(state.isGenerating, isFalse);
+        expect(state.isSending, isFalse);
+        expect(fakeRepository.getStatusCalls, 0);
+        expect(fakeRepository.streamConversationCalls, 1);
+
+        // Manual retry replays the exact same request ID on the same route.
+        controller = StreamController<AiChatStreamEvent>();
+        final retryFuture = notifier.retryLastSend();
+        expect(fakeRepository.streamConversationCalls, 2);
+        expect(fakeRepository.streamFollowUpCalls, 0);
+        expect(capturedRequestId, requestId);
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              answer: 'Replayed answer',
+              status: 'completed',
+              assistantMessageId: 'ast-replay',
+            ),
+          ),
+        );
+        await controller.close();
+        await retryFuture;
+
+        final replayed = container.read(genericAiChatProvider);
+        expect(replayed.messages.length, 2);
+        expect(replayed.messages[1].text, 'Replayed answer');
+      },
+    );
+
+    test(
+      'retry of an uncertain first message stays on the first-message route after chat_id is learned',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+        final requestId = capturedRequestId!;
+
+        // Status lookup fails during recovery.
+        fakeRepository.getStatusError = const LearnLensException(
+          message: 'No internet connection',
+          code: 'network_error',
+        );
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        await controller.close();
+        await sendFuture;
+
+        var state = container.read(genericAiChatProvider);
+        expect(state.currentChatId, 'chat-stream');
+        expect(state.messages.length, 1);
+        expect(state.messages.single.hasSendError, isTrue);
+        expect(state.messages.single.requestId, requestId);
+        expect(state.isGenerating, isFalse);
+
+        fakeRepository.getStatusError = null;
+        controller = StreamController<AiChatStreamEvent>();
+        final retryFuture = notifier.retryLastSend();
+
+        expect(fakeRepository.streamConversationCalls, 2);
+        expect(fakeRepository.streamFollowUpCalls, 0);
+        expect(capturedChatId, isNull);
+        expect(capturedRequestId, requestId);
+
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              answer: 'A',
+              status: 'completed',
+              assistantMessageId: 'ast-1',
+            ),
+          ),
+        );
+        await controller.close();
+        await retryFuture;
+
+        state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 2);
+        expect(state.messages[1].text, 'A');
+      },
+    );
+
+    test(
+      'status showing a different request marks the submission as not accepted',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        await notifier.selectConversation('chat-existing');
+        fakeRepository.nextStatusResponse = AiConversationDto(
+          chatId: 'chat-existing',
+          generation: generation(
+            requestId: 'someone-else',
+            status: 'completed',
+          ),
+        );
+
+        final sendFuture = notifier.sendMessage('Follow up');
+        final requestId = capturedRequestId!;
+        expect(fakeRepository.streamFollowUpCalls, 1);
+        expect(capturedChatId, 'chat-existing');
+
+        controller.addError(
+          const LearnLensException(
+            message: 'Connection timed out',
+            code: 'timeout',
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(fakeRepository.getStatusCalls, 1);
+        final userMsg = state.messages.last;
+        expect(userMsg.isUser, isTrue);
+        expect(userMsg.hasSendError, isTrue);
+        expect(userMsg.requestId, requestId);
+        expect(state.isGenerating, isFalse);
+      },
+    );
+
+    test(
+      'pre-stream 401 rejection uses the send-error path without recovery',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+
+        controller.addError(
+          const LearnLensException(
+            message: 'Unable to connect to AI assistant. Please try again.',
+            code: 'session_missing_or_expired',
+            statusCode: 401,
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.single.hasSendError, isTrue);
+        expect(state.messages.single.errorCode, 'session_missing_or_expired');
+        expect(state.isGenerating, isFalse);
+        expect(fakeRepository.getStatusCalls, 0);
+      },
+    );
+
+    test('pre-stream 429 quota rejection blocks further sends', () async {
+      final notifier = container.read(genericAiChatProvider.notifier);
+      final sendFuture = notifier.sendMessage('Q');
+
+      controller.addError(
+        LearnLensException(
+          message: 'Hourly limit reached',
+          code: 'hourly_message_limit',
+          statusCode: 429,
+          retryAt: DateTime.now().toUtc().add(const Duration(minutes: 10)),
+        ),
+      );
+      await controller.close();
+      await sendFuture;
+
+      final state = container.read(genericAiChatProvider);
+      expect(state.hasActiveRateLimit, isTrue);
+      expect(state.quotaError, 'Hourly limit reached');
+
+      await notifier.sendMessage('Another');
+      expect(fakeRepository.streamConversationCalls, 1);
+    });
+
+    test(
+      'malformed stream surfaces as a send error without exposing raw exceptions',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q');
+
+        controller.addError(
+          const LearnLensException(
+            message: 'Received an invalid response from AI assistant.',
+            code: 'malformed_stream_event',
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.single.hasSendError, isTrue);
+        expect(state.messages.single.errorCode, 'malformed_stream_event');
+        expect(state.isGenerating, isFalse);
+        expect(state.isSending, isFalse);
+      },
+    );
+
+    test(
+      'late stream events are ignored after the user starts a new chat',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q in A');
+        final requestId = capturedRequestId!;
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        await pumpEventQueue();
+        expect(
+          container.read(genericAiChatProvider).currentChatId,
+          'chat-stream',
+        );
+
+        notifier.startNewChat();
+
+        controller.add(const AiChatStreamEvent.delta('late text'));
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              answer: 'late answer',
+              status: 'completed',
+              assistantMessageId: 'ast-late',
+            ),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.currentChatId, isNull);
+        expect(state.messages, isEmpty);
+        expect(state.isGenerating, isFalse);
+      },
+    );
+
+    test(
+      'late stream events cannot update a newly selected conversation',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('Q in A');
+        final requestId = capturedRequestId!;
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        await pumpEventQueue();
+
+        await notifier.selectConversation('chat-B');
+        final before = container.read(genericAiChatProvider).messages;
+
+        controller.add(const AiChatStreamEvent.delta('from A'));
+        controller.add(
+          const AiChatStreamEvent.error(code: 'stream_failed', message: 'x'),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.currentChatId, 'chat-B');
+        expect(state.messages.map((m) => m.id), before.map((m) => m.id));
+        expect(state.messages.any((m) => m.text.contains('from A')), isFalse);
+        expect(state.isGenerating, isFalse);
+        // Recovery for A was skipped: only the selectConversation load ran.
+        expect(fakeRepository.getStatusCalls, 0);
+        expect(fakeRepository.getMessagesCalls, 1);
+      },
+    );
+
+    test(
+      'duplicate submissions are ignored while a stream is active',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final sendFuture = notifier.sendMessage('First');
+        final requestId = capturedRequestId!;
+
+        await notifier.sendMessage('Second while streaming');
+        expect(fakeRepository.streamConversationCalls, 1);
+        expect(container.read(genericAiChatProvider).messages.length, 1);
+
+        controller.add(AiChatStreamEvent.accepted(turn(requestId: requestId)));
+        await pumpEventQueue();
+        await notifier.sendMessage('Third while streaming');
+        expect(fakeRepository.streamConversationCalls, 1);
+        expect(fakeRepository.streamFollowUpCalls, 0);
+
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              answer: 'A',
+              status: 'completed',
+              assistantMessageId: 'ast-1',
+            ),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        // Once finished, a follow-up is accepted on the learned chat.
+        controller = StreamController<AiChatStreamEvent>();
+        final followUp = notifier.sendMessage('Fourth');
+        expect(fakeRepository.streamFollowUpCalls, 1);
+        expect(capturedChatId, 'chat-stream');
+        await controller.close();
+        await followUp;
+      },
+    );
+
+    test(
+      'follow-up stream targets the active conversation and appends in place',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        await notifier.selectConversation('hist-1');
+        expect(container.read(genericAiChatProvider).messages.length, 2);
+
+        final sendFuture = notifier.sendMessage('Follow up');
+        final requestId = capturedRequestId!;
+        expect(capturedChatId, 'hist-1');
+
+        controller.add(
+          AiChatStreamEvent.accepted(
+            turn(requestId: requestId, chatId: 'hist-1'),
+          ),
+        );
+        controller.add(const AiChatStreamEvent.delta('More '));
+        controller.add(const AiChatStreamEvent.delta('detail.'));
+        controller.add(
+          AiChatStreamEvent.done(
+            turn(
+              requestId: requestId,
+              chatId: 'hist-1',
+              answer: 'More detail.',
+              status: 'completed',
+              assistantMessageId: 'ast-follow',
+            ),
+          ),
+        );
+        await controller.close();
+        await sendFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.currentChatId, 'hist-1');
+        expect(state.messages.map((m) => m.id), [
+          'msg-1',
+          'msg-2',
+          'usr-stream',
+          'ast-follow',
+        ]);
+        expect(state.messages.last.text, 'More detail.');
+      },
+    );
+
+    test(
+      'web mode keeps the JSON turn route and never opens a stream',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.useStreaming = false;
+
+        await notifier.sendMessage('Hello from web');
+
+        expect(fakeRepository.streamConversationCalls, 0);
+        expect(fakeRepository.startConversationCalls, 1);
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 2);
+        expect(state.messages[1].text, 'Answer to Hello from web');
+        expect(state.messages.where((m) => m.isStreaming), isEmpty);
       },
     );
   });

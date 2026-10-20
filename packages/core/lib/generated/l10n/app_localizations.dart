@@ -6113,6 +6113,12 @@ abstract class AppLocalizations {
   /// **'Sending...'**
   String get aiMessageSending;
 
+  /// No description provided for @aiGeneratingResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating response...'**
+  String get aiGeneratingResponse;
+
   /// No description provided for @announcementsQuickLinks.
   ///
   /// In en, this message translates to:

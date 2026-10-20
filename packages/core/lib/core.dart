@@ -86,6 +86,7 @@ export 'network/dio_provider.dart';
 export 'network/file_downloader.dart';
 export 'network/network_utils.dart';
 export 'network/learnlens_network_client.dart';
+export 'network/sse_parser.dart';
 export 'network/learnlens_session_manager.dart';
 export 'data/exceptions/learnlens_exception.dart';
 export 'data/providers/generic_ai_chat_provider.dart';

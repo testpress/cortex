@@ -3405,6 +3405,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiMessageSending => 'Sending...';
 
   @override
+  String get aiGeneratingResponse => 'Generating response...';
+
+  @override
   String get announcementsQuickLinks => 'Quick Links';
 
   @override

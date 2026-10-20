@@ -1301,6 +1301,7 @@
   "aiRetrySendMessageSemantic": "انقر لإعادة إرسال الرسالة",
   "aiTapToRetry": "انقر لإعادة المحاولة",
   "aiMessageSending": "جارٍ الإرسال...",
+  "aiGeneratingResponse": "جارٍ إنشاء الرد...",
   "announcementsQuickLinks": "روابط سريعة",
   "announcementsFilterByCategory": "تصفية حسب الفئة",
   "announcementsAllPosts": "جميع الإعلانات",
