@@ -761,19 +761,14 @@ void main() {
   testWidgets('hides landing Back and invokes onOpenHistory callback', (
     tester,
   ) async {
-    var backCalled = false;
     var historyCalled = false;
 
     await tester.pumpWidget(
-      buildSubject(
-        onBack: () => backCalled = true,
-        onOpenHistory: () => historyCalled = true,
-      ),
+      buildSubject(onOpenHistory: () => historyCalled = true),
     );
     await tester.pumpAndSettle();
 
     expect(find.text('Back'), findsNothing);
-    expect(backCalled, isFalse);
 
     await tester.tap(find.byIcon(LucideIcons.menu));
     await tester.pump();

@@ -19,8 +19,9 @@ class AiScreen extends ConsumerStatefulWidget {
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
 
-  /// Optional back navigation callback.
-  /// If null, pops if possible ([Navigator.canPop]).
+  /// Optional fallback for back navigation when no conversation is active.
+  /// The landing header hides Back; conversation Back resets the chat first.
+  /// If null, the fallback pops if possible ([Navigator.canPop]).
   final VoidCallback? onBack;
 
   /// Optional menu/history navigation callback.
@@ -238,6 +239,8 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         !chatState.isLoadingMessages &&
         !chatState.hasMessagesError;
 
+    final showBack =
+        chatState.currentChatId != null || displayMessages.isNotEmpty;
     final canvasColor = aiChatCanvasColor(design);
 
     final quotaBanner =
@@ -262,10 +265,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AiChatHeader(
-            onBack:
-                chatState.currentChatId != null || displayMessages.isNotEmpty
-                ? _handleBack
-                : null,
+            onBack: showBack ? _handleBack : null,
             onMenu: _handleMenu,
           ),
 
