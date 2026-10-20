@@ -3,13 +3,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   const columnWidth = 400.0;
   const longMessage =
       'Show me similar practice questions about momentum, impulse, and '
       'collisions so I can revise before the test';
 
-  final radius = DesignConfig.defaults().radius;
-  final colors = DesignConfig.defaults().colors;
+  final radius = DesignRadius.defaults();
+  final colors = DesignColors.defaults();
 
   Widget buildSubject(
     Widget child, {
