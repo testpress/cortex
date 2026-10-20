@@ -52,7 +52,8 @@ class _AppMarkdownState extends State<AppMarkdown> {
     final design = Design.of(context);
 
     final baseStyle =
-        textStyle ?? design.typography.body.copyWith(fontSize: 14, height: 1.5);
+        widget.textStyle ??
+        design.typography.body.copyWith(fontSize: 14, height: 1.5);
 
     return SmoothMarkdown(
       data: _sanitizedData,
