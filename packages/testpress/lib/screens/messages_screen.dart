@@ -38,7 +38,9 @@ bool isAllowedMessagesInAppNavigation(Uri uri, String? domainHost) {
     return false;
   }
 
-  return path.startsWith('/messages') || path.startsWith('/api/');
+  return path == '/messages' ||
+      path.startsWith('/messages/') ||
+      path.startsWith('/api/');
 }
 
 /// A dedicated screen for displaying student-staff messages.

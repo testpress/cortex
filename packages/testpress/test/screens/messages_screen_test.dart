@@ -547,6 +547,13 @@ void main() {
         ),
         isFalse,
       );
+      expect(
+        isAllowedMessagesInAppNavigation(
+          Uri.parse('https://test.testpress.in/messages-archive'),
+          domainHost,
+        ),
+        isFalse,
+      );
     });
 
     test('returns false for non-http/https schemes', () {
