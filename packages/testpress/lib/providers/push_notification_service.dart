@@ -21,6 +21,8 @@ class PushNotificationService {
 
   bool _isInitialized = false;
   String? _pendingDeepLink;
+  DateTime? _pendingDeepLinkTimestamp;
+  static const Duration _pendingLinkTtl = Duration(minutes: 30);
 
   PushNotificationService(this._ref);
 
@@ -28,49 +30,65 @@ class PushNotificationService {
     if (_isInitialized) return;
     _isInitialized = true;
 
+    void flushPendingLink() {
+      if (_pendingDeepLink != null) {
+        final path = _pendingDeepLink!;
+        final timestamp = _pendingDeepLinkTimestamp;
+        _pendingDeepLink = null;
+        _pendingDeepLinkTimestamp = null;
+        if (timestamp != null &&
+            DateTime.now().difference(timestamp) <= _pendingLinkTtl) {
+          _dispatchRoute(path);
+        }
+      }
+    }
+
+    // 1. Replay pending deep link once bootstrap transitions to authenticated
+    _ref.listen<BootstrapState>(bootstrapProvider, (_, next) {
+      if (next == BootstrapState.authenticated) {
+        flushPendingLink();
+      }
+    });
+
     final messaging = FirebaseMessaging.instance;
 
-    // 1. Request Notification Permissions (iOS & Android 13+)
+    // 2. Request Notification Permissions (iOS & Android 13+)
     await messaging.requestPermission(alert: true, badge: true, sound: true);
 
-    // 2. Initialize Local Notifications (For Foreground Alerts)
+    // 3. Initialize Local Notifications (For Foreground Alerts)
     await _initLocalNotifications();
 
-    // 3. Listen to Foreground Messages
+    // 4. Listen to Foreground Messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(message);
     });
 
-    // 4. Listen to Taps when app is in Background (but running)
+    // 5. Listen to Taps when app is in Background (but running)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _handleDeepLink(_extractUrl(message));
     });
 
-    // 5. Listen to Token Refreshes
+    // 6. Listen to Token Refreshes
     messaging.onTokenRefresh.listen((token) {
       _syncDeviceToken(token);
     });
 
-    // 6. Handle App Launches from Terminated State
+    // 7. Handle App Launches from Terminated State
     final initialMessage = await messaging.getInitialMessage();
     if (initialMessage != null) {
       _handleDeepLink(_extractUrl(initialMessage));
     }
 
-    // 7. Initial Token Sync if user is logged in
+    // 8. Initial Token Sync if user is logged in
     final token = await messaging.getToken();
     if (token != null) {
       _syncDeviceToken(token);
     }
 
-    // 8. Replay pending deep link once bootstrap transitions to authenticated
-    _ref.listen<BootstrapState>(bootstrapProvider, (_, next) {
-      if (next == BootstrapState.authenticated && _pendingDeepLink != null) {
-        final path = _pendingDeepLink!;
-        _pendingDeepLink = null;
-        _dispatchRoute(path);
-      }
-    });
+    // 9. Flush pending deep link if bootstrap reached authenticated during initialization
+    if (_ref.read(bootstrapProvider) == BootstrapState.authenticated) {
+      flushPendingLink();
+    }
   }
 
   Future<void> _initLocalNotifications() async {
@@ -187,6 +205,7 @@ class PushNotificationService {
     } else {
       // Store pending path to dispatch as soon as the user is authenticated (last tap wins)
       _pendingDeepLink = targetPath;
+      _pendingDeepLinkTimestamp = DateTime.now();
     }
   }
 
