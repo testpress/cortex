@@ -9,6 +9,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/providers/notification_preferences_provider.dart';
 import '../navigation/app_router.dart';
+import '../navigation/deep_link_handler.dart';
 
 part 'push_notification_service.g.dart';
 
@@ -40,7 +41,11 @@ class PushNotificationService {
 
     // 4. Listen to Taps when app is in Background (but running)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleDeepLink(message.data['short_url']);
+      final url =
+          message.data['short_url'] ??
+          message.data['url'] ??
+          message.data['link'];
+      _handleDeepLink(url);
     });
 
     // 5. Listen to Token Refreshes
@@ -51,7 +56,11 @@ class PushNotificationService {
     // 6. Handle App Launches from Terminated State
     final initialMessage = await messaging.getInitialMessage();
     if (initialMessage != null) {
-      _handleDeepLink(initialMessage.data['short_url']);
+      final url =
+          initialMessage.data['short_url'] ??
+          initialMessage.data['url'] ??
+          initialMessage.data['link'];
+      _handleDeepLink(url);
     }
 
     // 7. Initial Token Sync if user is logged in
@@ -108,7 +117,10 @@ class PushNotificationService {
   void _showLocalNotification(RemoteMessage message) {
     final title = message.data['title'] ?? message.notification?.title;
     final summary = message.data['summary'] ?? message.notification?.body;
-    final url = message.data['short_url'];
+    final url =
+        message.data['short_url'] ??
+        message.data['url'] ??
+        message.data['link'];
 
     if (title != null && summary != null) {
       final preferences = _ref.read(notificationPreferencesProvider);
@@ -155,13 +167,19 @@ class PushNotificationService {
   }
 
   void _handleDeepLink(String? url) {
-    if (url == null || url.isEmpty) return;
+    if (url == null || url.trim().isEmpty) return;
 
-    final uri = Uri.tryParse(url);
-    if (uri != null) {
+    try {
+      final targetPath = DeepLinkHandler.resolve(url);
       final router = _ref.read(goRouterProvider);
-      final path = uri.path.startsWith('/') ? uri.path : '/${uri.path}';
-      router.push(path);
+      router.push(targetPath);
+    } catch (_) {
+      try {
+        final router = _ref.read(goRouterProvider);
+        router.push(DeepLinkHandler.defaultRoute);
+      } catch (_) {
+        // Safe fallback failed silently
+      }
     }
   }
 
