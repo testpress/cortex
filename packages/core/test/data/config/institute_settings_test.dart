@@ -45,5 +45,26 @@ void main() {
       expect(settings.enableAiTab, isTrue);
       expect(settings.toJson()['enable_ai_chatbot'], isTrue);
     });
+
+    test(
+      'parses messages_enabled and messages_label correctly and defaults properly',
+      () {
+        final jsonDefault = {'name': 'Test Institute'};
+        final defaultSettings = InstituteSettings.fromJson(jsonDefault);
+        expect(defaultSettings.messagesEnabled, isFalse);
+        expect(defaultSettings.messagesLabel, isNull);
+
+        final jsonEnabled = {
+          'name': 'Test Institute',
+          'messages_enabled': true,
+          'messages_label': 'Support Desk',
+        };
+        final enabledSettings = InstituteSettings.fromJson(jsonEnabled);
+        expect(enabledSettings.messagesEnabled, isTrue);
+        expect(enabledSettings.messagesLabel, 'Support Desk');
+        expect(enabledSettings.toJson()['messages_enabled'], isTrue);
+        expect(enabledSettings.toJson()['messages_label'], 'Support Desk');
+      },
+    );
   });
 }

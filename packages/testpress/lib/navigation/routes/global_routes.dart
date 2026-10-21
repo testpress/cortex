@@ -6,6 +6,7 @@ import 'package:courses/courses.dart';
 
 import '../../screens/bookmarks/bookmarks_screen.dart';
 import '../../screens/my_report_screen.dart';
+import '../../screens/messages_screen.dart';
 import '../../screens/dashboard/qotd_screen.dart';
 import '../../screens/live_streams/live_stream_list_screen.dart';
 
@@ -133,6 +134,11 @@ class GlobalRoutes {
       path: '/my-report',
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => const MyReportScreen(),
+    ),
+    GoRoute(
+      path: '/messages',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const MessagesScreen(),
     ),
     GoRoute(
       path: '/qotd',

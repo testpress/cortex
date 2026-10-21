@@ -58,4 +58,22 @@ class UserRepository {
   Future<String> getPresignedSsoUrl() {
     return _source.getPresignedSsoUrl();
   }
+
+  /// Resolves an authenticated SSO URL for WebViews with the destination [nextPath].
+  ///
+  /// Combines the presigned SSO path from the backend with [domainUrl]
+  /// (falling back to [apiBaseUrl] or [AppConfig.apiBaseUrl]) and the encoded [nextPath].
+  Future<String> getAuthenticatedSsoUrl({
+    required String nextPath,
+    String? domainUrl,
+    String? apiBaseUrl,
+  }) async {
+    final ssoPath = await getPresignedSsoUrl();
+    return buildAuthenticatedSsoUrl(
+      ssoPath: ssoPath,
+      nextPath: nextPath,
+      domainUrl: domainUrl,
+      apiBaseUrl: apiBaseUrl,
+    );
+  }
 }

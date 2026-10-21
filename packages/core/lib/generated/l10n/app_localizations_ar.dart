@@ -718,6 +718,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerMyReport => 'تقريري';
 
   @override
+  String get drawerMessages => 'الرسائل';
+
+  @override
+  String get messagesTitle => 'الرسائل';
+
+  @override
+  String get couldNotOpenLink => 'تعذر فتح الرابط';
+
+  @override
   String get drawerProfile => 'الملف الشخصي';
 
   @override

@@ -53,5 +53,38 @@ void main() {
       expect(cachedUser?.id, equals('123'));
       expect(cachedUser?.username, equals('testuser'));
     });
+
+    test('getPresignedSsoUrl delegates directly to dataSource', () async {
+      when(
+        mockSource.getPresignedSsoUrl(),
+      ).thenAnswer((_) async => '/sso/auth/token123/');
+
+      final ssoPath = await repository.getPresignedSsoUrl();
+
+      expect(ssoPath, equals('/sso/auth/token123/'));
+      verify(mockSource.getPresignedSsoUrl()).called(1);
+    });
+
+    test(
+      'getAuthenticatedSsoUrl fetches sso path and composes target url',
+      () async {
+        when(
+          mockSource.getPresignedSsoUrl(),
+        ).thenAnswer((_) async => '/sso/auth/token123/');
+
+        final url = await repository.getAuthenticatedSsoUrl(
+          nextPath: '/messages/?testpress_app=1',
+          domainUrl: 'https://learn.example.com',
+        );
+
+        expect(
+          url,
+          equals(
+            'https://learn.example.com/sso/auth/token123/?next=%2Fmessages%2F%3Ftestpress_app%3D1',
+          ),
+        );
+        verify(mockSource.getPresignedSsoUrl()).called(1);
+      },
+    );
   });
 }

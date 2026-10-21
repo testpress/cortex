@@ -24,6 +24,7 @@ class DashboardDrawer extends ConsumerWidget {
     final forumEnabled = settings?.forumEnabled ?? false;
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
     final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
+    final messagesEnabled = settings?.messagesEnabled ?? false;
     final enableStudentReport = !(settings?.disableStudentReport ?? false);
     final analyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
     final qotdEnabled = settings?.qotdEnabled ?? false;
@@ -43,6 +44,12 @@ class DashboardDrawer extends ConsumerWidget {
     final displayForumLabel = (forumLabel != null && forumLabel.isNotEmpty)
         ? forumLabel
         : l10n.drawerForum;
+
+    final messagesLabel = settings?.messagesLabel?.trim();
+    final displayMessagesLabel =
+        (messagesLabel != null && messagesLabel.isNotEmpty)
+        ? messagesLabel
+        : l10n.drawerMessages;
 
     return AppDrawer(
       isOpen: isOpen,
@@ -209,6 +216,15 @@ class DashboardDrawer extends ConsumerWidget {
         ),
         AppDrawerSection(
           items: [
+            if (messagesEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.messagesSquare,
+                label: displayMessagesLabel,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/messages');
+                },
+              ),
             AppDrawerItem(
               icon: LucideIcons.shield,
               label: l10n.drawerPrivacy,
