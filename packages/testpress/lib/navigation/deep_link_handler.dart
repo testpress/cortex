@@ -74,20 +74,14 @@ class DeepLinkHandler {
           final chapterId = segments[3];
           return '/study/course/$courseId/chapters/$chapterId';
         }
-        if (segments.length >= 2 && segments[1].toLowerCase() != 'chapters') {
-          // /courses/:courseId
+        if (segments.length >= 2) {
           final courseId = segments[1];
-          return '/study/course/$courseId/chapters';
+          // Ensure courseId is an actual ID and not reserved words like 'chapters' or 'contents'
+          if (courseId.toLowerCase() != 'chapters' &&
+              courseId.toLowerCase() != 'contents') {
+            return '/study/course/$courseId/chapters';
+          }
         }
-        return '/study';
-
-      case 'chapters':
-        if (segments.length >= 3) {
-          // /chapters/:chapterId/:contentId
-          final contentId = segments[2];
-          return '/study/lesson/$contentId';
-        }
-        // When no courseId is provided in URL, route safely to the study tab
         return '/study';
 
       case 'products':

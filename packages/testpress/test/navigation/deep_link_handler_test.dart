@@ -60,7 +60,6 @@ void main() {
         ),
         '/study/lesson/999',
       );
-      expect(DeepLinkHandler.resolve('/chapters/45/888'), '/study/lesson/888');
     });
 
     test('resolves course and chapter hierarchy links', () {
@@ -77,7 +76,8 @@ void main() {
         DeepLinkHandler.resolve('/courses/15/chapters/22'),
         '/study/course/15/chapters/22',
       );
-      expect(DeepLinkHandler.resolve('/chapters/30'), '/study');
+      expect(DeepLinkHandler.resolve('/courses/contents'), '/study');
+      expect(DeepLinkHandler.resolve('/courses/chapters'), '/study');
     });
 
     test('resolves product and store deep links', () {

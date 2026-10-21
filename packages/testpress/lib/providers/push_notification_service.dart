@@ -9,6 +9,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/providers/notification_preferences_provider.dart';
 import '../navigation/app_router.dart';
+import '../navigation/bootstrap_provider.dart';
 import '../navigation/deep_link_handler.dart';
 
 part 'push_notification_service.g.dart';
@@ -165,6 +166,28 @@ class PushNotificationService {
     if (url == null || url.trim().isEmpty) return;
 
     final targetPath = DeepLinkHandler.resolve(url);
+    final bootstrapState = _ref.read(bootstrapProvider);
+
+    // During cold-start, wait for bootstrap to finish before navigating
+    if (bootstrapState == BootstrapState.loading) {
+      ProviderSubscription<BootstrapState>? subscription;
+      subscription = _ref.listen<BootstrapState>(bootstrapProvider, (_, next) {
+        if (next != BootstrapState.loading) {
+          subscription?.close();
+          if (next == BootstrapState.authenticated) {
+            _dispatchRoute(targetPath);
+          }
+        }
+      });
+      return;
+    }
+
+    if (bootstrapState == BootstrapState.authenticated) {
+      _dispatchRoute(targetPath);
+    }
+  }
+
+  void _dispatchRoute(String targetPath) {
     try {
       final router = _ref.read(goRouterProvider);
       if (targetPath == DeepLinkHandler.defaultRoute) {
@@ -177,8 +200,10 @@ class PushNotificationService {
       try {
         final router = _ref.read(goRouterProvider);
         router.go(DeepLinkHandler.defaultRoute);
-      } catch (_) {
-        // Fallback failed silently
+      } catch (innerError, innerSt) {
+        _ref
+            .read(sentryServiceProvider)
+            .captureException(innerError, stackTrace: innerSt);
       }
     }
   }
