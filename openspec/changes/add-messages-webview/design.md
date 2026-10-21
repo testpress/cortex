@@ -40,11 +40,18 @@ Cortex embeds this interface using `AppWebView`, authenticated via single-use pr
 * **Decision**: Pass `permissions: [Permission.camera, Permission.storage, Permission.microphone]` to `AppWebView`.
 * **Rationale**: Chat allows students to attach documents or capture photos from camera. `AppWebView` already configures Android's `setOnShowFileSelector` with `FilePicker.pickFiles`.
 
+### 5. Client-Side Soft Keyboard Viewport Adaptation
+* **Decision**: Apply `MediaQuery.viewInsetsOf(context).bottom` padding to the `Column` hosting `AppWebView` inside `AppShell`.
+* **Rationale**: In Cortex, `AppShell` does not contain Material `Scaffold`'s `resizeToAvoidBottomInset` mechanism. By applying bottom inset padding directly in `MessagesScreen`, the `Expanded` containing `AppWebView` physically shrinks when the software keyboard opens, allowing Android's native WebView platform view to resize and push the chat composer above the keyboard.
+* **Alternatives Considered**: Injected JavaScript `scrollIntoView` or CSS manipulation (discarded because the root cause was the Flutter container not resizing the native PlatformView); Material `Scaffold` (forbidden by Cortex design system rules).
+
 ## Risks / Trade-offs
 
 - **[Risk] Soft Keyboard Overlap**: The software keyboard might obscure the message input field in the web view on some devices.
-  - *Mitigation*: Ensure `AppShell` has `resizeToAvoidBottomInset: true` (or standard `AppShell` default behavior) so the viewport height shrinks when the virtual keyboard is toggled.
+  - *Mitigation*: Apply `MediaQuery.viewInsetsOf(context).bottom` padding to the `Column` containing `AppWebView` in `MessagesScreen`.
+
 - **[Risk] SSO Expiration During Long Idle Sessions**: If the user stays idle in the screen for hours, the web session could expire.
   - *Mitigation*: Re-entry or error retries re-trigger `messagesUrlProvider` with a freshly generated SSO URL, and show `AppErrorView` on load failures.
 - **[Risk] External Links Trapping**: Clicking an external link within the chat (e.g. an external study resource URL posted by a teacher) could stay inside the embedded WebView.
   - *Mitigation*: Use `onNavigationRequest` to detect non-institute hosts and open them externally with `url_launcher`.
+

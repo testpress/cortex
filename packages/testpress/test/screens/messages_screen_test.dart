@@ -36,6 +36,9 @@ class _FakePlatformWebViewController extends PlatformWebViewController {
 
   @override
   Future<void> loadRequest(LoadRequestParams params) async {}
+
+  @override
+  Future<void> runJavaScript(String javaScript) async {}
 }
 
 class _FakePlatformWebViewWidget extends PlatformWebViewWidget {
@@ -434,6 +437,36 @@ void main() {
 
         // Allow toast display (2500ms) and fade animation (350ms) timers to finish
         await tester.pump(const Duration(seconds: 4));
+      },
+    );
+
+    testWidgets(
+      'applies bottom inset padding when keyboard viewInsets are present',
+      (tester) async {
+        const resolvedUrl =
+            'https://test.testpress.in/sso/token/?next=%2Fmessages%2F%3Ftestpress_app%3D1';
+        final overrides = [
+          instituteSettingsProvider.overrideWith((ref) => null),
+          messagesUrlProvider.overrideWith((ref) => resolvedUrl),
+        ];
+
+        await tester.pumpWidget(
+          MediaQuery(
+            data: const MediaQueryData(
+              viewInsets: EdgeInsets.only(bottom: 300),
+            ),
+            child: wrap(const MessagesScreen(), overrides: overrides),
+          ),
+        );
+        await tester.pump();
+
+        final paddingWidget = tester.widget<Padding>(
+          find.byWidgetPredicate(
+            (w) =>
+                w is Padding && w.padding == const EdgeInsets.only(bottom: 300),
+          ),
+        );
+        expect(paddingWidget.padding, const EdgeInsets.only(bottom: 300));
       },
     );
   });

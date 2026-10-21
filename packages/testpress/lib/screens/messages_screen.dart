@@ -90,6 +90,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final title = settings?.messagesLabel ?? l10n.messagesTitle;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return PopScope(
       canPop: false,
@@ -99,39 +100,45 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
       },
       child: AppShell(
         backgroundColor: design.colors.surface,
-        child: Column(
-          children: [
-            AppHeader(
-              title: title,
-              leading: AppBackButton(onTap: _handleBack),
-            ),
-            Expanded(
-              child: messagesUrlAsync.when(
-                data: (messagesUrl) {
-                  final domainHost = Uri.tryParse(messagesUrl)?.host;
-                  return AppWebView(
-                    url: messagesUrl,
-                    onWebViewCreated: (controller) {
-                      _controller = controller;
-                    },
-                    onNavigationRequest: (request) {
-                      final uri = Uri.tryParse(request.url);
-                      if (uri != null &&
-                          !isAllowedMessagesInAppNavigation(uri, domainHost)) {
-                        unawaited(_launchExternalUrl(uri));
-                        return NavigationDecision.prevent;
-                      }
-                      return NavigationDecision.navigate;
-                    },
-                  );
-                },
-                loading: () => const Center(child: AppLoadingIndicator()),
-                error: (err, st) => AppErrorView(
-                  onRetry: () => ref.invalidate(messagesUrlProvider),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: Column(
+            children: [
+              AppHeader(
+                title: title,
+                leading: AppBackButton(onTap: _handleBack),
+              ),
+              Expanded(
+                child: messagesUrlAsync.when(
+                  data: (messagesUrl) {
+                    final domainHost = Uri.tryParse(messagesUrl)?.host;
+                    return AppWebView(
+                      url: messagesUrl,
+                      onWebViewCreated: (controller) {
+                        _controller = controller;
+                      },
+                      onNavigationRequest: (request) {
+                        final uri = Uri.tryParse(request.url);
+                        if (uri != null &&
+                            !isAllowedMessagesInAppNavigation(
+                              uri,
+                              domainHost,
+                            )) {
+                          unawaited(_launchExternalUrl(uri));
+                          return NavigationDecision.prevent;
+                        }
+                        return NavigationDecision.navigate;
+                      },
+                    );
+                  },
+                  loading: () => const Center(child: AppLoadingIndicator()),
+                  error: (err, st) => AppErrorView(
+                    onRetry: () => ref.invalidate(messagesUrlProvider),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -13,6 +13,7 @@
 - [x] 2.5 Show error `AppToast` with async/await and widget test coverage when external URL launch fails in `MessagesScreen`
 - [x] 2.6 Implement `buildAuthenticatedSsoUrl` helper and `UserRepository.getAuthenticatedSsoUrl()` in `packages/core` with unit tests
 - [x] 2.7 Update `messagesUrl` provider in `packages/testpress` to consume `userRepo.getAuthenticatedSsoUrl` and update tests
+- [x] 2.8 Apply `MediaQuery.viewInsetsOf(context).bottom` padding to resize `MessagesScreen` when soft keyboard appears
 
 
 ## 3. Navigation & Routing

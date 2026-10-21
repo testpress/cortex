@@ -6,7 +6,7 @@ part of 'messages_screen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$messagesUrlHash() => r'ece663e95c6cd11560838140e89ef16d83ec784c';
+String _$messagesUrlHash() => r'53225b73f759d7c180f7e9cc474dc8b2f469b20d';
 
 /// Provider to fetch and resolve the presigned SSO URL for student messages.
 ///

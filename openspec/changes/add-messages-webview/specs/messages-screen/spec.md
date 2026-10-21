@@ -69,3 +69,9 @@ The system SHALL embed `AppWebView` inside `MessagesScreen` to display the resol
 - **WHEN** launching the external application or system browser fails
 - **THEN** the system displays an error `AppToast` indicating the link could not be opened
 
+#### Scenario: Viewport and composer adjustment for soft keyboard
+- **WHEN** the on-screen keyboard appears
+- **THEN** the screen applies bottom insets to resize the WebView container, allowing the web composer to stay visible above the keyboard
+
+
+
