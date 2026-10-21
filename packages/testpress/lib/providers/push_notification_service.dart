@@ -20,6 +20,7 @@ class PushNotificationService {
       FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
+  String? _pendingDeepLink;
 
   PushNotificationService(this._ref);
 
@@ -61,6 +62,15 @@ class PushNotificationService {
     if (token != null) {
       _syncDeviceToken(token);
     }
+
+    // 8. Replay pending deep link once bootstrap transitions to authenticated
+    _ref.listen<BootstrapState>(bootstrapProvider, (_, next) {
+      if (next == BootstrapState.authenticated && _pendingDeepLink != null) {
+        final path = _pendingDeepLink!;
+        _pendingDeepLink = null;
+        _dispatchRoute(path);
+      }
+    });
   }
 
   Future<void> _initLocalNotifications() async {
@@ -123,7 +133,9 @@ class PushNotificationService {
         final uri = Uri.tryParse(url);
         if (uri != null && uri.pathSegments.isNotEmpty) {
           final firstSegment = uri.pathSegments.first;
-          if (firstSegment == 'exams' || firstSegment == 'chapters') {
+          if (firstSegment == 'exams' ||
+              firstSegment == 'chapters' ||
+              firstSegment == 'courses') {
             channelId = 'contents_channel';
             shouldShow = preferences.testAssessmentAlerts;
           } else if (firstSegment == 'p') {
@@ -168,28 +180,19 @@ class PushNotificationService {
     final targetPath = DeepLinkHandler.resolve(url);
     final bootstrapState = _ref.read(bootstrapProvider);
 
-    // During cold-start, wait for bootstrap to finish before navigating
-    if (bootstrapState == BootstrapState.loading) {
-      ProviderSubscription<BootstrapState>? subscription;
-      subscription = _ref.listen<BootstrapState>(bootstrapProvider, (_, next) {
-        if (next != BootstrapState.loading) {
-          subscription?.close();
-          if (next == BootstrapState.authenticated) {
-            _dispatchRoute(targetPath);
-          }
-        }
-      });
-      return;
-    }
-
-    if (bootstrapState == BootstrapState.authenticated) {
+    if (bootstrapState == BootstrapState.authenticated ||
+        targetPath == '/login' ||
+        targetPath == '/signup') {
       _dispatchRoute(targetPath);
+    } else {
+      // Store pending path to dispatch as soon as the user is authenticated (last tap wins)
+      _pendingDeepLink = targetPath;
     }
   }
 
   void _dispatchRoute(String targetPath) {
+    final router = _ref.read(goRouterProvider);
     try {
-      final router = _ref.read(goRouterProvider);
       if (targetPath == DeepLinkHandler.defaultRoute) {
         router.go(targetPath);
       } else {
@@ -197,14 +200,7 @@ class PushNotificationService {
       }
     } catch (e, st) {
       _ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
-      try {
-        final router = _ref.read(goRouterProvider);
-        router.go(DeepLinkHandler.defaultRoute);
-      } catch (innerError, innerSt) {
-        _ref
-            .read(sentryServiceProvider)
-            .captureException(innerError, stackTrace: innerSt);
-      }
+      router.go(DeepLinkHandler.defaultRoute);
     }
   }
 

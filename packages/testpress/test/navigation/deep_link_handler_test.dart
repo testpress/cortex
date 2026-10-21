@@ -78,6 +78,7 @@ void main() {
       );
       expect(DeepLinkHandler.resolve('/courses/contents'), '/study');
       expect(DeepLinkHandler.resolve('/courses/chapters'), '/study');
+      expect(DeepLinkHandler.resolve('/courses/chapters/5'), '/study');
     });
 
     test('resolves product and store deep links', () {
@@ -131,6 +132,10 @@ void main() {
 
     test('handles custom application schemes', () {
       expect(DeepLinkHandler.resolve('testpress://dashboard'), '/home');
+      expect(
+        DeepLinkHandler.resolve('testpress://study/lesson/1'),
+        '/study/lesson/1',
+      );
       expect(
         DeepLinkHandler.resolve('testpress://exams/chapter_content/2054'),
         '/study/lesson/2054',

@@ -29,8 +29,7 @@ The system SHALL map legacy web endpoints and notification destination patterns 
   - `/activate` or `/register` SHALL map to `/signup`.
 - **Courses & Lessons (Video / PDF / Notes)**:
   - `/courses/:courseId/contents/:contentId` SHALL map to `/study/lesson/:contentId`.
-  - `/exams/chapter_content/:contentId` SHALL map to `/study/lesson/:contentId`.
-  - `/chapters/:chapterId/:contentId` SHALL map to `/study/lesson/:contentId`.
+  - `/exams/chapter_content/:contentId` SHALL map to `/study/lesson/:contentId` (intentional: legacy exam chapter content is rendered by the unified study lesson player).
   - `/courses` SHALL map to `/study`.
 - **Store & Products**:
   - `/products/:slug` SHALL map to `/store/product/:slug`.

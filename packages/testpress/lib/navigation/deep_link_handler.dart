@@ -40,6 +40,7 @@ class DeepLinkHandler {
     final first = segments[0].toLowerCase();
 
     switch (first) {
+      // Deliberate: Web LMS and legacy dashboard aliases all map to the primary home screen.
       case 'home':
       case 'dashboard':
       case 'learn':
@@ -55,6 +56,7 @@ class DeepLinkHandler {
         return '/signup';
 
       case 'exams':
+        // Legacy chapter learning content is rendered by the unified lesson player.
         if (segments.length >= 3 &&
             segments[1].toLowerCase() == 'chapter_content') {
           final contentId = segments[2];
