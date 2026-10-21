@@ -41,11 +41,7 @@ class PushNotificationService {
 
     // 4. Listen to Taps when app is in Background (but running)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      final url =
-          message.data['short_url'] ??
-          message.data['url'] ??
-          message.data['link'];
-      _handleDeepLink(url);
+      _handleDeepLink(_extractUrl(message));
     });
 
     // 5. Listen to Token Refreshes
@@ -56,11 +52,7 @@ class PushNotificationService {
     // 6. Handle App Launches from Terminated State
     final initialMessage = await messaging.getInitialMessage();
     if (initialMessage != null) {
-      final url =
-          initialMessage.data['short_url'] ??
-          initialMessage.data['url'] ??
-          initialMessage.data['link'];
-      _handleDeepLink(url);
+      _handleDeepLink(_extractUrl(initialMessage));
     }
 
     // 7. Initial Token Sync if user is logged in
@@ -117,10 +109,7 @@ class PushNotificationService {
   void _showLocalNotification(RemoteMessage message) {
     final title = message.data['title'] ?? message.notification?.title;
     final summary = message.data['summary'] ?? message.notification?.body;
-    final url =
-        message.data['short_url'] ??
-        message.data['url'] ??
-        message.data['link'];
+    final url = _extractUrl(message);
 
     if (title != null && summary != null) {
       final preferences = _ref.read(notificationPreferencesProvider);
@@ -166,19 +155,30 @@ class PushNotificationService {
     }
   }
 
+  String? _extractUrl(RemoteMessage message) {
+    return message.data['short_url'] ??
+        message.data['url'] ??
+        message.data['link'];
+  }
+
   void _handleDeepLink(String? url) {
     if (url == null || url.trim().isEmpty) return;
 
+    final targetPath = DeepLinkHandler.resolve(url);
     try {
-      final targetPath = DeepLinkHandler.resolve(url);
       final router = _ref.read(goRouterProvider);
-      router.push(targetPath);
-    } catch (_) {
+      if (targetPath == DeepLinkHandler.defaultRoute) {
+        router.go(targetPath);
+      } else {
+        router.push(targetPath);
+      }
+    } catch (e, st) {
+      _ref.read(sentryServiceProvider).captureException(e, stackTrace: st);
       try {
         final router = _ref.read(goRouterProvider);
-        router.push(DeepLinkHandler.defaultRoute);
+        router.go(DeepLinkHandler.defaultRoute);
       } catch (_) {
-        // Safe fallback failed silently
+        // Fallback failed silently
       }
     }
   }

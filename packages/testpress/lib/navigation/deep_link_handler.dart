@@ -87,6 +87,7 @@ class DeepLinkHandler {
           final contentId = segments[2];
           return '/study/lesson/$contentId';
         }
+        // When no courseId is provided in URL, route safely to the study tab
         return '/study';
 
       case 'products':
@@ -112,18 +113,69 @@ class DeepLinkHandler {
         return '/home/discussions/forum';
 
       case 'study':
-        // Already an internal study route path (e.g. /study, /study/lesson/:id)
-        final path = uri.path.startsWith('/') ? uri.path : '/${uri.path}';
-        return (path.length > 1 && path.endsWith('/'))
-            ? path.substring(0, path.length - 1)
-            : path;
+        if (segments.length >= 3 && segments[1].toLowerCase() == 'lesson') {
+          final contentId = segments[2];
+          return '/study/lesson/$contentId';
+        }
+        if (segments.length >= 5 &&
+            segments[1].toLowerCase() == 'course' &&
+            segments[3].toLowerCase() == 'chapters') {
+          final courseId = segments[2];
+          final chapterId = segments[4];
+          return '/study/course/$courseId/chapters/$chapterId';
+        }
+        if (segments.length >= 4 &&
+            segments[1].toLowerCase() == 'course' &&
+            segments[3].toLowerCase() == 'chapters') {
+          final courseId = segments[2];
+          return '/study/course/$courseId/chapters';
+        }
+        // Unrecognized or missing sub-paths under /study safely fall back to /study
+        return '/study';
 
       case 'discussions':
-        return '/home/${segments.join('/')}';
+        if (segments.length >= 2) {
+          final sub = segments[1].toLowerCase();
+          if (sub == 'forum') {
+            if (segments.length >= 4 && segments[2].toLowerCase() == 'posts') {
+              final slug = segments[3];
+              return '/home/discussions/forum/posts/$slug';
+            }
+            return '/home/discussions/forum';
+          }
+          if (sub == 'doubts') {
+            if (segments.length >= 3) {
+              final doubtId = segments[2];
+              return '/home/discussions/doubts/$doubtId';
+            }
+            return '/home/discussions/doubts';
+          }
+        }
+        return '/home/discussions/forum';
 
       case 'profile':
+      case 'user':
+        if (segments.length >= 2) {
+          final sub = segments[1].toLowerCase();
+          switch (sub) {
+            case 'notifications':
+            case 'edit':
+            case 'settings':
+            case 'login-activity':
+            case 'certificates':
+              return '/profile/$sub';
+          }
+        }
+        return '/profile';
+
       case 'ai':
-        return '/$first';
+        if (segments.length >= 2) {
+          final sub = segments[1].toLowerCase();
+          if (sub == 'chat' || sub == 'history') {
+            return '/ai/$sub';
+          }
+        }
+        return '/ai';
 
       default:
         return defaultRoute;

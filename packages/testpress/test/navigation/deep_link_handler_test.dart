@@ -11,6 +11,7 @@ void main() {
 
     test('returns /home for root path or dashboard aliases', () {
       expect(DeepLinkHandler.resolve('/'), '/home');
+      expect(DeepLinkHandler.resolve('https://staging.testpress.in'), '/home');
       expect(DeepLinkHandler.resolve('/dashboard'), '/home');
       expect(DeepLinkHandler.resolve('/dashboard/'), '/home');
       expect(DeepLinkHandler.resolve('/learn'), '/home');
@@ -154,8 +155,66 @@ void main() {
       },
     );
 
-    test('preserves direct study paths if already formatted', () {
-      expect(DeepLinkHandler.resolve('/study/lesson/456'), '/study/lesson/456');
+    test(
+      'validates study paths and safely falls back on invalid sub-routes',
+      () {
+        expect(DeepLinkHandler.resolve('/study'), '/study');
+        expect(
+          DeepLinkHandler.resolve('/study/lesson/456'),
+          '/study/lesson/456',
+        );
+        expect(
+          DeepLinkHandler.resolve('/study/course/12/chapters/34'),
+          '/study/course/12/chapters/34',
+        );
+        expect(
+          DeepLinkHandler.resolve('/study/course/12/chapters'),
+          '/study/course/12/chapters',
+        );
+        expect(DeepLinkHandler.resolve('/study/garbage'), '/study');
+        expect(DeepLinkHandler.resolve('/study/lesson'), '/study');
+        expect(
+          DeepLinkHandler.resolve('testpress://study/lesson/123'),
+          '/study/lesson/123',
+        );
+      },
+    );
+
+    test('validates discussions routes and maps sub-paths safely', () {
+      expect(
+        DeepLinkHandler.resolve('/discussions/doubts/12'),
+        '/home/discussions/doubts/12',
+      );
+      expect(
+        DeepLinkHandler.resolve('/discussions/doubts'),
+        '/home/discussions/doubts',
+      );
+      expect(
+        DeepLinkHandler.resolve('/discussions/forum/posts/test-slug'),
+        '/home/discussions/forum/posts/test-slug',
+      );
+      expect(
+        DeepLinkHandler.resolve('/discussions/forum'),
+        '/home/discussions/forum',
+      );
+      expect(
+        DeepLinkHandler.resolve('/discussions/unknown_subpath'),
+        '/home/discussions/forum',
+      );
+    });
+
+    test('validates profile and ai routes', () {
+      expect(DeepLinkHandler.resolve('/profile'), '/profile');
+      expect(
+        DeepLinkHandler.resolve('/profile/notifications'),
+        '/profile/notifications',
+      );
+      expect(DeepLinkHandler.resolve('/profile/settings'), '/profile/settings');
+      expect(DeepLinkHandler.resolve('/profile/unknown'), '/profile');
+      expect(DeepLinkHandler.resolve('/ai'), '/ai');
+      expect(DeepLinkHandler.resolve('/ai/chat'), '/ai/chat');
+      expect(DeepLinkHandler.resolve('/ai/history'), '/ai/history');
+      expect(DeepLinkHandler.resolve('/ai/unknown'), '/ai');
     });
   });
 }
