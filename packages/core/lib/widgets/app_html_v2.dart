@@ -10,6 +10,7 @@ import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../data/config/app_config.dart';
 import 'app_loading_indicator.dart';
+import 'app_iframe_view.dart';
 
 /// Native HTML + LaTeX renderer.
 ///
@@ -202,6 +203,30 @@ class AppHtmlV2 extends StatelessWidget {
                   _showZoomableImage(context, url, design);
                 }
               },
+
+        customWidgetBuilder: (element) {
+          if (element.localName == 'iframe') {
+            final src = element.attributes['src'];
+            if (src != null && src.trim().isNotEmpty) {
+              double aspectRatio = 16 / 9;
+              final widthAttr = element.attributes['width'];
+              final heightAttr = element.attributes['height'];
+              if (widthAttr != null && heightAttr != null) {
+                final w = double.tryParse(widthAttr);
+                final h = double.tryParse(heightAttr);
+                if (w != null && h != null && w > 0 && h > 0) {
+                  aspectRatio = w / h;
+                }
+              }
+
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
+                child: AppIframeView(src: src.trim(), aspectRatio: aspectRatio),
+              );
+            }
+          }
+          return null;
+        },
 
         factoryBuilder: () => _MathWidgetFactory(
           textColor: effectiveTextColor,
