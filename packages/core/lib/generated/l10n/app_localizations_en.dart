@@ -725,6 +725,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesTitle => 'Chat with Us';
 
   @override
+  String get couldNotOpenLink => 'Could not open the link';
+
+  @override
   String get drawerProfile => 'Profile';
 
   @override

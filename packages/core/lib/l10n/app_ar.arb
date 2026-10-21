@@ -248,6 +248,7 @@
   "drawerMyReport": "تقريري",
   "drawerMessages": "الرسائل",
   "messagesTitle": "الرسائل",
+  "couldNotOpenLink": "تعذر فتح الرابط",
   "drawerProfile": "الملف الشخصي",
   "drawerSettings": "إعدادات التطبيق",
   "drawerLoginActivity": "نشاط تسجيل الدخول",

@@ -1,47 +1,23 @@
 import 'dart:async' show unawaited;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
+part 'messages_screen.g.dart';
+
 /// Provider to fetch and resolve the presigned SSO URL for student messages.
-final messagesUrlProvider = FutureProvider.autoDispose<String>((ref) async {
+@riverpod
+Future<String> messagesUrl(Ref ref) async {
   final settings = ref.watch(instituteSettingsProvider);
   final userRepo = await ref.watch(userRepositoryProvider.future);
-  final ssoPath = await userRepo.getPresignedSsoUrl();
 
-  const nextPath = '/messages/?testpress_app=1';
-  final encodedNextPath = Uri.encodeComponent(nextPath);
-
-  final apiUri = Uri.parse(AppConfig.apiBaseUrl);
-  final domainUrl = settings?.domainUrl;
-  String? formattedDomainUrl = domainUrl;
-
-  if (formattedDomainUrl != null && formattedDomainUrl.isNotEmpty) {
-    if (!formattedDomainUrl.startsWith('http://') &&
-        !formattedDomainUrl.startsWith('https://')) {
-      formattedDomainUrl = 'https://$formattedDomainUrl';
-    }
-  } else {
-    formattedDomainUrl = Uri(
-      scheme: apiUri.scheme,
-      host: apiUri.host,
-      port: apiUri.hasPort ? apiUri.port : null,
-    ).toString();
-  }
-
-  if (formattedDomainUrl.endsWith('/')) {
-    formattedDomainUrl = formattedDomainUrl.substring(
-      0,
-      formattedDomainUrl.length - 1,
-    );
-  }
-
-  final normalizedSsoPath = ssoPath.startsWith('/') ? ssoPath : '/$ssoPath';
-  final separator = normalizedSsoPath.contains('?') ? '&' : '?';
-
-  return '$formattedDomainUrl$normalizedSsoPath${separator}next=$encodedNextPath';
-});
+  return userRepo.getAuthenticatedSsoUrl(
+    nextPath: '/messages/?testpress_app=1',
+    domainUrl: settings?.domainUrl,
+  );
+}
 
 /// Keeps messages routes on the institute domain inside the WebView,
 /// delegating external links and file attachments to the system browser.
@@ -58,7 +34,7 @@ bool isAllowedMessagesInAppNavigation(Uri uri, String? domainHost) {
   }
 
   final path = uri.path.toLowerCase();
-  if (path.endsWith('.pdf') || path.contains('/media/')) {
+  if (path.endsWith('.pdf')) {
     return false;
   }
 
@@ -78,7 +54,6 @@ class MessagesScreen extends ConsumerStatefulWidget {
 
 class _MessagesScreenState extends ConsumerState<MessagesScreen> {
   WebViewController? _controller;
-  bool _canPop = false;
 
   Future<void> _handleBack() async {
     final controller = _controller;
@@ -88,13 +63,24 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     }
 
     if (!mounted) return;
-    setState(() => _canPop = true);
+    context.pop();
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.pop();
-      }
-    });
+  Future<void> _launchExternalUrl(Uri uri) async {
+    bool launched = false;
+    try {
+      launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      launched = false;
+    }
+
+    if (!launched && mounted) {
+      AppToast.show(
+        context,
+        message: L10n.of(context).couldNotOpenLink,
+        isError: true,
+      );
+    }
   }
 
   @override
@@ -106,7 +92,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     final title = settings?.messagesLabel ?? l10n.messagesTitle;
 
     return PopScope(
-      canPop: _canPop,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         await _handleBack();
@@ -132,9 +118,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                       final uri = Uri.tryParse(request.url);
                       if (uri != null &&
                           !isAllowedMessagesInAppNavigation(uri, domainHost)) {
-                        unawaited(
-                          launchUrl(uri, mode: LaunchMode.externalApplication),
-                        );
+                        unawaited(_launchExternalUrl(uri));
                         return NavigationDecision.prevent;
                       }
                       return NavigationDecision.navigate;
@@ -143,7 +127,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 },
                 loading: () => const Center(child: AppLoadingIndicator()),
                 error: (err, st) => AppErrorView(
-                  onRetry: () => ref.refresh(messagesUrlProvider),
+                  onRetry: () => ref.invalidate(messagesUrlProvider),
                 ),
               ),
             ),

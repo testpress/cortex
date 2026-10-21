@@ -17,15 +17,15 @@ The system SHALL expose a "Messages" option in the main navigation drawer (`Dash
 - **AND** the app navigates to `/messages`
 
 ### Requirement: Messages Presigned SSO URL Resolution
-The system SHALL resolve a presigned single sign-on URL using `UserRepository.getPresignedSsoUrl()` and format it with the target destination `/messages/?testpress_app=1` and the active institute domain.
+The system SHALL resolve a presigned single sign-on URL using `UserRepository.getAuthenticatedSsoUrl()` and format it with the target destination `/messages/?testpress_app=1` and the active institute domain.
 
 #### Scenario: Successful URL resolution with custom domain
 - **WHEN** `messagesUrlProvider` is invoked with an institute containing custom domain `https://learn.example.com`
-- **THEN** the provider resolves the presigned SSO path and returns `https://learn.example.com<sso_path>?next=%2Fmessages%2F%3Ftestpress_app%3D1`
+- **THEN** `UserRepository.getAuthenticatedSsoUrl()` resolves the presigned SSO path and returns `https://learn.example.com<sso_path>?next=%2Fmessages%2F%3Ftestpress_app%3D1`
 
 #### Scenario: Fallback to API base URL domain
 - **WHEN** `messagesUrlProvider` is invoked and the institute has no custom domain
-- **THEN** the provider uses the scheme and host from `AppConfig.apiBaseUrl` as the base domain
+- **THEN** `UserRepository.getAuthenticatedSsoUrl()` uses the scheme and host from `AppConfig.apiBaseUrl` as the base domain
 
 ### Requirement: Messages WebView Authorization and Capabilities
 The system SHALL embed `AppWebView` inside `MessagesScreen` to display the resolved messaging page, supporting mobile user-agent identification, file/attachment pickers, and required hardware permissions.
@@ -64,4 +64,8 @@ The system SHALL embed `AppWebView` inside `MessagesScreen` to display the resol
 - **WHEN** a navigation request is initiated with a URL that navigates away from the `/messages` route or points to an external host
 - **THEN** the WebView prevents in-app navigation
 - **AND** the URL is launched via `url_launcher` in an external application
+
+#### Scenario: External launch failure displays toast feedback
+- **WHEN** launching the external application or system browser fails
+- **THEN** the system displays an error `AppToast` indicating the link could not be opened
 

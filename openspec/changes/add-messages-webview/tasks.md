@@ -10,6 +10,9 @@
 - [x] 2.2 Create `MessagesScreen` in `packages/testpress/lib/screens/messages_screen.dart` with `AppShell`, `AppHeader`, `AppWebView`, and `PopScope` back-navigation delegate
 - [x] 2.3 Add widget tests for `MessagesScreen` covering loading, error, and loaded states
 - [x] 2.4 Intercept attachment and external URL navigation in `MessagesScreen` using `url_launcher` and add unit/widget tests
+- [x] 2.5 Show error `AppToast` with async/await and widget test coverage when external URL launch fails in `MessagesScreen`
+- [x] 2.6 Implement `buildAuthenticatedSsoUrl` helper and `UserRepository.getAuthenticatedSsoUrl()` in `packages/core` with unit tests
+- [x] 2.7 Update `messagesUrl` provider in `packages/testpress` to consume `userRepo.getAuthenticatedSsoUrl` and update tests
 
 
 ## 3. Navigation & Routing

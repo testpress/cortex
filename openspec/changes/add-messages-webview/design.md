@@ -21,10 +21,10 @@ Cortex embeds this interface using `AppWebView`, authenticated via single-use pr
 
 ## Decisions
 
-### 1. Reuse Presigned SSO URL Pattern with Destination Next Parameter
-* **Decision**: Generate an authenticated link using `userRepo.getPresignedSsoUrl()` and append `next=%2Fmessages%2F%3Ftestpress_app%3D1`.
-* **Rationale**: Bypasses manual session cookie extraction and works with tenant-specific custom domains. The backend validates the SSO token, sets the session cookie, and seamlessly redirects to `/messages/?testpress_app=1`.
-* **Alternatives Considered**: Direct JWT header injection via `AppWebView.buildHeaders`. Discarded because standard Django HTML templates and forms rely on Django session cookies and CSRF tokens rather than Bearer headers for web polling and POST forms.
+### 1. Encapsulate Presigned SSO URL Composition in UserRepository
+* **Decision**: Encapsulate domain resolution and presigned SSO URL composition in `UserRepository.getAuthenticatedSsoUrl()` in `packages/core` backed by a pure `buildAuthenticatedSsoUrl()` helper.
+* **Rationale**: Moves URL parsing, trailing slash normalization, and `next` parameter encoding out of UI screen files into the platform repository layer where it is reusable across all packages and directly unit testable.
+* **Alternatives Considered**: Keeping URL string manipulation in the screen file (discarded due to review feedback and business logic leakage); Direct JWT header injection via `AppWebView.buildHeaders` (discarded because Django templates rely on session cookies and CSRF tokens).
 
 ### 2. State & Provider Management with Riverpod Codegen
 * **Decision**: Define `@riverpod Future<String> messagesUrl(MessagesUrlRef ref)` using Riverpod code generation in `packages/testpress/lib/screens/messages_screen.dart`.

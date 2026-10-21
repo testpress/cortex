@@ -733,6 +733,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get messagesTitle => 'സന്ദേശങ്ങൾ';
 
   @override
+  String get couldNotOpenLink => 'ലിങ്ക് തുറക്കാനായില്ല';
+
+  @override
   String get drawerProfile => 'പ്രൊഫൈൽ';
 
   @override

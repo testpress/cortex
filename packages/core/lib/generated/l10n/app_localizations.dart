@@ -1422,6 +1422,12 @@ abstract class AppLocalizations {
   /// **'Chat with Us'**
   String get messagesTitle;
 
+  /// No description provided for @couldNotOpenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the link'**
+  String get couldNotOpenLink;
+
   /// No description provided for @drawerProfile.
   ///
   /// In en, this message translates to:

@@ -1,7 +1,6 @@
 import 'dart:async' show unawaited;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import '../../providers/assignment_sso_provider.dart';

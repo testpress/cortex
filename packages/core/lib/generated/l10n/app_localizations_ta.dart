@@ -738,6 +738,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get messagesTitle => 'செய்திகள்';
 
   @override
+  String get couldNotOpenLink => 'இணைப்பைத் திறக்க முடியவில்லை';
+
+  @override
   String get drawerProfile => 'சுயவிவரம்';
 
   @override

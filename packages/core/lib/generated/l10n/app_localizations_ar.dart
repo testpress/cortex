@@ -724,6 +724,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messagesTitle => 'الرسائل';
 
   @override
+  String get couldNotOpenLink => 'تعذر فتح الرابط';
+
+  @override
   String get drawerProfile => 'الملف الشخصي';
 
   @override

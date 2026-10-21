@@ -6,6 +6,10 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:testpress/screens/messages_screen.dart';
 // ignore: depend_on_referenced_packages
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+// ignore: depend_on_referenced_packages
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
+// ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 class _FakePlatformWebViewController extends PlatformWebViewController {
@@ -123,11 +127,56 @@ class FakeUserRepository extends Fake implements UserRepository {
     }
     return ssoPath;
   }
+
+  @override
+  Future<String> getAuthenticatedSsoUrl({
+    required String nextPath,
+    String? domainUrl,
+    String? apiBaseUrl,
+  }) async {
+    final path = await getPresignedSsoUrl();
+    return buildAuthenticatedSsoUrl(
+      ssoPath: path,
+      nextPath: nextPath,
+      domainUrl: domainUrl,
+      apiBaseUrl: apiBaseUrl,
+    );
+  }
+}
+
+class _MockUrlLauncherPlatform extends Fake
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {
+  bool launchUrlResult = true;
+  bool shouldThrow = false;
+  String? launchedUrl;
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    launchedUrl = url;
+    if (shouldThrow) {
+      throw Exception('Launch failed');
+    }
+    return launchUrlResult;
+  }
 }
 
 void main() {
+  late UrlLauncherPlatform originalUrlLauncher;
+  late _MockUrlLauncherPlatform mockUrlLauncher;
+
   setUpAll(() {
     WebViewPlatform.instance = _FakeWebViewPlatform();
+  });
+
+  setUp(() {
+    originalUrlLauncher = UrlLauncherPlatform.instance;
+    mockUrlLauncher = _MockUrlLauncherPlatform();
+    UrlLauncherPlatform.instance = mockUrlLauncher;
+  });
+
+  tearDown(() {
+    UrlLauncherPlatform.instance = originalUrlLauncher;
   });
 
   Widget wrap(Widget child, {List<Override> overrides = const []}) {
@@ -144,7 +193,9 @@ void main() {
                 delegates: LocalizationProvider.delegates,
                 child: Directionality(
                   textDirection: TextDirection.ltr,
-                  child: child,
+                  child: Overlay(
+                    initialEntries: [OverlayEntry(builder: (_) => child)],
+                  ),
                 ),
               );
             },
@@ -314,6 +365,77 @@ void main() {
         expect(externalDecision, NavigationDecision.prevent);
       },
     );
+
+    testWidgets('shows error AppToast when external URL launch fails', (
+      tester,
+    ) async {
+      mockUrlLauncher.launchUrlResult = false;
+
+      const resolvedUrl =
+          'https://test.testpress.in/sso/token/?next=%2Fmessages%2F%3Ftestpress_app%3D1';
+      final overrides = [
+        instituteSettingsProvider.overrideWith((ref) => null),
+        messagesUrlProvider.overrideWith((ref) => resolvedUrl),
+      ];
+
+      await tester.pumpWidget(
+        wrap(const MessagesScreen(), overrides: overrides),
+      );
+      await tester.pump();
+
+      final webView = tester.widget<AppWebView>(find.byType(AppWebView));
+      expect(webView.onNavigationRequest, isNotNull);
+
+      final externalDecision = await webView.onNavigationRequest!(
+        const NavigationRequest(
+          url: 'https://s3.amazonaws.com/testpress/uploads/attachment.pdf',
+          isMainFrame: true,
+        ),
+      );
+      expect(externalDecision, NavigationDecision.prevent);
+
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Could not open the link'), findsOneWidget);
+
+      // Allow toast display (2500ms) and fade animation (350ms) timers to finish
+      await tester.pump(const Duration(seconds: 4));
+    });
+
+    testWidgets(
+      'shows error AppToast when external URL launch throws an exception',
+      (tester) async {
+        mockUrlLauncher.shouldThrow = true;
+
+        const resolvedUrl =
+            'https://test.testpress.in/sso/token/?next=%2Fmessages%2F%3Ftestpress_app%3D1';
+        final overrides = [
+          instituteSettingsProvider.overrideWith((ref) => null),
+          messagesUrlProvider.overrideWith((ref) => resolvedUrl),
+        ];
+
+        await tester.pumpWidget(
+          wrap(const MessagesScreen(), overrides: overrides),
+        );
+        await tester.pump();
+
+        final webView = tester.widget<AppWebView>(find.byType(AppWebView));
+        expect(webView.onNavigationRequest, isNotNull);
+
+        final externalDecision = await webView.onNavigationRequest!(
+          const NavigationRequest(
+            url: 'https://s3.amazonaws.com/testpress/uploads/attachment.pdf',
+            isMainFrame: true,
+          ),
+        );
+        expect(externalDecision, NavigationDecision.prevent);
+
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(find.text('Could not open the link'), findsOneWidget);
+
+        // Allow toast display (2500ms) and fade animation (350ms) timers to finish
+        await tester.pump(const Duration(seconds: 4));
+      },
+    );
   });
 
   group('isAllowedMessagesInAppNavigation', () {
@@ -367,17 +489,27 @@ void main() {
       );
     });
 
-    test('returns false for media and pdf files even on the same host', () {
+    test('returns false for pdf files even on the messages route', () {
       expect(
         isAllowedMessagesInAppNavigation(
-          Uri.parse('https://test.testpress.in/media/attachments/report.docx'),
+          Uri.parse('https://test.testpress.in/messages/doc.pdf'),
+          domainHost,
+        ),
+        isFalse,
+      );
+    });
+
+    test('returns false for non-messages routes on the same host', () {
+      expect(
+        isAllowedMessagesInAppNavigation(
+          Uri.parse('https://test.testpress.in/courses/1/'),
           domainHost,
         ),
         isFalse,
       );
       expect(
         isAllowedMessagesInAppNavigation(
-          Uri.parse('https://test.testpress.in/messages/doc.pdf'),
+          Uri.parse('https://test.testpress.in/media/attachments/report.docx'),
           domainHost,
         ),
         isFalse,

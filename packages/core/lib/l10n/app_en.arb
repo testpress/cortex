@@ -343,6 +343,7 @@
   "drawerMyReport": "My report",
   "drawerMessages": "Chat with Us",
   "messagesTitle": "Chat with Us",
+  "couldNotOpenLink": "Could not open the link",
   "drawerProfile": "Profile",
   "drawerSettings": "App Settings",
   "drawerLoginActivity": "Login Activity",

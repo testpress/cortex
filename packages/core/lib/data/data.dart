@@ -80,6 +80,7 @@ export 'repositories/repository_providers.dart';
 export 'repositories/institute_settings_repository.dart';
 export 'repositories/learnlens_repository.dart';
 export 'repositories/qotd_repository.dart';
+export 'utils/sso_url_builder.dart';
 export 'providers/bookmark_provider.dart';
 export 'providers/announcements_provider.dart';
 export 'providers/institute_settings_provider.dart';
