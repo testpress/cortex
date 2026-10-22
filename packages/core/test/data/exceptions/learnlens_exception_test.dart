@@ -196,5 +196,54 @@ void main() {
         );
       },
     );
+
+    test('sanitizes 401 with stringified JSON payload and unauthorised_login', () {
+      final dioException = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        message:
+            'The status code of 401 has the following meaning: "Client error"\nRead more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+        response: Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 401,
+          data:
+              '{"error_code": "unauthorised_login", "detail": "Please Login and try again."}',
+        ),
+      );
+
+      final exception = LearnLensNetworkClient.parseDioException(dioException);
+
+      expect(exception.statusCode, 401);
+      expect(
+        exception.message,
+        'Unable to connect to AI assistant. Please try again.',
+      );
+    });
+
+    test(
+      'never leaks developer MDN status code URLs from DioException message',
+      () {
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: ''),
+          type: DioExceptionType.badResponse,
+          message:
+              'This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.\nRead more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+          response: Response(
+            requestOptions: RequestOptions(path: ''),
+            statusCode: 401,
+            data: null,
+          ),
+        );
+
+        final exception = LearnLensNetworkClient.parseDioException(
+          dioException,
+        );
+
+        expect(
+          exception.message,
+          'Unable to connect to AI assistant. Please try again.',
+        );
+      },
+    );
   });
 }

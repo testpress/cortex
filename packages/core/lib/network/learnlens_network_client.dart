@@ -106,22 +106,43 @@ class LearnLensNetworkClient {
       type = ApiErrorType.unknown;
     }
 
+    dynamic rawData = e.response?.data;
+    if (rawData is String && rawData.trim().isNotEmpty) {
+      final trimmed = rawData.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          rawData = jsonDecode(trimmed);
+        } catch (_) {}
+      }
+    }
+
     String resolveMessage(String? raw) {
-      if (raw == null) return 'Something went wrong. Please try again.';
+      if (raw == null || raw.trim().isEmpty) {
+        return statusCode == 401
+            ? 'Unable to connect to AI assistant. Please try again.'
+            : 'Something went wrong. Please try again.';
+      }
       final lower = raw.toLowerCase();
-      if (lower.contains('session expired') ||
+      if (statusCode == 401 ||
+          lower.contains('developer.mozilla.org') ||
+          lower.contains('dioexception') ||
+          lower.contains('status code of') ||
+          lower.contains('validatestatus') ||
+          lower.contains('session expired') ||
           lower.contains('token expired') ||
           lower.contains('invalid session token') ||
           lower.contains('invalid token') ||
-          lower.contains('unauthorized')) {
+          lower.contains('unauthorized') ||
+          lower.contains('unauthorised') ||
+          lower.contains('please login')) {
         return 'Unable to connect to AI assistant. Please try again.';
       }
-      return raw;
+      return raw.trim();
     }
 
-    final data = e.response?.data;
-    if (data is Map<String, dynamic> && data.containsKey('detail')) {
-      final quota = AiChatQuotaErrorDto.fromDetail(data['detail']);
+    if (rawData is Map<String, dynamic> && rawData.containsKey('detail')) {
+      final quota = AiChatQuotaErrorDto.fromDetail(rawData['detail']);
       return LearnLensException(
         message: resolveMessage(quota.message),
         code: quota.code,
@@ -132,6 +153,7 @@ class LearnLensNetworkClient {
         type: type,
       );
     }
+
     return LearnLensException(
       message: resolveMessage(e.message),
       statusCode: statusCode,
