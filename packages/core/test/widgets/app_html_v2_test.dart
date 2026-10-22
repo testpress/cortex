@@ -115,6 +115,41 @@ void main() {
 
       expect(find.byType(AppIframeView), findsNothing);
     });
+
+    group('AppHtmlV2.parseAspectRatio', () {
+      test('calculates correct aspect ratio from positive numbers', () {
+        expect(AppHtmlV2.parseAspectRatio('640', '360'), 640 / 360);
+        expect(AppHtmlV2.parseAspectRatio('560', '315'), 560 / 315);
+        expect(AppHtmlV2.parseAspectRatio('400', '300'), 4 / 3);
+      });
+
+      test('falls back to 16:9 for percentage dimensions', () {
+        expect(AppHtmlV2.parseAspectRatio('100%', '300'), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('100%', '100%'), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('500', '100%'), 16 / 9);
+      });
+
+      test('falls back to 16:9 for null or empty dimensions', () {
+        expect(AppHtmlV2.parseAspectRatio(null, null), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('640', null), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio(null, '360'), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('', ''), 16 / 9);
+      });
+
+      test('falls back to 16:9 for zero, negative, or invalid dimensions', () {
+        expect(AppHtmlV2.parseAspectRatio('0', '360'), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('640', '0'), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('-640', '360'), 16 / 9);
+        expect(AppHtmlV2.parseAspectRatio('invalid', 'auto'), 16 / 9);
+      });
+
+      test('supports custom default ratio', () {
+        expect(
+          AppHtmlV2.parseAspectRatio(null, null, defaultRatio: 4 / 3),
+          4 / 3,
+        );
+      });
+    });
   });
 }
 

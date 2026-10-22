@@ -51,6 +51,25 @@ class AppHtmlV2 extends StatelessWidget {
   /// that uses relative URLs (e.g. QOTD questions from the API).
   final Uri? baseUrl;
 
+  /// Parses numeric `width` and `height` HTML attributes into an aspect ratio.
+  ///
+  /// Returns [defaultRatio] (16:9) if attributes are null, non-numeric,
+  /// zero/negative, or percentages (e.g. `width="100%"`).
+  static double parseAspectRatio(
+    String? width,
+    String? height, {
+    double defaultRatio = 16 / 9,
+  }) {
+    if (width != null && height != null) {
+      final w = double.tryParse(width.trim());
+      final h = double.tryParse(height.trim());
+      if (w != null && h != null && w > 0 && h > 0) {
+        return w / h;
+      }
+    }
+    return defaultRatio;
+  }
+
   @visibleForTesting
   static String sanitizeHtml(String html) {
     var res = html;
@@ -208,16 +227,10 @@ class AppHtmlV2 extends StatelessWidget {
           if (element.localName == 'iframe') {
             final src = element.attributes['src'];
             if (src != null && src.trim().isNotEmpty) {
-              double aspectRatio = 16 / 9;
-              final widthAttr = element.attributes['width'];
-              final heightAttr = element.attributes['height'];
-              if (widthAttr != null && heightAttr != null) {
-                final w = double.tryParse(widthAttr);
-                final h = double.tryParse(heightAttr);
-                if (w != null && h != null && w > 0 && h > 0) {
-                  aspectRatio = w / h;
-                }
-              }
+              final aspectRatio = parseAspectRatio(
+                element.attributes['width'],
+                element.attributes['height'],
+              );
 
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: design.spacing.sm),

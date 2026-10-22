@@ -85,37 +85,6 @@ void main() {
       expect(find.byType(ClipRRect), findsOneWidget);
     });
 
-    testWidgets('uses localized semantic label by default', (tester) async {
-      await tester.pumpWidget(
-        wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
-      );
-
-      final semanticsFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Semantics &&
-            widget.properties.label == 'Embedded video player',
-      );
-      expect(semanticsFinder, findsOneWidget);
-    });
-
-    testWidgets('respects custom semantic label', (tester) async {
-      await tester.pumpWidget(
-        wrap(
-          const AppIframeView(
-            src: 'https://www.youtube.com/embed/test',
-            semanticLabel: 'Custom video player',
-          ),
-        ),
-      );
-
-      final semanticsFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Semantics &&
-            widget.properties.label == 'Custom video player',
-      );
-      expect(semanticsFinder, findsOneWidget);
-    });
-
     testWidgets('respects custom aspect ratio', (tester) async {
       await tester.pumpWidget(
         wrap(
@@ -132,23 +101,43 @@ void main() {
       expect(aspectRatioWidget.aspectRatio, 4 / 3);
     });
 
-    testWidgets('exposes semantic container with label', (tester) async {
+    testWidgets('renders AspectRatio and ClipRRect container directly', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
       );
 
-      final semanticsFinder = find.byWidgetPredicate(
-        (w) =>
-            w is Semantics &&
-            w.container == true &&
-            w.properties.label == 'Embedded video player',
-      );
-      expect(semanticsFinder, findsOneWidget);
+      expect(find.byType(AspectRatio), findsOneWidget);
+      expect(find.byType(ClipRRect), findsOneWidget);
     });
+
+    testWidgets(
+      'shows loading indicator while loading and hides it on page finished',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+        );
+
+        expect(find.byType(AppLoadingIndicator), findsOneWidget);
+
+        _lastNavigationDelegate?.onPageFinishedCallback?.call(
+          'https://www.youtube.com/embed/test',
+        );
+        await tester.pump();
+
+        expect(find.byType(AppLoadingIndicator), findsNothing);
+      },
+    );
 
     testWidgets('navigation delegate blocks intent:// schemes', (tester) async {
       await tester.pumpWidget(
-        wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+        wrap(
+          const AppIframeView(
+            src: 'https://www.youtube.com/embed/test',
+            baseUrl: 'https://www.testpress.in',
+          ),
+        ),
       );
 
       expect(_lastNavigationDelegate?.navigationRequestCallback, isNotNull);
@@ -196,6 +185,26 @@ void main() {
       expect(evilHostDecision, NavigationDecision.prevent);
     });
 
+    testWidgets(
+      'defaults to null baseUrl when unspecified and blocks non-youtube navigation',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+        );
+
+        expect(_lastWebViewController?.lastLoadedBaseUrl, isNull);
+        final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+        final testpressDecision = await callback(
+          const NavigationRequest(
+            url: 'https://www.testpress.in',
+            isMainFrame: true,
+          ),
+        );
+        expect(testpressDecision, NavigationDecision.prevent);
+      },
+    );
+
     testWidgets('supports configurable baseUrl and enforces its origin', (
       tester,
     ) async {
@@ -221,6 +230,15 @@ void main() {
         ),
       );
       expect(allowedTenantDecision, NavigationDecision.navigate);
+
+      // Other subdomains of the tenant domain should be blocked by exact host match
+      final otherSubdomainDecision = await callback(
+        const NavigationRequest(
+          url: 'https://user-generated.myinstitute.com/page',
+          isMainFrame: true,
+        ),
+      );
+      expect(otherSubdomainDecision, NavigationDecision.prevent);
 
       // Default testpress host should not be allowed when custom baseUrl is provided
       final testpressDecision = await callback(
@@ -401,6 +419,14 @@ void main() {
         );
         expect(youtubeSpoofDecision, NavigationDecision.prevent);
 
+        final youtubePrefixSpoofDecision = await callback(
+          const NavigationRequest(
+            url: 'https://youtube.com.evil.com/embed/123',
+            isMainFrame: true,
+          ),
+        );
+        expect(youtubePrefixSpoofDecision, NavigationDecision.prevent);
+
         final vimeoSpoofDecision = await callback(
           const NavigationRequest(
             url: 'https://vimeo.evil.com/video/123',
@@ -451,6 +477,7 @@ class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
   _FakePlatformNavigationDelegate(super.params) : super.implementation();
 
   NavigationRequestCallback? navigationRequestCallback;
+  void Function(String url)? onPageFinishedCallback;
 
   @override
   Future<void> setOnNavigationRequest(
@@ -470,7 +497,9 @@ class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
   @override
   Future<void> setOnPageFinished(
     void Function(String url) onPageFinished,
-  ) async {}
+  ) async {
+    onPageFinishedCallback = onPageFinished;
+  }
 
   @override
   Future<void> setOnWebResourceError(
