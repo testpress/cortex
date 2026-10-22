@@ -3311,12 +3311,6 @@ abstract class AppLocalizations {
   /// **'Clear search'**
   String get commonClearSearchSemantic;
 
-  /// Accessibility semantic label for embedded iframe video players
-  ///
-  /// In en, this message translates to:
-  /// **'Embedded video player'**
-  String get embeddedVideoPlayerSemantic;
-
   /// No description provided for @forumFilterSemantic.
   ///
   /// In en, this message translates to:
