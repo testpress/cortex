@@ -3,9 +3,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../design/design_provider.dart';
-import '../accessibility/app_semantics.dart';
 import '../data/config/app_config.dart';
-import '../localization/l10n_helper.dart';
+import 'app_loading_indicator.dart';
 
 /// A platform-neutral inline iframe embed view.
 ///
@@ -93,6 +92,7 @@ class AppIframeView extends StatefulWidget {
 
 class _AppIframeViewState extends State<AppIframeView> {
   late final WebViewController _controller;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -119,6 +119,21 @@ class _AppIframeViewState extends State<AppIframeView> {
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
+          onPageStarted: (_) {
+            if (mounted && !_isLoading) {
+              setState(() => _isLoading = true);
+            }
+          },
+          onPageFinished: (_) {
+            if (mounted && _isLoading) {
+              setState(() => _isLoading = false);
+            }
+          },
+          onWebResourceError: (_) {
+            if (mounted && _isLoading) {
+              setState(() => _isLoading = false);
+            }
+          },
           onNavigationRequest: (NavigationRequest request) {
             final uri = Uri.tryParse(request.url);
             if (uri == null) {
@@ -136,16 +151,19 @@ class _AppIframeViewState extends State<AppIframeView> {
               return NavigationDecision.prevent;
             }
 
-            // 1. Allow tenant base origin (e.g. Testpress LMS host)
-            final baseUri = Uri.tryParse(_effectiveBaseUrl);
-            final baseHost = baseUri?.host.toLowerCase();
-            final isBaseOrigin =
-                baseHost != null &&
-                baseHost.isNotEmpty &&
-                (requestHost == baseHost || requestHost.endsWith('.$baseHost'));
+            // 1. Allow tenant base origin (exact host match)
+            final effectiveBase = _effectiveBaseUrl;
+            if (effectiveBase != null) {
+              final baseUri = Uri.tryParse(effectiveBase);
+              final baseHost = baseUri?.host.toLowerCase();
+              final isBaseOrigin =
+                  baseHost != null &&
+                  baseHost.isNotEmpty &&
+                  requestHost == baseHost;
 
-            if (isBaseOrigin) {
-              return NavigationDecision.navigate;
+              if (isBaseOrigin) {
+                return NavigationDecision.navigate;
+              }
             }
 
             // 2. Only YouTube embed provider is permitted
@@ -169,7 +187,7 @@ class _AppIframeViewState extends State<AppIframeView> {
       );
   }
 
-  String get _effectiveBaseUrl {
+  String? get _effectiveBaseUrl {
     final custom = widget.baseUrl?.trim();
     if (custom != null && custom.isNotEmpty) {
       final normalized = AppIframeView.normalizeUrl(custom);
@@ -180,12 +198,15 @@ class _AppIframeViewState extends State<AppIframeView> {
       final normalized = AppIframeView.normalizeUrl(configUrl);
       if (normalized.isNotEmpty) return normalized;
     }
-    return 'https://www.testpress.in';
+    return null;
   }
 
   void _loadIframe() {
     final normalized = AppIframeView.normalizeUrl(widget.src);
     if (normalized.isEmpty) {
+      if (_isLoading) {
+        _isLoading = false;
+      }
       _controller.loadHtmlString('<!DOCTYPE html><html><body></body></html>');
       return;
     }
@@ -218,7 +239,7 @@ class _AppIframeViewState extends State<AppIframeView> {
     <iframe
       src="$escapedSrc"
       frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen>
     </iframe>
   </body>
@@ -238,20 +259,22 @@ class _AppIframeViewState extends State<AppIframeView> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
-    final l10n = L10n.of(context);
     final effectiveRadius =
         widget.borderRadius ?? BorderRadius.circular(design.radius.md);
     final effectiveBg = widget.backgroundColor ?? design.colors.surfaceVariant;
 
-    return AppSemantics.container(
-      label: widget.semanticLabel ?? l10n.embeddedVideoPlayerSemantic,
-      child: AspectRatio(
-        aspectRatio: widget.aspectRatio,
-        child: ClipRRect(
-          borderRadius: effectiveRadius,
-          child: Container(
-            color: effectiveBg,
-            child: WebViewWidget(controller: _controller),
+    return AspectRatio(
+      aspectRatio: widget.aspectRatio,
+      child: ClipRRect(
+        borderRadius: effectiveRadius,
+        child: Container(
+          color: effectiveBg,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              WebViewWidget(controller: _controller),
+              if (_isLoading) const Center(child: AppLoadingIndicator()),
+            ],
           ),
         ),
       ),
