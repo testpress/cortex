@@ -4,6 +4,8 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../design/design_provider.dart';
 import '../accessibility/app_semantics.dart';
+import '../data/config/app_config.dart';
+import '../localization/l10n_helper.dart';
 
 /// A platform-neutral inline iframe embed view.
 ///
@@ -18,9 +20,10 @@ class AppIframeView extends StatefulWidget {
     this.borderRadius,
     this.backgroundColor,
     this.semanticLabel,
+    this.baseUrl,
   });
 
-  /// The iframe embed source URL (e.g. YouTube, Vimeo, or LMS embed link).
+  /// The iframe embed source URL (e.g. YouTube embed link).
   final String src;
 
   /// Aspect ratio of the iframe container. Defaults to 16:9.
@@ -32,20 +35,56 @@ class AppIframeView extends StatefulWidget {
   /// Optional background placeholder color.
   final Color? backgroundColor;
 
-  /// Optional accessibility semantic label. Defaults to 'Embedded video player'.
+  /// Optional accessibility semantic label. Defaults to localized embedded video player label.
   final String? semanticLabel;
 
+  /// Optional base origin URL used for loading the iframe embed.
+  ///
+  /// Defaults to [AppConfig.apiBaseUrl] if configured, or `https://www.testpress.in`.
+  final String? baseUrl;
+
   /// Normalizes protocol-relative or bare URLs to full HTTPS URLs.
+  ///
+  /// Rejects non-http(s) schemes (e.g. `javascript:`, `data:`) by returning an empty string.
+  /// Validates with [Uri.tryParse] and re-serializes to ensure a well-formed URL.
   @visibleForTesting
   static String normalizeUrl(String rawUrl) {
     var url = rawUrl.trim();
+    if (url.isEmpty) return '';
+
     if (url.startsWith('//')) {
-      return 'https:$url';
+      url = 'https:$url';
+    } else {
+      final schemeMatch = RegExp(
+        r'^([a-zA-Z][a-zA-Z0-9+\-.]*):',
+      ).firstMatch(url);
+      if (schemeMatch != null) {
+        final scheme = schemeMatch.group(1)!.toLowerCase();
+        if (scheme != 'http' && scheme != 'https') {
+          return '';
+        }
+      } else {
+        url = 'https://$url';
+      }
     }
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      return 'https://$url';
+
+    final parsed = Uri.tryParse(url);
+    if (parsed == null ||
+        !parsed.hasScheme ||
+        (parsed.scheme != 'http' && parsed.scheme != 'https')) {
+      return '';
     }
-    return url;
+
+    return parsed.toString();
+  }
+
+  static String _escapeHtmlAttribute(String value) {
+    return value
+        .replaceAll('&', '&amp;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;');
   }
 
   @override
@@ -92,27 +131,66 @@ class _AppIframeViewState extends State<AppIframeView> {
               return NavigationDecision.prevent;
             }
 
-            // Only allow the base origin, initial embed page, or embed player URLs.
-            // Blocks wandering to external sites, youtube.com/watch, channels, or suggested videos.
-            final url = request.url;
-            final isBaseOrigin = url.startsWith('https://www.testpress.in');
-            final isEmbedUrl =
-                uri.path.contains('/embed/') ||
-                uri.path.contains('/video/') ||
-                url == AppIframeView.normalizeUrl(widget.src);
+            final requestHost = uri.host.toLowerCase();
+            if (requestHost.isEmpty) {
+              return NavigationDecision.prevent;
+            }
 
-            if (isBaseOrigin || isEmbedUrl) {
+            // 1. Allow tenant base origin (e.g. Testpress LMS host)
+            final baseUri = Uri.tryParse(_effectiveBaseUrl);
+            final baseHost = baseUri?.host.toLowerCase();
+            final isBaseOrigin =
+                baseHost != null &&
+                baseHost.isNotEmpty &&
+                (requestHost == baseHost || requestHost.endsWith('.$baseHost'));
+
+            if (isBaseOrigin) {
               return NavigationDecision.navigate;
             }
 
-            return NavigationDecision.prevent;
+            // 2. Only YouTube embed provider is permitted
+            final isYouTube =
+                requestHost == 'youtube.com' ||
+                requestHost.endsWith('.youtube.com') ||
+                requestHost == 'youtube-nocookie.com' ||
+                requestHost.endsWith('.youtube-nocookie.com');
+
+            if (!isYouTube) {
+              return NavigationDecision.prevent;
+            }
+
+            // For YouTube, restrict to embed paths so users cannot wander to
+            // watch pages (/watch), channel feeds, or recommended videos.
+            return uri.path.startsWith('/embed/')
+                ? NavigationDecision.navigate
+                : NavigationDecision.prevent;
           },
         ),
       );
   }
 
+  String get _effectiveBaseUrl {
+    final custom = widget.baseUrl?.trim();
+    if (custom != null && custom.isNotEmpty) {
+      final normalized = AppIframeView.normalizeUrl(custom);
+      if (normalized.isNotEmpty) return normalized;
+    }
+    final configUrl = AppConfig.apiBaseUrl.trim();
+    if (configUrl.isNotEmpty) {
+      final normalized = AppIframeView.normalizeUrl(configUrl);
+      if (normalized.isNotEmpty) return normalized;
+    }
+    return 'https://www.testpress.in';
+  }
+
   void _loadIframe() {
     final normalized = AppIframeView.normalizeUrl(widget.src);
+    if (normalized.isEmpty) {
+      _controller.loadHtmlString('<!DOCTYPE html><html><body></body></html>');
+      return;
+    }
+
+    final escapedSrc = AppIframeView._escapeHtmlAttribute(normalized);
     final html =
         '''
 <!DOCTYPE html>
@@ -138,7 +216,7 @@ class _AppIframeViewState extends State<AppIframeView> {
   </head>
   <body>
     <iframe
-      src="$normalized"
+      src="$escapedSrc"
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowfullscreen>
@@ -146,13 +224,13 @@ class _AppIframeViewState extends State<AppIframeView> {
   </body>
 </html>
 ''';
-    _controller.loadHtmlString(html, baseUrl: 'https://www.testpress.in');
+    _controller.loadHtmlString(html, baseUrl: _effectiveBaseUrl);
   }
 
   @override
   void didUpdateWidget(covariant AppIframeView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.src != widget.src) {
+    if (oldWidget.src != widget.src || oldWidget.baseUrl != widget.baseUrl) {
       _loadIframe();
     }
   }
@@ -160,12 +238,13 @@ class _AppIframeViewState extends State<AppIframeView> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final effectiveRadius =
         widget.borderRadius ?? BorderRadius.circular(design.radius.md);
     final effectiveBg = widget.backgroundColor ?? design.colors.surfaceVariant;
 
     return AppSemantics.container(
-      label: widget.semanticLabel ?? 'Embedded video player',
+      label: widget.semanticLabel ?? l10n.embeddedVideoPlayerSemantic,
       child: AspectRatio(
         aspectRatio: widget.aspectRatio,
         child: ClipRRect(

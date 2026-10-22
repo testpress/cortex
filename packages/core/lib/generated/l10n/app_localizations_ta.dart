@@ -1804,6 +1804,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get commonClearSearchSemantic => 'தேடலை அழி';
 
   @override
+  String get embeddedVideoPlayerSemantic => 'உட்பொதிக்கப்பட்ட வீடியோ பிளேயர்';
+
+  @override
   String get forumFilterSemantic => 'வடிகட்டி';
 
   @override

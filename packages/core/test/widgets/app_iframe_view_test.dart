@@ -33,6 +33,13 @@ void main() {
         'http://example.com/embed',
       );
     });
+
+    test('rejects non-http(s) schemes like javascript: and data:', () {
+      expect(AppIframeView.normalizeUrl('javascript:alert(1)'), '');
+      expect(AppIframeView.normalizeUrl('data:text/html,evil'), '');
+      expect(AppIframeView.normalizeUrl('vbscript:msgbox'), '');
+      expect(AppIframeView.normalizeUrl(''), '');
+    });
   });
 
   group('AppIframeView Widget', () {
@@ -41,9 +48,28 @@ void main() {
     });
 
     Widget wrap(Widget child) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: DesignProvider(config: DesignConfig.defaults(), child: child),
+      return LocalizationProvider(
+        child: Builder(
+          builder: (context) {
+            final locale = LocalizationProvider.of(context).locale;
+            return WidgetsApp(
+              color: const Color(0xFF000000),
+              locale: locale,
+              localizationsDelegates: LocalizationProvider.delegates,
+              pageRouteBuilder:
+                  <T>(RouteSettings settings, WidgetBuilder builder) =>
+                      PageRouteBuilder<T>(
+                        settings: settings,
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            builder(context),
+                      ),
+              home: DesignProvider(
+                config: DesignConfig.defaults(),
+                child: child,
+              ),
+            );
+          },
+        ),
       );
     }
 
@@ -57,6 +83,37 @@ void main() {
       final aspectRatioWidget = tester.widget<AspectRatio>(aspectRatioFinder);
       expect(aspectRatioWidget.aspectRatio, 16 / 9);
       expect(find.byType(ClipRRect), findsOneWidget);
+    });
+
+    testWidgets('uses localized semantic label by default', (tester) async {
+      await tester.pumpWidget(
+        wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+      );
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Embedded video player',
+      );
+      expect(semanticsFinder, findsOneWidget);
+    });
+
+    testWidgets('respects custom semantic label', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const AppIframeView(
+            src: 'https://www.youtube.com/embed/test',
+            semanticLabel: 'Custom video player',
+          ),
+        ),
+      );
+
+      final semanticsFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Custom video player',
+      );
+      expect(semanticsFinder, findsOneWidget);
     });
 
     testWidgets('respects custom aspect ratio', (tester) async {
@@ -128,14 +185,242 @@ void main() {
         ),
       );
       expect(baseDecision, NavigationDecision.navigate);
+
+      // Verify prefix spoofing is blocked: uri.host comparison prevents .evil.com bypass
+      final evilHostDecision = await callback(
+        const NavigationRequest(
+          url: 'https://www.testpress.in.evil.com/phish',
+          isMainFrame: true,
+        ),
+      );
+      expect(evilHostDecision, NavigationDecision.prevent);
     });
+
+    testWidgets('supports configurable baseUrl and enforces its origin', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          const AppIframeView(
+            src: 'https://www.youtube.com/embed/test',
+            baseUrl: 'https://learn.myinstitute.com',
+          ),
+        ),
+      );
+
+      expect(
+        _lastWebViewController?.lastLoadedBaseUrl,
+        'https://learn.myinstitute.com',
+      );
+      final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+      final allowedTenantDecision = await callback(
+        const NavigationRequest(
+          url: 'https://learn.myinstitute.com/page',
+          isMainFrame: true,
+        ),
+      );
+      expect(allowedTenantDecision, NavigationDecision.navigate);
+
+      // Default testpress host should not be allowed when custom baseUrl is provided
+      final testpressDecision = await callback(
+        const NavigationRequest(
+          url: 'https://www.testpress.in',
+          isMainFrame: true,
+        ),
+      );
+      expect(testpressDecision, NavigationDecision.prevent);
+    });
+
+    testWidgets('rejects arbitrary third-party hosts with /embed/ or /video/', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+      );
+
+      final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+      // Arbitrary host with /video/ path should be blocked
+      final evilVideoDecision = await callback(
+        const NavigationRequest(
+          url: 'https://evil.com/video/phish',
+          isMainFrame: true,
+        ),
+      );
+      expect(evilVideoDecision, NavigationDecision.prevent);
+
+      // Arbitrary host with /embed/ path should be blocked
+      final evilEmbedDecision = await callback(
+        const NavigationRequest(
+          url: 'https://malicious.org/embed/x',
+          isMainFrame: true,
+        ),
+      );
+      expect(evilEmbedDecision, NavigationDecision.prevent);
+    });
+
+    testWidgets('rejects non-YouTube providers like Vimeo', (tester) async {
+      await tester.pumpWidget(
+        wrap(const AppIframeView(src: 'https://player.vimeo.com/video/12345')),
+      );
+
+      final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+      final vimeoDecision = await callback(
+        const NavigationRequest(
+          url: 'https://player.vimeo.com/video/12345',
+          isMainFrame: true,
+        ),
+      );
+      expect(vimeoDecision, NavigationDecision.prevent);
+    });
+
+    testWidgets('escapes HTML attribute delimiter characters in iframe src', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          const AppIframeView(
+            src: 'https://www.youtube.com/embed/test?a=1&b=2',
+          ),
+        ),
+      );
+
+      final loadedHtml = _lastWebViewController?.lastLoadedHtml ?? '';
+      expect(
+        loadedHtml,
+        contains('src="https://www.youtube.com/embed/test?a=1&amp;b=2"'),
+      );
+      expect(loadedHtml, isNot(contains('&b=2"')));
+    });
+  });
+
+  group('AppIframeView Host Spoofing & Security Guardrails', () {
+    Widget wrap(Widget child) {
+      return LocalizationProvider(
+        child: Builder(
+          builder: (context) {
+            final locale = LocalizationProvider.of(context).locale;
+            return WidgetsApp(
+              color: const Color(0xFF000000),
+              locale: locale,
+              localizationsDelegates: LocalizationProvider.delegates,
+              pageRouteBuilder:
+                  <T>(RouteSettings settings, WidgetBuilder builder) =>
+                      PageRouteBuilder<T>(
+                        settings: settings,
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            builder(context),
+                      ),
+              home: DesignProvider(
+                config: DesignConfig.defaults(),
+                child: child,
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    testWidgets('rejects domain prefix spoofing like testpress.in.evil.com', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+      );
+
+      final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+      final spoofDecision = await callback(
+        const NavigationRequest(
+          url: 'https://testpress.in.evil.com/embed/video',
+          isMainFrame: true,
+        ),
+      );
+      expect(spoofDecision, NavigationDecision.prevent);
+
+      final spoofWwwDecision = await callback(
+        const NavigationRequest(
+          url: 'https://www.testpress.in.evil.com/phish',
+          isMainFrame: true,
+        ),
+      );
+      expect(spoofWwwDecision, NavigationDecision.prevent);
+    });
+
+    testWidgets(
+      'rejects arbitrary hosts with embed paths (e.g. evil.com/embed/)',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+        );
+
+        final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+        final evilEmbedDecision = await callback(
+          const NavigationRequest(
+            url: 'https://evil.com/embed/',
+            isMainFrame: true,
+          ),
+        );
+        expect(evilEmbedDecision, NavigationDecision.prevent);
+
+        final evilEmbedDeepDecision = await callback(
+          const NavigationRequest(
+            url: 'https://evil.com/embed/malicious-video-id',
+            isMainFrame: true,
+          ),
+        );
+        expect(evilEmbedDeepDecision, NavigationDecision.prevent);
+
+        final evilVideoDecision = await callback(
+          const NavigationRequest(
+            url: 'https://evil.com/video/attack',
+            isMainFrame: true,
+          ),
+        );
+        expect(evilVideoDecision, NavigationDecision.prevent);
+      },
+    );
+
+    testWidgets(
+      'rejects subdomain spoofing on third-party hosts like youtube.evil.com',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+        );
+
+        final callback = _lastNavigationDelegate!.navigationRequestCallback!;
+
+        final youtubeSpoofDecision = await callback(
+          const NavigationRequest(
+            url: 'https://youtube.evil.com/embed/123',
+            isMainFrame: true,
+          ),
+        );
+        expect(youtubeSpoofDecision, NavigationDecision.prevent);
+
+        final vimeoSpoofDecision = await callback(
+          const NavigationRequest(
+            url: 'https://vimeo.evil.com/video/123',
+            isMainFrame: true,
+          ),
+        );
+        expect(vimeoSpoofDecision, NavigationDecision.prevent);
+      },
+    );
   });
 }
 
 _FakePlatformNavigationDelegate? _lastNavigationDelegate;
+_FakePlatformWebViewController? _lastWebViewController;
 
 class _FakePlatformWebViewController extends PlatformWebViewController {
   _FakePlatformWebViewController(super.params) : super.implementation();
+
+  String? lastLoadedBaseUrl;
+  String? lastLoadedHtml;
 
   @override
   Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
@@ -149,7 +434,10 @@ class _FakePlatformWebViewController extends PlatformWebViewController {
   ) async {}
 
   @override
-  Future<void> loadHtmlString(String html, {String? baseUrl}) async {}
+  Future<void> loadHtmlString(String html, {String? baseUrl}) async {
+    lastLoadedHtml = html;
+    lastLoadedBaseUrl = baseUrl;
+  }
 }
 
 class _FakePlatformWebViewWidget extends PlatformWebViewWidget {
@@ -195,7 +483,9 @@ class _FakeWebViewPlatform extends WebViewPlatform {
   PlatformWebViewController createPlatformWebViewController(
     PlatformWebViewControllerCreationParams params,
   ) {
-    return _FakePlatformWebViewController(params);
+    final controller = _FakePlatformWebViewController(params);
+    _lastWebViewController = controller;
+    return controller;
   }
 
   @override

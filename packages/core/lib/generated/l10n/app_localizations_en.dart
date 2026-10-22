@@ -1781,6 +1781,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonClearSearchSemantic => 'Clear search';
 
   @override
+  String get embeddedVideoPlayerSemantic => 'Embedded video player';
+
+  @override
   String get forumFilterSemantic => 'Filter';
 
   @override

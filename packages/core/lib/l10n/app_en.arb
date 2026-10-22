@@ -899,6 +899,10 @@
   "forumFilterClearAll": "Clear All",
   "commonBackSemantic": "Back",
   "commonClearSearchSemantic": "Clear search",
+  "embeddedVideoPlayerSemantic": "Embedded video player",
+  "@embeddedVideoPlayerSemantic": {
+    "description": "Accessibility semantic label for embedded iframe video players"
+  },
   "forumFilterSemantic": "Filter",
   "forumFilterActivityPosted": "Posted by me",
   "forumFilterActivityCommented": "Commented by me",
