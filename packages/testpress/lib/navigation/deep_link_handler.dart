@@ -48,11 +48,17 @@ class DeepLinkRule {
       }
     }
 
-    String result = target;
-    params.forEach((paramName, paramValue) {
-      result = result.replaceAll(paramName, paramValue);
-    });
-    return result;
+    final targetSegments = target
+        .split('/')
+        .where((s) => s.isNotEmpty)
+        .toList();
+    final resolvedSegments = targetSegments.map((segment) {
+      if (segment.startsWith(':') && params.containsKey(segment)) {
+        return Uri.encodeComponent(params[segment]!);
+      }
+      return segment;
+    }).toList();
+    return resolvedSegments.isEmpty ? '/' : '/${resolvedSegments.join('/')}';
   }
 }
 
@@ -67,6 +73,7 @@ class DeepLinkHandler {
   /// Declarative table of URL pattern to internal target route rules.
   static final List<DeepLinkRule> rules = [
     // Dashboard & Home aliases
+    DeepLinkRule('/home', '/home'),
     DeepLinkRule('/dashboard', '/home'),
     DeepLinkRule('/learn', '/home'),
     DeepLinkRule('/leaderboard', '/home'),
@@ -80,6 +87,15 @@ class DeepLinkHandler {
     // Lessons & Chapter content (legacy exam chapter content is unified into lesson player)
     DeepLinkRule('/exams/chapter_content/:id', '/study/lesson/:id'),
     DeepLinkRule('/courses/:courseId/contents/:id', '/study/lesson/:id'),
+    DeepLinkRule(
+      '/courses/:courseId/:chapterId/:id',
+      '/study/lesson/:id',
+      excludedParams: {
+        ':courseId': {'chapters', 'contents'},
+        ':chapterId': {'chapters', 'contents'},
+      },
+    ),
+    DeepLinkRule('/chapters/:chapterId/:id', '/study/lesson/:id'),
     DeepLinkRule('/study/lesson/:id', '/study/lesson/:id'),
 
     // Course & Chapter hierarchy
@@ -229,7 +245,21 @@ class DeepLinkHandler {
     InstituteSettings? settings,
     bool? showExamTab,
     bool? showCertificate,
+    bool? showProfileTab,
   }) {
+    final effectiveShowProfile = showProfileTab ?? AppConfig.showProfileTab;
+    final effectiveShowExam = showExamTab ?? AppConfig.showExamTab;
+    final activeTabs = NavTab.active(settings);
+
+    if (route == '/profile' || route.startsWith('/profile/')) {
+      final isProfileActive = showProfileTab != null
+          ? effectiveShowProfile
+          : activeTabs.contains(NavTab.profile);
+      if (!isProfileActive) {
+        return defaultRoute;
+      }
+    }
+
     final effectiveShowCert = showCertificate ?? AppConfig.showCertificate;
     if (route.startsWith('/profile/certificates')) {
       if (!effectiveShowCert) {
@@ -237,11 +267,11 @@ class DeepLinkHandler {
       }
     }
 
-    final effectiveShowExam = showExamTab ?? AppConfig.showExamTab;
-    final activeTabs = NavTab.active(settings);
-
     if (route == '/exams' || route.startsWith('/exams/')) {
-      if (!effectiveShowExam) {
+      final isExamActive = showExamTab != null
+          ? effectiveShowExam
+          : activeTabs.contains(NavTab.exams);
+      if (!isExamActive) {
         return activeTabs.contains(NavTab.study) ? '/study' : defaultRoute;
       }
     }

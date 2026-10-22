@@ -12,6 +12,8 @@ void main() {
 
     test('returns /home for root path or dashboard aliases', () {
       expect(DeepLinkHandler.resolve('/'), '/home');
+      expect(DeepLinkHandler.resolve('/home'), '/home');
+      expect(DeepLinkHandler.resolve('/home/'), '/home');
       expect(DeepLinkHandler.resolve('https://staging.testpress.in'), '/home');
       expect(DeepLinkHandler.resolve('/dashboard'), '/home');
       expect(DeepLinkHandler.resolve('/dashboard/'), '/home');
@@ -60,6 +62,28 @@ void main() {
           'https://staging.testpress.in/courses/12/contents/999?preview=true',
         ),
         '/study/lesson/999',
+      );
+      expect(
+        DeepLinkHandler.resolve(
+          '/courses/python/getting-stated-with-python/2063',
+        ),
+        '/study/lesson/2063',
+      );
+      expect(
+        DeepLinkHandler.resolve(
+          'https://staging.testpress.in/courses/python/getting-stated-with-python/2063/',
+        ),
+        '/study/lesson/2063',
+      );
+      expect(
+        DeepLinkHandler.resolve('/chapters/getting-stated-with-python/2071/'),
+        '/study/lesson/2071',
+      );
+      expect(
+        DeepLinkHandler.resolve(
+          'https://staging.testpress.in/chapters/getting-stated-with-python/2071/',
+        ),
+        '/study/lesson/2071',
       );
     });
 
@@ -357,6 +381,40 @@ void main() {
         '/profile/certificates',
       );
     });
+
+    test('falls back to /home when profile tab is disabled', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/profile',
+          showProfileTab: false,
+        ),
+        '/home',
+      );
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/profile/settings',
+          showProfileTab: false,
+        ),
+        '/home',
+      );
+    });
+
+    test('retains profile routes when profile tab is enabled', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/profile',
+          showProfileTab: true,
+        ),
+        '/profile',
+      );
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/profile/settings',
+          showProfileTab: true,
+        ),
+        '/profile/settings',
+      );
+    });
   });
 
   group('DeepLinkRule pattern matching', () {
@@ -370,6 +428,14 @@ void main() {
         '/study/lesson/202',
       );
       expect(rule.match(['courses', '101', 'contents']), isNull);
+    });
+
+    test('encodes special characters in substituted parameters', () {
+      final rule = DeepLinkRule('/products/:slug', '/store/product/:slug');
+      expect(
+        rule.match(['products', 'upsc/test']),
+        '/store/product/upsc%2Ftest',
+      );
     });
 
     test('enforces allowed parameters constraint', () {

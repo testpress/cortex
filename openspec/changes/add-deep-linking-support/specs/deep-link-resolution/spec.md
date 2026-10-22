@@ -30,6 +30,8 @@ The system SHALL map legacy web endpoints and notification destination patterns 
   - `/activate` or `/register` SHALL map to `/signup`.
 - **Courses & Lessons (Video / PDF / Notes)**:
   - `/courses/:courseId/contents/:contentId` SHALL map to `/study/lesson/:contentId`.
+  - `/courses/:courseId/:chapterId/:contentId` SHALL map to `/study/lesson/:contentId`.
+  - `/chapters/:chapterId/:contentId` SHALL map to `/study/lesson/:contentId`.
   - `/exams/chapter_content/:contentId` SHALL map to `/study/lesson/:contentId` (intentional: legacy exam chapter content is rendered by the unified study lesson player).
   - `/courses/:courseId/chapters/:chapterId` SHALL map to `/study/course/:courseId/chapters/:chapterId`.
   - `/courses/:courseId/chapters` SHALL map to `/study/course/:courseId/chapters`.
@@ -75,6 +77,7 @@ The system SHALL map legacy web endpoints and notification destination patterns 
 The system SHALL validate resolved routes against active tabs and feature flags before navigating, falling back to safe alternate routes or `/home` if a feature or tab is disabled for the current institute build or configuration.
 
 - **Exams Tab**: If a route targets `/exams` and `AppConfig.showExamTab` is false, it SHALL fall back to `/study`.
+- **Profile Tab**: If a route targets `/profile` or `/profile/*` and `AppConfig.showProfileTab` is false, it SHALL fall back to `/home`.
 - **Store Tab**: If a route targets `/store` or `/store/*` and `settings?.storeEnabled` is false, it SHALL fall back to `/home`.
 - **AI Tab**: If a route targets `/ai` or `/ai/*` and `settings?.enableAiChatbot` is false, it SHALL fall back to `/home`.
 - **Certificates**: If a route targets `/profile/certificates` and `AppConfig.showCertificate` is false, it SHALL fall back to `/profile`.
@@ -88,6 +91,11 @@ The system SHALL validate resolved routes against active tabs and feature flags 
 - **GIVEN** an institute build where `AppConfig.showExamTab == false`
 - **WHEN** an exam notification deep link `/exams` is dispatched
 - **THEN** navigation SHALL fall back to `/study`
+
+#### Scenario: Navigating to disabled profile link
+- **GIVEN** an institute build where `AppConfig.showProfileTab == false`
+- **WHEN** a profile notification deep link `/profile/settings` is dispatched
+- **THEN** navigation SHALL fall back to `/home`
 
 ---
 

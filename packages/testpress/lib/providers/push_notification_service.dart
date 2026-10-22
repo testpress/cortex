@@ -203,9 +203,14 @@ class PushNotificationService {
   }
 
   String? _extractUrl(RemoteMessage message) {
-    return message.data['short_url'] ??
+    final url =
+        message.data['short_url'] ??
         message.data['url'] ??
         message.data['link'];
+    if (url != null && url.trim().isNotEmpty) {
+      return url.trim();
+    }
+    return null;
   }
 
   void _handleDeepLink(String? url) {
