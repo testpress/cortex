@@ -33,8 +33,6 @@ class AiScreen extends ConsumerStatefulWidget {
 }
 
 class _AiScreenState extends ConsumerState<AiScreen> {
-  static const double _maxContentWidth = 768.0;
-
   late final ScrollController _scrollController;
   late final TextEditingController _composerController;
   late final FocusNode _composerFocusNode;
@@ -275,16 +273,11 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                 horizontal: design.spacing.md,
                 vertical: design.spacing.xs,
               ),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: _maxContentWidth),
-                  child: _AiNoticeBanner(
-                    message: l10n.aiInitErrorBanner,
-                    actionLabel: l10n.labelRetry,
-                    onAction: () =>
-                        ref.read(genericAiChatProvider.notifier).initialize(),
-                  ),
-                ),
+              child: _AiNoticeBanner(
+                message: l10n.aiInitErrorBanner,
+                actionLabel: l10n.labelRetry,
+                onAction: () =>
+                    ref.read(genericAiChatProvider.notifier).initialize(),
               ),
             ),
 
@@ -316,61 +309,50 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                       onSuggestion: isInputBlocked ? null : _handleSuggestion,
                     ),
                   )
-                : Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: _maxContentWidth,
-                      ),
-                      child: AppSemantics.scrollableList(
-                        itemCount: displayMessages.length,
-                        label: l10n.aiSupportTitle,
-                        child: NotificationListener<ScrollMetricsNotification>(
-                          onNotification: (notification) {
-                            if (notification.metrics.pixels >
-                                    notification.metrics.maxScrollExtent &&
-                                notification.metrics.maxScrollExtent >= 0) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                _clampScrollBounds();
-                              });
-                            }
-                            return false;
-                          },
-                          child: ListView.builder(
-                            key: ValueKey(
-                              chatState.currentChatId ?? 'new_chat',
-                            ),
-                            controller: _scrollController,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: design.spacing.md,
-                              vertical: design.spacing.sm * 1.5,
-                            ),
-                            itemCount: displayMessages.length,
-                            itemBuilder: (context, index) {
-                              final item = displayMessages[index];
-                              if (item.isUser) {
-                                return AiUserMessageBubble(
-                                  message: item.text,
-                                  timestamp: DateFormatter.formatTime(
-                                    item.timestamp,
-                                  ),
-                                  isSending: item.isSending,
-                                  hasSendError: item.hasSendError,
-                                  onRetry: () => _handleRetry(item.id, true),
-                                );
-                              }
-                              return AiAssistantCard(
-                                message: item.text,
-                                timestamp: DateFormatter.formatTime(
-                                  item.timestamp,
-                                ),
-                                isGenerating: item.isStreaming,
-                                hasGenerationError: item.hasGenerationError,
-                                onRetry: () => _handleRetry(item.id, false),
-                                onCopy: () => _handleCopy(item.text),
-                              );
-                            },
-                          ),
+                : AppSemantics.scrollableList(
+                    itemCount: displayMessages.length,
+                    label: l10n.aiSupportTitle,
+                    child: NotificationListener<ScrollMetricsNotification>(
+                      onNotification: (notification) {
+                        if (notification.metrics.pixels >
+                                notification.metrics.maxScrollExtent &&
+                            notification.metrics.maxScrollExtent >= 0) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            _clampScrollBounds();
+                          });
+                        }
+                        return false;
+                      },
+                      child: ListView.builder(
+                        key: ValueKey(chatState.currentChatId ?? 'new_chat'),
+                        controller: _scrollController,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: design.spacing.md,
+                          vertical: design.spacing.sm * 1.5,
                         ),
+                        itemCount: displayMessages.length,
+                        itemBuilder: (context, index) {
+                          final item = displayMessages[index];
+                          if (item.isUser) {
+                            return AiUserMessageBubble(
+                              message: item.text,
+                              timestamp: DateFormatter.formatTime(
+                                item.timestamp,
+                              ),
+                              isSending: item.isSending,
+                              hasSendError: item.hasSendError,
+                              onRetry: () => _handleRetry(item.id, true),
+                            );
+                          }
+                          return AiAssistantCard(
+                            message: item.text,
+                            timestamp: DateFormatter.formatTime(item.timestamp),
+                            isGenerating: item.isStreaming,
+                            hasGenerationError: item.hasGenerationError,
+                            onRetry: () => _handleRetry(item.id, false),
+                            onCopy: () => _handleCopy(item.text),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -379,17 +361,12 @@ class _AiScreenState extends ConsumerState<AiScreen> {
           if (!showEmptyState) ...[
             // Quota / Rate-limit warning banner if active
             if (quotaBanner != null)
-              Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: _maxContentWidth),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.md,
-                      vertical: design.spacing.xs,
-                    ),
-                    child: quotaBanner,
-                  ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.md,
+                  vertical: design.spacing.xs,
                 ),
+                child: quotaBanner,
               ),
 
             // Composer docked to bottom
@@ -403,21 +380,14 @@ class _AiScreenState extends ConsumerState<AiScreen> {
               child: SafeArea(
                 top: false,
                 bottom: bottomInset == 0,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: _maxContentWidth,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: design.spacing.md,
-                        end: design.spacing.md,
-                        top: design.spacing.sm * 1.5,
-                        bottom: design.spacing.sm * 1.5,
-                      ),
-                      child: buildComposer(),
-                    ),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: design.spacing.md,
+                    end: design.spacing.md,
+                    top: design.spacing.sm * 1.5,
+                    bottom: design.spacing.sm * 1.5,
                   ),
+                  child: buildComposer(),
                 ),
               ),
             ),
@@ -436,9 +406,6 @@ class _AiEmptyState extends StatelessWidget {
     this.notice,
   });
 
-  static const double _phoneContentWidth = 340.0;
-  static const double _tabletContentWidth = 480.0;
-
   final Widget composer;
 
   /// Receives the starter prompt of the tapped card. Null disables the cards.
@@ -454,23 +421,16 @@ class _AiEmptyState extends StatelessWidget {
     final gap = design.spacing.sm * 1.5;
 
     Widget card(IconData icon, Color color, String label, String prompt) {
-      return Expanded(
-        child: AiSuggestionCard(
-          icon: icon,
-          iconColor: color,
-          label: label,
-          onTap: onSuggestion == null ? null : () => onSuggestion!(prompt),
-        ),
+      return AiSuggestionCard(
+        icon: icon,
+        iconColor: color,
+        label: label,
+        onTap: onSuggestion == null ? null : () => onSuggestion!(prompt),
       );
     }
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final contentWidth =
-            constraints.maxWidth >= design.layout.tabletBreakpoint
-            ? _tabletContentWidth
-            : _phoneContentWidth;
-
         // Reversed so the composer stays in view when the keyboard leaves
         // less room than the content needs.
         return SingleChildScrollView(
@@ -480,7 +440,7 @@ class _AiEmptyState extends StatelessWidget {
             child: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: contentWidth + design.spacing.md * 2,
+                  maxWidth: design.layout.tabletBreakpoint,
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(design.spacing.md),
@@ -502,39 +462,54 @@ class _AiEmptyState extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            card(
-                              LucideIcons.bookOpen,
-                              design.colors.accent4,
-                              l10n.aiSuggestionExplainConcept,
-                              l10n.aiSuggestionExplainConceptPrompt,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: card(
+                                      LucideIcons.bookOpen,
+                                      design.colors.accent4,
+                                      l10n.aiSuggestionExplainConcept,
+                                      l10n.aiSuggestionExplainConceptPrompt,
+                                    ),
+                                  ),
+                                  SizedBox(height: gap),
+                                  Expanded(
+                                    child: card(
+                                      LucideIcons.fileQuestionMark,
+                                      design.colors.accent1,
+                                      l10n.aiSuggestionPracticeQuestions,
+                                      l10n.aiSuggestionPracticeQuestionsPrompt,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(width: gap),
-                            card(
-                              LucideIcons.calculator,
-                              design.colors.accent2,
-                              l10n.aiSuggestionSolveProblem,
-                              l10n.aiSuggestionSolveProblemPrompt,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: gap),
-                      IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            card(
-                              LucideIcons.fileQuestionMark,
-                              design.colors.accent1,
-                              l10n.aiSuggestionPracticeQuestions,
-                              l10n.aiSuggestionPracticeQuestionsPrompt,
-                            ),
-                            SizedBox(width: gap),
-                            card(
-                              LucideIcons.lightbulb,
-                              design.colors.accent3,
-                              l10n.aiSuggestionStudyTips,
-                              l10n.aiSuggestionStudyTipsPrompt,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: card(
+                                      LucideIcons.calculator,
+                                      design.colors.accent2,
+                                      l10n.aiSuggestionSolveProblem,
+                                      l10n.aiSuggestionSolveProblemPrompt,
+                                    ),
+                                  ),
+                                  SizedBox(height: gap),
+                                  Expanded(
+                                    child: card(
+                                      LucideIcons.lightbulb,
+                                      design.colors.accent3,
+                                      l10n.aiSuggestionStudyTips,
+                                      l10n.aiSuggestionStudyTipsPrompt,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
