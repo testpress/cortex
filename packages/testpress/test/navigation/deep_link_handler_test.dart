@@ -1,3 +1,4 @@
+import 'package:core/data/config/institute_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testpress/navigation/deep_link_handler.dart';
 
@@ -220,6 +221,182 @@ void main() {
       expect(DeepLinkHandler.resolve('/ai/chat'), '/ai/chat');
       expect(DeepLinkHandler.resolve('/ai/history'), '/ai/history');
       expect(DeepLinkHandler.resolve('/ai/unknown'), '/ai');
+    });
+  });
+
+  group('DeepLinkHandler.filterRouteByAvailability', () {
+    test(
+      'falls back to /study when exam tab is disabled and /study is active',
+      () {
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/exams',
+            showExamTab: false,
+          ),
+          '/study',
+        );
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/exams/available',
+            showExamTab: false,
+          ),
+          '/study',
+        );
+      },
+    );
+
+    test('retains /exams when exam tab is enabled', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability('/exams', showExamTab: true),
+        '/exams',
+      );
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/exams/available',
+          showExamTab: true,
+        ),
+        '/exams/available',
+      );
+    });
+
+    test(
+      'falls back to /home when store is disabled in institute settings',
+      () {
+        final disabledSettings = InstituteSettings.fromJson({
+          'domain_url': 'https://test.com',
+          'store_enabled': false,
+        });
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/store/product/upsc-2026',
+            settings: disabledSettings,
+          ),
+          '/home',
+        );
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/store',
+            settings: disabledSettings,
+          ),
+          '/home',
+        );
+      },
+    );
+
+    test(
+      'retains store routes when store is enabled in institute settings',
+      () {
+        final enabledSettings = InstituteSettings.fromJson({
+          'domain_url': 'https://test.com',
+          'store_enabled': true,
+        });
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/store/product/upsc-2026',
+            settings: enabledSettings,
+          ),
+          '/store/product/upsc-2026',
+        );
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/store',
+            settings: enabledSettings,
+          ),
+          '/store',
+        );
+      },
+    );
+
+    test(
+      'falls back to /home when AI tab is disabled in institute settings',
+      () {
+        final disabledSettings = InstituteSettings.fromJson({
+          'domain_url': 'https://test.com',
+          'enable_ai_chatbot': false,
+        });
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/ai/chat',
+            settings: disabledSettings,
+          ),
+          '/home',
+        );
+      },
+    );
+
+    test('retains AI routes when AI tab is enabled in institute settings', () {
+      final enabledSettings = InstituteSettings.fromJson({
+        'domain_url': 'https://test.com',
+        'enable_ai_chatbot': true,
+      });
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/ai/chat',
+          settings: enabledSettings,
+        ),
+        '/ai/chat',
+      );
+    });
+
+    test('falls back to /profile when certificates is disabled', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/profile/certificates',
+          showCertificate: false,
+        ),
+        '/profile',
+      );
+    });
+
+    test('retains certificates when enabled', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/profile/certificates',
+          showCertificate: true,
+        ),
+        '/profile/certificates',
+      );
+    });
+  });
+
+  group('DeepLinkRule pattern matching', () {
+    test('substitutes single parameter accurately', () {
+      final rule = DeepLinkRule(
+        '/courses/:courseId/contents/:id',
+        '/study/lesson/:id',
+      );
+      expect(
+        rule.match(['courses', '101', 'contents', '202']),
+        '/study/lesson/202',
+      );
+      expect(rule.match(['courses', '101', 'contents']), isNull);
+    });
+
+    test('enforces allowed parameters constraint', () {
+      final rule = DeepLinkRule(
+        '/ai/:sub',
+        '/ai/:sub',
+        allowedParams: {
+          ':sub': {'chat', 'history'},
+        },
+      );
+      expect(rule.match(['ai', 'chat']), '/ai/chat');
+      expect(rule.match(['ai', 'unknown']), isNull);
+    });
+
+    test('enforces excluded parameters constraint', () {
+      final rule = DeepLinkRule(
+        '/courses/:courseId',
+        '/study/course/:courseId/chapters',
+        excludedParams: {
+          ':courseId': {'chapters', 'contents'},
+        },
+      );
+      expect(
+        rule.match(['courses', 'math-101']),
+        '/study/course/math-101/chapters',
+      );
+      expect(rule.match(['courses', 'chapters']), isNull);
     });
   });
 }

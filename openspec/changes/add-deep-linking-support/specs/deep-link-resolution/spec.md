@@ -20,8 +20,9 @@ The system SHALL provide a `DeepLinkHandler` to parse incoming URLs (from push n
 ---
 
 ### Requirement: Route Normalization Mapping
-The system SHALL map legacy web endpoints and notification destination patterns to matching Cortex internal routes.
+The system SHALL map legacy web endpoints and notification destination patterns to matching Cortex internal routes using a declarative list of pattern-to-target rules.
 
+- **Declarative Rule Table**: URL patterns SHALL be defined declaratively (e.g., `/courses/:courseId/contents/:id` → `/study/lesson/:id`) and evaluated by a path pattern matcher.
 - **Dashboard / Home**:
   - Paths `/dashboard`, `/learn`, `/leaderboard`, or root `/` SHALL map to `/home`.
 - **Authentication**:
@@ -30,14 +31,23 @@ The system SHALL map legacy web endpoints and notification destination patterns 
 - **Courses & Lessons (Video / PDF / Notes)**:
   - `/courses/:courseId/contents/:contentId` SHALL map to `/study/lesson/:contentId`.
   - `/exams/chapter_content/:contentId` SHALL map to `/study/lesson/:contentId` (intentional: legacy exam chapter content is rendered by the unified study lesson player).
+  - `/courses/:courseId/chapters/:chapterId` SHALL map to `/study/course/:courseId/chapters/:chapterId`.
+  - `/courses/:courseId/chapters` SHALL map to `/study/course/:courseId/chapters`.
   - `/courses` SHALL map to `/study`.
 - **Store & Products**:
-  - `/products/:slug` SHALL map to `/store/product/:slug`.
+  - `/products/:slug` or `/store/product/:slug` SHALL map to `/store/product/:slug`.
   - `/products` or `/store` SHALL map to `/store`.
 - **Exams**:
   - `/exams`, `/exams/available`, `/exams/upcoming`, `/exams/history` SHALL map to `/exams`.
 - **Discussions / Forum**:
-  - `/p/:slug` or `/posts/:slug` SHALL map to `/home/discussions/forum/posts/:slug`.
+  - `/p/:slug` or `/posts/:slug` or `/discussions/forum/posts/:slug` SHALL map to `/home/discussions/forum/posts/:slug`.
+  - `/discussions/forum` or `/posts` or `/p` SHALL map to `/home/discussions/forum`.
+  - `/discussions/doubts/:id` SHALL map to `/home/discussions/doubts/:id`.
+  - `/discussions/doubts` SHALL map to `/home/discussions/doubts`.
+- **Profile**:
+  - `/profile/:sub` or `/user/:sub` (for notifications, edit, settings, login-activity, certificates) SHALL map to `/profile/:sub`.
+- **AI**:
+  - `/ai/:sub` (for chat, history) SHALL map to `/ai/:sub`.
 
 #### Scenario: Deep linking to chapter content / lesson
 - **GIVEN** incoming URL `/exams/chapter_content/2054`
@@ -58,6 +68,26 @@ The system SHALL map legacy web endpoints and notification destination patterns 
 - **GIVEN** incoming URL `/p/important-exam-guidelines`
 - **WHEN** resolved by `DeepLinkHandler`
 - **THEN** the returned route SHALL be `/home/discussions/forum/posts/important-exam-guidelines`
+
+---
+
+### Requirement: Feature and Tab Availability Validation
+The system SHALL validate resolved routes against active tabs and feature flags before navigating, falling back to safe alternate routes or `/home` if a feature or tab is disabled for the current institute build or configuration.
+
+- **Exams Tab**: If a route targets `/exams` and `AppConfig.showExamTab` is false, it SHALL fall back to `/study`.
+- **Store Tab**: If a route targets `/store` or `/store/*` and `settings?.storeEnabled` is false, it SHALL fall back to `/home`.
+- **AI Tab**: If a route targets `/ai` or `/ai/*` and `settings?.enableAiChatbot` is false, it SHALL fall back to `/home`.
+- **Certificates**: If a route targets `/profile/certificates` and `AppConfig.showCertificate` is false, it SHALL fall back to `/profile`.
+
+#### Scenario: Navigating to disabled store link
+- **GIVEN** an institute with `storeEnabled == false`
+- **WHEN** a store notification deep link `/store/product/upsc` is dispatched
+- **THEN** navigation SHALL fall back to `/home`
+
+#### Scenario: Navigating to disabled exams link
+- **GIVEN** an institute build where `AppConfig.showExamTab == false`
+- **WHEN** an exam notification deep link `/exams` is dispatched
+- **THEN** navigation SHALL fall back to `/study`
 
 ---
 

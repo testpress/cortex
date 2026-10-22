@@ -22,3 +22,13 @@
 - [x] 3.2 Test all specified URL patterns, query parameter stripping, and segment extraction.
 - [x] 3.3 Test edge cases (null, empty, malformed URLs, and unknown route fallbacks).
 - [x] 3.4 Run Flutter tests in `packages/testpress` to ensure all tests pass and code quality checks succeed.
+
+## 4. Pattern Matcher & Tenant Tab Gating Refactor
+
+- [x] 4.1 Refactor `DeepLinkHandler` to use a declarative pattern-to-target rule table with parameter substitution.
+- [x] 4.2 Add route availability checking against `NavTab.active(settings)` and `AppConfig.showCertificate` with safe fallback to `/home` (or `/study` for exams).
+- [x] 4.3 Update `PushNotificationService` to store pending raw URLs and resolve/validate at dispatch time when `InstituteSettings` is loaded.
+- [x] 4.4 Update unit tests to verify declarative pattern matching and feature/tab availability fallbacks.
+- [x] 4.5 Clear pending deep link on user logout to prevent cross-account redirection.
+- [x] 4.6 Switch bottom navigation shell tabs via `router.go()` and push detail screens via `router.push()`.
+- [x] 4.7 Register bootstrapProvider listener in pushNotificationService factory for canonical Riverpod lifecycle management.

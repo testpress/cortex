@@ -4,9 +4,12 @@
 The system SHALL intercept incoming notification URLs and process them through `DeepLinkHandler` before performing navigation.
 
 - **URL Extraction**: When a notification is tapped in foreground, background, or terminated states, `PushNotificationService` SHALL extract the deep link URL from the notification payload (`data['url']` or `data['link']`).
-- **Normalized Routing**: `PushNotificationService` SHALL pass the extracted URL to `DeepLinkHandler.resolve(url)` and navigate using `GoRouter` with the resolved route.
-- **Unauthenticated Session Persistence**: If a deep link is received while unauthenticated or loading, the target route SHALL be retained in memory with a 30-minute TTL and dispatched once the user transitions to `BootstrapState.authenticated`. Stale links beyond this window SHALL be discarded to prevent unexpected navigation.
-- **Graceful Error Handling**: If resolution or navigation throws an unexpected exception, the system SHALL catch the error, log it, and navigate the user to `/home` to maintain a seamless user experience.
+- **Normalized Routing**: `PushNotificationService` SHALL resolve extracted URLs using `DeepLinkHandler.resolve(url)` and validate tab/feature availability against the loaded `InstituteSettings` and build configuration at dispatch time before pushing the route.
+- **Unauthenticated Session Persistence**: If a deep link is received while unauthenticated or loading, the raw URL SHALL be retained in memory as pending with a 30-minute TTL and resolved/dispatched once the user transitions to `BootstrapState.authenticated` and institute settings are available. Stale links beyond this window SHALL be discarded to prevent unexpected navigation.
+- **Session Cleanup on Logout**: When an authenticated user logs out, `PushNotificationService` SHALL clear any pending deep link to prevent subsequent users logging into the same device from receiving targets intended for the prior session.
+- **Feature Availability Fallback**: If a resolved route targets an unavailable tab or disabled feature, `PushNotificationService` SHALL fall back to `/home` (or `/study` if the exam tab is disabled).
+- **Tab vs Detail Navigation Dispatching**: Primary tab root destinations (matching `NavTab.values`, e.g. `/home`, `/study`, `/exams`, `/store`, `/profile`, `/ai`) SHALL navigate via `GoRouter.go()` to switch the bottom navigation shell branch, while nested or detail screens (e.g. `/study/lesson/:id`, `/store/product/:slug`) SHALL navigate via `GoRouter.push()` to preserve back navigation.
+- **Safe Route Resolution**: Unrecognized, malformed, or arbitrary URLs SHALL normalize safely to `/home` via `DeepLinkHandler.resolve`, ensuring navigation targets are always valid GoRouter routes without displaying error screens.
 
 #### Scenario: User taps notification with dashboard web URL
 - **GIVEN** a push notification received with payload `{'url': 'https://staging.testpress.in/dashboard'}`
