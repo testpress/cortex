@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'teams_web_view.dart';
+import 'zoom_web_view.dart';
 
 final _meetingJoiningProvider = StateProvider.autoDispose<bool>((ref) => false);
 
@@ -46,6 +47,29 @@ class VideoConferenceViewer extends ConsumerWidget {
         ),
       );
       return;
+    }
+
+    if (lesson.isZoom) {
+      final user = ref.read(userProvider).valueOrNull;
+      final displayName = user?.name ?? user?.username ?? 'Participant';
+      final zoomUrl = ZoomWebViewConfig.buildZoomWebClientUrl(
+        conferenceId: lesson.conferenceId,
+        password: lesson.password,
+        displayName: displayName,
+        fallbackUrl: lesson.contentUrl,
+      );
+
+      if (zoomUrl.isNotEmpty) {
+        Navigator.of(context).push(
+          AppRoute(
+            page: ZoomVideoConferenceScreen(
+              joinUrl: zoomUrl,
+              title: lesson.title,
+            ),
+          ),
+        );
+        return;
+      }
     }
 
     final meetingService = ref.read(meetingServiceProvider);
@@ -243,7 +267,13 @@ class VideoConferenceLobbyView extends StatelessWidget {
                 title: L10n.of(context).liveStreamStartTime,
                 subtitle: formattedStart!,
               ),
-            if (_isLive && lesson.isTeams && lesson.contentUrl == null) ...[
+            if (_isLive &&
+                ((lesson.isTeams && lesson.contentUrl == null) ||
+                    (lesson.isZoom &&
+                        (lesson.conferenceId == null ||
+                            lesson.conferenceId!.isEmpty) &&
+                        (lesson.contentUrl == null ||
+                            lesson.contentUrl!.isEmpty)))) ...[
               const ConferenceDivider(),
               ConferenceInfoRow(
                 icon: LucideIcons.alertCircle,
