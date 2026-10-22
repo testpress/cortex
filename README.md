@@ -29,6 +29,7 @@ cortex/
 - **[Architecture & Developer Guide](docs/architecture-overview.md)**: System design, monorepo package boundaries, offline-first Drift/Dio pattern, Riverpod state management, GoRouter, and UI guidelines.
 - **[Data Flow & Runtime Concepts](docs/data-flow-and-concepts.md)**: Deep dive into Riverpod dependency injection, memoization, scoped singletons, Drift reactive streams, and the API-to-UI data pipeline.
 - **[Setup Guide](docs/setup.md)**: Local environment setup, dependency installation, and build runner commands.
+- **[Client Runner](docs/client-runner.md)**: Run the app with a client's remote configuration and branding.
 - **Architecture Decisions & AI Context**: Deep ADRs and LLM behavioral rules live in [`packages/core/docs/`](packages/core/docs/).
 
 ## Public API
