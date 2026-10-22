@@ -116,6 +116,23 @@ void main() {
       expect(find.byType(AppIframeView), findsNothing);
     });
 
+    testWidgets(
+      'skips non-YouTube iframes completely without rendering AppIframeView',
+      (tester) async {
+        const html = '''
+        <iframe src="https://player.vimeo.com/video/76979871" frameborder="0"></iframe>
+        <iframe src="https://www.dailymotion.com/embed/video/x7tgad0" frameborder="0"></iframe>
+        <iframe src="https://evil.com/embed/video" frameborder="0"></iframe>
+        <iframe src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" frameborder="0"></iframe>
+      ''';
+
+        await tester.pumpWidget(wrap(const AppHtmlV2(data: html)));
+        await tester.pump();
+
+        expect(find.byType(AppIframeView), findsNothing);
+      },
+    );
+
     group('AppHtmlV2.parseAspectRatio', () {
       test('calculates correct aspect ratio from positive numbers', () {
         expect(AppHtmlV2.parseAspectRatio('640', '360'), 640 / 360);

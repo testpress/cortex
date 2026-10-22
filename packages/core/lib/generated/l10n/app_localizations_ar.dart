@@ -1777,9 +1777,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonClearSearchSemantic => 'مسح البحث';
 
   @override
-  String get embeddedVideoPlayerSemantic => 'مشغل فيديو مضمن';
-
-  @override
   String get forumFilterSemantic => 'تصفية';
 
   @override

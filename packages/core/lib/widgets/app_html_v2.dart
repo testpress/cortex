@@ -182,7 +182,7 @@ class AppHtmlV2 extends StatelessWidget {
         customWidgetBuilder: (element) {
           if (element.localName == 'iframe') {
             final src = element.attributes['src'];
-            if (src != null && src.trim().isNotEmpty) {
+            if (src != null && AppIframeView.isSupportedUrl(src)) {
               final aspectRatio = parseAspectRatio(
                 element.attributes['width'],
                 element.attributes['height'],
@@ -197,6 +197,7 @@ class AppHtmlV2 extends StatelessWidget {
                 ),
               );
             }
+            return const SizedBox.shrink();
           }
           return null;
         },

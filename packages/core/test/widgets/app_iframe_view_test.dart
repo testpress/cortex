@@ -42,6 +42,48 @@ void main() {
     });
   });
 
+  group('AppIframeView.isSupportedUrl', () {
+    test('accepts valid YouTube embed URLs', () {
+      expect(
+        AppIframeView.isSupportedUrl(
+          'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        ),
+        isTrue,
+      );
+      expect(
+        AppIframeView.isSupportedUrl('https://youtube.com/embed/dQw4w9WgXcQ'),
+        isTrue,
+      );
+      expect(
+        AppIframeView.isSupportedUrl(
+          'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+        ),
+        isTrue,
+      );
+      expect(
+        AppIframeView.isSupportedUrl('//www.youtube.com/embed/dQw4w9WgXcQ'),
+        isTrue,
+      );
+    });
+
+    test('rejects non-YouTube or non-embed URLs', () {
+      expect(
+        AppIframeView.isSupportedUrl('https://www.youtube.com/watch?v=123'),
+        isFalse,
+      );
+      expect(
+        AppIframeView.isSupportedUrl('https://vimeo.com/video/123'),
+        isFalse,
+      );
+      expect(
+        AppIframeView.isSupportedUrl('https://youtube.evil.com/embed/123'),
+        isFalse,
+      );
+      expect(AppIframeView.isSupportedUrl(''), isFalse);
+      expect(AppIframeView.isSupportedUrl('javascript:alert(1)'), isFalse);
+    });
+  });
+
   group('AppIframeView Widget', () {
     setUpAll(() {
       WebViewPlatform.instance = _FakeWebViewPlatform();
@@ -126,6 +168,48 @@ void main() {
         );
         await tester.pump();
 
+        expect(find.byType(AppLoadingIndicator), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'resets and shows loading indicator when src changes via didUpdateWidget',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test1')),
+        );
+
+        expect(find.byType(AppLoadingIndicator), findsOneWidget);
+
+        _lastNavigationDelegate?.onPageFinishedCallback?.call(
+          'https://www.youtube.com/embed/test1',
+        );
+        await tester.pump();
+        expect(find.byType(AppLoadingIndicator), findsNothing);
+
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test2')),
+        );
+        expect(find.byType(AppLoadingIndicator), findsOneWidget);
+
+        _lastNavigationDelegate?.onPageFinishedCallback?.call(
+          'https://www.youtube.com/embed/test2',
+        );
+        await tester.pump();
+        expect(find.byType(AppLoadingIndicator), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'dismisses loading indicator when src updates to empty string via didUpdateWidget',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test1')),
+        );
+        expect(find.byType(AppLoadingIndicator), findsOneWidget);
+
+        await tester.pumpWidget(wrap(const AppIframeView(src: '')));
+        await tester.pump();
         expect(find.byType(AppLoadingIndicator), findsNothing);
       },
     );

@@ -18,7 +18,6 @@ class AppIframeView extends StatefulWidget {
     this.aspectRatio = 16 / 9,
     this.borderRadius,
     this.backgroundColor,
-    this.semanticLabel,
     this.baseUrl,
   });
 
@@ -34,19 +33,12 @@ class AppIframeView extends StatefulWidget {
   /// Optional background placeholder color.
   final Color? backgroundColor;
 
-  /// Optional accessibility semantic label. Defaults to localized embedded video player label.
-  final String? semanticLabel;
-
-  /// Optional base origin URL used for loading the iframe embed.
-  ///
-  /// Defaults to [AppConfig.apiBaseUrl] if configured, or `https://www.testpress.in`.
   final String? baseUrl;
 
   /// Normalizes protocol-relative or bare URLs to full HTTPS URLs.
   ///
   /// Rejects non-http(s) schemes (e.g. `javascript:`, `data:`) by returning an empty string.
   /// Validates with [Uri.tryParse] and re-serializes to ensure a well-formed URL.
-  @visibleForTesting
   static String normalizeUrl(String rawUrl) {
     var url = rawUrl.trim();
     if (url.isEmpty) return '';
@@ -75,6 +67,25 @@ class AppIframeView extends StatefulWidget {
     }
 
     return parsed.toString();
+  }
+
+  /// Checks whether [rawUrl] is a supported YouTube embed URL.
+  ///
+  /// Rejects non-HTTP(S) schemes, non-YouTube hosts, and paths that do not
+  /// start with `/embed/`.
+  static bool isSupportedUrl(String rawUrl) {
+    final normalized = normalizeUrl(rawUrl);
+    if (normalized.isEmpty) return false;
+    final uri = Uri.tryParse(normalized);
+    if (uri == null) return false;
+    final host = uri.host.toLowerCase();
+    final isYouTube =
+        host == 'youtube.com' ||
+        host.endsWith('.youtube.com') ||
+        host == 'youtube-nocookie.com' ||
+        host.endsWith('.youtube-nocookie.com');
+    if (!isYouTube) return false;
+    return uri.path.startsWith('/embed/');
   }
 
   static String _escapeHtmlAttribute(String value) {
@@ -166,22 +177,12 @@ class _AppIframeViewState extends State<AppIframeView> {
               }
             }
 
-            // 2. Only YouTube embed provider is permitted
-            final isYouTube =
-                requestHost == 'youtube.com' ||
-                requestHost.endsWith('.youtube.com') ||
-                requestHost == 'youtube-nocookie.com' ||
-                requestHost.endsWith('.youtube-nocookie.com');
-
-            if (!isYouTube) {
-              return NavigationDecision.prevent;
+            // 2. Only YouTube embed provider is permitted (/embed/ path)
+            if (AppIframeView.isSupportedUrl(request.url)) {
+              return NavigationDecision.navigate;
             }
 
-            // For YouTube, restrict to embed paths so users cannot wander to
-            // watch pages (/watch), channel feeds, or recommended videos.
-            return uri.path.startsWith('/embed/')
-                ? NavigationDecision.navigate
-                : NavigationDecision.prevent;
+            return NavigationDecision.prevent;
           },
         ),
       );
@@ -205,7 +206,11 @@ class _AppIframeViewState extends State<AppIframeView> {
     final normalized = AppIframeView.normalizeUrl(widget.src);
     if (normalized.isEmpty) {
       if (_isLoading) {
-        _isLoading = false;
+        if (mounted) {
+          setState(() => _isLoading = false);
+        } else {
+          _isLoading = false;
+        }
       }
       _controller.loadHtmlString('<!DOCTYPE html><html><body></body></html>');
       return;
@@ -252,6 +257,7 @@ class _AppIframeViewState extends State<AppIframeView> {
   void didUpdateWidget(covariant AppIframeView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.src != widget.src || oldWidget.baseUrl != widget.baseUrl) {
+      setState(() => _isLoading = true);
       _loadIframe();
     }
   }
