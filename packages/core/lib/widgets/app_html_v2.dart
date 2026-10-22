@@ -221,7 +221,11 @@ class AppHtmlV2 extends StatelessWidget {
 
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
-                child: AppIframeView(src: src.trim(), aspectRatio: aspectRatio),
+                child: AppIframeView(
+                  src: src.trim(),
+                  aspectRatio: aspectRatio,
+                  baseUrl: baseUrl?.toString(),
+                ),
               );
             }
           }

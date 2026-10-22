@@ -10,9 +10,25 @@ void main() {
   });
 
   Widget wrap(Widget child) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: DesignProvider(config: DesignConfig.defaults(), child: child),
+    return LocalizationProvider(
+      child: Builder(
+        builder: (context) {
+          final locale = LocalizationProvider.of(context).locale;
+          return WidgetsApp(
+            color: const Color(0xFF000000),
+            locale: locale,
+            localizationsDelegates: LocalizationProvider.delegates,
+            pageRouteBuilder:
+                <T>(RouteSettings settings, WidgetBuilder builder) =>
+                    PageRouteBuilder<T>(
+                      settings: settings,
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          builder(context),
+                    ),
+            home: DesignProvider(config: DesignConfig.defaults(), child: child),
+          );
+        },
+      ),
     );
   }
 
@@ -43,7 +59,7 @@ void main() {
       'calculates custom aspect ratio from width and height attributes',
       (tester) async {
         const html = '''
-        <iframe src="https://player.vimeo.com/video/12345" width="400" height="300"></iframe>
+        <iframe src="https://www.youtube.com/embed/12345" width="400" height="300"></iframe>
       ''';
 
         await tester.pumpWidget(wrap(const AppHtmlV2(data: html)));

@@ -615,6 +615,7 @@
   "forumFilterByActivity": "പ്രവർത്തനം അനുസരിച്ച് ഫിൽറ്റർ ചെയ്യുക",
   "forumFilterClearAll": "എല്ലാം മായ്‌ക്കുക",
   "commonBackSemantic": "തിരികെ",
+  "embeddedVideoPlayerSemantic": "എംബഡഡ് വീഡിയോ പ്ലെയർ",
   "commonClearSearchSemantic": "തിരയൽ മായ്ക്കുക",
   "forumFilterSemantic": "ഫിൽറ്റർ",
   "forumFilterActivityPosted": "ഞാൻ പോസ്റ്റ് ചെയ്തത്",

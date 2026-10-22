@@ -1795,6 +1795,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get commonClearSearchSemantic => 'തിരയൽ മായ്ക്കുക';
 
   @override
+  String get embeddedVideoPlayerSemantic => 'എംബഡഡ് വീഡിയോ പ്ലെയർ';
+
+  @override
   String get forumFilterSemantic => 'ഫിൽറ്റർ';
 
   @override

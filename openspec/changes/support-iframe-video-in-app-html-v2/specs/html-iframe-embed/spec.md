@@ -4,12 +4,12 @@
 The `AppHtmlV2` widget SHALL detect `<iframe>` elements in HTML content and render them as inline, responsive embedded views without dropping the iframe or breaking the surrounding native text layout.
 
 #### Scenario: Renders iframe as embedded responsive view
-- **WHEN** HTML containing an `<iframe>` tag (such as YouTube or Vimeo) is passed to `AppHtmlV2`
+- **WHEN** HTML containing an `<iframe>` tag (such as a YouTube embed) is passed to `AppHtmlV2`
 - **THEN** the iframe is rendered inline within a 16:9 aspect ratio container with rounded corners matching the design system
 - **AND** the surrounding paragraphs, headings, and images continue to be rendered natively by Flutter
 
 ### Requirement: Secure and Error-Resistant Origin Handling
-The embedded iframe viewer SHALL load iframe URLs using an authorized HTTPS base URL (e.g., `https://www.testpress.in`) and unrestricted JavaScript mode to prevent origin mismatch errors (such as YouTube Error 153).
+The embedded iframe viewer SHALL load iframe URLs using an authorized HTTPS base URL (configured via constructor `baseUrl`, `AppConfig.apiBaseUrl`, or defaulting to `https://www.testpress.in`) and unrestricted JavaScript mode to prevent origin mismatch errors (such as YouTube Error 153). Navigation guards SHALL validate `uri.host` matching against the base origin rather than prefix matching to prevent domain spoofing.
 
 #### Scenario: Playing embedded YouTube video
 - **WHEN** an iframe with `src="https://www.youtube.com/embed/..."` is rendered
@@ -33,7 +33,20 @@ The embedded iframe viewer SHALL intercept navigation requests to prevent unsupp
 
 #### Scenario: Navigation away from the video embed
 - **WHEN** the user clicks external links, channel links, or non-embed video links inside the player
-- **THEN** navigation outside the embed URL is prevented, keeping the user focused on the intended content
+- **THEN** navigation is permitted only if the request host matches the verified `baseUrl` host or YouTube with an allowed `/embed/` path
+- **AND** navigation to arbitrary third-party hosts is prevented
+
+### Requirement: Iframe Source Sanitization and Attribute Injection Defense
+The embedded iframe viewer SHALL sanitize the iframe `src` URL before interpolating it into HTML to prevent attribute injection, script execution, or unexpected protocol execution.
+
+#### Scenario: Normalizing protocol and validating URL
+- **WHEN** a raw URL is normalized
+- **THEN** only `http` or `https` schemes (or protocol-relative URLs converted to `https:`) are permitted
+- **AND** invalid schemes (e.g. `javascript:`, `data:`) or malformed strings are rejected with an empty string or null
+
+#### Scenario: Preventing attribute breakout in HTML template
+- **WHEN** the sanitized URL is placed inside the HTML `<iframe src="...">` template
+- **THEN** attribute delimiter characters (such as double quotes `"`, single quotes `'`, or HTML special characters `<`, `>`, `&`) are escaped or properly encoded via URI re-serialization so that markup or attribute injection is prevented
 
 ### Requirement: Immediate Inline Appearance
 The embedded iframe viewer SHALL mount the player directly without blocking overlays or artificial delays so that video thumbnails and play controls appear immediately.
@@ -41,4 +54,5 @@ The embedded iframe viewer SHALL mount the player directly without blocking over
 #### Scenario: Loading the video container
 - **WHEN** the embedded iframe view is initialized
 - **THEN** the webview is immediately visible without an artificial spinner overlay covering the player
+
 

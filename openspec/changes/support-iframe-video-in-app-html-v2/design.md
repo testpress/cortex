@@ -1,6 +1,6 @@
 ## Context
 
-In LMS product descriptions, course overviews, and test explanations, content creators frequently embed video walkthroughs (such as YouTube or Vimeo iframes). On the web, these iframes are rendered natively by the browser.
+In LMS product descriptions, course overviews, and test explanations, content creators frequently embed video walkthroughs (such as YouTube iframes). On the web, these iframes are rendered natively by the browser.
 
 In the Flutter mobile application, content is rendered via `AppHtmlV2` (`packages/core/lib/widgets/app_html_v2.dart`), which is powered by `flutter_widget_from_html_core`. Because `flutter_widget_from_html_core` does not include WebView dependencies, it silently ignores and drops all `<iframe>` tags, leaving the video completely absent from the mobile UI.
 
@@ -14,7 +14,7 @@ In the Flutter mobile application, content is rendered via `AppHtmlV2` (`package
 
 **Non-Goals:**
 - Replacing `AppHtmlV2` with full-page `AppHtml` (WebView) which causes layout height recalculations and scroll stutter.
-- Implementing custom playback controllers over the third-party iframe (YouTube/Vimeo provide their own native controls).
+- Implementing custom playback controllers over the third-party iframe (YouTube provides its own native controls).
 
 ## Decisions
 
@@ -29,9 +29,9 @@ In the Flutter mobile application, content is rendered via `AppHtmlV2` (`package
 - **Decision**: Implement a dedicated `AppIframeView` widget in `packages/core/lib/widgets/app_iframe_view.dart`.
 - **Configuration**:
   - `setJavaScriptMode(JavaScriptMode.unrestricted)`
-  - HTTPS base URL (`https://www.testpress.in`) when loading request or HTML embed
+  - Configurable HTTPS base URL origin (`widget.baseUrl`, `AppConfig.apiBaseUrl`, fallback to `https://www.testpress.in`)
+  - Strict navigation guard comparing `uri.host` against the base origin and allowed video embed endpoints
   - Constrained within `AspectRatio(aspectRatio: 16 / 9)` and `ClipRRect` with `design.radius.md`
-  - Shimmer/skeleton placeholder while the WebView is loading
 
 ## Risks / Trade-offs
 
