@@ -9,6 +9,7 @@ The system SHALL provide a screen for users to compose and submit new academic d
 - **Validation**: Title, Category, and Content SHALL NOT be empty before submission is enabled.
 - **Navigation (Success)**: Upon successful submission, the system SHALL dismiss the form and navigate the user to the newly created doubt's detail screen.
 - **Navigation (Failure)**: Upon a submission error, the system SHALL dismiss the form and display an error toast message on the underlying screen.
+- **Submission Routing**: When AI doubts are enabled (`enableAiDoubt` is true), tapping submit SHALL present the user with a choice between AI and Mentor routing. When AI doubts are disabled (`enableAiDoubt` is false), the system SHALL bypass the options sheet and immediately submit the query as a Mentor doubt.
 
 #### Scenario: Submitting a valid doubt successfully
 - **GIVEN** the user has entered a title, selected a category, and provided content
@@ -19,6 +20,17 @@ The system SHALL provide a screen for users to compose and submit new academic d
 - **GIVEN** the user submits the doubt
 - **WHEN** the API responds with an error
 - **THEN** the system SHALL dismiss the doubt composition form and show an error toast message
+
+#### Scenario: Submitting when AI doubts are disabled
+- **GIVEN** `enableAiDoubt` is false
+- **WHEN** the user taps submit on a valid doubt
+- **THEN** the system SHALL NOT present the submission options sheet
+- **AND** the system SHALL submit the doubt directly with query type Mentor
+
+#### Scenario: Submitting with isAskAi flag when AI doubts are disabled
+- **GIVEN** `enableAiDoubt` is false
+- **WHEN** the form is opened with `isAskAi` set to true
+- **THEN** the system SHALL override the AI target and submit the doubt directly with query type Mentor
 
 ### Requirement: Rich Text Editor
 The system SHALL provide a rich-text editor for the doubt content to support structured questions.
