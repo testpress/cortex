@@ -592,7 +592,9 @@ class OnlineExamRepository implements ExamRepository {
             .where(
               (q) =>
                   q.sectionId == activeSection.id.toString() ||
-                  q.sectionId == activeSection.id,
+                  q.sectionId == activeSection.id ||
+                  (activeSection.infoId != null &&
+                      q.sectionId == activeSection.infoId),
             )
             .toList();
       } else {
@@ -879,7 +881,9 @@ class OnlineExamRepository implements ExamRepository {
           .where(
             (q) =>
                 q.sectionId == nextSection.id.toString() ||
-                q.sectionId == nextSection.id,
+                q.sectionId == nextSection.id ||
+                (nextSection.infoId != null &&
+                    q.sectionId == nextSection.infoId),
           )
           .toList();
 
