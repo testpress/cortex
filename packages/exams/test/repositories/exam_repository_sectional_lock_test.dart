@@ -239,4 +239,155 @@ void main() {
       expect(repository.state.questions.first.sectionId, secondSectionInfoId);
     },
   );
+
+  test(
+    'OnlineExamRepository avoids ID collision between section index and infoId',
+    () async {
+      final attempt = AttemptDto(
+        id: 1162936,
+        state: 'Running',
+        remainingTime: '0:20:00',
+        sections: [
+          const SectionDto(
+            id: '0',
+            name: 'Section A',
+            state: 'Completed',
+            duration: '0:25:00',
+            order: 0,
+            infoId: '1',
+          ),
+          const SectionDto(
+            id: '1',
+            name: 'Section B',
+            state: 'Running',
+            duration: '0:20:00',
+            order: 1,
+            infoId: '2',
+          ),
+        ],
+      );
+
+      final List<QuestionDto> questions = [
+        const QuestionDto(
+          id: 'q1',
+          text: 'Question for Section A',
+          type: 'MCQ',
+          options: [],
+          answerUrl: '',
+          order: 0,
+          sectionId: '1',
+        ),
+        const QuestionDto(
+          id: 'q2',
+          text: 'Question for Section B',
+          type: 'MCQ',
+          options: [],
+          answerUrl: '',
+          order: 1,
+          sectionId: '2',
+        ),
+      ];
+
+      final fakeApi = FakeDataSource(attempts: [attempt], questions: questions);
+
+      final repository = OnlineExamRepository(
+        dataSource: fakeApi,
+        dbFuture: Future.value(db),
+        sentryService: fakeSentry,
+      );
+
+      final exam = ExamDto(
+        id: 'exam_1',
+        title: 'RRB Test',
+        duration: '0:45:00',
+        questionCount: 2,
+        attemptsUrl: 'https://example.com/attempts/',
+        pausedAttemptsCount: 1,
+      );
+
+      await repository.startCourseLinkedExam(
+        exam,
+        'https://example.com/attempts/',
+      );
+
+      final state = repository.state;
+      expect(state.status, ExamAttemptStatus.inProgress);
+      expect(state.questions.length, 1);
+      expect(state.questions.first.id, 'q2');
+    },
+  );
+
+  test(
+    'OnlineExamRepository falls back to section.id when infoId is null',
+    () async {
+      final attempt = AttemptDto(
+        id: 1162936,
+        state: 'Running',
+        remainingTime: '0:20:00',
+        sections: [
+          const SectionDto(
+            id: 'sec_alpha',
+            name: 'Alpha',
+            state: 'Running',
+            duration: '0:25:00',
+            order: 0,
+            infoId: null,
+          ),
+          const SectionDto(
+            id: 'sec_beta',
+            name: 'Beta',
+            state: 'Not Started',
+            duration: '0:20:00',
+            order: 1,
+            infoId: null,
+          ),
+        ],
+      );
+
+      final List<QuestionDto> questions = [
+        const QuestionDto(
+          id: 'q1',
+          text: 'Alpha Question',
+          type: 'MCQ',
+          options: [],
+          answerUrl: '',
+          order: 0,
+          sectionId: 'sec_alpha',
+        ),
+        const QuestionDto(
+          id: 'q2',
+          text: 'Beta Question',
+          type: 'MCQ',
+          options: [],
+          answerUrl: '',
+          order: 1,
+          sectionId: 'sec_beta',
+        ),
+      ];
+
+      final fakeApi = FakeDataSource(attempts: [attempt], questions: questions);
+
+      final repository = OnlineExamRepository(
+        dataSource: fakeApi,
+        dbFuture: Future.value(db),
+        sentryService: fakeSentry,
+      );
+
+      final exam = ExamDto(
+        id: 'exam_1',
+        title: 'Fallback Test',
+        duration: '0:45:00',
+        questionCount: 2,
+        attemptsUrl: 'https://example.com/attempts/',
+        pausedAttemptsCount: 1,
+      );
+
+      await repository.startCourseLinkedExam(
+        exam,
+        'https://example.com/attempts/',
+      );
+      expect(repository.state.questions.length, 1);
+      expect(repository.state.questions.first.id, 'q1');
+    },
+  );
 }

@@ -589,13 +589,7 @@ class OnlineExamRepository implements ExamRepository {
       // Local filter: only show questions for the active section if we have sectional locks
       if (updatedAttempt.hasSectionalLock) {
         questions = allQuestions
-            .where(
-              (q) =>
-                  q.sectionId == activeSection.id.toString() ||
-                  q.sectionId == activeSection.id ||
-                  (activeSection.infoId != null &&
-                      q.sectionId == activeSection.infoId),
-            )
+            .where((q) => _belongsToSection(q, activeSection))
             .toList();
       } else {
         questions = allQuestions;
@@ -878,13 +872,7 @@ class OnlineExamRepository implements ExamRepository {
       final attemptIdStr = _currentState.attempt!.activeId!.toString();
       final allQuestions = _sectionQuestionsCache[attemptIdStr] ?? [];
       final List<QuestionDto> questions = allQuestions
-          .where(
-            (q) =>
-                q.sectionId == nextSection.id.toString() ||
-                q.sectionId == nextSection.id ||
-                (nextSection.infoId != null &&
-                    q.sectionId == nextSection.infoId),
-          )
+          .where((q) => _belongsToSection(q, nextSection))
           .toList();
 
       final remainingSeconds = _parseDuration(
@@ -1316,6 +1304,14 @@ class OnlineExamRepository implements ExamRepository {
   Future<void> refreshExams() async {}
 
   // ─── Internal Helpers ──────────────────────────────────────────────────────
+
+  bool _belongsToSection(QuestionDto question, SectionDto section) {
+    final targetSectionId =
+        (section.infoId != null && section.infoId!.isNotEmpty)
+        ? section.infoId!
+        : section.id;
+    return question.sectionId == targetSectionId;
+  }
 
   void _sortQuestions(List<QuestionDto> questions, List<SectionDto>? sections) {
     if (sections == null || sections.isEmpty) {
