@@ -325,30 +325,29 @@ void main() {
     },
   );
 
-  testWidgets('suggestion cards in a row share the same height', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(320, 640);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.reset);
+  testWidgets(
+    'all suggestion cards share the same height on narrow viewport with large text scale',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1.0;
+      tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+      addTearDown(() {
+        tester.view.reset();
+        tester.platformDispatcher.clearTextScaleFactorTestValue();
+      });
 
-    await tester.pumpWidget(buildSubject());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
 
-    final cards = find.byType(AiSuggestionCard);
-    expect(
-      tester.getSize(cards.at(0)).height,
-      tester.getSize(cards.at(1)).height,
-    );
-    expect(
-      tester.getSize(cards.at(2)).height,
-      tester.getSize(cards.at(3)).height,
-    );
-    expect(
-      tester.getSize(cards.at(0)).width,
-      tester.getSize(cards.at(1)).width,
-    );
-  });
+      final cards = find.byType(AiSuggestionCard);
+      expect(cards, findsNWidgets(4));
+
+      final firstCardHeight = tester.getSize(cards.at(0)).height;
+      for (var i = 1; i < 4; i++) {
+        expect(tester.getSize(cards.at(i)).height, equals(firstCardHeight));
+      }
+    },
+  );
 
   testWidgets(
     'tapping a suggestion prefills and focuses the composer without sending',
@@ -804,7 +803,9 @@ void main() {
     expect(copyRect.left, lessThan(markdownRect.left + 16.0));
   });
 
-  testWidgets('constrains chat column on wide tablet viewport', (tester) async {
+  testWidgets('spans chat column full width on wide tablet viewport', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(1200, 800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -829,8 +830,44 @@ void main() {
     final listViewFinder = find.byType(ListView);
     expect(listViewFinder, findsOneWidget);
     final listSize = tester.getSize(listViewFinder);
-    expect(listSize.width, lessThanOrEqualTo(768.0));
+    expect(listSize.width, equals(1200.0));
+
+    final context = tester.element(find.byType(AiScreen));
+    final design = Design.of(context);
+
+    final menuFinder = find.byIcon(LucideIcons.menu);
+    expect(menuFinder, findsOneWidget);
+    // Menu icon sits near the trailing edge of the 1200dp screen
+    expect(
+      tester.getTopRight(menuFinder).dx,
+      greaterThan(1200.0 - (design.spacing.md * 2)),
+    );
   });
+
+  testWidgets(
+    'constrains empty state within tabletBreakpoint on wide viewports',
+    (tester) async {
+      tester.view.physicalSize = const Size(1200, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(AiScreen));
+      final design = Design.of(context);
+
+      final composerFinder = find.byType(AiComposer);
+      expect(composerFinder, findsOneWidget);
+      final composerSize = tester.getSize(composerFinder);
+      final expectedWidth =
+          design.layout.tabletBreakpoint - (design.spacing.md * 2);
+      expect(composerSize.width, equals(expectedWidth));
+    },
+  );
 
   testWidgets(
     'wraps message list in AppSemantics.scrollableList with item count',
