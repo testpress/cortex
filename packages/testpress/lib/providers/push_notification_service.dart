@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,8 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/providers/notification_preferences_provider.dart';
 import '../navigation/app_router.dart';
+import '../navigation/bootstrap_provider.dart';
+import '../navigation/deep_link_handler.dart';
 
 part 'push_notification_service.g.dart';
 
@@ -18,8 +21,46 @@ class PushNotificationService {
       FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
+  String? _pendingDeepLink;
+  DateTime? _pendingDeepLinkTimestamp;
+  static const Duration _pendingLinkTtl = Duration(minutes: 30);
 
   PushNotificationService(this._ref);
+
+  /// Clears any pending deep link (e.g. on user logout).
+  void clearPendingLink() {
+    _pendingDeepLink = null;
+    _pendingDeepLinkTimestamp = null;
+  }
+
+  @visibleForTesting
+  String? get pendingDeepLink => _pendingDeepLink;
+
+  @visibleForTesting
+  DateTime? get pendingDeepLinkTimestamp => _pendingDeepLinkTimestamp;
+
+  @visibleForTesting
+  void handleDeepLink(String? url) => _handleDeepLink(url);
+
+  @visibleForTesting
+  void setPendingDeepLink(String? url, DateTime? timestamp) {
+    _pendingDeepLink = url;
+    _pendingDeepLinkTimestamp = timestamp;
+  }
+
+  /// Flushes and dispatches any valid pending deep link that was queued
+  /// while waiting for authentication and settings initialization.
+  void flushPendingLink() {
+    if (_pendingDeepLink != null) {
+      final path = _pendingDeepLink!;
+      final timestamp = _pendingDeepLinkTimestamp;
+      clearPendingLink();
+      if (timestamp != null &&
+          DateTime.now().difference(timestamp) <= _pendingLinkTtl) {
+        _dispatchRoute(path);
+      }
+    }
+  }
 
   Future<void> initialize() async {
     if (_isInitialized) return;
@@ -27,37 +68,42 @@ class PushNotificationService {
 
     final messaging = FirebaseMessaging.instance;
 
-    // 1. Request Notification Permissions (iOS & Android 13+)
+    // 2. Request Notification Permissions (iOS & Android 13+)
     await messaging.requestPermission(alert: true, badge: true, sound: true);
 
-    // 2. Initialize Local Notifications (For Foreground Alerts)
+    // 3. Initialize Local Notifications (For Foreground Alerts)
     await _initLocalNotifications();
 
-    // 3. Listen to Foreground Messages
+    // 4. Listen to Foreground Messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(message);
     });
 
-    // 4. Listen to Taps when app is in Background (but running)
+    // 5. Listen to Taps when app is in Background (but running)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleDeepLink(message.data['short_url']);
+      _handleDeepLink(_extractUrl(message));
     });
 
-    // 5. Listen to Token Refreshes
+    // 6. Listen to Token Refreshes
     messaging.onTokenRefresh.listen((token) {
       _syncDeviceToken(token);
     });
 
-    // 6. Handle App Launches from Terminated State
+    // 7. Handle App Launches from Terminated State
     final initialMessage = await messaging.getInitialMessage();
     if (initialMessage != null) {
-      _handleDeepLink(initialMessage.data['short_url']);
+      _handleDeepLink(_extractUrl(initialMessage));
     }
 
-    // 7. Initial Token Sync if user is logged in
+    // 8. Initial Token Sync if user is logged in
     final token = await messaging.getToken();
     if (token != null) {
       _syncDeviceToken(token);
+    }
+
+    // 9. Flush pending deep link if bootstrap reached authenticated during initialization
+    if (_ref.read(bootstrapProvider) == BootstrapState.authenticated) {
+      flushPendingLink();
     }
   }
 
@@ -108,7 +154,7 @@ class PushNotificationService {
   void _showLocalNotification(RemoteMessage message) {
     final title = message.data['title'] ?? message.notification?.title;
     final summary = message.data['summary'] ?? message.notification?.body;
-    final url = message.data['short_url'];
+    final url = _extractUrl(message);
 
     if (title != null && summary != null) {
       final preferences = _ref.read(notificationPreferencesProvider);
@@ -121,7 +167,9 @@ class PushNotificationService {
         final uri = Uri.tryParse(url);
         if (uri != null && uri.pathSegments.isNotEmpty) {
           final firstSegment = uri.pathSegments.first;
-          if (firstSegment == 'exams' || firstSegment == 'chapters') {
+          if (firstSegment == 'exams' ||
+              firstSegment == 'chapters' ||
+              firstSegment == 'courses') {
             channelId = 'contents_channel';
             shouldShow = preferences.testAssessmentAlerts;
           } else if (firstSegment == 'p') {
@@ -154,14 +202,53 @@ class PushNotificationService {
     }
   }
 
-  void _handleDeepLink(String? url) {
-    if (url == null || url.isEmpty) return;
+  String? _extractUrl(RemoteMessage message) {
+    final url =
+        message.data['short_url'] ??
+        message.data['url'] ??
+        message.data['link'];
+    if (url != null && url.trim().isNotEmpty) {
+      return url.trim();
+    }
+    return null;
+  }
 
-    final uri = Uri.tryParse(url);
-    if (uri != null) {
-      final router = _ref.read(goRouterProvider);
-      final path = uri.path.startsWith('/') ? uri.path : '/${uri.path}';
-      router.push(path);
+  void _handleDeepLink(String? url) {
+    if (url == null || url.trim().isEmpty) return;
+
+    final bootstrapState = _ref.read(bootstrapProvider);
+
+    if (bootstrapState == BootstrapState.authenticated) {
+      _dispatchRoute(url);
+    } else {
+      // Check if it is a public auth destination that can bypass authentication
+      final candidateRoute = DeepLinkHandler.resolve(url);
+      if (candidateRoute == '/login' || candidateRoute == '/signup') {
+        _dispatchRoute(url);
+      } else {
+        // Store raw link to resolve at dispatch time once authenticated & settings loaded
+        _pendingDeepLink = url;
+        _pendingDeepLinkTimestamp = DateTime.now();
+      }
+    }
+  }
+
+  void _dispatchRoute(String rawUrl) {
+    var targetPath = DeepLinkHandler.resolve(rawUrl);
+
+    // Validate against loaded settings and feature flags at dispatch time
+    final settings = _ref.read(instituteSettingsProvider);
+    targetPath = DeepLinkHandler.filterRouteByAvailability(
+      targetPath,
+      settings: settings,
+    );
+
+    final router = _ref.read(goRouterProvider);
+    final isTabRoute = NavTab.values.any((tab) => tab.id == targetPath);
+    if (isTabRoute) {
+      router.go(targetPath);
+    } else {
+      router.push(targetPath);
     }
   }
 
@@ -205,6 +292,22 @@ PushNotificationService pushNotificationService(
       if (token != null) {
         service._syncDeviceToken(token);
       }
+    }
+  });
+
+  // Replay pending deep link once bootstrap transitions to authenticated
+  ref.listen<BootstrapState>(bootstrapProvider, (_, next) {
+    if (next == BootstrapState.authenticated) {
+      service.flushPendingLink();
+    }
+  });
+
+  // Clear any pending deep link when an active user logs out
+  ref.listen(authProvider, (previous, next) {
+    final wasLoggedIn = previous?.valueOrNull ?? false;
+    final isLoggedIn = next.valueOrNull ?? false;
+    if (wasLoggedIn && !isLoggedIn) {
+      service.clearPendingLink();
     }
   });
 
