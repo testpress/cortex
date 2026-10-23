@@ -15,20 +15,6 @@
 -dontwarn javax.swing.**
 -dontwarn org.commonmark.**
 -dontwarn retrofit2.**
--dontwarn us.zoom.**
-
-# Zoom: optional Intune / China-login deps
--dontwarn com.microsoft.intune.mam.**
--dontwarn com.zipow.cnthirdparty.**
-
-# Keep Zoom SDK classes, reflection bridges, and plugins
--keep class us.zoom.** { *; }
--keep class com.zipow.** { *; }
--keep class com.testpress.flutter_zoom_meeting_sdk.** { *; }
-
-# WebRTC components utilized by Zoom SDK
--keep class org.webrtc.** { *; }
--dontwarn org.webrtc.**
 
 # Keep native methods so JNI bindings remain intact
 -keepclasseswithmembernames class * {
