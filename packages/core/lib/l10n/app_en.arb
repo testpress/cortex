@@ -640,6 +640,7 @@
   "testSaved": "Saved",
   "testMarked": "Marked",
   "testMarkForReview": "Mark for Review",
+  "testClearResponse": "Clear Response",
   "testPrevious": "Previous",
   "testNext": "Next",
   "testFinish": "Finish",

@@ -19,6 +19,7 @@ class TestQuestionCard extends StatefulWidget {
   final AnswerDto? answer;
   final bool isMarked;
   final bool canGoPrevious;
+  final bool canGoNext;
   final bool isLastQuestion;
   final String? finishLabel;
   final VoidCallback onToggleMark;
@@ -31,6 +32,7 @@ class TestQuestionCard extends StatefulWidget {
   final int answeredCount;
   final int totalQuestions;
   final VoidCallback onPaletteTap;
+  final VoidCallback? onClearResponse;
 
   /// Called when the user selects an option or changes a text input.
   ///
@@ -46,6 +48,7 @@ class TestQuestionCard extends StatefulWidget {
     required this.answer,
     required this.isMarked,
     required this.canGoPrevious,
+    this.canGoNext = true,
     required this.isLastQuestion,
     this.finishLabel,
     required this.answeredCount,
@@ -55,6 +58,7 @@ class TestQuestionCard extends StatefulWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onOptionSelect,
+    this.onClearResponse,
     this.isQuizMode = false,
     this.isQuizChecked = false,
     this.quizReview,
@@ -206,6 +210,7 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
                 TestNavigationActions(
                   isMarked: widget.isMarked,
                   canGoPrevious: widget.canGoPrevious,
+                  canGoNext: widget.canGoNext,
                   isLastQuestion: widget.isLastQuestion,
                   finishLabel: widget.finishLabel,
                   onToggleMark: widget.onToggleMark,
@@ -214,6 +219,13 @@ class _TestQuestionCardState extends State<TestQuestionCard> {
                   isQuizMode: widget.isQuizMode,
                   isQuizChecked: widget.isQuizChecked,
                   onCheck: widget.onCheck,
+                  hasAnswer: widget.answer?.hasAnswer ?? false,
+                  onClearResponse: widget.onClearResponse != null
+                      ? () {
+                          _textController.clear();
+                          widget.onClearResponse!();
+                        }
+                      : null,
                 ),
                 SizedBox(height: design.spacing.md),
                 TestPaletteTrigger(

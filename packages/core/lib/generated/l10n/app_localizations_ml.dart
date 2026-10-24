@@ -1226,6 +1226,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get testMarkForReview => 'റിവ്യൂവിനായി മാർക്ക് ചെയ്യുക';
 
   @override
+  String get testClearResponse => 'ഉത്തരം മായ്‌ക്കുക';
+
+  @override
   String get testPrevious => 'മുൻപത്തെ';
 
   @override
