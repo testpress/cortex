@@ -99,6 +99,16 @@ void main() {
       expect(output, isNot(contains('height:')));
       expect(output, isNot(contains('line-height:')));
     });
+
+    test('does not match or strip hyphenated attributes like data-style', () {
+      const input =
+          '<td data-style="height: 20px;" style="height: 10px; font-weight: bold;">Cell</td>';
+      final output = AppHtmlV2.sanitizeHtml(input);
+
+      expect(output, contains('data-style="height: 20px"'));
+      expect(output, contains('font-weight: bold'));
+      expect(output, isNot(contains('height: 10px')));
+    });
   });
 
   group('AppHtmlV2 table rendering tests', () {

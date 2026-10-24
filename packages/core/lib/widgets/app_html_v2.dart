@@ -145,7 +145,7 @@ class AppHtmlV2 extends StatelessWidget {
     // 7. Strip restrictive height and line-height styles from table tags
     res = res.replaceAllMapped(
       RegExp(
-        r'''(<(?:table|thead|tbody|tfoot|tr|td|th)\b[^>]*?\bstyle\s*=\s*)(["'])(.*?)\2''',
+        r'''(<(?:table|thead|tbody|tfoot|tr|td|th)\b[^>]*?(?<![\w-])style\s*=\s*)(["'])(.*?)\2''',
         caseSensitive: false,
         dotAll: true,
       ),
