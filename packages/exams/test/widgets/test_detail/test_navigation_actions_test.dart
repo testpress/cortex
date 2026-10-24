@@ -369,6 +369,9 @@ void main() {
       );
       expect(appFocusableFinder, findsOneWidget);
 
+      final focusableRect = tester.getRect(appFocusableFinder);
+      expect(focusableRect.height, greaterThanOrEqualTo(48.0));
+
       final markFinder = find.text('Mark for Review');
       final clearRect = tester.getRect(clearFinder);
       final markRect = tester.getRect(markFinder);
