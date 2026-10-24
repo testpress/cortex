@@ -50,7 +50,8 @@ class AppHtmlV2 extends StatelessWidget {
   /// that uses relative URLs (e.g. QOTD questions from the API).
   final Uri? baseUrl;
 
-  String _sanitizeHtml(String html) {
+  @visibleForTesting
+  static String sanitizeHtml(String html) {
     var res = html;
 
     // 1. Strip <script> tags entirely (tag + content)
@@ -132,6 +133,49 @@ class AppHtmlV2 extends StatelessWidget {
       },
     );
 
+    // 6. Strip legacy height attributes from table tags (table, thead, tbody, tfoot, tr, td, th)
+    res = res.replaceAllMapped(
+      RegExp(
+        r'(<(?:table|thead|tbody|tfoot|tr|td|th)\b[^>]*?)[\x20\x09\x0a\x0c\x0d]height\s*=\s*(?:\x22[^\x22]*\x22|\x27[^\x27]*\x27|[^\x20\x09\x0a\x0c\x0d>]+)',
+        caseSensitive: false,
+      ),
+      (m) => m[1]!,
+    );
+
+    // 7. Strip restrictive height and line-height styles from table tags
+    res = res.replaceAllMapped(
+      RegExp(
+        r'''(<(?:table|thead|tbody|tfoot|tr|td|th)\b[^>]*?(?<![\w-])style\s*=\s*)(["'])(.*?)\2''',
+        caseSensitive: false,
+        dotAll: true,
+      ),
+      (m) {
+        final prefix = m[1]!;
+        final quote = m[2]!;
+        final styleVal = m[3] ?? '';
+        final clean = styleVal
+            .split(';')
+            .map((prop) {
+              final parts = prop.split(':');
+              if (parts.length < 2) return prop;
+              final key = parts[0].trim().toLowerCase();
+              if (key == 'height' ||
+                  key == 'min-height' ||
+                  key == 'max-height' ||
+                  key == 'line-height') {
+                return '';
+              }
+              return prop;
+            })
+            .where((p) => p.trim().isNotEmpty)
+            .join(';');
+
+        return clean.trim().isEmpty
+            ? prefix.replaceFirst(RegExp(r'\s*style\s*=\s*$'), '')
+            : '$prefix$quote$clean$quote';
+      },
+    );
+
     return res;
   }
 
@@ -141,7 +185,7 @@ class AppHtmlV2 extends StatelessWidget {
 
     final effectiveTextColor = textColor ?? design.colors.textPrimary;
 
-    final processedData = _preprocessMath(_sanitizeHtml(data));
+    final processedData = _preprocessMath(sanitizeHtml(data));
 
     return Padding(
       padding: padding,
