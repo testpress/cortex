@@ -50,6 +50,7 @@ class LessonWebView extends StatefulWidget {
 
     if (initialUrl != null) {
       final initialHost = Uri.tryParse(initialUrl)?.host;
+      // Compare host only to allow same-domain server redirects and path normalization.
       if (initialHost != null &&
           initialHost.isNotEmpty &&
           uri.host == initialHost) {
@@ -62,11 +63,11 @@ class LessonWebView extends StatefulWidget {
       unawaited(
         launcher(uri, mode: LaunchMode.inAppBrowserView).then((launched) {
           if (!launched) {
-            debugPrint('Failed to launch external URL: $uri');
+            SentryService()
+                .captureMessage('Failed to launch external URL: $uri');
           }
         }).catchError((Object error, StackTrace stackTrace) {
           SentryService().captureException(error, stackTrace: stackTrace);
-          debugPrint('Error launching external URL $uri: $error\n$stackTrace');
         }),
       );
     }
@@ -160,6 +161,8 @@ class _LessonWebViewState extends State<LessonWebView> {
           onNavigationRequest: (request) =>
               LessonWebView.handleNavigationRequest(
             request: request,
+            // Fallback to defaultBaseUrl allows HTML origin to load inline;
+            // in-content testpress.in links will also navigate inline.
             initialUrl: widget.url ?? LessonWebView.defaultBaseUrl,
           ),
         ),

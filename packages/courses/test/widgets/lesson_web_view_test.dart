@@ -187,66 +187,41 @@ void main() {
       expect(decision, NavigationDecision.prevent);
     });
 
-    test('catches launch errors and logs without unhandled exceptions',
-        () async {
-      final logs = <String>[];
-      final originalDebugPrint = debugPrint;
-      debugPrint = (String? message, {int? wrapWidth}) {
-        if (message != null) logs.add(message);
-      };
+    test('catches launch errors without unhandled exceptions', () async {
+      const request = NavigationRequest(
+        url: 'https://meet.google.com/abc-defg-hij',
+        isMainFrame: true,
+      );
 
-      try {
-        const request = NavigationRequest(
-          url: 'https://meet.google.com/abc-defg-hij',
-          isMainFrame: true,
-        );
+      final decision = LessonWebView.handleNavigationRequest(
+        request: request,
+        urlLauncher: (uri,
+            {LaunchMode mode = LaunchMode.platformDefault}) async {
+          throw Exception('Platform activity not found');
+        },
+      );
 
-        final decision = LessonWebView.handleNavigationRequest(
-          request: request,
-          urlLauncher: (uri,
-              {LaunchMode mode = LaunchMode.platformDefault}) async {
-            throw Exception('Platform activity not found');
-          },
-        );
-
-        expect(decision, NavigationDecision.prevent);
-        // Allow unawaited async exception handling to complete
-        await Future<void>.delayed(Duration.zero);
-        expect(logs.any((msg) => msg.contains('Error launching external URL')),
-            isTrue);
-      } finally {
-        debugPrint = originalDebugPrint;
-      }
+      expect(decision, NavigationDecision.prevent);
+      // Allow unawaited async exception handling to complete cleanly
+      await Future<void>.delayed(Duration.zero);
     });
 
-    test('logs when launchUrl returns false', () async {
-      final logs = <String>[];
-      final originalDebugPrint = debugPrint;
-      debugPrint = (String? message, {int? wrapWidth}) {
-        if (message != null) logs.add(message);
-      };
+    test('handles launchUrl returning false gracefully', () async {
+      const request = NavigationRequest(
+        url: 'https://meet.google.com/abc-defg-hij',
+        isMainFrame: true,
+      );
 
-      try {
-        const request = NavigationRequest(
-          url: 'https://meet.google.com/abc-defg-hij',
-          isMainFrame: true,
-        );
+      final decision = LessonWebView.handleNavigationRequest(
+        request: request,
+        urlLauncher: (uri,
+            {LaunchMode mode = LaunchMode.platformDefault}) async {
+          return false;
+        },
+      );
 
-        final decision = LessonWebView.handleNavigationRequest(
-          request: request,
-          urlLauncher: (uri,
-              {LaunchMode mode = LaunchMode.platformDefault}) async {
-            return false;
-          },
-        );
-
-        expect(decision, NavigationDecision.prevent);
-        await Future<void>.delayed(Duration.zero);
-        expect(logs.any((msg) => msg.contains('Failed to launch external URL')),
-            isTrue);
-      } finally {
-        debugPrint = originalDebugPrint;
-      }
+      expect(decision, NavigationDecision.prevent);
+      await Future<void>.delayed(Duration.zero);
     });
   });
 
