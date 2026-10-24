@@ -50,7 +50,8 @@ class AppHtmlV2 extends StatelessWidget {
   /// that uses relative URLs (e.g. QOTD questions from the API).
   final Uri? baseUrl;
 
-  String _sanitizeHtml(String html) {
+  @visibleForTesting
+  static String sanitizeHtml(String html) {
     var res = html;
 
     // 1. Strip <script> tags entirely (tag + content)
@@ -146,6 +147,7 @@ class AppHtmlV2 extends StatelessWidget {
       RegExp(
         r'''(<(?:table|thead|tbody|tfoot|tr|td|th)\b[^>]*?\bstyle\s*=\s*)(["'])(.*?)\2''',
         caseSensitive: false,
+        dotAll: true,
       ),
       (m) {
         final prefix = m[1]!;
@@ -183,7 +185,7 @@ class AppHtmlV2 extends StatelessWidget {
 
     final effectiveTextColor = textColor ?? design.colors.textPrimary;
 
-    final processedData = _preprocessMath(_sanitizeHtml(data));
+    final processedData = _preprocessMath(sanitizeHtml(data));
 
     return Padding(
       padding: padding,
