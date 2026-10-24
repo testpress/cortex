@@ -4,10 +4,11 @@
 - [x] 1.2 Disallow switching inactive section tabs in `TestDetailScreen` when `attempt.hasSectionalLock == true`
 - [x] 1.3 Add test coverage verifying inactive section tabs are non-interactive during sectional locks
 
-## 2. Prevent Premature Manual Section Transitions
+## 2. Preemptive Section Ending Configuration
 
-- [x] 2.1 Update `TestDetailScreen` so that on sectional lock exams, the last question of an active section does not show "Next Section" or manually trigger `switchSection` ahead of timer expiration
-- [x] 2.2 Verify with unit/widget tests that sectional lock prevents manual early transition and respects timer expiration
+- [x] 2.1 Add `allowPreemptiveSectionEnding` to `ExamDto` (defaulting to `false`) and parse `allow_preemptive_section_ending` from JSON
+- [x] 2.2 Wire `allowPreemptiveSectionEnding` in `TestDetailScreen` so that forward advancement and final submission are blocked only when `allowPreemptiveSectionEnding == false`
+- [x] 2.3 Verify with unit and widget tests that `ExamDto` parses the flag and `TestDetailScreen` enables/disables navigation accordingly
 
 ## 3. Clear Question Response Action
 

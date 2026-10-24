@@ -214,8 +214,11 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                     ? lesson.maxRetakes
                     : (embeddedExam?.maxRetakes ?? -1),
                 hasInstructions: embeddedExam?.hasInstructions ?? false,
+                allowPreemptiveSectionEnding:
+                    embeddedExam?.allowPreemptiveSectionEnding ?? false,
               ),
               attemptsUrl,
+
               isQuizMode: widget.isQuizMode,
               isPartial: widget.isPartial,
               isCustomTest: widget.isCustomTest,
@@ -527,6 +530,12 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
           : _activeSubjectIndex;
     }
 
+    final bool hasSectionalLock =
+        useSections && state.attempt?.hasSectionalLock == true;
+    final bool allowPreemptiveEnding =
+        state.exam?.allowPreemptiveSectionEnding ?? false;
+    final bool isSectionLocked = hasSectionalLock && !allowPreemptiveEnding;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -560,14 +569,12 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                         SectionsTabBar(
                           tabNames: tabNames,
                           activeIndex: activeTabIndex,
-                          isLocked:
-                              useSections &&
-                              state.attempt?.hasSectionalLock == true,
+                          isLocked: hasSectionalLock,
                           onTabSelected: (index) {
-                            if (useSections &&
-                                state.attempt?.hasSectionalLock == true) {
+                            if (hasSectionalLock) {
                               return;
                             }
+
                             // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             if (useSections) {
                               ref
@@ -626,9 +633,6 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                             final q = allQuestions[index];
                             final a = state.answers[q.id];
                             final isLast = index == allQuestions.length - 1;
-                            final isSectionLocked =
-                                useSections &&
-                                state.attempt?.hasSectionalLock == true;
                             final canGoNext = isLast ? !isSectionLocked : true;
 
                             return TestQuestionCard(

@@ -139,38 +139,32 @@ class TestNavigationActions extends StatelessWidget {
     return AppSemantics.button(
       label: l10n.testClearResponse,
       onTap: onClearResponse,
-      child: AppFocusable(
+      child: GestureDetector(
         onTap: onClearResponse,
-        borderRadius: BorderRadius.circular(design.radius.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: design.spacing.md,
-              vertical: design.spacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              borderRadius: BorderRadius.circular(design.radius.md),
-              border: Border.all(color: design.colors.border, width: 1.0),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(LucideIcons.x, color: design.colors.textPrimary, size: 18),
-                const SizedBox(width: 8),
-                AppText.body(
-                  l10n.testClearResponse,
-                  color: design.colors.textPrimary,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    height: 1.2,
-                  ),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: design.colors.card,
+            borderRadius: BorderRadius.circular(design.radius.md),
+            border: Border.all(color: design.colors.border, width: 1.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(LucideIcons.x, color: design.colors.textPrimary, size: 18),
+              const SizedBox(width: 8),
+              AppText.body(
+                l10n.testClearResponse,
+                color: design.colors.textPrimary,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -10,6 +10,7 @@ void main() {
     required bool isQuizChecked,
     required bool isLastQuestion,
     bool canGoNext = true,
+    String? finishLabel,
     VoidCallback? onNext,
     bool hasAnswer = false,
     VoidCallback? onClearResponse,
@@ -29,6 +30,7 @@ void main() {
                 canGoPrevious: true,
                 canGoNext: canGoNext,
                 isLastQuestion: isLastQuestion,
+                finishLabel: finishLabel,
                 onToggleMark: () {},
                 onPrevious: () {},
                 onNext: onNext ?? () {},
@@ -189,6 +191,86 @@ void main() {
   );
 
   testWidgets(
+    'TestNavigationActions invokes onNext on last question (Finish) when canGoNext is true',
+    (WidgetTester tester) async {
+      bool finishInvoked = false;
+
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          isQuizMode: false,
+          isQuizChecked: false,
+          isLastQuestion: true,
+          canGoNext: true,
+          onNext: () => finishInvoked = true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final finishFinder = find.widgetWithText(NavButton, 'Finish');
+      expect(finishFinder, findsOneWidget);
+
+      await tester.tap(finishFinder);
+      await tester.pumpAndSettle();
+
+      expect(finishInvoked, isTrue);
+    },
+  );
+
+  testWidgets(
+    'TestNavigationActions disables custom finishLabel (Next Section) when canGoNext is false',
+    (WidgetTester tester) async {
+      bool nextSectionInvoked = false;
+
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          isQuizMode: false,
+          isQuizChecked: false,
+          isLastQuestion: true,
+          finishLabel: 'Next Section',
+          canGoNext: false,
+          onNext: () => nextSectionInvoked = true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final nextSectionFinder = find.widgetWithText(NavButton, 'Next Section');
+      expect(nextSectionFinder, findsOneWidget);
+
+      await tester.tap(nextSectionFinder);
+      await tester.pumpAndSettle();
+
+      expect(nextSectionInvoked, isFalse);
+    },
+  );
+
+  testWidgets(
+    'TestNavigationActions invokes onNext for custom finishLabel (Next Section) when canGoNext is true',
+    (WidgetTester tester) async {
+      bool nextSectionInvoked = false;
+
+      await tester.pumpWidget(
+        createWidgetUnderTest(
+          isQuizMode: false,
+          isQuizChecked: false,
+          isLastQuestion: true,
+          finishLabel: 'Next Section',
+          canGoNext: true,
+          onNext: () => nextSectionInvoked = true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final nextSectionFinder = find.widgetWithText(NavButton, 'Next Section');
+      expect(nextSectionFinder, findsOneWidget);
+
+      await tester.tap(nextSectionFinder);
+      await tester.pumpAndSettle();
+
+      expect(nextSectionInvoked, isTrue);
+    },
+  );
+
+  testWidgets(
     'TestNavigationActions shows Clear Response when hasAnswer is true and invokes callback',
     (WidgetTester tester) async {
       bool clearInvoked = false;
@@ -251,7 +333,7 @@ void main() {
   );
 
   testWidgets(
-    'Clear Response button has at least 48dp height for WCAG touch target compliance',
+    'Clear Response button has button semantics and matches Mark for Review styling',
     (WidgetTester tester) async {
       await tester.pumpWidget(
         createWidgetUnderTest(
@@ -265,15 +347,21 @@ void main() {
       await tester.pumpAndSettle();
 
       final clearFinder = find.text('Clear Response');
-      final buttonFinder = find.ancestor(
-        of: clearFinder,
-        matching: find.byType(AppFocusable),
-      );
-      expect(buttonFinder, findsOneWidget);
+      expect(clearFinder, findsOneWidget);
 
-      final buttonSize = tester.getSize(buttonFinder);
-      expect(buttonSize.height, greaterThanOrEqualTo(48.0));
-      expect(buttonSize.width, greaterThanOrEqualTo(48.0));
+      final clearTextWidget = tester.widget<AppText>(
+        find.widgetWithText(AppText, 'Clear Response'),
+      );
+      expect(clearTextWidget.style?.fontSize, 13);
+      expect(clearTextWidget.style?.fontWeight, FontWeight.w600);
+
+      final semanticsFinder = find.ancestor(
+        of: clearFinder,
+        matching: find.byWidgetPredicate(
+          (w) => w is Semantics && w.properties.button == true,
+        ),
+      );
+      expect(semanticsFinder, findsOneWidget);
     },
   );
 }

@@ -18,6 +18,7 @@ class ExamDto {
   final String? startDate;
   final String? endDate;
   final String? gracePeriod;
+  final bool allowPreemptiveSectionEnding;
 
   const ExamDto({
     required this.id,
@@ -38,6 +39,7 @@ class ExamDto {
     this.startDate,
     this.endDate,
     this.gracePeriod,
+    this.allowPreemptiveSectionEnding = false,
   });
 
   factory ExamDto.fromJson(Map<String, dynamic> json) {
@@ -61,6 +63,8 @@ class ExamDto {
       startDate: json['start_date'] as String?,
       endDate: json['end_date'] as String?,
       gracePeriod: json['grace_period']?.toString(),
+      allowPreemptiveSectionEnding:
+          json['allow_preemptive_section_ending'] as bool? ?? false,
     );
   }
 
@@ -84,6 +88,7 @@ class ExamDto {
       'start_date': startDate,
       'end_date': endDate,
       'grace_period': gracePeriod,
+      'allow_preemptive_section_ending': allowPreemptiveSectionEnding,
     };
   }
 }
