@@ -362,6 +362,17 @@ void main() {
         ),
       );
       expect(semanticsFinder, findsOneWidget);
+
+      final appFocusableFinder = find.ancestor(
+        of: clearFinder,
+        matching: find.byType(AppFocusable),
+      );
+      expect(appFocusableFinder, findsOneWidget);
+
+      final markFinder = find.text('Mark for Review');
+      final clearRect = tester.getRect(clearFinder);
+      final markRect = tester.getRect(markFinder);
+      expect(clearRect.height, equals(markRect.height));
     },
   );
 }

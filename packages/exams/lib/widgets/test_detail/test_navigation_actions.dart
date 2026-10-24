@@ -139,8 +139,9 @@ class TestNavigationActions extends StatelessWidget {
     return AppSemantics.button(
       label: l10n.testClearResponse,
       onTap: onClearResponse,
-      child: GestureDetector(
+      child: AppFocusable(
         onTap: onClearResponse,
+        borderRadius: BorderRadius.circular(design.radius.md),
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.md,
@@ -155,7 +156,7 @@ class TestNavigationActions extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(LucideIcons.x, color: design.colors.textPrimary, size: 18),
-              const SizedBox(width: 8),
+              SizedBox(width: design.spacing.sm),
               AppText.body(
                 l10n.testClearResponse,
                 color: design.colors.textPrimary,

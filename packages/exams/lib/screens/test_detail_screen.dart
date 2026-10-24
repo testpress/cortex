@@ -568,6 +568,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                         SectionsTabBar(
                           tabNames: tabNames,
                           activeIndex: activeTabIndex,
+                          // Tabs stay locked during sectional lock; learners can only advance sequentially via Next Section.
                           isLocked: hasSectionalLock,
                           onTabSelected: (index) {
                             if (hasSectionalLock) {
