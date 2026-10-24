@@ -218,7 +218,6 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                     embeddedExam?.allowPreemptiveSectionEnding ?? false,
               ),
               attemptsUrl,
-
               isQuizMode: widget.isQuizMode,
               isPartial: widget.isPartial,
               isCustomTest: widget.isCustomTest,
@@ -574,7 +573,6 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                             if (hasSectionalLock) {
                               return;
                             }
-
                             // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             if (useSections) {
                               ref
@@ -643,8 +641,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                               canGoPrevious: index > 0,
                               canGoNext: canGoNext,
                               isLastQuestion: isLast,
-                              finishLabel:
-                                  isLast && hasNextSection && !isSectionLocked
+                              finishLabel: isLast && hasNextSection
                                   ? l10n.nextSection
                                   : null,
                               answeredCount: sectionAnsweredCount,
