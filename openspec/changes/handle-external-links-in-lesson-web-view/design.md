@@ -17,8 +17,8 @@
 ## Decisions
 
 ### Decision 1: External URL Delegation in NavigationDelegate
-- **Choice**: In `onNavigationRequest`, check if the scheme is `http` or `https`. If it is the initial `widget.url`, return `NavigationDecision.navigate`. Otherwise, invoke `unawaited(launchUrl(uri, mode: LaunchMode.inAppBrowserView))` and return `NavigationDecision.prevent`.
-- **Rationale**: Keeps the student in the app via an in-app browser tab (Chrome Custom Tabs on Android / SFSafariViewController on iOS) with a top "Done" button, avoids WebView SSL handshake issues, and provides full WebRTC camera/mic and Google authentication support.
+- **Choice**: In `onNavigationRequest`, check `request.isMainFrame`. Subframes (`!request.isMainFrame`) loading `http`/`https` URLs (such as YouTube iframes embedded in notes) return `NavigationDecision.navigate` to render inline. For top-level main frame navigation (`request.isMainFrame`), allow URLs on the same host when `initialUrl` is supplied (`uri.host == initialHost`) to support server redirects and normalized paths. Otherwise, invoke `unawaited(launchUrl(uri, mode: LaunchMode.inAppBrowserView))` and return `NavigationDecision.prevent`.
+- **Rationale**: Keeps the student in the app via an in-app browser tab (Chrome Custom Tabs on Android / SFSafariViewController on iOS) with a top "Done" button, avoids WebView SSL handshake issues, supports direct URL SSO/internal redirects, and ensures embedded iframe videos in lesson notes are not hijacked to external windows.
 - **Alternatives considered**:
   - `LaunchMode.externalApplication`: Kicks the user out to standalone browser/external app. Exits learning app context, which hurts retention and reading continuity.
 

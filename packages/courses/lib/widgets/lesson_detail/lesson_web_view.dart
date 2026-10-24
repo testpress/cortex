@@ -30,7 +30,6 @@ class LessonWebView extends StatefulWidget {
   final EdgeInsets? padding;
 
   /// Static helper to handle navigation requests with external link delegation.
-  @visibleForTesting
   static NavigationDecision handleNavigationRequest({
     required NavigationRequest request,
     String? initialUrl,
@@ -39,15 +38,99 @@ class LessonWebView extends StatefulWidget {
     final uri = Uri.tryParse(request.url);
     if (uri == null) return NavigationDecision.prevent;
 
-    if (initialUrl != null && request.url == initialUrl) {
-      return NavigationDecision.navigate;
+    // Allow subframes (e.g. embedded iframes) to load inline.
+    if (!request.isMainFrame) {
+      return ['http', 'https'].contains(uri.scheme)
+          ? NavigationDecision.navigate
+          : NavigationDecision.prevent;
+    }
+
+    if (initialUrl != null) {
+      final initialHost = Uri.tryParse(initialUrl)?.host;
+      if (initialHost != null &&
+          initialHost.isNotEmpty &&
+          uri.host == initialHost) {
+        return NavigationDecision.navigate;
+      }
     }
 
     if (['http', 'https'].contains(uri.scheme)) {
       final launcher = urlLauncher ?? launchUrl;
-      unawaited(launcher(uri, mode: LaunchMode.inAppBrowserView));
+      unawaited(
+        launcher(uri, mode: LaunchMode.inAppBrowserView).then((launched) {
+          if (!launched) {
+            debugPrint('Failed to launch external URL: $uri');
+          }
+        }).catchError((Object error, StackTrace stackTrace) {
+          debugPrint('Error launching external URL $uri: $error\n$stackTrace');
+        }),
+      );
     }
     return NavigationDecision.prevent;
+  }
+
+  /// Formats raw HTML with responsive styling, design system colors, and typography.
+  static String buildStyledHtml({
+    required String? htmlContent,
+    String? description,
+    required DesignColors colors,
+  }) {
+    final textColor = _colorToHexString(colors.textPrimary);
+    final backgroundColor = _colorToHexString(colors.canvas);
+    final primaryColor = _colorToHexString(colors.primary);
+
+    return '''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+            body { 
+              margin: 0; 
+              padding: 0; 
+              background-color: $backgroundColor; 
+              color: $textColor;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              line-height: 1.6;
+              font-size: 15px;
+              -webkit-user-select: none;
+              -webkit-touch-callout: none;
+              overflow-x: hidden;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+            }
+            img, video { max-width: 100%; height: auto; }
+            iframe { 
+              width: 100% !important; 
+              height: auto !important;
+              aspect-ratio: 16 / 9 !important; 
+              border: none; 
+              border-radius: 8px;
+            }
+            table {
+              max-width: 100% !important;
+              display: block;
+              overflow-x: auto;
+              -webkit-overflow-scrolling: touch;
+            }
+            .content-wrapper { padding: 16px; }
+            p { margin-top: 0; margin-bottom: 12px; }
+            a { color: $primaryColor; text-decoration: none; }
+          </style>
+        </head>
+        <body>
+          <div class="content-wrapper">
+            ${htmlContent ?? ''}
+            ${description != null && description.isNotEmpty ? '<div style="margin-top: 16px;">$description</div>' : ''}
+          </div>
+        </body>
+      </html>
+    ''';
+  }
+
+  static String _colorToHexString(Color color) {
+    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
   }
 
   @override
@@ -134,58 +217,11 @@ class _LessonWebViewState extends State<LessonWebView> {
     // This fixes YouTube Error 153 where local file:// or null origins are blocked.
     const baseUrl = 'https://www.testpress.in';
 
-    final textColor = _colorToHexString(design.colors.textPrimary);
-    final backgroundColor = _colorToHexString(design.colors.canvas);
-
-    // Wrap content with basic responsive CSS to ensure embeds fit the screen
-    final styledHtml = '''
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-          <style>
-            body { 
-              margin: 0; 
-              padding: 0; 
-              background-color: $backgroundColor; 
-              color: $textColor;
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-              line-height: 1.6;
-              font-size: 15px;
-              -webkit-user-select: none;
-              -webkit-touch-callout: none;
-              overflow-x: hidden;
-              word-wrap: break-word;
-              overflow-wrap: break-word;
-            }
-            img, video { max-width: 100%; height: auto; }
-            iframe { 
-              width: 100% !important; 
-              height: auto !important;
-              aspect-ratio: 16 / 9 !important; 
-              border: none; 
-              border-radius: 8px;
-            }
-            table {
-              max-width: 100% !important;
-              display: block;
-              overflow-x: auto;
-              -webkit-overflow-scrolling: touch;
-            }
-            .content-wrapper { padding: 16px; }
-            p { margin-top: 0; margin-bottom: 12px; }
-            a { color: ${_colorToHexString(design.colors.primary)}; text-decoration: none; }
-          </style>
-        </head>
-        <body>
-          <div class="content-wrapper">
-            ${widget.htmlContent ?? ''}
-            ${widget.description != null && widget.description!.isNotEmpty ? '<div style="margin-top: 16px;">${widget.description}</div>' : ''}
-          </div>
-        </body>
-      </html>
-    ''';
+    final styledHtml = LessonWebView.buildStyledHtml(
+      htmlContent: widget.htmlContent,
+      description: widget.description,
+      colors: design.colors,
+    );
 
     _controller.loadHtmlString(styledHtml, baseUrl: baseUrl);
   }
@@ -284,10 +320,6 @@ class _LessonWebViewState extends State<LessonWebView> {
       SentryService().captureException(e, stackTrace: st);
       // Non-fatal if the host page blocks runtime styling.
     }
-  }
-
-  String _colorToHexString(Color color) {
-    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
   }
 
   @override
