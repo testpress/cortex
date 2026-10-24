@@ -1217,6 +1217,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get testMarkForReview => 'Mark for Review';
 
   @override
+  String get testClearResponse => 'Clear Response';
+
+  @override
   String get testPrevious => 'Previous';
 
   @override

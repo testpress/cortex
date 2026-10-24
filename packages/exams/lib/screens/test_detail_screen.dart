@@ -214,6 +214,8 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                     ? lesson.maxRetakes
                     : (embeddedExam?.maxRetakes ?? -1),
                 hasInstructions: embeddedExam?.hasInstructions ?? false,
+                allowPreemptiveSectionEnding:
+                    embeddedExam?.allowPreemptiveSectionEnding ?? false,
               ),
               attemptsUrl,
               isQuizMode: widget.isQuizMode,
@@ -527,6 +529,12 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
           : _activeSubjectIndex;
     }
 
+    final bool hasSectionalLock =
+        useSections && state.attempt?.hasSectionalLock == true;
+    final bool allowPreemptiveEnding =
+        state.exam?.allowPreemptiveSectionEnding ?? false;
+    final bool isSectionLocked = hasSectionalLock && !allowPreemptiveEnding;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -560,7 +568,12 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                         SectionsTabBar(
                           tabNames: tabNames,
                           activeIndex: activeTabIndex,
+                          // Tabs stay locked during sectional lock; learners can only advance sequentially via Next Section.
+                          isLocked: hasSectionalLock,
                           onTabSelected: (index) {
+                            if (hasSectionalLock) {
+                              return;
+                            }
                             // No need to manually submit dirty questions; answers are immediately queued to the repository.
                             if (useSections) {
                               ref
@@ -619,6 +632,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                             final q = allQuestions[index];
                             final a = state.answers[q.id];
                             final isLast = index == allQuestions.length - 1;
+                            final canGoNext = isLast ? !isSectionLocked : true;
 
                             return TestQuestionCard(
                               key: ValueKey(q.id),
@@ -626,6 +640,7 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                               answer: a,
                               isMarked: a?.isMarked ?? false,
                               canGoPrevious: index > 0,
+                              canGoNext: canGoNext,
                               isLastQuestion: isLast,
                               finishLabel: isLast && hasNextSection
                                   ? l10n.nextSection
@@ -635,6 +650,8 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                               onPaletteTap: () =>
                                   setState(() => _showPalette = true),
                               onToggleMark: () => _handleToggleMark(state, q),
+                              onClearResponse: () =>
+                                  _handleClearResponse(state, q),
                               onPrevious: () {
                                 if (index > 0) {
                                   if (MotionPreferences.shouldAnimate(
@@ -673,14 +690,14 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
                                   } else {
                                     _pageController.jumpToPage(index + 1);
                                   }
-                                } else if (hasNextSection) {
+                                } else if (hasNextSection && !isSectionLocked) {
                                   // No need to manually submit dirty questions; answers are immediately queued.
                                   ref
                                       .read(examAttemptProvider.notifier)
                                       .switchSection(
                                         state.currentSectionIndex + 1,
                                       );
-                                } else {
+                                } else if (!isSectionLocked) {
                                   setState(
                                     () => _showSubmitConfirmation = true,
                                   );
@@ -916,6 +933,30 @@ class _TestDetailContentState extends ConsumerState<_TestDetailContent> {
       questionId: question.id,
       selectedOptions: currentAnswer.selectedOptions,
       isMarked: !currentAnswer.isMarked,
+    );
+
+    if (state.isQuizMode) {
+      ref
+          .read(examAttemptProvider.notifier)
+          .updateLocalAnswer(question.id, newAnswer);
+    } else {
+      ref
+          .read(examAttemptProvider.notifier)
+          .submitAnswer(question.id, newAnswer);
+      _showSavedIndicator();
+    }
+  }
+
+  void _handleClearResponse(ExamAttemptState state, QuestionDto question) {
+    final currentAnswer = state.answers[question.id];
+    if (currentAnswer == null || !currentAnswer.hasAnswer) return;
+
+    final newAnswer = AnswerDto(
+      questionId: question.id,
+      selectedOptions: [],
+      shortText: null,
+      essayText: null,
+      isMarked: currentAnswer.isMarked,
     );
 
     if (state.isQuizMode) {

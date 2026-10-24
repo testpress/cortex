@@ -1216,6 +1216,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get testMarkForReview => 'وضع علامة للمراجعة';
 
   @override
+  String get testClearResponse => 'مسح الإجابة';
+
+  @override
   String get testPrevious => 'السابق';
 
   @override

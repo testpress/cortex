@@ -387,6 +387,7 @@
   "testSaved": "تم الحفظ",
   "testMarked": "تم وضع علامة",
   "testMarkForReview": "وضع علامة للمراجعة",
+  "testClearResponse": "مسح الإجابة",
   "testPrevious": "السابق",
   "testNext": "التالي",
   "testFinish": "إنهاء",

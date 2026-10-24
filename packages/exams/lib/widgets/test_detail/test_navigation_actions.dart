@@ -5,6 +5,7 @@ import 'nav_button.dart';
 class TestNavigationActions extends StatelessWidget {
   final bool isMarked;
   final bool canGoPrevious;
+  final bool canGoNext;
   final bool isLastQuestion;
   final String? finishLabel;
   final VoidCallback onToggleMark;
@@ -14,11 +15,14 @@ class TestNavigationActions extends StatelessWidget {
   final bool isQuizChecked;
   final bool isChecking;
   final VoidCallback? onCheck;
+  final bool hasAnswer;
+  final VoidCallback? onClearResponse;
 
   const TestNavigationActions({
     super.key,
     required this.isMarked,
     required this.canGoPrevious,
+    this.canGoNext = true,
     required this.isLastQuestion,
     this.finishLabel,
     required this.onToggleMark,
@@ -28,6 +32,8 @@ class TestNavigationActions extends StatelessWidget {
     this.isQuizChecked = false,
     this.isChecking = false,
     this.onCheck,
+    this.hasAnswer = false,
+    this.onClearResponse,
   });
 
   @override
@@ -37,7 +43,16 @@ class TestNavigationActions extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildMarkButton(design, l10n),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildMarkButton(context),
+            if (hasAnswer &&
+                onClearResponse != null &&
+                (!isQuizMode || !isQuizChecked))
+              _buildClearButton(context),
+          ],
+        ),
         SizedBox(height: design.spacing.md),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,7 +82,7 @@ class TestNavigationActions extends StatelessWidget {
                     finishLabel ??
                     (isLastQuestion ? l10n.testFinish : l10n.testNext),
                 icon: LucideIcons.chevronRight,
-                onTap: onNext,
+                onTap: canGoNext ? onNext : null,
               ),
           ],
         ),
@@ -75,7 +90,9 @@ class TestNavigationActions extends StatelessWidget {
     );
   }
 
-  Widget _buildMarkButton(DesignConfig design, AppLocalizations l10n) {
+  Widget _buildMarkButton(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
     final markColor = design.colors.accent1;
     return GestureDetector(
       onTap: onToggleMark,
@@ -111,6 +128,54 @@ class TestNavigationActions extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClearButton(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    return AppSemantics.button(
+      label: l10n.testClearResponse,
+      onTap: onClearResponse,
+      child: AppFocusable(
+        onTap: onClearResponse,
+        borderRadius: BorderRadius.circular(design.radius.md),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48.0),
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.md,
+                vertical: design.spacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: design.colors.card,
+                borderRadius: BorderRadius.circular(design.radius.md),
+                border: Border.all(color: design.colors.border, width: 1.0),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    LucideIcons.x,
+                    color: design.colors.textPrimary,
+                    size: 18,
+                  ),
+                  SizedBox(width: design.spacing.sm),
+                  AppText.body(
+                    l10n.testClearResponse,
+                    color: design.colors.textPrimary,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

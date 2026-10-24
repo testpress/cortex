@@ -1231,6 +1231,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get testMarkForReview => 'மதிப்பாய்வுக்கு குறிக்கவும்';
 
   @override
+  String get testClearResponse => 'பதிலை அழி';
+
+  @override
   String get testPrevious => 'முந்தையது';
 
   @override

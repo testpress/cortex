@@ -5,12 +5,14 @@ class SectionsTabBar extends StatelessWidget {
   final List<String> tabNames;
   final int activeIndex;
   final ValueChanged<int> onTabSelected;
+  final bool isLocked;
 
   const SectionsTabBar({
     super.key,
     required this.tabNames,
     required this.activeIndex,
     required this.onTabSelected,
+    this.isLocked = false,
   });
 
   @override
@@ -30,13 +32,16 @@ class SectionsTabBar extends StatelessWidget {
             final index = entry.key;
             final tabName = entry.value;
             final isActive = index == activeIndex;
+            final isClickable = !isActive && !isLocked;
 
             final bgColor = isActive
                 ? design.colors.textPrimary
                 : design.colors.surfaceVariant;
             final fgColor = isActive
                 ? design.colors.card
-                : design.colors.textPrimary;
+                : (isLocked
+                      ? design.colors.textSecondary
+                      : design.colors.textPrimary);
 
             final tabDisplayName = tabName.isEmpty
                 ? l10n.labelGeneral
@@ -46,17 +51,10 @@ class SectionsTabBar extends StatelessWidget {
               padding: EdgeInsets.only(right: design.spacing.sm),
               child: AppSemantics.button(
                 label: l10n.filterBy(tabDisplayName),
-                onTap: () {
-                  if (!isActive) {
-                    onTabSelected(index);
-                  }
-                },
+                enabled: isClickable,
+                onTap: isClickable ? () => onTabSelected(index) : null,
                 child: AppFocusable(
-                  onTap: () {
-                    if (!isActive) {
-                      onTabSelected(index);
-                    }
-                  },
+                  onTap: isClickable ? () => onTabSelected(index) : null,
                   borderRadius: design.radius.pill,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

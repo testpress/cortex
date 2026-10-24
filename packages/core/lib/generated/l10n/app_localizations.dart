@@ -2267,6 +2267,12 @@ abstract class AppLocalizations {
   /// **'Mark for Review'**
   String get testMarkForReview;
 
+  /// No description provided for @testClearResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Response'**
+  String get testClearResponse;
+
   /// No description provided for @testPrevious.
   ///
   /// In en, this message translates to:
