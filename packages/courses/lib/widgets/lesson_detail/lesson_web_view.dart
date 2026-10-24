@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 
 import 'package:flutter/widgets.dart';
@@ -28,6 +29,115 @@ class LessonWebView extends StatefulWidget {
   /// Optional padding around the webview.
   final EdgeInsets? padding;
 
+  /// Default origin used when rendering HTML content strings.
+  static const defaultBaseUrl = 'https://www.testpress.in';
+
+  /// Static helper to handle navigation requests with external link delegation.
+  static NavigationDecision handleNavigationRequest({
+    required NavigationRequest request,
+    String? initialUrl,
+    Future<bool> Function(Uri, {LaunchMode mode})? urlLauncher,
+  }) {
+    final uri = Uri.tryParse(request.url);
+    if (uri == null) return NavigationDecision.prevent;
+
+    // Allow subframes (e.g. embedded iframes) to load inline.
+    if (!request.isMainFrame) {
+      return ['http', 'https'].contains(uri.scheme)
+          ? NavigationDecision.navigate
+          : NavigationDecision.prevent;
+    }
+
+    if (initialUrl != null) {
+      final initialHost = Uri.tryParse(initialUrl)?.host;
+      // Compare host only to allow same-domain server redirects and path normalization.
+      if (initialHost != null &&
+          initialHost.isNotEmpty &&
+          uri.host == initialHost) {
+        return NavigationDecision.navigate;
+      }
+    }
+
+    if (['http', 'https'].contains(uri.scheme)) {
+      final launcher = urlLauncher ?? launchUrl;
+      unawaited(
+        launcher(uri, mode: LaunchMode.inAppBrowserView).then((launched) {
+          if (!launched) {
+            SentryService()
+                .captureMessage('Failed to launch external URL: $uri');
+          }
+        }).catchError((Object error, StackTrace stackTrace) {
+          SentryService().captureException(error, stackTrace: stackTrace);
+        }),
+      );
+    }
+    return NavigationDecision.prevent;
+  }
+
+  /// Formats raw HTML with responsive styling, design system colors, and typography.
+  static String buildStyledHtml({
+    required String? htmlContent,
+    String? description,
+    required DesignColors colors,
+  }) {
+    final textColor = _colorToHexString(colors.textPrimary);
+    final backgroundColor = _colorToHexString(colors.canvas);
+    final primaryColor = _colorToHexString(colors.primary);
+
+    return '''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+            body { 
+              margin: 0; 
+              padding: 0; 
+              background-color: $backgroundColor; 
+              color: $textColor;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              line-height: 1.6;
+              font-size: 15px;
+              -webkit-user-select: none;
+              -webkit-touch-callout: none;
+              overflow-x: hidden;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+            }
+            img, video { max-width: 100%; height: auto; }
+            iframe { 
+              width: 100% !important; 
+              height: auto !important;
+              aspect-ratio: 16 / 9 !important; 
+              border: none; 
+              border-radius: 8px;
+            }
+            table {
+              max-width: 100% !important;
+              display: block;
+              overflow-x: auto;
+              -webkit-overflow-scrolling: touch;
+            }
+            .content-wrapper { padding: 16px; }
+            p { margin-top: 0; margin-bottom: 12px; }
+            a { color: $primaryColor; text-decoration: none; }
+          </style>
+        </head>
+        <body>
+          <div class="content-wrapper">
+            ${htmlContent ?? ''}
+            ${description != null && description.isNotEmpty ? '<div style="margin-top: 16px;">$description</div>' : ''}
+          </div>
+        </body>
+      </html>
+    ''';
+  }
+
+  static String _colorToHexString(Color color) {
+    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+  }
+
   @override
   State<LessonWebView> createState() => _LessonWebViewState();
 }
@@ -48,13 +158,13 @@ class _LessonWebViewState extends State<LessonWebView> {
             _applyChatDomCompaction();
           },
           onWebResourceError: (error) {},
-          onNavigationRequest: (request) {
-            final uri = Uri.tryParse(request.url);
-            if (uri != null && !['http', 'https'].contains(uri.scheme)) {
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
+          onNavigationRequest: (request) =>
+              LessonWebView.handleNavigationRequest(
+            request: request,
+            // Fallback to defaultBaseUrl allows HTML origin to load inline;
+            // in-content testpress.in links will also navigate inline.
+            initialUrl: widget.url ?? LessonWebView.defaultBaseUrl,
+          ),
         ),
       );
   }
@@ -110,58 +220,16 @@ class _LessonWebViewState extends State<LessonWebView> {
     }
 
     final design = Design.of(context);
-    // We use https://www.testpress.in as baseUrl to provide a valid HTTPS origin.
+    // We use defaultBaseUrl to provide a valid HTTPS origin.
     // This fixes YouTube Error 153 where local file:// or null origins are blocked.
-    const baseUrl = 'https://www.testpress.in';
+    final styledHtml = LessonWebView.buildStyledHtml(
+      htmlContent: widget.htmlContent,
+      description: widget.description,
+      colors: design.colors,
+    );
 
-    final textColor = _colorToHexString(design.colors.textPrimary);
-    final backgroundColor = _colorToHexString(design.colors.canvas);
-
-    // Wrap content with basic responsive CSS to ensure embeds fit the screen
-    final styledHtml = '''
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-          <style>
-            body { 
-              margin: 0; 
-              padding: 0; 
-              background-color: $backgroundColor; 
-              color: $textColor;
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-              line-height: 1.6;
-              font-size: 15px;
-              -webkit-user-select: none;
-              -webkit-touch-callout: none;
-              overflow-x: hidden;
-              word-wrap: break-word;
-              overflow-wrap: break-word;
-            }
-            img, video { max-width: 100%; height: auto; }
-            iframe { 
-              width: 100% !important; 
-              height: auto !important;
-              aspect-ratio: 16 / 9 !important; 
-              border: none; 
-              border-radius: 8px;
-            }
-            .content-wrapper { padding: 16px; }
-            p { margin-top: 0; margin-bottom: 12px; }
-            a { color: ${_colorToHexString(design.colors.primary)}; text-decoration: none; }
-          </style>
-        </head>
-        <body>
-          <div class="content-wrapper">
-            ${widget.htmlContent ?? ''}
-            ${widget.description != null && widget.description!.isNotEmpty ? '<div style="margin-top: 16px;">${widget.description}</div>' : ''}
-          </div>
-        </body>
-      </html>
-    ''';
-
-    _controller.loadHtmlString(styledHtml, baseUrl: baseUrl);
+    _controller.loadHtmlString(styledHtml,
+        baseUrl: LessonWebView.defaultBaseUrl);
   }
 
   Future<void> _applyInputFocusStabilityFix() async {
@@ -258,10 +326,6 @@ class _LessonWebViewState extends State<LessonWebView> {
       SentryService().captureException(e, stackTrace: st);
       // Non-fatal if the host page blocks runtime styling.
     }
-  }
-
-  String _colorToHexString(Color color) {
-    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
   }
 
   @override
