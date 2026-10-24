@@ -36,6 +36,29 @@ void main() {
       }
     });
 
+    test('allows main-frame navigation for baseUrl without external launch',
+        () {
+      bool launchCalled = false;
+
+      const request = NavigationRequest(
+        url: LessonWebView.defaultBaseUrl,
+        isMainFrame: true,
+      );
+
+      final decision = LessonWebView.handleNavigationRequest(
+        request: request,
+        initialUrl: LessonWebView.defaultBaseUrl,
+        urlLauncher: (uri,
+            {LaunchMode mode = LaunchMode.platformDefault}) async {
+          launchCalled = true;
+          return true;
+        },
+      );
+
+      expect(decision, NavigationDecision.navigate);
+      expect(launchCalled, isFalse);
+    });
+
     test(
         'prevents navigation and delegates to launchUrl for external http/https URLs',
         () async {

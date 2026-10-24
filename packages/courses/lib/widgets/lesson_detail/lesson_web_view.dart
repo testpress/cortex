@@ -29,6 +29,9 @@ class LessonWebView extends StatefulWidget {
   /// Optional padding around the webview.
   final EdgeInsets? padding;
 
+  /// Default origin used when rendering HTML content strings.
+  static const defaultBaseUrl = 'https://www.testpress.in';
+
   /// Static helper to handle navigation requests with external link delegation.
   static NavigationDecision handleNavigationRequest({
     required NavigationRequest request,
@@ -62,6 +65,7 @@ class LessonWebView extends StatefulWidget {
             debugPrint('Failed to launch external URL: $uri');
           }
         }).catchError((Object error, StackTrace stackTrace) {
+          SentryService().captureException(error, stackTrace: stackTrace);
           debugPrint('Error launching external URL $uri: $error\n$stackTrace');
         }),
       );
@@ -156,7 +160,7 @@ class _LessonWebViewState extends State<LessonWebView> {
           onNavigationRequest: (request) =>
               LessonWebView.handleNavigationRequest(
             request: request,
-            initialUrl: widget.url,
+            initialUrl: widget.url ?? LessonWebView.defaultBaseUrl,
           ),
         ),
       );
@@ -213,17 +217,16 @@ class _LessonWebViewState extends State<LessonWebView> {
     }
 
     final design = Design.of(context);
-    // We use https://www.testpress.in as baseUrl to provide a valid HTTPS origin.
+    // We use defaultBaseUrl to provide a valid HTTPS origin.
     // This fixes YouTube Error 153 where local file:// or null origins are blocked.
-    const baseUrl = 'https://www.testpress.in';
-
     final styledHtml = LessonWebView.buildStyledHtml(
       htmlContent: widget.htmlContent,
       description: widget.description,
       colors: design.colors,
     );
 
-    _controller.loadHtmlString(styledHtml, baseUrl: baseUrl);
+    _controller.loadHtmlString(styledHtml,
+        baseUrl: LessonWebView.defaultBaseUrl);
   }
 
   Future<void> _applyInputFocusStabilityFix() async {

@@ -16,6 +16,10 @@ The `LessonWebView` SHALL intercept top-level (`isMainFrame == true`) HTTP and H
 - **WHEN** `LessonWebView` is configured with an initial `url` parameter
 - **THEN** navigation to URLs on the same host as `initialUrl` is permitted with `NavigationDecision.navigate` to support server redirects and normalized paths
 
+#### Scenario: HTML string content with default base URL
+- **WHEN** `LessonWebView` renders HTML content using `defaultBaseUrl` as origin
+- **THEN** navigation requests matching the `defaultBaseUrl` host are permitted with `NavigationDecision.navigate` without delegating to `url_launcher`
+
 ### Requirement: Responsive Table Layout
 The `LessonWebView` SHALL apply responsive CSS to HTML tables so wide data tables do not overflow the viewport or cause horizontal clipping of page margins.
 
