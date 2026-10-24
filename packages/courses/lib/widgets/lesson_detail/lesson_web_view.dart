@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 
 import 'package:flutter/widgets.dart';
@@ -28,6 +29,27 @@ class LessonWebView extends StatefulWidget {
   /// Optional padding around the webview.
   final EdgeInsets? padding;
 
+  /// Static helper to handle navigation requests with external link delegation.
+  @visibleForTesting
+  static NavigationDecision handleNavigationRequest({
+    required NavigationRequest request,
+    String? initialUrl,
+    Future<bool> Function(Uri, {LaunchMode mode})? urlLauncher,
+  }) {
+    final uri = Uri.tryParse(request.url);
+    if (uri == null) return NavigationDecision.prevent;
+
+    if (initialUrl != null && request.url == initialUrl) {
+      return NavigationDecision.navigate;
+    }
+
+    if (['http', 'https'].contains(uri.scheme)) {
+      final launcher = urlLauncher ?? launchUrl;
+      unawaited(launcher(uri, mode: LaunchMode.inAppBrowserView));
+    }
+    return NavigationDecision.prevent;
+  }
+
   @override
   State<LessonWebView> createState() => _LessonWebViewState();
 }
@@ -48,13 +70,11 @@ class _LessonWebViewState extends State<LessonWebView> {
             _applyChatDomCompaction();
           },
           onWebResourceError: (error) {},
-          onNavigationRequest: (request) {
-            final uri = Uri.tryParse(request.url);
-            if (uri != null && !['http', 'https'].contains(uri.scheme)) {
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
+          onNavigationRequest: (request) =>
+              LessonWebView.handleNavigationRequest(
+            request: request,
+            initialUrl: widget.url,
+          ),
         ),
       );
   }
@@ -146,6 +166,12 @@ class _LessonWebViewState extends State<LessonWebView> {
               aspect-ratio: 16 / 9 !important; 
               border: none; 
               border-radius: 8px;
+            }
+            table {
+              max-width: 100% !important;
+              display: block;
+              overflow-x: auto;
+              -webkit-overflow-scrolling: touch;
             }
             .content-wrapper { padding: 16px; }
             p { margin-top: 0; margin-bottom: 12px; }
