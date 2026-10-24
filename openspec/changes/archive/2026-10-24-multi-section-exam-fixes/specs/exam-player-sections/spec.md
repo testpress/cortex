@@ -24,6 +24,8 @@ The exam player SHALL dynamically parse and display a tab-switching header for e
 - **THEN** the exam player SHALL enable the "Next Section" action on the last question of intermediate sections and the "Finish" action on the final section, allowing the learner to advance or submit early.
 
 
+## ADDED Requirements
+
 ### Requirement: Clear Question Response
 The exam player SHALL provide an explicit action to clear selected answers on an active question.
 
