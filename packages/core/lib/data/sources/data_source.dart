@@ -187,6 +187,9 @@ abstract class DataSource {
     String? categorySlug,
   });
 
+  /// Fetch a single post/announcement by slug.
+  Future<PostDto> getPost(String slug);
+
   /// Fetch a list of post categories.
   Future<List<PostCategoryDto>> getPostCategories();
 

@@ -141,19 +141,21 @@ class DeepLinkHandler {
     DeepLinkRule('/products', '/store'),
     DeepLinkRule('/store', '/store', matchPrefix: true),
 
+    // Posts & Announcements
+    DeepLinkRule('/p/:slug', '/home/posts/:slug'),
+    DeepLinkRule('/posts/:slug', '/home/posts/:slug'),
+    DeepLinkRule('/p', '/home/posts'),
+    DeepLinkRule('/posts', '/home/posts'),
+
     // Discussions & Forum
     DeepLinkRule(
       '/discussions/forum/posts/:slug',
       '/home/discussions/forum/posts/:slug',
     ),
-    DeepLinkRule('/p/:slug', '/home/discussions/forum/posts/:slug'),
-    DeepLinkRule('/posts/:slug', '/home/discussions/forum/posts/:slug'),
     DeepLinkRule('/discussions/doubts/:id', '/home/discussions/doubts/:id'),
     DeepLinkRule('/discussions/doubts', '/home/discussions/doubts'),
     DeepLinkRule('/discussions/forum', '/home/discussions/forum'),
     DeepLinkRule('/discussions', '/home/discussions/forum', matchPrefix: true),
-    DeepLinkRule('/p', '/home/discussions/forum'),
-    DeepLinkRule('/posts', '/home/discussions/forum'),
 
     // Profile & User
     DeepLinkRule(

@@ -125,23 +125,23 @@ void main() {
       );
     });
 
-    test('resolves forum and discussion post deep links', () {
+    test('resolves post and announcement deep links', () {
       expect(
         DeepLinkHandler.resolve('/p/neet-2026-strategy-guide'),
-        '/home/discussions/forum/posts/neet-2026-strategy-guide',
+        '/home/posts/neet-2026-strategy-guide',
       );
       expect(
         DeepLinkHandler.resolve('/posts/physics-formula-cheatsheet'),
-        '/home/discussions/forum/posts/physics-formula-cheatsheet',
+        '/home/posts/physics-formula-cheatsheet',
       );
       expect(
         DeepLinkHandler.resolve(
           'https://staging.testpress.in/p/announcements-june-2026?utm_source=fcm',
         ),
-        '/home/discussions/forum/posts/announcements-june-2026',
+        '/home/posts/announcements-june-2026',
       );
-      expect(DeepLinkHandler.resolve('/p'), '/home/discussions/forum');
-      expect(DeepLinkHandler.resolve('/posts'), '/home/discussions/forum');
+      expect(DeepLinkHandler.resolve('/p'), '/home/posts');
+      expect(DeepLinkHandler.resolve('/posts'), '/home/posts');
     });
 
     test('resolves exam list and sub-paths', () {

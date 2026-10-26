@@ -173,3 +173,24 @@ class CategoryPostsFetchingPage extends _$CategoryPostsFetchingPage {
 
   void setFetching(bool fetching) => state = fetching;
 }
+
+@riverpod
+Stream<PostDto?> postDetail(PostDetailRef ref, String slug) async* {
+  final repository = await ref.watch(postsRepositoryProvider.future);
+
+  final cached = await repository.watchPostBySlug(slug).first;
+
+  if (cached == null) {
+    try {
+      final fetched = await repository.fetchPost(slug);
+      yield fetched;
+    } catch (e, stack) {
+      yield* Stream.error(e, stack);
+      return;
+    }
+  } else {
+    repository.fetchPost(slug).catchError((_) => cached);
+  }
+
+  yield* repository.watchPostBySlug(slug);
+}

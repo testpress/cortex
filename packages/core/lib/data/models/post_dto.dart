@@ -79,7 +79,11 @@ class PostDto {
           (json['category'] is Map
               ? (json['category']['id'] as num?)?.toInt()
               : null),
-      categoryName: json['category_name'] as String?,
+      categoryName:
+          json['category_name'] as String? ??
+          (json['category'] is Map
+              ? json['category']['name'] as String?
+              : null),
       shortLink: json['short_link'] as String? ?? '',
       summary: json['summary'] as String? ?? '',
       contentHtml: json['content_html'] as String? ?? '',

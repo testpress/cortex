@@ -77,6 +77,51 @@ class PostsRepository {
     );
   }
 
+  /// Watch a single post by slug from the local database.
+  Stream<PostDto?> watchPostBySlug(String slug) {
+    return _db
+        .watchPostBySlug(slug)
+        .map(
+          (r) => r == null
+              ? null
+              : PostDto(
+                  id: r.id,
+                  slug: r.slug,
+                  title: r.title,
+                  categoryId: r.categoryId,
+                  categoryName: r.categoryName,
+                  shortLink: r.shortLink,
+                  summary: r.summary,
+                  contentHtml: r.contentHtml,
+                  coverImage: r.coverImage,
+                  publishedDate: r.publishedDate,
+                  webUrl: r.webUrl,
+                  allowComments: r.allowComments,
+                ),
+        );
+  }
+
+  /// Fetch a single post by slug from the network and cache it locally.
+  Future<PostDto> fetchPost(String slug) async {
+    final dto = await _source.getPost(slug);
+    final companion = PostsTableCompanion.insert(
+      id: Value(dto.id),
+      slug: dto.slug,
+      title: dto.title,
+      categoryId: Value(dto.categoryId),
+      categoryName: Value(dto.categoryName),
+      shortLink: dto.shortLink,
+      summary: dto.summary,
+      contentHtml: dto.contentHtml,
+      coverImage: Value(dto.coverImage),
+      publishedDate: dto.publishedDate,
+      webUrl: Value(dto.webUrl),
+      allowComments: dto.allowComments,
+    );
+    await _db.upsertPost(companion);
+    return dto;
+  }
+
   /// Fetch a paginated list of posts from the network and cache them locally.
   Future<PaginatedResponseDto<PostDto>> fetchPosts({
     int page = 1,
