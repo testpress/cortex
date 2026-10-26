@@ -20,6 +20,12 @@ class CourseRepository {
   final Map<String, Future<CourseDto?>> _activeDetailSyncs = {};
   final Map<String, Future<List<LessonDto>>> _activeContentSyncs = {};
 
+  /// Session-scoped in-memory cache of resolved video attempt IDs to avoid
+  /// redundant network lookups during playback. Intentionally kept in-memory
+  /// rather than persisted to Drift, as attempt sessions are ephemeral to the active play session.
+  final Map<int, int> _videoAttemptIds = {};
+  final Map<int, Future<int?>> _activeVideoAttemptSyncs = {};
+
   /// Stream controller for sync status updates
   final _syncStatusController = StreamController<Set<String>>.broadcast();
   final Set<String> _activeSyncIds = {};
@@ -51,6 +57,8 @@ class CourseRepository {
     _activeDetailSyncs.clear();
     _activeContentSyncs.clear();
     _activeSyncIds.clear();
+    _activeVideoAttemptSyncs.clear();
+    _videoAttemptIds.clear();
   }
 
   void dispose() {
@@ -1131,19 +1139,38 @@ class CourseRepository {
     }
   }
 
+  /// Retrieves or initializes the video attempt ID for an active video lesson.
+  Future<int?> getVideoAttemptId(int chapterContentId) async {
+    if (_videoAttemptIds.containsKey(chapterContentId)) {
+      return _videoAttemptIds[chapterContentId];
+    }
+    if (_activeVideoAttemptSyncs.containsKey(chapterContentId)) {
+      return _activeVideoAttemptSyncs[chapterContentId]!;
+    }
+
+    final syncFuture = () async {
+      try {
+        final id = await _source.getVideoAttemptId(chapterContentId);
+        if (id != null) {
+          _videoAttemptIds[chapterContentId] = id;
+        }
+        return id;
+      } finally {
+        _activeVideoAttemptSyncs.remove(chapterContentId);
+      }
+    }();
+
+    _activeVideoAttemptSyncs[chapterContentId] = syncFuture;
+    return syncFuture;
+  }
+
   /// Updates video attempt with watched time ranges
   Future<void> updateVideoAttempt({
     required int chapterContentId,
     required String lastWatchPosition,
     required List<List<double>> watchedTimeRanges,
   }) async {
-    await _source.updateVideoAttempt(
-      chapterContentId: chapterContentId,
-      lastWatchPosition: lastWatchPosition,
-      watchedTimeRanges: watchedTimeRanges,
-    );
-
-    // Update the local database with the new position so it resumes correctly when navigating back
+    // Always persist last watched position locally first so resume position is never lost on network failure
     try {
       final existing = await getLesson(chapterContentId.toString());
       if (existing != null) {
@@ -1153,6 +1180,34 @@ class CourseRepository {
       }
     } catch (e, st) {
       _sentryService.captureException(e, stackTrace: st);
+    }
+
+    int? attemptId;
+    try {
+      attemptId = await getVideoAttemptId(chapterContentId);
+    } catch (e, st) {
+      _sentryService.captureException(e, stackTrace: st);
+      rethrow;
+    }
+
+    if (attemptId != null) {
+      try {
+        await _source.updateUserVideo(
+          videoAttemptId: attemptId,
+          lastPosition: lastWatchPosition,
+          timeRanges: watchedTimeRanges,
+        );
+      } catch (e, st) {
+        _videoAttemptIds.remove(chapterContentId);
+        _sentryService.captureException(e, stackTrace: st);
+        rethrow;
+      }
+    } else {
+      await _source.updateVideoAttempt(
+        chapterContentId: chapterContentId,
+        lastWatchPosition: lastWatchPosition,
+        watchedTimeRanges: watchedTimeRanges,
+      );
     }
   }
 

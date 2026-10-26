@@ -1020,6 +1020,78 @@ class HttpDataSource implements DataSource {
     return null;
   }
 
+  int? _extractVideoAttemptId(dynamic json) {
+    if (json is! Map<String, dynamic>) return null;
+    final rawId =
+        (json['video'] is Map<String, dynamic> ? json['video']['id'] : null) ??
+        json['object_id'];
+    if (rawId is int) return rawId;
+    if (rawId is String) return int.tryParse(rawId);
+    return null;
+  }
+
+  @override
+  Future<int?> getVideoAttemptId(int chapterContentId) async {
+    final attemptsUrl = ApiEndpoints.lessonAttempts(
+      chapterContentId.toString(),
+    );
+    final dynamic data = await performNetworkRequest(
+      _dio.get(attemptsUrl),
+      fromJson: (json) => json,
+    );
+    if (data is Map<String, dynamic> && data['results'] is List) {
+      final results = data['results'] as List;
+      if (results.isNotEmpty) {
+        final id = _extractVideoAttemptId(results.first);
+        if (id == null) {
+          final keys = results.first is Map
+              ? (results.first as Map).keys.toList()
+              : results.first.runtimeType;
+          throw FormatException(
+            'Could not parse video attempt ID from existing attempt with keys: $keys',
+          );
+        }
+        return id;
+      }
+
+      // Only initialize via POST if results is empty (no previous attempts exist)
+      return await performNetworkRequest<int?>(
+        _dio.post(attemptsUrl, data: <String, dynamic>{}),
+        fromJson: (json) {
+          final id = _extractVideoAttemptId(json);
+          if (id == null) {
+            final keys = json is Map ? json.keys.toList() : json.runtimeType;
+            throw FormatException(
+              'POST to $attemptsUrl succeeded, but response missing video attempt ID. Keys: $keys',
+            );
+          }
+          return id;
+        },
+      );
+    }
+    final summary = data is Map
+        ? 'keys: ${data.keys.toList()}'
+        : data.runtimeType;
+    throw FormatException(
+      'Unexpected response format from $attemptsUrl: $summary',
+    );
+  }
+
+  @override
+  Future<void> updateUserVideo({
+    required int videoAttemptId,
+    required String lastPosition,
+    required List<List<double>> timeRanges,
+  }) async {
+    await performNetworkRequest(
+      _dio.put(
+        ApiEndpoints.userVideo(videoAttemptId),
+        data: {'last_position': lastPosition, 'time_ranges': timeRanges},
+      ),
+      fromJson: (data) => data,
+    );
+  }
+
   @override
   Future<void> updateVideoAttempt({
     required int chapterContentId,

@@ -54,6 +54,9 @@ class ApiEndpoints {
       '/api/v2.5/chapter_contents/$id/attempts/';
   static const String updateVideoAttempt =
       '/api/v2.5/chapter_content_attempts/videos/update/';
+
+  /// Note: user_videos is only exposed under v2.4 on the backend (matches Native Android).
+  static String userVideo(int id) => '/api/v2.4/user_videos/$id/';
   static const String dashboard = '/api/v3/dashboard/';
   static const String liveClasses = '/api/v3/live-classes/';
   static String liveClassDetail(String id) =>
