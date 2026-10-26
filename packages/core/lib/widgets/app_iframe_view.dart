@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -278,7 +280,15 @@ class _AppIframeViewState extends State<AppIframeView> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              WebViewWidget(controller: _controller),
+              WebViewWidget(
+                controller: _controller,
+                gestureRecognizers:
+                    const <Factory<OneSequenceGestureRecognizer>>{
+                      Factory<OneSequenceGestureRecognizer>(
+                        EagerGestureRecognizer.new,
+                      ),
+                    },
+              ),
               if (_isLoading) const Center(child: AppLoadingIndicator()),
             ],
           ),

@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
@@ -152,6 +154,25 @@ void main() {
 
       expect(find.byType(AspectRatio), findsOneWidget);
       expect(find.byType(ClipRRect), findsOneWidget);
+    });
+
+    testWidgets('configures WebViewWidget with eager gesture recognizers', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(const AppIframeView(src: 'https://www.youtube.com/embed/test')),
+      );
+
+      final webViewFinder = find.byType(WebViewWidget);
+      expect(webViewFinder, findsOneWidget);
+      final webViewWidget = tester.widget<WebViewWidget>(webViewFinder);
+      expect(webViewWidget.gestureRecognizers, isNotEmpty);
+      expect(
+        webViewWidget.gestureRecognizers.any(
+          (factory) => factory.type == OneSequenceGestureRecognizer,
+        ),
+        isTrue,
+      );
     });
 
     testWidgets(
