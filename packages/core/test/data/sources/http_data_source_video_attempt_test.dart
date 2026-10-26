@@ -117,7 +117,7 @@ void main() {
     );
 
     test(
-      'does NOT fall through to POST when results is non-empty but parsing fails',
+      'throws FormatException and does NOT fall through to POST when results is non-empty but parsing fails',
       () async {
         dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
           recordedRequests.add({
@@ -150,11 +150,39 @@ void main() {
         });
 
         final dataSource = HttpDataSource(dio: dio);
-        final result = await dataSource.getVideoAttemptId(100);
+        await expectLater(
+          () => dataSource.getVideoAttemptId(100),
+          throwsA(isA<FormatException>()),
+        );
 
-        expect(result, isNull);
         expect(recordedRequests.length, 1);
         expect(recordedRequests.first['method'], 'GET');
+      },
+    );
+
+    test(
+      'throws FormatException when GET response is not a valid results map',
+      () async {
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          recordedRequests.add({
+            'method': options.method,
+            'path': options.path,
+          });
+
+          return ResponseBody.fromString(
+            jsonEncode(['unexpected', 'list', 'format']),
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+        await expectLater(
+          () => dataSource.getVideoAttemptId(100),
+          throwsA(isA<FormatException>()),
+        );
       },
     );
 

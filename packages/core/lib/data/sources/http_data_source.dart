@@ -1042,7 +1042,13 @@ class HttpDataSource implements DataSource {
     if (data is Map<String, dynamic> && data['results'] is List) {
       final results = data['results'] as List;
       if (results.isNotEmpty) {
-        return _extractVideoAttemptId(results.first);
+        final id = _extractVideoAttemptId(results.first);
+        if (id == null) {
+          throw FormatException(
+            'Could not parse video attempt ID from existing attempt: ${results.first}',
+          );
+        }
+        return id;
       }
 
       // Only initialize via POST if results is empty (no previous attempts exist)
@@ -1059,7 +1065,9 @@ class HttpDataSource implements DataSource {
         },
       );
     }
-    return null;
+    throw FormatException(
+      'Unexpected response format from $attemptsUrl: $data',
+    );
   }
 
   @override
