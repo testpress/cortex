@@ -1044,8 +1044,11 @@ class HttpDataSource implements DataSource {
       if (results.isNotEmpty) {
         final id = _extractVideoAttemptId(results.first);
         if (id == null) {
+          final keys = results.first is Map
+              ? (results.first as Map).keys.toList()
+              : results.first.runtimeType;
           throw FormatException(
-            'Could not parse video attempt ID from existing attempt: ${results.first}',
+            'Could not parse video attempt ID from existing attempt with keys: $keys',
           );
         }
         return id;
@@ -1057,16 +1060,20 @@ class HttpDataSource implements DataSource {
         fromJson: (json) {
           final id = _extractVideoAttemptId(json);
           if (id == null) {
+            final keys = json is Map ? json.keys.toList() : json.runtimeType;
             throw FormatException(
-              'POST to $attemptsUrl succeeded, but failed to parse video attempt ID from response: $json',
+              'POST to $attemptsUrl succeeded, but response missing video attempt ID. Keys: $keys',
             );
           }
           return id;
         },
       );
     }
+    final summary = data is Map
+        ? 'keys: ${data.keys.toList()}'
+        : data.runtimeType;
     throw FormatException(
-      'Unexpected response format from $attemptsUrl: $data',
+      'Unexpected response format from $attemptsUrl: $summary',
     );
   }
 
