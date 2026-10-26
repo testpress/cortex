@@ -10,6 +10,7 @@ import '../design/design_provider.dart';
 import '../design/design_config.dart';
 import '../data/config/app_config.dart';
 import 'app_loading_indicator.dart';
+import 'app_iframe_view.dart';
 
 /// Native HTML + LaTeX renderer.
 ///
@@ -49,6 +50,25 @@ class AppHtmlV2 extends StatelessWidget {
   /// Only pass this when the HTML content originates from a remote source
   /// that uses relative URLs (e.g. QOTD questions from the API).
   final Uri? baseUrl;
+
+  /// Parses numeric `width` and `height` HTML attributes into an aspect ratio.
+  ///
+  /// Returns [defaultRatio] (16:9) if attributes are null, non-numeric,
+  /// zero/negative, or percentages (e.g. `width="100%"`).
+  static double parseAspectRatio(
+    String? width,
+    String? height, {
+    double defaultRatio = 16 / 9,
+  }) {
+    if (width != null && height != null) {
+      final w = double.tryParse(width.trim());
+      final h = double.tryParse(height.trim());
+      if (w != null && h != null && w > 0 && h > 0) {
+        return w / h;
+      }
+    }
+    return defaultRatio;
+  }
 
   @visibleForTesting
   static String sanitizeHtml(String html) {
@@ -202,6 +222,29 @@ class AppHtmlV2 extends StatelessWidget {
                   _showZoomableImage(context, url, design);
                 }
               },
+
+        customWidgetBuilder: (element) {
+          if (element.localName == 'iframe') {
+            final src = element.attributes['src'];
+            if (src != null && AppIframeView.isSupportedUrl(src)) {
+              final aspectRatio = parseAspectRatio(
+                element.attributes['width'],
+                element.attributes['height'],
+              );
+
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: design.spacing.sm),
+                child: AppIframeView(
+                  src: src.trim(),
+                  aspectRatio: aspectRatio,
+                  baseUrl: baseUrl?.toString(),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+          return null;
+        },
 
         factoryBuilder: () => _MathWidgetFactory(
           textColor: effectiveTextColor,
