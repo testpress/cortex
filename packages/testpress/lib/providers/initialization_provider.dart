@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/data/data.dart';
 import 'package:core/core.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'push_notification_service.dart';
 
 import 'dart:developer' as dev;
@@ -21,7 +20,6 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
   // Initialize Firebase Core & Push Notifications (fails silently if google-services.json was missing)
   try {
-    await Firebase.initializeApp();
     await ref.read(pushNotificationServiceProvider).initialize();
   } catch (e, stack) {
     dev.log(

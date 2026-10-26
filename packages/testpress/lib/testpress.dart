@@ -15,6 +15,8 @@ export 'package:discussions/discussions.dart';
 
 // Re-export providers
 export 'providers/initialization_provider.dart';
+export 'providers/push_notification_service.dart'
+    show initializeFirebaseMessaging;
 
 // Re-export navigation
 export 'navigation/app_router.dart';
