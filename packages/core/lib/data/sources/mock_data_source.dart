@@ -1700,6 +1700,20 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<int?> getVideoAttemptId(int chapterContentId) async {
+    return 101;
+  }
+
+  @override
+  Future<void> updateUserVideo({
+    required int videoAttemptId,
+    required String lastPosition,
+    required List<List<double>> timeRanges,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+
+  @override
   Future<AttemptDto> endExam(
     String attemptId, {
     bool isContentExam = false,

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:core/data/data.dart';
 import '../../network/network_utils.dart';
 import 'curriculum_parser.dart';
@@ -1018,6 +1019,78 @@ class HttpDataSource implements DataSource {
       }
     }
     return null;
+  }
+
+  @override
+  Future<int?> getVideoAttemptId(int chapterContentId) async {
+    final attemptsUrl = ApiEndpoints.lessonAttempts(
+      chapterContentId.toString(),
+    );
+    try {
+      final dynamic data = await performNetworkRequest(
+        _dio.get(attemptsUrl),
+        fromJson: (json) => json,
+      );
+      if (data is Map<String, dynamic> && data['results'] is List) {
+        final results = data['results'] as List;
+        if (results.isNotEmpty) {
+          final attempt = results.first;
+          if (attempt is Map<String, dynamic>) {
+            final rawId =
+                (attempt['video'] is Map<String, dynamic>
+                    ? attempt['video']['id']
+                    : null) ??
+                attempt['object_id'];
+            if (rawId is int) return rawId;
+            if (rawId is String) return int.tryParse(rawId);
+          }
+          Sentry.captureException(
+            FormatException(
+              'Failed to parse video attempt ID from existing attempt for chapter content $chapterContentId',
+            ),
+          );
+          return null;
+        }
+
+        // Only initialize via POST if results is empty (no previous attempts exist)
+        final dynamic createdData = await performNetworkRequest(
+          _dio.post(attemptsUrl, data: <String, dynamic>{}),
+          fromJson: (json) => json,
+        );
+        if (createdData is Map<String, dynamic>) {
+          final rawId =
+              (createdData['video'] is Map<String, dynamic>
+                  ? createdData['video']['id']
+                  : null) ??
+              createdData['object_id'] ??
+              createdData['id'];
+          if (rawId is int) return rawId;
+          if (rawId is String) return int.tryParse(rawId);
+        }
+      }
+    } catch (e, stackTrace) {
+      Sentry.captureException(e, stackTrace: stackTrace);
+    }
+    return null;
+  }
+
+  @override
+  Future<void> updateUserVideo({
+    required int videoAttemptId,
+    required String lastPosition,
+    required List<List<double>> timeRanges,
+  }) async {
+    try {
+      await performNetworkRequest(
+        _dio.put(
+          ApiEndpoints.userVideo(videoAttemptId),
+          data: {'last_position': lastPosition, 'time_ranges': timeRanges},
+        ),
+        fromJson: (data) => data,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

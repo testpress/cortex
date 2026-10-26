@@ -556,6 +556,111 @@ void main() {
       expect(fakeSource.getLiveClassDetailCallCount, 1);
       expect(fakeSource.getLessonDetailCallCount, 0);
     });
+
+    test('updateVideoAttempt routes to updateUserVideo using videoAttemptId',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      fakeSource.videoAttemptIdToReturn = 555;
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      await repository.updateVideoAttempt(
+        chapterContentId: 100,
+        lastWatchPosition: '120.5',
+        watchedTimeRanges: [
+          [0.0, 30.0],
+          [40.0, 60.0]
+        ],
+      );
+
+      expect(fakeSource.getVideoAttemptIdCallCount, 1);
+      expect(fakeSource.updateUserVideoCallCount, 1);
+      expect(fakeSource.lastUpdatedVideoAttemptId, 555);
+      expect(fakeSource.lastUpdatedPosition, '120.5');
+
+      // Second call uses cached videoAttemptId without re-querying
+      await repository.updateVideoAttempt(
+        chapterContentId: 100,
+        lastWatchPosition: '130.0',
+        watchedTimeRanges: [
+          [60.0, 70.0]
+        ],
+      );
+
+      expect(fakeSource.getVideoAttemptIdCallCount, 1);
+      expect(fakeSource.updateUserVideoCallCount, 2);
+      expect(fakeSource.lastUpdatedPosition, '130.0');
+
+      await db.close();
+    });
+
+    test(
+        'updateVideoAttempt evicts cached videoAttemptId when updateUserVideo fails',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      fakeSource.videoAttemptIdToReturn = 555;
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // Warm up cache
+      await repository.getVideoAttemptId(100);
+      expect(fakeSource.getVideoAttemptIdCallCount, 1);
+
+      // Make updateUserVideo fail
+      fakeSource.updateUserVideoShouldThrow = true;
+
+      await expectLater(
+        () => repository.updateVideoAttempt(
+          chapterContentId: 100,
+          lastWatchPosition: '120.5',
+          watchedTimeRanges: [
+            [0.0, 30.0],
+          ],
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      // Verify that after failure, attempt ID was evicted from cache,
+      // so next call must re-query getVideoAttemptId from source
+      fakeSource.updateUserVideoShouldThrow = false;
+      await repository.updateVideoAttempt(
+        chapterContentId: 100,
+        lastWatchPosition: '130.0',
+        watchedTimeRanges: [
+          [30.0, 60.0],
+        ],
+      );
+
+      expect(fakeSource.getVideoAttemptIdCallCount, 2);
+      expect(fakeSource.updateUserVideoCallCount, 2);
+
+      await db.close();
+    });
+
+    test(
+        'updateVideoAttempt falls back to updateVideoAttempt when getVideoAttemptId returns null',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      fakeSource.shouldReturnNullVideoAttemptId = true;
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      await repository.updateVideoAttempt(
+        chapterContentId: 200,
+        lastWatchPosition: '45.0',
+        watchedTimeRanges: [
+          [0.0, 45.0],
+        ],
+      );
+
+      expect(fakeSource.getVideoAttemptIdCallCount, 1);
+      expect(fakeSource.updateUserVideoCallCount, 0);
+      expect(fakeSource.updateVideoAttemptCallCount, 1);
+      expect(fakeSource.lastFallbackChapterContentId, 200);
+      expect(fakeSource.lastFallbackPosition, '45.0');
+
+      await db.close();
+    });
   });
 }
 
@@ -568,6 +673,53 @@ class FakeProgressDataSource extends MockDataSource {
   int getChaptersCallCount = 0;
   int getLessonDetailCallCount = 0;
   int getLiveClassDetailCallCount = 0;
+  int getVideoAttemptIdCallCount = 0;
+  int updateUserVideoCallCount = 0;
+  int updateVideoAttemptCallCount = 0;
+  int? videoAttemptIdToReturn;
+  int? lastUpdatedVideoAttemptId;
+  String? lastUpdatedPosition;
+  int? lastFallbackChapterContentId;
+  String? lastFallbackPosition;
+  bool updateUserVideoShouldThrow = false;
+  bool shouldReturnNullVideoAttemptId = false;
+
+  @override
+  Future<int?> getVideoAttemptId(int chapterContentId) async {
+    getVideoAttemptIdCallCount++;
+    if (shouldReturnNullVideoAttemptId) {
+      return null;
+    }
+    if (videoAttemptIdToReturn != null) {
+      return videoAttemptIdToReturn;
+    }
+    return super.getVideoAttemptId(chapterContentId);
+  }
+
+  @override
+  Future<void> updateUserVideo({
+    required int videoAttemptId,
+    required String lastPosition,
+    required List<List<double>> timeRanges,
+  }) async {
+    updateUserVideoCallCount++;
+    lastUpdatedVideoAttemptId = videoAttemptId;
+    lastUpdatedPosition = lastPosition;
+    if (updateUserVideoShouldThrow) {
+      throw Exception('Server rejected attempt ID');
+    }
+  }
+
+  @override
+  Future<void> updateVideoAttempt({
+    required int chapterContentId,
+    required String lastWatchPosition,
+    required List<List<double>> watchedTimeRanges,
+  }) async {
+    updateVideoAttemptCallCount++;
+    lastFallbackChapterContentId = chapterContentId;
+    lastFallbackPosition = lastWatchPosition;
+  }
 
   @override
   Future<CourseDto> getCourseDetail(String courseId) async {

@@ -251,6 +251,16 @@ abstract class DataSource {
     required List<List<double>> watchedTimeRanges,
   });
 
+  /// Get existing video attempt ID or create a new attempt session if none exists.
+  Future<int?> getVideoAttemptId(int chapterContentId);
+
+  /// Update an existing user video attempt with new playback position and watched intervals.
+  Future<void> updateUserVideo({
+    required int videoAttemptId,
+    required String lastPosition,
+    required List<List<double>> timeRanges,
+  });
+
   /// End the exam attempt and finalize results.
   Future<AttemptDto> endExam(String attemptId, {bool isContentExam = false});
 

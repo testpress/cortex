@@ -19,6 +19,7 @@ class CourseRepository {
   final Map<String, Future<List<ChapterDto>>> _activeChapterSyncs = {};
   final Map<String, Future<CourseDto?>> _activeDetailSyncs = {};
   final Map<String, Future<List<LessonDto>>> _activeContentSyncs = {};
+  final Map<int, int> _videoAttemptIds = {};
 
   /// Stream controller for sync status updates
   final _syncStatusController = StreamController<Set<String>>.broadcast();
@@ -51,6 +52,7 @@ class CourseRepository {
     _activeDetailSyncs.clear();
     _activeContentSyncs.clear();
     _activeSyncIds.clear();
+    _videoAttemptIds.clear();
   }
 
   void dispose() {
@@ -1131,17 +1133,45 @@ class CourseRepository {
     }
   }
 
+  /// Retrieves or initializes the video attempt ID for an active video lesson.
+  Future<int?> getVideoAttemptId(int chapterContentId) async {
+    if (_videoAttemptIds.containsKey(chapterContentId)) {
+      return _videoAttemptIds[chapterContentId];
+    }
+    final id = await _source.getVideoAttemptId(chapterContentId);
+    if (id != null) {
+      _videoAttemptIds[chapterContentId] = id;
+    }
+    return id;
+  }
+
   /// Updates video attempt with watched time ranges
   Future<void> updateVideoAttempt({
     required int chapterContentId,
     required String lastWatchPosition,
     required List<List<double>> watchedTimeRanges,
   }) async {
-    await _source.updateVideoAttempt(
-      chapterContentId: chapterContentId,
-      lastWatchPosition: lastWatchPosition,
-      watchedTimeRanges: watchedTimeRanges,
-    );
+    final attemptId = await getVideoAttemptId(chapterContentId);
+
+    if (attemptId != null) {
+      try {
+        await _source.updateUserVideo(
+          videoAttemptId: attemptId,
+          lastPosition: lastWatchPosition,
+          timeRanges: watchedTimeRanges,
+        );
+      } catch (e, st) {
+        _videoAttemptIds.remove(chapterContentId);
+        _sentryService.captureException(e, stackTrace: st);
+        rethrow;
+      }
+    } else {
+      await _source.updateVideoAttempt(
+        chapterContentId: chapterContentId,
+        lastWatchPosition: lastWatchPosition,
+        watchedTimeRanges: watchedTimeRanges,
+      );
+    }
 
     // Update the local database with the new position so it resumes correctly when navigating back
     try {
