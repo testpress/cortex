@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:core/network/network_utils.dart';
 import 'package:core/data/sources/http_data_source.dart';
 
 class _MockHttpClientAdapter implements HttpClientAdapter {
@@ -203,19 +204,65 @@ void main() {
       },
     );
 
-    test('handles network exceptions gracefully and returns null', () async {
-      dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
-        throw DioException(
-          requestOptions: options,
-          type: DioExceptionType.connectionTimeout,
-          error: 'Connection timeout',
+    test(
+      'returns null on POST response if video and object_id are missing, ignoring root id',
+      () async {
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          recordedRequests.add({
+            'method': options.method,
+            'path': options.path,
+          });
+
+          if (options.method == 'GET') {
+            return ResponseBody.fromString(
+              jsonEncode({'results': []}),
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+
+          if (options.method == 'POST') {
+            return ResponseBody.fromString(
+              jsonEncode({
+                'id':
+                    9999, // ContentAttempt.id, should NOT be treated as user_video ID
+              }),
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+
+          throw DioException(requestOptions: options);
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+        final result = await dataSource.getVideoAttemptId(100);
+
+        expect(result, isNull);
+      },
+    );
+
+    test(
+      'propagates network exceptions to caller instead of returning null',
+      () async {
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          throw DioException(
+            requestOptions: options,
+            type: DioExceptionType.connectionTimeout,
+            error: 'Connection timeout',
+          );
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+        expect(
+          () => dataSource.getVideoAttemptId(100),
+          throwsA(isA<ApiException>()),
         );
-      });
-
-      final dataSource = HttpDataSource(dio: dio);
-      final result = await dataSource.getVideoAttemptId(100);
-
-      expect(result, isNull);
-    });
+      },
+    );
   });
 }

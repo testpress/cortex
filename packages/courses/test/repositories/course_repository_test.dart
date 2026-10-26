@@ -661,6 +661,32 @@ void main() {
 
       await db.close();
     });
+
+    test(
+        'updateVideoAttempt does NOT fall back to legacy updateVideoAttempt when getVideoAttemptId throws network error',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      fakeSource.getVideoAttemptIdShouldThrow = true;
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      await expectLater(
+        () => repository.updateVideoAttempt(
+          chapterContentId: 300,
+          lastWatchPosition: '50.0',
+          watchedTimeRanges: [
+            [0.0, 50.0],
+          ],
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      expect(fakeSource.getVideoAttemptIdCallCount, 1);
+      expect(fakeSource.updateUserVideoCallCount, 0);
+      expect(fakeSource.updateVideoAttemptCallCount, 0);
+
+      await db.close();
+    });
   });
 }
 
@@ -683,10 +709,14 @@ class FakeProgressDataSource extends MockDataSource {
   String? lastFallbackPosition;
   bool updateUserVideoShouldThrow = false;
   bool shouldReturnNullVideoAttemptId = false;
+  bool getVideoAttemptIdShouldThrow = false;
 
   @override
   Future<int?> getVideoAttemptId(int chapterContentId) async {
     getVideoAttemptIdCallCount++;
+    if (getVideoAttemptIdShouldThrow) {
+      throw Exception('Network connection timed out');
+    }
     if (shouldReturnNullVideoAttemptId) {
       return null;
     }
