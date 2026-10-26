@@ -7,6 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.validate();
+  try {
+    await initializeFirebaseMessaging();
+  } catch (_) {
+    // Firebase is optional for local builds without platform configuration.
+  }
   await DeviceOrientationHelper.initialize();
   final sharedPreferences = await SharedPreferences.getInstance();
 

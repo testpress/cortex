@@ -227,5 +227,30 @@ void main() {
       expect(notificationBodyFromMessage(message), 'Fallback body');
       expect(notificationUrlFromMessage(message), '/live/class-1/');
     });
+
+    test('returns null for missing or blank URLs', () {
+      expect(notificationUrlFromMessage(RemoteMessage(data: const {})), isNull);
+      expect(
+        notificationUrlFromMessage(
+          RemoteMessage(data: const {'short_url': '   '}),
+        ),
+        isNull,
+      );
+    });
+
+    test('returns null when title and body fields are missing or blank', () {
+      final message = RemoteMessage(data: const {'title': '  ', 'summary': ''});
+
+      expect(notificationTitleFromMessage(message), isNull);
+      expect(notificationBodyFromMessage(message), isNull);
+      expect(
+        notificationTitleFromMessage(RemoteMessage(data: const {})),
+        isNull,
+      );
+      expect(
+        notificationBodyFromMessage(RemoteMessage(data: const {})),
+        isNull,
+      );
+    });
   });
 }

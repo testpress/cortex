@@ -16,71 +16,116 @@ import '../navigation/deep_link_handler.dart';
 
 part 'push_notification_service.g.dart';
 
+class PushNotificationChannels {
+  PushNotificationChannels._();
+
+  static const postsId = 'posts_channel';
+  static const postsName = 'Posts';
+  static const postsDescription =
+      'Notifications for new articles and announcements';
+  static const contentsId = 'contents_channel';
+  static const contentsName = 'Learning Content';
+  static const contentsDescription =
+      'Notifications for exams, tests, and chapters';
+}
+
+bool _firebaseMessagingHandlerRegistered = false;
+
+/// Initializes Firebase and registers the background handler before the app
+/// starts. This is intentionally public so the application shell can call it
+/// before [runApp].
+Future<void> initializeFirebaseMessaging() async {
+  if (_firebaseMessagingHandlerRegistered) return;
+
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  _firebaseMessagingHandlerRegistered = true;
+}
+
 /// Displays backend data-only FCM messages while the app is backgrounded.
 ///
 /// Firebase invokes this top-level function in a background isolate, so it
 /// must not depend on Riverpod, BuildContext, or the app's service instance.
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp();
 
-  final title = notificationTitleFromMessage(message);
-  final body = notificationBodyFromMessage(message);
-  if (title == null || body == null) return;
+    final title = notificationTitleFromMessage(message);
+    final body = notificationBodyFromMessage(message);
+    if (title == null || body == null) return;
 
-  final url = notificationUrlFromMessage(message);
-  final channelId = notificationChannelIdForUrl(url);
-  final localNotifications = FlutterLocalNotificationsPlugin();
+    final url = notificationUrlFromMessage(message);
+    final channelId = notificationChannelIdForUrl(url);
+    final localNotifications = FlutterLocalNotificationsPlugin();
 
-  await localNotifications.initialize(
-    const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(),
-    ),
-  );
+    await localNotifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(),
+      ),
+    );
+    await _createNotificationChannels(localNotifications);
 
+    await localNotifications.show(
+      notificationIdForMessage(message),
+      title,
+      body,
+      notificationDetailsForChannel(channelId),
+      payload: url,
+    );
+  } catch (error, stackTrace) {
+    debugPrint('FCM background notification failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+}
+
+Future<void> _createNotificationChannels(
+  FlutterLocalNotificationsPlugin localNotifications,
+) async {
   final androidPlugin = localNotifications
       .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin
       >();
   await androidPlugin?.createNotificationChannel(
-    AndroidNotificationChannel(
-      channelId,
-      channelId == 'posts_channel' ? 'Posts' : 'Learning Content',
-      description: channelId == 'posts_channel'
-          ? 'Notifications for new articles and announcements'
-          : 'Notifications for exams, tests, and chapters',
+    const AndroidNotificationChannel(
+      PushNotificationChannels.postsId,
+      PushNotificationChannels.postsName,
+      description: PushNotificationChannels.postsDescription,
       importance: Importance.high,
     ),
   );
-
-  await localNotifications.show(
-    message.hashCode,
-    title,
-    body,
-    NotificationDetails(
-      android: AndroidNotificationDetails(
-        channelId,
-        channelId == 'posts_channel' ? 'Posts' : 'Learning Content',
-        importance: Importance.high,
-        priority: Priority.high,
-        icon: '@mipmap/ic_launcher',
-      ),
-      iOS: const DarwinNotificationDetails(),
+  await androidPlugin?.createNotificationChannel(
+    const AndroidNotificationChannel(
+      PushNotificationChannels.contentsId,
+      PushNotificationChannels.contentsName,
+      description: PushNotificationChannels.contentsDescription,
+      importance: Importance.high,
     ),
-    payload: url,
   );
 }
 
 String? notificationTitleFromMessage(RemoteMessage message) {
-  return message.data['title']?.toString() ?? message.notification?.title;
+  return _firstNonBlank([
+    message.data['title']?.toString(),
+    message.notification?.title,
+  ]);
 }
 
 String? notificationBodyFromMessage(RemoteMessage message) {
-  return message.data['summary']?.toString() ??
-      message.data['body']?.toString() ??
-      message.data['description']?.toString() ??
-      message.notification?.body;
+  return _firstNonBlank([
+    message.data['summary']?.toString(),
+    message.data['body']?.toString(),
+    message.data['description']?.toString(),
+    message.notification?.body,
+  ]);
+}
+
+String? _firstNonBlank(Iterable<String?> values) {
+  for (final value in values) {
+    if (value != null && value.trim().isNotEmpty) return value;
+  }
+  return null;
 }
 
 String? notificationUrlFromMessage(RemoteMessage message) {
@@ -100,8 +145,28 @@ String notificationChannelIdForUrl(String? url) {
   return firstSegment == 'exams' ||
           firstSegment == 'chapters' ||
           firstSegment == 'courses'
-      ? 'contents_channel'
-      : 'posts_channel';
+      ? PushNotificationChannels.contentsId
+      : PushNotificationChannels.postsId;
+}
+
+int notificationIdForMessage(RemoteMessage message) {
+  return message.messageId?.hashCode ?? DateTime.now().millisecondsSinceEpoch;
+}
+
+NotificationDetails notificationDetailsForChannel(String channelId) {
+  final isPosts = channelId == PushNotificationChannels.postsId;
+  return NotificationDetails(
+    android: AndroidNotificationDetails(
+      channelId,
+      isPosts
+          ? PushNotificationChannels.postsName
+          : PushNotificationChannels.contentsName,
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    ),
+    iOS: const DarwinNotificationDetails(),
+  );
 }
 
 class PushNotificationService {
@@ -157,7 +222,7 @@ class PushNotificationService {
 
     final messaging = FirebaseMessaging.instance;
 
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    await initializeFirebaseMessaging();
 
     // 2. Request Notification Permissions (iOS & Android 13+)
     await messaging.requestPermission(alert: true, badge: true, sound: true);
@@ -217,29 +282,7 @@ class PushNotificationService {
       },
     );
 
-    // Set up Notification Channels (Android 8.0+)
-    final androidPlugin = _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-
-    await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        'posts_channel',
-        'Posts',
-        description: 'Notifications for new articles and announcements',
-        importance: Importance.high,
-      ),
-    );
-
-    await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        'contents_channel',
-        'Learning Content',
-        description: 'Notifications for exams, tests, and chapters',
-        importance: Importance.high,
-      ),
-    );
+    await _createNotificationChannels(_localNotifications);
   }
 
   void _showLocalNotification(RemoteMessage message) {
@@ -251,7 +294,7 @@ class PushNotificationService {
       final preferences = _ref.read(notificationPreferencesProvider);
 
       // Smart Routing: Decide channel by URL pattern matching Android's behavior
-      String channelId = 'posts_channel';
+      String channelId = PushNotificationChannels.postsId;
       bool shouldShow = true;
 
       if (url != null) {
@@ -261,10 +304,10 @@ class PushNotificationService {
           if (firstSegment == 'exams' ||
               firstSegment == 'chapters' ||
               firstSegment == 'courses') {
-            channelId = 'contents_channel';
+            channelId = PushNotificationChannels.contentsId;
             shouldShow = preferences.testAssessmentAlerts;
           } else if (firstSegment == 'p') {
-            channelId = 'posts_channel';
+            channelId = PushNotificationChannels.postsId;
             shouldShow = preferences.announcementsUpdates;
           } else if (firstSegment == 'live') {
             shouldShow = preferences.liveClassReminders;
@@ -275,19 +318,10 @@ class PushNotificationService {
       if (!shouldShow) return;
 
       _localNotifications.show(
-        message.hashCode,
+        notificationIdForMessage(message),
         title,
         summary,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channelId,
-            channelId == 'posts_channel' ? 'Posts' : 'Learning Content',
-            importance: Importance.high,
-            priority: Priority.high,
-            icon: '@mipmap/ic_launcher',
-          ),
-          iOS: const DarwinNotificationDetails(),
-        ),
+        notificationDetailsForChannel(channelId),
         payload: url,
       );
     }
