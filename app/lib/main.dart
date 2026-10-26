@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:testpress/testpress.dart';
@@ -9,8 +10,13 @@ void main() async {
   AppConfig.validate();
   try {
     await initializeFirebaseMessaging();
-  } catch (_) {
+  } catch (error, stackTrace) {
     // Firebase is optional for local builds without platform configuration.
+    dev.log(
+      'Firebase messaging initialization skipped',
+      error: error,
+      stackTrace: stackTrace,
+    );
   }
   await DeviceOrientationHelper.initialize();
   final sharedPreferences = await SharedPreferences.getInstance();

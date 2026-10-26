@@ -228,6 +228,52 @@ void main() {
       expect(notificationUrlFromMessage(message), '/live/class-1/');
     });
 
+    test(
+      'does not use notification fields for data-only background handling',
+      () {
+        final message = RemoteMessage(
+          notification: const RemoteNotification(
+            title: 'OS notification title',
+            body: 'OS notification body',
+          ),
+          data: const {},
+        );
+
+        expect(
+          notificationTitleFromMessage(
+            message,
+            includeNotificationFallback: false,
+          ),
+          isNull,
+        );
+        expect(
+          notificationBodyFromMessage(
+            message,
+            includeNotificationFallback: false,
+          ),
+          isNull,
+        );
+      },
+    );
+
+    test('routes live URLs to the live notification category', () {
+      expect(
+        notificationCategoryForUrl('/live/class-1/'),
+        NotificationCategory.live,
+      );
+    });
+
+    test(
+      'routes unknown URLs to posts without classifying them as announcements',
+      () {
+        expect(
+          notificationCategoryForUrl('/dashboard/'),
+          NotificationCategory.other,
+        );
+        expect(notificationChannelIdForUrl('/dashboard/'), 'posts_channel');
+      },
+    );
+
     test('returns null for missing or blank URLs', () {
       expect(notificationUrlFromMessage(RemoteMessage(data: const {})), isNull);
       expect(
@@ -250,6 +296,37 @@ void main() {
       expect(
         notificationBodyFromMessage(RemoteMessage(data: const {})),
         isNull,
+      );
+    });
+
+    test('keeps notification IDs within the signed 32-bit range', () {
+      final withMessageId = RemoteMessage(messageId: 'message-1');
+      final withoutMessageId = RemoteMessage();
+
+      expect(
+        notificationIdForMessage(withMessageId),
+        inInclusiveRange(0, 0x7FFFFFFF),
+      );
+      expect(
+        notificationIdForMessage(withoutMessageId),
+        inInclusiveRange(0, 0x7FFFFFFF),
+      );
+    });
+
+    test('uses the expected details for each notification channel', () {
+      final posts = notificationDetailsForChannel(
+        PushNotificationChannels.postsId,
+      );
+      final contents = notificationDetailsForChannel(
+        PushNotificationChannels.contentsId,
+      );
+
+      expect(posts.android?.channelId, PushNotificationChannels.postsId);
+      expect(posts.android?.channelName, PushNotificationChannels.postsName);
+      expect(contents.android?.channelId, PushNotificationChannels.contentsId);
+      expect(
+        contents.android?.channelName,
+        PushNotificationChannels.contentsName,
       );
     });
   });

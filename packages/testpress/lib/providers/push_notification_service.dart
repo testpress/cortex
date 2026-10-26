@@ -29,6 +29,8 @@ class PushNotificationChannels {
       'Notifications for exams, tests, and chapters';
 }
 
+enum NotificationCategory { posts, contents, live, other }
+
 bool _firebaseMessagingHandlerRegistered = false;
 
 /// Initializes Firebase and registers the background handler before the app
@@ -46,13 +48,25 @@ Future<void> initializeFirebaseMessaging() async {
 ///
 /// Firebase invokes this top-level function in a background isolate, so it
 /// must not depend on Riverpod, BuildContext, or the app's service instance.
+/// Notification preferences are currently held in Riverpod memory only, so
+/// they cannot be read from this isolate. Foreground notifications honor those
+/// preferences; background notifications follow the operating-system channel
+/// settings until the preferences are persisted for background access.
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
     await Firebase.initializeApp();
 
-    final title = notificationTitleFromMessage(message);
-    final body = notificationBodyFromMessage(message);
+    // The backend sends data-only messages. Do not fall back to the
+    // notification block here, because Android may already display it.
+    final title = notificationTitleFromMessage(
+      message,
+      includeNotificationFallback: false,
+    );
+    final body = notificationBodyFromMessage(
+      message,
+      includeNotificationFallback: false,
+    );
     if (title == null || body == null) return;
 
     final url = notificationUrlFromMessage(message);
@@ -105,19 +119,25 @@ Future<void> _createNotificationChannels(
   );
 }
 
-String? notificationTitleFromMessage(RemoteMessage message) {
+String? notificationTitleFromMessage(
+  RemoteMessage message, {
+  bool includeNotificationFallback = true,
+}) {
   return _firstNonBlank([
     message.data['title']?.toString(),
-    message.notification?.title,
+    if (includeNotificationFallback) message.notification?.title,
   ]);
 }
 
-String? notificationBodyFromMessage(RemoteMessage message) {
+String? notificationBodyFromMessage(
+  RemoteMessage message, {
+  bool includeNotificationFallback = true,
+}) {
   return _firstNonBlank([
     message.data['summary']?.toString(),
     message.data['body']?.toString(),
     message.data['description']?.toString(),
-    message.notification?.body,
+    if (includeNotificationFallback) message.notification?.body,
   ]);
 }
 
@@ -137,20 +157,32 @@ String? notificationUrlFromMessage(RemoteMessage message) {
   return null;
 }
 
-String notificationChannelIdForUrl(String? url) {
+NotificationCategory notificationCategoryForUrl(String? url) {
   final uri = url == null ? null : Uri.tryParse(url);
   final firstSegment = uri != null && uri.pathSegments.isNotEmpty
       ? uri.pathSegments.first
       : null;
-  return firstSegment == 'exams' ||
-          firstSegment == 'chapters' ||
-          firstSegment == 'courses'
+  if (firstSegment == 'exams' ||
+      firstSegment == 'chapters' ||
+      firstSegment == 'courses') {
+    return NotificationCategory.contents;
+  }
+  if (firstSegment == 'live') return NotificationCategory.live;
+  if (firstSegment == 'p') return NotificationCategory.posts;
+  return NotificationCategory.other;
+}
+
+String notificationChannelIdForUrl(String? url) {
+  return notificationCategoryForUrl(url) == NotificationCategory.contents
       ? PushNotificationChannels.contentsId
       : PushNotificationChannels.postsId;
 }
 
 int notificationIdForMessage(RemoteMessage message) {
-  return message.messageId?.hashCode ?? DateTime.now().millisecondsSinceEpoch;
+  final rawId =
+      message.messageId?.hashCode ??
+      DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  return rawId & 0x7FFFFFFF;
 }
 
 NotificationDetails notificationDetailsForChannel(String channelId) {
@@ -282,38 +314,31 @@ class PushNotificationService {
       },
     );
 
+    final launchDetails = await _localNotifications
+        .getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      _handleDeepLink(launchDetails?.notificationResponse?.payload);
+    }
+
     await _createNotificationChannels(_localNotifications);
   }
 
   void _showLocalNotification(RemoteMessage message) {
-    final title = message.data['title'] ?? message.notification?.title;
-    final summary = message.data['summary'] ?? message.notification?.body;
+    final title = notificationTitleFromMessage(message);
+    final summary = notificationBodyFromMessage(message);
     final url = _extractUrl(message);
 
     if (title != null && summary != null) {
       final preferences = _ref.read(notificationPreferencesProvider);
 
-      // Smart Routing: Decide channel by URL pattern matching Android's behavior
-      String channelId = PushNotificationChannels.postsId;
-      bool shouldShow = true;
-
-      if (url != null) {
-        final uri = Uri.tryParse(url);
-        if (uri != null && uri.pathSegments.isNotEmpty) {
-          final firstSegment = uri.pathSegments.first;
-          if (firstSegment == 'exams' ||
-              firstSegment == 'chapters' ||
-              firstSegment == 'courses') {
-            channelId = PushNotificationChannels.contentsId;
-            shouldShow = preferences.testAssessmentAlerts;
-          } else if (firstSegment == 'p') {
-            channelId = PushNotificationChannels.postsId;
-            shouldShow = preferences.announcementsUpdates;
-          } else if (firstSegment == 'live') {
-            shouldShow = preferences.liveClassReminders;
-          }
-        }
-      }
+      final category = notificationCategoryForUrl(url);
+      final channelId = notificationChannelIdForUrl(url);
+      final shouldShow = switch (category) {
+        NotificationCategory.contents => preferences.testAssessmentAlerts,
+        NotificationCategory.posts => preferences.announcementsUpdates,
+        NotificationCategory.live => preferences.liveClassReminders,
+        NotificationCategory.other => true,
+      };
 
       if (!shouldShow) return;
 
