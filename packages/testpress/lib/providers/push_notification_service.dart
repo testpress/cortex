@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,6 +15,94 @@ import '../navigation/bootstrap_provider.dart';
 import '../navigation/deep_link_handler.dart';
 
 part 'push_notification_service.g.dart';
+
+/// Displays backend data-only FCM messages while the app is backgrounded.
+///
+/// Firebase invokes this top-level function in a background isolate, so it
+/// must not depend on Riverpod, BuildContext, or the app's service instance.
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  final title = notificationTitleFromMessage(message);
+  final body = notificationBodyFromMessage(message);
+  if (title == null || body == null) return;
+
+  final url = notificationUrlFromMessage(message);
+  final channelId = notificationChannelIdForUrl(url);
+  final localNotifications = FlutterLocalNotificationsPlugin();
+
+  await localNotifications.initialize(
+    const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
+    ),
+  );
+
+  final androidPlugin = localNotifications
+      .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >();
+  await androidPlugin?.createNotificationChannel(
+    AndroidNotificationChannel(
+      channelId,
+      channelId == 'posts_channel' ? 'Posts' : 'Learning Content',
+      description: channelId == 'posts_channel'
+          ? 'Notifications for new articles and announcements'
+          : 'Notifications for exams, tests, and chapters',
+      importance: Importance.high,
+    ),
+  );
+
+  await localNotifications.show(
+    message.hashCode,
+    title,
+    body,
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        channelId,
+        channelId == 'posts_channel' ? 'Posts' : 'Learning Content',
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+      ),
+      iOS: const DarwinNotificationDetails(),
+    ),
+    payload: url,
+  );
+}
+
+String? notificationTitleFromMessage(RemoteMessage message) {
+  return message.data['title']?.toString() ?? message.notification?.title;
+}
+
+String? notificationBodyFromMessage(RemoteMessage message) {
+  return message.data['summary']?.toString() ??
+      message.data['body']?.toString() ??
+      message.data['description']?.toString() ??
+      message.notification?.body;
+}
+
+String? notificationUrlFromMessage(RemoteMessage message) {
+  final url =
+      message.data['short_url'] ?? message.data['url'] ?? message.data['link'];
+  if (url != null && url.trim().isNotEmpty) {
+    return url.trim();
+  }
+  return null;
+}
+
+String notificationChannelIdForUrl(String? url) {
+  final uri = url == null ? null : Uri.tryParse(url);
+  final firstSegment = uri != null && uri.pathSegments.isNotEmpty
+      ? uri.pathSegments.first
+      : null;
+  return firstSegment == 'exams' ||
+          firstSegment == 'chapters' ||
+          firstSegment == 'courses'
+      ? 'contents_channel'
+      : 'posts_channel';
+}
 
 class PushNotificationService {
   final Ref _ref;
@@ -67,6 +156,8 @@ class PushNotificationService {
     _isInitialized = true;
 
     final messaging = FirebaseMessaging.instance;
+
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     // 2. Request Notification Permissions (iOS & Android 13+)
     await messaging.requestPermission(alert: true, badge: true, sound: true);

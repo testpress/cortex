@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -182,6 +183,49 @@ void main() {
 
       expect(service.pendingDeepLink, isNull);
       expect(service.pendingDeepLinkTimestamp, isNull);
+    });
+  });
+
+  group('backend FCM payload parsing', () {
+    test('reads the backend data-only payload fields', () {
+      final message = RemoteMessage(
+        data: const {
+          'title': 'New announcement',
+          'summary': 'The next lesson is now available.',
+          'short_url': '/p/announcement-1/',
+        },
+      );
+
+      expect(notificationTitleFromMessage(message), 'New announcement');
+      expect(
+        notificationBodyFromMessage(message),
+        'The next lesson is now available.',
+      );
+      expect(notificationUrlFromMessage(message), '/p/announcement-1/');
+      expect(
+        notificationChannelIdForUrl('/p/announcement-1/'),
+        'posts_channel',
+      );
+    });
+
+    test('routes exam and chapter URLs to the learning channel', () {
+      expect(notificationChannelIdForUrl('/exams/42/'), 'contents_channel');
+      expect(notificationChannelIdForUrl('/chapters/42/'), 'contents_channel');
+      expect(notificationChannelIdForUrl('/courses/42/'), 'contents_channel');
+    });
+
+    test('falls back to standard notification payload fields', () {
+      final message = RemoteMessage(
+        notification: const RemoteNotification(
+          title: 'Fallback title',
+          body: 'Fallback body',
+        ),
+        data: const {'url': '/live/class-1/'},
+      );
+
+      expect(notificationTitleFromMessage(message), 'Fallback title');
+      expect(notificationBodyFromMessage(message), 'Fallback body');
+      expect(notificationUrlFromMessage(message), '/live/class-1/');
     });
   });
 }
