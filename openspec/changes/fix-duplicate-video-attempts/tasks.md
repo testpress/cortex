@@ -11,6 +11,8 @@
 - [x] 2.1 Add attempt ID caching and routing to `updateUserVideo` in `CourseRepository`
 - [x] 2.2 Wire attempt ID initialization and sync integration in `VideoAttemptNotifier`
 - [x] 2.3 Evict cached attempt ID from `_videoAttemptIds` on `updateUserVideo` failure
+- [x] 2.4 Deduplicate concurrent `getVideoAttemptId` calls via `_activeVideoAttemptSyncs` in `CourseRepository`
+- [x] 2.5 Persist local DB position in `updateVideoAttempt` before attempt resolution
 
 ## 3. Verification
 
@@ -19,3 +21,4 @@
 - [x] 3.3 Add unit test for fallback to updateVideoAttempt when attempt ID is null
 - [x] 3.4 Add unit tests for `HttpDataSource.getVideoAttemptId` covering non-empty parsing failure, empty POST, and fallback
 - [x] 3.5 Run test suites across `packages/courses` and `packages/core`
+- [x] 3.6 Add unit tests for in-flight deduplication and local DB position persistence on error

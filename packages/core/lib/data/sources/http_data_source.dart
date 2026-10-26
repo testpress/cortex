@@ -1046,11 +1046,18 @@ class HttpDataSource implements DataSource {
       }
 
       // Only initialize via POST if results is empty (no previous attempts exist)
-      final dynamic createdData = await performNetworkRequest(
+      return await performNetworkRequest<int?>(
         _dio.post(attemptsUrl, data: <String, dynamic>{}),
-        fromJson: (json) => json,
+        fromJson: (json) {
+          final id = _extractVideoAttemptId(json);
+          if (id == null) {
+            throw FormatException(
+              'POST to $attemptsUrl succeeded, but failed to parse video attempt ID from response: $json',
+            );
+          }
+          return id;
+        },
       );
-      return _extractVideoAttemptId(createdData);
     }
     return null;
   }

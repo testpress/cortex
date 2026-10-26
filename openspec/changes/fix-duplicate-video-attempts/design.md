@@ -26,11 +26,18 @@ In the Cortex app, video progress updates were calling `POST /api/v2.5/chapter_c
 - **Alternatives considered**: Only parsing `video['id']`.
 
 ### Decision 3: Route through `updateUserVideo` with fallback in `CourseRepository`
-- **Rationale**: If `videoAttemptId` is present or can be resolved, route to `_source.updateUserVideo(videoAttemptId: ...)`. If it cannot be resolved (or during offline sync), smoothly fallback to `_source.updateVideoAttempt(...)`.
+- **Rationale**: If `videoAttemptId` is present or can be resolved, route to `_source.updateUserVideo(videoAttemptId: ...)`. If it cannot be resolved because the attempt is empty or unparseable, smoothly fallback to `_source.updateVideoAttempt(...)`.
+- **Network Failure vs Fallback**: Transient network errors from `getVideoAttemptId` rethrow (and report to Sentry) rather than falling back to the legacy endpoint, preventing duplicate attempts from being created during temporary connection drops. Unsent delta ranges are retained by `VideoAttemptNotifier` for retry.
+
+### Decision 4: In-flight deduplication for concurrent attempt resolutions
+- **Rationale**: Concurrent sync triggers (e.g. initial playback + immediate seek/pause) share the same in-flight `Future<int?>` via `_activeVideoAttemptSyncs` to prevent racing GET/POST calls from creating duplicates.
+
+### Decision 5: Persist local DB position before network attempt resolution
+- **Rationale**: The user's last watched position is saved to the local Drift database first before initiating network calls, ensuring resume progress is never lost even if network requests fail.
 
 ## Risks / Trade-offs
 
 - **[Risk]**: Initial GET/POST attempt retrieval fails due to temporary network glitch.
-  - **Mitigation**: Video playback continues uninterrupted; sync gracefully falls back to the previous endpoint, and next sync tick attempts to re-resolve the ID.
+  - **Mitigation**: Local watch duration is already saved to Drift; transient error bubbles to `VideoAttemptNotifier` which keeps watched ranges queued for the next retry tick without creating duplicate attempts.
 - **[Risk]**: First-time video viewing has one extra round-trip to initialize the attempt.
-  - **Mitigation**: Once resolved, the attempt ID is cached in `CourseRepository._videoAttemptIds` for the duration of the video session.
+  - **Mitigation**: Once resolved, the attempt ID is cached in `CourseRepository._videoAttemptIds` for the duration of the video session. In-flight calls are deduplicated via `_activeVideoAttemptSyncs`.

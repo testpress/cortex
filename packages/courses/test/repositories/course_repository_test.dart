@@ -687,6 +687,64 @@ void main() {
 
       await db.close();
     });
+
+    test('concurrent getVideoAttemptId calls share the same in-flight Future',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      fakeSource.videoAttemptIdToReturn = 777;
+      fakeSource.getVideoAttemptIdDelay = const Duration(milliseconds: 50);
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      final future1 = repository.getVideoAttemptId(400);
+      final future2 = repository.getVideoAttemptId(400);
+
+      final results = await Future.wait([future1, future2]);
+
+      expect(results[0], 777);
+      expect(results[1], 777);
+      expect(fakeSource.getVideoAttemptIdCallCount, 1);
+
+      await db.close();
+    });
+
+    test(
+        'updateVideoAttempt updates local DB position even when getVideoAttemptId throws',
+        () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final fakeSource = FakeProgressDataSource();
+      fakeSource.getVideoAttemptIdShouldThrow = true;
+      final repository = CourseRepository(db, fakeSource, MockSentryService());
+
+      // Pre-seed lesson in db
+      await db.upsertLessons([
+        const LessonsTableCompanion(
+          id: Value('500'),
+          chapterId: Value('ch1'),
+          title: Value('Test Video'),
+          type: Value('video'),
+          duration: Value('120 min'),
+          orderIndex: Value(0),
+        ),
+      ]);
+
+      await expectLater(
+        () => repository.updateVideoAttempt(
+          chapterContentId: 500,
+          lastWatchPosition: '95.5',
+          watchedTimeRanges: [
+            [0.0, 95.5],
+          ],
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      // Verify DB position was updated despite network error
+      final updatedLesson = await repository.getLesson('500');
+      expect(updatedLesson?.lastWatchedDuration, '95.5');
+
+      await db.close();
+    });
   });
 }
 
@@ -710,10 +768,14 @@ class FakeProgressDataSource extends MockDataSource {
   bool updateUserVideoShouldThrow = false;
   bool shouldReturnNullVideoAttemptId = false;
   bool getVideoAttemptIdShouldThrow = false;
+  Duration? getVideoAttemptIdDelay;
 
   @override
   Future<int?> getVideoAttemptId(int chapterContentId) async {
     getVideoAttemptIdCallCount++;
+    if (getVideoAttemptIdDelay != null) {
+      await Future.delayed(getVideoAttemptIdDelay!);
+    }
     if (getVideoAttemptIdShouldThrow) {
       throw Exception('Network connection timed out');
     }

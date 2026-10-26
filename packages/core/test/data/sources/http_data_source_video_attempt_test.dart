@@ -33,6 +33,10 @@ void main() {
       dio = Dio(BaseOptions(baseUrl: 'https://testpress.example'));
     });
 
+    tearDown(() {
+      onNetworkErrorCapture = null;
+    });
+
     test(
       'extracts video attempt ID from attempt["video"]["id"] on GET',
       () async {
@@ -205,8 +209,13 @@ void main() {
     );
 
     test(
-      'returns null on POST response if video and object_id are missing, ignoring root id',
+      'throws ApiException and captures error on POST response if video and object_id are missing',
       () async {
+        Object? capturedError;
+        onNetworkErrorCapture = (error, stackTrace) {
+          capturedError = error;
+        };
+
         dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
           recordedRequests.add({
             'method': options.method,
@@ -240,9 +249,12 @@ void main() {
         });
 
         final dataSource = HttpDataSource(dio: dio);
-        final result = await dataSource.getVideoAttemptId(100);
+        await expectLater(
+          () => dataSource.getVideoAttemptId(100),
+          throwsA(isA<ApiException>()),
+        );
 
-        expect(result, isNull);
+        expect(capturedError, isA<ApiException>());
       },
     );
 
