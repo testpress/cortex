@@ -23,6 +23,31 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
+    final settings = ref.watch(instituteSettingsProvider);
+    ref.listen<InstituteSettings?>(instituteSettingsProvider, (prev, next) {
+      if (next != null && !next.postsEnabled) {
+        if (context.mounted) {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/home');
+          }
+        }
+      }
+    });
+
+    if (settings != null && !settings.postsEnabled) {
+      return _buildStatus(
+        context: context,
+        design: design,
+        l10n: l10n,
+        child: AppErrorView(
+          title: l10n.errorNotFoundTitle,
+          onRetry: () => context.go('/home'),
+        ),
+      );
+    }
+
     if (post != null) {
       return _buildContent(context, design, l10n, post!);
     }

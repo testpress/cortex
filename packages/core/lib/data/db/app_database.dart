@@ -528,15 +528,21 @@ class AppDatabase extends _$AppDatabase {
     postsTable,
   )..orderBy([(t) => OrderingTerm.desc(t.publishedDate)])).watch();
 
-  Stream<PostData?> watchPostBySlug(String slug) =>
+  Stream<PostData?> watchPostBySlug(String slug, {bool isShortLink = false}) =>
       (select(postsTable)
-            ..where((t) => t.slug.equals(slug) | t.shortLink.equals(slug))
+            ..where(
+              (t) =>
+                  isShortLink ? t.shortLink.equals(slug) : t.slug.equals(slug),
+            )
             ..limit(1))
           .watchSingleOrNull();
 
-  Future<PostData?> getPostBySlug(String slug) =>
+  Future<PostData?> getPostBySlug(String slug, {bool isShortLink = false}) =>
       (select(postsTable)
-            ..where((t) => t.slug.equals(slug) | t.shortLink.equals(slug))
+            ..where(
+              (t) =>
+                  isShortLink ? t.shortLink.equals(slug) : t.slug.equals(slug),
+            )
             ..limit(1))
           .getSingleOrNull();
 

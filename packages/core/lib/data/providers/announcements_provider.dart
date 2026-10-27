@@ -184,7 +184,9 @@ Stream<PostDto?> postDetail(
 }) async* {
   final repository = await ref.watch(postsRepositoryProvider.future);
 
-  final cached = await repository.watchPostBySlug(slug).first;
+  final cached = await repository
+      .watchPostBySlug(slug, isShortLink: isShortLink)
+      .first;
 
   if (cached == null) {
     try {
@@ -210,5 +212,5 @@ Stream<PostDto?> postDetail(
     );
   }
 
-  yield* repository.watchPostBySlug(slug);
+  yield* repository.watchPostBySlug(slug, isShortLink: isShortLink);
 }

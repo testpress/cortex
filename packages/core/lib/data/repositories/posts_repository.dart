@@ -59,9 +59,9 @@ class PostsRepository {
   }
 
   /// Watch a single post by slug from the local database.
-  Stream<PostDto?> watchPostBySlug(String slug) {
+  Stream<PostDto?> watchPostBySlug(String slug, {bool isShortLink = false}) {
     return _db
-        .watchPostBySlug(slug)
+        .watchPostBySlug(slug, isShortLink: isShortLink)
         .map((r) => r == null ? null : _mapRowToDto(r));
   }
 
