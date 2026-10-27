@@ -8,25 +8,34 @@ import 'package:profile/profile.dart';
 
 part 'student_notes_screen.g.dart';
 
+const String _studentNotesPath = '/student-diary/my-notes/';
+const String _themeStorageKey = 'tp_theme_preference';
+
 /// Provider to fetch and resolve the presigned SSO URL for student notes.
 @riverpod
 Future<String> studentNotesUrl(Ref ref) async {
   final settings = ref.watch(instituteSettingsProvider);
   final userRepo = await ref.watch(userRepositoryProvider.future);
-  final designMode = ref.watch(designModeProvider);
+  // Read once at initial URL creation time to avoid rebuilding the provider
+  // and reloading the entire WebView when the theme changes.
+  final designMode = ref.read(designModeProvider);
 
   final themeParam = switch (designMode) {
     DesignMode.dark => 'dark',
     DesignMode.light => 'light',
-    _ => '',
+    _ => null,
   };
-  final querySuffix = themeParam.isNotEmpty ? '&theme=$themeParam' : '';
 
-  final url = await userRepo.getAuthenticatedSsoUrl(
-    nextPath: '/student-diary/my-notes/?testpress_app=1$querySuffix',
+  final queryParams = <String, String>{'testpress_app': '1'};
+  if (themeParam != null) {
+    queryParams['theme'] = themeParam;
+  }
+  final nextUri = Uri(path: _studentNotesPath, queryParameters: queryParams);
+
+  return userRepo.getAuthenticatedSsoUrl(
+    nextPath: nextUri.toString(),
     domainUrl: settings?.domainUrl,
   );
-  return url;
 }
 
 /// Keeps student notes routes on the institute domain inside the WebView,
@@ -67,7 +76,6 @@ class StudentNotesScreen extends ConsumerStatefulWidget {
 
 class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
   WebViewController? _controller;
-  bool? _lastIsDark;
 
   Future<void> _syncTheme(bool isDark) async {
     final controller = _controller;
@@ -79,19 +87,29 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
       (function() {
         try {
           var theme = '$theme';
-          localStorage.setItem('tp_theme_preference', theme);
+          localStorage.setItem('$_themeStorageKey', theme);
           document.documentElement.setAttribute('data-theme', theme);
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
           } else {
             document.documentElement.classList.remove('dark');
           }
-        } catch(e) {}
+        } catch(e) {
+          console.error('Failed to sync theme in WebView:', e);
+        }
       })();
     ''';
     try {
       await controller.runJavaScript(script);
-    } catch (_) {}
+    } catch (e, st) {
+      ref
+          .read(sentryServiceProvider)
+          .captureException(
+            e,
+            stackTrace: st,
+            tags: const {'feature': 'student_notes_theme_sync'},
+          );
+    }
   }
 
   Future<void> _handleBack() async {
@@ -109,7 +127,14 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
     bool launched = false;
     try {
       launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {
+    } catch (e, st) {
+      ref
+          .read(sentryServiceProvider)
+          .captureException(
+            e,
+            stackTrace: st,
+            tags: const {'feature': 'student_notes_external_launch'},
+          );
       launched = false;
     }
 
@@ -128,13 +153,20 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
     final settings = ref.watch(instituteSettingsProvider);
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final title = settings?.studentNotesLabel ?? l10n.notesTitle;
+    final customLabel = settings?.studentNotesLabel?.trim();
+    final title = (customLabel != null && customLabel.isNotEmpty)
+        ? customLabel
+        : l10n.notesTitle;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
-    if (_lastIsDark != null && _lastIsDark != design.isDark) {
-      _syncTheme(design.isDark);
-    }
-    _lastIsDark = design.isDark;
+    // Listen to theme mode changes without rebuilding the WebView provider
+    ref.listen(designModeProvider, (previous, next) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _syncTheme(Design.of(context).isDark);
+        }
+      });
+    });
 
     return PopScope(
       canPop: false,
