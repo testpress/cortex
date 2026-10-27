@@ -105,6 +105,34 @@ class PostDto {
     'allow_comments': allowComments,
   };
 
+  PostDto copyWith({
+    int? id,
+    String? slug,
+    String? title,
+    int? categoryId,
+    String? categoryName,
+    String? shortLink,
+    String? summary,
+    String? contentHtml,
+    String? coverImage,
+    String? publishedDate,
+    String? webUrl,
+    bool? allowComments,
+  }) => PostDto(
+    id: id ?? this.id,
+    slug: slug ?? this.slug,
+    title: title ?? this.title,
+    categoryId: categoryId ?? this.categoryId,
+    categoryName: categoryName ?? this.categoryName,
+    shortLink: shortLink ?? this.shortLink,
+    summary: summary ?? this.summary,
+    contentHtml: contentHtml ?? this.contentHtml,
+    coverImage: coverImage ?? this.coverImage,
+    publishedDate: publishedDate ?? this.publishedDate,
+    webUrl: webUrl ?? this.webUrl,
+    allowComments: allowComments ?? this.allowComments,
+  );
+
   /// Parses the full list API response.
   ///
   /// Handles both v2.3 (results is a List) and v3 (results is a Map with posts & categories).

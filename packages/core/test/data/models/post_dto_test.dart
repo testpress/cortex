@@ -126,5 +126,24 @@ void main() {
       expect(serialized['name'], 'Announcements');
       expect(serialized['is_starred'], isTrue);
     });
+
+    test('PostDto.copyWith overrides specified fields correctly', () {
+      const dto = PostDto(
+        id: 1,
+        slug: 'test-slug',
+        title: 'Title',
+        shortLink: '',
+        summary: 'Summary',
+        contentHtml: '<p>Content</p>',
+        publishedDate: '2026-10-27T10:00:00Z',
+        allowComments: false,
+      );
+
+      final updated = dto.copyWith(shortLink: 'abc123', allowComments: true);
+      expect(updated.id, 1);
+      expect(updated.slug, 'test-slug');
+      expect(updated.shortLink, 'abc123');
+      expect(updated.allowComments, isTrue);
+    });
   });
 }

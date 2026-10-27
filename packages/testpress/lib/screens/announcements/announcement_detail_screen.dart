@@ -41,10 +41,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
         context: context,
         design: design,
         l10n: l10n,
-        child: AppErrorView(
-          title: l10n.errorNotFoundTitle,
-          onRetry: () => context.go('/home'),
-        ),
+        child: AppErrorView(title: l10n.errorNotFoundTitle),
       );
     }
 
