@@ -678,48 +678,31 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<PostDto> getPost(String slug) async {
-    // Full slugs (e.g. 'exam-strategy-guide') contain hyphens.
-    // Short links (e.g. 'fseznr') are short alphanumeric codes generated for /p/ links.
-    final isLikelyShortLink = !slug.contains('-') && slug.length <= 10;
+  Future<PostDto> getPost(String slug, {bool isShortLink = false}) async {
+    final attempts = isShortLink
+        ? <Map<String, dynamic>?>[
+            {'short_link': 'true'},
+            null,
+          ]
+        : <Map<String, dynamic>?>[
+            null,
+            {'short_link': 'true'},
+          ];
 
-    if (isLikelyShortLink) {
+    for (int i = 0; i < attempts.length; i++) {
       try {
         return await performNetworkRequest(
-          _dio.get(
-            ApiEndpoints.postDetail(slug),
-            queryParameters: {'short_link': 'true'},
-          ),
+          _dio.get(ApiEndpoints.postDetail(slug), queryParameters: attempts[i]),
           fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
         );
       } on ApiException catch (e) {
-        if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
-          return performNetworkRequest(
-            _dio.get(ApiEndpoints.postDetail(slug)),
-            fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
-          );
-        }
-        rethrow;
-      }
-    } else {
-      try {
-        return await performNetworkRequest(
-          _dio.get(ApiEndpoints.postDetail(slug)),
-          fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
-        );
-      } on ApiException catch (e) {
-        if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
-          return performNetworkRequest(
-            _dio.get(
-              ApiEndpoints.postDetail(slug),
-              queryParameters: {'short_link': 'true'},
-            ),
-            fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
-          );
+        if (e.statusCode == 404 && i < attempts.length - 1) {
+          continue;
         }
         rethrow;
       }
     }
+    throw const ApiException('Post not found', type: ApiErrorType.notFound);
   }
 
   @override

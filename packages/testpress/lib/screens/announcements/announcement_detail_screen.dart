@@ -35,8 +35,11 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                 Expanded(
                   child: Center(
                     child: AppErrorView(
-                      title: l10n.errorNotFoundTitle,
-                      message: l10n.errorGenericMessage,
+                      error: const ApiException(
+                        'The requested resource was not found.',
+                        type: ApiErrorType.notFound,
+                        statusCode: 404,
+                      ),
                       onRetry: () => ref.invalidate(postDetailProvider(slug!)),
                     ),
                   ),
@@ -99,8 +102,8 @@ class AnnouncementDetailScreen extends ConsumerWidget {
             children: [
               AppBackButton(
                 onTap: () {
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
+                  if (context.canPop()) {
+                    context.pop();
                   } else {
                     context.go('/home');
                   }

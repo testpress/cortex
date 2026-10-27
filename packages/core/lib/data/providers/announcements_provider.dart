@@ -191,6 +191,8 @@ Stream<PostDto?> postDetail(PostDetailRef ref, String slug) async* {
       return;
     }
   } else {
+    // If the post was already cached, return it immediately and attempt a background refresh.
+    // If the refresh fails (e.g. offline), the user continues to see their cached copy.
     unawaited(
       repository.fetchPost(slug).catchError((Object e) {
         debugPrint('Background refresh failed for post $slug: $e');

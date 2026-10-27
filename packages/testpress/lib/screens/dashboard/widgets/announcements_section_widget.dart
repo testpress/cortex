@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:courses/courses.dart';
-import '../../announcements/announcements_list_screen.dart';
-import '../../announcements/announcement_detail_screen.dart';
 
 class AnnouncementsSectionWidget extends ConsumerWidget {
   const AnnouncementsSectionWidget({super.key});
@@ -22,18 +20,9 @@ class AnnouncementsSectionWidget extends ConsumerWidget {
       data: (data) => UpdatesAnnouncementsSection(
         title: settings?.postsLabel,
         posts: data.take(3).toList(),
-        onViewAll: () {
-          Navigator.of(
-            context,
-            rootNavigator: true,
-          ).push(AppRoute(page: const AnnouncementsListScreen()));
-        },
-        onItemTap: (post) {
-          Navigator.of(
-            context,
-            rootNavigator: true,
-          ).push(AppRoute(page: AnnouncementDetailScreen(post: post)));
-        },
+        onViewAll: () => context.push('/home/posts'),
+        onItemTap: (post) =>
+            context.push('/home/posts/${post.slug}', extra: post),
       ),
       loading: () => const SizedBox(height: 100),
       error: (error, stack) => const SizedBox.shrink(),
