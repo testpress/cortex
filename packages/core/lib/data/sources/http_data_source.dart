@@ -678,6 +678,17 @@ class HttpDataSource implements DataSource {
   }
 
   @override
+  Future<PostDto> getPost(String slug, {bool isShortLink = false}) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.postDetail(slug),
+        queryParameters: isShortLink ? {'short_link': 'true'} : null,
+      ),
+      fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
+  @override
   Future<List<PostCategoryDto>> getPostCategories() async {
     return performNetworkRequest(
       _dio.get(ApiEndpoints.postCategories),

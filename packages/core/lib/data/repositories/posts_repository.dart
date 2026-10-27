@@ -55,26 +55,25 @@ class PostsRepository {
 
   /// Watch all posts from the local database.
   Stream<List<PostDto>> watchPosts() {
-    return _db.watchPosts().map(
-      (rows) => rows
-          .map(
-            (r) => PostDto(
-              id: r.id,
-              slug: r.slug,
-              title: r.title,
-              categoryId: r.categoryId,
-              categoryName: r.categoryName,
-              shortLink: r.shortLink,
-              summary: r.summary,
-              contentHtml: r.contentHtml,
-              coverImage: r.coverImage,
-              publishedDate: r.publishedDate,
-              webUrl: r.webUrl,
-              allowComments: r.allowComments,
-            ),
-          )
-          .toList(),
-    );
+    return _db.watchPosts().map((rows) => rows.map(_mapRowToDto).toList());
+  }
+
+  /// Watch a single post by slug from the local database.
+  Stream<PostDto?> watchPostBySlug(String slug, {bool isShortLink = false}) {
+    return _db
+        .watchPostBySlug(slug, isShortLink: isShortLink)
+        .map((r) => r == null ? null : _mapRowToDto(r));
+  }
+
+  /// Fetch a single post by slug from the network and cache it locally.
+  Future<PostDto> fetchPost(String slug, {bool isShortLink = false}) async {
+    final dto = await _source.getPost(slug, isShortLink: isShortLink);
+    final postToSave = (isShortLink && dto.shortLink.isEmpty)
+        ? dto.copyWith(shortLink: slug)
+        : dto;
+    final companion = _mapDtoToCompanion(postToSave);
+    await _db.upsertPost(companion);
+    return postToSave;
   }
 
   /// Fetch a paginated list of posts from the network and cache them locally.
@@ -86,24 +85,7 @@ class PostsRepository {
       page: page,
       categorySlug: categorySlug,
     );
-    final companions = response.results
-        .map(
-          (dto) => PostsTableCompanion.insert(
-            id: Value(dto.id),
-            slug: dto.slug,
-            title: dto.title,
-            categoryId: Value(dto.categoryId),
-            categoryName: Value(dto.categoryName),
-            shortLink: dto.shortLink,
-            summary: dto.summary,
-            contentHtml: dto.contentHtml,
-            coverImage: Value(dto.coverImage),
-            publishedDate: dto.publishedDate,
-            webUrl: Value(dto.webUrl),
-            allowComments: dto.allowComments,
-          ),
-        )
-        .toList();
+    final companions = response.results.map(_mapDtoToCompanion).toList();
     // Page 1 = fresh sync — replace all to delete stale entries.
     // Page > 1 = additive pagination — upsert only.
     if (page == 1) {
@@ -113,6 +95,37 @@ class PostsRepository {
     }
     return response;
   }
+
+  static PostDto _mapRowToDto(PostData r) => PostDto(
+    id: r.id,
+    slug: r.slug,
+    title: r.title,
+    categoryId: r.categoryId,
+    categoryName: r.categoryName,
+    shortLink: r.shortLink,
+    summary: r.summary,
+    contentHtml: r.contentHtml,
+    coverImage: r.coverImage,
+    publishedDate: r.publishedDate,
+    webUrl: r.webUrl,
+    allowComments: r.allowComments,
+  );
+
+  static PostsTableCompanion _mapDtoToCompanion(PostDto dto) =>
+      PostsTableCompanion.insert(
+        id: Value(dto.id),
+        slug: dto.slug,
+        title: dto.title,
+        categoryId: Value(dto.categoryId),
+        categoryName: Value(dto.categoryName),
+        shortLink: dto.shortLink,
+        summary: dto.summary,
+        contentHtml: dto.contentHtml,
+        coverImage: Value(dto.coverImage),
+        publishedDate: dto.publishedDate,
+        webUrl: Value(dto.webUrl),
+        allowComments: dto.allowComments,
+      );
 
   /// Fetch a paginated list of posts directly from the network without caching locally.
   ///

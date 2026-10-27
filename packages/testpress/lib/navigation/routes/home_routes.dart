@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:discussions/discussions.dart';
+import '../../screens/announcements/announcement_detail_screen.dart';
+import '../../screens/announcements/announcements_list_screen.dart';
 import '../../screens/dashboard/dashboard_lessons_list_screen.dart';
 import '../../screens/dashboard/paid_active_home_screen.dart';
 
@@ -12,6 +14,32 @@ class HomeRoutes {
       path: '/home',
       builder: (context, state) => const PaidActiveHomeScreen(),
       routes: [
+        GoRoute(
+          path: 'posts',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const AnnouncementsListScreen(),
+          routes: [
+            GoRoute(
+              path: ':slug',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) {
+                // If `extra` is provided (e.g. from announcements list), it is displayed immediately
+                // without a network round-trip. Otherwise, the post is fetched reactively via `slug`.
+                final slug = state.pathParameters['slug']!;
+                final post = state.extra is PostDto
+                    ? state.extra as PostDto
+                    : null;
+                final isShortLink =
+                    state.uri.queryParameters['is_short_link'] == 'true';
+                return AnnouncementDetailScreen(
+                  slug: slug,
+                  post: post,
+                  isShortLink: isShortLink,
+                );
+              },
+            ),
+          ],
+        ),
         GoRoute(
           path: 'lessons',
           parentNavigatorKey: rootNavigatorKey,

@@ -6,6 +6,159 @@ part of 'announcements_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$postDetailHash() => r'c77e4cbefdc2bf47030e38db27de33e540c3b15a';
+
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+
+/// See also [postDetail].
+@ProviderFor(postDetail)
+const postDetailProvider = PostDetailFamily();
+
+/// See also [postDetail].
+class PostDetailFamily extends Family<AsyncValue<PostDto?>> {
+  /// See also [postDetail].
+  const PostDetailFamily();
+
+  /// See also [postDetail].
+  PostDetailProvider call(String slug, {bool isShortLink = false}) {
+    return PostDetailProvider(slug, isShortLink: isShortLink);
+  }
+
+  @override
+  PostDetailProvider getProviderOverride(
+    covariant PostDetailProvider provider,
+  ) {
+    return call(provider.slug, isShortLink: provider.isShortLink);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'postDetailProvider';
+}
+
+/// See also [postDetail].
+class PostDetailProvider extends AutoDisposeStreamProvider<PostDto?> {
+  /// See also [postDetail].
+  PostDetailProvider(String slug, {bool isShortLink = false})
+    : this._internal(
+        (ref) =>
+            postDetail(ref as PostDetailRef, slug, isShortLink: isShortLink),
+        from: postDetailProvider,
+        name: r'postDetailProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$postDetailHash,
+        dependencies: PostDetailFamily._dependencies,
+        allTransitiveDependencies: PostDetailFamily._allTransitiveDependencies,
+        slug: slug,
+        isShortLink: isShortLink,
+      );
+
+  PostDetailProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.slug,
+    required this.isShortLink,
+  }) : super.internal();
+
+  final String slug;
+  final bool isShortLink;
+
+  @override
+  Override overrideWith(
+    Stream<PostDto?> Function(PostDetailRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PostDetailProvider._internal(
+        (ref) => create(ref as PostDetailRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        slug: slug,
+        isShortLink: isShortLink,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<PostDto?> createElement() {
+    return _PostDetailProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PostDetailProvider &&
+        other.slug == slug &&
+        other.isShortLink == isShortLink;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, slug.hashCode);
+    hash = _SystemHash.combine(hash, isShortLink.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PostDetailRef on AutoDisposeStreamProviderRef<PostDto?> {
+  /// The parameter `slug` of this provider.
+  String get slug;
+
+  /// The parameter `isShortLink` of this provider.
+  bool get isShortLink;
+}
+
+class _PostDetailProviderElement
+    extends AutoDisposeStreamProviderElement<PostDto?>
+    with PostDetailRef {
+  _PostDetailProviderElement(super.provider);
+
+  @override
+  String get slug => (origin as PostDetailProvider).slug;
+  @override
+  bool get isShortLink => (origin as PostDetailProvider).isShortLink;
+}
+
 String _$announcementsHash() => r'60e6b8d9e7ec37952855932dc6dfab14d026f291';
 
 /// See also [Announcements].
@@ -59,27 +212,6 @@ final announcementsFetchingPageProvider =
 
 typedef _$AnnouncementsFetchingPage = AutoDisposeNotifier<bool>;
 String _$categoryPostsHash() => r'1f5263a32be8df79ca28b67b4e4cda1262728ead';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
 
 abstract class _$CategoryPosts
     extends BuildlessAutoDisposeAsyncNotifier<List<PostDto>> {

@@ -1,17 +1,163 @@
-import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AnnouncementDetailScreen extends StatelessWidget {
-  const AnnouncementDetailScreen({super.key, required this.post});
+class AnnouncementDetailScreen extends ConsumerWidget {
+  const AnnouncementDetailScreen({
+    super.key,
+    this.post,
+    this.slug,
+    this.isShortLink = false,
+  }) : assert(
+         post != null || slug != null,
+         'Either post or slug must be provided',
+       );
 
-  final PostDto post;
+  final PostDto? post;
+  final String? slug;
+  final bool isShortLink;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
+    final settings = ref.watch(instituteSettingsProvider);
+    ref.listen<InstituteSettings?>(instituteSettingsProvider, (prev, next) {
+      if (next != null && !next.postsEnabled) {
+        if (context.mounted) {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/home');
+          }
+        }
+      }
+    });
+
+    if (settings != null && !settings.postsEnabled) {
+      return _buildStatus(
+        context: context,
+        design: design,
+        l10n: l10n,
+        child: AppErrorView(title: l10n.errorNotFoundTitle),
+      );
+    }
+
+    if (post != null) {
+      return _buildContent(context, design, l10n, post!);
+    }
+
+    final postAsync = ref.watch(
+      postDetailProvider(slug!, isShortLink: isShortLink),
+    );
+
+    return postAsync.when(
+      data: (loadedPost) {
+        if (loadedPost == null) {
+          return _buildStatus(
+            context: context,
+            design: design,
+            l10n: l10n,
+            child: AppErrorView(
+              title: l10n.errorNotFoundTitle,
+              onRetry: () => ref.invalidate(
+                postDetailProvider(slug!, isShortLink: isShortLink),
+              ),
+            ),
+          );
+        }
+        return _buildContent(context, design, l10n, loadedPost);
+      },
+      loading: () => _buildStatus(
+        context: context,
+        design: design,
+        l10n: l10n,
+        child: const AppLoadingIndicator(),
+      ),
+      error: (error, _) => _buildStatus(
+        context: context,
+        design: design,
+        l10n: l10n,
+        child: AppErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(
+            postDetailProvider(slug!, isShortLink: isShortLink),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatus({
+    required BuildContext context,
+    required DesignConfig design,
+    required AppLocalizations l10n,
+    required Widget child,
+  }) {
+    return AppShell(
+      backgroundColor: design.colors.card,
+      child: Column(
+        children: [
+          _buildAppBar(context, design, l10n),
+          Expanded(child: Center(child: child)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar(
+    BuildContext context,
+    DesignConfig design,
+    AppLocalizations l10n,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: design.colors.card,
+        border: Border(bottom: BorderSide(color: design.colors.divider)),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            design.spacing.screenPadding,
+            design.spacing.md,
+            design.spacing.screenPadding,
+            design.spacing.md,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AppBackButton(
+                onTap: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/home');
+                  }
+                },
+              ),
+              SizedBox(width: design.spacing.sm),
+              Expanded(
+                child: AppText.title(
+                  l10n.drawerPosts,
+                  color: design.colors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    DesignConfig design,
+    AppLocalizations l10n,
+    PostDto post,
+  ) {
     DateTime? date;
     try {
       date = DateTime.parse(post.publishedDate);
@@ -24,49 +170,7 @@ class AnnouncementDetailScreen extends StatelessWidget {
       backgroundColor: design.colors.card,
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              border: Border(bottom: BorderSide(color: design.colors.divider)),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  design.spacing.screenPadding,
-                  design.spacing.md,
-                  design.spacing.screenPadding,
-                  design.spacing.md,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 2,
-                        ), // Optical alignment
-                        child: Icon(
-                          LucideIcons.arrowLeft,
-                          color: design.colors.textPrimary,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: design.spacing.sm),
-                    Expanded(
-                      child: AppText.title(
-                        l10n.drawerPosts,
-                        color: design.colors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
+          _buildAppBar(context, design, l10n),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),

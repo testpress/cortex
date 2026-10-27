@@ -125,23 +125,23 @@ void main() {
       );
     });
 
-    test('resolves forum and discussion post deep links', () {
+    test('resolves post and announcement deep links', () {
       expect(
         DeepLinkHandler.resolve('/p/neet-2026-strategy-guide'),
-        '/home/discussions/forum/posts/neet-2026-strategy-guide',
+        '/home/posts/neet-2026-strategy-guide?is_short_link=true',
       );
       expect(
         DeepLinkHandler.resolve('/posts/physics-formula-cheatsheet'),
-        '/home/discussions/forum/posts/physics-formula-cheatsheet',
+        '/home/posts/physics-formula-cheatsheet',
       );
       expect(
         DeepLinkHandler.resolve(
           'https://staging.testpress.in/p/announcements-june-2026?utm_source=fcm',
         ),
-        '/home/discussions/forum/posts/announcements-june-2026',
+        '/home/posts/announcements-june-2026?is_short_link=true',
       );
-      expect(DeepLinkHandler.resolve('/p'), '/home/discussions/forum');
-      expect(DeepLinkHandler.resolve('/posts'), '/home/discussions/forum');
+      expect(DeepLinkHandler.resolve('/p'), '/home/posts');
+      expect(DeepLinkHandler.resolve('/posts'), '/home/posts');
     });
 
     test('resolves exam list and sub-paths', () {
@@ -413,6 +413,75 @@ void main() {
           showProfileTab: true,
         ),
         '/profile/settings',
+      );
+    });
+
+    test(
+      'falls back to /home when posts is disabled in institute settings',
+      () {
+        final disabledSettings = InstituteSettings.fromJson({
+          'domain_url': 'https://test.com',
+          'posts_enabled': false,
+        });
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/home/posts/physics-notes',
+            settings: disabledSettings,
+          ),
+          '/home',
+        );
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/home/posts/fseznr?is_short_link=true',
+            settings: disabledSettings,
+          ),
+          '/home',
+        );
+        expect(
+          DeepLinkHandler.filterRouteByAvailability(
+            '/home/posts',
+            settings: disabledSettings,
+          ),
+          '/home',
+        );
+      },
+    );
+
+    test('retains post routes when posts is enabled in institute settings', () {
+      final enabledSettings = InstituteSettings.fromJson({
+        'domain_url': 'https://test.com',
+        'posts_enabled': true,
+      });
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/home/posts/physics-notes',
+          settings: enabledSettings,
+        ),
+        '/home/posts/physics-notes',
+      );
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/home/posts/fseznr?is_short_link=true',
+          settings: enabledSettings,
+        ),
+        '/home/posts/fseznr?is_short_link=true',
+      );
+    });
+
+    test('retains post routes on cold start when settings are null', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/home/posts/physics-notes',
+          settings: null,
+        ),
+        '/home/posts/physics-notes',
+      );
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/home/posts/fseznr?is_short_link=true',
+          settings: null,
+        ),
+        '/home/posts/fseznr?is_short_link=true',
       );
     });
   });

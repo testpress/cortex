@@ -528,6 +528,27 @@ class AppDatabase extends _$AppDatabase {
     postsTable,
   )..orderBy([(t) => OrderingTerm.desc(t.publishedDate)])).watch();
 
+  Stream<PostData?> watchPostBySlug(String slug, {bool isShortLink = false}) =>
+      (select(postsTable)
+            ..where(
+              (t) =>
+                  isShortLink ? t.shortLink.equals(slug) : t.slug.equals(slug),
+            )
+            ..limit(1))
+          .watchSingleOrNull();
+
+  Future<PostData?> getPostBySlug(String slug, {bool isShortLink = false}) =>
+      (select(postsTable)
+            ..where(
+              (t) =>
+                  isShortLink ? t.shortLink.equals(slug) : t.slug.equals(slug),
+            )
+            ..limit(1))
+          .getSingleOrNull();
+
+  Future<int> upsertPost(PostsTableCompanion row) =>
+      into(postsTable).insertOnConflictUpdate(row);
+
   Future<void> upsertPosts(List<PostsTableCompanion> rows) =>
       batch((b) => b.insertAllOnConflictUpdate(postsTable, rows));
 

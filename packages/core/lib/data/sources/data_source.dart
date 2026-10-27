@@ -187,6 +187,9 @@ abstract class DataSource {
     String? categorySlug,
   });
 
+  /// Fetch a single post/announcement by slug or shortLink code.
+  Future<PostDto> getPost(String slug, {bool isShortLink = false});
+
   /// Fetch a list of post categories.
   Future<List<PostCategoryDto>> getPostCategories();
 

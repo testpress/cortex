@@ -2144,6 +2144,20 @@ class MockDataSource implements DataSource {
   }
 
   @override
+  Future<PostDto> getPost(String slug, {bool isShortLink = false}) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final match = mockPosts
+        .where((p) => isShortLink ? p.shortLink == slug : p.slug == slug)
+        .firstOrNull;
+    if (match != null) return match;
+    throw ApiException(
+      'Post not found: $slug',
+      type: ApiErrorType.notFound,
+      statusCode: 404,
+    );
+  }
+
+  @override
   Future<List<PostCategoryDto>> getPostCategories() async {
     await Future.delayed(const Duration(milliseconds: 300));
     return mockPostCategories;

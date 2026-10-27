@@ -64,6 +64,7 @@ class ApiEndpoints {
 
   // Posts / Announcements
   static const String posts = '/api/v3/posts/';
+  static String postDetail(String slug) => '/api/v3/posts/$slug/';
   static const String postCategories = '/api/v2.3/posts/categories/';
 
   static const String leaderboard = '/api/v2.3/leaderboard/';

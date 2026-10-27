@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../announcement_detail_screen.dart';
 
 class AnnouncementListItem extends StatelessWidget {
   const AnnouncementListItem({super.key, required this.post});
@@ -26,10 +25,7 @@ class AnnouncementListItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         if (Skeletonizer.maybeOf(context)?.enabled ?? false) return;
-        Navigator.of(
-          context,
-          rootNavigator: true,
-        ).push(AppRoute(page: AnnouncementDetailScreen(post: post)));
+        context.push('/home/posts/${post.slug}', extra: post);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: design.spacing.sm),

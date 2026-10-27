@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/post_dto.dart';
 import '../repositories/repository_providers.dart';
@@ -172,4 +174,43 @@ class CategoryPostsFetchingPage extends _$CategoryPostsFetchingPage {
   bool build() => false;
 
   void setFetching(bool fetching) => state = fetching;
+}
+
+@riverpod
+Stream<PostDto?> postDetail(
+  PostDetailRef ref,
+  String slug, {
+  bool isShortLink = false,
+}) async* {
+  final repository = await ref.watch(postsRepositoryProvider.future);
+
+  final cached = await repository
+      .watchPostBySlug(slug, isShortLink: isShortLink)
+      .first;
+
+  if (cached == null) {
+    try {
+      final fetched = await repository.fetchPost(
+        slug,
+        isShortLink: isShortLink,
+      );
+      yield fetched;
+    } catch (e, stack) {
+      yield* Stream.error(e, stack);
+      return;
+    }
+  } else {
+    // If the post was already cached, return it immediately and attempt a background refresh.
+    // If the refresh fails (e.g. offline), the user continues to see their cached copy.
+    unawaited(
+      repository
+          .fetchPost(slug, isShortLink: isShortLink)
+          .then<void>((_) {})
+          .catchError((Object e) {
+            debugPrint('Background refresh failed for post $slug: $e');
+          }),
+    );
+  }
+
+  yield* repository.watchPostBySlug(slug, isShortLink: isShortLink);
 }
