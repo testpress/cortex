@@ -721,6 +721,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerMessages => 'الرسائل';
 
   @override
+  String get drawerNotes => 'الملاحظات';
+
+  @override
+  String get notesTitle => 'الملاحظات';
+
+  @override
   String get messagesTitle => 'الرسائل';
 
   @override

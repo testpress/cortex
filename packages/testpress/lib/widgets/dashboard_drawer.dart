@@ -25,6 +25,7 @@ class DashboardDrawer extends ConsumerWidget {
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
     final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
     final messagesEnabled = settings?.messagesEnabled ?? false;
+    final studentNotesEnabled = settings?.studentNotesEnabled ?? false;
     final enableStudentReport = !(settings?.disableStudentReport ?? false);
     final analyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
     final qotdEnabled = settings?.qotdEnabled ?? false;
@@ -51,6 +52,12 @@ class DashboardDrawer extends ConsumerWidget {
         ? messagesLabel
         : l10n.drawerMessages;
 
+    final studentNotesLabel = settings?.studentNotesLabel?.trim();
+    final displayStudentNotesLabel =
+        (studentNotesLabel != null && studentNotesLabel.isNotEmpty)
+        ? studentNotesLabel
+        : l10n.drawerNotes;
+
     return AppDrawer(
       isOpen: isOpen,
       fullPage: true,
@@ -62,6 +69,15 @@ class DashboardDrawer extends ConsumerWidget {
       sections: [
         AppDrawerSection(
           items: [
+            if (studentNotesEnabled)
+              AppDrawerItem(
+                icon: LucideIcons.penSquare,
+                label: displayStudentNotesLabel,
+                action: () {
+                  ref.read(isHomeDrawerOpenProvider.notifier).state = false;
+                  context.push('/student-notes');
+                },
+              ),
             if (bookmarksEnabled)
               AppDrawerItem(
                 icon: LucideIcons.bookmark,

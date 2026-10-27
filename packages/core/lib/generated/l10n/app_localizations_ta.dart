@@ -735,6 +735,12 @@ class AppLocalizationsTa extends AppLocalizations {
   String get drawerMessages => 'செய்திகள்';
 
   @override
+  String get drawerNotes => 'குறிப்புகள்';
+
+  @override
+  String get notesTitle => 'குறிப்புகள்';
+
+  @override
   String get messagesTitle => 'செய்திகள்';
 
   @override

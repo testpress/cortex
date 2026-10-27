@@ -66,5 +66,26 @@ void main() {
         expect(enabledSettings.toJson()['messages_label'], 'Support Desk');
       },
     );
+
+    test(
+      'parses student_notes_enabled and student_notes_label correctly and defaults properly',
+      () {
+        final jsonDefault = {'name': 'Test Institute'};
+        final defaultSettings = InstituteSettings.fromJson(jsonDefault);
+        expect(defaultSettings.studentNotesEnabled, isFalse);
+        expect(defaultSettings.studentNotesLabel, isNull);
+
+        final jsonEnabled = {
+          'name': 'Test Institute',
+          'student_notes_enabled': true,
+          'student_notes_label': 'My Notebook',
+        };
+        final enabledSettings = InstituteSettings.fromJson(jsonEnabled);
+        expect(enabledSettings.studentNotesEnabled, isTrue);
+        expect(enabledSettings.studentNotesLabel, 'My Notebook');
+        expect(enabledSettings.toJson()['student_notes_enabled'], isTrue);
+        expect(enabledSettings.toJson()['student_notes_label'], 'My Notebook');
+      },
+    );
   });
 }
