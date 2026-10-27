@@ -678,36 +678,14 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<PostDto> getPost(String slug) async {
-    // Queries title slugs (containing hyphens or long) directly first.
-    // For short codes (push notification deep links like /p/<short_code>), queries ?short_link=true first.
-    // Seamlessly falls back to the alternate query if the first attempt returns 404.
-    // Note: A genuinely missing post will attempt both queries before returning 404.
-    final bool preferSlug = slug.contains('-') || slug.length > 10;
-    final attempts = preferSlug
-        ? const <Map<String, dynamic>?>[
-            null,
-            {'short_link': 'true'},
-          ]
-        : const <Map<String, dynamic>?>[
-            {'short_link': 'true'},
-            null,
-          ];
-
-    for (int i = 0; i < attempts.length; i++) {
-      try {
-        return await performNetworkRequest(
-          _dio.get(ApiEndpoints.postDetail(slug), queryParameters: attempts[i]),
-          fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
-        );
-      } on ApiException catch (e) {
-        if (e.statusCode == 404 && i < attempts.length - 1) {
-          continue;
-        }
-        rethrow;
-      }
-    }
-    throw const ApiException('Post not found', type: ApiErrorType.notFound);
+  Future<PostDto> getPost(String slug, {bool isShortLink = false}) async {
+    return performNetworkRequest(
+      _dio.get(
+        ApiEndpoints.postDetail(slug),
+        queryParameters: isShortLink ? {'short_link': 'true'} : null,
+      ),
+      fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
+    );
   }
 
   @override

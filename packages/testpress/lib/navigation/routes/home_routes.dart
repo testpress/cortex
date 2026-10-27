@@ -29,7 +29,13 @@ class HomeRoutes {
                 final post = state.extra is PostDto
                     ? state.extra as PostDto
                     : null;
-                return AnnouncementDetailScreen(slug: slug, post: post);
+                final isShortLink =
+                    state.uri.queryParameters['is_short_link'] == 'true';
+                return AnnouncementDetailScreen(
+                  slug: slug,
+                  post: post,
+                  isShortLink: isShortLink,
+                );
               },
             ),
           ],

@@ -177,14 +177,21 @@ class CategoryPostsFetchingPage extends _$CategoryPostsFetchingPage {
 }
 
 @riverpod
-Stream<PostDto?> postDetail(PostDetailRef ref, String slug) async* {
+Stream<PostDto?> postDetail(
+  PostDetailRef ref,
+  String slug, {
+  bool isShortLink = false,
+}) async* {
   final repository = await ref.watch(postsRepositoryProvider.future);
 
   final cached = await repository.watchPostBySlug(slug).first;
 
   if (cached == null) {
     try {
-      final fetched = await repository.fetchPost(slug);
+      final fetched = await repository.fetchPost(
+        slug,
+        isShortLink: isShortLink,
+      );
       yield fetched;
     } catch (e, stack) {
       yield* Stream.error(e, stack);
@@ -194,9 +201,12 @@ Stream<PostDto?> postDetail(PostDetailRef ref, String slug) async* {
     // If the post was already cached, return it immediately and attempt a background refresh.
     // If the refresh fails (e.g. offline), the user continues to see their cached copy.
     unawaited(
-      repository.fetchPost(slug).then<void>((_) {}).catchError((Object e) {
-        debugPrint('Background refresh failed for post $slug: $e');
-      }),
+      repository
+          .fetchPost(slug, isShortLink: isShortLink)
+          .then<void>((_) {})
+          .catchError((Object e) {
+            debugPrint('Background refresh failed for post $slug: $e');
+          }),
     );
   }
 

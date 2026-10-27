@@ -4,14 +4,19 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AnnouncementDetailScreen extends ConsumerWidget {
-  const AnnouncementDetailScreen({super.key, this.post, this.slug})
-    : assert(
-        post != null || slug != null,
-        'Either post or slug must be provided',
-      );
+  const AnnouncementDetailScreen({
+    super.key,
+    this.post,
+    this.slug,
+    this.isShortLink = false,
+  }) : assert(
+         post != null || slug != null,
+         'Either post or slug must be provided',
+       );
 
   final PostDto? post;
   final String? slug;
+  final bool isShortLink;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +27,9 @@ class AnnouncementDetailScreen extends ConsumerWidget {
       return _buildContent(context, design, l10n, post!);
     }
 
-    final postAsync = ref.watch(postDetailProvider(slug!));
+    final postAsync = ref.watch(
+      postDetailProvider(slug!, isShortLink: isShortLink),
+    );
 
     return postAsync.when(
       data: (loadedPost) {
@@ -32,12 +39,10 @@ class AnnouncementDetailScreen extends ConsumerWidget {
             design: design,
             l10n: l10n,
             child: AppErrorView(
-              error: const ApiException(
-                'Post not found',
-                type: ApiErrorType.notFound,
-                statusCode: 404,
+              title: l10n.errorNotFoundTitle,
+              onRetry: () => ref.invalidate(
+                postDetailProvider(slug!, isShortLink: isShortLink),
               ),
-              onRetry: () => ref.invalidate(postDetailProvider(slug!)),
             ),
           );
         }
@@ -55,7 +60,9 @@ class AnnouncementDetailScreen extends ConsumerWidget {
         l10n: l10n,
         child: AppErrorView(
           error: error,
-          onRetry: () => ref.invalidate(postDetailProvider(slug!)),
+          onRetry: () => ref.invalidate(
+            postDetailProvider(slug!, isShortLink: isShortLink),
+          ),
         ),
       ),
     );

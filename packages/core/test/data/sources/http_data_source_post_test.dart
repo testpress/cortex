@@ -25,7 +25,7 @@ void main() {
     });
 
     test(
-      'queries ?short_link=true first for short codes and succeeds on first attempt',
+      'makes request with ?short_link=true when isShortLink is true',
       () async {
         dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
           recordedRequests.add({
@@ -46,7 +46,7 @@ void main() {
         });
 
         final dataSource = HttpDataSource(dio: dio);
-        final post = await dataSource.getPost('fseznr');
+        final post = await dataSource.getPost('fseznr', isShortLink: true);
 
         expect(post.slug, 'physics-formula-sheet');
         expect(post.shortLink, 'fseznr');
@@ -58,7 +58,7 @@ void main() {
     );
 
     test(
-      'queries plain slug first for hyphenated slugs and succeeds on first attempt',
+      'makes request without query parameters when isShortLink is false',
       () async {
         dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
           recordedRequests.add({
@@ -79,7 +79,10 @@ void main() {
         });
 
         final dataSource = HttpDataSource(dio: dio);
-        final post = await dataSource.getPost('physics-formula-sheet');
+        final post = await dataSource.getPost(
+          'physics-formula-sheet',
+          isShortLink: false,
+        );
 
         expect(post.slug, 'physics-formula-sheet');
         expect(recordedRequests.length, 1);
@@ -87,38 +90,30 @@ void main() {
       },
     );
 
-    test('falls back to second attempt when first attempt returns 404', () async {
+    test('throws ApiException on 404 Not Found', () async {
       dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
         recordedRequests.add({
           'path': options.path,
           'queryParameters': options.queryParameters,
         });
-
-        // 404 on short_link, 200 on plain slug
-        if (options.queryParameters['short_link'] == 'true') {
-          return ResponseBody.fromString('Not Found', 404);
-        }
-
-        return ResponseBody.fromString(
-          validPostJson,
-          200,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
-        );
+        return ResponseBody.fromString('Not Found', 404);
       });
 
       final dataSource = HttpDataSource(dio: dio);
-      // 'welcome' has no hyphens and length <= 10, so attempts ?short_link=true first
-      final post = await dataSource.getPost('welcome');
 
-      expect(post.slug, 'physics-formula-sheet');
-      expect(recordedRequests.length, 2);
-      expect(recordedRequests[0]['queryParameters'], {'short_link': 'true'});
-      expect(recordedRequests[1]['queryParameters'], isEmpty);
+      expect(
+        () => dataSource.getPost('missing-post', isShortLink: false),
+        throwsA(
+          isA<ApiException>()
+              .having((e) => e.statusCode, 'statusCode', 404)
+              .having((e) => e.type, 'type', ApiErrorType.notFound),
+        ),
+      );
+      await Future.delayed(const Duration(milliseconds: 50));
+      expect(recordedRequests.length, 1);
     });
 
-    test('rethrows non-404 error immediately without retrying', () async {
+    test('rethrows non-404 error immediately', () async {
       dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
         recordedRequests.add({
           'path': options.path,
@@ -130,12 +125,11 @@ void main() {
       final dataSource = HttpDataSource(dio: dio);
 
       expect(
-        () => dataSource.getPost('fseznr'),
+        () => dataSource.getPost('fseznr', isShortLink: true),
         throwsA(
           isA<ApiException>().having((e) => e.statusCode, 'statusCode', 500),
         ),
       );
-      // Wait for async call to finish
       await Future.delayed(const Duration(milliseconds: 50));
       expect(recordedRequests.length, 1);
     });

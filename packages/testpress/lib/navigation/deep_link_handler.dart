@@ -48,7 +48,11 @@ class DeepLinkRule {
       }
     }
 
-    final targetSegments = target
+    final parts = target.split('?');
+    final pathPart = parts[0];
+    final queryPart = parts.length > 1 ? parts.sublist(1).join('?') : null;
+
+    final targetSegments = pathPart
         .split('/')
         .where((s) => s.isNotEmpty)
         .toList();
@@ -58,7 +62,10 @@ class DeepLinkRule {
       }
       return segment;
     }).toList();
-    return resolvedSegments.isEmpty ? '/' : '/${resolvedSegments.join('/')}';
+    final resolvedPath = resolvedSegments.isEmpty
+        ? '/'
+        : '/${resolvedSegments.join('/')}';
+    return queryPart != null ? '$resolvedPath?$queryPart' : resolvedPath;
   }
 }
 
@@ -142,7 +149,7 @@ class DeepLinkHandler {
     DeepLinkRule('/store', '/store', matchPrefix: true),
 
     // Posts & Announcements
-    DeepLinkRule('/p/:slug', '/home/posts/:slug'),
+    DeepLinkRule('/p/:slug', '/home/posts/:slug?is_short_link=true'),
     DeepLinkRule('/posts/:slug', '/home/posts/:slug'),
     DeepLinkRule('/p', '/home/posts'),
     DeepLinkRule('/posts', '/home/posts'),
@@ -292,6 +299,14 @@ class DeepLinkHandler {
 
     if (route == '/info' || route.startsWith('/info/')) {
       if (!activeTabs.contains(NavTab.info)) {
+        return defaultRoute;
+      }
+    }
+
+    if (route == '/home/posts' ||
+        route.startsWith('/home/posts/') ||
+        route.startsWith('/home/posts?')) {
+      if (!(settings?.postsEnabled ?? false)) {
         return defaultRoute;
       }
     }
