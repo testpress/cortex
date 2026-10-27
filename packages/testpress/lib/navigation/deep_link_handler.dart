@@ -306,7 +306,7 @@ class DeepLinkHandler {
     if (route == '/home/posts' ||
         route.startsWith('/home/posts/') ||
         route.startsWith('/home/posts?')) {
-      if (!(settings?.postsEnabled ?? false)) {
+      if (settings != null && !settings.postsEnabled) {
         return defaultRoute;
       }
     }

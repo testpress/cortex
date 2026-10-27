@@ -467,6 +467,23 @@ void main() {
         '/home/posts/fseznr?is_short_link=true',
       );
     });
+
+    test('retains post routes on cold start when settings are null', () {
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/home/posts/physics-notes',
+          settings: null,
+        ),
+        '/home/posts/physics-notes',
+      );
+      expect(
+        DeepLinkHandler.filterRouteByAvailability(
+          '/home/posts/fseznr?is_short_link=true',
+          settings: null,
+        ),
+        '/home/posts/fseznr?is_short_link=true',
+      );
+    });
   });
 
   group('DeepLinkRule pattern matching', () {
