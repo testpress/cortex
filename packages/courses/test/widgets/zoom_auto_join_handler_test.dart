@@ -6,12 +6,16 @@ ZoomAutoJoinHandler _buildHandler({
   void Function()? onJoinTimeout,
   void Function()? onLoadingStart,
   void Function()? onLoadingEnd,
+  void Function()? onPermissionPermanentlyDenied,
+  Duration fallbackTimeout = const Duration(seconds: 8),
 }) {
   return ZoomAutoJoinHandler(
     onJoinSuccess: onJoinSuccess,
     onJoinTimeout: onJoinTimeout,
     onLoadingStart: onLoadingStart,
     onLoadingEnd: onLoadingEnd,
+    onPermissionPermanentlyDenied: onPermissionPermanentlyDenied,
+    fallbackTimeout: fallbackTimeout,
   );
 }
 
@@ -142,14 +146,29 @@ void main() {
       'https://us02web.zoom.us/j/1234567890?pwd=abc',
       'https://app.zoom.us/wc/1234567890/join',
       'https://zoom.us/wc/join/1234567890',
+      'https://zoomgov.com/wc/1234567890/join',
     ];
 
     const nonGateUrls = [
       'https://example.com/join',
       'https://teams.microsoft.com/meet/join',
       'https://zoom.us/privacy',
+      'https://evil.com/?zoom.us/j/',
+      'https://evil.com/zoom.us/join',
       '',
     ];
+
+    test(
+        'isZoomJoinGateUrl rejects third-party URLs with spoofed query or path',
+        () {
+      final handler = _buildHandler();
+      expect(
+          handler.isZoomJoinGateUrl('https://evil.com/?zoom.us/j/'), isFalse);
+      expect(
+          handler.isZoomJoinGateUrl('https://evil.com/zoom.us/join'), isFalse);
+      expect(
+          handler.isZoomJoinGateUrl('https://zoomgov.com/wc/123/join'), isTrue);
+    });
 
     for (final url in gateUrls) {
       test('onPageStarted triggers loading for gate URL: $url', () {
@@ -223,12 +242,74 @@ void main() {
       expect(timedOut, isTrue);
     });
 
+    test('onPermissionDenied fires onPermissionPermanentlyDenied', () {
+      bool permissionDenied = false;
+      final handler = _buildHandler(
+        onPermissionPermanentlyDenied: () => permissionDenied = true,
+      );
+      handler.simulateJsMessage('onPermissionDenied');
+      expect(permissionDenied, isTrue);
+    });
+
     test('messages after dispose() are silently ignored', () {
       bool joinSucceeded = false;
       final handler = _buildHandler(onJoinSuccess: () => joinSucceeded = true);
       handler.dispose();
       handler.simulateJsMessage('onMeetingDetected');
       expect(joinSucceeded, isFalse);
+    });
+
+    testWidgets(
+        'onButtonClicked: triggers fallback timer and drops loader if no page loads',
+        (tester) async {
+      bool loadingEnded = false;
+      final handler = _buildHandler(
+        onLoadingEnd: () => loadingEnded = true,
+        fallbackTimeout: const Duration(seconds: 5),
+      );
+
+      handler.simulateJsMessage('onButtonClicked');
+      expect(loadingEnded, isFalse);
+
+      await tester.pump(const Duration(seconds: 4));
+      expect(loadingEnded, isFalse);
+
+      await tester.pump(const Duration(seconds: 2));
+      expect(loadingEnded, isTrue);
+    });
+
+    testWidgets(
+        'onButtonClicked: fallback timer is cancelled if page finishes before timeout',
+        (tester) async {
+      int loadingEndedCount = 0;
+      final handler = _buildHandler(
+        onLoadingEnd: () => loadingEndedCount++,
+        fallbackTimeout: const Duration(seconds: 5),
+      );
+
+      handler.simulateJsMessage('onButtonClicked');
+      await tester.pump(const Duration(seconds: 2));
+      handler.onPageFinished('https://app.zoom.us/wc/active');
+      expect(loadingEndedCount, equals(1));
+
+      // Advance past original timeout to verify timer doesn't fire a second time
+      await tester.pump(const Duration(seconds: 5));
+      expect(loadingEndedCount, equals(1));
+    });
+
+    testWidgets('onButtonClicked: fallback timer is cancelled on dispose',
+        (tester) async {
+      bool loadingEnded = false;
+      final handler = _buildHandler(
+        onLoadingEnd: () => loadingEnded = true,
+        fallbackTimeout: const Duration(seconds: 5),
+      );
+
+      handler.simulateJsMessage('onButtonClicked');
+      handler.dispose();
+
+      await tester.pump(const Duration(seconds: 6));
+      expect(loadingEnded, isFalse);
     });
   });
 }

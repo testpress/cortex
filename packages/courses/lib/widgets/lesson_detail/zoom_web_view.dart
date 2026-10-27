@@ -1,9 +1,21 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:core/core.dart';
 
 class ZoomPermissionHandler {
+  static Future<void> requestPermissions() async {
+    final permissions = [
+      Permission.camera,
+      Permission.microphone,
+    ];
+
+    try {
+      await permissions.request();
+    } catch (_) {}
+  }
+
   static Future<bool> checkAndRequestPermissions() async {
     final permissions = [
       Permission.camera,
@@ -11,16 +23,7 @@ class ZoomPermissionHandler {
     ];
 
     final statuses = await permissions.request();
-
-    bool allGranted = true;
-    for (var status in statuses.values) {
-      if (!status.isGranted) {
-        allGranted = false;
-        break;
-      }
-    }
-
-    return allGranted;
+    return statuses.values.every((status) => status.isGranted);
   }
 }
 
@@ -112,19 +115,24 @@ class ZoomAutoJoinHandler {
   WebViewController? _webViewController;
   bool _hasCompletedAutoJoin = false;
   bool _isDisposed = false;
+  Timer? _fallbackTimer;
 
   final Function()? onJoinSuccess;
   final Function()? onJoinTimeout;
   final Function()? onLoadingStart;
   final Function()? onLoadingEnd;
+  final Function()? onPermissionPermanentlyDenied;
   final Function(Object error, StackTrace stackTrace)? onError;
+  final Duration fallbackTimeout;
 
   ZoomAutoJoinHandler({
     this.onJoinSuccess,
     this.onJoinTimeout,
     this.onLoadingStart,
     this.onLoadingEnd,
+    this.onPermissionPermanentlyDenied,
     this.onError,
+    this.fallbackTimeout = const Duration(seconds: 8),
   });
 
   void attach(WebViewController controller) {
@@ -136,6 +144,38 @@ class ZoomAutoJoinHandler {
         _handleJavaScriptMessage(message.message);
       },
     );
+
+    _webViewController?.addJavaScriptChannel(
+      'ZoomPermissionChannel',
+      onMessageReceived: (JavaScriptMessage message) {
+        if (message.message == 'onPermissionDenied') {
+          onPermissionPermanentlyDenied?.call();
+        }
+      },
+    );
+
+    _injectPermissionBridge();
+  }
+
+  /// Patches getUserMedia in the WebView so that any NotAllowedError
+  /// (permanent OS permission denial) is forwarded to Flutter.
+  Future<void> _injectPermissionBridge() async {
+    const script = '''
+      (function() {
+        var _origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+        navigator.mediaDevices.getUserMedia = function(constraints) {
+          return _origGetUserMedia(constraints).catch(function(err) {
+            if (err.name === 'NotAllowedError' && window.ZoomPermissionChannel) {
+              window.ZoomPermissionChannel.postMessage('onPermissionDenied');
+            }
+            return Promise.reject(err);
+          });
+        };
+      })();
+    ''';
+    try {
+      await _webViewController?.runJavaScript(script);
+    } catch (_) {}
   }
 
   void onPageStarted(String url) {
@@ -146,10 +186,12 @@ class ZoomAutoJoinHandler {
 
   void onPageFinished(String url) {
     _hideScrollbars();
+    _injectPermissionBridge();
 
     if (!_hasCompletedAutoJoin && isZoomJoinGateUrl(url)) {
       _autoJoinZoomMeetingWeb();
     } else {
+      _cancelFallbackTimer();
       onLoadingEnd?.call();
       if (_hasCompletedAutoJoin) {
         onJoinSuccess?.call();
@@ -180,13 +222,17 @@ class ZoomAutoJoinHandler {
   }
 
   bool isZoomJoinGateUrl(String? url) {
-    if (url == null) return false;
+    if (url == null || !ZoomWebViewConfig.isPermittedZoomUrl(url)) {
+      return false;
+    }
 
-    final normalizedUrl = url.toLowerCase();
-    return normalizedUrl.contains('zoom.us') &&
-        (normalizedUrl.contains('/j/') ||
-            normalizedUrl.contains('/wc/') ||
-            normalizedUrl.contains('/join'));
+    final uri = Uri.tryParse(url);
+    if (uri == null) return false;
+
+    final path = uri.path.toLowerCase();
+    return path.contains('/j/') ||
+        path.contains('/wc/') ||
+        path.contains('/join');
   }
 
   Future<void> _autoJoinZoomMeetingWeb() async {
@@ -253,8 +299,22 @@ class ZoomAutoJoinHandler {
       await _webViewController?.runJavaScript(javascript);
     } catch (e, st) {
       onError?.call(e, st);
-      onJoinTimeout?.call();
+      onLoadingEnd?.call();
     }
+  }
+
+  void _startFallbackTimer() {
+    _cancelFallbackTimer();
+    _fallbackTimer = Timer(fallbackTimeout, () {
+      if (!_isDisposed) {
+        onLoadingEnd?.call();
+      }
+    });
+  }
+
+  void _cancelFallbackTimer() {
+    _fallbackTimer?.cancel();
+    _fallbackTimer = null;
   }
 
   void _handleJavaScriptMessage(String message) {
@@ -262,12 +322,17 @@ class ZoomAutoJoinHandler {
 
     if (message == 'onButtonClicked') {
       _hasCompletedAutoJoin = true;
+      _startFallbackTimer();
     } else if (message == 'onMeetingDetected') {
       _hasCompletedAutoJoin = true;
+      _cancelFallbackTimer();
       onLoadingEnd?.call();
       onJoinSuccess?.call();
     } else if (message == 'onAutoJoinTimeout') {
+      _cancelFallbackTimer();
       onJoinTimeout?.call();
+    } else if (message == 'onPermissionDenied') {
+      onPermissionPermanentlyDenied?.call();
     }
   }
 
@@ -277,6 +342,7 @@ class ZoomAutoJoinHandler {
   void dispose() {
     _isDisposed = true;
     _hasCompletedAutoJoin = false;
+    _cancelFallbackTimer();
   }
 }
 
@@ -299,13 +365,17 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
   late WebViewController _webViewController;
   late ZoomAutoJoinHandler _autoJoinHandler;
   bool _isLoading = false;
-  bool _permissionsGranted = false;
+  bool _isWebViewReady = false;
+  bool _isShowingPermissionDialog = false;
+  bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
     _initializeHandler();
-    _checkPermissionsAndLoad();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPermissionsAndLoad();
+    });
   }
 
   void _initializeHandler() {
@@ -322,12 +392,10 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
       onJoinTimeout: () {
         if (mounted) {
           setState(() => _isLoading = false);
-          AppToast.show(
-            context,
-            message: L10n.of(context).liveStreamJoinFailed,
-            isError: true,
-          );
         }
+      },
+      onPermissionPermanentlyDenied: () {
+        if (mounted) _showPermissionSettingsDialog();
       },
       onError: (error, stackTrace) {
         SentryService().captureException(error, stackTrace: stackTrace);
@@ -335,27 +403,80 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
     );
   }
 
+  Future<void> _showPermissionSettingsDialog() async {
+    if (_isShowingPermissionDialog || !mounted) return;
+
+    final cameraStatus = await Permission.camera.status;
+    final micStatus = await Permission.microphone.status;
+    final isPermanentlyDenied =
+        cameraStatus.isPermanentlyDenied || micStatus.isPermanentlyDenied;
+
+    if (!mounted) return;
+
+    if (isPermanentlyDenied) {
+      _isShowingPermissionDialog = true;
+      try {
+        final l10n = L10n.of(context);
+        final confirmed = await showConfirmationDialog(
+          context,
+          title: l10n.zoomPermissionDialogTitle,
+          content: l10n.zoomPermissionDialogContent,
+          confirmText: l10n.openSettings,
+          cancelText: l10n.notNow,
+        );
+
+        if (confirmed) {
+          await openAppSettings();
+        }
+      } finally {
+        _isShowingPermissionDialog = false;
+      }
+    } else {
+      AppToast.show(
+        context,
+        message: L10n.of(context).zoomPermissionRequired,
+        isError: true,
+      );
+    }
+  }
+
   Future<void> _checkPermissionsAndLoad() async {
     final permissionsGranted =
         await ZoomPermissionHandler.checkAndRequestPermissions();
 
-    if (permissionsGranted && mounted) {
-      setState(() => _permissionsGranted = true);
+    if (!mounted) return;
+
+    if (permissionsGranted) {
       await _setupWebView();
-    } else if (mounted) {
-      AppToast.show(
-        context,
-        message: L10n.of(context).teamsPermissionRequired,
-        isError: true,
-      );
-      Navigator.of(context).pop();
+      setState(() => _isWebViewReady = true);
+    } else {
+      await _showPermissionSettingsDialog();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
   Future<void> _setupWebView() async {
     _webViewController = WebViewController(
-      onPermissionRequest: (WebViewPermissionRequest request) {
-        request.grant();
+      onPermissionRequest: (WebViewPermissionRequest request) async {
+        final currentUrl = await _webViewController.currentUrl();
+        final urlToCheck = (currentUrl != null && currentUrl.isNotEmpty)
+            ? currentUrl
+            : widget.joinUrl;
+        final isPermittedHost =
+            ZoomWebViewConfig.isPermittedZoomUrl(urlToCheck);
+
+        final isAllowedResourceType = request.types.isNotEmpty &&
+            request.types.every((type) =>
+                type == WebViewPermissionResourceType.camera ||
+                type == WebViewPermissionResourceType.microphone);
+
+        if (isPermittedHost && isAllowedResourceType) {
+          await request.grant();
+        } else {
+          await request.deny();
+        }
       },
     )
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -363,6 +484,9 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (String url) {
+            if (_hasError && mounted) {
+              setState(() => _hasError = false);
+            }
             _autoJoinHandler.onPageStarted(url);
           },
           onPageFinished: (String url) {
@@ -375,7 +499,18 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
             return NavigationDecision.prevent;
           },
           onWebResourceError: (WebResourceError error) {
-            // Ignored background resource errors
+            if (error.isForMainFrame == true && error.errorCode != -999) {
+              SentryService().captureException(
+                'Zoom WebView main frame load failure: ${error.description} (code: ${error.errorCode})',
+                stackTrace: StackTrace.current,
+              );
+              if (mounted) {
+                setState(() {
+                  _hasError = true;
+                  _isLoading = false;
+                });
+              }
+            }
           },
         ),
       );
@@ -390,40 +525,56 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    Widget bodyContent;
+    if (_hasError) {
+      bodyContent = Center(
+        child: AppErrorView(
+          onRetry: () {
+            setState(() {
+              _hasError = false;
+              _isLoading = true;
+            });
+            _webViewController.loadRequest(Uri.parse(widget.joinUrl));
+          },
+        ),
+      );
+    } else {
+      bodyContent = Stack(
+        children: [
+          if (_isWebViewReady) WebViewWidget(controller: _webViewController),
+          if (_isLoading)
+            AppSemantics.container(
+              label: L10n.of(context).zoomJoinMeetingLoading,
+              child: Container(
+                color: design.colors.canvas,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AppLoadingIndicator(
+                        color: design.colors.primary,
+                      ),
+                      SizedBox(height: design.spacing.sm),
+                      AppText.label(
+                        L10n.of(context).zoomJoinMeetingLoading,
+                        color: design.colors.textPrimary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      );
+    }
+
     return LessonDetailShell(
       title: widget.title,
       onBack: () => Navigator.of(context).pop(),
       backgroundColor: design.colors.canvas,
       child: SafeArea(
         top: false,
-        child: Stack(
-          children: [
-            if (_permissionsGranted)
-              WebViewWidget(controller: _webViewController),
-            if (_isLoading)
-              AppSemantics.container(
-                label: L10n.of(context).teamsJoinMeetingLoading,
-                child: Container(
-                  color: design.colors.canvas,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppLoadingIndicator(
-                          color: design.colors.primary,
-                        ),
-                        SizedBox(height: design.spacing.sm),
-                        AppText.label(
-                          L10n.of(context).teamsJoinMeetingLoading,
-                          color: design.colors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+        child: bodyContent,
       ),
     );
   }

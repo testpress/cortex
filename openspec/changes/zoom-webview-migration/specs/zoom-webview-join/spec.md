@@ -10,9 +10,10 @@ The system SHALL allow users to join Zoom live classes using an in-app WebView s
 - **AND** load the Zoom web client join URL with the meeting ID, passcode, and participant display name.
 
 #### Scenario: User denies camera or microphone permissions
-- **WHEN** camera or microphone permissions are denied or permanently denied
-- **THEN** the system SHALL display a localized error toast indicating permissions are required
-- **AND** pop back to the previous screen without attempting to load the meeting.
+- **WHEN** camera or microphone permissions are denied or permanently denied upon entering the screen
+- **THEN** the system SHALL display a confirmation dialog prompting the user to open device Settings to enable them
+- **AND** open application settings if the user confirms
+- **AND** return to the lesson lobby without attempting to load the meeting.
 
 #### Scenario: Deep link handling in WebView
 - **WHEN** the Zoom web page attempts to navigate to a native URI scheme (such as `zoomus://` or `intent://`)
@@ -22,6 +23,6 @@ The system SHALL allow users to join Zoom live classes using an in-app WebView s
 - **WHEN** the user is inside the Zoom WebView screen and taps the back button on `LessonDetailShell`
 - **THEN** the WebView SHALL be disposed, releasing camera and microphone media streams, and return the user to the lesson lobby.
 
-#### Scenario: Fallback when meeting cannot join
-- **WHEN** the Zoom WebView encounters an unrecoverable loading error or join timeout
-- **THEN** the system SHALL report the failure to Sentry and display a localized error toast to the user.
+#### Scenario: Fallback when auto-join detection completes or times out
+- **WHEN** the Zoom WebView automated button detection completes, times out, or encounters a non-fatal script error
+- **THEN** the system SHALL dismiss the loading overlay and allow the user to manually interact with the meeting without showing a join failure toast.
