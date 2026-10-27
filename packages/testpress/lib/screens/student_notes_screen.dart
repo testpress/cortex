@@ -1,42 +1,12 @@
 import 'dart:async' show unawaited;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
+import '../providers/student_notes_provider.dart';
 
-part 'student_notes_screen.g.dart';
-
-const String _studentNotesPath = '/student-diary/my-notes/';
 const String _themeStorageKey = 'tp_theme_preference';
-
-/// Provider to fetch and resolve the presigned SSO URL for student notes.
-@riverpod
-Future<String> studentNotesUrl(Ref ref) async {
-  final settings = ref.watch(instituteSettingsProvider);
-  final userRepo = await ref.watch(userRepositoryProvider.future);
-  // Read once at initial URL creation time to avoid rebuilding the provider
-  // and reloading the entire WebView when the theme changes.
-  final designMode = ref.read(designModeProvider);
-
-  final themeParam = switch (designMode) {
-    DesignMode.dark => 'dark',
-    DesignMode.light => 'light',
-    _ => null,
-  };
-
-  final queryParams = <String, String>{'testpress_app': '1'};
-  if (themeParam != null) {
-    queryParams['theme'] = themeParam;
-  }
-  final nextUri = Uri(path: _studentNotesPath, queryParameters: queryParams);
-
-  return userRepo.getAuthenticatedSsoUrl(
-    nextPath: nextUri.toString(),
-    domainUrl: settings?.domainUrl,
-  );
-}
 
 /// Keeps student notes routes on the institute domain inside the WebView,
 /// delegating external links and file attachments to the system browser.
@@ -184,7 +154,7 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
             children: [
               AppHeader(
                 title: title,
-                leading: AppBackButton(onTap: _handleBack),
+                leading: AppBackButton(onTap: () => context.pop()),
               ),
               Expanded(
                 child: notesUrlAsync.when(
@@ -192,6 +162,10 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
                     final domainHost = Uri.tryParse(notesUrl)?.host;
                     return AppWebView(
                       url: notesUrl,
+                      permissions: const [
+                        Permission.camera,
+                        Permission.storage,
+                      ],
                       onWebViewCreated: (controller) {
                         _controller = controller;
                       },
@@ -200,11 +174,14 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
                       },
                       onNavigationRequest: (request) {
                         final uri = Uri.tryParse(request.url);
-                        if (uri != null &&
-                            !isAllowedStudentNotesInAppNavigation(
-                              uri,
-                              domainHost,
-                            )) {
+                        if (uri == null) {
+                          return NavigationDecision.prevent;
+                        }
+
+                        if (!isAllowedStudentNotesInAppNavigation(
+                          uri,
+                          domainHost,
+                        )) {
                           unawaited(_launchExternalUrl(uri));
                           return NavigationDecision.prevent;
                         }

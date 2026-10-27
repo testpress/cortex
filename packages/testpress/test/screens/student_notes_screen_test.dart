@@ -6,6 +6,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import 'package:testpress/screens/student_notes_screen.dart';
+import 'package:testpress/providers/student_notes_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 // ignore: depend_on_referenced_packages
@@ -402,6 +403,16 @@ void main() {
           ),
         );
         expect(externalDecision, NavigationDecision.prevent);
+
+        final malformedDecision = await webView.onNavigationRequest!(
+          const NavigationRequest(url: 'ht tp://bad uri', isMainFrame: true),
+        );
+        expect(malformedDecision, NavigationDecision.prevent);
+
+        expect(
+          webView.permissions,
+          equals(const [Permission.camera, Permission.storage]),
+        );
       },
     );
 

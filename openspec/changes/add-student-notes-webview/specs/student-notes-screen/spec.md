@@ -28,7 +28,7 @@ The system SHALL resolve a presigned single sign-on URL using `UserRepository.ge
 - **THEN** `UserRepository.getAuthenticatedSsoUrl()` uses the scheme and host from `AppConfig.apiBaseUrl` as the base domain
 
 ### Requirement: Student Notes WebView Authorization and Capabilities
-The system SHALL embed `AppWebView` inside `StudentNotesScreen` to display the resolved notes page, supporting file attachments and camera access.
+The system SHALL embed `AppWebView` inside `StudentNotesScreen` to display the resolved notes page, displaying the responsive rich-text notes interface.
 
 #### Scenario: Loading state display
 - **WHEN** the presigned SSO URL is being fetched
@@ -40,7 +40,7 @@ The system SHALL embed `AppWebView` inside `StudentNotesScreen` to display the r
 
 #### Scenario: WebView page rendered
 - **WHEN** the SSO URL resolves successfully
-- **THEN** `StudentNotesScreen` renders `AppWebView` pointing to the resolved URL with camera and storage permissions enabled
+- **THEN** `StudentNotesScreen` renders `AppWebView` pointing to the resolved URL with theme synchronization and navigation handling
 
 ### Requirement: Layout, Header, and Back Navigation
 `StudentNotesScreen` SHALL provide a header adhering to Cortex design standards with a back button and back navigation delegate for in-webview history.

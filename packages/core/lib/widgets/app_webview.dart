@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 export 'package:webview_flutter/webview_flutter.dart'
     show NavigationDecision, NavigationRequest, WebViewController;
+export 'package:permission_handler/permission_handler.dart' show Permission;
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:file_picker/file_picker.dart';

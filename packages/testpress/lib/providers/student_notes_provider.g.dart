@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'student_notes_screen.dart';
+part of 'student_notes_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$studentNotesUrlHash() => r'studentNotesUrl';
+String _$studentNotesUrlHash() => r'2691ad27a20c3547167732a3fc26372eb04620a2';
 
 /// Provider to fetch and resolve the presigned SSO URL for student notes.
 ///
