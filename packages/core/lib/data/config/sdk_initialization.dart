@@ -21,7 +21,11 @@ Future<void> sdkInitialization(SdkInitializationRef ref) async {
     authToken = await ref.read(authLocalDataSourceProvider).getToken();
   }
 
-  TestpressSDK.initialize(subdomain: subdomain, authToken: authToken);
+  TestpressSDK.initialize(
+    subdomain: subdomain,
+    authToken: authToken,
+    allowFallbackToL3: true,
+  );
 
   // Initialize Sentry SDK
   await ref.read(sentryServiceProvider).initialize();
