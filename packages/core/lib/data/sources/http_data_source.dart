@@ -678,16 +678,13 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<PostDto> getPost(String slug, {bool isShortLink = false}) async {
-    final attempts = isShortLink
-        ? <Map<String, dynamic>?>[
-            {'short_link': 'true'},
-            null,
-          ]
-        : <Map<String, dynamic>?>[
-            null,
-            {'short_link': 'true'},
-          ];
+  Future<PostDto> getPost(String slug) async {
+    // Queries via short_link first (matching /p/<short_code> notification deep links),
+    // and falls back to standard slug query on 404.
+    const attempts = <Map<String, dynamic>?>[
+      {'short_link': 'true'},
+      null,
+    ];
 
     for (int i = 0; i < attempts.length; i++) {
       try {

@@ -66,8 +66,8 @@ class PostsRepository {
   }
 
   /// Fetch a single post by slug from the network and cache it locally.
-  Future<PostDto> fetchPost(String slug, {bool isShortLink = false}) async {
-    final dto = await _source.getPost(slug, isShortLink: isShortLink);
+  Future<PostDto> fetchPost(String slug) async {
+    final dto = await _source.getPost(slug);
     final companion = _mapDtoToCompanion(dto);
     await _db.upsertPost(companion);
     return dto;

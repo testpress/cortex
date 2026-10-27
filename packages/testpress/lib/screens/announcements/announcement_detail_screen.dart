@@ -27,53 +27,49 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     return postAsync.when(
       data: (loadedPost) {
         if (loadedPost == null) {
-          return AppShell(
-            backgroundColor: design.colors.card,
-            child: Column(
-              children: [
-                _buildAppBar(context, design, l10n),
-                Expanded(
-                  child: Center(
-                    child: AppErrorView(
-                      error: const ApiException(
-                        'The requested resource was not found.',
-                        type: ApiErrorType.notFound,
-                        statusCode: 404,
-                      ),
-                      onRetry: () => ref.invalidate(postDetailProvider(slug!)),
-                    ),
-                  ),
-                ),
-              ],
+          return _buildStatus(
+            context: context,
+            design: design,
+            l10n: l10n,
+            child: AppErrorView(
+              title: l10n.errorNotFoundTitle,
+              onRetry: () => ref.invalidate(postDetailProvider(slug!)),
             ),
           );
         }
         return _buildContent(context, design, l10n, loadedPost);
       },
-      loading: () => AppShell(
-        backgroundColor: design.colors.card,
-        child: Column(
-          children: [
-            _buildAppBar(context, design, l10n),
-            const Expanded(child: Center(child: AppLoadingIndicator())),
-          ],
+      loading: () => _buildStatus(
+        context: context,
+        design: design,
+        l10n: l10n,
+        child: const AppLoadingIndicator(),
+      ),
+      error: (error, _) => _buildStatus(
+        context: context,
+        design: design,
+        l10n: l10n,
+        child: AppErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(postDetailProvider(slug!)),
         ),
       ),
-      error: (error, _) => AppShell(
-        backgroundColor: design.colors.card,
-        child: Column(
-          children: [
-            _buildAppBar(context, design, l10n),
-            Expanded(
-              child: Center(
-                child: AppErrorView(
-                  error: error,
-                  onRetry: () => ref.invalidate(postDetailProvider(slug!)),
-                ),
-              ),
-            ),
-          ],
-        ),
+    );
+  }
+
+  Widget _buildStatus({
+    required BuildContext context,
+    required DesignConfig design,
+    required AppLocalizations l10n,
+    required Widget child,
+  }) {
+    return AppShell(
+      backgroundColor: design.colors.card,
+      child: Column(
+        children: [
+          _buildAppBar(context, design, l10n),
+          Expanded(child: Center(child: child)),
+        ],
       ),
     );
   }

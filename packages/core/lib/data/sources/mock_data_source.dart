@@ -2130,7 +2130,7 @@ class MockDataSource implements DataSource {
   }
 
   @override
-  Future<PostDto> getPost(String slug, {bool isShortLink = false}) async {
+  Future<PostDto> getPost(String slug) async {
     await Future.delayed(const Duration(milliseconds: 300));
     final match = mockPosts
         .where((p) => p.slug == slug || p.shortLink == slug)
