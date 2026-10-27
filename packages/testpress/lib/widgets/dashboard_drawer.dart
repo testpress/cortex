@@ -25,7 +25,7 @@ class DashboardDrawer extends ConsumerWidget {
     final bookmarksEnabled = settings?.bookmarksEnabled ?? false;
     final helpdeskEnabled = settings?.helpdeskEnabled ?? false;
     final messagesEnabled = settings?.messagesEnabled ?? false;
-    final studentNotesEnabled = settings?.studentNotesEnabled ?? false;
+    final studentNotesEnabled = true;
     final enableStudentReport = !(settings?.disableStudentReport ?? false);
     final analyticsEnabled = !(settings?.disableStudentAnalytics ?? false);
     final qotdEnabled = settings?.qotdEnabled ?? false;

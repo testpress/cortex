@@ -156,16 +156,18 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
     final customLabel = settings?.studentNotesLabel?.trim();
     final title = (customLabel != null && customLabel.isNotEmpty)
         ? customLabel
-        : l10n.notesTitle;
+        : l10n.drawerNotes;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     // Listen to theme mode changes without rebuilding the WebView provider
     ref.listen(designModeProvider, (previous, next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _syncTheme(Design.of(context).isDark);
-        }
-      });
+      final isDark = switch (next) {
+        DesignMode.dark => true,
+        DesignMode.light => false,
+        DesignMode.system =>
+          MediaQuery.maybePlatformBrightnessOf(context) == Brightness.dark,
+      };
+      _syncTheme(isDark);
     });
 
     return PopScope(
@@ -194,7 +196,7 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
                         _controller = controller;
                       },
                       onPageFinished: (url) {
-                        _syncTheme(design.isDark);
+                        _syncTheme(Design.of(context).isDark);
                       },
                       onNavigationRequest: (request) {
                         final uri = Uri.tryParse(request.url);
