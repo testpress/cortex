@@ -408,11 +408,6 @@ void main() {
           const NavigationRequest(url: 'ht tp://bad uri', isMainFrame: true),
         );
         expect(malformedDecision, NavigationDecision.prevent);
-
-        expect(
-          webView.permissions,
-          equals(const [Permission.camera, Permission.storage]),
-        );
       },
     );
 

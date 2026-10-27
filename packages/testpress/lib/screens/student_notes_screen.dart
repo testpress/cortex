@@ -36,7 +36,7 @@ bool isAllowedStudentNotesInAppNavigation(Uri uri, String? domainHost) {
 /// A dedicated screen for displaying student personal notes.
 ///
 /// Wraps [AppWebView] to load the student notes web view via presigned SSO,
-/// handling in-webview history on back gestures and providing a refresh action.
+/// handling in-webview history on back gestures.
 class StudentNotesScreen extends ConsumerStatefulWidget {
   const StudentNotesScreen({super.key});
 
@@ -162,10 +162,6 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
                     final domainHost = Uri.tryParse(notesUrl)?.host;
                     return AppWebView(
                       url: notesUrl,
-                      permissions: const [
-                        Permission.camera,
-                        Permission.storage,
-                      ],
                       onWebViewCreated: (controller) {
                         _controller = controller;
                       },

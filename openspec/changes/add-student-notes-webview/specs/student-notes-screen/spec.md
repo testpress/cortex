@@ -57,7 +57,7 @@ The system SHALL embed `AppWebView` inside `StudentNotesScreen` to display the r
 - **WHEN** the user presses the system back button and the web view cannot go back further
 - **THEN** `StudentNotesScreen` pops and returns to the previous route
 
-### Requirement: Attachment and External Link Delegation
+### Requirement: External Link Delegation
 `StudentNotesScreen` SHALL intercept navigation requests to prevent the embedded WebView from navigating to external hosts, launching them in the device's system browser instead.
 
 #### Scenario: User taps external link
