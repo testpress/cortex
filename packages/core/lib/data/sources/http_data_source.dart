@@ -682,6 +682,7 @@ class HttpDataSource implements DataSource {
     // Queries title slugs (containing hyphens or long) directly first.
     // For short codes (push notification deep links like /p/<short_code>), queries ?short_link=true first.
     // Seamlessly falls back to the alternate query if the first attempt returns 404.
+    // Note: A genuinely missing post will attempt both queries before returning 404.
     final bool preferSlug = slug.contains('-') || slug.length > 10;
     final attempts = preferSlug
         ? const <Map<String, dynamic>?>[

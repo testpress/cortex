@@ -25,7 +25,24 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     final postAsync = ref.watch(postDetailProvider(slug!));
 
     return postAsync.when(
-      data: (loadedPost) => _buildContent(context, design, l10n, loadedPost!),
+      data: (loadedPost) {
+        if (loadedPost == null) {
+          return _buildStatus(
+            context: context,
+            design: design,
+            l10n: l10n,
+            child: AppErrorView(
+              error: const ApiException(
+                'Post not found',
+                type: ApiErrorType.notFound,
+                statusCode: 404,
+              ),
+              onRetry: () => ref.invalidate(postDetailProvider(slug!)),
+            ),
+          );
+        }
+        return _buildContent(context, design, l10n, loadedPost);
+      },
       loading: () => _buildStatus(
         context: context,
         design: design,
