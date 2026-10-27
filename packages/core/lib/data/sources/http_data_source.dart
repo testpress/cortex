@@ -679,12 +679,19 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<PostDto> getPost(String slug) async {
-    // Queries via short_link first (matching /p/<short_code> notification deep links),
-    // and falls back to standard slug query on 404.
-    const attempts = <Map<String, dynamic>?>[
-      {'short_link': 'true'},
-      null,
-    ];
+    // Queries title slugs (containing hyphens or long) directly first.
+    // For short codes (push notification deep links like /p/<short_code>), queries ?short_link=true first.
+    // Seamlessly falls back to the alternate query if the first attempt returns 404.
+    final bool preferSlug = slug.contains('-') || slug.length > 10;
+    final attempts = preferSlug
+        ? const <Map<String, dynamic>?>[
+            null,
+            {'short_link': 'true'},
+          ]
+        : const <Map<String, dynamic>?>[
+            {'short_link': 'true'},
+            null,
+          ];
 
     for (int i = 0; i < attempts.length; i++) {
       try {
