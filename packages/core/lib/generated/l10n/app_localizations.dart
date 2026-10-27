@@ -1416,17 +1416,11 @@ abstract class AppLocalizations {
   /// **'Chat with Us'**
   String get drawerMessages;
 
-  /// No description provided for @drawerNotes.
+  /// No description provided for @notes.
   ///
   /// In en, this message translates to:
   /// **'Notes'**
-  String get drawerNotes;
-
-  /// No description provided for @notesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes'**
-  String get notesTitle;
+  String get notes;
 
   /// No description provided for @messagesTitle.
   ///

@@ -5,7 +5,7 @@ The system SHALL expose a "Notes" option in the main navigation drawer (`Dashboa
 
 #### Scenario: Notes option visible in drawer
 - **WHEN** the dashboard drawer is open and `studentNotesEnabled` in `InstituteSettings` is `true`
-- **THEN** the drawer displays the Notes item with an appropriate icon and label (`studentNotesLabel` or localized `drawerNotes`)
+- **THEN** the drawer displays the Notes item with an appropriate icon and label (`studentNotesLabel` or localized `notes`)
 
 #### Scenario: Notes option hidden in drawer
 - **WHEN** the dashboard drawer is open and `studentNotesEnabled` in `InstituteSettings` is `false`

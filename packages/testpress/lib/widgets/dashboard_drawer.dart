@@ -56,7 +56,7 @@ class DashboardDrawer extends ConsumerWidget {
     final displayStudentNotesLabel =
         (studentNotesLabel != null && studentNotesLabel.isNotEmpty)
         ? studentNotesLabel
-        : l10n.drawerNotes;
+        : l10n.notes;
 
     return AppDrawer(
       isOpen: isOpen,

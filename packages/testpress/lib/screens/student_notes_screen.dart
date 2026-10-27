@@ -156,7 +156,7 @@ class _StudentNotesScreenState extends ConsumerState<StudentNotesScreen> {
     final customLabel = settings?.studentNotesLabel?.trim();
     final title = (customLabel != null && customLabel.isNotEmpty)
         ? customLabel
-        : l10n.drawerNotes;
+        : l10n.notes;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     // Listen to theme mode changes without rebuilding the WebView provider

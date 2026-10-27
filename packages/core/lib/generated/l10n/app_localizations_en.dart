@@ -722,10 +722,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerMessages => 'Chat with Us';
 
   @override
-  String get drawerNotes => 'Notes';
-
-  @override
-  String get notesTitle => 'Notes';
+  String get notes => 'Notes';
 
   @override
   String get messagesTitle => 'Chat with Us';
