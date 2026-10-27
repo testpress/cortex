@@ -5,17 +5,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:core/core.dart';
 
 class ZoomPermissionHandler {
-  static Future<void> requestPermissions() async {
-    final permissions = [
-      Permission.camera,
-      Permission.microphone,
-    ];
-
-    try {
-      await permissions.request();
-    } catch (_) {}
-  }
-
   static Future<bool> checkAndRequestPermissions() async {
     final permissions = [
       Permission.camera,
@@ -81,14 +70,6 @@ class ZoomWebViewConfig {
       return false;
     }
 
-    // Explicitly reject app-switch schemes or intents
-    if (url.startsWith('zoomus:') ||
-        url.startsWith('zoommtg:') ||
-        url.startsWith('intent:') ||
-        url.startsWith('market:')) {
-      return false;
-    }
-
     final host = uri.host.toLowerCase();
     final isZoomHost = host == 'zoom.us' ||
         host.endsWith('.zoom.us') ||
@@ -99,15 +80,15 @@ class ZoomWebViewConfig {
       return false;
     }
 
-    // Block navigation to download/app stores or marketing sales funnels
+    // Only allow meeting-related paths. Everything else on zoom.us
+    // (privacy policy, terms, legal, marketing, etc.) is blocked.
     final path = uri.path.toLowerCase();
-    if (path.startsWith('/download') ||
-        path.startsWith('/pricing') ||
-        path.startsWith('/signup')) {
-      return false;
-    }
+    final isMeetingPath = path.startsWith('/j/') ||
+        path.startsWith('/wc/') ||
+        path.startsWith('/join') ||
+        path.startsWith('/s/');
 
-    return true;
+    return isMeetingPath;
   }
 }
 
@@ -153,8 +134,6 @@ class ZoomAutoJoinHandler {
         }
       },
     );
-
-    _injectPermissionBridge();
   }
 
   /// Patches getUserMedia in the WebView so that any NotAllowedError
@@ -162,6 +141,10 @@ class ZoomAutoJoinHandler {
   Future<void> _injectPermissionBridge() async {
     const script = '''
       (function() {
+        if (window.__tpGumPatched) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+        window.__tpGumPatched = true;
+
         var _origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
         navigator.mediaDevices.getUserMedia = function(constraints) {
           return _origGetUserMedia(constraints).catch(function(err) {
@@ -243,6 +226,17 @@ class ZoomAutoJoinHandler {
 
         var checkExist = setInterval(function() {
             retries++;
+
+            // GUARD: If the Zoom app-launch dialog is showing (user clicked "Join with app"),
+            // do not auto-click anything — clicking "Join from browser" here causes a stutter loop.
+            var allBtns = document.querySelectorAll('button');
+            for (var i = 0; i < allBtns.length; i++) {
+                var t = (allBtns[i].textContent || allBtns[i].innerText || '').toLowerCase();
+                if (t.indexOf('zoom workplace app') > -1) {
+                    clearInterval(checkExist);
+                    return;
+                }
+            }
 
             // PHASE 0: Check if meeting room is active (video grid or controls loaded)
             var meetingApp = document.querySelector('#meeting-app') ||
@@ -338,6 +332,11 @@ class ZoomAutoJoinHandler {
 
   @visibleForTesting
   void simulateJsMessage(String message) => _handleJavaScriptMessage(message);
+
+  void reset() {
+    _hasCompletedAutoJoin = false;
+    _cancelFallbackTimer();
+  }
 
   void dispose() {
     _isDisposed = true;
@@ -448,6 +447,7 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
 
     if (permissionsGranted) {
       await _setupWebView();
+      if (!mounted) return;
       setState(() => _isWebViewReady = true);
     } else {
       await _showPermissionSettingsDialog();
@@ -530,6 +530,7 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
       bodyContent = Center(
         child: AppErrorView(
           onRetry: () {
+            _autoJoinHandler.reset();
             setState(() {
               _hasError = false;
               _isLoading = true;

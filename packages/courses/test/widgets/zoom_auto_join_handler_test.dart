@@ -311,5 +311,43 @@ void main() {
       await tester.pump(const Duration(seconds: 6));
       expect(loadingEnded, isFalse);
     });
+
+    testWidgets(
+        'reset(): clears completed auto-join state and allows loading start on retry',
+        (tester) async {
+      bool loadingStarted = false;
+      final handler = _buildHandler(
+        onLoadingStart: () => loadingStarted = true,
+      );
+
+      // Simulate completion
+      handler.simulateJsMessage('onMeetingDetected');
+      expect(loadingStarted, isFalse);
+
+      // Verify onPageStarted does not trigger while completed
+      handler.onPageStarted('https://zoom.us/j/123456');
+      expect(loadingStarted, isFalse);
+
+      // Reset handler (as called onRetry)
+      handler.reset();
+
+      // Now onPageStarted should trigger loading start again
+      handler.onPageStarted('https://zoom.us/j/123456');
+      expect(loadingStarted, isTrue);
+    });
+
+    testWidgets('reset(): cancels active fallback timer', (tester) async {
+      bool loadingEnded = false;
+      final handler = _buildHandler(
+        onLoadingEnd: () => loadingEnded = true,
+        fallbackTimeout: const Duration(seconds: 5),
+      );
+
+      handler.simulateJsMessage('onButtonClicked');
+      handler.reset();
+
+      await tester.pump(const Duration(seconds: 6));
+      expect(loadingEnded, isFalse);
+    });
   });
 }
