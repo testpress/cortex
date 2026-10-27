@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/post_dto.dart';
 import '../repositories/repository_providers.dart';
@@ -189,7 +191,12 @@ Stream<PostDto?> postDetail(PostDetailRef ref, String slug) async* {
       return;
     }
   } else {
-    repository.fetchPost(slug).catchError((_) => cached);
+    unawaited(
+      repository.fetchPost(slug).catchError((Object e) {
+        debugPrint('Background refresh failed for post $slug: $e');
+        return cached;
+      }),
+    );
   }
 
   yield* repository.watchPostBySlug(slug);

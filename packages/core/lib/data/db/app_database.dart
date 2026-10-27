@@ -530,12 +530,14 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<PostData?> watchPostBySlug(String slug) =>
       (select(postsTable)
-            ..where((t) => t.slug.equals(slug) | t.shortLink.equals(slug)))
+            ..where((t) => t.slug.equals(slug) | t.shortLink.equals(slug))
+            ..limit(1))
           .watchSingleOrNull();
 
   Future<PostData?> getPostBySlug(String slug) =>
       (select(postsTable)
-            ..where((t) => t.slug.equals(slug) | t.shortLink.equals(slug)))
+            ..where((t) => t.slug.equals(slug) | t.shortLink.equals(slug))
+            ..limit(1))
           .getSingleOrNull();
 
   Future<int> upsertPost(PostsTableCompanion row) =>

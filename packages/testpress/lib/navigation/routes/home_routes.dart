@@ -23,6 +23,7 @@ class HomeRoutes {
               path: ':slug',
               parentNavigatorKey: rootNavigatorKey,
               builder: (context, state) {
+                // Accepts extra when navigating from the announcements list, or slug when opened via deep link.
                 final slug = state.pathParameters['slug']!;
                 final post = state.extra is PostDto
                     ? state.extra as PostDto

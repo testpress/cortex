@@ -1,7 +1,7 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AnnouncementDetailScreen extends ConsumerWidget {
   const AnnouncementDetailScreen({super.key, this.post, this.slug})
@@ -35,9 +35,9 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                 Expanded(
                   child: Center(
                     child: AppErrorView(
-                      title: l10n.errorGenericTitle,
-                      message: 'Announcement not found',
-                      onRetry: () => ref.refresh(postDetailProvider(slug!)),
+                      title: l10n.errorNotFoundTitle,
+                      message: l10n.errorGenericMessage,
+                      onRetry: () => ref.invalidate(postDetailProvider(slug!)),
                     ),
                   ),
                 ),
@@ -65,7 +65,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
               child: Center(
                 child: AppErrorView(
                   error: error,
-                  onRetry: () => ref.refresh(postDetailProvider(slug!)),
+                  onRetry: () => ref.invalidate(postDetailProvider(slug!)),
                 ),
               ),
             ),
@@ -75,7 +75,11 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAppBar(BuildContext context, DesignConfig design, dynamic l10n) {
+  Widget _buildAppBar(
+    BuildContext context,
+    DesignConfig design,
+    AppLocalizations l10n,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: design.colors.card,
@@ -93,7 +97,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              GestureDetector(
+              AppBackButton(
                 onTap: () {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
@@ -101,14 +105,6 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                     context.go('/home');
                   }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2), // Optical alignment
-                  child: Icon(
-                    LucideIcons.arrowLeft,
-                    color: design.colors.textPrimary,
-                    size: 22,
-                  ),
-                ),
               ),
               SizedBox(width: design.spacing.sm),
               Expanded(
@@ -127,7 +123,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
   Widget _buildContent(
     BuildContext context,
     DesignConfig design,
-    dynamic l10n,
+    AppLocalizations l10n,
     PostDto post,
   ) {
     DateTime? date;

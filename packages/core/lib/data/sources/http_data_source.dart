@@ -679,24 +679,46 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<PostDto> getPost(String slug) async {
-    try {
-      // First try short_link query (matching /p/<short_code> deep links)
-      return await performNetworkRequest(
-        _dio.get(
-          ApiEndpoints.postDetail(slug),
-          queryParameters: {'short_link': 'true'},
-        ),
-        fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
-      );
-    } on ApiException catch (e) {
-      if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
-        // Fallback to standard slug lookup
-        return performNetworkRequest(
+    // Full slugs (e.g. 'exam-strategy-guide') contain hyphens.
+    // Short links (e.g. 'fseznr') are short alphanumeric codes generated for /p/ links.
+    final isLikelyShortLink = !slug.contains('-') && slug.length <= 10;
+
+    if (isLikelyShortLink) {
+      try {
+        return await performNetworkRequest(
+          _dio.get(
+            ApiEndpoints.postDetail(slug),
+            queryParameters: {'short_link': 'true'},
+          ),
+          fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
+        );
+      } on ApiException catch (e) {
+        if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
+          return performNetworkRequest(
+            _dio.get(ApiEndpoints.postDetail(slug)),
+            fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
+          );
+        }
+        rethrow;
+      }
+    } else {
+      try {
+        return await performNetworkRequest(
           _dio.get(ApiEndpoints.postDetail(slug)),
           fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
         );
+      } on ApiException catch (e) {
+        if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
+          return performNetworkRequest(
+            _dio.get(
+              ApiEndpoints.postDetail(slug),
+              queryParameters: {'short_link': 'true'},
+            ),
+            fromJson: (data) => PostDto.fromJson(data as Map<String, dynamic>),
+          );
+        }
+        rethrow;
       }
-      rethrow;
     }
   }
 
