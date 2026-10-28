@@ -8,6 +8,31 @@ import 'dart:developer' as dev;
 
 part 'initialization_provider.g.dart';
 
+Map<String, dynamic> _settingsFailureContext(Object error) {
+  return {
+    'api_host': AppConfig.apiBaseUrl,
+    'endpoint': ApiEndpoints.instituteSettings,
+    'exception_type': error.runtimeType.toString(),
+    'exception': _sanitizeDiagnosticText(error),
+    if (error is ApiException) ...{
+      'api_error_type': error.type.name,
+      if (error.statusCode != null) 'status_code': error.statusCode,
+      if (error.error != null)
+        'underlying_error': _sanitizeDiagnosticText(error.error!),
+    },
+  };
+}
+
+String _sanitizeDiagnosticText(Object value) {
+  final sanitized = value.toString().replaceAll(
+    RegExp(r'https?://[^\s]+'),
+    '<redacted-url>',
+  );
+  return sanitized.length <= 500
+      ? sanitized
+      : '${sanitized.substring(0, 500)}…';
+}
+
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
 @Riverpod(keepAlive: true)
@@ -16,7 +41,15 @@ Future<void> appInitialization(AppInitializationRef ref) async {
 
   // Settings can load concurrently with the remaining startup work, but Sentry
   // must be ready first or the first failure can be lost during initialization.
-  await ref.read(sentryServiceProvider).initialize();
+  try {
+    await ref.read(sentryServiceProvider).initialize();
+  } catch (e, stack) {
+    dev.log(
+      'Sentry initialization failed (diagnostics disabled)',
+      error: e,
+      stackTrace: stack,
+    );
+  }
   unawaited(ref.read(settingsInitializationProvider.future));
 
   // Initialize Firebase Core & Push Notifications (fails silently if google-services.json was missing)
@@ -79,17 +112,7 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
       ref.read(instituteSettingsProvider.notifier).state = fresh;
     } catch (e, stack) {
       dev.log('Settings initialization failed', error: e, stackTrace: stack);
-      final failureContext = <String, dynamic>{
-        'api_host': AppConfig.apiBaseUrl,
-        'endpoint': ApiEndpoints.instituteSettings,
-        'exception_type': e.runtimeType.toString(),
-        'exception': e.toString(),
-        if (e is ApiException) ...{
-          'api_error_type': e.type.name,
-          if (e.statusCode != null) 'status_code': e.statusCode,
-          if (e.error != null) 'underlying_error': e.error.toString(),
-        },
-      };
+      final failureContext = _settingsFailureContext(e);
 
       // Connection failures are normally filtered from Sentry as expected
       // offline conditions. Cold-start settings failures must always produce
@@ -100,10 +123,7 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
         e,
         stackTrace: stack,
         level: AppErrorLevel.error,
-        tags: {
-          'failure_stage': 'cold_start_settings',
-          'api_host': AppConfig.apiBaseUrl,
-        },
+        tags: {'failure_stage': 'cold_start_settings'},
         contexts: {'settings_request': failureContext},
         bypassFilter: true,
       );

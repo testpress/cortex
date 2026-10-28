@@ -57,7 +57,7 @@ class SentryService {
 
         // Filter out expected client conditions (offline, 4xx client errors)
         options.beforeSend = (event, hint) {
-          if (shouldIgnoreException(event.throwable)) {
+          if (shouldIgnoreSentryEvent(event)) {
             return null;
           }
           return event;
@@ -94,6 +94,14 @@ class SentryService {
       }
     }
     return false;
+  }
+
+  @visibleForTesting
+  static bool shouldIgnoreSentryEvent(SentryEvent event) {
+    if (event.tags?['bypass_filter'] == 'true') {
+      return false;
+    }
+    return shouldIgnoreException(event.throwable);
   }
 
   /// Attaches the Sentry network error handler to the global [onNetworkErrorCapture] hook.
@@ -170,6 +178,7 @@ class SentryService {
       stackTrace: stackTrace,
       withScope: (scope) {
         if (level != null) scope.level = level.toSentryLevel;
+        if (bypassFilter) scope.setTag('bypass_filter', 'true');
         if (tags != null) {
           tags.forEach((key, value) {
             scope.setTag(key, value);

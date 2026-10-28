@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tpstreams_player_sdk/tpstreams_player_sdk.dart';
 import '../services/sentry_service.dart';
@@ -28,5 +30,14 @@ Future<void> sdkInitialization(SdkInitializationRef ref) async {
   );
 
   // Initialize Sentry SDK
-  await ref.read(sentryServiceProvider).initialize();
+  try {
+    await ref.read(sentryServiceProvider).initialize();
+  } catch (e, stack) {
+    // Sentry is diagnostic-only and must never prevent app startup.
+    dev.log(
+      'Sentry initialization failed (diagnostics disabled)',
+      error: e,
+      stackTrace: stack,
+    );
+  }
 }
