@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'api_endpoints.dart';
 import '../data/exceptions/api_exception.dart';
+import '../data/auth/types/auth_exception.dart';
 
 /// Attaches the JWT authentication token to the Authorization header.
 /// Fetches the token asynchronously from storage to ensure it's always fresh.
@@ -16,7 +17,8 @@ class AuthInterceptor extends Interceptor {
   bool _parallelLoginTriggered = false;
 
   /// Paths that should not have an Authorization header attached.
-  static const _authFlowPaths = [
+  static const _publicPaths = [
+    ApiEndpoints.instituteSettings,
     ApiEndpoints.login,
     ApiEndpoints.socialAuth,
     ApiEndpoints.register,
@@ -45,17 +47,22 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip attaching token for login related paths
-    final isAuthFlowPath = _authFlowPaths.any(
+    // Public endpoints must not depend on secure-storage availability.
+    final isPublicPath = _publicPaths.any(
       (path) => options.path.contains(path),
     );
 
-    if (isAuthFlowPath) {
+    if (isPublicPath) {
       _sessionExpiryTriggered = false;
     } else {
-      final token = await getToken();
-      if (token != null && token.isNotEmpty) {
-        options.headers['Authorization'] = 'JWT $token';
+      try {
+        final token = await getToken();
+        if (token != null && token.isNotEmpty) {
+          options.headers['Authorization'] = 'JWT $token';
+        }
+      } on AuthException {
+        // A secure-storage failure must not abort the HTTP request. The server
+        // will return 401 for protected endpoints without a usable token.
       }
     }
 
@@ -67,7 +74,7 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       final hasAuthHeader = err.requestOptions.headers['Authorization'] != null;
 
-      final isAuthFlowPath = _authFlowPaths.any(
+      final isAuthFlowPath = _publicPaths.any(
         (path) => err.requestOptions.path.contains(path),
       );
 
