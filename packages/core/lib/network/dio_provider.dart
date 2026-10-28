@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,6 +19,8 @@ class DioFactory {
     final dio = Dio(
       BaseOptions(
         baseUrl: AppConfig.apiBaseUrl,
+        // Use Dio's default platform HTTP client and keep redirects disabled
+        // globally. API redirects must be handled explicitly per endpoint.
         followRedirects: false,
         headers: {
           'Accept': 'application/json',
@@ -28,15 +28,6 @@ class DioFactory {
         },
       ),
     );
-
-    if (!kIsWeb) {
-      final securityContext = SecurityContext(withTrustedRoots: true);
-      dio.httpClientAdapter = IOHttpClientAdapter(
-        createHttpClient: () {
-          return HttpClient(context: securityContext);
-        },
-      );
-    }
 
     dio.interceptors.add(UserAgentInterceptor());
     dio.interceptors.add(

@@ -24,6 +24,10 @@ Map<String, dynamic> _settingsFailureContext(Object error) {
           'redirect_location': error.dioDiagnostics!.redirectLocation,
         if (error.dioDiagnostics!.underlyingErrorType != null)
           'underlying_error_type': error.dioDiagnostics!.underlyingErrorType,
+        if (error.dioDiagnostics!.underlyingErrorText != null)
+          'underlying_error_text': _sanitizeDiagnosticText(
+            error.dioDiagnostics!.underlyingErrorText!,
+          ),
         if (error.dioDiagnostics!.dioMessage != null)
           'dio_message': _sanitizeDiagnosticText(
             error.dioDiagnostics!.dioMessage!,
@@ -139,11 +143,38 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
       // one diagnostic event because they block first launch and can also be
       // caused by redirects, TLS failures, or release-only request differences.
       final sentry = ref.read(sentryServiceProvider);
+      final diagnostics = e is ApiException ? e.dioDiagnostics : null;
+      dev.log(
+        'Cold-start settings request diagnostics: '
+        'dio_type=${diagnostics?.dioType}, '
+        'underlying_type=${diagnostics?.underlyingErrorType}, '
+        'underlying_error=${_sanitizeDiagnosticText(diagnostics?.underlyingErrorText ?? e)}, '
+        'request_uri=${diagnostics?.requestUri}, '
+        'status_code=${e is ApiException ? e.statusCode : null}, '
+        'follow_redirects=${diagnostics?.followRedirects}, '
+        'response_type=${diagnostics?.responseType}',
+        error: e,
+        stackTrace: stack,
+      );
+      final diagnosticTags = <String, String>{
+        'failure_stage': 'cold_start_settings',
+        if (diagnostics != null) 'dio_type': diagnostics.dioType,
+        if (diagnostics?.underlyingErrorType != null)
+          'dio_underlying_type': diagnostics!.underlyingErrorType!,
+        if (diagnostics?.underlyingErrorText != null)
+          'dio_underlying_error': _sanitizeDiagnosticText(
+            diagnostics!.underlyingErrorText!,
+          ),
+        if (diagnostics != null)
+          'dio_follow_redirects': diagnostics.followRedirects.toString(),
+        if (diagnostics?.responseType != null)
+          'dio_response_type': diagnostics!.responseType,
+      };
       await sentry.captureException(
         e,
         stackTrace: stack,
         level: AppErrorLevel.error,
-        tags: {'failure_stage': 'cold_start_settings'},
+        tags: diagnosticTags,
         contexts: {'settings_request': failureContext},
         bypassFilter: true,
       );

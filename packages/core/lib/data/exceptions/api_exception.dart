@@ -41,6 +41,7 @@ class DioDiagnostics {
   final String requestUri;
   final String? redirectLocation;
   final String? underlyingErrorType;
+  final String? underlyingErrorText;
   final String? dioMessage;
   final bool followRedirects;
   final int maxRedirects;
@@ -56,6 +57,7 @@ class DioDiagnostics {
     required this.requestUri,
     this.redirectLocation,
     this.underlyingErrorType,
+    this.underlyingErrorText,
     this.dioMessage,
     required this.followRedirects,
     required this.maxRedirects,
@@ -75,6 +77,7 @@ class DioDiagnostics {
         error.response?.headers.value('location'),
       ),
       underlyingErrorType: error.error?.runtimeType.toString(),
+      underlyingErrorText: error.error?.toString(),
       dioMessage: error.message,
       followRedirects: error.requestOptions.followRedirects,
       maxRedirects: error.requestOptions.maxRedirects,
