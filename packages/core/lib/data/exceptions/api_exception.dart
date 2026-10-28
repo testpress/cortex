@@ -36,6 +36,75 @@ enum ApiErrorType {
   unknown,
 }
 
+class DioDiagnostics {
+  final String dioType;
+  final String requestUri;
+  final String? redirectLocation;
+  final String? underlyingErrorType;
+  final String? dioMessage;
+  final bool followRedirects;
+  final int maxRedirects;
+  final String responseType;
+  final int? connectTimeoutMs;
+  final int? sendTimeoutMs;
+  final int? receiveTimeoutMs;
+  final List<String> requestHeaderNames;
+  final List<String> responseHeaderNames;
+
+  const DioDiagnostics({
+    required this.dioType,
+    required this.requestUri,
+    this.redirectLocation,
+    this.underlyingErrorType,
+    this.dioMessage,
+    required this.followRedirects,
+    required this.maxRedirects,
+    required this.responseType,
+    this.connectTimeoutMs,
+    this.sendTimeoutMs,
+    this.receiveTimeoutMs,
+    required this.requestHeaderNames,
+    required this.responseHeaderNames,
+  });
+
+  factory DioDiagnostics.fromDioException(DioException error) {
+    return DioDiagnostics(
+      dioType: error.type.name,
+      requestUri: _uriWithoutQuery(error.requestOptions.uri),
+      redirectLocation: _locationWithoutQuery(
+        error.response?.headers.value('location'),
+      ),
+      underlyingErrorType: error.error?.runtimeType.toString(),
+      dioMessage: error.message,
+      followRedirects: error.requestOptions.followRedirects,
+      maxRedirects: error.requestOptions.maxRedirects,
+      responseType: error.requestOptions.responseType.name,
+      connectTimeoutMs: error.requestOptions.connectTimeout?.inMilliseconds,
+      sendTimeoutMs: error.requestOptions.sendTimeout?.inMilliseconds,
+      receiveTimeoutMs: error.requestOptions.receiveTimeout?.inMilliseconds,
+      requestHeaderNames: error.requestOptions.headers.keys.toList(),
+      responseHeaderNames:
+          error.response?.headers.map.keys.toList() ?? const [],
+    );
+  }
+
+  static String _uriWithoutQuery(Uri uri) {
+    return Uri(
+      scheme: uri.scheme.isEmpty ? null : uri.scheme,
+      host: uri.host.isEmpty ? null : uri.host,
+      port: uri.hasPort ? uri.port : null,
+      path: uri.path,
+    ).toString();
+  }
+
+  static String? _locationWithoutQuery(String? location) {
+    if (location == null || location.isEmpty) return null;
+    final uri = Uri.tryParse(location);
+    if (uri == null) return location.split('?').first.split('#').first;
+    return _uriWithoutQuery(uri);
+  }
+}
+
 /// Base class for all API-related exceptions in the application.
 class ApiException implements Exception {
   final String message;
@@ -43,19 +112,7 @@ class ApiException implements Exception {
   final int? statusCode;
   final dynamic data;
   final dynamic error;
-  final String? dioType;
-  final String? requestUri;
-  final String? redirectLocation;
-  final String? underlyingErrorType;
-  final String? dioMessage;
-  final bool? followRedirects;
-  final int? maxRedirects;
-  final String? responseType;
-  final int? connectTimeoutMs;
-  final int? sendTimeoutMs;
-  final int? receiveTimeoutMs;
-  final List<String>? requestHeaderNames;
-  final List<String>? responseHeaderNames;
+  final DioDiagnostics? dioDiagnostics;
 
   const ApiException(
     this.message, {
@@ -63,19 +120,7 @@ class ApiException implements Exception {
     this.statusCode,
     this.data,
     this.error,
-    this.dioType,
-    this.requestUri,
-    this.redirectLocation,
-    this.underlyingErrorType,
-    this.dioMessage,
-    this.followRedirects,
-    this.maxRedirects,
-    this.responseType,
-    this.connectTimeoutMs,
-    this.sendTimeoutMs,
-    this.receiveTimeoutMs,
-    this.requestHeaderNames,
-    this.responseHeaderNames,
+    this.dioDiagnostics,
   });
 
   /// Whether this exception represents an HTTP 4xx client-side error.
@@ -88,27 +133,14 @@ class ApiException implements Exception {
       type == ApiErrorType.rateLimited;
 
   factory ApiException.fromDioException(DioException error) {
+    final diagnostics = DioDiagnostics.fromDioException(error);
     ApiException withDiagnostics(ApiException exception) => ApiException(
       exception.message,
       type: exception.type,
       statusCode: exception.statusCode,
       data: exception.data,
       error: exception.error,
-      dioType: error.type.name,
-      requestUri: error.requestOptions.uri
-          .replace(queryParameters: {}, fragment: '')
-          .toString(),
-      redirectLocation: error.response?.headers.value('location'),
-      underlyingErrorType: error.error?.runtimeType.toString(),
-      dioMessage: error.message,
-      followRedirects: error.requestOptions.followRedirects,
-      maxRedirects: error.requestOptions.maxRedirects,
-      responseType: error.requestOptions.responseType.name,
-      connectTimeoutMs: error.requestOptions.connectTimeout?.inMilliseconds,
-      sendTimeoutMs: error.requestOptions.sendTimeout?.inMilliseconds,
-      receiveTimeoutMs: error.requestOptions.receiveTimeout?.inMilliseconds,
-      requestHeaderNames: error.requestOptions.headers.keys.toList(),
-      responseHeaderNames: error.response?.headers.map.keys.toList(),
+      dioDiagnostics: diagnostics,
     );
 
     if (error.type == DioExceptionType.connectionError) {
