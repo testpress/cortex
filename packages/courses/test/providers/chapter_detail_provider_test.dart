@@ -45,7 +45,8 @@ class MockSentryService extends SentryService {
       {Map<String, dynamic>? contexts,
       AppErrorLevel? level,
       dynamic stackTrace,
-      Map<String, String>? tags}) async {
+      Map<String, String>? tags,
+      bool bypassFilter = false}) async {
     capturedException = exception as Exception;
   }
 }

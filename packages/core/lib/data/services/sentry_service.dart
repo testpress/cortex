@@ -31,7 +31,14 @@ extension AppErrorLevelMapper on AppErrorLevel {
 }
 
 class SentryService {
+  Future<void>? _initialization;
+
   Future<void> initialize() async {
+    final initialization = _initialization ??= _initialize();
+    await initialization;
+  }
+
+  Future<void> _initialize() async {
     if (AppConfig.sentryDsn.isNotEmpty) {
       // Get package info to explicitly set the release version
       final packageInfo = await PackageInfo.fromPlatform();
@@ -152,8 +159,9 @@ class SentryService {
     AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
+    bool bypassFilter = false,
   }) async {
-    if (shouldIgnoreException(exception)) {
+    if (!bypassFilter && shouldIgnoreException(exception)) {
       return;
     }
 

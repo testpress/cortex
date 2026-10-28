@@ -14,8 +14,9 @@ part 'initialization_provider.g.dart';
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
 
-  // Kick off settings load immediately — runs concurrently with Firebase & SDK init.
-  // This way cached settings are ready by the time the home screen renders.
+  // Settings can load concurrently with the remaining startup work, but Sentry
+  // must be ready first or the first failure can be lost during initialization.
+  await ref.read(sentryServiceProvider).initialize();
   unawaited(ref.read(settingsInitializationProvider.future));
 
   // Initialize Firebase Core & Push Notifications (fails silently if google-services.json was missing)
@@ -78,9 +79,34 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
       ref.read(instituteSettingsProvider.notifier).state = fresh;
     } catch (e, stack) {
       dev.log('Settings initialization failed', error: e, stackTrace: stack);
-      ref
-          .read(sentryServiceProvider)
-          .captureException(e, stackTrace: stack, level: AppErrorLevel.warning);
+      final failureContext = <String, dynamic>{
+        'api_host': AppConfig.apiBaseUrl,
+        'endpoint': ApiEndpoints.instituteSettings,
+        'exception_type': e.runtimeType.toString(),
+        'exception': e.toString(),
+        if (e is ApiException) ...{
+          'api_error_type': e.type.name,
+          if (e.statusCode != null) 'status_code': e.statusCode,
+          if (e.error != null) 'underlying_error': e.error.toString(),
+        },
+      };
+
+      // Connection failures are normally filtered from Sentry as expected
+      // offline conditions. Cold-start settings failures must always produce
+      // one diagnostic event because they block first launch and can also be
+      // caused by redirects, TLS failures, or release-only request differences.
+      final sentry = ref.read(sentryServiceProvider);
+      await sentry.captureException(
+        e,
+        stackTrace: stack,
+        level: AppErrorLevel.error,
+        tags: {
+          'failure_stage': 'cold_start_settings',
+          'api_host': AppConfig.apiBaseUrl,
+        },
+        contexts: {'settings_request': failureContext},
+        bypassFilter: true,
+      );
       rethrow;
     }
   }

@@ -13,8 +13,9 @@ class _FakeSentryService extends SentryService {
     AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
+    bool bypassFilter = false,
   }) async {
-    if (SentryService.shouldIgnoreException(exception)) {
+    if (!bypassFilter && SentryService.shouldIgnoreException(exception)) {
       return;
     }
     captured.add(
