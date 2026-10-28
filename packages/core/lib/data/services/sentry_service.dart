@@ -66,6 +66,10 @@ class SentryService {
 
       Sentry.configureScope((scope) {
         scope.setTag('domain', AppConfig.apiBaseUrl);
+        scope.setTag('app_name', packageInfo.appName);
+        scope.setTag('app_version', packageInfo.version);
+        scope.setTag('app_build', packageInfo.buildNumber);
+        scope.setTag('package_name', packageInfo.packageName);
       });
 
       // Attach to the global network error handler

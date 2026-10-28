@@ -36,6 +36,75 @@ enum ApiErrorType {
   unknown,
 }
 
+class DioDiagnostics {
+  final String dioType;
+  final String requestUri;
+  final String? redirectLocation;
+  final String? underlyingErrorType;
+  final String? dioMessage;
+  final bool followRedirects;
+  final int maxRedirects;
+  final String responseType;
+  final int? connectTimeoutMs;
+  final int? sendTimeoutMs;
+  final int? receiveTimeoutMs;
+  final List<String> requestHeaderNames;
+  final List<String> responseHeaderNames;
+
+  const DioDiagnostics({
+    required this.dioType,
+    required this.requestUri,
+    this.redirectLocation,
+    this.underlyingErrorType,
+    this.dioMessage,
+    required this.followRedirects,
+    required this.maxRedirects,
+    required this.responseType,
+    this.connectTimeoutMs,
+    this.sendTimeoutMs,
+    this.receiveTimeoutMs,
+    required this.requestHeaderNames,
+    required this.responseHeaderNames,
+  });
+
+  factory DioDiagnostics.fromDioException(DioException error) {
+    return DioDiagnostics(
+      dioType: error.type.name,
+      requestUri: _uriWithoutQuery(error.requestOptions.uri),
+      redirectLocation: _locationWithoutQuery(
+        error.response?.headers.value('location'),
+      ),
+      underlyingErrorType: error.error?.runtimeType.toString(),
+      dioMessage: error.message,
+      followRedirects: error.requestOptions.followRedirects,
+      maxRedirects: error.requestOptions.maxRedirects,
+      responseType: error.requestOptions.responseType.name,
+      connectTimeoutMs: error.requestOptions.connectTimeout?.inMilliseconds,
+      sendTimeoutMs: error.requestOptions.sendTimeout?.inMilliseconds,
+      receiveTimeoutMs: error.requestOptions.receiveTimeout?.inMilliseconds,
+      requestHeaderNames: error.requestOptions.headers.keys.toList(),
+      responseHeaderNames:
+          error.response?.headers.map.keys.toList() ?? const [],
+    );
+  }
+
+  static String _uriWithoutQuery(Uri uri) {
+    return Uri(
+      scheme: uri.scheme.isEmpty ? null : uri.scheme,
+      host: uri.host.isEmpty ? null : uri.host,
+      port: uri.hasPort ? uri.port : null,
+      path: uri.path,
+    ).toString();
+  }
+
+  static String? _locationWithoutQuery(String? location) {
+    if (location == null || location.isEmpty) return null;
+    final uri = Uri.tryParse(location);
+    if (uri == null) return location.split('?').first.split('#').first;
+    return _uriWithoutQuery(uri);
+  }
+}
+
 /// Base class for all API-related exceptions in the application.
 class ApiException implements Exception {
   final String message;
@@ -43,6 +112,7 @@ class ApiException implements Exception {
   final int? statusCode;
   final dynamic data;
   final dynamic error;
+  final DioDiagnostics? dioDiagnostics;
 
   const ApiException(
     this.message, {
@@ -50,6 +120,7 @@ class ApiException implements Exception {
     this.statusCode,
     this.data,
     this.error,
+    this.dioDiagnostics,
   });
 
   /// Whether this exception represents an HTTP 4xx client-side error.
@@ -62,21 +133,35 @@ class ApiException implements Exception {
       type == ApiErrorType.rateLimited;
 
   factory ApiException.fromDioException(DioException error) {
+    final diagnostics = DioDiagnostics.fromDioException(error);
+    ApiException withDiagnostics(ApiException exception) => ApiException(
+      exception.message,
+      type: exception.type,
+      statusCode: exception.statusCode,
+      data: exception.data,
+      error: exception.error,
+      dioDiagnostics: diagnostics,
+    );
+
     if (error.type == DioExceptionType.connectionError) {
-      return ApiException(
-        'We couldn\'t connect. Please check your internet and try again.',
-        type: ApiErrorType.noInternet,
-        error: error.error,
+      return withDiagnostics(
+        ApiException(
+          'We couldn\'t connect. Please check your internet and try again.',
+          type: ApiErrorType.noInternet,
+          error: error.error,
+        ),
       );
     }
 
     if (error.type == DioExceptionType.connectionTimeout ||
         error.type == DioExceptionType.sendTimeout ||
         error.type == DioExceptionType.receiveTimeout) {
-      return ApiException(
-        'The request timed out. Please try again.',
-        type: ApiErrorType.timeout,
-        error: error.error,
+      return withDiagnostics(
+        ApiException(
+          'The request timed out. Please try again.',
+          type: ApiErrorType.timeout,
+          error: error.error,
+        ),
       );
     }
 
@@ -88,93 +173,112 @@ class ApiException implements Exception {
       if (statusCode == 302) {
         final location = error.response?.headers.value('location') ?? '';
         if (location.contains('/settings/force/')) {
-          return ApiException(
-            'Student profile update is required.',
-            type: ApiErrorType.enforceStudentData,
-            statusCode: statusCode,
-            data: data,
-            error: error.error,
+          return withDiagnostics(
+            ApiException(
+              'Student profile update is required.',
+              type: ApiErrorType.enforceStudentData,
+              statusCode: statusCode,
+              data: data,
+              error: error.error,
+            ),
           );
         }
       }
 
       if (statusCode == 400 || statusCode == 422) {
-        return ApiException(
-          backendMessage ?? 'Something looks wrong with the info you provided.',
-          type: ApiErrorType.badRequest,
-          statusCode: statusCode,
-          data: data,
-          error: error.error,
+        return withDiagnostics(
+          ApiException(
+            backendMessage ??
+                'Something looks wrong with the info you provided.',
+            type: ApiErrorType.badRequest,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          ),
         );
       }
 
       if (statusCode == 401) {
-        return ApiException(
-          // Pass the backend message as-is, or empty string if none.
-          // An empty message signals SessionExpiredDialog to show the
-          // localized sessionExpiredFallbackMessage in the user's locale.
-          backendMessage ?? '',
-          type: ApiErrorType.unauthorized,
-          statusCode: statusCode,
-          data: data,
-          error: error.error,
+        return withDiagnostics(
+          ApiException(
+            // Pass the backend message as-is, or empty string if none.
+            // An empty message signals SessionExpiredDialog to show the
+            // localized sessionExpiredFallbackMessage in the user's locale.
+            backendMessage ?? '',
+            type: ApiErrorType.unauthorized,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          ),
         );
       }
 
       if (statusCode == 403) {
-        return ApiException(
-          backendMessage ??
-              'It looks like you don\'t have access to this feature.',
-          type: ApiErrorType.forbidden,
-          statusCode: statusCode,
-          data: data,
-          error: error.error,
+        return withDiagnostics(
+          ApiException(
+            backendMessage ??
+                'It looks like you don\'t have access to this feature.',
+            type: ApiErrorType.forbidden,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          ),
         );
       }
 
       if (statusCode == 404) {
-        return ApiException(
-          'The requested resource was not found.',
-          type: ApiErrorType.notFound,
-          statusCode: statusCode,
-          data: data,
-          error: error.error,
+        return withDiagnostics(
+          ApiException(
+            'The requested resource was not found.',
+            type: ApiErrorType.notFound,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          ),
         );
       }
 
       if (statusCode == 429) {
-        return ApiException(
-          'Please take a short break and try again in a moment.',
-          type: ApiErrorType.rateLimited,
-          statusCode: statusCode,
-          data: data,
-          error: error.error,
+        return withDiagnostics(
+          ApiException(
+            'Please take a short break and try again in a moment.',
+            type: ApiErrorType.rateLimited,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          ),
         );
       }
 
       if (statusCode != null && statusCode >= 500) {
-        return ApiException(
-          'The server is having trouble. Please try again later.',
-          type: ApiErrorType.serverError,
-          statusCode: statusCode,
-          data: data,
-          error: error.error,
+        return withDiagnostics(
+          ApiException(
+            'The server is having trouble. Please try again later.',
+            type: ApiErrorType.serverError,
+            statusCode: statusCode,
+            data: data,
+            error: error.error,
+          ),
         );
       }
 
-      return ApiException(
-        backendMessage ?? 'Oops! Something went wrong. Please try again.',
-        type: ApiErrorType.unknown,
-        statusCode: statusCode,
-        data: data,
-        error: error.error,
+      return withDiagnostics(
+        ApiException(
+          backendMessage ?? 'Oops! Something went wrong. Please try again.',
+          type: ApiErrorType.unknown,
+          statusCode: statusCode,
+          data: data,
+          error: error.error,
+        ),
       );
     }
 
-    return ApiException(
-      'Oops! Something went wrong on our end. Please try again in a moment.',
-      type: ApiErrorType.unknown,
-      error: error.error,
+    return withDiagnostics(
+      ApiException(
+        'Oops! Something went wrong on our end. Please try again in a moment.',
+        type: ApiErrorType.unknown,
+        error: error.error,
+      ),
     );
   }
 
