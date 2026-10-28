@@ -36,6 +36,9 @@ platform :android do
     aab_path = options[:aab] ? resolve_path(options[:aab]) : (File.exist?(default_aab) ? default_aab : Dir[File.join(root_dir, "app/build/app/outputs/bundle/release/*.aab")].sort.first)
     json_key = resolve_path(options[:json_key] || meta["play_key_path"] || "app/android/play_console_key.json")
     track = options[:track] || "production"
+    release_status = options[:release_status] || ENV["ANDROID_RELEASE_STATUS"] || "draft"
+
+    UI.user_error!("Invalid Android release status: #{release_status}") unless %w[draft completed].include?(release_status)
 
     UI.user_error!("Missing package_name in options or release_metadata.json") unless package_name && !package_name.empty?
     UI.user_error!("AAB file not found at #{aab_path}") unless File.exist?(aab_path)
@@ -50,7 +53,7 @@ platform :android do
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: "completed"
+      release_status: release_status
     )
   end
 end

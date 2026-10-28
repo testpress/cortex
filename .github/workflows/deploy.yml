@@ -30,6 +30,14 @@ on:
           - minor
           - major
         default: patch
+      android_release_status:
+        description: 'Google Play Android release status (draft prevents rollout)'
+        required: false
+        type: choice
+        options:
+          - draft
+          - completed
+        default: draft
 
 permissions:
   contents: read
@@ -84,6 +92,7 @@ jobs:
     with:
       subdomain: ${{ inputs.subdomain }}
       config_path: ${{ inputs.config_path || '' }}
+      release_status: ${{ inputs.android_release_status }}
     secrets:
       API_ACCESS_KEY: ${{ secrets.TESTPRESS_API_KEY }}
 

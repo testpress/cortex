@@ -12,6 +12,11 @@ on:
         required: false
         type: string
         default: ''
+      release_status:
+        description: 'Google Play release status (draft prevents rollout)'
+        required: false
+        type: string
+        default: draft
     secrets:
       API_ACCESS_KEY:
         required: true
@@ -126,6 +131,8 @@ jobs:
           echo "Android build completed in ${BUILD_DURATION}s ($(( BUILD_DURATION / 60 ))m $(( BUILD_DURATION % 60 ))s)"
 
       - name: Deploy to Google Play Store
+        env:
+          ANDROID_RELEASE_STATUS: ${{ inputs.release_status }}
         run: bundle exec fastlane android deploy
 
       - name: Upload AAB Artifact
