@@ -64,6 +64,9 @@ class InstituteSettings {
   final bool messagesEnabled;
   final String? messagesLabel;
 
+  final bool studentNotesEnabled;
+  final String? studentNotesLabel;
+
   //Security Settings
   final bool allowScreenshotInApp;
   final VideoWatermarkType? videoWatermarkType;
@@ -127,6 +130,8 @@ class InstituteSettings {
     this.videoWatermarkPosition,
     this.messagesEnabled = false,
     this.messagesLabel,
+    this.studentNotesEnabled = false,
+    this.studentNotesLabel,
   });
 
   factory InstituteSettings.fromJson(Map<String, dynamic> json) {
@@ -190,6 +195,8 @@ class InstituteSettings {
       helpdeskEnabled: json['is_helpdesk_enabled'] as bool? ?? false,
       messagesEnabled: json['messages_enabled'] as bool? ?? false,
       messagesLabel: json['messages_label'] as String?,
+      studentNotesEnabled: json['student_notes_enabled'] as bool? ?? false,
+      studentNotesLabel: json['student_notes_label'] as String?,
 
       allowScreenshotInApp: json['allow_screenshot_in_app'] as bool? ?? false,
 
@@ -260,6 +267,8 @@ class InstituteSettings {
       'is_helpdesk_enabled': helpdeskEnabled,
       'messages_enabled': messagesEnabled,
       'messages_label': messagesLabel,
+      'student_notes_enabled': studentNotesEnabled,
+      'student_notes_label': studentNotesLabel,
       'allow_screenshot_in_app': allowScreenshotInApp,
       'store_enabled': storeEnabled,
       'store_label': storeLabel,

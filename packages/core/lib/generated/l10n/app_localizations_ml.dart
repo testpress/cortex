@@ -730,6 +730,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get drawerMessages => 'സന്ദേശങ്ങൾ';
 
   @override
+  String get notes => 'കുറിപ്പുകൾ';
+
+  @override
   String get messagesTitle => 'സന്ദേശങ്ങൾ';
 
   @override

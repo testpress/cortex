@@ -318,5 +318,112 @@ void main() {
 
       expect(find.text('Support Center'), findsOneWidget);
     });
+
+    testWidgets(
+      'displays Notes item when studentNotesEnabled is true and hides when false',
+      (tester) async {
+        final container = ProviderContainer(
+          overrides: [
+            isHomeDrawerOpenProvider.overrideWith((ref) => true),
+            instituteSettingsProvider.overrideWith(
+              (ref) => InstituteSettings.fromJson(const {
+                'student_notes_enabled': true,
+              }),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: DesignProvider(
+              config: DesignConfig.defaults(),
+              child: LocalizationProvider(
+                child: Builder(
+                  builder: (context) {
+                    final locale = LocalizationProvider.of(context).locale;
+                    return WidgetsApp(
+                      color: const Color(0xFF000000),
+                      locale: locale,
+                      localizationsDelegates: LocalizationProvider.delegates,
+                      pageRouteBuilder:
+                          <T>(RouteSettings settings, WidgetBuilder builder) =>
+                              PageRouteBuilder<T>(
+                                settings: settings,
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        builder(context),
+                              ),
+                      home: const DashboardDrawer(),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Notes'), findsOneWidget);
+
+        // Update settings to disabled
+        container.read(instituteSettingsProvider.notifier).state =
+            InstituteSettings.fromJson(const {'student_notes_enabled': false});
+        await tester.pumpAndSettle();
+
+        expect(find.text('Notes'), findsNothing);
+      },
+    );
+
+    testWidgets('displays custom studentNotesLabel in drawer when provided', (
+      tester,
+    ) async {
+      final container = ProviderContainer(
+        overrides: [
+          isHomeDrawerOpenProvider.overrideWith((ref) => true),
+          instituteSettingsProvider.overrideWith(
+            (ref) => InstituteSettings.fromJson(const {
+              'student_notes_enabled': true,
+              'student_notes_label': 'My Notes',
+            }),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: DesignProvider(
+            config: DesignConfig.defaults(),
+            child: LocalizationProvider(
+              child: Builder(
+                builder: (context) {
+                  final locale = LocalizationProvider.of(context).locale;
+                  return WidgetsApp(
+                    color: const Color(0xFF000000),
+                    locale: locale,
+                    localizationsDelegates: LocalizationProvider.delegates,
+                    pageRouteBuilder:
+                        <T>(RouteSettings settings, WidgetBuilder builder) =>
+                            PageRouteBuilder<T>(
+                              settings: settings,
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      builder(context),
+                            ),
+                    home: const DashboardDrawer(),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('My Notes'), findsOneWidget);
+    });
   });
 }
