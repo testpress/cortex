@@ -17,6 +17,28 @@ Map<String, dynamic> _settingsFailureContext(Object error) {
     if (error is ApiException) ...{
       'api_error_type': error.type.name,
       if (error.statusCode != null) 'status_code': error.statusCode,
+      if (error.dioType != null) 'dio_type': error.dioType,
+      if (error.requestUri != null)
+        'request_uri': _sanitizeDiagnosticText(error.requestUri!),
+      if (error.redirectLocation != null)
+        'redirect_location': _sanitizeDiagnosticText(error.redirectLocation!),
+      if (error.underlyingErrorType != null)
+        'underlying_error_type': error.underlyingErrorType,
+      if (error.dioMessage != null)
+        'dio_message': _sanitizeDiagnosticText(error.dioMessage!),
+      if (error.followRedirects != null)
+        'follow_redirects': error.followRedirects,
+      if (error.maxRedirects != null) 'max_redirects': error.maxRedirects,
+      if (error.responseType != null) 'response_type': error.responseType,
+      if (error.connectTimeoutMs != null)
+        'connect_timeout_ms': error.connectTimeoutMs,
+      if (error.sendTimeoutMs != null) 'send_timeout_ms': error.sendTimeoutMs,
+      if (error.receiveTimeoutMs != null)
+        'receive_timeout_ms': error.receiveTimeoutMs,
+      if (error.requestHeaderNames != null)
+        'request_header_names': error.requestHeaderNames,
+      if (error.responseHeaderNames != null)
+        'response_header_names': error.responseHeaderNames,
       if (error.error != null)
         'underlying_error': _sanitizeDiagnosticText(error.error!),
     },
