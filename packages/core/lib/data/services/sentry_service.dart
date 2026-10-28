@@ -31,7 +31,14 @@ extension AppErrorLevelMapper on AppErrorLevel {
 }
 
 class SentryService {
+  Future<void>? _initialization;
+
   Future<void> initialize() async {
+    final initialization = _initialization ??= _initialize();
+    await initialization;
+  }
+
+  Future<void> _initialize() async {
     if (AppConfig.sentryDsn.isNotEmpty) {
       // Get package info to explicitly set the release version
       final packageInfo = await PackageInfo.fromPlatform();
@@ -50,7 +57,7 @@ class SentryService {
 
         // Filter out expected client conditions (offline, 4xx client errors)
         options.beforeSend = (event, hint) {
-          if (shouldIgnoreException(event.throwable)) {
+          if (shouldIgnoreSentryEvent(event)) {
             return null;
           }
           return event;
@@ -87,6 +94,14 @@ class SentryService {
       }
     }
     return false;
+  }
+
+  @visibleForTesting
+  static bool shouldIgnoreSentryEvent(SentryEvent event) {
+    if (event.tags?['bypass_filter'] == 'true') {
+      return false;
+    }
+    return shouldIgnoreException(event.throwable);
   }
 
   /// Attaches the Sentry network error handler to the global [onNetworkErrorCapture] hook.
@@ -152,8 +167,9 @@ class SentryService {
     AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
+    bool bypassFilter = false,
   }) async {
-    if (shouldIgnoreException(exception)) {
+    if (!bypassFilter && shouldIgnoreException(exception)) {
       return;
     }
 
@@ -162,6 +178,7 @@ class SentryService {
       stackTrace: stackTrace,
       withScope: (scope) {
         if (level != null) scope.level = level.toSentryLevel;
+        if (bypassFilter) scope.setTag('bypass_filter', 'true');
         if (tags != null) {
           tags.forEach((key, value) {
             scope.setTag(key, value);

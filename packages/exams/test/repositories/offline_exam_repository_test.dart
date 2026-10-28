@@ -18,6 +18,7 @@ class FakeSentryService extends Fake implements SentryService {
     AppErrorLevel? level,
     dynamic stackTrace,
     Map<String, String>? tags,
+    bool bypassFilter = false,
   }) async {}
 }
 

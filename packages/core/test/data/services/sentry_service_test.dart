@@ -2,6 +2,7 @@ import 'package:core/data/services/sentry_service.dart';
 import 'package:core/network/network_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class _FakeSentryService extends SentryService {
   final List<CapturedError> captured = [];
@@ -13,8 +14,9 @@ class _FakeSentryService extends SentryService {
     AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
+    bool bypassFilter = false,
   }) async {
-    if (SentryService.shouldIgnoreException(exception)) {
+    if (!bypassFilter && SentryService.shouldIgnoreException(exception)) {
       return;
     }
     captured.add(
@@ -274,5 +276,30 @@ void main() {
         expect(captured.contexts, isNull);
       },
     );
+  });
+
+  group('SentryService.shouldIgnoreSentryEvent', () {
+    test('does not filter a bypassed no-internet event', () {
+      final event = SentryEvent(
+        throwable: const ApiException(
+          'No internet',
+          type: ApiErrorType.noInternet,
+        ),
+        tags: {'bypass_filter': 'true'},
+      );
+
+      expect(SentryService.shouldIgnoreSentryEvent(event), isFalse);
+    });
+
+    test('filters a normal no-internet event', () {
+      final event = SentryEvent(
+        throwable: const ApiException(
+          'No internet',
+          type: ApiErrorType.noInternet,
+        ),
+      );
+
+      expect(SentryService.shouldIgnoreSentryEvent(event), isTrue);
+    });
   });
 }

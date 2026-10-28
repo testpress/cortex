@@ -2019,6 +2019,7 @@ class MockSentryService extends _i1.Mock implements _i2.SentryService {
     _i2.AppErrorLevel? level,
     Map<String, String>? tags,
     Map<String, dynamic>? contexts,
+    bool bypassFilter = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -2029,6 +2030,7 @@ class MockSentryService extends _i1.Mock implements _i2.SentryService {
                 #level: level,
                 #tags: tags,
                 #contexts: contexts,
+                #bypassFilter: bypassFilter,
               },
             ),
             returnValue: _i3.Future<void>.value(),

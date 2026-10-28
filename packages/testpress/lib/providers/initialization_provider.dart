@@ -8,14 +8,48 @@ import 'dart:developer' as dev;
 
 part 'initialization_provider.g.dart';
 
+Map<String, dynamic> _settingsFailureContext(Object error) {
+  return {
+    'api_host': AppConfig.apiBaseUrl,
+    'endpoint': ApiEndpoints.instituteSettings,
+    'exception_type': error.runtimeType.toString(),
+    'exception': _sanitizeDiagnosticText(error),
+    if (error is ApiException) ...{
+      'api_error_type': error.type.name,
+      if (error.statusCode != null) 'status_code': error.statusCode,
+      if (error.error != null)
+        'underlying_error': _sanitizeDiagnosticText(error.error!),
+    },
+  };
+}
+
+String _sanitizeDiagnosticText(Object value) {
+  final sanitized = value.toString().replaceAll(
+    RegExp(r'https?://[^\s]+'),
+    '<redacted-url>',
+  );
+  return sanitized.length <= 500
+      ? sanitized
+      : '${sanitized.substring(0, 500)}…';
+}
+
 /// Provider that handles app-wide data initialization and refresh logic.
 /// This prevents side effects within UI-driven data providers.
 @Riverpod(keepAlive: true)
 Future<void> appInitialization(AppInitializationRef ref) async {
   final userRepo = await ref.watch(userRepositoryProvider.future);
 
-  // Kick off settings load immediately — runs concurrently with Firebase & SDK init.
-  // This way cached settings are ready by the time the home screen renders.
+  // Settings can load concurrently with the remaining startup work, but Sentry
+  // must be ready first or the first failure can be lost during initialization.
+  try {
+    await ref.read(sentryServiceProvider).initialize();
+  } catch (e, stack) {
+    dev.log(
+      'Sentry initialization failed (diagnostics disabled)',
+      error: e,
+      stackTrace: stack,
+    );
+  }
   unawaited(ref.read(settingsInitializationProvider.future));
 
   // Initialize Firebase Core & Push Notifications (fails silently if google-services.json was missing)
@@ -78,9 +112,21 @@ Future<void> settingsInitialization(SettingsInitializationRef ref) async {
       ref.read(instituteSettingsProvider.notifier).state = fresh;
     } catch (e, stack) {
       dev.log('Settings initialization failed', error: e, stackTrace: stack);
-      ref
-          .read(sentryServiceProvider)
-          .captureException(e, stackTrace: stack, level: AppErrorLevel.warning);
+      final failureContext = _settingsFailureContext(e);
+
+      // Connection failures are normally filtered from Sentry as expected
+      // offline conditions. Cold-start settings failures must always produce
+      // one diagnostic event because they block first launch and can also be
+      // caused by redirects, TLS failures, or release-only request differences.
+      final sentry = ref.read(sentryServiceProvider);
+      await sentry.captureException(
+        e,
+        stackTrace: stack,
+        level: AppErrorLevel.error,
+        tags: {'failure_stage': 'cold_start_settings'},
+        contexts: {'settings_request': failureContext},
+        bypassFilter: true,
+      );
       rethrow;
     }
   }

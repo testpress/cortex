@@ -66,6 +66,7 @@ class FakeSentryService extends Fake implements SentryService {
     dynamic level,
     Map<String, dynamic>? contexts,
     Map<String, String>? tags,
+    bool bypassFilter = false,
   }) async {}
 }
 
