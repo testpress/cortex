@@ -77,6 +77,11 @@ class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
   ) async {}
 
   @override
+  Future<void> setOnUrlChange(
+    void Function(UrlChange change) onUrlChange,
+  ) async {}
+
+  @override
   Future<void> setOnWebResourceError(
     void Function(WebResourceError error) onWebResourceError,
   ) async {}
@@ -202,6 +207,27 @@ void main() {
 
       expect(find.text('Attend Class'), findsNothing);
       expect(find.text('Meeting link is missing'), findsOneWidget);
+    });
+
+    testWidgets(
+        'ZoomVideoConferenceScreen triggers onMeetingExit when back is tapped',
+        (tester) async {
+      bool exited = false;
+      await tester.pumpWidget(wrap(
+        ZoomVideoConferenceScreen(
+          joinUrl: 'https://app.zoom.us/wc/12345/join',
+          title: 'Live Class',
+          onMeetingExit: () => exited = true,
+        ),
+      ));
+      await tester.pump();
+
+      final backButton = find.byType(LessonDetailShell);
+      expect(backButton, findsOneWidget);
+
+      final shell = tester.widget<LessonDetailShell>(backButton);
+      shell.onBack?.call();
+      expect(exited, isTrue);
     });
   });
 }

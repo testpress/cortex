@@ -5,6 +5,9 @@
 - [x] 1.3 Implement `ZoomAutoJoinHandler` for URL gate detection, scheme interception (`zoomus://`), and JavaScript callbacks
 - [x] 1.4 Implement `ZoomVideoConferenceScreen` in `packages/courses/lib/widgets/lesson_detail/zoom_web_view.dart` wrapped in `LessonDetailShell`
 - [x] 1.5 Add unit and widget tests for `ZoomAutoJoinHandler` and `ZoomVideoConferenceScreen`
+- [x] 1.6 Intercept post-attendee and leave meeting redirects in Zoom WebView to return to lesson lobby
+- [x] 1.7 Inject touch responsiveness, desktop tooltip suppression, and viewport optimizations into Zoom WebView
+- [x] 1.8 Refactor Zoom WebView implementation into separated concern files (config, auto-join handler, screen)
 
 ## 2. Lesson Orchestration Integration
 

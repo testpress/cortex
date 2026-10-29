@@ -7,6 +7,7 @@ ZoomAutoJoinHandler _buildHandler({
   void Function()? onLoadingStart,
   void Function()? onLoadingEnd,
   void Function()? onPermissionPermanentlyDenied,
+  void Function()? onMeetingLeft,
   Duration fallbackTimeout = const Duration(seconds: 8),
 }) {
   return ZoomAutoJoinHandler(
@@ -15,6 +16,7 @@ ZoomAutoJoinHandler _buildHandler({
     onLoadingStart: onLoadingStart,
     onLoadingEnd: onLoadingEnd,
     onPermissionPermanentlyDenied: onPermissionPermanentlyDenied,
+    onMeetingLeft: onMeetingLeft,
     fallbackTimeout: fallbackTimeout,
   );
 }
@@ -138,6 +140,53 @@ void main() {
         isFalse,
       );
     });
+
+    test('isZoomExitUrl detects post-attendee and leave endpoints', () {
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://zoom.us/postattendee?id=123'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://app.zoom.us/postattendee'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://app.zoom.us/wc/12345/leave'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://app.zoom.us/wc/leave'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://zoom.us/postmeeting'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://app.zoom.us/wc'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://app.zoom.us/wc/home'),
+        isTrue,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://app.zoom.us/wc/12345/join'),
+        isFalse,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl('https://zoom.us/j/12345'),
+        isFalse,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl(null),
+        isFalse,
+      );
+      expect(
+        ZoomWebViewConfig.isZoomExitUrl(''),
+        isFalse,
+      );
+    });
   });
 
   group('ZoomAutoJoinHandler — URL gate detection', () {
@@ -168,6 +217,16 @@ void main() {
           handler.isZoomJoinGateUrl('https://evil.com/zoom.us/join'), isFalse);
       expect(
           handler.isZoomJoinGateUrl('https://zoomgov.com/wc/123/join'), isTrue);
+    });
+
+    test('isZoomJoinGateUrl rejects leave and post-attendee URLs', () {
+      final handler = _buildHandler();
+      expect(handler.isZoomJoinGateUrl('https://app.zoom.us/wc/12345/leave'),
+          isFalse);
+      expect(
+          handler.isZoomJoinGateUrl('https://app.zoom.us/wc/leave'), isFalse);
+      expect(handler.isZoomJoinGateUrl('https://zoom.us/postattendee?id=123'),
+          isFalse);
     });
 
     for (final url in gateUrls) {
@@ -249,6 +308,15 @@ void main() {
       );
       handler.simulateJsMessage('onPermissionDenied');
       expect(permissionDenied, isTrue);
+    });
+
+    test('onMeetingLeft fires onMeetingLeft callback', () {
+      bool meetingLeft = false;
+      final handler = _buildHandler(
+        onMeetingLeft: () => meetingLeft = true,
+      );
+      handler.simulateJsMessage('onMeetingLeft');
+      expect(meetingLeft, isTrue);
     });
 
     test('messages after dispose() are silently ignored', () {
