@@ -208,7 +208,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
               right: design.spacing.md,
               child: AppButton.primary(
                 label: context.l10n.customExamCreateTitle,
-                leading: const Icon(LucideIcons.plus, size: 20),
+                leading: const Icon(LucideIcons.wandSparkles, size: 20),
                 onPressed: () => context.push('/exams/create-custom-exam'),
               ),
             ),
