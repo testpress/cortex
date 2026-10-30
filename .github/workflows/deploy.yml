@@ -1,4 +1,5 @@
 name: Deploy/Release App
+run-name: 'Deploy ${{ inputs.subdomain }} (${{ inputs.version_type }}) by @${{ github.actor }}'
 
 on:
   workflow_dispatch:
