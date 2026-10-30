@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:courses/widgets/lesson_detail/zoom_web_view.dart';
+import 'package:courses/widgets/lesson_detail/zoom_auto_join_handler.dart';
+import 'package:courses/widgets/lesson_detail/zoom_web_view_config.dart';
 
 ZoomAutoJoinHandler _buildHandler({
   void Function()? onJoinSuccess,

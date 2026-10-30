@@ -5,9 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:core/core.dart';
 import 'zoom_web_view_config.dart';
 import 'zoom_auto_join_handler.dart';
-
-export 'zoom_web_view_config.dart';
-export 'zoom_auto_join_handler.dart';
+import 'zoom_permission_handler.dart';
 
 class ZoomVideoConferenceScreen extends StatefulWidget {
   final String joinUrl;

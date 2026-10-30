@@ -1,19 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:core/core.dart';
-
-class ZoomPermissionHandler {
-  static Future<bool> checkAndRequestPermissions() async {
-    final permissions = [
-      Permission.camera,
-      Permission.microphone,
-    ];
-
-    final statuses = await permissions.request();
-    return statuses.values.every((status) => status.isGranted);
-  }
-}
 
 class ZoomWebViewConfig {
   static const String desktopUserAgent =

@@ -8,6 +8,9 @@
 - [x] 1.6 Intercept post-attendee and leave meeting redirects in Zoom WebView to return to lesson lobby
 - [x] 1.7 Inject touch responsiveness, desktop tooltip suppression, and viewport optimizations into Zoom WebView
 - [x] 1.8 Refactor Zoom WebView implementation into separated concern files (config, auto-join handler, screen)
+- [x] 1.9 Decouple Zoom WebView re-exports and import config/handler directly in callers and tests
+- [x] 1.10 Extract `ZoomPermissionHandler` to `packages/courses/lib/widgets/lesson_detail/zoom_permission_handler.dart`
+- [x] 1.11 Extract JavaScript string templates from `ZoomAutoJoinHandler` to `packages/courses/lib/widgets/lesson_detail/zoom_scripts.dart`
 
 ## 2. Lesson Orchestration Integration
 

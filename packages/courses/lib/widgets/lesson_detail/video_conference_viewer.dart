@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'teams_web_view.dart';
 import 'zoom_web_view.dart';
+import 'zoom_web_view_config.dart';
 
 final _meetingJoiningProvider = StateProvider.autoDispose<bool>((ref) => false);
 
