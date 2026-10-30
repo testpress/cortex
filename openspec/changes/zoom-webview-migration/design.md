@@ -57,10 +57,10 @@ Zoom actively checks the browser user agent and blocks standard mobile browsers 
 - **[Risk] Stale DOM selectors, English text heuristics, and User-Agent obsolescence**
   → *Risk details*: The automated join script relies on hardcoded DOM element selectors, English string matching (`"join from your browser"`, `"zoom workplace app"`), and a desktop Chrome 114 user-agent string. Over time, Zoom may alter their Web Client markup, localize button copy, or deprecate older Chrome versions.
   → *Mitigation*: Auto-join operates with non-fatal fallbacks. If button heuristics fail, time out (via the 8-second fallback timer), or encounter script errors, the loading overlay is dismissed automatically so the student can interact with the meeting and tap "Join" manually. Sentry reports errors to alert of any DOM breakage. Periodic maintenance of the desktop UA string should be part of release audits.
-- **[Trade-off] Disabling WebView pinch-to-zoom (WCAG 1.4.4)**
-  → *Rationale*: Pinch-to-zoom is intentionally disabled (`enableZoom(false)` and viewport `user-scalable=no`) to avoid accidental viewport panning, zoom lockups, and broken desktop meeting layouts during live video, consistent with `TeamsVideoConferenceScreen`.
-- **[Trade-off] Desktop tooltip suppression in mobile WebView**
-  → *Rationale*: Desktop hover tooltips are suppressed via CSS in the mobile WebView to eliminate mobile tap delays and hover traps. Zoom toolbar buttons natively define explicit `aria-label` attributes on `<button>` elements, ensuring TalkBack and VoiceOver screen-reader accessibility remains intact.
+- **[Accessibility] Preserving pinch-to-zoom (WCAG 1.4.4)**
+  → *Implementation*: Pinch-to-zoom is supported (`enableZoom(true)` on the WebView controller and `width=device-width, initial-scale=1.0` viewport). To eliminate the 300ms double-tap delay on mobile controls without disabling zoom, `touch-action: manipulation` is applied across interactive elements.
+- **[Accessibility] Scoped desktop tooltip suppression via `@media (hover: none)`**
+  → *Implementation*: Desktop hover tooltips (`.tippy-box`, `[role="tooltip"]`) are scoped to `@media (hover: none)` to prevent touch traps and tap blocking on touchscreens, while preserving tooltip visibility and accessibility for pointer and external keyboard users.
 - **[Risk] Audio permission / device routing in WebView**
   → *Mitigation*: Both Android WebView and iOS `WKWebView` support WebRTC audio/video when camera and microphone permissions are granted. We handle both OS-level permission requests and WebView runtime grants.
 - **[Risk] Landscape orientation while viewing screen shares**

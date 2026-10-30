@@ -158,7 +158,7 @@ class _ZoomVideoConferenceScreenState extends State<ZoomVideoConferenceScreen> {
       },
     )
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..enableZoom(false)
+      ..enableZoom(true)
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (String url) {

@@ -34,6 +34,7 @@ void main() {
 
       expect(url, startsWith('https://app.zoom.us/wc/1234567890/join?'));
       final uri = Uri.parse(url);
+      expect(uri.queryParameters['prefer'], equals('1'));
       expect(uri.queryParameters['pwd'], equals('secretPassword'));
       expect(uri.queryParameters['uname'], equals('John Doe'));
     });

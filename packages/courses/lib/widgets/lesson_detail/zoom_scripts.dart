@@ -39,7 +39,7 @@ class ZoomScripts {
           meta.name = 'viewport';
           document.head.appendChild(meta);
         }
-        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        meta.content = 'width=device-width, initial-scale=1.0';
 
         var style = document.getElementById('tp-touch-styles');
         if (!style) {
@@ -47,7 +47,9 @@ class ZoomScripts {
           style.id = 'tp-touch-styles';
           style.innerHTML = [
             'html, body, button, [role="button"], a, .footer-button__button { touch-action: manipulation !important; -webkit-tap-highlight-color: transparent !important; }',
-            '.tippy-box, [role="tooltip"], .tooltip, .popover, .zoom-tooltip, .tippy-popper { display: none !important; pointer-events: none !important; visibility: hidden !important; }',
+            'html, body { -webkit-user-select: none !important; user-select: none !important; }',
+            '@media (hover: none) { .tippy-box, [role="tooltip"], .tooltip, .popover, .zoom-tooltip, .tippy-popper { display: none !important; pointer-events: none !important; visibility: hidden !important; } }',
+            'button[aria-label*="Meeting Information" i], button[aria-label*="Meeting Info" i], .meeting-info-icon, [class*="meeting-info-icon"] { display: none !important; pointer-events: none !important; }',
             'button:focus, button:active, [role="button"]:focus, [role="button"]:active { outline: none !important; box-shadow: none !important; }',
             '@media (hover: none) { button:hover, [role="button"]:hover { outline: none !important; box-shadow: none !important; } }'
           ].join(' ');
@@ -66,6 +68,72 @@ class ZoomScripts {
       } catch (e) {
         // Non-fatal DOM tweak.
       }
+    })();
+  ''';
+
+  static const String blockUpsells = '''
+    (function () {
+      if (window.__tpBlockerInstalled) return;
+      window.__tpBlockerInstalled = true;
+
+      var BLOCKED = [
+        'send report', 'report a problem', 'report problem',
+        'download zoom', 'download the app', 'get the app',
+        'install zoom', 'app store', 'google play',
+        'request remote control', 'remote control',
+        'launching zoom', 'download now', 'try joining again',
+        'meeting information', 'invite link'
+      ];
+
+      function matches(text) {
+        text = (text || '').toLowerCase();
+        for (var i = 0; i < BLOCKED.length; i++) {
+          if (text.indexOf(BLOCKED[i]) > -1) return true;
+        }
+        return false;
+      }
+
+      // 1. Swallow clicks on trigger buttons before Zoom's handlers run.
+      function interceptClick(e) {
+        var el = e.target && e.target.closest &&
+          e.target.closest('button, a, [role="button"], [role="menuitem"], span');
+        if (!el) return;
+        var label = (el.textContent || '') + ' ' + (el.getAttribute('aria-label') || '');
+        if (matches(label)) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      }
+      document.addEventListener('click', interceptClick, true);
+      document.addEventListener('touchend', interceptClick, true);
+
+      // 2. Fallback: hide any dialog that still opens with blocked text.
+      var obs = new MutationObserver(function () {
+        var dialogs = document.querySelectorAll('[role="dialog"], [role="alertdialog"], .zm-modal, .ReactModal__Content');
+        dialogs.forEach(function (d) {
+          if (d.__tpHidden) return;
+          if (matches(d.textContent)) {
+            d.__tpHidden = true;
+            d.style.setProperty('display', 'none', 'important');
+            var mask = document.querySelector('.zm-modal-mask, .ReactModal__Overlay, [class*="modal-mask"]');
+            if (mask) mask.style.setProperty('display', 'none', 'important');
+            var closeBtn = d.querySelector('button[aria-label*="close" i], button.close, [class*="close"]');
+            if (closeBtn && typeof closeBtn.click === 'function') {
+              try { closeBtn.click(); } catch (_) {}
+            }
+          }
+        });
+
+        // Hide Remote Control in the View Options dropdown
+        var menuItems = document.querySelectorAll('[role="menuitem"]');
+        for (var m = 0; m < menuItems.length; m++) {
+          var mText = (menuItems[m].textContent || '').toLowerCase();
+          if (mText.indexOf('remote control') > -1) {
+            menuItems[m].style.setProperty('display', 'none', 'important');
+          }
+        }
+      });
+      obs.observe(document.documentElement, { childList: true, subtree: true });
     })();
   ''';
 

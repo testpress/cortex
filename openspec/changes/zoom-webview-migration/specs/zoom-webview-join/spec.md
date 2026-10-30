@@ -33,6 +33,4 @@ The system SHALL allow users to join Zoom live classes using an in-app WebView s
 
 #### Scenario: Touch responsiveness and desktop hover suppression in WebView
 - **WHEN** the Zoom web client loads inside the WebView on mobile or tablet devices
-- **THEN** the system SHALL inject viewport meta-tag settings, suppress desktop tooltips and outline artifacts, and ensure single-tap responsiveness on meeting controls
-- **AND** pinch-to-zoom SHALL be disabled (`enableZoom(false)` and `user-scalable=no`) to prevent meeting UI layouts from panning or shifting accidentally during live video, consistent with the Teams WebView implementation
-- **AND** desktop hover tooltips SHALL be suppressed via CSS to prevent touch-event trapping on mobile meeting controls without affecting native screen-reader button labels (`aria-label`).
+- **THEN** the system SHALL inject scalable viewport meta-tag settings (`width=device-width, initial-scale=1.0`), suppress desktop tooltips via `@media (hover: none)` to prevent touch traps without affecting pointer/keyboard users, suppress Zoom "Send Report" links and "Download App" prompts to prevent user confusion, suppress the Meeting Information icon and raw invite link to prevent unauthorized link sharing, disable remote control request options, and preserve pinch-to-zoom accessibility (WCAG 1.4.4) while maintaining single-tap responsiveness on meeting controls via `touch-action: manipulation`.

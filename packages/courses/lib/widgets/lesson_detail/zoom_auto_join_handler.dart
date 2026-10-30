@@ -70,6 +70,7 @@ class ZoomAutoJoinHandler {
     _hideScrollbars();
     _injectTouchOptimizations();
     _injectPermissionBridge();
+    _injectBlockers();
 
     if (!_hasCompletedAutoJoin && isZoomJoinGateUrl(url)) {
       _autoJoinZoomMeetingWeb();
@@ -93,6 +94,14 @@ class ZoomAutoJoinHandler {
   Future<void> _hideScrollbars() async {
     try {
       await _webViewController?.runJavaScript(ZoomScripts.hideScrollbars);
+    } catch (e, st) {
+      onError?.call(e, st);
+    }
+  }
+
+  Future<void> _injectBlockers() async {
+    try {
+      await _webViewController?.runJavaScript(ZoomScripts.blockUpsells);
     } catch (e, st) {
       onError?.call(e, st);
     }

@@ -31,7 +31,9 @@ class ZoomWebViewConfig {
     if (conferenceId != null && conferenceId.trim().isNotEmpty) {
       final sanitizedId = conferenceId.replaceAll(RegExp(r'\s+'), '');
       final uri = Uri.parse('https://app.zoom.us/wc/$sanitizedId/join');
-      final params = <String, String>{};
+      final params = <String, String>{
+        'prefer': '1',
+      };
       if (password != null && password.isNotEmpty) {
         params['pwd'] = password;
       }
