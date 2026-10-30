@@ -6005,6 +6005,48 @@ abstract class AppLocalizations {
   /// **'Meeting link is missing'**
   String get teamsMissingJoinLink;
 
+  /// No description provided for @zoomPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and microphone access is required. Enable them in Settings to join.'**
+  String get zoomPermissionRequired;
+
+  /// No description provided for @zoomJoinMeetingLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining meeting...'**
+  String get zoomJoinMeetingLoading;
+
+  /// No description provided for @zoomPermissionDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera & microphone required'**
+  String get zoomPermissionDialogTitle;
+
+  /// No description provided for @zoomPermissionDialogContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and microphone access is blocked. Open Settings and enable them to use audio and video in this meeting.'**
+  String get zoomPermissionDialogContent;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
+
+  /// No description provided for @meetingParticipantDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Participant'**
+  String get meetingParticipantDefaultName;
+
   /// No description provided for @aiStudyCompanionTitle.
   ///
   /// In en, this message translates to:

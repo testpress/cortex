@@ -107,6 +107,11 @@ class LessonDto {
   bool get isZoom =>
       liveStreamProvider?.toLowerCase().contains('zoom') ?? false;
 
+  /// Whether this Zoom lesson has a joinable conference ID or fallback URL.
+  bool get hasJoinableZoomSource =>
+      (conferenceId != null && conferenceId!.trim().isNotEmpty) ||
+      (contentUrl != null && contentUrl!.trim().isNotEmpty);
+
   /// Whether this live stream or conference uses MS Teams.
   bool get isTeams =>
       liveStreamProvider?.toLowerCase().contains('teams') ?? false;

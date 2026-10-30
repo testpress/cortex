@@ -3353,6 +3353,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get teamsMissingJoinLink => 'رابط الاجتماع مفقود';
 
   @override
+  String get zoomPermissionRequired =>
+      'يلزم الوصول إلى الكاميرا والميكروفون. قم بتمكينها في الإعدادات للانضمام.';
+
+  @override
+  String get zoomJoinMeetingLoading => 'جارِ الانضمام إلى الاجتماع...';
+
+  @override
+  String get zoomPermissionDialogTitle => 'الكاميرا والميكروفون مطلوبان';
+
+  @override
+  String get zoomPermissionDialogContent =>
+      'تم حظر الوصول إلى الكاميرا والميكروفون. افتح الإعدادات وقم بتمكينهما لاستخدام الصوت والفيديو في هذا الاجتماع.';
+
+  @override
+  String get openSettings => 'افتح الإعدادات';
+
+  @override
+  String get notNow => 'ليس الآن';
+
+  @override
+  String get meetingParticipantDefaultName => 'مشارك';
+
+  @override
   String get aiStudyCompanionTitle => 'رفيق الدراسة بالذكاء الاصطناعي الخاص بك';
 
   @override
