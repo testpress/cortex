@@ -5189,6 +5189,108 @@ abstract class AppLocalizations {
   /// **'Curriculum'**
   String get storeCurriculum;
 
+  /// No description provided for @storeMeetYourFaculty.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet your faculty'**
+  String get storeMeetYourFaculty;
+
+  /// No description provided for @storeMeetYourFacultyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn about the expert instructors teaching this course'**
+  String get storeMeetYourFacultyDescription;
+
+  /// No description provided for @storeFacultyIntroduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Faculty Introduction'**
+  String get storeFacultyIntroduction;
+
+  /// No description provided for @storeTaughtBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Taught by {name}'**
+  String storeTaughtBy(String name);
+
+  /// No description provided for @storeTaughtByAndMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Taught by {name} and {count} more'**
+  String storeTaughtByAndMore(String name, int count);
+
+  /// No description provided for @storeYearsTeaching.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} years teaching'**
+  String storeYearsTeaching(int years);
+
+  /// No description provided for @storeIntroVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Intro video'**
+  String get storeIntroVideo;
+
+  /// No description provided for @storeFacultyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Faculty profile'**
+  String get storeFacultyProfile;
+
+  /// No description provided for @storeHighlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get storeHighlights;
+
+  /// No description provided for @storeQualifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Qualifications'**
+  String get storeQualifications;
+
+  /// No description provided for @storeAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get storeAbout;
+
+  /// No description provided for @storeTeachesInThisProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Teaches in this product'**
+  String get storeTeachesInThisProduct;
+
+  /// No description provided for @storeNowShowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Now showing'**
+  String get storeNowShowing;
+
+  /// No description provided for @storeWatchIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch intro'**
+  String get storeWatchIntro;
+
+  /// No description provided for @storeIntroForCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Intro for {course}'**
+  String storeIntroForCourse(String course);
+
+  /// No description provided for @storeShowFewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer'**
+  String get storeShowFewer;
+
+  /// No description provided for @storeShowAllFaculty.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all {count} faculty'**
+  String storeShowAllFaculty(int count);
+
   /// No description provided for @storeHaveDiscountCode.
   ///
   /// In en, this message translates to:

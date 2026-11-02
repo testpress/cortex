@@ -1439,6 +1439,61 @@
   },
   "storeDescription": "Description",
   "storeCurriculum": "Curriculum",
+  "storeMeetYourFaculty": "Meet your faculty",
+  "storeMeetYourFacultyDescription": "Learn about the expert instructors teaching this course",
+  "storeFacultyIntroduction": "Faculty Introduction",
+  "storeTaughtBy": "Taught by {name}",
+  "@storeTaughtBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storeTaughtByAndMore": "Taught by {name} and {count} more",
+  "@storeTaughtByAndMore": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storeYearsTeaching": "{years} years teaching",
+  "@storeYearsTeaching": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "storeIntroVideo": "Intro video",
+  "storeFacultyProfile": "Faculty profile",
+  "storeHighlights": "Highlights",
+  "storeQualifications": "Qualifications",
+  "storeAbout": "About",
+  "storeTeachesInThisProduct": "Teaches in this product",
+  "storeNowShowing": "Now showing",
+  "storeWatchIntro": "Watch intro",
+  "storeIntroForCourse": "Intro for {course}",
+  "@storeIntroForCourse": {
+    "placeholders": {
+      "course": {
+        "type": "String"
+      }
+    }
+  },
+  "storeShowFewer": "Show fewer",
+  "storeShowAllFaculty": "Show all {count} faculty",
+  "@storeShowAllFaculty": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "storeHaveDiscountCode": "Have a discount code?",
   "storePayInstallments": "Pay in installments",
   "storeDiscountCoupon": "Discount Coupon",
