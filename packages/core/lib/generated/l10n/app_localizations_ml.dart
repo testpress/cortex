@@ -3402,6 +3402,29 @@ class AppLocalizationsMl extends AppLocalizations {
   String get teamsMissingJoinLink => 'മീറ്റിംഗ് ലിങ്ക് ലഭ്യമല്ല';
 
   @override
+  String get zoomPermissionRequired =>
+      'ക്യാമറ, മൈക്രോഫോൺ ആക്സസ് ആവശ്യമാണ്. ചേരുന്നതിന് ക്രമീകരണങ്ങളിൽ അവ പ്രവർത്തനക്ഷമമാക്കുക.';
+
+  @override
+  String get zoomJoinMeetingLoading => 'മീറ്റിംഗിൻ ചേരുന്നു...';
+
+  @override
+  String get zoomPermissionDialogTitle => 'ക്യാമറയും മൈക്രോഫോണും ആവശ്യമാണ്';
+
+  @override
+  String get zoomPermissionDialogContent =>
+      'ക്യാമറയും മൈക്രോഫോണും ആക്സസ് തടഞ്ഞിരിക്കുന്നു. ഈ മീറ്റിംഗിൽ ഓഡിയോയും വീഡിയോയും ഉപയോഗിക്കാൻ ക്രമീകരണങ്ങൾ തുറന്ന് അവ പ്രവർത്തനക്ഷമമാക്കുക.';
+
+  @override
+  String get openSettings => 'ക്രമീകരണങ്ങൾ തുറക്കുക';
+
+  @override
+  String get notNow => 'ഇപ്പോൾ വേണ്ട';
+
+  @override
+  String get meetingParticipantDefaultName => 'പങ്കാളി';
+
+  @override
   String get aiStudyCompanionTitle => 'നിങ്ങളുടെ AI പഠന സഹായി';
 
   @override

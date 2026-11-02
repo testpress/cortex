@@ -448,31 +448,24 @@ Future<void> updateZoomDependency(String appDirPath, bool enabled) async {
   if (!pubspecFile.existsSync()) return;
 
   var content = await pubspecFile.readAsString();
-  content = content.replaceAll(
-    RegExp(r'\s*#?\s*zoom:\s*\n\s*#?\s*path:\s*\.\./packages/zoom\s*\n'),
-    '\n',
-  );
-
-  if (enabled) {
-    Logger.info('Enabling Zoom native SDK dependency in pubspec.yaml...');
+  if (content.contains('packages/zoom')) {
     content = content.replaceAll(
-      '  testpress:\n    path: ../packages/testpress',
-      '  testpress:\n    path: ../packages/testpress\n  zoom:\n    path: ../packages/zoom',
+      RegExp(r'\s*#?\s*zoom:\s*\n\s*#?\s*path:\s*\.\./packages/zoom\s*\n'),
+      '\n',
     );
-  } else {
-    Logger.info('Zoom native SDK dependency is disabled.');
-  }
+    await pubspecFile.writeAsString(content);
 
-  await pubspecFile.writeAsString(content);
+    Logger.info(
+      'Cleaned obsolete native Zoom dependency. Running flutter pub get...',
+    );
+    final pubGetResult = await Process.run('flutter', [
+      'pub',
+      'get',
+    ], workingDirectory: appDirPath);
 
-  Logger.info('Syncing dependencies with flutter pub get...');
-  final pubGetResult = await Process.run('flutter', [
-    'pub',
-    'get',
-  ], workingDirectory: appDirPath);
-
-  if (pubGetResult.exitCode != 0) {
-    Logger.warn('flutter pub get failed: ${pubGetResult.stderr}');
+    if (pubGetResult.exitCode != 0) {
+      Logger.warn('flutter pub get failed: ${pubGetResult.stderr}');
+    }
   }
 }
 

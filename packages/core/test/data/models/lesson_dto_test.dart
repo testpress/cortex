@@ -904,4 +904,54 @@ void main() {
       );
     });
   });
+
+  group('LessonDto.hasJoinableZoomSource', () {
+    test('returns true when conferenceId is present and non-empty', () {
+      final dto = LessonDto.fromJson({
+        'id': '1',
+        'title': 'Zoom Class',
+        'content_type': 'video_conference',
+        'conference_id': '123456789',
+      });
+      expect(dto.hasJoinableZoomSource, isTrue);
+    });
+
+    test('returns true when contentUrl is present and non-empty', () {
+      final dto = LessonDto.fromJson({
+        'id': '2',
+        'title': 'Zoom Class',
+        'content_type': 'video_conference',
+        'join_url': 'https://app.zoom.us/wc/123/join',
+      });
+      expect(dto.hasJoinableZoomSource, isTrue);
+    });
+
+    test(
+      'returns false when both conferenceId and contentUrl are missing or empty',
+      () {
+        final dto = LessonDto.fromJson({
+          'id': '3',
+          'title': 'Zoom Class',
+          'content_type': 'video_conference',
+          'conference_id': '',
+          'join_url': '',
+        });
+        expect(dto.hasJoinableZoomSource, isFalse);
+      },
+    );
+
+    test(
+      'returns false when conferenceId and contentUrl contain only whitespace',
+      () {
+        final dto = LessonDto.fromJson({
+          'id': '4',
+          'title': 'Zoom Class',
+          'content_type': 'video_conference',
+          'conference_id': '   ',
+          'join_url': '   ',
+        });
+        expect(dto.hasJoinableZoomSource, isFalse);
+      },
+    );
+  });
 }

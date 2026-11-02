@@ -3348,6 +3348,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teamsMissingJoinLink => 'Meeting link is missing';
 
   @override
+  String get zoomPermissionRequired =>
+      'Camera and microphone access is required. Enable them in Settings to join.';
+
+  @override
+  String get zoomJoinMeetingLoading => 'Joining meeting...';
+
+  @override
+  String get zoomPermissionDialogTitle => 'Camera & microphone required';
+
+  @override
+  String get zoomPermissionDialogContent =>
+      'Camera and microphone access is blocked. Open Settings and enable them to use audio and video in this meeting.';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get meetingParticipantDefaultName => 'Participant';
+
+  @override
   String get aiStudyCompanionTitle => 'Your AI study companion';
 
   @override

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'teams_web_view.dart';
+import 'zoom_web_view.dart';
+import 'zoom_web_view_config.dart';
 
 final _meetingJoiningProvider = StateProvider.autoDispose<bool>((ref) => false);
 
@@ -19,18 +21,19 @@ class VideoConferenceViewer extends ConsumerWidget {
   final VoidCallback? onComplete;
 
   void _joinMeeting(BuildContext context, WidgetRef ref) async {
+    final l10n = L10n.of(context);
     final state = lesson.streamStatus?.toLowerCase();
 
     if (state == 'completed' || state == 'ended') {
       AppToast.show(context,
-          message: L10n.of(context).liveStreamEndedMessage, isError: true);
+          message: l10n.liveStreamEndedMessage, isError: true);
       return;
     }
 
     if (state != 'running' && state != 'live' && state != 'started') {
       AppToast.show(
         context,
-        message: L10n.of(context).liveStreamWaitingForHost,
+        message: l10n.liveStreamWaitingForHost,
         isError: true,
       );
       return;
@@ -48,10 +51,35 @@ class VideoConferenceViewer extends ConsumerWidget {
       return;
     }
 
+    if (lesson.isZoom) {
+      final user = ref.read(userProvider).valueOrNull;
+      final displayName =
+          user?.name ?? user?.username ?? l10n.meetingParticipantDefaultName;
+      final zoomUrl = ZoomWebViewConfig.buildZoomWebClientUrl(
+        conferenceId: lesson.conferenceId,
+        password: lesson.password,
+        displayName: displayName,
+        fallbackUrl: lesson.contentUrl,
+      );
+
+      if (zoomUrl.isNotEmpty) {
+        Navigator.of(context).push(
+          AppRoute(
+            page: ZoomVideoConferenceScreen(
+              joinUrl: zoomUrl,
+              title: lesson.title,
+            ),
+          ),
+        );
+        return;
+      }
+    }
+
     final meetingService = ref.read(meetingServiceProvider);
     if (meetingService != null) {
       final user = ref.read(userProvider).valueOrNull;
-      final displayName = user?.name ?? user?.username ?? 'Participant';
+      final displayName =
+          user?.name ?? user?.username ?? l10n.meetingParticipantDefaultName;
 
       ref.read(_meetingJoiningProvider.notifier).state = true;
       try {
@@ -66,7 +94,7 @@ class VideoConferenceViewer extends ConsumerWidget {
         if (context.mounted) {
           AppToast.show(
             context,
-            message: L10n.of(context).liveStreamJoinFailed,
+            message: l10n.liveStreamJoinFailed,
             isError: true,
           );
         }
@@ -243,7 +271,9 @@ class VideoConferenceLobbyView extends StatelessWidget {
                 title: L10n.of(context).liveStreamStartTime,
                 subtitle: formattedStart!,
               ),
-            if (_isLive && lesson.isTeams && lesson.contentUrl == null) ...[
+            if (_isLive &&
+                ((lesson.isTeams && lesson.contentUrl == null) ||
+                    (lesson.isZoom && !lesson.hasJoinableZoomSource))) ...[
               const ConferenceDivider(),
               ConferenceInfoRow(
                 icon: LucideIcons.alertCircle,

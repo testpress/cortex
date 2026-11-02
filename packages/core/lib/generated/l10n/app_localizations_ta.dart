@@ -3399,6 +3399,29 @@ class AppLocalizationsTa extends AppLocalizations {
   String get teamsMissingJoinLink => 'சந்திப்பு இணைப்பு காணவில்லை';
 
   @override
+  String get zoomPermissionRequired =>
+      'சேர, கேமரா மற்றும் மைக்ரோஃபோன் அணுகல் தேவை. அமைப்புகளில் அவற்றை இயக்கவும்.';
+
+  @override
+  String get zoomJoinMeetingLoading => 'கூட்டத்தில் சேர்கிறோம்...';
+
+  @override
+  String get zoomPermissionDialogTitle => 'கேமரா மற்றும் மைக்ரோஃபோன் தேவை';
+
+  @override
+  String get zoomPermissionDialogContent =>
+      'கேமரா மற்றும் மைக்ரோஃபோன் அணுகல் தடுக்கப்பட்டுள்ளது. இந்த கூட்டத்தில் ஆடியோ மற்றும் வீடியோவைப் பயன்படுத்த அமைப்புகளைத் திறந்து அவற்றை இயக்கவும்.';
+
+  @override
+  String get openSettings => 'அமைப்புகளைத் திறக்கவும்';
+
+  @override
+  String get notNow => 'இப்போது இல்லை';
+
+  @override
+  String get meetingParticipantDefaultName => 'பங்கேற்பாளர்';
+
+  @override
   String get aiStudyCompanionTitle => 'உங்கள் AI கற்றல் துணை';
 
   @override
