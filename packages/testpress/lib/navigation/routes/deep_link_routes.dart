@@ -38,9 +38,6 @@ class DeepLinkRoutes {
     '/dashboard',
     '/leaderboard',
 
-    // 7. Account activation
-    '/activate',
-
     // 8. Discussions & Forum
     '/discussions/forum/posts/:slug',
     '/discussions/doubts/:id',

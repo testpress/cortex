@@ -437,12 +437,18 @@ Future<void> updateAndroidDeepLinkConfig(
   Logger.info(
     'Configuring Android App Links host: ${client.deepLinkHost} (${client.whiteLabeledHost})...',
   );
-  final content = StringBuffer()
-    ..writeln('\n# Injected deep link host properties')
-    ..writeln('DEEP_LINK_HOST=${client.deepLinkHost}')
-    ..writeln('WHITE_LABELED_HOST=${client.whiteLabeledHost}');
 
-  await gradleProps.writeAsString(content.toString(), mode: FileMode.append);
+  var lines = await gradleProps.readAsLines();
+  lines = lines.where((line) {
+    final trimmed = line.trim();
+    return !trimmed.startsWith('DEEP_LINK_HOST=') &&
+        !trimmed.startsWith('WHITE_LABELED_HOST=') &&
+        trimmed != '# Injected deep link host properties';
+  }).toList();
+  lines.add('\n# Injected deep link host properties');
+  lines.add('DEEP_LINK_HOST=${client.deepLinkHost}');
+  lines.add('WHITE_LABELED_HOST=${client.whiteLabeledHost}');
+  await gradleProps.writeAsString('${lines.join('\n')}\n');
 }
 
 /// Updates Android Google Services configuration.
@@ -485,6 +491,19 @@ Future<void> updateZoomDependency(String appDirPath, bool enabled) async {
 
     if (pubGetResult.exitCode != 0) {
       Logger.warn('flutter pub get failed: ${pubGetResult.stderr}');
+    }
+    Logger.info('Syncing dependencies with flutter pub get...');
+
+    final isWindows = Platform.isWindows;
+
+    final result = await Process.run(
+      isWindows ? 'cmd.exe' : 'flutter',
+      isWindows ? ['/c', 'flutter', 'pub', 'get'] : ['pub', 'get'],
+      workingDirectory: appDirPath,
+    );
+
+    if (result.exitCode != 0) {
+      Logger.warn('flutter pub get failed: ${result.stderr}');
     }
   }
 }

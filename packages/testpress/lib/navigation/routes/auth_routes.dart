@@ -147,6 +147,11 @@ class AuthRoutes {
           slideTransitionPage(context, state.pageKey, const SignupScreen()),
     ),
     GoRoute(
+      path: '/activate',
+      pageBuilder: (context, state) =>
+          slideTransitionPage(context, state.pageKey, const SignupScreen()),
+    ),
+    GoRoute(
       path: '/forgot-password',
       pageBuilder: (context, state) => slideTransitionPage(
         context,
