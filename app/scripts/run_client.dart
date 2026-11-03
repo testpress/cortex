@@ -21,11 +21,9 @@ void main(List<String> args) async {
       'Running the app for ${client.appName} (${cliArgs.platform}, ${cliArgs.mode} mode)...',
     );
 
-    final isWindows = Platform.isWindows;
-
     final runProcess = await Process.start(
-      isWindows ? 'cmd.exe' : 'flutter',
-      isWindows ? ['/c', 'flutter', ...runArgs] : runArgs,
+      'flutter',
+      runArgs,
       workingDirectory: appDirPath,
       mode: ProcessStartMode.inheritStdio,
     );

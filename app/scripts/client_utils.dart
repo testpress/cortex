@@ -493,19 +493,6 @@ Future<void> updateZoomDependency(String appDirPath, bool enabled) async {
     if (pubGetResult.exitCode != 0) {
       Logger.warn('flutter pub get failed: ${pubGetResult.stderr}');
     }
-    Logger.info('Syncing dependencies with flutter pub get...');
-
-    final isWindows = Platform.isWindows;
-
-    final result = await Process.run(
-      isWindows ? 'cmd.exe' : 'flutter',
-      isWindows ? ['/c', 'flutter', 'pub', 'get'] : ['pub', 'get'],
-      workingDirectory: appDirPath,
-    );
-
-    if (result.exitCode != 0) {
-      Logger.warn('flutter pub get failed: ${result.stderr}');
-    }
   }
 }
 
