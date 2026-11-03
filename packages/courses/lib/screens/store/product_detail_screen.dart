@@ -44,9 +44,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       Scrollable.ensureVisible(
         targetContext,
         duration: shouldAnimate ? design.motion.normal : Duration.zero,
-        curve: shouldAnimate
-            ? MotionPreferences.curve(context, design.motion.easeOut)
-            : Curves.linear,
+        curve: MotionPreferences.curve(context, design.motion.easeOut),
       );
     }
   }

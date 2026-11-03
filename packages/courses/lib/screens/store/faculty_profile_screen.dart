@@ -59,52 +59,47 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (_activeVideoUrl != null &&
-                          _activeVideoUrl!.trim().isNotEmpty)
-                        _FacultyVideoPlayer(videoUrl: _activeVideoUrl!),
-                      Padding(
-                        padding: EdgeInsets.all(design.spacing.screenPadding),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _FacultyCredentialsSection(faculty: person),
-                            if (person.highlights.isNotEmpty) ...[
-                              SizedBox(height: design.spacing.lg),
-                              _FacultyHighlightsSection(
-                                highlights: person.highlights,
-                              ),
-                            ],
-                            if (person.qualifications.isNotEmpty) ...[
-                              SizedBox(height: design.spacing.lg),
-                              _FacultyQualificationsSection(
-                                qualifications: person.qualifications,
-                              ),
-                            ],
-                            if (person.bio.isNotEmpty) ...[
-                              SizedBox(height: design.spacing.lg),
-                              _FacultyBioSection(bio: person.bio),
-                            ],
-                            if (person.teaches.isNotEmpty) ...[
-                              SizedBox(height: design.spacing.xl),
-                              _FacultyCoursesSection(
-                                teaches: person.teaches,
-                                activeVideoUrl: _activeVideoUrl,
-                                onSelectCourse: _switchVideo,
-                              ),
-                            ],
-                            SizedBox(height: design.spacing.xl),
-                          ],
-                        ),
-                      ),
-                    ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_activeVideoUrl != null &&
+                      _activeVideoUrl!.trim().isNotEmpty)
+                    _FacultyVideoPlayer(videoUrl: _activeVideoUrl!),
+                  Padding(
+                    padding: EdgeInsets.all(design.spacing.screenPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _FacultyCredentialsSection(faculty: person),
+                        if (person.highlights.isNotEmpty) ...[
+                          SizedBox(height: design.spacing.lg),
+                          _FacultyHighlightsSection(
+                            highlights: person.highlights,
+                          ),
+                        ],
+                        if (person.qualifications.isNotEmpty) ...[
+                          SizedBox(height: design.spacing.lg),
+                          _FacultyQualificationsSection(
+                            qualifications: person.qualifications,
+                          ),
+                        ],
+                        if (person.bio.isNotEmpty) ...[
+                          SizedBox(height: design.spacing.lg),
+                          _FacultyBioSection(bio: person.bio),
+                        ],
+                        if (person.teaches.isNotEmpty) ...[
+                          SizedBox(height: design.spacing.xl),
+                          _FacultyCoursesSection(
+                            teaches: person.teaches,
+                            activeVideoUrl: _activeVideoUrl,
+                            onSelectCourse: _switchVideo,
+                          ),
+                        ],
+                        SizedBox(height: design.spacing.xl),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
@@ -142,6 +137,9 @@ class _FacultyVideoPlayer extends StatefulWidget {
 }
 
 class _FacultyVideoPlayerState extends State<_FacultyVideoPlayer> {
+  static const _videoReadyTimeout = Duration(seconds: 4);
+  static const _videoLetterboxColor = Color(0xFF000000);
+
   late final WebViewController _controller;
   bool _isLoading = true;
   bool _hasError = false;
@@ -183,7 +181,7 @@ class _FacultyVideoPlayerState extends State<_FacultyVideoPlayer> {
               setState(() => _isLoading = false);
             } else if (mounted) {
               _fallbackTimer?.cancel();
-              _fallbackTimer = Timer(const Duration(seconds: 4), () {
+              _fallbackTimer = Timer(_videoReadyTimeout, () {
                 if (mounted && _isLoading) {
                   setState(() => _isLoading = false);
                 }
@@ -201,17 +199,22 @@ class _FacultyVideoPlayerState extends State<_FacultyVideoPlayer> {
         ),
       );
 
-    _loadVideo();
+    _loadVideo(isInitial: true);
   }
 
-  void _loadVideo() {
+  void _loadVideo({bool isInitial = false}) {
     _fallbackTimer?.cancel();
     final uri = Uri.tryParse(widget.videoUrl);
     if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
-      setState(() {
+      if (isInitial) {
         _hasError = true;
         _isLoading = false;
-      });
+      } else if (mounted) {
+        setState(() {
+          _hasError = true;
+          _isLoading = false;
+        });
+      }
       return;
     }
 
@@ -323,7 +326,7 @@ class _FacultyVideoPlayerState extends State<_FacultyVideoPlayer> {
           child: Stack(
             children: [
               Container(
-                color: const Color(0xFF000000),
+                color: _videoLetterboxColor,
                 child: WebViewWidget(controller: _controller),
               ),
               if (_isLoading && !_hasError)

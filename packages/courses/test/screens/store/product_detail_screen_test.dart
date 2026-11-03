@@ -571,6 +571,55 @@ void main() {
       // Screen should be closed
       expect(find.byType(FacultyProfileScreen), findsNothing);
     });
+
+    testWidgets('tapping faculty summary row scrolls to faculty section',
+        (tester) async {
+      final facultyProduct = ProductDto(
+        id: 701,
+        title: 'Long Course with Faculty',
+        slug: 'long-course-with-faculty',
+        price: '500.00',
+        courses: const [100],
+        descriptionHtml: '<p>${'Long description content.<br/>' * 40}</p>',
+        faculty: const [
+          ProductFacultyDto(
+            id: 1,
+            name: 'Dr. Ananya Rao',
+            initials: 'AR',
+            subjects: ['Polity'],
+            shortDescription: 'Author of Polity Simple',
+          ),
+        ],
+      );
+
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: facultyProduct,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: facultyProduct),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final scrollableFinder = find.byType(Scrollable).first;
+      final scrollableState = tester.state<ScrollableState>(scrollableFinder);
+      expect(scrollableState.position.pixels, 0.0);
+
+      await tester.tap(find.byType(ProductFacultySummary));
+      await tester.pumpAndSettle();
+
+      expect(scrollableState.position.pixels, greaterThan(0.0));
+    });
   });
 }
 

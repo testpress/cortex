@@ -31,9 +31,10 @@ Tapping any instructor card pushes `FacultyProfileScreen` via `AppRoute`.
 - **Video Section**: 16:9 aspect ratio container embedding a dedicated `WebViewController`/`WebViewWidget` with an inline HTML wrapper, JavaScript channel communication (`VideoChannel`) for ready state detection, and a clean loading overlay (`AppLoadingIndicator`) that conceals the unscaled web view during initial load until ready or `onPageFinished`. Omitted if the instructor has no video URL.
 - **Credentials & Bio**: Instructor avatar, full name, subjects, teaching experience badge, highlights with award icons, qualifications with graduation cap icons, and biographical summary.
 - **Course Video Switcher**: When an instructor teaches multiple courses in the bundle with separate intro videos, an interactive course list lets the learner switch the active stream with a "Now showing" indicator.
-- **Responsive Layout**: Body content is centered within a maximum width container (`maxWidth: 720`), ensuring comfortable reading widths and balanced media sizing across both phones and tablets.
+- **Responsive Layout**: Body content uses standard `SingleChildScrollView` with `design.spacing.screenPadding`, ensuring consistent full-width presentation across both phones and tablets without artificial width clamping.
+- **Navigation & Deep-linking**: Uses in-app push `Navigator.of(context).push(AppRoute(page: FacultyProfileScreen(faculty: faculty)))` passing the resolved `ProductFacultyDto`. Standalone GoRoute deep-linking (e.g., `/store/faculty/:id`) is deferred to a future iteration as faculty profiles currently live nested within product detail payloads rather than an independent standalone lookup endpoint.
 
-*Rationale*: Dedicated screen navigation integrates with standard platform back gestures, isolates media playback from parent scroll controllers, and scales consistently across form factors.
+*Rationale*: Dedicated screen navigation integrates with standard platform back gestures, isolates media playback from parent scroll controllers, and scales consistently across form factors. In-app route push complies with `ai_context.md` for nested screens while avoiding premature routing complexity prior to standalone backend endpoint availability.
 
 ### D3: Typed Data Contract
 Extend `ProductDto` with `List<ProductFacultyDto> faculty` and nested `FacultyTeachingDto` matching the `/api/v3/products/{slug}/` payload.
@@ -53,3 +54,4 @@ All components use Cortex neutral design primitives without Material or Cupertin
 - **[Risk] Products without assigned faculty** → *Mitigation*: Both `ProductFacultySummary` and `ProductFacultySection` conditionally evaluate `product.faculty.isNotEmpty` and return `SizedBox.shrink()` when empty, consuming zero layout height.
 - **[Risk] Faculty without introduction video** → *Mitigation*: The 16:9 video container is conditionally rendered only when `hasIntroVideo` is true, falling back to credentials and bio directly below the header.
 - **[Risk] Missing or failing instructor photo URLs** → *Mitigation*: `CachedNetworkImage` specifies an error widget and placeholder that fallback to a monogram avatar (`_buildInitials`) derived from instructor initials.
+- **[Deferred] Standalone Faculty Deep-linking** → Standalone deep-linking via GoRoute (`/store/faculty/:id`) is deferred to a future iteration; `FacultyProfileScreen` is accessed via in-app `AppRoute` using the nested `ProductFacultyDto` resolved from the product details payload.
