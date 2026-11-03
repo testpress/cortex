@@ -6,6 +6,7 @@ import 'package:core/data/data.dart';
 import 'package:profile/profile.dart';
 import '../widgets/dashboard_drawer.dart';
 import 'bootstrap_provider.dart';
+import 'deep_link_handler.dart';
 
 /// The root navigator key for the whole app
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -26,8 +27,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: initialLocation,
     observers: [SentryService.createNavigatorObserver()],
     redirect: (context, state) => AuthRoutes.redirect(context, state),
+    onException: (context, state, router) =>
+        router.go(DeepLinkHandler.defaultRoute),
     routes: [
       ...AuthRoutes.routes,
+      ...DeepLinkRoutes.routes,
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => _AppShellBuilder(
           navigationShell: navigationShell,

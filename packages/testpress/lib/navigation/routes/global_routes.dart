@@ -22,15 +22,33 @@ class GlobalRoutes {
         GoRoute(
           path: 'product/:slug',
           parentNavigatorKey: rootNavigatorKey,
-          redirect: (context, state) {
-            if (state.extra == null || state.extra is! ProductDto) {
-              return '/store'; // Fallback for deep linking / web reload
-            }
-            return null;
-          },
           builder: (context, state) {
-            final product = state.extra as ProductDto;
-            return ProductDetailScreen(product: product);
+            final slug = state.pathParameters['slug']!;
+            final extraProduct = state.extra is ProductDto
+                ? state.extra as ProductDto
+                : null;
+            if (extraProduct != null) {
+              return ProductDetailScreen(product: extraProduct);
+            }
+            return Consumer(
+              builder: (context, ref, child) {
+                final productAsync = ref.watch(productDetailProvider(slug));
+                return productAsync.when(
+                  data: (product) => ProductDetailScreen(product: product),
+                  loading: () => Container(
+                    color: Design.of(context).colors.surface,
+                    child: const Center(child: AppLoadingIndicator()),
+                  ),
+                  error: (e, _) {
+                    final l10n = L10n.of(context);
+                    return AppErrorView(
+                      title: l10n.errorGenericTitle,
+                      error: e,
+                    );
+                  },
+                );
+              },
+            );
           },
         ),
       ],

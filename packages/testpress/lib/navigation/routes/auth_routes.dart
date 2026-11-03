@@ -12,6 +12,8 @@ class AuthRoutes {
     '/login',
     '/mobile-login',
     '/signup',
+    '/register',
+    '/activate',
     '/forgot-password',
     '/otp',
     '/onboarding',
@@ -20,9 +22,16 @@ class AuthRoutes {
   };
 
   static String? redirect(BuildContext context, GoRouterState state) {
+    final rawPath = state.uri.path;
+    if (rawPath.length > 1 && rawPath.endsWith('/')) {
+      final stripped = rawPath.substring(0, rawPath.length - 1);
+      final query = state.uri.hasQuery ? '?${state.uri.query}' : '';
+      return '$stripped$query';
+    }
+
     final container = ProviderScope.containerOf(context, listen: false);
     final bootstrapState = container.read(bootstrapProvider);
-    final path = state.uri.path;
+    final path = rawPath;
     final isAuthRoute = _authPaths.contains(path);
 
     if (bootstrapState == BootstrapState.error) {
@@ -33,13 +42,16 @@ class AuthRoutes {
     if (bootstrapState == BootstrapState.loading) {
       if (path == '/onboarding' || path == '/connection-error') return null;
 
-      // Respect the pre-boot cached auth signal so the loading gate doesn't
-      // immediately bounce initialLocation='/home' back to /onboarding before
-      // authProvider has a chance to resolve. authProvider still performs full
-      // async verification in the background; once bootstrapProvider transitions
-      // out of loading, router.refresh() fires and the correct redirect applies.
+      // Allow auth routes (/register, /signup, /login, /mobile-login) to display immediately
+      if (isAuthRoute) return null;
+
       final cachedIsLoggedIn = container.read(cachedAuthFlagProvider);
-      if (cachedIsLoggedIn && !isAuthRoute) return null;
+      if (cachedIsLoggedIn) return null;
+
+      if (path != '/home' && path != '/') {
+        final redirectUrl = Uri.encodeComponent(state.uri.toString());
+        return '/onboarding?redirect=$redirectUrl';
+      }
 
       return '/onboarding';
     }
@@ -57,18 +69,40 @@ class AuthRoutes {
     if (bootstrapState == BootstrapState.authenticated) {
       if ((isAuthRoute && path != '/login-activity') ||
           path == '/enforce-student-data') {
+        final redirectParam = state.uri.queryParameters['redirect'];
+        if (redirectParam != null && redirectParam.isNotEmpty) {
+          final target = Uri.decodeComponent(redirectParam);
+          if (target.startsWith('/') &&
+              target != '/login' &&
+              target != '/signup' &&
+              target != '/register') {
+            return target;
+          }
+        }
         return '/home';
       }
       return null;
     }
 
     // Unauthenticated
-    if (!isAuthRoute) return '/login';
+    if (!isAuthRoute) {
+      if (path != '/onboarding' &&
+          path != '/connection-error' &&
+          path != '/enforce-student-data') {
+        final redirectUrl = Uri.encodeComponent(state.uri.toString());
+        return '/login?redirect=$redirectUrl';
+      }
+      return '/login';
+    }
 
     // /onboarding, /connection-error, and /enforce-student-data - unauthenticated user landing here must go to login.
     if (path == '/onboarding' ||
         path == '/connection-error' ||
         path == '/enforce-student-data') {
+      final redirectParam = state.uri.queryParameters['redirect'];
+      if (redirectParam != null && redirectParam.isNotEmpty) {
+        return '/login?redirect=$redirectParam';
+      }
       return '/login';
     }
 
@@ -99,6 +133,11 @@ class AuthRoutes {
     ),
     GoRoute(
       path: '/signup',
+      pageBuilder: (context, state) =>
+          slideTransitionPage(context, state.pageKey, const SignupScreen()),
+    ),
+    GoRoute(
+      path: '/register',
       pageBuilder: (context, state) =>
           slideTransitionPage(context, state.pageKey, const SignupScreen()),
     ),

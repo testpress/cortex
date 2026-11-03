@@ -29,6 +29,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        val host = project.findProperty("DEEP_LINK_HOST") as String? ?: "testpress.in"
+        val whiteLabeledHost = project.findProperty("WHITE_LABELED_HOST") as String? ?: host
+        manifestPlaceholders["deepLinkHost"] = host
+        manifestPlaceholders["whiteLabeledHost"] = whiteLabeledHost
     }
 
     signingConfigs {

@@ -39,6 +39,11 @@ void main() {
       );
       expect(DeepLinkHandler.resolve('/activate'), '/signup');
       expect(DeepLinkHandler.resolve('/register'), '/signup');
+      expect(DeepLinkHandler.resolve('/register/'), '/signup');
+      expect(
+        DeepLinkHandler.resolve('https://staging.testpress.in/register/'),
+        '/signup',
+      );
       expect(DeepLinkHandler.resolve('/signup'), '/signup');
     });
 
@@ -96,6 +101,22 @@ void main() {
       expect(
         DeepLinkHandler.resolve('/courses/15'),
         '/study/course/15/chapters',
+      );
+      expect(
+        DeepLinkHandler.resolve('https://staging.testpress.in/learn/536'),
+        '/study/course/536/chapters',
+      );
+      expect(
+        DeepLinkHandler.resolve('https://staging.testpress.in/learn/536/'),
+        '/study/course/536/chapters',
+      );
+      expect(
+        DeepLinkHandler.resolve('/learn/536/chapters/12'),
+        '/study/course/536/chapters/12',
+      );
+      expect(
+        DeepLinkHandler.resolve('/learn/536/contents/99'),
+        '/study/lesson/99',
       );
       expect(
         DeepLinkHandler.resolve('/courses/15/chapters/22'),
@@ -532,6 +553,51 @@ void main() {
         '/study/course/math-101/chapters',
       );
       expect(rule.match(['courses', 'chapters']), isNull);
+    });
+
+    test('resolves standalone chapter URLs', () {
+      expect(DeepLinkHandler.resolve('/chapters/45'), '/study');
+      expect(
+        DeepLinkHandler.resolve('https://rays.testpress.in/chapters/45'),
+        '/study',
+      );
+    });
+
+    test('resolves checklist URL test cases', () {
+      // Course content (video / lecture / pdf / exam)
+      expect(
+        DeepLinkHandler.resolve(
+          'https://learn.siddhiprep.com/courses/8/contents/3899/?content_detail_v2=true',
+        ),
+        '/study/lesson/3899',
+      );
+      // Course module
+      expect(
+        DeepLinkHandler.resolve('/courses/8/chapters/25'),
+        '/study/course/8/chapters/25',
+      );
+      // Course curriculum
+      expect(DeepLinkHandler.resolve('/courses/8'), '/study/course/8/chapters');
+      // Product
+      expect(
+        DeepLinkHandler.resolve('/products/neet-2026'),
+        '/store/product/neet-2026',
+      );
+      // Blog posts
+      expect(
+        DeepLinkHandler.resolve('/posts/welcome-post'),
+        '/home/posts/welcome-post',
+      );
+      expect(
+        DeepLinkHandler.resolve('/p/w123'),
+        '/home/posts/w123?is_short_link=true',
+      );
+      // Auth & dashboard
+      expect(DeepLinkHandler.resolve('/login'), '/login');
+      expect(DeepLinkHandler.resolve('/register'), '/signup');
+      expect(DeepLinkHandler.resolve('/activate'), '/signup');
+      expect(DeepLinkHandler.resolve('/learn'), '/home');
+      expect(DeepLinkHandler.resolve('/dashboard'), '/home');
     });
   });
 }
