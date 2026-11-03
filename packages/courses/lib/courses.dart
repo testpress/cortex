@@ -34,11 +34,14 @@ export 'providers/recent_activity_provider.dart';
 export 'providers/dashboard_providers.dart';
 export 'screens/store/store_page.dart';
 export 'screens/store/product_detail_screen.dart';
+export 'screens/store/faculty_profile_screen.dart';
 
 export 'store_constants.dart';
 export 'providers/store_providers.dart';
 export 'widgets/store/store_chapter_tile.dart';
 export 'widgets/store/store_content_tile.dart';
+export 'widgets/store/product_faculty_summary.dart';
+export 'widgets/store/product_faculty_section.dart';
 
 export 'providers/info_providers.dart';
 export 'screens/info/info_page.dart';

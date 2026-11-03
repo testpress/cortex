@@ -6,6 +6,9 @@ import '../../widgets/store/product_discount_sheet.dart';
 import '../../widgets/store/product_installment_sheet.dart';
 import '../../widgets/store/product_subscription_sheet.dart';
 import '../../widgets/store/product_expandable_course_card.dart';
+import '../../widgets/store/product_faculty_summary.dart';
+import '../../widgets/store/product_faculty_section.dart';
+import 'faculty_profile_screen.dart';
 import '../../providers/store_providers.dart';
 import 'package:core/data/data.dart';
 
@@ -31,6 +34,28 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   int? _selectedPlanDetailId;
 
   final TextEditingController _couponController = TextEditingController();
+  final GlobalKey _facultySectionKey = GlobalKey();
+
+  void _scrollToFacultySection() {
+    final targetContext = _facultySectionKey.currentContext;
+    if (targetContext != null) {
+      final design = Design.of(context);
+      final shouldAnimate = MotionPreferences.shouldAnimate(context);
+      Scrollable.ensureVisible(
+        targetContext,
+        duration: shouldAnimate ? design.motion.normal : Duration.zero,
+        curve: MotionPreferences.curve(context, design.motion.easeOut),
+      );
+    }
+  }
+
+  void _openFacultyProfile(ProductFacultyDto faculty) {
+    Navigator.of(context).push(
+      AppRoute(
+        page: FacultyProfileScreen(faculty: faculty),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -551,6 +576,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         ],
                                       ),
                                     ),
+                                  if (product.faculty.isNotEmpty)
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: design.spacing.sm),
+                                      child: ProductFacultySummary(
+                                        faculty: product.faculty,
+                                        onTap: _scrollToFacultySection,
+                                      ),
+                                    ),
                                   if (hasDescription || hasCourse)
                                     Container(
                                         height: 1, color: design.colors.border),
@@ -613,6 +647,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                                 ),
                                               ))
                                           .toList(),
+                                    ),
+                                  if (product.faculty.isNotEmpty)
+                                    ProductFacultySection(
+                                      key: _facultySectionKey,
+                                      faculty: product.faculty,
+                                      onSelectFaculty: _openFacultyProfile,
                                     ),
                                 ],
                               ),

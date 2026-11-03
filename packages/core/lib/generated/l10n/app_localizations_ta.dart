@@ -2887,6 +2887,69 @@ class AppLocalizationsTa extends AppLocalizations {
   String get storeCurriculum => 'பாடத்திட்டம்';
 
   @override
+  String get storeMeetYourFaculty => 'உங்கள் ஆசிரியர்களை சந்தியுங்கள்';
+
+  @override
+  String get storeMeetYourFacultyDescription =>
+      'இந்த பாடத்திட்டத்தை கற்பிக்கும் பயிற்றுவிப்பாளர்களைப் பற்றி அறியுங்கள்';
+
+  @override
+  String get storeFacultyIntroduction => 'ஆசிரியர் அறிமுகம்';
+
+  @override
+  String storeTaughtBy(String name) {
+    return '$name கற்பிக்கிறார்';
+  }
+
+  @override
+  String storeTaughtByAndMore(String name, int count) {
+    return '$name மற்றும் மேலும் $count பேர் கற்பிக்கின்றனர்';
+  }
+
+  @override
+  String storeYearsTeaching(int years) {
+    return '$years ஆண்டுகள் கற்பித்தல் அனுபவம்';
+  }
+
+  @override
+  String get storeIntroVideo => 'அறிமுக வீடியோ';
+
+  @override
+  String get storeFacultyProfile => 'ஆசிரியர் சுயவிவரம்';
+
+  @override
+  String get storeHighlights => 'முக்கிய சிறப்பம்சங்கள்';
+
+  @override
+  String get storeQualifications => 'தகுதிகள்';
+
+  @override
+  String get storeAbout => 'பற்றி';
+
+  @override
+  String get storeTeachesInThisProduct =>
+      'இந்த தொகுப்பில் கற்பிக்கும் பாடங்கள்';
+
+  @override
+  String get storeNowShowing => 'இப்போது ஒளிபரப்பாகிறது';
+
+  @override
+  String get storeWatchIntro => 'அறிமுகம் பார்க்கவும்';
+
+  @override
+  String storeIntroForCourse(String course) {
+    return '$course-க்கான அறிமுகம்';
+  }
+
+  @override
+  String get storeShowFewer => 'குறைவாகக் காட்டு';
+
+  @override
+  String storeShowAllFaculty(int count) {
+    return 'அனைத்து $count ஆசிரியர்களையும் காட்டு';
+  }
+
+  @override
   String get storeHaveDiscountCode => 'தள்ளுபடி குறியீடு உள்ளதா?';
 
   @override

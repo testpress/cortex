@@ -208,6 +208,133 @@ class SubscriptionPlanDto {
   };
 }
 
+/// DTO representing a course taught by a faculty member.
+class FacultyTeachingDto {
+  final int id;
+  final String course;
+  final String subject;
+  final String videoUrl;
+
+  const FacultyTeachingDto({
+    required this.id,
+    required this.course,
+    this.subject = '',
+    this.videoUrl = '',
+  });
+
+  factory FacultyTeachingDto.fromJson(Map<String, dynamic> json) {
+    return FacultyTeachingDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      course: json['course'] as String? ?? '',
+      subject: json['subject'] as String? ?? '',
+      videoUrl: json['video_url'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'course': course,
+    'subject': subject,
+    'video_url': videoUrl,
+  };
+}
+
+/// DTO representing an instructor/faculty member associated with a product.
+class ProductFacultyDto {
+  final int id;
+  final String name;
+  final String initials;
+  final String? photo;
+  final String shortDescription;
+  final String designation;
+  final int yearsOfExperience;
+  final List<String> highlights;
+  final List<String> qualifications;
+  final String bio;
+  final List<String> subjects;
+  final List<String> courses;
+  final String? videoUrl;
+  final List<FacultyTeachingDto> teaches;
+
+  const ProductFacultyDto({
+    required this.id,
+    required this.name,
+    this.initials = '',
+    this.photo,
+    this.shortDescription = '',
+    this.designation = '',
+    this.yearsOfExperience = 0,
+    this.highlights = const [],
+    this.qualifications = const [],
+    this.bio = '',
+    this.subjects = const [],
+    this.courses = const [],
+    this.videoUrl,
+    this.teaches = const [],
+  });
+
+  bool get hasIntroVideo =>
+      (videoUrl != null && videoUrl!.trim().isNotEmpty) ||
+      teaches.any((t) => t.videoUrl.trim().isNotEmpty);
+
+  factory ProductFacultyDto.fromJson(Map<String, dynamic> json) {
+    return ProductFacultyDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String? ?? '',
+      initials: json['initials'] as String? ?? '',
+      photo: json['photo'] as String?,
+      shortDescription: json['short_description'] as String? ?? '',
+      designation: json['designation'] as String? ?? '',
+      yearsOfExperience: (json['years_of_experience'] as num?)?.toInt() ?? 0,
+      highlights:
+          (json['highlights'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      qualifications:
+          (json['qualifications'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      bio: json['bio'] as String? ?? '',
+      subjects:
+          (json['subjects'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      courses:
+          (json['courses'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      videoUrl: json['video_url'] as String?,
+      teaches:
+          (json['teaches'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map((e) => FacultyTeachingDto.fromJson(e))
+              .toList() ??
+          const [],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'initials': initials,
+    if (photo != null) 'photo': photo,
+    'short_description': shortDescription,
+    'designation': designation,
+    'years_of_experience': yearsOfExperience,
+    'highlights': highlights,
+    'qualifications': qualifications,
+    'bio': bio,
+    'subjects': subjects,
+    'courses': courses,
+    if (videoUrl != null) 'video_url': videoUrl,
+    'teaches': teaches.map((t) => t.toJson()).toList(),
+  };
+}
+
 /// DTO for Products (Store items) — maps to /api/v3/products/.
 class ProductDto {
   final int id;
@@ -224,6 +351,7 @@ class ProductDto {
   final String? category;
   final List<PriceDto> prices;
   final List<ProductCourseDto> coursesDetails;
+  final List<ProductFacultyDto> faculty;
 
   const ProductDto({
     required this.id,
@@ -240,6 +368,7 @@ class ProductDto {
     this.category,
     this.prices = const [],
     this.coursesDetails = const [],
+    this.faculty = const [],
   });
 
   bool get isFree => double.tryParse(price.replaceAll(',', '')) == 0;
@@ -362,6 +491,12 @@ class ProductDto {
         }
         return details;
       }(),
+      faculty:
+          (json['faculty'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map((e) => ProductFacultyDto.fromJson(e))
+              .toList() ??
+          const [],
     );
   }
 
@@ -381,6 +516,7 @@ class ProductDto {
     'category': category,
     'prices': prices.map((p) => p.toJson()).toList(),
     'courses_details': coursesDetails.map((c) => c.toJson()).toList(),
+    'faculty': faculty.map((f) => f.toJson()).toList(),
   };
 }
 

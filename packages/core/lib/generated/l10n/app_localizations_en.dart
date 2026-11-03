@@ -2843,6 +2843,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storeCurriculum => 'Curriculum';
 
   @override
+  String get storeMeetYourFaculty => 'Meet your faculty';
+
+  @override
+  String get storeMeetYourFacultyDescription =>
+      'Learn about the expert instructors teaching this course';
+
+  @override
+  String get storeFacultyIntroduction => 'Faculty Introduction';
+
+  @override
+  String storeTaughtBy(String name) {
+    return 'Taught by $name';
+  }
+
+  @override
+  String storeTaughtByAndMore(String name, int count) {
+    return 'Taught by $name and $count more';
+  }
+
+  @override
+  String storeYearsTeaching(int years) {
+    return '$years years teaching';
+  }
+
+  @override
+  String get storeIntroVideo => 'Intro video';
+
+  @override
+  String get storeFacultyProfile => 'Faculty profile';
+
+  @override
+  String get storeHighlights => 'Highlights';
+
+  @override
+  String get storeQualifications => 'Qualifications';
+
+  @override
+  String get storeAbout => 'About';
+
+  @override
+  String get storeTeachesInThisProduct => 'Teaches in this product';
+
+  @override
+  String get storeNowShowing => 'Now showing';
+
+  @override
+  String get storeWatchIntro => 'Watch intro';
+
+  @override
+  String storeIntroForCourse(String course) {
+    return 'Intro for $course';
+  }
+
+  @override
+  String get storeShowFewer => 'Show fewer';
+
+  @override
+  String storeShowAllFaculty(int count) {
+    return 'Show all $count faculty';
+  }
+
+  @override
   String get storeHaveDiscountCode => 'Have a discount code?';
 
   @override

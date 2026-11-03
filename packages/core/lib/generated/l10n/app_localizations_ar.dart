@@ -2848,6 +2848,68 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storeCurriculum => 'المنهج';
 
   @override
+  String get storeMeetYourFaculty => 'تعرف على أعضاء هيئة التدريس';
+
+  @override
+  String get storeMeetYourFacultyDescription =>
+      'تعرف على المدربين الخبراء الذين يدرسون هذه الدورة';
+
+  @override
+  String get storeFacultyIntroduction => 'مقدمة أعضاء هيئة التدريس';
+
+  @override
+  String storeTaughtBy(String name) {
+    return 'تدريس بواسطة $name';
+  }
+
+  @override
+  String storeTaughtByAndMore(String name, int count) {
+    return 'تدريس بواسطة $name و$count آخرين';
+  }
+
+  @override
+  String storeYearsTeaching(int years) {
+    return '$years سنوات من التدريس';
+  }
+
+  @override
+  String get storeIntroVideo => 'فيديو تعريفي';
+
+  @override
+  String get storeFacultyProfile => 'الملف الشخصي للمدرس';
+
+  @override
+  String get storeHighlights => 'أبرز الإنجازات';
+
+  @override
+  String get storeQualifications => 'المؤهلات';
+
+  @override
+  String get storeAbout => 'عن المدرس';
+
+  @override
+  String get storeTeachesInThisProduct => 'المقررات التي يدرسها في هذه الباقة';
+
+  @override
+  String get storeNowShowing => 'يعرض الآن';
+
+  @override
+  String get storeWatchIntro => 'مشاهدة الفيديو التعريفي';
+
+  @override
+  String storeIntroForCourse(String course) {
+    return 'فيديو تعريفي لـ $course';
+  }
+
+  @override
+  String get storeShowFewer => 'عرض أقل';
+
+  @override
+  String storeShowAllFaculty(int count) {
+    return 'عرض جميع أعضاء هيئة التدريس ($count)';
+  }
+
+  @override
   String get storeHaveDiscountCode => 'هل لديك كود خصم؟';
 
   @override
