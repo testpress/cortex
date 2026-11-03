@@ -25,3 +25,10 @@ The system SHALL fetch and display a paginated list of products from the `/api/v
 - **WHEN** a product has `plan_ids` populated
 - **THEN** the product card SHALL indicate it has duration-based pricing tiers
 
+### Requirement: Native Faculty Presentation on Product Detail
+The store product detail screen SHALL incorporate native faculty components without altering or regressing existing product cards, pricing rows, subscription plan sheets, installment sheets, or checkout flows.
+
+#### Scenario: Existing store workflows remain unchanged
+- **WHEN** the faculty section and "Taught by" rows are rendered
+- **THEN** all existing buy now buttons, coupon apply flows, installment sheets, and plan selection behaviors continue to function identically
+
