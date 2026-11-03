@@ -38,7 +38,7 @@ class DeepLinkRoutes {
     '/dashboard',
     '/leaderboard',
 
-    // 8. Discussions & Forum
+    // 7. Discussions & Forum
     '/discussions/forum/posts/:slug',
     '/discussions/doubts/:id',
     '/discussions/doubts',

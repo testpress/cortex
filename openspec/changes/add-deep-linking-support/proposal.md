@@ -8,18 +8,23 @@ The native Android app solved this via a dedicated `DeeplinkHandler.java` that p
 
 ## What Changes
 
-- **DeepLinkHandler Utility**: Introduce a platform-neutral `DeepLinkHandler` in `packages/testpress` that parses and normalizes incoming URLs:
+- **DeepLinkHandler & Route Mapping**: Introduce a platform-neutral `DeepLinkHandler` and `DeepLinkRoutes` in `packages/testpress` that parse and normalize incoming URLs:
   - `/dashboard`, `/learn`, `/leaderboard` → `/home`
-  - `/login` → `/login`
-  - `/activate` → `/signup`
-  - `/courses/:courseId/contents/:contentId` → `/study/lesson/:contentId`
-  - `/exams/chapter_content/:contentId` → `/study/lesson/:contentId`
-  - `/chapters/:chapterId/:contentId` → `/study/lesson/:contentId`
-  - `/chapters/:chapterId` → `/study/course/:courseId/chapters/:chapterId`
+  - Authentication: `/login` → `/login`, `/register` → `/register` (SignupScreen), `/activate` → `/activate` (SignupScreen), `/mobile-login` → `/mobile-login`, `/forgot-password` → `/forgot-password`
+  - Lessons & contents: `/courses/:courseId/contents/:id`, `/learn/:courseId/contents/:id`, `/exams/chapter_content/:id`, `/chapters/:chapterId/:id` → `/study/lesson/:id`
+  - Course modules & hierarchy:
+    - `/courses/:courseId/chapters/:chapterId`, `/learn/:courseId/chapters/:chapterId` → `/study/course/:courseId/chapters/:chapterId`
+    - `/courses/:courseId/chapters`, `/learn/:courseId/chapters`, `/learn/:courseId`, `/courses/:courseId` → `/study/course/:courseId/chapters`
+    - `/chapters/:chapterId`, `/chapters`, `/courses` → `/study`
+
+
+
+
   - `/products/:slug` or `/store/product/:slug` → `/store/product/:slug`
   - `/products` or `/store` → `/store`
   - `/exams` or `/exams/available` or `/exams/upcoming` or `/exams/history` → `/exams`
-  - `/p/:slug` or `/posts/:slug` → `/home/discussions/forum/posts/:slug`
+  - Posts & Announcements: `/posts/:slug`, `/p/:slug`, `/posts`, `/p` → `/home/posts/:slug` / `/home/posts`
+  - Discussions & Forum: `/discussions/forum/posts/:slug`, `/discussions/doubts/:id`, `/discussions/doubts`, `/discussions/forum`, `/discussions`
   - Unknown/unmatched paths → Gracefully fallback to `/home` instead of throwing an unhandled `GoException`.
 - **Push Notification Integration**: Update `PushNotificationService._handleDeepLink` to route URLs through `DeepLinkHandler.resolve(url)`.
 - **Query Parameter Safety**: Automatically strip query strings (such as `?content_detail_v2=true&use_htmx_for_partial_views=true`) before path resolution.
