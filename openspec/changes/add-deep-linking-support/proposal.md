@@ -38,3 +38,13 @@ The native Android app solved this via a dedicated `DeeplinkHandler.java` that p
 - `packages/testpress/lib/navigation/deep_link_handler.dart`: New URL parser and resolver.
 - `packages/testpress/lib/providers/push_notification_service.dart`: Integrates `DeepLinkHandler`.
 - `packages/testpress/test/navigation/deep_link_handler_test.dart`: Unit tests for URL mapping and edge cases.
+
+## Android App Links & Domain Verification
+
+- **Host Configuration**:
+  - `DEEP_LINK_HOST`: Set dynamically from the client's `apiBaseUrl` (e.g. `staging.testpress.in` or `siddhiprep.testpress.in`).
+  - `WHITE_LABELED_HOST`: Set from the client's remote `white_labeled_host_url` (e.g. `learn.siddhiprep.com`), falling back to `DEEP_LINK_HOST`.
+  - **Local Builds**: When built without client parameters, builds fall back to `testpress.in`.
+- **Domain Verification (`assetlinks.json`)**:
+  - Android App Links use `android:autoVerify="true"`.
+  - Each institute and white-labeled domain must serve `https://<domain>/.well-known/assetlinks.json` containing the application ID and the SHA-256 fingerprint of the signing certificate to allow links to open directly in the app.

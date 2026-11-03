@@ -316,5 +316,43 @@ void main() {
         expect(find.text('RegisterScreen'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'authenticated user opening /activate deep link is redirected to /home',
+      (tester) async {
+        final container = ProviderContainer(
+          overrides: [
+            bootstrapProvider.overrideWith(
+              (ref) => BootstrapState.authenticated,
+            ),
+            cachedAuthFlagProvider.overrideWithValue(true),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final router = GoRouter(
+          initialLocation: '/activate',
+          redirect: (context, state) => AuthRoutes.redirect(context, state),
+          routes: [
+            GoRoute(
+              path: '/activate',
+              builder: (_, _) => const Text('ActivateScreen'),
+            ),
+            GoRoute(path: '/home', builder: (_, _) => const Text('HomeScreen')),
+          ],
+        );
+
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(router.state.uri.path, '/home');
+        expect(find.text('HomeScreen'), findsOneWidget);
+      },
+    );
   });
 }

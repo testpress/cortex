@@ -445,7 +445,8 @@ Future<void> updateAndroidDeepLinkConfig(
         !trimmed.startsWith('WHITE_LABELED_HOST=') &&
         trimmed != '# Injected deep link host properties';
   }).toList();
-  lines.add('\n# Injected deep link host properties');
+  lines.add('');
+  lines.add('# Injected deep link host properties');
   lines.add('DEEP_LINK_HOST=${client.deepLinkHost}');
   lines.add('WHITE_LABELED_HOST=${client.whiteLabeledHost}');
   await gradleProps.writeAsString('${lines.join('\n')}\n');
