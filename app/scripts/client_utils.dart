@@ -134,6 +134,7 @@ Future<void> runClientWorkflow(
       await updateIosGoogleConfig(appDir.path, client.iosClientId);
     } else {
       await updateAndroidGoogleConfig(appDir.path, client.googleServicesJson);
+      await updateAndroidDeepLinkConfig(appDir.path, client);
     }
     brandingUpdated = true;
 
@@ -426,6 +427,32 @@ GOOGLE_REVERSED_CLIENT_ID = $reversedClientId
 }
 
 /// Updates Android Google Services configuration.
+Future<void> updateAndroidDeepLinkConfig(
+  String appDirPath,
+  ClientConfig client,
+) async {
+  final gradleProps = File('$appDirPath/android/gradle.properties');
+  if (!gradleProps.existsSync()) return;
+
+  Logger.info(
+    'Configuring Android App Links host: ${client.deepLinkHost} (${client.whiteLabeledHost})...',
+  );
+
+  var lines = await gradleProps.readAsLines();
+  lines = lines.where((line) {
+    final trimmed = line.trim();
+    return !trimmed.startsWith('DEEP_LINK_HOST=') &&
+        !trimmed.startsWith('WHITE_LABELED_HOST=') &&
+        trimmed != '# Injected deep link host properties';
+  }).toList();
+  lines.add('');
+  lines.add('# Injected deep link host properties');
+  lines.add('DEEP_LINK_HOST=${client.deepLinkHost}');
+  lines.add('WHITE_LABELED_HOST=${client.whiteLabeledHost}');
+  await gradleProps.writeAsString('${lines.join('\n')}\n');
+}
+
+/// Updates Android Google Services configuration.
 Future<void> updateAndroidGoogleConfig(
   String appDirPath,
   dynamic googleServices,
@@ -577,6 +604,7 @@ class ClientConfig {
   final String? appleIssuerId;
   final String? appleTeamId;
   final String? appStoreAppId;
+  final String? whiteLabeledHostUrl;
 
   const ClientConfig({
     required this.appName,
@@ -609,6 +637,7 @@ class ClientConfig {
     this.appleIssuerId,
     this.appleTeamId,
     this.appStoreAppId,
+    this.whiteLabeledHostUrl,
   });
 
   factory ClientConfig.fromRemote({
@@ -656,7 +685,29 @@ class ClientConfig {
       appleIssuerId: remoteConfig['apple_issuer_id']?.toString(),
       appleTeamId: remoteConfig['team_id']?.toString(),
       appStoreAppId: remoteConfig['app_store_app_id']?.toString(),
+      whiteLabeledHostUrl: remoteConfig['white_labeled_host_url']?.toString(),
     );
+  }
+
+  /// The primary host for deep links (e.g. `staging.testpress.in` or `siddhiprep.testpress.in`).
+  String get deepLinkHost {
+    final uri = Uri.tryParse(apiBaseUrl);
+    return uri?.host.isNotEmpty == true ? uri!.host : 'testpress.in';
+  }
+
+  /// The white-labeled host for deep links (e.g. `learn.siddhiprep.com`),
+  /// falling back to [deepLinkHost] if not configured.
+  String get whiteLabeledHost {
+    if (whiteLabeledHostUrl != null && whiteLabeledHostUrl!.isNotEmpty) {
+      final normalized = whiteLabeledHostUrl!.startsWith('http')
+          ? whiteLabeledHostUrl!
+          : 'https://$whiteLabeledHostUrl';
+      final uri = Uri.tryParse(normalized);
+      if (uri != null && uri.host.isNotEmpty) {
+        return uri.host;
+      }
+    }
+    return deepLinkHost;
   }
 
   /// Builds the common `--dart-define` list for Flutter commands.

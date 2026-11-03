@@ -87,6 +87,8 @@ class DeepLinkHandler {
 
     // Authentication
     DeepLinkRule('/login', '/login'),
+    DeepLinkRule('/otp_login', '/mobile-login'),
+    DeepLinkRule('/password/reset', '/forgot-password', matchPrefix: true),
     DeepLinkRule('/activate', '/signup'),
     DeepLinkRule('/register', '/signup'),
     DeepLinkRule('/signup', '/signup'),
@@ -103,12 +105,30 @@ class DeepLinkHandler {
       },
     ),
     DeepLinkRule('/chapters/:chapterId/:id', '/study/lesson/:id'),
+    DeepLinkRule('/chapters/:chapterId', '/study'),
+    DeepLinkRule('/chapters', '/study', matchPrefix: true),
     DeepLinkRule('/study/lesson/:id', '/study/lesson/:id'),
 
     // Course & Chapter hierarchy
     DeepLinkRule(
       '/courses/:courseId/chapters/:chapterId',
       '/study/course/:courseId/chapters/:chapterId',
+    ),
+    DeepLinkRule(
+      '/learn/:courseId/chapters/:chapterId',
+      '/study/course/:courseId/chapters/:chapterId',
+    ),
+    DeepLinkRule('/learn/:courseId/contents/:id', '/study/lesson/:id'),
+    DeepLinkRule(
+      '/learn/:courseId/chapters',
+      '/study/course/:courseId/chapters',
+    ),
+    DeepLinkRule(
+      '/learn/:courseId',
+      '/study/course/:courseId/chapters',
+      excludedParams: {
+        ':courseId': {'chapters', 'contents'},
+      },
     ),
     DeepLinkRule(
       '/study/course/:courseId/chapters/:chapterId',

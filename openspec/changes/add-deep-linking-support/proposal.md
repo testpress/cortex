@@ -8,18 +8,23 @@ The native Android app solved this via a dedicated `DeeplinkHandler.java` that p
 
 ## What Changes
 
-- **DeepLinkHandler Utility**: Introduce a platform-neutral `DeepLinkHandler` in `packages/testpress` that parses and normalizes incoming URLs:
+- **DeepLinkHandler & Route Mapping**: Introduce a platform-neutral `DeepLinkHandler` and `DeepLinkRoutes` in `packages/testpress` that parse and normalize incoming URLs:
   - `/dashboard`, `/learn`, `/leaderboard` → `/home`
-  - `/login` → `/login`
-  - `/activate` → `/signup`
-  - `/courses/:courseId/contents/:contentId` → `/study/lesson/:contentId`
-  - `/exams/chapter_content/:contentId` → `/study/lesson/:contentId`
-  - `/chapters/:chapterId/:contentId` → `/study/lesson/:contentId`
-  - `/chapters/:chapterId` → `/study/course/:courseId/chapters/:chapterId`
+  - Authentication: `/login` → `/login`, `/register` → `/register` (SignupScreen), `/activate` → `/activate` (SignupScreen), `/otp_login` → `/mobile-login`, `/password/reset` → `/forgot-password`
+  - Lessons & contents: `/courses/:courseId/contents/:id`, `/learn/:courseId/contents/:id`, `/exams/chapter_content/:id`, `/chapters/:chapterId/:id` → `/study/lesson/:id`
+  - Course modules & hierarchy:
+    - `/courses/:courseId/chapters/:chapterId`, `/learn/:courseId/chapters/:chapterId` → `/study/course/:courseId/chapters/:chapterId`
+    - `/courses/:courseId/chapters`, `/learn/:courseId/chapters`, `/learn/:courseId`, `/courses/:courseId` → `/study/course/:courseId/chapters`
+    - `/chapters/:chapterId`, `/chapters`, `/courses` → `/study`
+
+
+
+
   - `/products/:slug` or `/store/product/:slug` → `/store/product/:slug`
   - `/products` or `/store` → `/store`
   - `/exams` or `/exams/available` or `/exams/upcoming` or `/exams/history` → `/exams`
-  - `/p/:slug` or `/posts/:slug` → `/home/discussions/forum/posts/:slug`
+  - Posts & Announcements: `/posts/:slug`, `/p/:slug`, `/posts`, `/p` → `/home/posts/:slug` / `/home/posts`
+  - Discussions & Forum: `/discussions/forum/posts/:slug`, `/discussions/doubts/:id`, `/discussions/doubts`, `/discussions/forum`, `/discussions`
   - Unknown/unmatched paths → Gracefully fallback to `/home` instead of throwing an unhandled `GoException`.
 - **Push Notification Integration**: Update `PushNotificationService._handleDeepLink` to route URLs through `DeepLinkHandler.resolve(url)`.
 - **Query Parameter Safety**: Automatically strip query strings (such as `?content_detail_v2=true&use_htmx_for_partial_views=true`) before path resolution.
@@ -38,3 +43,13 @@ The native Android app solved this via a dedicated `DeeplinkHandler.java` that p
 - `packages/testpress/lib/navigation/deep_link_handler.dart`: New URL parser and resolver.
 - `packages/testpress/lib/providers/push_notification_service.dart`: Integrates `DeepLinkHandler`.
 - `packages/testpress/test/navigation/deep_link_handler_test.dart`: Unit tests for URL mapping and edge cases.
+
+## Android App Links & Domain Verification
+
+- **Host Configuration**:
+  - `DEEP_LINK_HOST`: Set dynamically from the client's `apiBaseUrl` (e.g. `staging.testpress.in` or `siddhiprep.testpress.in`).
+  - `WHITE_LABELED_HOST`: Set from the client's remote `white_labeled_host_url` (e.g. `learn.siddhiprep.com`), falling back to `DEEP_LINK_HOST`.
+  - **Local Builds**: When built without client parameters, builds fall back to `testpress.in`.
+- **Domain Verification (`assetlinks.json`)**:
+  - Android App Links use `android:autoVerify="true"`.
+  - Each institute and white-labeled domain must serve `https://<domain>/.well-known/assetlinks.json` containing the application ID and the SHA-256 fingerprint of the signing certificate to allow links to open directly in the app.
