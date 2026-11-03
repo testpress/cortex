@@ -11,10 +11,12 @@ class AuthRoutes {
   static const _authPaths = {
     '/login',
     '/mobile-login',
+    '/otp_login',
     '/signup',
     '/register',
     '/activate',
     '/forgot-password',
+    '/password/reset',
     '/otp',
     '/onboarding',
     '/login-activity',

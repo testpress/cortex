@@ -44,6 +44,10 @@ class DeepLinkRoutes {
     '/discussions/doubts',
     '/discussions/forum',
     '/discussions',
+
+    // 8. Authentication web aliases
+    '/otp_login',
+    '/password/reset',
   ];
 
   static List<RouteBase> get routes => paths

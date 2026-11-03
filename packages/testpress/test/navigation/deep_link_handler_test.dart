@@ -45,6 +45,22 @@ void main() {
         '/signup',
       );
       expect(DeepLinkHandler.resolve('/signup'), '/signup');
+      expect(DeepLinkHandler.resolve('/otp_login'), '/mobile-login');
+      expect(
+        DeepLinkHandler.resolve('https://staging.testpress.in/otp_login/'),
+        '/mobile-login',
+      );
+      expect(DeepLinkHandler.resolve('/password/reset'), '/forgot-password');
+      expect(
+        DeepLinkHandler.resolve('https://staging.testpress.in/password/reset/'),
+        '/forgot-password',
+      );
+      expect(
+        DeepLinkHandler.resolve(
+          'https://staging.testpress.in/password/reset/confirm/MQ/set-password/',
+        ),
+        '/forgot-password',
+      );
     });
 
     test('resolves chapter content and lesson deep links', () {

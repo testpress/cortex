@@ -87,6 +87,8 @@ class DeepLinkHandler {
 
     // Authentication
     DeepLinkRule('/login', '/login'),
+    DeepLinkRule('/otp_login', '/mobile-login'),
+    DeepLinkRule('/password/reset', '/forgot-password', matchPrefix: true),
     DeepLinkRule('/activate', '/signup'),
     DeepLinkRule('/register', '/signup'),
     DeepLinkRule('/signup', '/signup'),

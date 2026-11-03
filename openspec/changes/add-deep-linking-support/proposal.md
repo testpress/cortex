@@ -10,7 +10,7 @@ The native Android app solved this via a dedicated `DeeplinkHandler.java` that p
 
 - **DeepLinkHandler & Route Mapping**: Introduce a platform-neutral `DeepLinkHandler` and `DeepLinkRoutes` in `packages/testpress` that parse and normalize incoming URLs:
   - `/dashboard`, `/learn`, `/leaderboard` → `/home`
-  - Authentication: `/login` → `/login`, `/register` → `/register` (SignupScreen), `/activate` → `/activate` (SignupScreen), `/mobile-login` → `/mobile-login`, `/forgot-password` → `/forgot-password`
+  - Authentication: `/login` → `/login`, `/register` → `/register` (SignupScreen), `/activate` → `/activate` (SignupScreen), `/otp_login` → `/mobile-login`, `/password/reset` → `/forgot-password`
   - Lessons & contents: `/courses/:courseId/contents/:id`, `/learn/:courseId/contents/:id`, `/exams/chapter_content/:id`, `/chapters/:chapterId/:id` → `/study/lesson/:id`
   - Course modules & hierarchy:
     - `/courses/:courseId/chapters/:chapterId`, `/learn/:courseId/chapters/:chapterId` → `/study/course/:courseId/chapters/:chapterId`
