@@ -42,11 +42,14 @@ class AuthRoutes {
     if (bootstrapState == BootstrapState.loading) {
       if (path == '/onboarding' || path == '/connection-error') return null;
 
-      // Allow auth routes (/register, /signup, /login, /mobile-login) to display immediately
-      if (isAuthRoute) return null;
-
       final cachedIsLoggedIn = container.read(cachedAuthFlagProvider);
-      if (cachedIsLoggedIn) return null;
+      if (cachedIsLoggedIn) {
+        if (isAuthRoute) return '/home';
+        return null;
+      }
+
+      // Allow unauthenticated users navigating to an auth route to proceed immediately
+      if (isAuthRoute) return null;
 
       if (path != '/home' && path != '/') {
         final redirectUrl = Uri.encodeComponent(state.uri.toString());
@@ -71,11 +74,12 @@ class AuthRoutes {
           path == '/enforce-student-data') {
         final redirectParam = state.uri.queryParameters['redirect'];
         if (redirectParam != null && redirectParam.isNotEmpty) {
-          final target = Uri.decodeComponent(redirectParam);
+          final target = redirectParam;
+          final targetUri = Uri.tryParse(target);
+          final targetPath = targetUri?.path ?? '';
           if (target.startsWith('/') &&
-              target != '/login' &&
-              target != '/signup' &&
-              target != '/register') {
+              !target.startsWith('//') &&
+              !_authPaths.contains(targetPath)) {
             return target;
           }
         }
@@ -101,7 +105,8 @@ class AuthRoutes {
         path == '/enforce-student-data') {
       final redirectParam = state.uri.queryParameters['redirect'];
       if (redirectParam != null && redirectParam.isNotEmpty) {
-        return '/login?redirect=$redirectParam';
+        final encoded = Uri.encodeComponent(redirectParam);
+        return '/login?redirect=$encoded';
       }
       return '/login';
     }

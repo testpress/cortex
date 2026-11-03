@@ -27,8 +27,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: initialLocation,
     observers: [SentryService.createNavigatorObserver()],
     redirect: (context, state) => AuthRoutes.redirect(context, state),
-    onException: (context, state, router) =>
-        router.go(DeepLinkHandler.defaultRoute),
+    onException: (context, state, router) {
+      if (state.error != null) {
+        ref
+            .read(sentryServiceProvider)
+            .captureException(state.error!, stackTrace: StackTrace.current);
+      }
+      router.go(DeepLinkHandler.defaultRoute);
+    },
     routes: [
       ...AuthRoutes.routes,
       ...DeepLinkRoutes.routes,

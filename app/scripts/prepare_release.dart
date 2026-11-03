@@ -66,6 +66,7 @@ void main(List<String> args) async {
 
   if (platform == 'android') {
     await updateAndroidGoogleConfig(appDir.path, client.googleServicesJson);
+    await updateAndroidDeepLinkConfig(appDir.path, client);
 
     // Download keystore if available
     if (client.keystoreUrl != null && client.keystoreUrl!.isNotEmpty) {
