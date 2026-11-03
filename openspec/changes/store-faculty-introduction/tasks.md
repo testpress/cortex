@@ -13,7 +13,7 @@
 
 ## 3. Product Detail Screen Integration
 
-- [x] 3.1 Integrate `ProductFacultySummary` and `ProductFacultySection` into `ProductDetailScreen` in `packages/courses/lib/screens/store/product_detail_screen.dart`, navigating to `FacultyProfileScreen` via `AppRoute` while strictly isolating and preserving existing checkout actions.
+- [x] 3.1 Integrate `ProductFacultySummary` (scrolling to faculty section on tap) and `ProductFacultySection` into `ProductDetailScreen` in `packages/courses/lib/screens/store/product_detail_screen.dart`, navigating to `FacultyProfileScreen` via `AppRoute` on card tap while strictly isolating and preserving existing checkout actions.
 
 ## 4. Testing & Verification
 

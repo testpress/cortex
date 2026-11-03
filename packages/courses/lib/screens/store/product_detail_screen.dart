@@ -34,6 +34,22 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   int? _selectedPlanDetailId;
 
   final TextEditingController _couponController = TextEditingController();
+  final GlobalKey _facultySectionKey = GlobalKey();
+
+  void _scrollToFacultySection() {
+    final targetContext = _facultySectionKey.currentContext;
+    if (targetContext != null) {
+      final design = Design.of(context);
+      final shouldAnimate = MotionPreferences.shouldAnimate(context);
+      Scrollable.ensureVisible(
+        targetContext,
+        duration: shouldAnimate ? design.motion.normal : Duration.zero,
+        curve: shouldAnimate
+            ? MotionPreferences.curve(context, design.motion.easeOut)
+            : Curves.linear,
+      );
+    }
+  }
 
   void _openFacultyProfile(ProductFacultyDto faculty) {
     Navigator.of(context).push(
@@ -568,8 +584,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                           bottom: design.spacing.sm),
                                       child: ProductFacultySummary(
                                         faculty: product.faculty,
-                                        onTap: () => _openFacultyProfile(
-                                            product.faculty.first),
+                                        onTap: _scrollToFacultySection,
                                       ),
                                     ),
                                   if (hasDescription || hasCourse)
@@ -637,6 +652,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     ),
                                   if (product.faculty.isNotEmpty)
                                     ProductFacultySection(
+                                      key: _facultySectionKey,
                                       faculty: product.faculty,
                                       onSelectFaculty: _openFacultyProfile,
                                     ),

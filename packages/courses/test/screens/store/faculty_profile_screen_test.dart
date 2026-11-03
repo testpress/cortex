@@ -5,6 +5,7 @@ import 'package:courses/screens/store/faculty_profile_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
@@ -121,7 +122,8 @@ void main() {
       expect(find.text('Now showing'), findsOneWidget);
       expect(find.text('Watch intro'), findsOneWidget);
 
-      // Tap the second course item to switch video
+      // Scroll and tap the second course item to switch video
+      await tester.scrollUntilVisible(find.text('Mains GS'), 100);
       await tester.tap(find.text('Mains GS'));
       await tester.pump();
 
@@ -149,7 +151,28 @@ void main() {
       )));
 
       expect(find.text('Prof. Sharma'), findsOneWidget);
-      expect(find.byType(AppWebView), findsNothing);
+      expect(find.byType(WebViewWidget), findsNothing);
+    });
+
+    testWidgets(
+        'renders error view inside video container when video fails to load',
+        (tester) async {
+      const failedVideoFaculty = ProductFacultyDto(
+        id: 3,
+        name: 'Dr. Kumar',
+        initials: 'DK',
+        videoUrl: 'invalid_url_without_scheme',
+        subjects: ['Physics'],
+      );
+
+      await tester.pumpWidget(wrap(const FacultyProfileScreen(
+        faculty: failedVideoFaculty,
+      )));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(WebViewWidget), findsOneWidget);
+      expect(find.byType(AppErrorView), findsOneWidget);
     });
   });
 }
@@ -168,16 +191,50 @@ class _FakeWebViewPlatform extends WebViewPlatform {
   ) {
     return _FakePlatformNavigationDelegate(params);
   }
+
+  @override
+  PlatformWebViewWidget createPlatformWebViewWidget(
+    PlatformWebViewWidgetCreationParams params,
+  ) {
+    return _FakePlatformWebViewWidget(params);
+  }
+}
+
+class _FakePlatformWebViewWidget extends PlatformWebViewWidget {
+  _FakePlatformWebViewWidget(super.params) : super.implementation();
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class _FakePlatformWebViewController extends PlatformWebViewController {
   _FakePlatformWebViewController(super.params) : super.implementation();
 
+  JavaScriptChannelParams? _channelParams;
+
   @override
   Future<void> loadRequest(LoadRequestParams params) async {}
 
   @override
+  Future<void> loadHtmlString(String html, {String? baseUrl}) async {
+    if (_channelParams != null && _channelParams!.name == 'VideoChannel') {
+      Future.microtask(() {
+        _channelParams!.onMessageReceived(
+          const JavaScriptMessage(message: 'ready'),
+        );
+      });
+    }
+  }
+
+  @override
   Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
+
+  @override
+  Future<void> addJavaScriptChannel(
+    JavaScriptChannelParams javaScriptChannelParams,
+  ) async {
+    _channelParams = javaScriptChannelParams;
+  }
 
   @override
   Future<void> setPlatformNavigationDelegate(
@@ -186,6 +243,12 @@ class _FakePlatformWebViewController extends PlatformWebViewController {
 
   @override
   Future<void> setBackgroundColor(Color color) async {}
+
+  @override
+  Future<String?> getUserAgent() async => 'MockUserAgent';
+
+  @override
+  Future<void> setUserAgent(String? userAgent) async {}
 }
 
 class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
@@ -202,7 +265,9 @@ class _FakePlatformNavigationDelegate extends PlatformNavigationDelegate {
   @override
   Future<void> setOnPageFinished(
     void Function(String url) onPageFinished,
-  ) async {}
+  ) async {
+    Future.microtask(() => onPageFinished('https://example.com/loaded'));
+  }
 
   @override
   Future<void> setOnWebResourceError(

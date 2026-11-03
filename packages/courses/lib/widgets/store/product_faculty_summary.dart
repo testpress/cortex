@@ -68,8 +68,8 @@ class ProductFacultySummary extends StatelessWidget {
         label: summaryText,
         onTap: onTap,
         child: GestureDetector(
-          onTap: onTap,
           behavior: HitTestBehavior.opaque,
+          onTap: onTap,
           child: rowContent,
         ),
       );

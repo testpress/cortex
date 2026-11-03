@@ -133,6 +133,10 @@ class FakeCourseRepository extends CourseRepository {
 }
 
 void main() {
+  setUp(() {
+    WebViewPlatform.instance = _FakeWebViewPlatform();
+  });
+
   Widget wrapRouter(Widget child, {List<Override> overrides = const []}) {
     final router = GoRouter(
       initialLocation: '/',
@@ -540,6 +544,10 @@ void main() {
       expect(find.byType(ProductFacultySummary), findsOneWidget);
       expect(find.text('Taught by Dr. Ananya Rao and 1 more'), findsOneWidget);
 
+      // Tap summary row to scroll to Meet your faculty section
+      await tester.tap(find.byType(ProductFacultySummary));
+      await tester.pumpAndSettle();
+
       // Verify Meet your faculty section
       expect(find.byType(ProductFacultySection), findsOneWidget);
       expect(find.text('Meet your faculty'), findsOneWidget);
@@ -547,7 +555,8 @@ void main() {
       // Scroll to Meet your faculty card and tap it
       await tester.ensureVisible(find.text('Meet your faculty'));
       await tester.tap(find.text('Dr. Ananya Rao').last);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Verify Faculty profile screen opens
       expect(find.byType(FacultyProfileScreen), findsOneWidget);
@@ -555,8 +564,9 @@ void main() {
       expect(find.text('Author of Polity Simple'), findsOneWidget);
 
       // Tap back button on the screen
-      await tester.tap(find.byIcon(LucideIcons.arrowLeft).first);
-      await tester.pumpAndSettle();
+      await tester.tap(find.byType(AppBackButton));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Screen should be closed
       expect(find.byType(FacultyProfileScreen), findsNothing);
@@ -567,6 +577,8 @@ void main() {
 class _FakePlatformWebViewController extends PlatformWebViewController {
   _FakePlatformWebViewController(super.params) : super.implementation();
 
+  JavaScriptChannelParams? _channelParams;
+
   @override
   Future<void> setPlatformNavigationDelegate(
     PlatformNavigationDelegate handler,
@@ -574,6 +586,13 @@ class _FakePlatformWebViewController extends PlatformWebViewController {
 
   @override
   Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
+
+  @override
+  Future<void> addJavaScriptChannel(
+    JavaScriptChannelParams javaScriptChannelParams,
+  ) async {
+    _channelParams = javaScriptChannelParams;
+  }
 
   @override
   Future<void> setUserAgent(String? userAgent) async {}
@@ -588,6 +607,17 @@ class _FakePlatformWebViewController extends PlatformWebViewController {
 
   @override
   Future<void> loadRequest(LoadRequestParams params) async {}
+
+  @override
+  Future<void> loadHtmlString(String html, {String? baseUrl}) async {
+    if (_channelParams != null && _channelParams!.name == 'VideoChannel') {
+      Future.microtask(() {
+        _channelParams!.onMessageReceived(
+          const JavaScriptMessage(message: 'ready'),
+        );
+      });
+    }
+  }
 
   @override
   Future<void> runJavaScript(String javaScript) async {}

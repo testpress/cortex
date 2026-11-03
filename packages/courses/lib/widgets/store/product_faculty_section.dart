@@ -61,8 +61,8 @@ class _ProductFacultySectionState extends State<ProductFacultySection> {
                   : l10n.storeShowAllFaculty(widget.faculty.length),
               onTap: () => setState(() => _showAll = !_showAll),
               child: GestureDetector(
-                onTap: () => setState(() => _showAll = !_showAll),
                 behavior: HitTestBehavior.opaque,
+                onTap: () => setState(() => _showAll = !_showAll),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 48),
                   child: Row(
@@ -111,9 +111,10 @@ class ProductFacultyCard extends StatelessWidget {
 
     return AppSemantics.button(
       label: '${person.name}. ${person.subjects.join(", ")}',
+      onTap: onTap,
       child: GestureDetector(
-        onTap: onTap,
         behavior: HitTestBehavior.opaque,
+        onTap: onTap,
         child: Container(
           padding: EdgeInsets.all(design.spacing.md),
           decoration: BoxDecoration(

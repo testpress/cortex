@@ -15,6 +15,10 @@ The system SHALL display an instructor overview row on the store product detail 
 - **WHEN** product has no assigned faculty members
 - **THEN** overview row is omitted consuming zero layout space
 
+#### Scenario: Tapping overview row
+- **WHEN** user taps the instructor overview row
+- **THEN** system scrolls the product detail view down to the "Meet your faculty" section
+
 ### Requirement: Meet Your Faculty Section
 The system SHALL display a "Meet your faculty" section below the course curriculum and description on the product detail page.
 
@@ -27,10 +31,10 @@ The system SHALL display a "Meet your faculty" section below the course curricul
 - **THEN** system displays the first 4 cards with an expand button toggling full list visibility
 
 ### Requirement: Faculty Profile Screen
-The system SHALL navigate to a dedicated full-page screen when an instructor card or summary row is selected.
+The system SHALL navigate to a dedicated full-page screen when an instructor card is selected.
 
 #### Scenario: View faculty profile
-- **WHEN** user selects an instructor card or summary row
+- **WHEN** user selects an instructor card
 - **THEN** system navigates to `FacultyProfileScreen` displaying the top header, 16:9 intro video player, credentials, highlights, qualifications, and biography
 
 #### Scenario: Faculty without video

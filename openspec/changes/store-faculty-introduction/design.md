@@ -20,15 +20,15 @@ When learners browse courses in the store, instructor credentials and teaching e
 
 ### D1: Two-Tier Faculty Presentation on Product Detail
 Faculty presentation is split into two placements on `ProductDetailScreen`:
-1. **Summary Row (`ProductFacultySummary`)**: Positioned above the Description/Curriculum tabs to provide immediate visual attribution via overlapping circular avatars (capped at 4) and a summary string (e.g. "Taught by Dr. Rao and 2 more"). Tapping navigates to the lead instructor.
+1. **Summary Row (`ProductFacultySummary`)**: Positioned above the Description/Curriculum tabs to provide immediate visual attribution via overlapping circular avatars (capped at 4) and a summary string (e.g. "Taught by Dr. Rao and 2 more"). Tapping scrolls the view smoothly down to the "Meet your faculty" section so learners can browse all instructors.
 2. **Faculty Cards Section (`ProductFacultySection`)**: Positioned below curriculum content, rendering vertical cards with instructor photo, intro video badge, name, subjects, experience, and bio snippet. If a product has more than 4 instructors, only the first 4 are shown initially with a "Show all {count} faculty" expand toggle.
 
 *Rationale*: High-level attribution is immediately visible on first glance, while deeper instructor bios are placed alongside curriculum details without pushing key purchase actions out of view.
 
 ### D2: Dedicated Full-Page Faculty Profile Screen
-Tapping any instructor card or the summary row pushes `FacultyProfileScreen` via `AppRoute`.
-- **Top Bar**: Platform-neutral header with a back button and localized title.
-- **Video Section**: 16:9 aspect ratio container embedding `AppWebView` for the active introduction video. Omitted if the instructor has no video URL.
+Tapping any instructor card pushes `FacultyProfileScreen` via `AppRoute`.
+- **Top Bar**: Platform-neutral `AppHeader` with `AppBackButton` enforcing a 48×48dp touch target with optical alignment and localized title.
+- **Video Section**: 16:9 aspect ratio container embedding a dedicated `WebViewController`/`WebViewWidget` with an inline HTML wrapper, JavaScript channel communication (`VideoChannel`) for ready state detection, and a clean loading overlay (`AppLoadingIndicator`) that conceals the unscaled web view during initial load until ready or `onPageFinished`. Omitted if the instructor has no video URL.
 - **Credentials & Bio**: Instructor avatar, full name, subjects, teaching experience badge, highlights with award icons, qualifications with graduation cap icons, and biographical summary.
 - **Course Video Switcher**: When an instructor teaches multiple courses in the bundle with separate intro videos, an interactive course list lets the learner switch the active stream with a "Now showing" indicator.
 - **Responsive Layout**: Body content is centered within a maximum width container (`maxWidth: 720`), ensuring comfortable reading widths and balanced media sizing across both phones and tablets.
