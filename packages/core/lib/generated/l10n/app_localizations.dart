@@ -5315,6 +5315,78 @@ abstract class AppLocalizations {
   /// **'Choose a Plan'**
   String get storeChoosePlan;
 
+  /// No description provided for @storeChooseAPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a plan'**
+  String get storeChooseAPlan;
+
+  /// No description provided for @storePickPlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the plan that fits you and how long you need it.'**
+  String get storePickPlanSubtitle;
+
+  /// No description provided for @storeComparePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare plans'**
+  String get storeComparePlans;
+
+  /// No description provided for @storeCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses'**
+  String get storeCourses;
+
+  /// No description provided for @storeCourseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 course} other{{count} courses}}'**
+  String storeCourseCount(int count);
+
+  /// No description provided for @storeBenefitCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} benefits'**
+  String storeBenefitCount(int count, int total);
+
+  /// No description provided for @storeWhatYouGet.
+  ///
+  /// In en, this message translates to:
+  /// **'What you get'**
+  String get storeWhatYouGet;
+
+  /// No description provided for @storePlanBenefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Benefits'**
+  String get storePlanBenefits;
+
+  /// No description provided for @storePlanNotAvailableForDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available for {duration}.'**
+  String storePlanNotAvailableForDuration(String duration);
+
+  /// No description provided for @storePlanAvailableForDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Available for {duration}.'**
+  String storePlanAvailableForDuration(String duration);
+
+  /// No description provided for @storeBenefitIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Included'**
+  String get storeBenefitIncluded;
+
+  /// No description provided for @storeBenefitNotIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not included'**
+  String get storeBenefitNotIncluded;
+
   /// No description provided for @storePayAmountNow.
   ///
   /// In en, this message translates to:

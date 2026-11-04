@@ -178,6 +178,84 @@ class _ProductSubscriptionSheetState
                                       ),
                                       SizedBox(height: design.spacing.sm),
                                     ],
+                                    () {
+                                      final benefits = widget.product.benefits;
+                                      if (benefits.isEmpty) {
+                                        return const SizedBox.shrink();
+                                      }
+                                      final planBenefitIds = plan.benefitIds;
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          AppText.label(
+                                            l10n.storePlanBenefits,
+                                            color: design.colors.textSecondary,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(height: design.spacing.xs),
+                                          ...benefits.map((b) {
+                                            final isIncluded =
+                                                planBenefitIds.contains(b.id);
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: design.spacing.xs / 2,
+                                              ),
+                                              child: AppSemantics.container(
+                                                label:
+                                                    '${b.name}: ${isIncluded ? l10n.storeBenefitIncluded : l10n.storeBenefitNotIncluded}',
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Icon(
+                                                      isIncluded
+                                                          ? LucideIcons.check
+                                                          : LucideIcons.x,
+                                                      size: design.iconSize.xs,
+                                                      color: isIncluded
+                                                          ? design
+                                                              .colors.success
+                                                          : design.colors
+                                                              .textSecondary
+                                                              .withValues(
+                                                                  alpha: 0.5),
+                                                    ),
+                                                    SizedBox(
+                                                        width:
+                                                            design.spacing.xs),
+                                                    Expanded(
+                                                      child: AppText.caption(
+                                                        b.name,
+                                                        color: isIncluded
+                                                            ? design.colors
+                                                                .textPrimary
+                                                            : design.colors
+                                                                .textSecondary
+                                                                .withValues(
+                                                                    alpha: 0.7),
+                                                        style: TextStyle(
+                                                          decoration: isIncluded
+                                                              ? null
+                                                              : TextDecoration
+                                                                  .lineThrough,
+                                                          fontWeight: isIncluded
+                                                              ? FontWeight.w500
+                                                              : FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                          SizedBox(height: design.spacing.sm),
+                                        ],
+                                      );
+                                    }(),
                                     ...plan.planDetails.map((detail) {
                                       final isSelected =
                                           detail.id == _selectedPlanDetailId;

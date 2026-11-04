@@ -2963,6 +2963,57 @@ class AppLocalizationsMl extends AppLocalizations {
   String get storeChoosePlan => 'ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക';
 
   @override
+  String get storeChooseAPlan => 'ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get storePickPlanSubtitle =>
+      'നിങ്ങൾക്ക് അനുയോജ്യമായ പ്ലാനും സമയപരിധിയും തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get storeComparePlans => 'പ്ലാനുകൾ താരതമ്യം ചെയ്യുക';
+
+  @override
+  String get storeCourses => 'കോഴ്സുകൾ';
+
+  @override
+  String storeCourseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count കോഴ്സുകൾ',
+      one: '1 കോഴ്സ്',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeBenefitCount(int count, int total) {
+    return '$total ആനുകൂല്യങ്ങളിൽ $count';
+  }
+
+  @override
+  String get storeWhatYouGet => 'നിങ്ങൾക്ക് ലഭിക്കുന്നത്';
+
+  @override
+  String get storePlanBenefits => 'പ്ലാൻ ആനുകൂല്യങ്ങൾ';
+
+  @override
+  String storePlanNotAvailableForDuration(String duration) {
+    return '$duration ലഭ്യമല്ല.';
+  }
+
+  @override
+  String storePlanAvailableForDuration(String duration) {
+    return '$duration ലഭ്യമാണ്.';
+  }
+
+  @override
+  String get storeBenefitIncluded => 'ഉൾപ്പെടുത്തിയിട്ടുണ്ട്';
+
+  @override
+  String get storeBenefitNotIncluded => 'ഉൾപ്പെടുത്തിയിട്ടില്ല';
+
+  @override
   String storePayAmountNow(String amount) {
     return '₹$amount ഇപ്പോൾ അടയ്ക്കുക';
   }

@@ -2962,6 +2962,57 @@ class AppLocalizationsTa extends AppLocalizations {
   String get storeChoosePlan => 'ஒரு திட்டத்தை தேர்வு செய்யவும்';
 
   @override
+  String get storeChooseAPlan => 'ஒரு திட்டத்தை தேர்வு செய்யவும்';
+
+  @override
+  String get storePickPlanSubtitle =>
+      'உங்களுக்கு தேவையான திட்டத்தையும் கால அளவையும் தேர்வு செய்யவும்.';
+
+  @override
+  String get storeComparePlans => 'திட்டங்களை ஒப்பிடவும்';
+
+  @override
+  String get storeCourses => 'பாடங்கள்';
+
+  @override
+  String storeCourseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count பாடங்கள்',
+      one: '1 பாடம்',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeBenefitCount(int count, int total) {
+    return '$total நன்மைகளில் $count';
+  }
+
+  @override
+  String get storeWhatYouGet => 'இதில் அடங்குபவை';
+
+  @override
+  String get storePlanBenefits => 'திட்டத்தின் நன்மைகள்';
+
+  @override
+  String storePlanNotAvailableForDuration(String duration) {
+    return '$duration கிடைக்கவில்லை.';
+  }
+
+  @override
+  String storePlanAvailableForDuration(String duration) {
+    return '$duration கிடைக்கும்.';
+  }
+
+  @override
+  String get storeBenefitIncluded => 'உள்ளது';
+
+  @override
+  String get storeBenefitNotIncluded => 'இல்லை';
+
+  @override
   String storePayAmountNow(String amount) {
     return '₹$amount இப்போது செலுத்தவும்';
   }

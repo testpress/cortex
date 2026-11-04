@@ -1131,6 +1131,37 @@ class MockDataSource implements DataSource {
       slug: slug,
       price: '300.00',
       courses: const [372],
+      hasProductSubscriptionPlans: true,
+      benefits: const [
+        ProductBenefitDto(id: 1, name: 'Recorded Video Lectures', order: 0),
+        ProductBenefitDto(id: 2, name: 'Weekly Live Doubt Clearing', order: 1),
+        ProductBenefitDto(id: 3, name: '1-on-1 Faculty Mentorship', order: 2),
+        ProductBenefitDto(id: 4, name: 'Printed Notes & Workbooks', order: 3),
+      ],
+      plans: const [
+        SubscriptionPlanDto(
+          id: 1,
+          productId: 524,
+          name: 'Basic Plan',
+          courseIds: [372],
+          benefitIds: [1, 2],
+          planDetails: [
+            PlanDetailDto(id: 101, durationInDays: 90, price: '300.00'),
+            PlanDetailDto(id: 102, durationInDays: 180, price: '500.00'),
+          ],
+        ),
+        SubscriptionPlanDto(
+          id: 2,
+          productId: 524,
+          name: 'Pro Mentorship Plan',
+          courseIds: [372],
+          benefitIds: [1, 2, 3, 4],
+          planDetails: [
+            PlanDetailDto(id: 201, durationInDays: 180, price: '800.00'),
+            PlanDetailDto(id: 202, durationInDays: 365, price: '1200.00'),
+          ],
+        ),
+      ],
     );
   }
 

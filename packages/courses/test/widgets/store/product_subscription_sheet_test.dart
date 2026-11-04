@@ -121,4 +121,52 @@ void main() {
 
     expect(selectedId, 11);
   });
+
+  testWidgets(
+      'renders plan benefits with included and excluded indicators for comparison',
+      (tester) async {
+    final productWithBenefits = ProductDto(
+      id: 102,
+      title: 'Course with Benefits',
+      slug: 'course-with-benefits',
+      price: '1000.00',
+      courses: const [],
+      benefits: const [
+        ProductBenefitDto(id: 1, name: 'Live Doubt Clearing'),
+        ProductBenefitDto(id: 2, name: '1-on-1 Mentorship'),
+      ],
+      plans: const [
+        SubscriptionPlanDto(
+          id: 1,
+          productId: 102,
+          name: 'Premium Plan',
+          benefitIds: [1, 2],
+          planDetails: [
+            PlanDetailDto(id: 1, price: '1000.00', durationInDays: 30),
+          ],
+        ),
+        SubscriptionPlanDto(
+          id: 2,
+          productId: 102,
+          name: 'Basic Plan',
+          benefitIds: [1],
+          planDetails: [
+            PlanDetailDto(id: 2, price: '500.00', durationInDays: 30),
+          ],
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(buildTestWidget(product: productWithBenefits));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Plan Benefits'), findsNWidgets(2));
+    expect(find.text('Live Doubt Clearing'), findsNWidgets(2));
+    expect(find.text('1-on-1 Mentorship'), findsNWidgets(2));
+
+    // Premium plan includes both (2 checks), Basic plan includes 1 (1 check)
+    expect(find.byIcon(LucideIcons.check), findsNWidgets(3));
+    // 1 close button in sheet header + 1 excluded benefit icon
+    expect(find.byIcon(LucideIcons.x), findsNWidgets(2));
+  });
 }

@@ -1046,6 +1046,18 @@
   "storePayInstallments": "الدفع على أقساط",
   "storeDiscountCoupon": "كوبون الخصم",
   "storeChoosePlan": "اختر خطة",
+  "storeChooseAPlan": "اختر خطة",
+  "storePickPlanSubtitle": "اختر الخطة المناسبة لك والمدة التي تحتاجها.",
+  "storeComparePlans": "مقارنة الخطط",
+  "storeCourses": "الدورات",
+  "storeCourseCount": "{count, plural, =1{دورة واحدة} other{{count} دورات}}",
+  "storeBenefitCount": "{count} من أصل {total} مزايا",
+  "storeWhatYouGet": "ما ستحصل عليه",
+  "storePlanBenefits": "مزايا الخطة",
+  "storePlanNotAvailableForDuration": "غير متوفر لمدة {duration}.",
+  "storePlanAvailableForDuration": "متوفر لمدة {duration}.",
+  "storeBenefitIncluded": "مشمول",
+  "storeBenefitNotIncluded": "غير مشمول",
   "storePayAmountNow": "ادفع ₹{amount} الآن",
   "@storePayAmountNow": {
     "placeholders": {

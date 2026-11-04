@@ -147,6 +147,28 @@ class PlanDetailDto {
   };
 }
 
+class ProductBenefitDto {
+  final int id;
+  final String name;
+  final int order;
+
+  const ProductBenefitDto({
+    required this.id,
+    required this.name,
+    this.order = 0,
+  });
+
+  factory ProductBenefitDto.fromJson(Map<String, dynamic> json) {
+    return ProductBenefitDto(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String? ?? '',
+      order: (json['order'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'order': order};
+}
+
 /// DTO for subscription plans in v3.
 class SubscriptionPlanDto {
   final int id;
@@ -155,6 +177,7 @@ class SubscriptionPlanDto {
   final String description;
   final List<int> planDetailIds;
   final List<int> courseIds;
+  final List<int> benefitIds;
   final List<PlanDetailDto> planDetails;
 
   const SubscriptionPlanDto({
@@ -164,6 +187,7 @@ class SubscriptionPlanDto {
     this.description = '',
     this.planDetailIds = const [],
     this.courseIds = const [],
+    this.benefitIds = const [],
     this.planDetails = const [],
   });
 
@@ -173,6 +197,11 @@ class SubscriptionPlanDto {
   }) {
     final detailIds =
         (json['plan_detail_ids'] as List<dynamic>?)
+            ?.map((e) => (e as num).toInt())
+            .toList() ??
+        const [];
+    final benefitIds =
+        (json['benefit_ids'] as List<dynamic>?)
             ?.map((e) => (e as num).toInt())
             .toList() ??
         const [];
@@ -187,6 +216,7 @@ class SubscriptionPlanDto {
               ?.map((e) => (e as num).toInt())
               .toList() ??
           const [],
+      benefitIds: benefitIds,
       planDetails: parsedDetails.isNotEmpty
           ? parsedDetails
           : (json['plan_details'] as List<dynamic>?)
@@ -204,6 +234,7 @@ class SubscriptionPlanDto {
     'description': description,
     'plan_detail_ids': planDetailIds,
     'course_ids': courseIds,
+    'benefit_ids': benefitIds,
     'plan_details': planDetails.map((d) => d.toJson()).toList(),
   };
 }
@@ -341,6 +372,7 @@ class ProductDto {
   final String title;
   final String slug;
   final String descriptionHtml;
+  final String shortDescription;
   final String price;
   final List<int> courses;
   final String? image;
@@ -352,12 +384,15 @@ class ProductDto {
   final List<PriceDto> prices;
   final List<ProductCourseDto> coursesDetails;
   final List<ProductFacultyDto> faculty;
+  final List<ProductBenefitDto> benefits;
+  final bool hasProductSubscriptionPlans;
 
   const ProductDto({
     required this.id,
     required this.title,
     required this.slug,
     this.descriptionHtml = '',
+    this.shortDescription = '',
     required this.price,
     required this.courses,
     this.image,
@@ -369,6 +404,8 @@ class ProductDto {
     this.prices = const [],
     this.coursesDetails = const [],
     this.faculty = const [],
+    this.benefits = const [],
+    this.hasProductSubscriptionPlans = false,
   });
 
   bool get isFree => double.tryParse(price.replaceAll(',', '')) == 0;
@@ -403,6 +440,7 @@ class ProductDto {
       title: json['title'] as String? ?? '',
       slug: json['slug'] as String? ?? '',
       descriptionHtml: json['description_html'] as String? ?? '',
+      shortDescription: json['short_description'] as String? ?? '',
       price:
           (json['price'] as String?) ??
           (json['current_price'] as String?) ??
@@ -497,6 +535,17 @@ class ProductDto {
               .map((e) => ProductFacultyDto.fromJson(e))
               .toList() ??
           const [],
+      benefits:
+          (json['benefits'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map((e) => ProductBenefitDto.fromJson(e))
+              .toList() ??
+          const [],
+      hasProductSubscriptionPlans:
+          json['has_product_subscription_plans'] as bool? ??
+          (json['plans'] as List<dynamic>?)?.isNotEmpty ??
+          (json['plan_ids'] as List<dynamic>?)?.isNotEmpty ??
+          false,
     );
   }
 
@@ -505,6 +554,7 @@ class ProductDto {
     'title': title,
     'slug': slug,
     'description_html': descriptionHtml,
+    'short_description': shortDescription,
     'price': price,
     'current_price': price,
     'courses': courses,
@@ -517,6 +567,8 @@ class ProductDto {
     'prices': prices.map((p) => p.toJson()).toList(),
     'courses_details': coursesDetails.map((c) => c.toJson()).toList(),
     'faculty': faculty.map((f) => f.toJson()).toList(),
+    'benefits': benefits.map((b) => b.toJson()).toList(),
+    'has_product_subscription_plans': hasProductSubscriptionPlans,
   };
 }
 

@@ -2922,6 +2922,57 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storeChoosePlan => 'اختر خطة';
 
   @override
+  String get storeChooseAPlan => 'اختر خطة';
+
+  @override
+  String get storePickPlanSubtitle =>
+      'اختر الخطة المناسبة لك والمدة التي تحتاجها.';
+
+  @override
+  String get storeComparePlans => 'مقارنة الخطط';
+
+  @override
+  String get storeCourses => 'الدورات';
+
+  @override
+  String storeCourseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دورات',
+      one: 'دورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeBenefitCount(int count, int total) {
+    return '$count من أصل $total مزايا';
+  }
+
+  @override
+  String get storeWhatYouGet => 'ما ستحصل عليه';
+
+  @override
+  String get storePlanBenefits => 'مزايا الخطة';
+
+  @override
+  String storePlanNotAvailableForDuration(String duration) {
+    return 'غير متوفر لمدة $duration.';
+  }
+
+  @override
+  String storePlanAvailableForDuration(String duration) {
+    return 'متوفر لمدة $duration.';
+  }
+
+  @override
+  String get storeBenefitIncluded => 'مشمول';
+
+  @override
+  String get storeBenefitNotIncluded => 'غير مشمول';
+
+  @override
   String storePayAmountNow(String amount) {
     return 'ادفع ₹$amount الآن';
   }

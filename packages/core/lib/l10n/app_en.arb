@@ -1498,6 +1498,49 @@
   "storePayInstallments": "Pay in installments",
   "storeDiscountCoupon": "Discount Coupon",
   "storeChoosePlan": "Choose a Plan",
+  "storeChooseAPlan": "Choose a plan",
+  "storePickPlanSubtitle": "Pick the plan that fits you and how long you need it.",
+  "storeComparePlans": "Compare plans",
+  "storeCourses": "Courses",
+  "storeCourseCount": "{count, plural, =1{1 course} other{{count} courses}}",
+  "@storeCourseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storeBenefitCount": "{count} of {total} benefits",
+  "@storeBenefitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "storeWhatYouGet": "What you get",
+  "storePlanBenefits": "Plan Benefits",
+  "storePlanNotAvailableForDuration": "Not available for {duration}.",
+  "@storePlanNotAvailableForDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "storePlanAvailableForDuration": "Available for {duration}.",
+  "@storePlanAvailableForDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "storeBenefitIncluded": "Included",
+  "storeBenefitNotIncluded": "Not included",
   "storePayAmountNow": "Pay ₹{amount} now",
   "@storePayAmountNow": {
     "placeholders": {

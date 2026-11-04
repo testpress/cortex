@@ -52,7 +52,7 @@ class ProductFacultySummary extends StatelessWidget {
           ),
           SizedBox(width: design.spacing.sm),
           Flexible(
-            child: AppText.caption(
+            child: AppText.bodySmall(
               summaryText,
               color: design.colors.textSecondary,
               maxLines: 1,
