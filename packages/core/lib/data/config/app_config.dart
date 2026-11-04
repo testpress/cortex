@@ -138,6 +138,21 @@ class AppConfig {
     return apiBaseUrl.contains('brilliantpalalms.testpress.in');
   }
 
+  static const bool _showWhatsAppOtpOptionFromEnvironment =
+      bool.fromEnvironment('SHOW_WHATSAPP_OTP_OPTION', defaultValue: false);
+
+  static bool get showWhatsAppOtpOption =>
+      _showWhatsAppOtpOptionFromEnvironment || isWhatsAppOtpHost(apiBaseUrl);
+
+  static bool isWhatsAppOtpHost(String baseUrl) {
+    final host = Uri.tryParse(baseUrl)?.host.toLowerCase();
+    return const {
+      'lmsdemo.testpress.in',
+      'staging.testpress.in',
+      'cortexlms.testpress.in',
+    }.contains(host);
+  }
+
   static const String _instituteLogoPathFromEnv = String.fromEnvironment(
     'INSTITUTE_LOGO_PATH',
     defaultValue: '',

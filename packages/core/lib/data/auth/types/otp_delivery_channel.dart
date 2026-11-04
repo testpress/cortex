@@ -1,0 +1,1 @@
+enum OtpDeliveryChannel { sms, whatsapp }

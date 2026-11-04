@@ -180,10 +180,22 @@ class AppLocalizationsMl extends AppLocalizations {
   String get loginResend => 'വീണ്ടും അയയ്ക്കുക';
 
   @override
+  String get loginResendViaSms => 'SMS വഴി വീണ്ടും അയയ്ക്കുക';
+
+  @override
+  String get loginResendViaWhatsApp => 'WhatsApp വഴി വീണ്ടും അയയ്ക്കുക';
+
+  @override
   String get loginOtpError => 'ദയവായി 4 അക്ക OTP നൽകുക';
 
   @override
   String get loginResendSuccess => 'കോഡ് വിജയകരമായി വീണ്ടും അയച്ചു!';
+
+  @override
+  String get loginResendSmsSuccess => 'കോഡ് SMS വഴി വീണ്ടും അയച്ചു.';
+
+  @override
+  String get loginResendWhatsAppSuccess => 'കോഡ് WhatsApp വഴി വീണ്ടും അയച്ചു.';
 
   @override
   String get loginResendFailed =>
