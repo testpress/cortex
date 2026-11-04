@@ -4,18 +4,19 @@ The OTP flow currently supports only one resend action. Users on selected instit
 
 ## What Changes
 
-- Add a host-specific `showWhatsAppOTPoption` capability for `lmsdemo.testpress.in`, `staging.testpress.in`, and `cortexlms.testpress.in`.
+- Add a `showWhatsAppOtpOption` capability for `lmsdemo.testpress.in`, `staging.testpress.in`, and `cortexlms.testpress.in`, with a compile-time opt-in for other hosts.
 - Keep the initial OTP request unchanged; the backend defaults delivery to SMS when `channel` is omitted.
 - On the OTP verification screen, offer SMS and WhatsApp resend actions when the capability is enabled; retain the existing SMS resend behavior on other hosts.
 - Include the selected `channel` (`sms` or `whatsapp`) on every OTP resend request.
 - Localize the channel-specific labels and feedback.
 - Use one auth `generateOtp` method with an optional channel for both initial sends and resends.
+- Preserve the existing inline SMS-only resend layout and provide a semantic 48dp minimum target for its resend action.
 
 ## Capabilities
 
 ### Modified Capabilities
 - `auth-api-session`: OTP generation accepts an explicit delivery channel.
-- `login-ui`: OTP resend offers channel choices on configured hosts.
+- `login-ui`: OTP resend offers channel choices on configured hosts or when enabled at build time, with accessible SMS-only resend behavior.
 
 ## Impact
 

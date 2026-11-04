@@ -10,10 +10,14 @@ class OtpScreen extends ConsumerStatefulWidget {
     super.key,
     required this.phoneNumber,
     required this.countryCode,
+    this.showWhatsAppOtpOptionOverride,
   });
 
   final String phoneNumber;
   final String countryCode;
+
+  @visibleForTesting
+  final bool? showWhatsAppOtpOptionOverride;
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -74,6 +78,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+    final showWhatsAppOtpOption =
+        widget.showWhatsAppOtpOptionOverride ?? AppConfig.showWhatsAppOtpOption;
 
     return Scaffold(
       backgroundColor: design.colors.surface,
@@ -154,7 +160,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                     l10n.loginResendCodeIn(_formattedTime),
                                     color: design.colors.textSecondary,
                                   )
-                                : AppConfig.showWhatsAppOTPoption
+                                : showWhatsAppOtpOption
                                 ? Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
@@ -186,10 +192,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                       ),
                                     ],
                                   )
-                                : Wrap(
-                                    alignment: WrapAlignment.center,
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       AppText.labelBold(
                                         l10n.loginDidntReceiveCode,
@@ -203,18 +207,26 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                                 OtpDeliveryChannel.sms,
                                               ),
                                         enabled: !_isBusy,
-                                        child: GestureDetector(
-                                          behavior: HitTestBehavior.opaque,
-                                          onTap: _isBusy
-                                              ? null
-                                              : () => _handleResendOtp(
-                                                  OtpDeliveryChannel.sms,
+                                        child: ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            minWidth: 48,
+                                            minHeight: 48,
+                                          ),
+                                          child: GestureDetector(
+                                            behavior: HitTestBehavior.opaque,
+                                            onTap: _isBusy
+                                                ? null
+                                                : () => _handleResendOtp(
+                                                    OtpDeliveryChannel.sms,
+                                                  ),
+                                            child: Center(
+                                              child: AppText.labelBold(
+                                                l10n.loginResend,
+                                                color: design.colors.primary,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                          child: AppText.labelBold(
-                                            l10n.loginResend,
-                                            color: design.colors.primary,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                         ),

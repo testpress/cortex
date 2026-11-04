@@ -35,5 +35,11 @@ void main() {
       expect(AppConfig.isWhatsAppOtpHost('not a url'), isFalse);
       expect(AppConfig.isWhatsAppOtpHost('/api/v2.5/'), isFalse);
     });
+
+    test(
+      'enables WhatsApp OTP when the compile-time flag is set',
+      () => expect(AppConfig.showWhatsAppOtpOption, isTrue),
+      skip: !const bool.fromEnvironment('SHOW_WHATSAPP_OTP_OPTION'),
+    );
   });
 }

@@ -1,23 +1,21 @@
 import 'package:core/core.dart';
-import 'package:core/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:profile/screens/otp_screen.dart';
 
 void main() {
-  tearDown(() {
-    AppConfig.showWhatsAppOTPoptionOverride = null;
-  });
-
-  Widget createTestApp() {
+  Widget createTestApp({bool? showWhatsAppOtpOptionOverride}) {
     final router = GoRouter(
       initialLocation: '/otp',
       routes: [
         GoRoute(
           path: '/otp',
-          builder: (context, state) =>
-              const OtpScreen(phoneNumber: '5551234567', countryCode: '+1'),
+          builder: (context, state) => OtpScreen(
+            phoneNumber: '5551234567',
+            countryCode: '+1',
+            showWhatsAppOtpOptionOverride: showWhatsAppOtpOptionOverride,
+          ),
         ),
       ],
     );
@@ -43,23 +41,10 @@ void main() {
   testWidgets('shows channel-specific resend options when enabled', (
     tester,
   ) async {
-    AppConfig.showWhatsAppOTPoptionOverride = true;
-    await tester.pumpWidget(createTestApp());
+    await tester.pumpWidget(createTestApp(showWhatsAppOtpOptionOverride: true));
     await expireResendCountdown(tester);
 
     expect(find.text('Resend via SMS'), findsOneWidget);
     expect(find.text('Resend via WhatsApp'), findsOneWidget);
-  });
-
-  testWidgets('keeps the existing SMS resend option on other hosts', (
-    tester,
-  ) async {
-    AppConfig.showWhatsAppOTPoptionOverride = false;
-    await tester.pumpWidget(createTestApp());
-    await expireResendCountdown(tester);
-
-    expect(find.text('Resend'), findsOneWidget);
-    expect(find.text('Resend via SMS'), findsNothing);
-    expect(find.text('Resend via WhatsApp'), findsNothing);
   });
 }

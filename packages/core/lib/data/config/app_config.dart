@@ -138,13 +138,12 @@ class AppConfig {
     return apiBaseUrl.contains('brilliantpalalms.testpress.in');
   }
 
-  @visibleForTesting
-  static bool? showWhatsAppOTPoptionOverride;
+  static const bool _showWhatsAppOtpOptionFromEnvironment =
+      bool.fromEnvironment('SHOW_WHATSAPP_OTP_OPTION', defaultValue: false);
 
-  static bool get showWhatsAppOTPoption =>
-      showWhatsAppOTPoptionOverride ?? isWhatsAppOtpHost(apiBaseUrl);
+  static bool get showWhatsAppOtpOption =>
+      _showWhatsAppOtpOptionFromEnvironment || isWhatsAppOtpHost(apiBaseUrl);
 
-  @visibleForTesting
   static bool isWhatsAppOtpHost(String baseUrl) {
     final host = Uri.tryParse(baseUrl)?.host.toLowerCase();
     return const {
