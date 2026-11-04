@@ -183,11 +183,25 @@ class AppLocalizationsTa extends AppLocalizations {
   String get loginResend => 'மீண்டும் அனுப்பு';
 
   @override
+  String get loginResendViaSms => 'SMS மூலம் மீண்டும் அனுப்பு';
+
+  @override
+  String get loginResendViaWhatsApp => 'WhatsApp மூலம் மீண்டும் அனுப்பு';
+
+  @override
   String get loginOtpError => 'சரியான 4 இலக்க OTP ஐ உள்ளிடவும்';
 
   @override
   String get loginResendSuccess =>
       'குறியீடு வெற்றிகரமாக மீண்டும் அனுப்பப்பட்டது!';
+
+  @override
+  String get loginResendSmsSuccess =>
+      'குறியீடு SMS மூலம் மீண்டும் அனுப்பப்பட்டது.';
+
+  @override
+  String get loginResendWhatsAppSuccess =>
+      'குறியீடு WhatsApp மூலம் மீண்டும் அனுப்பப்பட்டது.';
 
   @override
   String get loginResendFailed =>

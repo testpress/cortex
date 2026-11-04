@@ -154,8 +154,42 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                     l10n.loginResendCodeIn(_formattedTime),
                                     color: design.colors.textSecondary,
                                   )
-                                : Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                : AppConfig.showWhatsAppOTPoption
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      AppText.labelBold(
+                                        l10n.loginDidntReceiveCode,
+                                        color: design.colors.textSecondary,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: design.spacing.sm),
+                                      AppButton.secondary(
+                                        label: l10n.loginResendViaSms,
+                                        fullWidth: true,
+                                        onPressed: _isBusy
+                                            ? null
+                                            : () => _handleResendOtp(
+                                                OtpDeliveryChannel.sms,
+                                              ),
+                                      ),
+                                      SizedBox(height: design.spacing.sm),
+                                      AppButton.secondary(
+                                        label: l10n.loginResendViaWhatsApp,
+                                        fullWidth: true,
+                                        onPressed: _isBusy
+                                            ? null
+                                            : () => _handleResendOtp(
+                                                OtpDeliveryChannel.whatsapp,
+                                              ),
+                                      ),
+                                    ],
+                                  )
+                                : Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
                                     children: [
                                       AppText.labelBold(
                                         l10n.loginDidntReceiveCode,
@@ -163,10 +197,19 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                       ),
                                       AppSemantics.button(
                                         label: l10n.loginResend,
-                                        onTap: _handleResendOtp,
+                                        onTap: _isBusy
+                                            ? null
+                                            : () => _handleResendOtp(
+                                                OtpDeliveryChannel.sms,
+                                              ),
+                                        enabled: !_isBusy,
                                         child: GestureDetector(
                                           behavior: HitTestBehavior.opaque,
-                                          onTap: _handleResendOtp,
+                                          onTap: _isBusy
+                                              ? null
+                                              : () => _handleResendOtp(
+                                                  OtpDeliveryChannel.sms,
+                                                ),
                                           child: AppText.labelBold(
                                             l10n.loginResend,
                                             color: design.colors.primary,
@@ -215,7 +258,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     );
   }
 
-  Future<void> _handleResendOtp() async {
+  Future<void> _handleResendOtp(OtpDeliveryChannel channel) async {
     if (_isBusy) return;
 
     setState(() {
@@ -230,9 +273,15 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           .generateOtp(
             phoneNumber: widget.phoneNumber,
             countryCode: widget.countryCode,
+            channel: channel,
           );
       if (mounted) {
-        setState(() => _successMessage = L10n.of(context).loginResendSuccess);
+        final l10n = L10n.of(context);
+        setState(
+          () => _successMessage = channel == OtpDeliveryChannel.sms
+              ? l10n.loginResendSmsSuccess
+              : l10n.loginResendWhatsAppSuccess,
+        );
         _startTimer();
       }
     } catch (e, stack) {

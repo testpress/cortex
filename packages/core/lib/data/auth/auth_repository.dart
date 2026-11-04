@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
+import 'types/otp_delivery_channel.dart';
 import '../exceptions/api_exception.dart';
 import '../sources/data_source.dart';
 import 'types/auth_exception.dart';
@@ -92,11 +93,13 @@ class AuthRepository {
     required String phoneNumber,
     required String countryCode,
     String? email,
+    OtpDeliveryChannel? channel,
   }) {
     return _apiService.generateOtp(
       phoneNumber: phoneNumber,
       countryCode: countryCode,
       email: email,
+      channel: channel,
     );
   }
 

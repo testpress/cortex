@@ -179,10 +179,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginResend => 'Resend';
 
   @override
+  String get loginResendViaSms => 'Resend via SMS';
+
+  @override
+  String get loginResendViaWhatsApp => 'Resend via WhatsApp';
+
+  @override
   String get loginOtpError => 'Please enter a valid 4-digit OTP';
 
   @override
   String get loginResendSuccess => 'Code Resent Successfully!';
+
+  @override
+  String get loginResendSmsSuccess => 'Code sent again by SMS.';
+
+  @override
+  String get loginResendWhatsAppSuccess => 'Code sent again by WhatsApp.';
 
   @override
   String get loginResendFailed => 'Failed to resend code. Please try again.';

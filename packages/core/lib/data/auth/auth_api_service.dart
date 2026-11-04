@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../network/api_endpoints.dart';
 import '../services/sentry_service.dart';
 import 'types/auth_exception.dart';
+import 'types/otp_delivery_channel.dart';
 
 class AuthApiResult {
   final String authToken;
@@ -68,15 +69,18 @@ class AuthApiService {
     required String phoneNumber,
     required String countryCode,
     String? email,
+    OtpDeliveryChannel? channel,
   }) {
-    return _post(
-      ApiEndpoints.generateOtp,
-      _buildOtpIdentityPayload(
-        phoneNumber: phoneNumber,
-        countryCode: countryCode,
-        email: email,
-      ),
+    final payload = _buildOtpIdentityPayload(
+      phoneNumber: phoneNumber,
+      countryCode: countryCode,
+      email: email,
     );
+    if (channel != null) {
+      payload['channel'] = channel.name;
+    }
+
+    return _post(ApiEndpoints.generateOtp, payload);
   }
 
   Future<AuthApiResult> verifyOtp({

@@ -420,6 +420,18 @@ abstract class AppLocalizations {
   /// **'Resend'**
   String get loginResend;
 
+  /// No description provided for @loginResendViaSms.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend via SMS'**
+  String get loginResendViaSms;
+
+  /// No description provided for @loginResendViaWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend via WhatsApp'**
+  String get loginResendViaWhatsApp;
+
   /// No description provided for @loginOtpError.
   ///
   /// In en, this message translates to:
@@ -431,6 +443,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Code Resent Successfully!'**
   String get loginResendSuccess;
+
+  /// No description provided for @loginResendSmsSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Code sent again by SMS.'**
+  String get loginResendSmsSuccess;
+
+  /// No description provided for @loginResendWhatsAppSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Code sent again by WhatsApp.'**
+  String get loginResendWhatsAppSuccess;
 
   /// No description provided for @loginResendFailed.
   ///

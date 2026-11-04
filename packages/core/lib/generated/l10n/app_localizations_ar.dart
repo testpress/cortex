@@ -178,10 +178,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginResend => 'إعادة الإرسال';
 
   @override
+  String get loginResendViaSms => 'إعادة الإرسال عبر SMS';
+
+  @override
+  String get loginResendViaWhatsApp => 'إعادة الإرسال عبر WhatsApp';
+
+  @override
   String get loginOtpError => 'يرجى إدخال رمز OTP المكون من 4 أرقام';
 
   @override
   String get loginResendSuccess => 'تمت إعادة إرسال الرمز بنجاح!';
+
+  @override
+  String get loginResendSmsSuccess => 'تم إرسال الرمز مجددًا عبر SMS.';
+
+  @override
+  String get loginResendWhatsAppSuccess =>
+      'تم إرسال الرمز مجددًا عبر WhatsApp.';
 
   @override
   String get loginResendFailed =>

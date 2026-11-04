@@ -8,6 +8,7 @@ import 'auth_api_service.dart';
 import 'auth_local_data_source.dart';
 import 'auth_repository.dart';
 import 'types/auth_exception.dart';
+import 'types/otp_delivery_channel.dart';
 import '../../network/dio_provider.dart';
 import '../db/database_provider.dart';
 import '../sources/data_source_provider.dart';
@@ -162,11 +163,13 @@ class Auth extends _$Auth {
     required String phoneNumber,
     required String countryCode,
     String? email,
+    OtpDeliveryChannel? channel,
   }) async {
     await _repository.generateOtp(
       phoneNumber: phoneNumber,
       countryCode: countryCode,
       email: email,
+      channel: channel,
     );
   }
 

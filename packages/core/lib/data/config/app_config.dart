@@ -138,6 +138,22 @@ class AppConfig {
     return apiBaseUrl.contains('brilliantpalalms.testpress.in');
   }
 
+  @visibleForTesting
+  static bool? showWhatsAppOTPoptionOverride;
+
+  static bool get showWhatsAppOTPoption =>
+      showWhatsAppOTPoptionOverride ?? isWhatsAppOtpHost(apiBaseUrl);
+
+  @visibleForTesting
+  static bool isWhatsAppOtpHost(String baseUrl) {
+    final host = Uri.tryParse(baseUrl)?.host.toLowerCase();
+    return const {
+      'lmsdemo.testpress.in',
+      'staging.testpress.in',
+      'cortexlms.testpress.in',
+    }.contains(host);
+  }
+
   static const String _instituteLogoPathFromEnv = String.fromEnvironment(
     'INSTITUTE_LOGO_PATH',
     defaultValue: '',

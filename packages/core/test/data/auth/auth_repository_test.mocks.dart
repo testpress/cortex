@@ -412,12 +412,14 @@ class MockAuthApiService extends _i1.Mock implements _i2.AuthApiService {
     required String? phoneNumber,
     required String? countryCode,
     String? email,
+    _i4.OtpDeliveryChannel? channel,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#generateOtp, [], {
               #phoneNumber: phoneNumber,
               #countryCode: countryCode,
               #email: email,
+              #channel: channel,
             }),
             returnValue: _i6.Future<void>.value(),
             returnValueForMissingStub: _i6.Future<void>.value(),

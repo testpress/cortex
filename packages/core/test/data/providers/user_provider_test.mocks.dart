@@ -201,12 +201,14 @@ class MockAuthRepository extends _i1.Mock implements _i6.AuthRepository {
     required String? phoneNumber,
     required String? countryCode,
     String? email,
+    _i2.OtpDeliveryChannel? channel,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#generateOtp, [], {
               #phoneNumber: phoneNumber,
               #countryCode: countryCode,
               #email: email,
+              #channel: channel,
             }),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),

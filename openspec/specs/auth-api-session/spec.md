@@ -2,7 +2,9 @@
 
 ## Purpose
 TBD - created by archiving change integrate-auth-api. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Auth API service endpoints
 The system SHALL provide an auth API service that calls backend endpoints for password login, OTP generation, OTP verification, and logout.
 
@@ -48,3 +50,20 @@ The system SHALL expose explicit auth session states from auth provider to suppo
 - **WHEN** auth API service returns an error
 - **THEN** auth provider SHALL expose failure state with error message
 
+### Requirement: OTP generation delivery channel
+The auth API service SHALL preserve the existing initial default-SMS OTP request and SHALL support explicit delivery channels for OTP resend requests.
+
+#### Scenario: Initial OTP generation
+- **WHEN** a user submits a phone number to begin OTP login
+- **THEN** the app SHALL send the existing OTP generation request without a `channel` field
+- **AND** the backend SHALL use its default SMS delivery channel
+
+#### Scenario: Resend OTP through SMS
+- **WHEN** a user requests another OTP through SMS
+- **THEN** the OTP generation request SHALL include `channel: sms`
+- **AND** the phone number and country code identity SHALL remain unchanged
+
+#### Scenario: Resend OTP through WhatsApp
+- **WHEN** a user requests another OTP through WhatsApp
+- **THEN** the OTP generation request SHALL include `channel: whatsapp`
+- **AND** the phone number and country code identity SHALL remain unchanged
