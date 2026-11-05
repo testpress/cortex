@@ -7,13 +7,3 @@ String formatPlanDuration(AppLocalizations l10n, int durationInDays) {
   }
   return l10n.storeDurationDays(durationInDays);
 }
-
-/// Extension on [AppLocalizations] for convenient plan duration formatting.
-extension StoreDurationFormatting on AppLocalizations {
-  String formatPlanDuration(int durationInDays) {
-    if (durationInDays >= 365 && durationInDays % 365 == 0) {
-      return storeDurationYears(durationInDays ~/ 365);
-    }
-    return storeDurationDays(durationInDays);
-  }
-}

@@ -23,11 +23,5 @@ void main() {
       final l10n = lookupAppLocalizations(const Locale('en'));
       expect(formatPlanDuration(l10n, 400), '400 days');
     });
-
-    test('extension method produces identical output', () {
-      final l10n = lookupAppLocalizations(const Locale('en'));
-      expect(l10n.formatPlanDuration(365), '1 year');
-      expect(l10n.formatPlanDuration(90), '90 days');
-    });
   });
 }

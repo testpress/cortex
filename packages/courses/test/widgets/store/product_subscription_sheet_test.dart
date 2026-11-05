@@ -122,6 +122,26 @@ void main() {
     expect(selectedId, 11);
   });
 
+  testWidgets('exposes selected state in semantic label for active plan',
+      (tester) async {
+    await tester.pumpWidget(
+      buildTestWidget(
+        product: testProductWithPlans,
+        initialSelectedPlanDetailId: 11,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            (w.properties.label?.contains('selected') ?? false),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
       'renders plan benefits with included and excluded indicators for comparison',
       (tester) async {

@@ -262,10 +262,14 @@ class _ProductSubscriptionSheetState
                                           detail.id == _selectedPlanDetailId;
                                       final durationText = formatPlanDuration(
                                           l10n, detail.durationInDays);
+                                      final baseLabel =
+                                          '$durationText. ₹${detail.price}';
+                                      final semanticLabel = isSelected
+                                          ? '$baseLabel, selected'
+                                          : baseLabel;
 
                                       return AppSemantics.button(
-                                        label:
-                                            '$durationText. ₹${detail.price}',
+                                        label: semanticLabel,
                                         child: AppFocusable(
                                           onTap: () {
                                             setState(() {
@@ -348,16 +352,16 @@ class _ProductSubscriptionSheetState
                           : allPlanDetails.map((detail) {
                               final isSelected =
                                   detail.id == _selectedPlanDetailId;
-                              final durationText = detail.durationInDays >=
-                                          365 &&
-                                      detail.durationInDays % 365 == 0
-                                  ? l10n.storeDurationYears(
-                                      detail.durationInDays ~/ 365)
-                                  : l10n
-                                      .storeDurationDays(detail.durationInDays);
+                              final durationText = formatPlanDuration(
+                                  l10n, detail.durationInDays);
+                              final baseLabel =
+                                  '$durationText. ₹${detail.price}';
+                              final semanticLabel = isSelected
+                                  ? '$baseLabel, selected'
+                                  : baseLabel;
 
                               return AppSemantics.button(
-                                label: '$durationText. ₹${detail.price}',
+                                label: semanticLabel,
                                 child: AppFocusable(
                                   onTap: () {
                                     setState(() {
