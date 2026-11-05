@@ -2929,6 +2929,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storeChoosePlan => 'Choose a Plan';
 
   @override
+  String get storeChooseAPlan => 'Choose a plan';
+
+  @override
+  String get storePickPlanSubtitle =>
+      'Pick the plan that fits you and how long you need it.';
+
+  @override
+  String get storeComparePlans => 'Compare plans';
+
+  @override
+  String get storePlansLabel => 'Plans';
+
+  @override
+  String get storeCourses => 'Courses';
+
+  @override
+  String storeCourseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count courses',
+      one: '1 course',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String storeBenefitCount(int count, int total) {
+    return '$count of $total benefits';
+  }
+
+  @override
+  String get storeWhatYouGet => 'What you get';
+
+  @override
+  String get storePlanBenefits => 'Plan Benefits';
+
+  @override
+  String storePlanNotAvailableForDuration(String duration) {
+    return 'Not available for $duration.';
+  }
+
+  @override
+  String storePlanAvailableForDuration(String duration) {
+    return 'Available for $duration.';
+  }
+
+  @override
+  String get storeBenefitIncluded => 'Included';
+
+  @override
+  String get storeBenefitNotIncluded => 'Not included';
+
+  @override
   String storePayAmountNow(String amount) {
     return 'Pay ₹$amount now';
   }

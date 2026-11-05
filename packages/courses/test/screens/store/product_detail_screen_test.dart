@@ -10,6 +10,7 @@ import 'package:courses/courses.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 import 'package:courses/repositories/store_repository.dart';
 import 'package:courses/repositories/course_repository.dart';
+import 'package:courses/widgets/store/product_expandable_course_card.dart';
 
 class MockSentryService extends SentryService {
   @override
@@ -330,29 +331,59 @@ void main() {
     });
 
     testWidgets(
-        'plan-based product shows Subscribe, hides installments, selects plan in sheet, and switches to Proceed to Buy',
+        'plan-based product shows inline Choose a plan, duration pills, plan cards, and Proceed to Buy',
         (tester) async {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
       final subProduct = ProductDto(
         id: 526,
         title: 'Subscription Test Course',
         slug: 'sub-test-course',
         price: '599.00',
         courses: const [372],
+        benefits: const [
+          ProductBenefitDto(id: 1, name: 'Recorded lectures', order: 1),
+          ProductBenefitDto(id: 2, name: 'Mentorship calls', order: 2),
+        ],
         plans: const [
           SubscriptionPlanDto(
             id: 201,
             productId: 526,
-            name: 'Standard Tier',
+            name: 'Basic Access',
+            benefitIds: [1],
             planDetails: [
               PlanDetailDto(
                 id: 301,
-                durationInDays: 180,
-                price: '599.00',
+                durationInDays: 90,
+                price: '2999.00',
               ),
               PlanDetailDto(
                 id: 302,
-                durationInDays: 365,
-                price: '999.00',
+                durationInDays: 180,
+                price: '4999.00',
+              ),
+            ],
+          ),
+          SubscriptionPlanDto(
+            id: 202,
+            productId: 526,
+            name: 'Premium Elite',
+            benefitIds: [1, 2],
+            planDetails: [
+              PlanDetailDto(
+                id: 303,
+                durationInDays: 90,
+                price: '5999.00',
+              ),
+              PlanDetailDto(
+                id: 304,
+                durationInDays: 180,
+                price: '8999.00',
               ),
             ],
           ),
@@ -379,43 +410,50 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Verify "Subscribe" is displayed and "Pay in installments" is hidden
-      expect(find.text('Subscribe'), findsOneWidget);
-      expect(find.text('Proceed to Buy'), findsNothing);
+      // Verify inline "Choose a plan" and duration selector pills
+      expect(find.text('Choose a plan'), findsOneWidget);
+      expect(find.text('90 days'), findsWidgets);
+      expect(find.text('180 days'), findsOneWidget);
+
+      // Verify plan cards rendered inline
+      expect(find.text('Basic Access'), findsWidgets);
+      expect(find.text('Premium Elite'), findsWidgets);
+
+      // Verify "Proceed to Buy" is displayed (since plan is pre-selected) and installments hidden
+      expect(find.text('Proceed to Buy'), findsOneWidget);
       expect(find.text('Pay in installments'), findsNothing);
 
-      // Tap Subscribe button
-      await tester.tap(find.text('Subscribe'));
+      // Verify Compare plans section
+      expect(find.text('Compare plans'), findsOneWidget);
+      expect(find.text('Recorded lectures'), findsOneWidget);
+      expect(find.text('Mentorship calls'), findsOneWidget);
+
+      // Tap on 180 days duration pill -> updates selection to duration 180
+      await tester.tap(find.text('180 days'));
       await tester.pumpAndSettle();
 
-      // Verify bottom sheet opened with title and plan options, and no option is pre-selected
-      expect(find.text('Select a plan to proceed with your purchase'),
-          findsOneWidget);
-      expect(find.text('180 days. ₹599.00'), findsOneWidget);
-      expect(find.text('1 year. ₹999.00'), findsOneWidget);
-      expect(find.byIcon(LucideIcons.checkCircle), findsNothing);
-
-      // Tap on the 365 days option -> sheet closes and selects plan 302
-      await tester.tap(find.text('1 year. ₹999.00'));
+      // Tap on Premium Elite tab in Compare plans -> two-way sync updates active plan to 202
+      await tester.ensureVisible(find.text('Premium Elite').last);
+      await tester.tap(find.text('Premium Elite').last);
       await tester.pumpAndSettle();
 
-      // Sheet is closed, button is now "Proceed to Buy", and selected plan badge is shown
-      expect(find.text('Select a plan to proceed with your purchase'),
-          findsNothing);
-      expect(find.text('Proceed to Buy'), findsOneWidget);
-      expect(find.text('Subscribe'), findsNothing);
-      expect(find.text('1 year. ₹999.00'), findsOneWidget);
-
-      // Tap Proceed to Buy -> creates order with selected planDetailId 302
+      // Tap Proceed to Buy -> creates order with selected planDetailId 304 (Premium Elite 180 days)
       await tester.tap(find.text('Proceed to Buy'));
       await tester.pumpAndSettle();
 
-      expect(fakeRepo.lastPlanDetailId, 302);
+      expect(fakeRepo.lastPlanDetailId, 304);
     });
 
     testWidgets(
         'curriculum scopes to base course and excludes subscription-only courses',
         (tester) async {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
       const baseCourse = ProductCourseDto(
         id: 1200,
         title: 'Base Video Course',
@@ -472,13 +510,30 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Tap Curriculum tab
+      // Scroll to Curriculum tab and tap it
+      await tester.scrollUntilVisible(
+        find.text('Curriculum'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(find.text('Curriculum'));
       await tester.pumpAndSettle();
 
-      // Base course should be rendered, but plan course should be excluded from curriculum
-      expect(find.text('Base Video Course'), findsOneWidget);
-      expect(find.text('Plan Tier Course'), findsNothing);
+      // Base course should be rendered in expandable course card, but plan course excluded
+      expect(
+        find.descendant(
+          of: find.byType(ProductExpandableCourseCard),
+          matching: find.text('Base Video Course'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(ProductExpandableCourseCard),
+          matching: find.text('Plan Tier Course'),
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets(
@@ -565,8 +620,7 @@ void main() {
 
       // Tap back button on the screen
       await tester.tap(find.byType(AppBackButton));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pumpAndSettle();
 
       // Screen should be closed
       expect(find.byType(FacultyProfileScreen), findsNothing);
@@ -619,6 +673,80 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(scrollableState.position.pixels, greaterThan(0.0));
+    });
+
+    testWidgets('renders "What you get" section when product has benefits',
+        (tester) async {
+      final productWithBenefits = ProductDto(
+        id: 999,
+        title: 'Masterclass with Perks',
+        slug: 'masterclass-perks',
+        price: '2999.00',
+        courses: const [],
+        benefits: const [
+          ProductBenefitDto(id: 1, name: 'Live Doubt Clearing'),
+          ProductBenefitDto(id: 2, name: '1-on-1 Faculty Mentorship'),
+        ],
+      );
+
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: productWithBenefits,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: productWithBenefits),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('What you get'), findsOneWidget);
+      expect(find.text('Live Doubt Clearing'), findsOneWidget);
+      expect(find.text('1-on-1 Faculty Mentorship'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.sparkles), findsOneWidget);
+      expect(find.byIcon(LucideIcons.checkCircle2), findsNWidgets(2));
+    });
+
+    testWidgets('omits "What you get" section when product has no benefits',
+        (tester) async {
+      final productWithoutBenefits = ProductDto(
+        id: 998,
+        title: 'Simple Course',
+        slug: 'simple-course',
+        price: '999.00',
+        courses: const [],
+        benefits: const [],
+      );
+
+      final fakeRepo = FakeStoreRepository(
+        source: const MockDataSource(),
+        product: productWithoutBenefits,
+      );
+      final fakeCourseRepo = FakeCourseRepository();
+
+      await tester.pumpWidget(
+        wrapRouter(
+          ProductDetailScreen(product: productWithoutBenefits),
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(fakeRepo),
+            courseRepositoryProvider
+                .overrideWith((ref) async => fakeCourseRepo),
+            dataSourceProvider.overrideWithValue(const MockDataSource()),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('What you get'), findsNothing);
+      expect(find.byIcon(LucideIcons.sparkles), findsNothing);
     });
   });
 }

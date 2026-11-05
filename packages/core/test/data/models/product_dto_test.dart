@@ -269,4 +269,80 @@ void main() {
       },
     );
   });
+
+  group('ProductBenefitDto', () {
+    test('parses and serializes properly', () {
+      final json = {'id': 12, 'name': 'Live Doubt Sessions', 'order': 3};
+      final benefit = ProductBenefitDto.fromJson(json);
+
+      expect(benefit.id, 12);
+      expect(benefit.name, 'Live Doubt Sessions');
+      expect(benefit.order, 3);
+      expect(benefit.toJson(), json);
+    });
+  });
+
+  group('SubscriptionPlanDto benefit_ids', () {
+    test('parses benefit_ids correctly', () {
+      final json = {
+        'id': 10,
+        'product_id': 100,
+        'name': 'Pro Plan',
+        'description': 'Includes perks',
+        'plan_detail_ids': [1],
+        'course_ids': [2],
+        'benefit_ids': [101, 102],
+      };
+
+      final plan = SubscriptionPlanDto.fromJson(json);
+      expect(plan.benefitIds, [101, 102]);
+
+      final serialized = plan.toJson();
+      expect(serialized['benefit_ids'], [101, 102]);
+    });
+  });
+
+  group('ProductDto benefits and subscription plans flag', () {
+    test('parses benefits and has_product_subscription_plans', () {
+      final json = {
+        'id': 1,
+        'title': 'Master Course',
+        'slug': 'master-course',
+        'price': '499.00',
+        'courses': [1],
+        'has_product_subscription_plans': true,
+        'benefits': [
+          {'id': 50, 'name': 'Physical Books'},
+          {'id': 51, 'name': 'Mock Interviews'},
+        ],
+      };
+
+      final product = ProductDto.fromJson(json);
+      expect(product.hasProductSubscriptionPlans, isTrue);
+      expect(product.benefits, hasLength(2));
+      expect(product.benefits[0].id, 50);
+      expect(product.benefits[0].name, 'Physical Books');
+
+      final serialized = product.toJson();
+      expect(serialized['has_product_subscription_plans'], isTrue);
+      expect(serialized['benefits'], hasLength(2));
+    });
+
+    test(
+      'defaults benefits to empty list and infers hasProductSubscriptionPlans',
+      () {
+        final json = {
+          'id': 2,
+          'title': 'Simple Course',
+          'slug': 'simple-course',
+          'price': '0.00',
+          'courses': [],
+        };
+
+        final product = ProductDto.fromJson(json);
+        expect(product.benefits, isEmpty);
+        expect(product.hasProductSubscriptionPlans, isFalse);
+      },
+    );
+  });
 }

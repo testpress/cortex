@@ -5,6 +5,8 @@ import 'package:core/core.dart';
 import '../../widgets/store/product_discount_sheet.dart';
 import '../../widgets/store/product_installment_sheet.dart';
 import '../../widgets/store/product_subscription_sheet.dart';
+import '../../widgets/store/product_plan_section.dart';
+import '../../widgets/store/product_plan_comparison_section.dart';
 import '../../widgets/store/product_expandable_course_card.dart';
 import '../../widgets/store/product_faculty_summary.dart';
 import '../../widgets/store/product_faculty_section.dart';
@@ -31,6 +33,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   bool _isSubscriptionSheetOpen = false;
   bool _hasChosenPlan = false;
   int _selectedSubTabIndex = 0;
+  int? _selectedPlanId;
+  int? _selectedDurationInDays;
   int? _selectedPlanDetailId;
 
   final TextEditingController _couponController = TextEditingController();
@@ -60,12 +64,105 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final allPlanDetails = [
-      for (final p in widget.product.plans) ...p.planDetails
-    ];
-    if (allPlanDetails.length == 1) {
+    _initializeSelection(widget.product);
+  }
+
+  void _initializeSelection(ProductDto product) {
+    if (product.plans.isNotEmpty) {
+      final firstPlan = product.plans.first;
+      _selectedPlanId = firstPlan.id;
+
+      final allDurations = <int>{};
+      for (final plan in product.plans) {
+        for (final detail in plan.planDetails) {
+          allDurations.add(detail.durationInDays);
+        }
+      }
+      final sortedDurations = allDurations.toList()..sort();
+      _selectedDurationInDays = sortedDurations.firstOrNull;
+
+      final matchingDetail = firstPlan.planDetails
+              .where((d) => d.durationInDays == _selectedDurationInDays)
+              .firstOrNull ??
+          firstPlan.planDetails.firstOrNull;
+
+      if (matchingDetail != null) {
+        _selectedPlanDetailId = matchingDetail.id;
+        _hasChosenPlan = true;
+      }
+    } else {
+      final allPlanDetails = [for (final p in product.plans) ...p.planDetails];
+      if (allPlanDetails.length == 1) {
+        _hasChosenPlan = true;
+        _selectedPlanDetailId = allPlanDetails.first.id;
+      }
+    }
+  }
+
+  void _onSelectPlan(int planId, ProductDto product) {
+    final plan = product.plans.where((p) => p.id == planId).firstOrNull;
+    if (plan == null) return;
+
+    final matchingDetail = plan.planDetails
+        .where((d) => d.durationInDays == _selectedDurationInDays)
+        .firstOrNull;
+
+    if (matchingDetail == null && _selectedDurationInDays != null) {
+      return;
+    }
+
+    setState(() {
+      _selectedPlanId = planId;
       _hasChosenPlan = true;
-      _selectedPlanDetailId = allPlanDetails.first.id;
+
+      final effectiveDetail = matchingDetail ?? plan.planDetails.firstOrNull;
+      if (effectiveDetail != null) {
+        _selectedPlanDetailId = effectiveDetail.id;
+        _selectedDurationInDays = effectiveDetail.durationInDays;
+      }
+    });
+
+    if (_selectedPlanDetailId != null) {
+      ref
+          .read(productDiscountNotifierProvider(product.slug).notifier)
+          .setSelectedPlanDetailId(_selectedPlanDetailId!);
+    }
+  }
+
+  void _onSelectDuration(int duration, ProductDto product) {
+    setState(() {
+      _selectedDurationInDays = duration;
+
+      final activePlan =
+          product.plans.where((p) => p.id == _selectedPlanId).firstOrNull ??
+              product.plans.firstOrNull;
+
+      final matchingDetail = activePlan?.planDetails
+          .where((d) => d.durationInDays == duration)
+          .firstOrNull;
+
+      if (matchingDetail != null) {
+        _selectedPlanDetailId = matchingDetail.id;
+        _hasChosenPlan = true;
+      } else {
+        final altPlan = product.plans
+            .where(
+                (p) => p.planDetails.any((d) => d.durationInDays == duration))
+            .firstOrNull;
+        if (altPlan != null) {
+          _selectedPlanId = altPlan.id;
+          final altDetail = altPlan.planDetails
+              .firstWhere((d) => d.durationInDays == duration);
+          _selectedPlanDetailId = altDetail.id;
+          _hasChosenPlan = true;
+        }
+      }
+    });
+
+    if (_selectedPlanDetailId != null) {
+      ref
+          .read(productDiscountNotifierProvider(product.slug).notifier)
+          .setSelectedPlanDetailId(_selectedPlanDetailId!);
     }
   }
 
@@ -200,6 +297,78 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
+  Widget _buildBenefitsSection(
+    BuildContext context,
+    DesignConfig design,
+    ProductDto product,
+  ) {
+    if (product.benefits.isEmpty) return const SizedBox.shrink();
+    final l10n = L10n.of(context);
+
+    return AppSemantics.container(
+      label: l10n.storeWhatYouGet,
+      child: Container(
+        padding: EdgeInsets.all(design.spacing.md),
+        decoration: BoxDecoration(
+          color: design.colors.surfaceVariant.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(design.radius.lg),
+          border: Border.all(color: design.colors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  LucideIcons.sparkles,
+                  size: design.iconSize.md,
+                  color: design.colors.primary,
+                ),
+                SizedBox(width: design.spacing.sm),
+                AppText.cardTitle(
+                  l10n.storeWhatYouGet,
+                  color: design.colors.textPrimary,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ],
+            ),
+            SizedBox(height: design.spacing.md),
+            ...product.benefits.map((benefit) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: design.spacing.xs),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: Icon(
+                        LucideIcons.checkCircle2,
+                        size: 18,
+                        color: design.colors.success,
+                      ),
+                    ),
+                    SizedBox(width: design.spacing.sm),
+                    Expanded(
+                      child: AppText.body(
+                        benefit.name,
+                        color: design.colors.textPrimary,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildCourseDetails(
     BuildContext context,
     ProductCourseDto course,
@@ -276,6 +445,18 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    ref.listen<AsyncValue<ProductDto>>(
+      productDetailProvider(widget.product.slug),
+      (prev, next) {
+        final loadedProduct = next.valueOrNull;
+        if (loadedProduct != null &&
+            loadedProduct.plans.isNotEmpty &&
+            _selectedPlanId == null) {
+          _initializeSelection(loadedProduct);
+          if (mounted) setState(() {});
+        }
+      },
+    );
     final detailAsync = ref.watch(productDetailProvider(widget.product.slug));
     final product = detailAsync.valueOrNull ?? widget.product;
     final discountAsync =
@@ -366,9 +547,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 ),
                 padding: EdgeInsetsDirectional.fromSTEB(
                   design.spacing.screenPadding,
-                  MediaQuery.paddingOf(context).top + design.spacing.md,
+                  MediaQuery.paddingOf(context).top + design.spacing.xs,
                   design.spacing.screenPadding,
-                  design.spacing.md,
+                  design.spacing.xs,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -394,6 +575,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         product.title,
                         color: design.colors.textPrimary,
                       ),
+                    ),
+                    AppIconButton(
+                      icon: LucideIcons.messagesSquare,
+                      size: 22,
+                      color: design.colors.textPrimary,
+                      accessibilityLabel: L10n.of(context).drawerMessages,
+                      onTap: () => context.push('/messages'),
                     ),
                   ],
                 ),
@@ -436,155 +624,141 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (discountOrder != null) ...[
-                                    AppText.body(
-                                      '₹$basePriceStr',
-                                      style: TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        color: design.colors.textSecondary,
+                                  if (product.shortDescription.isNotEmpty) ...[
+                                    AppText.bodySmall(
+                                      product.shortDescription,
+                                      color: design.colors.textSecondary,
+                                    ),
+                                    SizedBox(height: design.spacing.sm),
+                                  ],
+                                  if (product.plans.isNotEmpty) ...[
+                                    if (discountOrder != null) ...[
+                                      _buildAppliedCouponCard(
+                                        context,
+                                        design,
+                                        appliedCouponCode: appliedCouponCode,
+                                        savedAmount: savedAmount,
+                                        productSlug: product.slug,
                                       ),
+                                      SizedBox(height: design.spacing.md),
+                                    ],
+                                    if (product.faculty.isNotEmpty)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: design.spacing.md),
+                                        child: ProductFacultySummary(
+                                          faculty: product.faculty,
+                                          onTap: _scrollToFacultySection,
+                                        ),
+                                      ),
+                                    ProductPlanSection(
+                                      product: product,
+                                      selectedPlanId: _selectedPlanId,
+                                      selectedDurationInDays:
+                                          _selectedDurationInDays,
+                                      onSelectPlan: (planId) =>
+                                          _onSelectPlan(planId, product),
+                                      onSelectDuration: (duration) =>
+                                          _onSelectDuration(duration, product),
                                     ),
-                                    SizedBox(height: design.spacing.xs / 2),
-                                    AppText.title(
-                                      '₹${discountOrder.total}',
-                                      color: design.colors.textPrimary,
+                                    SizedBox(height: design.spacing.lg),
+                                    ProductPlanComparisonSection(
+                                      product: product,
+                                      selectedPlanId: _selectedPlanId,
+                                      onSelectPlan: (planId) =>
+                                          _onSelectPlan(planId, product),
                                     ),
                                     SizedBox(height: design.spacing.md),
-                                    _buildAppliedCouponCard(
-                                      context,
-                                      design,
-                                      appliedCouponCode: appliedCouponCode,
-                                      savedAmount: savedAmount,
-                                      productSlug: product.slug,
-                                    ),
-                                  ] else
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.baseline,
-                                      textBaseline: TextBaseline.alphabetic,
-                                      children: [
-                                        AppText.title(
-                                          product.isFree
-                                              ? L10n.of(context).free
-                                              : '₹$basePriceStr',
-                                          color: design.colors.textPrimary,
+                                  ] else ...[
+                                    if (discountOrder != null) ...[
+                                      AppText.body(
+                                        '₹$basePriceStr',
+                                        style: TextStyle(
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                          color: design.colors.textSecondary,
                                         ),
-                                        if (!product.isFree &&
-                                            strikeThroughStr != null &&
-                                            strikeThroughStr.isNotEmpty) ...[
-                                          SizedBox(width: design.spacing.sm),
-                                          AppText.body(
-                                            '₹$strikeThroughStr',
-                                            style: TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color:
-                                                  design.colors.textSecondary,
-                                            ),
+                                      ),
+                                      SizedBox(height: design.spacing.xs / 2),
+                                      AppText.title(
+                                        '₹${discountOrder.total}',
+                                        color: design.colors.textPrimary,
+                                      ),
+                                      SizedBox(height: design.spacing.md),
+                                      _buildAppliedCouponCard(
+                                        context,
+                                        design,
+                                        appliedCouponCode: appliedCouponCode,
+                                        savedAmount: savedAmount,
+                                        productSlug: product.slug,
+                                      ),
+                                    ] else
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: [
+                                          AppText.title(
+                                            product.isFree
+                                                ? L10n.of(context).free
+                                                : '₹$basePriceStr',
+                                            color: design.colors.textPrimary,
                                           ),
-                                        ],
-                                      ],
-                                    ),
-                                  if (allPlanDetails.isNotEmpty &&
-                                      _hasChosenPlan &&
-                                      selectedPlanDetail != null) ...[
-                                    SizedBox(height: design.spacing.md),
-                                    () {
-                                      final durationText = selectedPlanDetail
-                                                      .durationInDays >=
-                                                  365 &&
-                                              selectedPlanDetail
-                                                          .durationInDays %
-                                                      365 ==
-                                                  0
-                                          ? '${selectedPlanDetail.durationInDays ~/ 365} year${selectedPlanDetail.durationInDays > 365 ? 's' : ''}'
-                                          : '${selectedPlanDetail.durationInDays} days';
-                                      return AppSemantics.button(
-                                        label: L10n.of(context)
-                                            .storeSelectedPlanTapToChange(
-                                          '$durationText. ₹${selectedPlanDetail.price}',
-                                        ),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _isSubscriptionSheetOpen = true;
-                                            });
-                                          },
-                                          behavior: HitTestBehavior.opaque,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: design.spacing.md,
-                                              vertical: design.spacing.sm,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: design.colors.accent2
-                                                  .withValues(alpha: 0.08),
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      design.radius.md),
-                                              border: Border.all(
-                                                color: design.colors.accent2
-                                                    .withValues(alpha: 0.3),
+                                          if (!product.isFree &&
+                                              strikeThroughStr != null &&
+                                              strikeThroughStr.isNotEmpty) ...[
+                                            SizedBox(width: design.spacing.sm),
+                                            AppText.body(
+                                              '₹$strikeThroughStr',
+                                              style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                color:
+                                                    design.colors.textSecondary,
                                               ),
                                             ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(
-                                                  LucideIcons.checkCircle,
-                                                  size: design.iconSize.sm,
-                                                  color: design.colors.accent2,
-                                                ),
-                                                SizedBox(
-                                                    width: design.spacing.xs),
-                                                AppText.labelBold(
-                                                  '$durationText. ₹${selectedPlanDetail.price}',
-                                                  color: design.colors.accent2,
-                                                ),
-                                                SizedBox(
-                                                    width: design.spacing.xs),
-                                                Icon(
-                                                  LucideIcons.chevronDown,
-                                                  size: design.iconSize.xs,
-                                                  color: design.colors.accent2,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }(),
-                                  ],
-                                  SizedBox(height: design.spacing.md),
-                                  if (validityDays != null)
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: design.spacing.md),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            LucideIcons.calendar,
-                                            size: design.iconSize.sm,
-                                          ),
-                                          SizedBox(width: design.spacing.xs),
-                                          AppText.labelBold(
-                                            L10n.of(context).storeValidityDays(
-                                                validityDays.toString()),
-                                          ),
+                                          ],
                                         ],
                                       ),
-                                    ),
-                                  if (product.faculty.isNotEmpty)
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: design.spacing.sm),
-                                      child: ProductFacultySummary(
-                                        faculty: product.faculty,
-                                        onTap: _scrollToFacultySection,
+                                    SizedBox(height: design.spacing.md),
+                                    if (validityDays != null)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: design.spacing.md),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              LucideIcons.calendar,
+                                              size: design.iconSize.sm,
+                                            ),
+                                            SizedBox(width: design.spacing.xs),
+                                            AppText.labelBold(
+                                              L10n.of(context)
+                                                  .storeValidityDays(
+                                                      validityDays.toString()),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                    if (product.faculty.isNotEmpty)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: design.spacing.sm),
+                                        child: ProductFacultySummary(
+                                          faculty: product.faculty,
+                                          onTap: _scrollToFacultySection,
+                                        ),
+                                      ),
+                                    if (product.benefits.isNotEmpty)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: design.spacing.md),
+                                        child: _buildBenefitsSection(
+                                            context, design, product),
+                                      ),
+                                  ],
                                   if (hasDescription || hasCourse)
                                     Container(
                                         height: 1, color: design.colors.border),
