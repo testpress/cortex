@@ -2,7 +2,10 @@
 
 - [x] 1.1 Create `ProductPlanCard` in `packages/courses/lib/widgets/store/product_plan_card.dart` rendering title, description, price, strike price, course count, benefit count (`X of Y benefits`), and radio indicator.
 - [x] 1.2 Create `ProductPlanSection` in `packages/courses/lib/widgets/store/product_plan_section.dart` rendering duration pills and vertically stacked `ProductPlanCard`s.
-- [x] 1.3 Create `ProductPlanComparisonSection` in `packages/courses/lib/widgets/store/product_plan_comparison_section.dart` rendering "Compare plans", segmented tabs (`[Basic] [Standard] [Premium]`), and Courses & What You Get checklists with ✓ and ✕ indicators.
+- [x] 1.3 Update `ProductPlanComparisonSection` in `packages/courses/lib/widgets/store/product_plan_comparison_section.dart` to render a side-by-side comparison matrix table with "Plans" column, plan column headers, section headers ("Courses" and "What you get"), rows with ✓ (included) and ✕ (excluded) indicators, and highlighted column tint for the selected plan.
+- [x] 1.4 Unify typography at 14px (bold for headers, regular/medium for rows) across plan card titles, table column headers, and table section dividers.
+- [x] 1.5 Update `ProductPlanCard` border and radio indicator selection colors from `success` (green) to `accent2` (blue) matching the Proceed to Buy button.
+- [x] 1.6 Update `ProductPlanComparisonSection` selected column background tint and header text to use `accent2` (blue) matching the card and button selection state.
 
 ## 2. Product Detail Screen Integration (`packages/courses`)
 

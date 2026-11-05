@@ -2973,6 +2973,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get storeComparePlans => 'പ്ലാനുകൾ താരതമ്യം ചെയ്യുക';
 
   @override
+  String get storePlansLabel => 'പ്ലാനുകൾ';
+
+  @override
   String get storeCourses => 'കോഴ്സുകൾ';
 
   @override

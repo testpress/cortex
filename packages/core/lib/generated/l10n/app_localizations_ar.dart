@@ -2932,6 +2932,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storeComparePlans => 'مقارنة الخطط';
 
   @override
+  String get storePlansLabel => 'الخطط';
+
+  @override
   String get storeCourses => 'الدورات';
 
   @override

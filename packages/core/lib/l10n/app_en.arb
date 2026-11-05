@@ -1501,6 +1501,7 @@
   "storeChooseAPlan": "Choose a plan",
   "storePickPlanSubtitle": "Pick the plan that fits you and how long you need it.",
   "storeComparePlans": "Compare plans",
+  "storePlansLabel": "Plans",
   "storeCourses": "Courses",
   "storeCourseCount": "{count, plural, =1{1 course} other{{count} courses}}",
   "@storeCourseCount": {

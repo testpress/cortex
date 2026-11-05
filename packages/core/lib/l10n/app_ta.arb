@@ -1295,6 +1295,7 @@
   "storeChooseAPlan": "ஒரு திட்டத்தை தேர்வு செய்யவும்",
   "storePickPlanSubtitle": "உங்களுக்கு தேவையான திட்டத்தையும் கால அளவையும் தேர்வு செய்யவும்.",
   "storeComparePlans": "திட்டங்களை ஒப்பிடவும்",
+  "storePlansLabel": "திட்டங்கள்",
   "storeCourses": "பாடங்கள்",
   "storeCourseCount": "{count, plural, =1{1 பாடம்} other{{count} பாடங்கள்}}",
   "storeBenefitCount": "{total} நன்மைகளில் {count}",

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'store_content_tile.dart';
+import 'store_formatters.dart';
 
 class ProductSubscriptionSheet extends ConsumerStatefulWidget {
   final ProductDto product;
@@ -259,14 +260,8 @@ class _ProductSubscriptionSheetState
                                     ...plan.planDetails.map((detail) {
                                       final isSelected =
                                           detail.id == _selectedPlanDetailId;
-                                      final durationText =
-                                          detail.durationInDays >= 365 &&
-                                                  detail.durationInDays % 365 ==
-                                                      0
-                                              ? l10n.storeDurationYears(
-                                                  detail.durationInDays ~/ 365)
-                                              : l10n.storeDurationDays(
-                                                  detail.durationInDays);
+                                      final durationText = formatPlanDuration(
+                                          l10n, detail.durationInDays);
 
                                       return AppSemantics.button(
                                         label:

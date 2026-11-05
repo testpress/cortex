@@ -2972,6 +2972,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get storeComparePlans => 'திட்டங்களை ஒப்பிடவும்';
 
   @override
+  String get storePlansLabel => 'திட்டங்கள்';
+
+  @override
   String get storeCourses => 'பாடங்கள்';
 
   @override

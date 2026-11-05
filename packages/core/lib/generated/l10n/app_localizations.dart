@@ -5333,6 +5333,12 @@ abstract class AppLocalizations {
   /// **'Compare plans'**
   String get storeComparePlans;
 
+  /// No description provided for @storePlansLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get storePlansLabel;
+
   /// No description provided for @storeCourses.
   ///
   /// In en, this message translates to:

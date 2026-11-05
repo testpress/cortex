@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
+import 'store_formatters.dart';
 
 /// Card representing a subscription plan tier with radio selection.
 class ProductPlanCard extends StatelessWidget {
@@ -29,25 +30,17 @@ class ProductPlanCard extends StatelessWidget {
     final isAvailable = activePlanDetail != null;
 
     final durationText = isAvailable
-        ? (activePlanDetail!.durationInDays >= 365 &&
-                activePlanDetail!.durationInDays % 365 == 0
-            ? l10n.storeDurationYears(activePlanDetail!.durationInDays ~/ 365)
-            : l10n.storeDurationDays(activePlanDetail!.durationInDays))
+        ? formatPlanDuration(l10n, activePlanDetail!.durationInDays)
         : '';
 
     final selectedDurationText = selectedDurationInDays != null
-        ? (selectedDurationInDays! >= 365 && selectedDurationInDays! % 365 == 0
-            ? l10n.storeDurationYears(selectedDurationInDays! ~/ 365)
-            : l10n.storeDurationDays(selectedDurationInDays!))
+        ? formatPlanDuration(l10n, selectedDurationInDays!)
         : '';
 
     final availableDurations =
         plan.planDetails.map((d) => d.durationInDays).toSet().toList()..sort();
-    final availableDurationsText = availableDurations.map((d) {
-      return d >= 365 && d % 365 == 0
-          ? l10n.storeDurationYears(d ~/ 365)
-          : l10n.storeDurationDays(d);
-    }).join(', ');
+    final availableDurationsText =
+        availableDurations.map((d) => formatPlanDuration(l10n, d)).join(', ');
 
     final priceStr = isAvailable ? activePlanDetail!.price : '';
     final strikeStr = activePlanDetail?.strikeThroughPrice;
@@ -73,7 +66,7 @@ class ProductPlanCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(design.radius.lg),
             border: Border.all(
               color: (isAvailable && isSelected)
-                  ? design.colors.success
+                  ? design.colors.accent2
                   : design.colors.border,
               width: (isAvailable && isSelected) ? 1.5 : 1.0,
             ),
@@ -86,7 +79,7 @@ class ProductPlanCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: AppText.title(
+                    child: AppText.body(
                       plan.name,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
@@ -113,7 +106,7 @@ class ProductPlanCard extends StatelessWidget {
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       if (priceStr.isNotEmpty)
-                        AppText.title(
+                        AppText.body(
                           '₹$priceStr',
                           color: design.colors.textPrimary,
                           style: const TextStyle(fontWeight: FontWeight.w700),
@@ -219,7 +212,7 @@ class ProductPlanCard extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           color: showSelected
-              ? design.colors.success
+              ? design.colors.accent2
               : design.colors.textSecondary
                   .withValues(alpha: isAvailable ? 0.5 : 0.25),
           width: 2.0,
@@ -232,7 +225,7 @@ class ProductPlanCard extends StatelessWidget {
                 height: 10.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: design.colors.success,
+                  color: design.colors.accent2,
                 ),
               ),
             )

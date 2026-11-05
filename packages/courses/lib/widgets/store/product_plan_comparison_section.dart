@@ -1,8 +1,9 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 
-/// Section rendering "Compare plans", segmented plan tabs, and feature checklists.
+/// Section rendering "Compare plans" as a side-by-side comparison matrix table.
 class ProductPlanComparisonSection extends StatelessWidget {
   final ProductDto product;
   final int? selectedPlanId;
@@ -22,72 +23,152 @@ class ProductPlanComparisonSection extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final activePlan =
-        product.plans.where((p) => p.id == selectedPlanId).firstOrNull ??
-            product.plans.first;
-
     final allCourses = product.coursesDetails;
     final allBenefits = product.benefits;
+    final plans = product.plans;
+
+    if (allCourses.isEmpty && allBenefits.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final activePlanId = selectedPlanId ?? plans.firstOrNull?.id;
+    final dividerColor = design.colors.border.withValues(alpha: 0.5);
+
+    final selectedColumnBg = design.isDark
+        ? design.colors.accent2.withValues(alpha: 0.18)
+        : design.colors.accent2.withValues(alpha: 0.10);
+
+    final selectedHeaderTextColor =
+        design.isDark ? design.colors.accent2 : const Color(0xFF1D4ED8);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppText.title(
-          l10n.storeComparePlans,
-          style: const TextStyle(fontWeight: FontWeight.w700),
+        AppSemantics.header(
+          label: l10n.storeComparePlans,
+          child: AppText.title(
+            l10n.storeComparePlans,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
         ),
         SizedBox(height: design.spacing.sm),
-        _buildSegmentedTabBar(context, design),
-        SizedBox(height: design.spacing.md),
-        Container(
-          decoration: BoxDecoration(
-            color: design.colors.card,
-            borderRadius: BorderRadius.circular(design.radius.lg),
-            border: Border.all(color: design.colors.border),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (allCourses.isNotEmpty) ...[
-                _buildSectionHeader(design, l10n.storeCourses),
-                ...allCourses.asMap().entries.map((entry) {
-                  final course = entry.value;
-                  final isLast =
-                      entry.key == allCourses.length - 1 && allBenefits.isEmpty;
-                  final isIncluded = activePlan.courseIds.contains(course.id);
-                  return _buildComparisonRow(
-                    context,
-                    design,
-                    title: course.title,
-                    isIncluded: isIncluded,
-                    isLast: isLast,
-                  );
-                }),
-              ],
-              if (allBenefits.isNotEmpty) ...[
-                _buildSectionHeader(
-                  design,
-                  l10n.storeWhatYouGet,
-                  hasTopBorder: allCourses.isNotEmpty,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final minFeatureWidth = 140.0;
+            final minPlanWidth = 85.0;
+            final minTableWidth =
+                minFeatureWidth + (plans.length * minPlanWidth);
+            final tableWidth = math.max(constraints.maxWidth, minTableWidth);
+
+            // Column width distribution: Feature/Plans column is 1.6x flex of plan columns
+            final columnWidths = <int, TableColumnWidth>{
+              0: const FlexColumnWidth(1.6),
+              for (int i = 0; i < plans.length; i++)
+                i + 1: const FlexColumnWidth(1.0),
+            };
+
+            final headerTableBorder = TableBorder(
+              verticalInside: BorderSide(color: dividerColor, width: 0.8),
+            );
+
+            final contentTableBorder = TableBorder(
+              horizontalInside: BorderSide(color: dividerColor, width: 0.8),
+              verticalInside: BorderSide(color: dividerColor, width: 0.8),
+            );
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: tableWidth,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: design.colors.card,
+                    borderRadius: BorderRadius.circular(design.radius.lg),
+                    border: Border.all(color: design.colors.border),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Header Table: Plans column header + plan name headers
+                      Table(
+                        columnWidths: columnWidths,
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        border: headerTableBorder,
+                        children: [
+                          _buildHeaderRow(
+                            context,
+                            design,
+                            plans,
+                            activePlanId: activePlanId,
+                            selectedColumnBg: selectedColumnBg,
+                            selectedHeaderTextColor: selectedHeaderTextColor,
+                          ),
+                        ],
+                      ),
+                      // Courses Section
+                      if (allCourses.isNotEmpty) ...[
+                        _buildSectionHeader(
+                          design,
+                          l10n.storeCourses,
+                          dividerColor: dividerColor,
+                        ),
+                        Table(
+                          columnWidths: columnWidths,
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          border: contentTableBorder,
+                          children: [
+                            ...allCourses.map(
+                              (c) => _buildItemRow(
+                                context,
+                                design,
+                                title: c.title,
+                                plans: plans,
+                                activePlanId: activePlanId,
+                                selectedColumnBg: selectedColumnBg,
+                                isIncluded: (p) => p.courseIds.contains(c.id),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      // "What you get" Benefits Section
+                      if (allBenefits.isNotEmpty) ...[
+                        _buildSectionHeader(
+                          design,
+                          l10n.storeWhatYouGet,
+                          dividerColor: dividerColor,
+                        ),
+                        Table(
+                          columnWidths: columnWidths,
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          border: contentTableBorder,
+                          children: [
+                            ...allBenefits.map(
+                              (b) => _buildItemRow(
+                                context,
+                                design,
+                                title: b.name,
+                                plans: plans,
+                                activePlanId: activePlanId,
+                                selectedColumnBg: selectedColumnBg,
+                                isIncluded: (p) => p.benefitIds.contains(b.id),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-                ...allBenefits.asMap().entries.map((entry) {
-                  final benefit = entry.value;
-                  final isLast = entry.key == allBenefits.length - 1;
-                  final isIncluded = activePlan.benefitIds.contains(benefit.id);
-                  return _buildComparisonRow(
-                    context,
-                    design,
-                    title: benefit.name,
-                    isIncluded: isIncluded,
-                    isLast: isLast,
-                  );
-                }),
-              ],
-            ],
-          ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -96,7 +177,7 @@ class ProductPlanComparisonSection extends StatelessWidget {
   Widget _buildSectionHeader(
     DesignConfig design,
     String title, {
-    bool hasTopBorder = false,
+    required Color dividerColor,
   }) {
     return Container(
       width: double.infinity,
@@ -105,146 +186,147 @@ class ProductPlanComparisonSection extends StatelessWidget {
         vertical: 10.0,
       ),
       decoration: BoxDecoration(
-        color: design.colors.surfaceVariant.withValues(alpha: 0.4),
+        color: design.colors.surfaceVariant.withValues(alpha: 0.35),
         border: Border(
-          top: hasTopBorder
-              ? BorderSide(color: design.colors.border, width: 0.8)
-              : BorderSide.none,
-          bottom: BorderSide(color: design.colors.border, width: 0.8),
+          top: BorderSide(color: dividerColor, width: 0.8),
+          bottom: BorderSide(color: dividerColor, width: 0.8),
         ),
       ),
-      child: AppText.body(
-        title,
-        color: design.colors.textPrimary,
-        style: const TextStyle(fontWeight: FontWeight.w700),
+      child: AppSemantics.header(
+        label: title,
+        child: AppText.bodySmall(
+          title,
+          color: design.colors.textPrimary,
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }
 
-  Widget _buildSegmentedTabBar(BuildContext context, DesignConfig design) {
-    final isFit = product.plans.length <= 3;
+  TableRow _buildHeaderRow(
+    BuildContext context,
+    DesignConfig design,
+    List<SubscriptionPlanDto> plans, {
+    required int? activePlanId,
+    required Color selectedColumnBg,
+    required Color selectedHeaderTextColor,
+  }) {
+    final l10n = L10n.of(context);
 
-    Widget buildTab(SubscriptionPlanDto plan) {
-      final isSelected = plan.id == selectedPlanId;
-      return AppSemantics.button(
-        label: plan.name,
-        onTap: () => onSelectPlan(plan.id),
-        child: AppFocusable(
-          onTap: () => onSelectPlan(plan.id),
-          borderRadius: BorderRadius.circular(design.radius.sm),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 48.0, minWidth: 48.0),
-            padding: EdgeInsets.symmetric(
-              horizontal: design.spacing.xs,
-              vertical: 6.0,
-            ),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color:
-                  isSelected ? design.colors.card : design.colors.transparent,
-              borderRadius: BorderRadius.circular(design.radius.sm),
-              boxShadow: isSelected ? design.shadows.surfaceSoft : null,
-            ),
-            child: AppText.bodySmall(
-              plan.name,
-              color: isSelected
-                  ? design.colors.textPrimary
-                  : design.colors.textSecondary,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-              ),
-            ),
+    return TableRow(
+      children: [
+        // "Plans" header column
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.sm,
+          ),
+          child: AppText.bodySmall(
+            l10n.storePlansLabel,
+            color: design.colors.textPrimary,
+            style: const TextStyle(fontWeight: FontWeight.w700),
           ),
         ),
-      );
-    }
-
-    final children = product.plans.map((plan) {
-      return isFit ? Expanded(child: buildTab(plan)) : buildTab(plan);
-    }).toList();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(3.0),
-      decoration: BoxDecoration(
-        color: design.colors.surfaceVariant,
-        borderRadius: BorderRadius.circular(design.radius.md),
-      ),
-      child: isFit
-          ? IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: children,
-              ),
-            )
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: children,
+        // Plan column headers
+        ...plans.map((plan) {
+          final isSelected = plan.id == activePlanId;
+          final semanticLabel =
+              isSelected ? '${plan.name}, selected' : plan.name;
+          return TableCell(
+            verticalAlignment: TableCellVerticalAlignment.fill,
+            child: AppSemantics.button(
+              label: semanticLabel,
+              onTap: () => onSelectPlan(plan.id),
+              child: AppFocusable(
+                onTap: () => onSelectPlan(plan.id),
+                child: Container(
+                  color: isSelected ? selectedColumnBg : null,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.xs,
+                    vertical: design.spacing.sm,
+                  ),
+                  alignment: Alignment.center,
+                  child: AppText.bodySmall(
+                    plan.name,
+                    color: isSelected
+                        ? selectedHeaderTextColor
+                        : design.colors.textPrimary,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight:
+                          isSelected ? FontWeight.w700 : FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ),
+          );
+        }),
+      ],
     );
   }
 
-  Widget _buildComparisonRow(
+  TableRow _buildItemRow(
     BuildContext context,
     DesignConfig design, {
     required String title,
-    required bool isIncluded,
-    bool isLast = false,
+    required List<SubscriptionPlanDto> plans,
+    required int? activePlanId,
+    required Color selectedColumnBg,
+    required bool Function(SubscriptionPlanDto plan) isIncluded,
   }) {
     final l10n = L10n.of(context);
-    final statusText =
-        isIncluded ? l10n.storeBenefitIncluded : l10n.storeBenefitNotIncluded;
 
-    return Container(
-      decoration: isLast
-          ? null
-          : BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: design.colors.border.withValues(alpha: 0.6),
-                  width: 0.8,
-                ),
-              ),
-            ),
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: 12.0,
-      ),
-      child: AppSemantics.container(
-        label: '$title: $statusText',
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: AppText.body(
-                title,
-                color: isIncluded
-                    ? design.colors.textPrimary
-                    : design.colors.textSecondary,
-                style: TextStyle(
-                  fontWeight: isIncluded ? FontWeight.w500 : FontWeight.w400,
-                  height: 1.4,
-                ),
-              ),
-            ),
-            SizedBox(width: design.spacing.sm),
-            Icon(
-              isIncluded ? LucideIcons.check : LucideIcons.x,
-              size: 16.0,
-              color: isIncluded
-                  ? design.colors.success
-                  : design.colors.textSecondary.withValues(alpha: 0.4),
-            ),
-          ],
+    return TableRow(
+      children: [
+        // Title cell (course or benefit)
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.md,
+            vertical: design.spacing.sm,
+          ),
+          child: AppText.bodySmall(
+            title,
+            color: design.colors.textPrimary,
+            style: const TextStyle(fontWeight: FontWeight.w500, height: 1.3),
+          ),
         ),
-      ),
+        // Indicator cell per plan
+        ...plans.map((plan) {
+          final isSelected = plan.id == activePlanId;
+          final included = isIncluded(plan);
+          final statusText = included
+              ? l10n.storeBenefitIncluded
+              : l10n.storeBenefitNotIncluded;
+
+          return TableCell(
+            verticalAlignment: TableCellVerticalAlignment.fill,
+            child: AppSemantics.container(
+              label: '$title, ${plan.name}: $statusText',
+              child: Container(
+                color: isSelected ? selectedColumnBg : null,
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.xs,
+                  vertical: design.spacing.sm,
+                ),
+                alignment: Alignment.center,
+                child: included
+                    ? Icon(
+                        LucideIcons.check,
+                        size: 16.0,
+                        color: design.colors.success,
+                      )
+                    : Icon(
+                        LucideIcons.x,
+                        size: 16.0,
+                        color:
+                            design.colors.textSecondary.withValues(alpha: 0.45),
+                      ),
+              ),
+            ),
+          );
+        }),
+      ],
     );
   }
 }

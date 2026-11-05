@@ -2927,6 +2927,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storeComparePlans => 'Compare plans';
 
   @override
+  String get storePlansLabel => 'Plans';
+
+  @override
   String get storeCourses => 'Courses';
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'product_plan_card.dart';
+import 'store_formatters.dart';
 
 /// Section rendering "Choose a plan", duration filters, and plan cards.
 class ProductPlanSection extends StatelessWidget {
@@ -47,9 +48,12 @@ class ProductPlanSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText.title(
-                    l10n.storeChooseAPlan,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  AppSemantics.header(
+                    label: l10n.storeChooseAPlan,
+                    child: AppText.title(
+                      l10n.storeChooseAPlan,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
                   ),
                   SizedBox(height: design.spacing.xs),
                   AppText.bodySmall(
@@ -108,23 +112,23 @@ class ProductPlanSection extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: durations.map((duration) {
               final isSelected = duration == selectedDurationInDays;
-              final label = duration >= 365 && duration % 365 == 0
-                  ? l10n.storeDurationYears(duration ~/ 365)
-                  : l10n.storeDurationDays(duration);
+              final label = formatPlanDuration(l10n, duration);
+
+              final semanticLabel = isSelected ? '$label, selected' : label;
 
               return AppSemantics.button(
-                label: label,
+                label: semanticLabel,
                 onTap: () => onSelectDuration(duration),
                 child: AppFocusable(
                   onTap: () => onSelectDuration(duration),
                   borderRadius: BorderRadius.circular(design.radius.sm),
                   child: Container(
                     constraints:
-                        const BoxConstraints(minHeight: 48.0, minWidth: 48.0),
+                        const BoxConstraints(minHeight: 36.0, minWidth: 48.0),
                     alignment: Alignment.center,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14.0,
-                      vertical: 7.0,
+                      horizontal: 12.0,
+                      vertical: 6.0,
                     ),
                     decoration: BoxDecoration(
                       color: isSelected

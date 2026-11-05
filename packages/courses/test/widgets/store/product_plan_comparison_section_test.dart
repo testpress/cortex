@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  Widget wrap(Widget child) {
+  Widget wrap(Widget child, {bool isDark = false}) {
     return DesignProvider(
-      config: DesignConfig.defaults(),
+      config: isDark ? DesignConfig.dark() : DesignConfig.defaults(),
       child: LocalizationProvider(
         child: Builder(
           builder: (context) {
@@ -58,8 +58,9 @@ void main() {
     ],
   );
 
-  group('ProductPlanComparisonSection Widget Tests', () {
-    testWidgets('renders Compare plans header and segmented tabs',
+  group('ProductPlanComparisonSection Matrix Table Tests', () {
+    testWidgets(
+        'renders Plans header, section headers, plan column headers, and rows',
         (tester) async {
       await tester.pumpWidget(
         wrap(
@@ -73,6 +74,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Compare plans'), findsOneWidget);
+      expect(find.text('Plans'), findsOneWidget);
       expect(find.text('Basic Access'), findsOneWidget);
       expect(find.text('Premium Elite'), findsOneWidget);
       expect(find.text('Courses'), findsOneWidget);
@@ -81,11 +83,26 @@ void main() {
       expect(find.text('What you get'), findsOneWidget);
       expect(find.text('Video Lectures'), findsOneWidget);
       expect(find.text('Mentorship Calls'), findsOneWidget);
+
+      // Verify check and x icons are rendered
+      expect(find.byIcon(LucideIcons.check), findsWidgets);
+      expect(find.byIcon(LucideIcons.x), findsWidgets);
+
+      // Verify selected state on plan headers (plan 101 is selected)
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics && w.properties.label == 'Basic Access, selected'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+            (w) => w is Semantics && w.properties.label == 'Premium Elite'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('shows included and not included indicators for active plan',
+    testWidgets('shows included and not included indicators across plans',
         (tester) async {
-      // Basic Access has course 1 and benefit 10, but not course 2 or benefit 20
       await tester.pumpWidget(
         wrap(
           ProductPlanComparisonSection(
@@ -97,31 +114,107 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Check semantic accessibility labels
+      // Check semantic accessibility labels for each plan column
       expect(
         find.byWidgetPredicate((w) =>
-            w is Semantics && w.properties.label == 'Prelims GS: Included'),
-        findsOneWidget,
-      );
-      expect(
-        find.byWidgetPredicate((w) =>
-            w is Semantics && w.properties.label == 'CSAT: Not included'),
-        findsOneWidget,
-      );
-      expect(
-        find.byWidgetPredicate((w) =>
-            w is Semantics && w.properties.label == 'Video Lectures: Included'),
+            w is Semantics &&
+            w.properties.label == 'Prelims GS, Basic Access: Included'),
         findsOneWidget,
       );
       expect(
         find.byWidgetPredicate((w) =>
             w is Semantics &&
-            w.properties.label == 'Mentorship Calls: Not included'),
+            w.properties.label == 'Prelims GS, Premium Elite: Included'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics &&
+            w.properties.label == 'CSAT, Basic Access: Not included'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics &&
+            w.properties.label == 'CSAT, Premium Elite: Included'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics &&
+            w.properties.label == 'Video Lectures, Basic Access: Included'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics &&
+            w.properties.label == 'Video Lectures, Premium Elite: Included'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics &&
+            w.properties.label ==
+                'Mentorship Calls, Basic Access: Not included'),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate((w) =>
+            w is Semantics &&
+            w.properties.label == 'Mentorship Calls, Premium Elite: Included'),
         findsOneWidget,
       );
     });
 
-    testWidgets('triggers onSelectPlan when tab is tapped', (tester) async {
+    testWidgets(
+        'highlights selected plan column with tint in light and dark mode',
+        (tester) async {
+      // Light mode test
+      await tester.pumpWidget(
+        wrap(
+          ProductPlanComparisonSection(
+            product: testProduct,
+            selectedPlanId: 102,
+            onSelectPlan: (_) {},
+          ),
+          isDark: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Header text for Premium Elite should have the accent blue color
+      final textWidgetLight = tester.widget<AppText>(
+        find.descendant(
+          of: find.bySemanticsLabel('Premium Elite, selected'),
+          matching: find.byType(AppText),
+        ),
+      );
+      expect(textWidgetLight.color, const Color(0xFF1D4ED8));
+
+      // Dark mode test
+      await tester.pumpWidget(
+        wrap(
+          ProductPlanComparisonSection(
+            product: testProduct,
+            selectedPlanId: 102,
+            onSelectPlan: (_) {},
+          ),
+          isDark: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final textWidgetDark = tester.widget<AppText>(
+        find.descendant(
+          of: find.bySemanticsLabel('Premium Elite, selected'),
+          matching: find.byType(AppText),
+        ),
+      );
+      expect(textWidgetDark.color, DesignColors.dark().accent2);
+    });
+
+    testWidgets('triggers onSelectPlan when plan column header is tapped',
+        (tester) async {
       int? selectedPlanId;
       await tester.pumpWidget(
         wrap(

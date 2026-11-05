@@ -1050,6 +1050,7 @@
   "storeChooseAPlan": "ഒരു പ്ലാൻ തിരഞ്ഞെടുക്കുക",
   "storePickPlanSubtitle": "നിങ്ങൾക്ക് അനുയോജ്യമായ പ്ലാനും സമയപരിധിയും തിരഞ്ഞെടുക്കുക.",
   "storeComparePlans": "പ്ലാനുകൾ താരതമ്യം ചെയ്യുക",
+  "storePlansLabel": "പ്ലാനുകൾ",
   "storeCourses": "കോഴ്സുകൾ",
   "storeCourseCount": "{count, plural, =1{1 കോഴ്സ്} other{{count} കോഴ്സുകൾ}}",
   "storeBenefitCount": "{total} ആനുകൂല്യങ്ങളിൽ {count}",

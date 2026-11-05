@@ -1049,6 +1049,7 @@
   "storeChooseAPlan": "اختر خطة",
   "storePickPlanSubtitle": "اختر الخطة المناسبة لك والمدة التي تحتاجها.",
   "storeComparePlans": "مقارنة الخطط",
+  "storePlansLabel": "الخطط",
   "storeCourses": "الدورات",
   "storeCourseCount": "{count, plural, =1{دورة واحدة} other{{count} دورات}}",
   "storeBenefitCount": "{count} من أصل {total} مزايا",
