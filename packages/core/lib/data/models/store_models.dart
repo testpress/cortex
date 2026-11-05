@@ -465,14 +465,19 @@ class ProductDto {
               .toList() ??
           const [],
       plans: () {
-        if (parsedPlans.isNotEmpty) return parsedPlans;
+        if (parsedPlans.isNotEmpty) {
+          final sorted = List<SubscriptionPlanDto>.from(parsedPlans)
+            ..sort((a, b) => a.id.compareTo(b.id));
+          return sorted;
+        }
         final rawPlanDetails =
             (json['plan_details'] as List<dynamic>?)
                 ?.whereType<Map<String, dynamic>>()
                 .map((e) => PlanDetailDto.fromJson(e))
                 .toList() ??
             const <PlanDetailDto>[];
-        return (json['plans'] as List<dynamic>?)
+        final parsed =
+            (json['plans'] as List<dynamic>?)
                 ?.whereType<Map<String, dynamic>>()
                 .map((e) {
                   final detailIds =
@@ -489,7 +494,10 @@ class ProductDto {
                   );
                 })
                 .toList() ??
-            const <SubscriptionPlanDto>[];
+            <SubscriptionPlanDto>[];
+
+        parsed.sort((a, b) => a.id.compareTo(b.id));
+        return parsed;
       }(),
       strikeThroughPrice: json['strike_through_price'] as String?,
       buyNowText: json['buy_now_text'] as String? ?? 'Buy Now',
@@ -770,9 +778,19 @@ class StoreProductsResponseDto {
               ?.map((id) => (id as num).toInt())
               .toList() ??
           [];
-      final productPlans = allPlans
-          .where((p) => productPlanIds.contains(p.id))
+      final planMap = {for (final p in allPlans) p.id: p};
+      final productPlans = productPlanIds
+          .map((id) => planMap[id])
+          .whereType<SubscriptionPlanDto>()
           .toList();
+
+      if (productPlans.isEmpty && productPlanIds.isEmpty) {
+        final matchingPlans = allPlans
+            .where((p) => p.productId == productMap['id'])
+            .toList();
+        productPlans.addAll(matchingPlans);
+      }
+      productPlans.sort((a, b) => a.id.compareTo(b.id));
 
       // Resolve category name from sideloaded categories if not present
       if (productMap['category'] == null && productMap['category_id'] is num) {

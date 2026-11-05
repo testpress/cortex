@@ -300,6 +300,56 @@ void main() {
       final serialized = plan.toJson();
       expect(serialized['benefit_ids'], [101, 102]);
     });
+
+    test('sorts plans by id ascending when parsing ProductDto', () {
+      final json = {
+        'id': 1,
+        'title': 'Test Product',
+        'slug': 'test-prod',
+        'price': '999.00',
+        'courses': [],
+        'plans': [
+          {'id': 74, 'product_id': 1, 'name': 'Standard Access'},
+          {'id': 75, 'product_id': 1, 'name': 'Premium Elite'},
+          {'id': 73, 'product_id': 1, 'name': 'Basic Access'},
+        ],
+      };
+      final product = ProductDto.fromJson(json);
+      expect(product.plans.map((p) => p.id).toList(), [73, 74, 75]);
+      expect(product.plans.map((p) => p.name).toList(), [
+        'Basic Access',
+        'Standard Access',
+        'Premium Elite',
+      ]);
+    });
+
+    test('StoreProductsResponseDto sorts product plans by id ascending', () {
+      final results = {
+        'products': [
+          {
+            'id': 100,
+            'title': 'Bundle',
+            'slug': 'bundle',
+            'price': '500',
+            'courses': [],
+            'plan_ids': [74, 75, 73],
+          },
+        ],
+        'plans': [
+          {'id': 74, 'product_id': 100, 'name': 'Standard Access'},
+          {'id': 75, 'product_id': 100, 'name': 'Premium Elite'},
+          {'id': 73, 'product_id': 100, 'name': 'Basic Access'},
+        ],
+      };
+      final response = StoreProductsResponseDto.fromJson({'results': results});
+      final product = response.products.first;
+      expect(product.plans.map((p) => p.id).toList(), [73, 74, 75]);
+      expect(product.plans.map((p) => p.name).toList(), [
+        'Basic Access',
+        'Standard Access',
+        'Premium Elite',
+      ]);
+    });
   });
 
   group('ProductDto benefits and subscription plans flag', () {
