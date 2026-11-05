@@ -230,5 +230,47 @@ void main() {
       await tester.tap(find.text('Premium Elite'));
       expect(selectedPlanId, 102);
     });
+
+    testWidgets('omits courses not included in any subscription plan',
+        (tester) async {
+      const baseCourse = ProductCourseDto(
+        id: 999,
+        title: 'Base Course Not In Plans',
+        slug: 'base-course',
+      );
+      final productWithBaseCourse = ProductDto(
+        id: 10,
+        title: 'Product with Base and Plan Courses',
+        slug: 'product-base-plan',
+        price: '2999',
+        courses: const [999, 1, 2],
+        coursesDetails: const [baseCourse, course1, course2],
+        benefits: const [benefit1],
+        plans: const [
+          SubscriptionPlanDto(
+            id: 101,
+            productId: 10,
+            name: 'Basic Access',
+            courseIds: [1],
+            benefitIds: [10],
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          ProductPlanComparisonSection(
+            product: productWithBaseCourse,
+            selectedPlanId: 101,
+            onSelectPlan: (_) {},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Only plan-bundled courses should be present in the table
+      expect(find.text('Prelims GS'), findsOneWidget);
+      expect(find.text('Base Course Not In Plans'), findsNothing);
+    });
   });
 }
