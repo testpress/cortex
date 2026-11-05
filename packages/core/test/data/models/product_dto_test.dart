@@ -300,6 +300,104 @@ void main() {
       final serialized = plan.toJson();
       expect(serialized['benefit_ids'], [101, 102]);
     });
+
+    test(
+      'parses inline plan_details fallback when parsedDetails is omitted',
+      () {
+        final json = {
+          'id': 10,
+          'product_id': 100,
+          'name': 'Fallback Plan',
+          'plan_details': [
+            {'id': 1, 'duration_in_days': 30, 'price': '100.00'},
+            {'id': 2, 'duration_in_days': 60, 'price': '200.00'},
+          ],
+        };
+
+        final plan = SubscriptionPlanDto.fromJson(json);
+        expect(plan.planDetails, hasLength(2));
+        expect(plan.planDetails[0].id, 1);
+        expect(plan.planDetails[0].durationInDays, 30);
+        expect(plan.planDetails[1].id, 2);
+        expect(plan.planDetails[1].durationInDays, 60);
+      },
+    );
+
+    test('sorts plans by id ascending when parsing ProductDto', () {
+      final json = {
+        'id': 1,
+        'title': 'Test Product',
+        'slug': 'test-prod',
+        'price': '999.00',
+        'courses': [],
+        'plans': [
+          {'id': 74, 'product_id': 1, 'name': 'Standard Access'},
+          {'id': 75, 'product_id': 1, 'name': 'Premium Elite'},
+          {'id': 73, 'product_id': 1, 'name': 'Basic Access'},
+        ],
+      };
+      final product = ProductDto.fromJson(json);
+      expect(product.plans.map((p) => p.id).toList(), [73, 74, 75]);
+      expect(product.plans.map((p) => p.name).toList(), [
+        'Basic Access',
+        'Standard Access',
+        'Premium Elite',
+      ]);
+    });
+
+    test(
+      'StoreProductsResponseDto returns empty plans when plan_ids is empty',
+      () {
+        final results = {
+          'products': [
+            {
+              'id': 100,
+              'title': 'Bundle',
+              'slug': 'bundle',
+              'price': '500',
+              'courses': [],
+              'plan_ids': <int>[],
+            },
+          ],
+          'plans': [
+            {'id': 73, 'product_id': 100, 'name': 'Plan 73'},
+          ],
+        };
+        final response = StoreProductsResponseDto.fromJson({
+          'results': results,
+        });
+        final product = response.products.first;
+        expect(product.plans, isEmpty);
+      },
+    );
+
+    test('StoreProductsResponseDto sorts product plans by id ascending', () {
+      final results = {
+        'products': [
+          {
+            'id': 100,
+            'title': 'Bundle',
+            'slug': 'bundle',
+            'price': '500',
+            'courses': [],
+            'plan_ids': [74, 75, 73],
+          },
+        ],
+        'plans': [
+          {'id': 74, 'product_id': 100, 'name': 'Standard Access'},
+          {'id': 75, 'product_id': 100, 'name': 'Premium Elite'},
+          {'id': 73, 'product_id': 100, 'name': 'Basic Access'},
+        ],
+      };
+      final response = StoreProductsResponseDto.fromJson({'results': results});
+      final product = response.products.first;
+      expect(product.plans.map((p) => p.id).toList(), [73, 74, 75]);
+      expect(product.plans.map((p) => p.name).toList(), [
+        'Basic Access',
+        'Standard Access',
+        'Premium Elite',
+      ]);
+    });
   });
 
   group('ProductDto benefits and subscription plans flag', () {

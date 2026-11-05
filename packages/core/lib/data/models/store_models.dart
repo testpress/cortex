@@ -239,6 +239,10 @@ class SubscriptionPlanDto {
   };
 }
 
+/// Sorts subscription plans by `id` ascending to match web tier ordering.
+List<SubscriptionPlanDto> _sortPlansById(Iterable<SubscriptionPlanDto> plans) =>
+    plans.toList()..sort((a, b) => a.id.compareTo(b.id));
+
 /// DTO representing a course taught by a faculty member.
 class FacultyTeachingDto {
   final int id;
@@ -465,14 +469,15 @@ class ProductDto {
               .toList() ??
           const [],
       plans: () {
-        if (parsedPlans.isNotEmpty) return parsedPlans;
+        if (parsedPlans.isNotEmpty) return _sortPlansById(parsedPlans);
         final rawPlanDetails =
             (json['plan_details'] as List<dynamic>?)
                 ?.whereType<Map<String, dynamic>>()
                 .map((e) => PlanDetailDto.fromJson(e))
                 .toList() ??
             const <PlanDetailDto>[];
-        return (json['plans'] as List<dynamic>?)
+        final parsed =
+            (json['plans'] as List<dynamic>?)
                 ?.whereType<Map<String, dynamic>>()
                 .map((e) {
                   final detailIds =
@@ -490,6 +495,7 @@ class ProductDto {
                 })
                 .toList() ??
             const <SubscriptionPlanDto>[];
+        return _sortPlansById(parsed);
       }(),
       strikeThroughPrice: json['strike_through_price'] as String?,
       buyNowText: json['buy_now_text'] as String? ?? 'Buy Now',
@@ -770,9 +776,9 @@ class StoreProductsResponseDto {
               ?.map((id) => (id as num).toInt())
               .toList() ??
           [];
-      final productPlans = allPlans
-          .where((p) => productPlanIds.contains(p.id))
-          .toList();
+      final productPlans = _sortPlansById(
+        allPlans.where((p) => productPlanIds.contains(p.id)),
+      );
 
       // Resolve category name from sideloaded categories if not present
       if (productMap['category'] == null && productMap['category_id'] is num) {
