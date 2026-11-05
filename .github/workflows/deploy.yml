@@ -1,4 +1,5 @@
 name: Deploy/Release App
+run-name: 'Release ${{ inputs.subdomain }}'
 
 on:
   workflow_dispatch:
