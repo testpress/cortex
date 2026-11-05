@@ -23,9 +23,14 @@ class ProductPlanComparisonSection extends StatelessWidget {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final allCourses = product.coursesDetails;
-    final allBenefits = product.benefits;
     final plans = product.plans;
+    final planCourseIds = {
+      for (final plan in plans) ...plan.courseIds,
+    };
+    final allCourses = product.coursesDetails
+        .where((c) => planCourseIds.contains(c.id))
+        .toList();
+    final allBenefits = product.benefits;
 
     if (allCourses.isEmpty && allBenefits.isEmpty) {
       return const SizedBox.shrink();
