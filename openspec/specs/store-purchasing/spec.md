@@ -11,11 +11,15 @@ The system SHALL allow users to directly purchase a simple product (a product wh
 - **THEN** they can directly initiate checkout at the product's listed price
 
 ### Requirement: Subscription Product Plan Selection
-The system SHALL require users to select a subscription plan and duration tier when purchasing a subscription product (a product with non-empty `plan_ids`). The subscription plan selector SHALL group options by plan, showing plan titles, bundled courses mapped from `plan.courseIds`, and duration options without pre-selection.
+The system SHALL require users to select a subscription plan and duration tier when purchasing a subscription product (a product with non-empty `plan_ids`). The subscription plan selector SHALL group options by plan, showing plan titles, bundled courses mapped from `plan.courseIds`, included benefits mapped from `plan.benefits` (or `plan.benefitIds`), and duration options without pre-selection.
 
 #### Scenario: User views a subscription product
 - **WHEN** the user views a product with `plan_ids` populated
-- **THEN** the system SHALL display a duration selector showing available plans, their bundled courses, and their `plan_details` (with `duration_in_days`, `price`, and `strike_through_price`)
+- **THEN** the system SHALL display a duration selector showing available plans, their bundled courses, their included benefits, and their `plan_details` (with `duration_in_days`, `price`, and `strike_through_price`)
+
+#### Scenario: User compares plan benefits
+- **WHEN** the user inspects multiple plans in the subscription sheet
+- **THEN** the system SHALL clearly display which benefits are included for each plan so the student can compare perk differences across tiers
 
 #### Scenario: User selects a plan duration
 - **WHEN** the user selects a duration tier under a plan
