@@ -239,6 +239,10 @@ class SubscriptionPlanDto {
   };
 }
 
+/// Sorts subscription plans by `id` ascending to match web tier ordering.
+List<SubscriptionPlanDto> _sortPlansById(Iterable<SubscriptionPlanDto> plans) =>
+    plans.toList()..sort((a, b) => a.id.compareTo(b.id));
+
 /// DTO representing a course taught by a faculty member.
 class FacultyTeachingDto {
   final int id;
@@ -465,11 +469,7 @@ class ProductDto {
               .toList() ??
           const [],
       plans: () {
-        if (parsedPlans.isNotEmpty) {
-          final sorted = List<SubscriptionPlanDto>.from(parsedPlans)
-            ..sort((a, b) => a.id.compareTo(b.id));
-          return sorted;
-        }
+        if (parsedPlans.isNotEmpty) return _sortPlansById(parsedPlans);
         final rawPlanDetails =
             (json['plan_details'] as List<dynamic>?)
                 ?.whereType<Map<String, dynamic>>()
@@ -494,10 +494,8 @@ class ProductDto {
                   );
                 })
                 .toList() ??
-            <SubscriptionPlanDto>[];
-
-        parsed.sort((a, b) => a.id.compareTo(b.id));
-        return parsed;
+            const <SubscriptionPlanDto>[];
+        return _sortPlansById(parsed);
       }(),
       strikeThroughPrice: json['strike_through_price'] as String?,
       buyNowText: json['buy_now_text'] as String? ?? 'Buy Now',
@@ -778,19 +776,9 @@ class StoreProductsResponseDto {
               ?.map((id) => (id as num).toInt())
               .toList() ??
           [];
-      final planMap = {for (final p in allPlans) p.id: p};
-      final productPlans = productPlanIds
-          .map((id) => planMap[id])
-          .whereType<SubscriptionPlanDto>()
-          .toList();
-
-      if (productPlans.isEmpty && productPlanIds.isEmpty) {
-        final matchingPlans = allPlans
-            .where((p) => p.productId == productMap['id'])
-            .toList();
-        productPlans.addAll(matchingPlans);
-      }
-      productPlans.sort((a, b) => a.id.compareTo(b.id));
+      final productPlans = _sortPlansById(
+        allPlans.where((p) => productPlanIds.contains(p.id)),
+      );
 
       // Resolve category name from sideloaded categories if not present
       if (productMap['category'] == null && productMap['category_id'] is num) {
