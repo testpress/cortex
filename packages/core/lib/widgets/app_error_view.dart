@@ -110,11 +110,20 @@ class _AppErrorViewState extends State<AppErrorView> {
           displayTitle ??= l10n.errorGenericTitle;
           break;
       }
-      displayMessage ??= apiError.message;
+      if (apiError.message.trim().isNotEmpty) {
+        displayMessage ??= apiError.message.trim();
+      }
     }
 
     displayTitle ??= l10n.errorGenericTitle;
     displayMessage ??= l10n.errorGenericMessage;
+
+    if (displayMessage.toLowerCase().contains('developer.mozilla.org') ||
+        displayMessage.toLowerCase().contains('dioexception') ||
+        displayMessage.toLowerCase().contains('validatestatus') ||
+        displayMessage.toLowerCase().contains('status code of')) {
+      displayMessage = l10n.errorGenericMessage;
+    }
 
     return Container(
       color: widget.backgroundColor ?? design.colors.surface,
