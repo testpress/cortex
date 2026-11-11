@@ -546,6 +546,17 @@ class _MathWidgetFactory extends WidgetFactory {
   final FontWeight? fontWeight;
   final double maxWidth;
 
+  /// Naive inversion filter for Dark Mode (CSS filter: invert(1) equivalent).
+  /// Converts black-on-transparent formula images into crisp white text.
+  /// Inverting each color channel independently preserves the subpixel
+  /// font smoothing and edge contrast without blurring thin glyph strokes.
+  static const ColorFilter _invertFilter = ColorFilter.matrix([
+    -1, 0, 0, 0, 255, // Invert Red
+    0, -1, 0, 0, 255, // Invert Green
+    0, 0, -1, 0, 255, // Invert Blue
+    0, 0, 0, 1, 0, // Preserve Alpha
+  ]);
+
   @override
   void parse(BuildTree meta) {
     if (meta.element.localName == 'img') {
@@ -562,6 +573,21 @@ class _MathWidgetFactory extends WidgetFactory {
         );
         return;
       }
+
+      super.parse(meta);
+
+      // Reactively invert black-ink math/question images into crisp white text in Dark Mode.
+      // Uses _DarkModeEquationFilter to immediately adapt to theme toggles (Light <-> Dark).
+      if (_isEquationOrInlineImage(meta.element)) {
+        meta.register(
+          BuildOp.inline(
+            onRenderInlineBlock: (tree, child) {
+              return _DarkModeEquationFilter(child: child);
+            },
+          ),
+        );
+      }
+      return;
     }
 
     if (meta.element.localName == 'math-tex') {
@@ -639,6 +665,64 @@ class _MathWidgetFactory extends WidgetFactory {
     );
   }
 
+  static bool _isEquationOrInlineImage(dynamic element) {
+    if (_hasMathAttributes(element)) return true;
+    if (_hasMathEngineUrl(element)) return true;
+    return _isLegacyInlineFormula(element);
+  }
+
+  static bool _hasMathAttributes(dynamic element) {
+    final className = element.attributes['class']?.toLowerCase() ?? '';
+    final role = element.attributes['role']?.toLowerCase() ?? '';
+    final attrs = element.attributes;
+
+    const mathKeywords = ['wiris', 'math', 'formula', 'equation'];
+    final hasMathKeyword = mathKeywords.any(className.contains);
+
+    return hasMathKeyword ||
+        role == 'math' ||
+        attrs.containsKey('data-mathml') ||
+        attrs.containsKey('data-latex');
+  }
+
+  static bool _hasMathEngineUrl(dynamic element) {
+    final src = element.attributes['src']?.toLowerCase() ?? '';
+    const engines = [
+      'formula',
+      'equation',
+      'latex',
+      'wiris',
+      'mimetex',
+      'codecogs',
+    ];
+    return engines.any(src.contains);
+  }
+
+  static bool _isLegacyInlineFormula(dynamic element) {
+    final height = _parseElementHeight(element);
+    if (height == null || height > 50) return false;
+
+    final src = element.attributes['src']?.toLowerCase() ?? '';
+    final align = element.attributes['align']?.toLowerCase() ?? '';
+    const inlineAligns = {'middle', 'absmiddle', 'baseline'};
+
+    return src.endsWith('.gif') || inlineAligns.contains(align);
+  }
+
+  static double? _parseElementHeight(dynamic element) {
+    final heightAttr = double.tryParse(
+      element.attributes['height']?.trim() ?? '',
+    );
+    if (heightAttr != null && heightAttr > 0) return heightAttr;
+
+    final style = element.attributes['style'] ?? '';
+    final match = RegExp(
+      r'height\s*:\s*([0-9.]+)\s*px',
+      caseSensitive: false,
+    ).firstMatch(style);
+    return double.tryParse(match?.group(1) ?? '');
+  }
+
   Widget _buildBlockMath(String tex) {
     final mathWidget = Math.tex(
       tex,
@@ -712,6 +796,27 @@ class _MathWidgetFactory extends WidgetFactory {
     } catch (_) {
       return const SizedBox.shrink();
     }
+  }
+}
+
+/// Reactively applies naive color inversion to formula images when in Dark Mode.
+/// Responds immediately to theme toggles (Light <-> Dark) via [Design.of]
+/// without requiring HTML re-parsing or widget reconstruction.
+class _DarkModeEquationFilter extends StatelessWidget {
+  const _DarkModeEquationFilter({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Design.of(context).isDark;
+    if (!isDark) {
+      return child;
+    }
+    return ColorFiltered(
+      colorFilter: _MathWidgetFactory._invertFilter,
+      child: child,
+    );
   }
 }
 

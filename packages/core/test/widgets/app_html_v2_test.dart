@@ -168,6 +168,173 @@ void main() {
       });
     });
   });
+
+  group('AppHtmlV2 Dark Mode Equation Color Inversion', () {
+    Widget wrapWithConfig(Widget child, DesignConfig config) {
+      return LocalizationProvider(
+        child: Builder(
+          builder: (context) {
+            final locale = LocalizationProvider.of(context).locale;
+            return WidgetsApp(
+              color: const Color(0xFF000000),
+              locale: locale,
+              localizationsDelegates: LocalizationProvider.delegates,
+              pageRouteBuilder:
+                  <T>(RouteSettings settings, WidgetBuilder builder) =>
+                      PageRouteBuilder<T>(
+                        settings: settings,
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            builder(context),
+                      ),
+              home: DesignProvider(config: config, child: child),
+            );
+          },
+        ),
+      );
+    }
+
+    testWidgets('wraps small equation image in ColorFiltered in dark mode', (
+      tester,
+    ) async {
+      const html = '''
+        <p>If <img src="https://example.com/sec.gif" height="22" width="112" alt="22" /> then find</p>
+      ''';
+
+      await tester.pumpWidget(
+        wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
+      );
+      await tester.pump();
+
+      final colorFilteredFinder = find.byType(ColorFiltered);
+      expect(colorFilteredFinder, findsOneWidget);
+    });
+
+    testWidgets(
+      'does not wrap small equation image in ColorFiltered in light mode',
+      (tester) async {
+        const html = '''
+        <p>If <img src="https://example.com/sec.gif" height="22" width="112" alt="22" /> then find</p>
+      ''';
+
+        await tester.pumpWidget(
+          wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.defaults()),
+        );
+        await tester.pump();
+
+        final colorFilteredFinder = find.byType(ColorFiltered);
+        expect(colorFilteredFinder, findsNothing);
+      },
+    );
+
+    testWidgets(
+      'does not wrap large image (height > 50) in ColorFiltered in dark mode',
+      (tester) async {
+        const html = '''
+        <p><img src="https://example.com/diagram.png" height="300" width="400" alt="Diagram" /></p>
+      ''';
+
+        await tester.pumpWidget(
+          wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
+        );
+        await tester.pump();
+
+        final colorFilteredFinder = find.byType(ColorFiltered);
+        expect(colorFilteredFinder, findsNothing);
+      },
+    );
+
+    testWidgets('does not wrap question diagram without height in dark mode', (
+      tester,
+    ) async {
+      const html = '''
+        <p><img src="https://example.com/questions/heart_anatomy.png" alt="Anatomy" /></p>
+      ''';
+
+      await tester.pumpWidget(
+        wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
+      );
+      await tester.pump();
+
+      final colorFilteredFinder = find.byType(ColorFiltered);
+      expect(colorFilteredFinder, findsNothing);
+    });
+
+    testWidgets(
+      'wraps formula image with math keyword even if height is over 50 in dark mode',
+      (tester) async {
+        const html = '''
+        <p><img src="https://example.com/matrix_formula.png" height="65" width="120" alt="Matrix" /></p>
+      ''';
+
+        await tester.pumpWidget(
+          wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
+        );
+        await tester.pump();
+
+        final colorFilteredFinder = find.byType(ColorFiltered);
+        expect(colorFilteredFinder, findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'reactively toggles ColorFiltered on theme switch without re-parsing HTML',
+      (tester) async {
+        const html = '''
+        <p>If <img src="https://example.com/sec.gif" height="22" width="112" alt="22" /> then find</p>
+      ''';
+
+        final configNotifier = ValueNotifier<DesignConfig>(
+          DesignConfig.defaults(),
+        );
+
+        await tester.pumpWidget(
+          LocalizationProvider(
+            child: Builder(
+              builder: (context) {
+                final locale = LocalizationProvider.of(context).locale;
+                return ValueListenableBuilder<DesignConfig>(
+                  valueListenable: configNotifier,
+                  builder: (context, config, _) {
+                    return WidgetsApp(
+                      color: const Color(0xFF000000),
+                      locale: locale,
+                      localizationsDelegates: LocalizationProvider.delegates,
+                      pageRouteBuilder:
+                          <T>(RouteSettings settings, WidgetBuilder builder) =>
+                              PageRouteBuilder<T>(
+                                settings: settings,
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        builder(context),
+                              ),
+                      home: DesignProvider(
+                        config: config,
+                        child: const AppHtmlV2(data: html),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        );
+        await tester.pump();
+
+        // Initially Light Mode -> no ColorFiltered
+        expect(find.byType(ColorFiltered), findsNothing);
+
+        // Switch to Dark Mode dynamically -> ColorFiltered is immediately applied
+        configNotifier.value = DesignConfig.dark();
+        await tester.pump();
+        expect(find.byType(ColorFiltered), findsOneWidget);
+
+        // Switch back to Light Mode dynamically -> ColorFiltered is immediately removed
+        configNotifier.value = DesignConfig.defaults();
+        await tester.pump();
+        expect(find.byType(ColorFiltered), findsNothing);
+      },
+    );
+  });
 }
 
 class _FakePlatformWebViewController extends PlatformWebViewController {
