@@ -26,11 +26,15 @@ In LMS assessments and course material, math questions frequently contain raster
 - **Rationale**: Wrapping equation blocks in a `StatelessWidget` that reads `Design.of(context).isDark` dynamically hooks into `DesignProvider`. When dark mode is toggled, only the filter rebuilds without triggering an expensive HTML re-parse.
 - **Alternatives considered**: Passing `isDark` into `WidgetFactory` constructor at parse time, which requires re-parsing the entire HTML tree when theme changes.
 
-### Decision 3: Multi-tiered Heuristics with Clean Code Separation
-- **Rationale**: Formulas in legacy content arrive under various schemas (`class="Wirisformula"`, `role="math"`, `src="...codecogs..."`, or `<img align="middle" ...>`). Breaking detection into small single-responsibility functions (`_hasMathAttributes`, `_hasMathEngineUrl`, `_isLegacyInlineFormula`) keeps code readable, maintainable, and easy to test.
+### Decision 3: Multi-tiered Heuristics with Scoped Legacy Detection
+- **Rationale**: Formulas in legacy content arrive under various schemas (`class="Wirisformula"`, `role="math"`, `src="...codecogs..."`, or unlabelled `/questions/<hash>.gif`). Detection is structured in three strictly scoped tiers:
+  1. *Explicit Math (Global)*: Tokenized class matching (`wirisformula`, `math`, `formula`, `equation`, `latex` or `wiris*`), `role="math"`, `data-mathml`, `data-latex`, or known engine hosts/endpoints (`codecogs.com`, `wiris.net`, `wiris.com`, `mimetex`, `latex.php`).
+  2. *Legacy Question Math (Scoped)*: Restricted to question assets (`src.contains('/questions/')`) with inline height (`height <= 50`) and excluding icons/emojis.
+  3. *Rejection (Universal)*: Diagrams (`height > 50`), non-question assets (avatars, icons, logos), and emojis are never inverted.
 
 ## Risks / Trade-offs
 
-- **[Risk] High-resolution math diagrams with `formula` in URL might be inverted** → Mitigation: Only images with height `<= 50` or explicit math tags/engine keywords are targeted. Diagrams and photos without math markers are ignored.
+- **[Trade-off] Client-side heuristic vs Backend metadata** → Rationale: Legacy assessment data in S3/CloudFront lacks semantic formula tags (e.g., CKEditor WIRIS raster images). Scoping the heuristic strictly to `/questions/` with `height <= 50` ensures 100% of legacy math inverts without risking false positives on emojis or icons outside assessments. Modern exams use LaTeX/MathJax text.
+- **[Risk] High-resolution math diagrams with `formula` in URL might be inverted** → Mitigation: Engine URLs are restricted to known formula rendering domains/endpoints, and diagrams with `height > 50` are rejected.
 - **[Risk] Colored formula text inversion** → Mitigation: Math equations in assessments are almost exclusively monochrome black ink. Inverting monochrome ink yields high-contrast white glyphs.
 

@@ -193,27 +193,28 @@ void main() {
       );
     }
 
-    testWidgets('wraps small equation image in ColorFiltered in dark mode', (
-      tester,
-    ) async {
-      const html = '''
-        <p>If <img src="https://example.com/sec.gif" height="22" width="112" alt="22" /> then find</p>
-      ''';
-
-      await tester.pumpWidget(
-        wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
-      );
-      await tester.pump();
-
-      final colorFilteredFinder = find.byType(ColorFiltered);
-      expect(colorFilteredFinder, findsOneWidget);
-    });
-
     testWidgets(
-      'does not wrap small equation image in ColorFiltered in light mode',
+      'wraps small legacy question equation image in ColorFiltered in dark mode',
       (tester) async {
         const html = '''
-        <p>If <img src="https://example.com/sec.gif" height="22" width="112" alt="22" /> then find</p>
+        <p>If <img src="https://d3r010pg6yymlb.cloudfront.net/institute/teammatesacademy/questions/8f5fa48f3ad940dcb50f613a829dde2e.gif" height="22" width="27" alt="22" /> then find</p>
+      ''';
+
+        await tester.pumpWidget(
+          wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
+        );
+        await tester.pump();
+
+        final colorFilteredFinder = find.byType(ColorFiltered);
+        expect(colorFilteredFinder, findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'does not wrap small question equation image in ColorFiltered in light mode',
+      (tester) async {
+        const html = '''
+        <p>If <img src="https://d3r010pg6yymlb.cloudfront.net/institute/teammatesacademy/questions/8f5fa48f3ad940dcb50f613a829dde2e.gif" height="22" width="27" alt="22" /> then find</p>
       ''';
 
         await tester.pumpWidget(
@@ -227,10 +228,10 @@ void main() {
     );
 
     testWidgets(
-      'does not wrap large image (height > 50) in ColorFiltered in dark mode',
+      'does not wrap large question diagram (height > 50) in ColorFiltered in dark mode',
       (tester) async {
         const html = '''
-        <p><img src="https://example.com/diagram.png" height="300" width="400" alt="Diagram" /></p>
+        <p><img src="https://d2a0lhgw3cuuqb.cloudfront.net/institute/rays/questions/74ec10cab983484f9c19ecb5c6796bb8.png" height="523" width="779" alt="Diagram" /></p>
       ''';
 
         await tester.pumpWidget(
@@ -260,10 +261,10 @@ void main() {
     });
 
     testWidgets(
-      'wraps formula image with math keyword even if height is over 50 in dark mode',
+      'wraps formula image with exact math class or engine even if height is over 50 in dark mode',
       (tester) async {
         const html = '''
-        <p><img src="https://example.com/matrix_formula.png" height="65" width="120" alt="Matrix" /></p>
+        <p><img class="Wirisformula" src="https://example.com/matrix.png" height="65" width="120" alt="Matrix" /></p>
       ''';
 
         await tester.pumpWidget(
@@ -277,10 +278,31 @@ void main() {
     );
 
     testWidgets(
+      'does not wrap non-question emojis, icons, or classes containing aftermath in dark mode',
+      (tester) async {
+        const html = '''
+        <div>
+          <p><img class="aftermath-banner" src="https://example.com/banner.png" height="20" width="20" /></p>
+          <p><img src="https://static.testpress.in/static/img/formula1_racing.png" height="22" width="22" /></p>
+          <p><img src="https://static.testpress.in/static/img/emoji_star.gif" height="18" width="18" /></p>
+        </div>
+      ''';
+
+        await tester.pumpWidget(
+          wrapWithConfig(const AppHtmlV2(data: html), DesignConfig.dark()),
+        );
+        await tester.pump();
+
+        final colorFilteredFinder = find.byType(ColorFiltered);
+        expect(colorFilteredFinder, findsNothing);
+      },
+    );
+
+    testWidgets(
       'reactively toggles ColorFiltered on theme switch without re-parsing HTML',
       (tester) async {
         const html = '''
-        <p>If <img src="https://example.com/sec.gif" height="22" width="112" alt="22" /> then find</p>
+        <p>If <img src="https://d3r010pg6yymlb.cloudfront.net/institute/teammatesacademy/questions/8f5fa48f3ad940dcb50f613a829dde2e.gif" height="22" width="27" alt="22" /> then find</p>
       ''';
 
         final configNotifier = ValueNotifier<DesignConfig>(

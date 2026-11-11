@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../design/design_provider.dart';
@@ -546,17 +547,6 @@ class _MathWidgetFactory extends WidgetFactory {
   final FontWeight? fontWeight;
   final double maxWidth;
 
-  /// Naive inversion filter for Dark Mode (CSS filter: invert(1) equivalent).
-  /// Converts black-on-transparent formula images into crisp white text.
-  /// Inverting each color channel independently preserves the subpixel
-  /// font smoothing and edge contrast without blurring thin glyph strokes.
-  static const ColorFilter _invertFilter = ColorFilter.matrix([
-    -1, 0, 0, 0, 255, // Invert Red
-    0, -1, 0, 0, 255, // Invert Green
-    0, 0, -1, 0, 255, // Invert Blue
-    0, 0, 0, 1, 0, // Preserve Alpha
-  ]);
-
   @override
   void parse(BuildTree meta) {
     if (meta.element.localName == 'img') {
@@ -665,51 +655,84 @@ class _MathWidgetFactory extends WidgetFactory {
     );
   }
 
-  static bool _isEquationOrInlineImage(dynamic element) {
+  static bool _isEquationOrInlineImage(dom.Element element) {
     if (_hasMathAttributes(element)) return true;
     if (_hasMathEngineUrl(element)) return true;
     return _isLegacyInlineFormula(element);
   }
 
-  static bool _hasMathAttributes(dynamic element) {
-    final className = element.attributes['class']?.toLowerCase() ?? '';
+  static bool _hasMathAttributes(dom.Element element) {
     final role = element.attributes['role']?.toLowerCase() ?? '';
+    if (role == 'math') return true;
+
     final attrs = element.attributes;
+    if (attrs.containsKey('data-mathml') || attrs.containsKey('data-latex')) {
+      return true;
+    }
 
-    const mathKeywords = ['wiris', 'math', 'formula', 'equation'];
-    final hasMathKeyword = mathKeywords.any(className.contains);
+    final className = element.attributes['class']?.toLowerCase() ?? '';
+    if (className.isEmpty) return false;
 
-    return hasMathKeyword ||
-        role == 'math' ||
-        attrs.containsKey('data-mathml') ||
-        attrs.containsKey('data-latex');
-  }
-
-  static bool _hasMathEngineUrl(dynamic element) {
-    final src = element.attributes['src']?.toLowerCase() ?? '';
-    const engines = [
+    final classTokens = className.split(RegExp(r'\s+'));
+    const exactMathClasses = {
+      'wirisformula',
+      'wirismark',
+      'math',
       'formula',
       'equation',
       'latex',
-      'wiris',
-      'mimetex',
-      'codecogs',
-    ];
-    return engines.any(src.contains);
+      'math-tex',
+    };
+
+    return classTokens.any(
+      (c) => exactMathClasses.contains(c) || c.startsWith('wiris'),
+    );
   }
 
-  static bool _isLegacyInlineFormula(dynamic element) {
+  static bool _hasMathEngineUrl(dom.Element element) {
+    final src = element.attributes['src']?.toLowerCase() ?? '';
+    if (src.isEmpty) return false;
+
+    const mathEngines = [
+      'codecogs.com',
+      'wiris.net',
+      'wiris.com',
+      'mimetex',
+      'latex.php',
+      '/wirisformula/',
+    ];
+    if (mathEngines.any(src.contains)) return true;
+
+    return src.contains('?formula=') ||
+        src.contains('&formula=') ||
+        src.contains('?latex=') ||
+        src.contains('&latex=');
+  }
+
+  static bool _isLegacyInlineFormula(dom.Element element) {
     final height = _parseElementHeight(element);
     if (height == null || height > 50) return false;
 
     final src = element.attributes['src']?.toLowerCase() ?? '';
+    if (src.isEmpty) return false;
+
+    if (src.contains('emoji') ||
+        src.contains('/icon') ||
+        src.contains('avatar')) {
+      return false;
+    }
+
+    if (!src.contains('/questions/')) return false;
+
     final align = element.attributes['align']?.toLowerCase() ?? '';
     const inlineAligns = {'middle', 'absmiddle', 'baseline'};
 
-    return src.endsWith('.gif') || inlineAligns.contains(align);
+    return src.endsWith('.gif') ||
+        src.endsWith('.png') ||
+        inlineAligns.contains(align);
   }
 
-  static double? _parseElementHeight(dynamic element) {
+  static double? _parseElementHeight(dom.Element element) {
     final heightAttr = double.tryParse(
       element.attributes['height']?.trim() ?? '',
     );
@@ -799,13 +822,33 @@ class _MathWidgetFactory extends WidgetFactory {
   }
 }
 
-/// Reactively applies naive color inversion to formula images when in Dark Mode.
-/// Responds immediately to theme toggles (Light <-> Dark) via [Design.of]
-/// without requiring HTML re-parsing or widget reconstruction.
 class _DarkModeEquationFilter extends StatelessWidget {
   const _DarkModeEquationFilter({required this.child});
 
   final Widget child;
+
+  static const ColorFilter _invertFilter = ColorFilter.matrix([
+    -1,
+    0,
+    0,
+    0,
+    255,
+    0,
+    -1,
+    0,
+    0,
+    255,
+    0,
+    0,
+    -1,
+    0,
+    255,
+    0,
+    0,
+    0,
+    1,
+    0,
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -813,10 +856,7 @@ class _DarkModeEquationFilter extends StatelessWidget {
     if (!isDark) {
       return child;
     }
-    return ColorFiltered(
-      colorFilter: _MathWidgetFactory._invertFilter,
-      child: child,
-    );
+    return ColorFiltered(colorFilter: _invertFilter, child: child);
   }
 }
 

@@ -22,8 +22,16 @@ The equation color inversion SHALL reactively toggle when the application theme 
 The renderer SHALL distinguish inline equations from diagrams and illustrations using class indicators, roles, data attributes, URL patterns, or inline alignment and height boundaries.
 
 #### Scenario: Explicit formula classes or URLs
-- **WHEN** an image tag has a class containing `wiris`, `math`, `formula`, or `equation`, or a URL containing recognized formula engines
+- **WHEN** an image tag has a class matching exact math tokens (`wirisformula`, `math`, `formula`, `equation`, `latex` or prefixed with `wiris`), or a URL from recognized formula engines (`codecogs.com`, `wiris.net`, `wiris.com`, `mimetex`, `latex.php`)
 - **THEN** the element is classified as an equation
+
+#### Scenario: Legacy question formulas scoped to questions path
+- **WHEN** an image is hosted under `/questions/`, has height <= 50dp, and is not an emoji or icon
+- **THEN** the element is classified as a legacy question equation
+
+#### Scenario: Non-question emojis and icons preserved
+- **WHEN** an image is outside `/questions/` and lacks explicit math classes or engine URLs
+- **THEN** the element is NOT classified as an equation, even if it is small or has inline alignment
 
 #### Scenario: Large general diagrams
 - **WHEN** an image is a general illustration without formula attributes and has height exceeding 50dp
