@@ -283,6 +283,18 @@ class _AppHtmlState extends State<AppHtml> {
               });
             }
 
+            function invertEquationImages() {
+              document.querySelectorAll('img').forEach(function(img) {
+                var src = img.src || '';
+                if (src.includes('emoji') || src.includes('/icon') || src.includes('avatar')) return;
+                var h = parseInt(img.getAttribute('height')) || 0;
+                var isMath = /wiris|math|formula|equation|codecogs|latex/i.test(img.className + ' ' + src);
+                if (isMath || (src.includes('/questions/') && h > 0 && h <= 50)) {
+                  img.style.filter = 'invert(1)';
+                }
+              });
+            }
+
             function cleanAll() {
               removeEmptyNodes(document.getElementById('content'));
               cleanTrailingEmptyNodes(document.getElementById('content'));
@@ -291,6 +303,7 @@ class _AppHtmlState extends State<AppHtml> {
                 cleanTrailingEmptyNodes(el);
               });
               setupImageClickHandlers();
+              ${design.isDark ? 'invertEquationImages();' : ''}
             }
 
             function signalReady() {
