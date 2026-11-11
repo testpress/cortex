@@ -146,5 +146,65 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'sanitizes technical DioException and MDN status code URLs to generic message',
+      (tester) async {
+        const technicalMessage =
+            'This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.\nRead more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status';
+
+        await tester.pumpWidget(
+          createTestWidget(
+            AppErrorView(
+              error: const ApiException(
+                technicalMessage,
+                type: ApiErrorType.unknown,
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        // Technical message / MDN URL must NEVER be rendered
+        expect(find.textContaining('developer.mozilla.org'), findsNothing);
+        expect(find.textContaining('validateStatus'), findsNothing);
+        expect(find.textContaining('status code of'), findsNothing);
+
+        // Falls back to localized generic title and message
+        expect(find.text('Something went wrong'), findsOneWidget);
+        expect(
+          find.text(
+            'Failed to load data. Please check your connection and try again.',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'sanitizes technical message explicitly passed to message parameter',
+      (tester) async {
+        await tester.pumpWidget(
+          createTestWidget(
+            const AppErrorView(
+              message:
+                  'DioException [bad response]: status code of 500 at https://developer.mozilla.org/status',
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        expect(find.textContaining('developer.mozilla.org'), findsNothing);
+        expect(find.textContaining('DioException'), findsNothing);
+        expect(
+          find.text(
+            'Failed to load data. Please check your connection and try again.',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

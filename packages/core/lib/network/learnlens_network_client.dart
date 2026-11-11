@@ -94,7 +94,9 @@ class LearnLensNetworkClient {
 
     final statusCode = e.response?.statusCode;
     final ApiErrorType type;
-    if (statusCode == 429) {
+    if (statusCode == 401) {
+      type = ApiErrorType.unauthorized;
+    } else if (statusCode == 429) {
       type = ApiErrorType.rateLimited;
     } else if (statusCode == 403) {
       type = ApiErrorType.forbidden;
@@ -106,24 +108,27 @@ class LearnLensNetworkClient {
       type = ApiErrorType.unknown;
     }
 
-    String resolveMessage(String? raw) {
-      if (raw == null) return 'Something went wrong. Please try again.';
-      final lower = raw.toLowerCase();
-      if (lower.contains('session expired') ||
-          lower.contains('token expired') ||
-          lower.contains('invalid session token') ||
-          lower.contains('invalid token') ||
-          lower.contains('unauthorized')) {
-        return 'Unable to connect to AI assistant. Please try again.';
+    final Object? rawData = e.response?.data;
+    Object? parsedData = rawData;
+    if (parsedData is String && parsedData.trim().isNotEmpty) {
+      final trimmed = parsedData.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          parsedData = jsonDecode(trimmed);
+        } catch (_) {
+          // If decoding stringified JSON fails (e.g. malformed JSON starting with {),
+          // retain the raw string payload for message extraction.
+        }
       }
-      return raw;
     }
 
-    final data = e.response?.data;
-    if (data is Map<String, dynamic> && data.containsKey('detail')) {
-      final quota = AiChatQuotaErrorDto.fromDetail(data['detail']);
+    if (parsedData is Map<String, dynamic> &&
+        parsedData.containsKey('detail')) {
+      final quota = AiChatQuotaErrorDto.fromDetail(parsedData['detail']);
+      final cleanMessage = ApiException.sanitizeErrorMessage(quota.message);
       return LearnLensException(
-        message: resolveMessage(quota.message),
+        message: cleanMessage ?? '',
         code: quota.code,
         statusCode: statusCode,
         limit: quota.limit,
@@ -132,8 +137,17 @@ class LearnLensNetworkClient {
         type: type,
       );
     }
+
+    final backendMessage = ApiException.extractApiMessage(parsedData);
+    final cleanBackend = ApiException.sanitizeErrorMessage(backendMessage);
+    final cleanDioMessage = ApiException.sanitizeErrorMessage(e.message);
+
+    // Prefer backend message over Dio transport message; never leak technical messages with MDN URLs.
+    final cleanMessage = cleanBackend ?? cleanDioMessage ?? '';
+
     return LearnLensException(
-      message: resolveMessage(e.message),
+      message: cleanMessage,
+      code: statusCode == 401 ? 'unauthorized' : null,
       statusCode: statusCode,
       originalError: e,
       type: type,

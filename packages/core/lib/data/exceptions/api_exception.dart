@@ -383,6 +383,27 @@ class ApiException implements Exception {
     return null;
   }
 
+  /// Whether [message] contains internal HTTP/Dio debug text.
+  static bool isTechnicalErrorMessage(String? message) {
+    if (message == null || message.trim().isEmpty) return false;
+    final lower = message.toLowerCase();
+    return lower.contains('developer.mozilla.org') ||
+        lower.contains('dioexception') ||
+        lower.contains('validatestatus') ||
+        lower.contains('has a status code of') ||
+        lower.contains('invalid status code of');
+  }
+
+  /// Returns trimmed [message], or `null` if empty or technical.
+  static String? sanitizeErrorMessage(String? message) {
+    if (message == null) return null;
+    final trimmed = message.trim();
+    if (trimmed.isEmpty || isTechnicalErrorMessage(trimmed)) {
+      return null;
+    }
+    return trimmed;
+  }
+
   @override
   String toString() => message;
 }
