@@ -73,6 +73,214 @@ class AppHtml extends StatefulWidget {
 
   @override
   State<AppHtml> createState() => _AppHtmlState();
+
+  /// Builds the complete HTML document string loaded into the WebView.
+  @visibleForTesting
+  static String buildHtmlDocument({
+    required String content,
+    required String bgCss,
+    required String txCss,
+    required double fontSize,
+    required bool isDark,
+  }) {
+    return '''
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              background-color: $bgCss;
+              color: $txCss;
+              font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+              font-size: ${fontSize}px;
+              line-height: 1.5;
+              overflow: hidden;
+            }
+            p, span, div, font, h1, h2, h3, h4, h5, h6 {
+              color: $txCss !important;
+            }
+            /* Reset MS Word default margins and paddings to prevent white spaces around */
+            p.MsoNormal, p.MsoListParagraph, p.MsoListParagraphCxSpFirst, p.MsoListParagraphCxSpMiddle, p.MsoListParagraphCxSpLast {
+              margin: 0 0 8px 0 !important;
+              padding: 0 !important;
+            }
+            #content {
+              padding: 0;
+              display: inline-block;
+              width: 100%;
+            }
+            #content > *:first-child {
+              margin-top: 0 !important;
+            }
+            #content > *:last-child {
+              margin-bottom: 0 !important;
+            }
+            img, iframe, table {
+              max-width: 100% !important;
+              height: auto !important;
+            }
+            table {
+              border-collapse: collapse;
+              width: 100%;
+              margin: 8px 0;
+            }
+            td, th {
+              border: 1px solid $txCss;
+              padding: 6px;
+            }
+          </style>
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+        </head>
+        <body>
+          <div id="content">
+            ${content.trim()}
+          </div>
+          <script>
+            function removeEmptyNodes(container) {
+              if (!container) return;
+              const elements = container.querySelectorAll('p, div, span');
+              elements.forEach(el => {
+                // Do not remove custom option selection indicators, their descendants, or their parent wrappers
+                if (el.closest('.indicator') || el.classList.contains('indicator') || el.querySelector('.indicator')) {
+                  return;
+                }
+                const text = el.textContent.replace(/\\u00a0/g, ' ').trim();
+                if (text === '' && !el.querySelector('img, iframe, video, audio, embed, math, svg, table, input, textarea')) {
+                  el.remove();
+                }
+              });
+            }
+
+            function cleanTrailingEmptyNodes(container) {
+              if (!container) return;
+              let last = container.lastElementChild;
+              while (last && last.textContent.trim() === '' && !last.querySelector('img, iframe, video, audio, embed, math, svg, input, textarea')) {
+                last.remove();
+                last = container.lastElementChild;
+              }
+            }
+
+            function setupImageClickHandlers() {
+              document.querySelectorAll('img').forEach(img => {
+                if (img.dataset.clickedSetup) return;
+                img.dataset.clickedSetup = "true";
+                img.style.cursor = 'pointer';
+                img.onclick = function(e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (window.ImageClickChannel) {
+                    window.ImageClickChannel.postMessage(img.src);
+                  }
+                };
+              });
+            }
+
+            function invertEquationImages() {
+              var exactMathClasses = ['wirisformula', 'wirismark', 'math', 'formula', 'equation', 'latex', 'math-tex'];
+              var mathEngines = ['codecogs.com', 'wiris.net', 'wiris.com', 'mimetex', 'latex.php', '/wirisformula/'];
+              var inlineAligns = ['middle', 'absmiddle', 'baseline'];
+
+              document.querySelectorAll('img').forEach(function(img) {
+                var src = (img.getAttribute('src') || img.src || '').toLowerCase();
+                if (!src || src.includes('emoji') || src.includes('/icon') || src.includes('avatar')) return;
+
+                var role = (img.getAttribute('role') || '').toLowerCase();
+                var hasMathAttrs = role === 'math' || img.hasAttribute('data-mathml') || img.hasAttribute('data-latex');
+
+                var classList = (img.className || '').toLowerCase().split(/\\s+/);
+                var hasMathClass = classList.some(function(c) {
+                  return exactMathClasses.indexOf(c) !== -1 || c.indexOf('wiris') === 0;
+                });
+
+                var hasEngineUrl = mathEngines.some(function(engine) {
+                  return src.indexOf(engine) !== -1;
+                }) || src.indexOf('?formula=') !== -1 || src.indexOf('&formula=') !== -1 ||
+                     src.indexOf('?latex=') !== -1 || src.indexOf('&latex=') !== -1;
+
+                if (hasMathAttrs || hasMathClass || hasEngineUrl) {
+                  img.style.filter = 'invert(1)';
+                  return;
+                }
+
+                if (!src.includes('/questions/')) return;
+
+                var heightAttr = img.getAttribute('height');
+                var h = heightAttr ? parseFloat(heightAttr) : 0;
+                if (!h && img.style.height) {
+                  var m = img.style.height.match(/([\\d.]+)px/);
+                  if (m) h = parseFloat(m[1]);
+                }
+                if (!h || h > 50) return;
+
+                var align = (img.getAttribute('align') || '').toLowerCase();
+                var isLegacy = src.endsWith('.png') || src.endsWith('.gif') || inlineAligns.indexOf(align) !== -1;
+                if (isLegacy) {
+                  img.style.filter = 'invert(1)';
+                }
+              });
+            }
+
+            function cleanAll() {
+              removeEmptyNodes(document.getElementById('content'));
+              cleanTrailingEmptyNodes(document.getElementById('content'));
+              document.querySelectorAll('.option-text').forEach(el => {
+                removeEmptyNodes(el);
+                cleanTrailingEmptyNodes(el);
+              });
+              setupImageClickHandlers();
+              ${isDark ? 'invertEquationImages();' : ''}
+            }
+
+            function signalReady() {
+              if (window._isSignaled) return;
+              window._isSignaled = true;
+              cleanAll();
+              if (window.HeightChannel) {
+                window.HeightChannel.postMessage(JSON.stringify({
+                  ready: true,
+                  height: document.getElementById('content').offsetHeight
+                }));
+              }
+            }
+
+            // Safety fallback: if MathJax takes too long or fails to load, signal ready anyway
+            setTimeout(signalReady, 1000);
+
+            window.MathJax = {
+              startup: {
+                pageReady: () => {
+                  return MathJax.startup.defaultPageReady().then(signalReady);
+                }
+              }
+            };
+
+            function sendHeight() {
+              setupImageClickHandlers();
+              const height = document.getElementById('content').offsetHeight;
+              if (window.HeightChannel) {
+                window.HeightChannel.postMessage(JSON.stringify({
+                  ready: false,
+                  height: height
+                }));
+              }
+            }
+
+            // Observe content changes (like image loads) to update height
+            const resizeObserver = new ResizeObserver(entries => {
+              sendHeight();
+            });
+            resizeObserver.observe(document.getElementById('content'));
+
+            // Initial height check
+            window.onload = sendHeight;
+          </script>
+        </body>
+      </html>
+    ''';
+  }
 }
 
 class _AppHtmlState extends State<AppHtml> {
@@ -187,158 +395,13 @@ class _AppHtmlState extends State<AppHtml> {
 
     if (!mounted) return;
 
-    final html =
-        '''
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-          <style>
-            body {
-              margin: 0;
-              padding: 0;
-              background-color: $bgCss;
-              color: $txCss;
-              font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-              font-size: ${widget.fontSize}px;
-              line-height: 1.5;
-              overflow: hidden;
-            }
-            p, span, div, font, h1, h2, h3, h4, h5, h6 {
-              color: $txCss !important;
-            }
-            /* Reset MS Word default margins and paddings to prevent white spaces around */
-            p.MsoNormal, p.MsoListParagraph, p.MsoListParagraphCxSpFirst, p.MsoListParagraphCxSpMiddle, p.MsoListParagraphCxSpLast {
-              margin: 0 0 8px 0 !important;
-              padding: 0 !important;
-            }
-            #content {
-              padding: 0;
-              display: inline-block;
-              width: 100%;
-            }
-            #content > *:first-child {
-              margin-top: 0 !important;
-            }
-            #content > *:last-child {
-              margin-bottom: 0 !important;
-            }
-            img, iframe, table {
-              max-width: 100% !important;
-              height: auto !important;
-            }
-            table {
-              border-collapse: collapse;
-              width: 100%;
-              margin: 8px 0;
-            }
-            td, th {
-              border: 1px solid $txCss;
-              padding: 6px;
-            }
-          </style>
-          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-        </head>
-        <body>
-          <div id="content">
-            ${rawHtml.trim()}
-          </div>
-          <script>
-            function removeEmptyNodes(container) {
-              if (!container) return;
-              const elements = container.querySelectorAll('p, div, span');
-              elements.forEach(el => {
-                // Do not remove custom option selection indicators, their descendants, or their parent wrappers
-                if (el.closest('.indicator') || el.classList.contains('indicator') || el.querySelector('.indicator')) {
-                  return;
-                }
-                const text = el.textContent.replace(/\u00a0/g, ' ').trim();
-                if (text === '' && !el.querySelector('img, iframe, video, audio, embed, math, svg, table, input, textarea')) {
-                  el.remove();
-                }
-              });
-            }
-
-            function cleanTrailingEmptyNodes(container) {
-              if (!container) return;
-              let last = container.lastElementChild;
-              while (last && last.textContent.trim() === '' && !last.querySelector('img, iframe, video, audio, embed, math, svg, input, textarea')) {
-                last.remove();
-                last = container.lastElementChild;
-              }
-            }
-
-            function setupImageClickHandlers() {
-              document.querySelectorAll('img').forEach(img => {
-                if (img.dataset.clickedSetup) return;
-                img.dataset.clickedSetup = "true";
-                img.style.cursor = 'pointer';
-                img.onclick = function(e) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (window.ImageClickChannel) {
-                    window.ImageClickChannel.postMessage(img.src);
-                  }
-                };
-              });
-            }
-
-            function cleanAll() {
-              removeEmptyNodes(document.getElementById('content'));
-              cleanTrailingEmptyNodes(document.getElementById('content'));
-              document.querySelectorAll('.option-text').forEach(el => {
-                removeEmptyNodes(el);
-                cleanTrailingEmptyNodes(el);
-              });
-              setupImageClickHandlers();
-            }
-
-            function signalReady() {
-              if (window._isSignaled) return;
-              window._isSignaled = true;
-              cleanAll();
-              if (window.HeightChannel) {
-                window.HeightChannel.postMessage(JSON.stringify({
-                  ready: true,
-                  height: document.getElementById('content').offsetHeight
-                }));
-              }
-            }
-
-            // Safety fallback: if MathJax takes too long or fails to load, signal ready anyway
-            setTimeout(signalReady, 1000);
-
-            window.MathJax = {
-              startup: {
-                pageReady: () => {
-                  return MathJax.startup.defaultPageReady().then(signalReady);
-                }
-              }
-            };
-
-            function sendHeight() {
-              setupImageClickHandlers();
-              const height = document.getElementById('content').offsetHeight;
-              if (window.HeightChannel) {
-                window.HeightChannel.postMessage(JSON.stringify({
-                  ready: false,
-                  height: height
-                }));
-              }
-            }
-
-            // Observe content changes (like image loads) to update height
-            const resizeObserver = new ResizeObserver(entries => {
-              sendHeight();
-            });
-            resizeObserver.observe(document.getElementById('content'));
-
-            // Initial height check
-            window.onload = sendHeight;
-          </script>
-        </body>
-      </html>
-    ''';
+    final html = AppHtml.buildHtmlDocument(
+      content: rawHtml,
+      bgCss: bgCss,
+      txCss: txCss,
+      fontSize: widget.fontSize,
+      isDark: design.isDark,
+    );
 
     _controller.loadHtmlString(html, baseUrl: 'https://testpress.in/');
   }

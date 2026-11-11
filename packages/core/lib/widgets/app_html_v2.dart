@@ -562,6 +562,21 @@ class _MathWidgetFactory extends WidgetFactory {
         );
         return;
       }
+
+      super.parse(meta);
+
+      // Reactively invert black-ink math/question images into crisp white text in Dark Mode.
+      // Uses _DarkModeEquationFilter to immediately adapt to theme toggles (Light <-> Dark).
+      if (_isEquationOrInlineImage(meta.element)) {
+        meta.register(
+          BuildOp.inline(
+            onRenderInlineBlock: (tree, child) {
+              return _DarkModeEquationFilter(child: child);
+            },
+          ),
+        );
+      }
+      return;
     }
 
     if (meta.element.localName == 'math-tex') {
@@ -639,6 +654,101 @@ class _MathWidgetFactory extends WidgetFactory {
     );
   }
 
+  static bool _isEquationOrInlineImage(dynamic element) {
+    if (_hasMathAttributes(element)) return true;
+    if (_hasMathEngineUrl(element)) return true;
+    return _isLegacyInlineFormula(element);
+  }
+
+  static bool _hasMathAttributes(dynamic element) {
+    final role = element.attributes['role']?.toLowerCase() ?? '';
+    if (role == 'math') return true;
+
+    final attrs = element.attributes;
+    if (attrs.containsKey('data-mathml') || attrs.containsKey('data-latex')) {
+      return true;
+    }
+
+    final className = element.attributes['class']?.toLowerCase() ?? '';
+    if (className.isEmpty) return false;
+
+    final classTokens = className.split(RegExp(r'\s+'));
+    const exactMathClasses = {
+      'wirisformula',
+      'wirismark',
+      'math',
+      'formula',
+      'equation',
+      'latex',
+      'math-tex',
+    };
+
+    // Matches WIRIS equation variants (e.g. Wirisformula, wirismark)
+    return classTokens.any(
+      (c) => exactMathClasses.contains(c) || c.startsWith('wiris'),
+    );
+  }
+
+  static bool _hasMathEngineUrl(dynamic element) {
+    final src = element.attributes['src']?.toLowerCase() ?? '';
+    if (src.isEmpty) return false;
+
+    const mathEngines = [
+      'codecogs.com',
+      'wiris.net',
+      'wiris.com',
+      'mimetex',
+      'latex.php',
+      '/wirisformula/',
+    ];
+    if (mathEngines.any(src.contains)) return true;
+
+    return src.contains('?formula=') ||
+        src.contains('&formula=') ||
+        src.contains('?latex=') ||
+        src.contains('&latex=');
+  }
+
+  // Fallback for legacy formulas under /questions/ (<=50px, e.g. √2) that lack math classes.
+  // Catches unaligned inline equations; small coloured figures under /questions/ may also
+  // invert, while larger diagrams (>50px) are preserved.
+  static bool _isLegacyInlineFormula(dynamic element) {
+    final height = _parseElementHeight(element);
+    if (height == null || height > 50) return false;
+
+    final src = element.attributes['src']?.toLowerCase() ?? '';
+    if (src.isEmpty) return false;
+
+    if (src.contains('emoji') ||
+        src.contains('/icon') ||
+        src.contains('avatar')) {
+      return false;
+    }
+
+    if (!src.contains('/questions/')) return false;
+
+    final align = element.attributes['align']?.toLowerCase() ?? '';
+    const inlineAligns = {'middle', 'absmiddle', 'baseline'};
+
+    return src.endsWith('.gif') ||
+        src.endsWith('.png') ||
+        inlineAligns.contains(align);
+  }
+
+  static double? _parseElementHeight(dynamic element) {
+    final heightAttr = double.tryParse(
+      element.attributes['height']?.trim() ?? '',
+    );
+    if (heightAttr != null && heightAttr > 0) return heightAttr;
+
+    final style = element.attributes['style'] ?? '';
+    final match = RegExp(
+      r'height\s*:\s*([0-9.]+)\s*px',
+      caseSensitive: false,
+    ).firstMatch(style);
+    return double.tryParse(match?.group(1) ?? '');
+  }
+
   Widget _buildBlockMath(String tex) {
     final mathWidget = Math.tex(
       tex,
@@ -712,6 +822,28 @@ class _MathWidgetFactory extends WidgetFactory {
     } catch (_) {
       return const SizedBox.shrink();
     }
+  }
+}
+
+class _DarkModeEquationFilter extends StatelessWidget {
+  const _DarkModeEquationFilter({required this.child});
+
+  final Widget child;
+
+  static const ColorFilter _invertFilter = ColorFilter.matrix([
+    -1, 0, 0, 0, 255, // R
+    0, -1, 0, 0, 255, // G
+    0, 0, -1, 0, 255, // B
+    0, 0, 0, 1, 0, // A
+  ]);
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Design.of(context).isDark;
+    if (!isDark) {
+      return child;
+    }
+    return ColorFiltered(colorFilter: _invertFilter, child: child);
   }
 }
 
