@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:html/dom.dart' as dom;
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../design/design_provider.dart';
@@ -655,13 +654,13 @@ class _MathWidgetFactory extends WidgetFactory {
     );
   }
 
-  static bool _isEquationOrInlineImage(dom.Element element) {
+  static bool _isEquationOrInlineImage(dynamic element) {
     if (_hasMathAttributes(element)) return true;
     if (_hasMathEngineUrl(element)) return true;
     return _isLegacyInlineFormula(element);
   }
 
-  static bool _hasMathAttributes(dom.Element element) {
+  static bool _hasMathAttributes(dynamic element) {
     final role = element.attributes['role']?.toLowerCase() ?? '';
     if (role == 'math') return true;
 
@@ -684,12 +683,13 @@ class _MathWidgetFactory extends WidgetFactory {
       'math-tex',
     };
 
+    // Matches WIRIS equation variants (e.g. Wirisformula, wirismark)
     return classTokens.any(
       (c) => exactMathClasses.contains(c) || c.startsWith('wiris'),
     );
   }
 
-  static bool _hasMathEngineUrl(dom.Element element) {
+  static bool _hasMathEngineUrl(dynamic element) {
     final src = element.attributes['src']?.toLowerCase() ?? '';
     if (src.isEmpty) return false;
 
@@ -709,7 +709,7 @@ class _MathWidgetFactory extends WidgetFactory {
         src.contains('&latex=');
   }
 
-  static bool _isLegacyInlineFormula(dom.Element element) {
+  static bool _isLegacyInlineFormula(dynamic element) {
     final height = _parseElementHeight(element);
     if (height == null || height > 50) return false;
 
@@ -732,7 +732,7 @@ class _MathWidgetFactory extends WidgetFactory {
         inlineAligns.contains(align);
   }
 
-  static double? _parseElementHeight(dom.Element element) {
+  static double? _parseElementHeight(dynamic element) {
     final heightAttr = double.tryParse(
       element.attributes['height']?.trim() ?? '',
     );
@@ -828,26 +828,10 @@ class _DarkModeEquationFilter extends StatelessWidget {
   final Widget child;
 
   static const ColorFilter _invertFilter = ColorFilter.matrix([
-    -1,
-    0,
-    0,
-    0,
-    255,
-    0,
-    -1,
-    0,
-    0,
-    255,
-    0,
-    0,
-    -1,
-    0,
-    255,
-    0,
-    0,
-    0,
-    1,
-    0,
+    -1, 0, 0, 0, 255, // R
+    0, -1, 0, 0, 255, // G
+    0, 0, -1, 0, 255, // B
+    0, 0, 0, 1, 0, // A
   ]);
 
   @override

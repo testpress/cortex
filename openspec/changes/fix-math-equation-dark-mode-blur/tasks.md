@@ -9,7 +9,6 @@
 - [x] 2.2 Implement _hasMathEngineUrl restricted to known formula rendering engines and endpoints
 - [x] 2.3 Implement _parseElementHeight and _isLegacyInlineFormula scoped to /questions/ and inline dimensions
 - [x] 2.4 Compose _isEquationOrInlineImage and register BuildOp.inline for equation images
-- [x] 2.5 Type element parameters with dom.Element from package:html/dom.dart
 
 ## 3. Verification & Testing
 
