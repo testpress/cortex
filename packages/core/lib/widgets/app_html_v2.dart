@@ -709,6 +709,9 @@ class _MathWidgetFactory extends WidgetFactory {
         src.contains('&latex=');
   }
 
+  // Fallback for legacy formulas under /questions/ (<=50px, e.g. √2) that lack math classes.
+  // Catches unaligned inline equations; small coloured figures under /questions/ may also
+  // invert, while larger diagrams (>50px) are preserved.
   static bool _isLegacyInlineFormula(dynamic element) {
     final height = _parseElementHeight(element);
     if (height == null || height > 50) return false;
