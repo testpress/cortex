@@ -12,7 +12,7 @@ The system SHALL display the curriculum structure for a given product, scoping c
 
 #### Scenario: Expand course curriculum to view chapters
 - **WHEN** user expands a course in the curriculum
-- **THEN** system fetches and renders the list of chapters for that course with expandable chapters and lesson details instead of summary count badges
+- **THEN** system fetches and renders the full list of chapters for that course (recursively fetching root and nested sub-chapters) with expandable chapters and lesson details instead of summary count badges
 
 #### Scenario: Expand chapter to view contents
 - **WHEN** user expands a leaf chapter
