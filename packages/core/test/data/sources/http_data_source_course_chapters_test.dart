@@ -204,6 +204,106 @@ void main() {
         expect(recordedRequests.length, 2);
       },
     );
+
+    test(
+      'fetches sibling non-leaf chapters concurrently and aggregates children',
+      () async {
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          recordedRequests.add({
+            'path': options.path,
+            'queryParameters': options.queryParameters,
+          });
+
+          final parentId = options.queryParameters['parent_id'];
+          if (parentId == 'null') {
+            final payload = jsonEncode({
+              'results': {
+                'chapters': [
+                  {
+                    'id': 10,
+                    'name': 'Physics',
+                    'course_id': 1,
+                    'leaf': false,
+                    'order': 1,
+                  },
+                  {
+                    'id': 20,
+                    'name': 'Chemistry',
+                    'course_id': 1,
+                    'leaf': false,
+                    'order': 2,
+                  },
+                ],
+              },
+            });
+            return ResponseBody.fromString(
+              payload,
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          } else if (parentId == '10') {
+            final payload = jsonEncode({
+              'results': {
+                'chapters': [
+                  {
+                    'id': 101,
+                    'name': 'Mechanics',
+                    'course_id': 1,
+                    'parent_id': 10,
+                    'leaf': true,
+                  },
+                ],
+              },
+            });
+            return ResponseBody.fromString(
+              payload,
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          } else if (parentId == '20') {
+            final payload = jsonEncode({
+              'results': {
+                'chapters': [
+                  {
+                    'id': 201,
+                    'name': 'Organic',
+                    'course_id': 1,
+                    'parent_id': 20,
+                    'leaf': true,
+                  },
+                ],
+              },
+            });
+            return ResponseBody.fromString(
+              payload,
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+
+          return ResponseBody.fromString('Not Found', 404);
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+        final chapters = await dataSource.getCourseChapters('1');
+
+        expect(chapters.length, 4);
+        expect(chapters.map((c) => c.id).toList(), ['10', '20', '101', '201']);
+        expect(recordedRequests.length, 3);
+        expect(recordedRequests[0]['queryParameters'], {'parent_id': 'null'});
+        final siblingParentIds = [
+          recordedRequests[1]['queryParameters']?['parent_id'],
+          recordedRequests[2]['queryParameters']?['parent_id'],
+        ].toSet();
+        expect(siblingParentIds, {'10', '20'});
+      },
+    );
   });
 }
 

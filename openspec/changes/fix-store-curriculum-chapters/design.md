@@ -19,12 +19,13 @@ Previously, `HttpDataSource.getCourseChapters` called `GET /api/v3/courses/{id}/
 ## Decisions
 
 ### Decision 1: Recursive Chapter Fetching in `HttpDataSource.getCourseChapters`
-- **Choice**: Implement recursive chapter fetching starting from root chapters (`parentId: null`), matching the pattern in `MockDataSource._getAllChaptersRecursively`.
-- **Rationale**: `ProductExpandableCourseCard` builds an in-memory parent-to-child map (`StoreChapterTile.buildChildrenMap(allChapters)`) and expects the entire course tree to be available upon course expansion. Reusing `getChapters` ensures consistent query parameters (`parent_id=null` / `parent_id={id}`) and response parsing.
+- **Choice**: Implement recursive chapter fetching starting from root chapters (`parentId: null`), matching the pattern in `MockDataSource._getAllChaptersRecursively`, and using `Future.wait` across sibling non-leaf folders to avoid sequential N+1 round trips.
+- **Rationale**: `ProductExpandableCourseCard` builds an in-memory parent-to-child map (`StoreChapterTile.buildChildrenMap(allChapters)`) and expects the entire course tree to be available upon course expansion. Reusing `getChapters` ensures consistent query parameters (`parent_id=null` / `parent_id={id}`) and response parsing. Firing sibling fetches concurrently keeps initial load times minimal.
 - **Alternative Considered**: Modifying `StoreChapterTile` to lazily fetch child chapters via a new Riverpod provider — rejected to avoid unnecessary state management changes, skeleton flashes, and complex tile caching when all chapters are already small enough to fetch and cache in-memory.
 
 ## Risks / Trade-offs
 
-- **[Risk] Multiple network requests for courses with nested sub-chapters** → *Mitigation*: Courses generally have 1–2 levels. `StoreRepository` caches the full chapter list in memory so each course is fetched at most once per session or until explicitly cleared.
-- **[Risk] Infinite recursion if backend data has circular references** → *Mitigation*: Track visited chapter IDs during recursion to prevent infinite loops even if data contains cyclical parent relationships.
+- **[Risk] Multiple network requests for courses with nested sub-chapters** → *Mitigation*: Sibling sub-chapters are fetched concurrently via `Future.wait`, eliminating serial network request queuing. In addition, `StoreRepository` caches the full chapter list in memory so each course is fetched at most once per session or until explicitly cleared.
+- **[Risk] Infinite recursion if backend data has circular references** → *Mitigation*: Track visited chapter IDs synchronously during recursion before dispatching asynchronous child fetches to prevent infinite loops even if data contains cyclical parent relationships.
+- **[Trade-off] Fail-fast vs. partial results on nested chapter retrieval** → *Rationale*: If any child chapter request fails, `Future.wait` rejects the entire batch. This fail-fast behavior is intentional to prevent caching an incomplete chapter tree in `StoreRepository`, ensuring students never see silently truncated curricula and allowing clean retries.
 
