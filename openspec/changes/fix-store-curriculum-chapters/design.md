@@ -26,6 +26,6 @@ Previously, `HttpDataSource.getCourseChapters` called `GET /api/v3/courses/{id}/
 ## Risks / Trade-offs
 
 - **[Risk] Multiple network requests for courses with nested sub-chapters** → *Mitigation*: Sibling sub-chapters are fetched concurrently via `Future.wait`, eliminating serial network request queuing. In addition, `StoreRepository` caches the full chapter list in memory so each course is fetched at most once per session or until explicitly cleared.
-- **[Risk] Infinite recursion if backend data has circular references** → *Mitigation*: Track visited chapter IDs synchronously during recursion before dispatching asynchronous child fetches to prevent infinite loops even if data contains cyclical parent relationships.
+- **[Risk] Infinite recursion if backend data has circular references** → *Mitigation*: Track expanded folder IDs (`expandedFolderIds`) synchronously during recursion before dispatching asynchronous child fetches to prevent infinite loops even if data contains cyclical parent relationships.
 - **[Trade-off] Fail-fast vs. partial results on nested chapter retrieval** → *Rationale*: If any child chapter request fails, `Future.wait` rejects the entire batch. This fail-fast behavior is intentional to prevent caching an incomplete chapter tree in `StoreRepository`, ensuring students never see silently truncated curricula and allowing clean retries.
 
