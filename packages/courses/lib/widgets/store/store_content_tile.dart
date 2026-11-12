@@ -46,7 +46,6 @@ class StoreContentTile extends StatelessWidget {
     final isPreview = content.isFreePreview;
     final badgeColor =
         isPreview ? design.colors.success : design.colors.accent2;
-    final badgeIcon = isPreview ? LucideIcons.playCircle : LucideIcons.lock;
     final badgeLabel =
         isPreview ? l10n.storeFreePreview : l10n.storeBuyToUnlock;
     final activeAction = isPreview
@@ -55,9 +54,7 @@ class StoreContentTile extends StatelessWidget {
 
     final badgeWidget = Container(
       padding: EdgeInsets.symmetric(
-        horizontal: isPreview
-            ? (design.spacing.sm + design.spacing.xs)
-            : design.spacing.sm,
+        horizontal: design.spacing.sm,
         vertical: design.spacing.xs,
       ),
       decoration: BoxDecoration(
@@ -67,21 +64,10 @@ class StoreContentTile extends StatelessWidget {
           color: badgeColor.withValues(alpha: 0.3),
         ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            badgeIcon,
-            size: design.iconSize.xs,
-            color: badgeColor,
-          ),
-          SizedBox(width: design.spacing.xs),
-          AppText.caption(
-            badgeLabel,
-            color: badgeColor,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ],
+      child: AppText.caption(
+        badgeLabel,
+        color: badgeColor,
+        style: const TextStyle(fontWeight: FontWeight.w600),
       ),
     );
 
