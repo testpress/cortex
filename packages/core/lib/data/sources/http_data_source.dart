@@ -120,11 +120,40 @@ class HttpDataSource implements DataSource {
   }
 
   @override
-  Future<List<ChapterDto>> getCourseChapters(String courseId) async {
-    return performNetworkRequest(
-      _dio.get(ApiEndpoints.courseChapters(courseId)),
-      fromJson: CurriculumParser.mapChapters,
-    );
+  Future<List<ChapterDto>> getCourseChapters(String courseId) {
+    return _getCourseChaptersRecursively(courseId, parentId: null);
+  }
+
+  Future<List<ChapterDto>> _getCourseChaptersRecursively(
+    String courseId, {
+    String? parentId,
+    Set<String>? expandedFolderIds,
+  }) async {
+    final expanded = expandedFolderIds ?? <String>{};
+    final chapters = await getChapters(courseId, parentId: parentId);
+    final allChapters = <ChapterDto>[...chapters];
+
+    final nonLeafChapters = chapters
+        .where((chapter) => !chapter.isLeaf && expanded.add(chapter.id))
+        .toList();
+
+    if (nonLeafChapters.isNotEmpty) {
+      final childrenLists = await Future.wait(
+        nonLeafChapters.map(
+          (chapter) => _getCourseChaptersRecursively(
+            courseId,
+            parentId: chapter.id,
+            expandedFolderIds: expanded,
+          ),
+        ),
+      );
+
+      for (final children in childrenLists) {
+        allChapters.addAll(children);
+      }
+    }
+
+    return allChapters;
   }
 
   @override
