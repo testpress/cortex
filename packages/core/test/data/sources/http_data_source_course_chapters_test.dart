@@ -297,10 +297,10 @@ void main() {
         expect(chapters.map((c) => c.id).toList(), ['10', '20', '101', '201']);
         expect(recordedRequests.length, 3);
         expect(recordedRequests[0]['queryParameters'], {'parent_id': 'null'});
-        final siblingParentIds = [
+        final siblingParentIds = {
           recordedRequests[1]['queryParameters']?['parent_id'],
           recordedRequests[2]['queryParameters']?['parent_id'],
-        ].toSet();
+        };
         expect(siblingParentIds, {'10', '20'});
       },
     );
