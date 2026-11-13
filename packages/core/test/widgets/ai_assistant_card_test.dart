@@ -56,4 +56,41 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     semantics.dispose();
   });
+
+  testWidgets(
+    'renders stopped response with partial message and subtle label',
+    (tester) async {
+      await tester.pumpWidget(
+        DesignProvider(
+          config: DesignConfig.defaults(context: null),
+          child: WidgetsApp(
+            color: const Color(0xFF000000),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            home: const Center(
+              child: AiAssistantCard(
+                message: 'Partial retained answer',
+                timestamp: '10:30 AM',
+                isStopped: true,
+              ),
+            ),
+            pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
+              settings: settings,
+              pageBuilder: (context, _, _) => builder(context),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Partial retained answer'), findsOneWidget);
+      expect(find.text('Stopped'), findsOneWidget);
+      expect(find.text('Try again'), findsNothing);
+      expect(
+        find.text("Couldn't generate a response. Please try again."),
+        findsNothing,
+      );
+    },
+  );
 }

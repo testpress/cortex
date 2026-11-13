@@ -3821,4 +3821,14 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get enforceStudentDataVerifyError =>
       'تعذّر التحقق من بيانات الملف الشخصي. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get aiStoppedResponse => 'تم الإيقاف';
+
+  @override
+  String get aiAccessRestrictedTitle => 'المحادثة بالذكاء الاصطناعي غير متوفرة';
+
+  @override
+  String get aiAccessRestrictedMessage =>
+      'المحادثة بالذكاء الاصطناعي غير مفعلة لحسابك.\nيُرجى التواصل مع المسؤول.';
 }

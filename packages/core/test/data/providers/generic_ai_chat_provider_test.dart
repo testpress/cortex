@@ -23,10 +23,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   Object? errorToThrow;
   Completer<AiChatTurnResponseDto>? turnCompleter;
   Completer<AiMessagePageResult>? messagePageCompleter;
+  AiChatPolicyDto? customPolicy;
 
   @override
   AiChatPolicyDto? get policy =>
-      const AiChatPolicyDto(maxMessageCharacters: 4000);
+      customPolicy ?? const AiChatPolicyDto(maxMessageCharacters: 4000);
 
   int streamConversationCalls = 0;
   int streamFollowUpCalls = 0;
@@ -1655,5 +1656,178 @@ void main() {
         expect(state.messages.where((m) => m.isStreaming), isEmpty);
       },
     );
+
+    test('policy canGenerate parses from JSON with default true', () {
+      const defaultPolicy = AiChatPolicyDto();
+      expect(defaultPolicy.canGenerate, isTrue);
+
+      final restrictedPolicy = AiChatPolicyDto.fromJson({
+        'can_generate': false,
+      });
+      expect(restrictedPolicy.canGenerate, isFalse);
+      expect(restrictedPolicy.toJson()['can_generate'], isFalse);
+    });
+
+    test(
+      'initialize sets hasAccessDenied when policy.canGenerate is false',
+      () async {
+        fakeRepository.customPolicy = const AiChatPolicyDto(canGenerate: false);
+        final notifier = container.read(genericAiChatProvider.notifier);
+
+        await notifier.initialize();
+
+        expect(container.read(genericAiChatProvider).hasAccessDenied, isTrue);
+
+        // Sending message should be rejected when access is restricted
+        await notifier.sendMessage('Test restricted');
+        expect(container.read(genericAiChatProvider).messages, isEmpty);
+      },
+    );
+
+    test(
+      'syncCanonicalState refreshes canonical status and messages',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.setInitialMessages([
+          GenericAiChatMessage(
+            id: 'temp-1',
+            text: 'Hello',
+            isUser: true,
+            timestamp: DateTime.now(),
+          ),
+        ]);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(currentChatId: 'chat-sync-1');
+
+        fakeRepository.nextStatusResponse = const AiConversationDto(
+          chatId: 'chat-sync-1',
+          title: 'Refreshed Title',
+        );
+        fakeRepository.nextMessagePage = AiMessagePageResult(
+          items: [
+            AiMessageDto(
+              messageId: 'm1',
+              role: 'user',
+              content: 'Hello',
+              createdAt: DateTime.now(),
+            ),
+            AiMessageDto(
+              messageId: 'm2',
+              role: 'assistant',
+              content: 'Canonical Answer',
+              createdAt: DateTime.now(),
+            ),
+          ],
+        );
+
+        await notifier.syncCanonicalState();
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.currentTitle, 'Refreshed Title');
+        expect(state.messages.length, 2);
+        expect(state.messages[1].text, 'Canonical Answer');
+        expect(fakeRepository.getStatusCalls, 1);
+        expect(fakeRepository.getMessagesCalls, 1);
+      },
+    );
+
+    test(
+      'syncCanonicalState discards update if conversation switched',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.setInitialMessages([
+          GenericAiChatMessage(
+            id: 'temp-1',
+            text: 'Initial message',
+            isUser: true,
+            timestamp: DateTime.now(),
+          ),
+        ]);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(currentChatId: 'chat-old');
+
+        fakeRepository.nextStatusResponse = const AiConversationDto(
+          chatId: 'chat-old',
+          title: 'Old Title',
+        );
+        fakeRepository.nextMessagePage = AiMessagePageResult(
+          items: [
+            AiMessageDto(
+              messageId: 'm-old',
+              role: 'assistant',
+              content: 'Old Answer',
+              createdAt: DateTime.now(),
+            ),
+          ],
+        );
+
+        final syncFuture = notifier.syncCanonicalState();
+        // Simulate switching to a new chat before the network call completes
+        notifier.startNewChat();
+
+        await syncFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.currentChatId, isNull);
+        expect(state.messages, isEmpty);
+      },
+    );
+
+    test('state.isStreaming reflects streaming message in thread', () {
+      final stateWithout = GenericAiChatState(
+        messages: [
+          GenericAiChatMessage(
+            id: 'm1',
+            text: 'Completed',
+            isUser: false,
+            timestamp: DateTime.now(),
+            isStreaming: false,
+          ),
+        ],
+      );
+      expect(stateWithout.isStreaming, isFalse);
+
+      final stateWith = GenericAiChatState(
+        messages: [
+          GenericAiChatMessage(
+            id: 'm2',
+            text: 'In progress',
+            isUser: false,
+            timestamp: DateTime.now(),
+            isStreaming: true,
+          ),
+        ],
+      );
+      expect(stateWith.isStreaming, isTrue);
+    });
+
+    test('recovers turn with stopped generation status', () async {
+      final notifier = container.read(genericAiChatProvider.notifier);
+      notifier.useStreaming = false;
+
+      fakeRepository.nextTurnResponse = AiChatTurnResponseDto(
+        chatId: 'chat-stopped-1',
+        title: 'Stopped Chat',
+        answer: 'Partial answer',
+        generation: AiGenerationDto(
+          generationId: 'gen-stop-1',
+          requestId: 'req-stop-1',
+          userMessageId: 'usr-stop-1',
+          status: 'stopped',
+          createdAt: DateTime.now().toUtc(),
+          finishedAt: DateTime.now(),
+        ),
+      );
+
+      await notifier.sendMessage('Generate something');
+
+      final state = container.read(genericAiChatProvider);
+      expect(state.messages.length, 2);
+      expect(state.messages.last.isStopped, isTrue);
+      expect(state.messages.last.text, 'Partial answer');
+      expect(state.isGenerating, isFalse);
+    });
   });
 }

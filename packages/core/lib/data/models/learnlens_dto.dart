@@ -129,6 +129,7 @@ class AiChatPolicyDto {
   final int maxNewConversationsPerDay;
   final int maxMessageCharacters;
   final String instituteTimezone;
+  final bool canGenerate;
 
   const AiChatPolicyDto({
     this.maxMessagesPerConversation = 20,
@@ -136,6 +137,7 @@ class AiChatPolicyDto {
     this.maxNewConversationsPerDay = 10,
     this.maxMessageCharacters = 4000,
     this.instituteTimezone = 'Asia/Kolkata',
+    this.canGenerate = true,
   });
 
   factory AiChatPolicyDto.fromJson(Map<String, dynamic> json) {
@@ -150,6 +152,7 @@ class AiChatPolicyDto {
           (json['max_message_characters'] as num?)?.toInt() ?? 4000,
       instituteTimezone:
           json['institute_timezone'] as String? ?? 'Asia/Kolkata',
+      canGenerate: json['can_generate'] as bool? ?? true,
     );
   }
 
@@ -159,6 +162,7 @@ class AiChatPolicyDto {
     'max_new_conversations_per_day': maxNewConversationsPerDay,
     'max_message_characters': maxMessageCharacters,
     'institute_timezone': instituteTimezone,
+    'can_generate': canGenerate,
   };
 }
 
@@ -255,6 +259,7 @@ class AiGenerationDto {
   bool get isCompleted => status.toLowerCase() == 'completed';
   bool get isProcessing => status.toLowerCase() == 'processing';
   bool get isFailed => status.toLowerCase() == 'failed';
+  bool get isStopped => status.toLowerCase() == 'stopped';
   bool get isUnresolved => status.toLowerCase() == 'unresolved';
 
   factory AiGenerationDto.fromJson(Map<String, dynamic> json) {

@@ -32,7 +32,8 @@ class AiScreen extends ConsumerStatefulWidget {
   ConsumerState<AiScreen> createState() => _AiScreenState();
 }
 
-class _AiScreenState extends ConsumerState<AiScreen> {
+class _AiScreenState extends ConsumerState<AiScreen>
+    with WidgetsBindingObserver {
   late final ScrollController _scrollController;
   late final TextEditingController _composerController;
   late final FocusNode _composerFocusNode;
@@ -44,6 +45,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController();
     _composerController = TextEditingController();
     _composerFocusNode = FocusNode();
@@ -60,10 +62,18 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     _composerController.dispose();
     _composerFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      ref.read(genericAiChatProvider.notifier).syncCanonicalState().ignore();
+    }
   }
 
   void _scrollToBottom({bool animate = false}) {
@@ -226,11 +236,14 @@ class _AiScreenState extends ConsumerState<AiScreen> {
       });
     }
 
+    final isAccessRestricted = chatState.hasAccessDenied;
+
     final isInputBlocked =
         chatState.isSending ||
         chatState.isGenerating ||
         chatState.hasActiveRateLimit ||
-        chatState.hasMessagesError;
+        chatState.hasMessagesError ||
+        isAccessRestricted;
 
     final showEmptyState =
         displayMessages.isEmpty &&
@@ -241,10 +254,11 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         chatState.currentChatId != null || displayMessages.isNotEmpty;
     final canvasColor = aiChatCanvasColor(design);
 
-    final quotaBanner =
-        chatState.quotaError != null && chatState.hasActiveRateLimit
-        ? _AiNoticeBanner(message: chatState.quotaError!)
-        : null;
+    final noticeBanner = isAccessRestricted
+        ? const _AiRestrictedAccessCard()
+        : (chatState.quotaError != null && chatState.hasActiveRateLimit
+              ? _AiNoticeBanner(message: chatState.quotaError!)
+              : null);
 
     Widget buildComposer() {
       return AiComposer(
@@ -304,7 +318,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                     top: false,
                     bottom: bottomInset == 0,
                     child: _AiEmptyState(
-                      notice: quotaBanner,
+                      notice: noticeBanner,
                       composer: buildComposer(),
                       onSuggestion: isInputBlocked ? null : _handleSuggestion,
                     ),
@@ -349,6 +363,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                             timestamp: DateFormatter.formatTime(item.timestamp),
                             isGenerating: item.isStreaming,
                             hasGenerationError: item.hasGenerationError,
+                            isStopped: item.isStopped,
                             onRetry: () => _handleRetry(item.id, false),
                             onCopy: () => _handleCopy(item.text),
                           );
@@ -360,13 +375,13 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
           if (!showEmptyState) ...[
             // Quota / Rate-limit warning banner if active
-            if (quotaBanner != null)
+            if (noticeBanner != null)
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: design.spacing.md,
                   vertical: design.spacing.xs,
                 ),
-                child: quotaBanner,
+                child: noticeBanner,
               ),
 
             // Composer docked to bottom
@@ -517,7 +532,7 @@ class _AiEmptyState extends StatelessWidget {
                       SizedBox(height: design.spacing.lg),
                       if (notice != null) ...[
                         notice!,
-                        SizedBox(height: design.spacing.sm),
+                        SizedBox(height: design.spacing.md),
                       ],
                       composer,
                     ],
@@ -599,6 +614,93 @@ class _AiNoticeBanner extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// Dedicated access restriction card when the student is not permitted to generate.
+class _AiRestrictedAccessCard extends StatelessWidget {
+  const _AiRestrictedAccessCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    return AppSemantics.container(
+      label:
+          '${l10n.aiAccessRestrictedTitle}. ${l10n.aiAccessRestrictedMessage}',
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: design.colors.warning.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(
+            color: design.colors.warning.withValues(alpha: 0.25),
+            width: 1.0,
+          ),
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                width: 5.0,
+                decoration: BoxDecoration(
+                  color: design.colors.warning,
+                  borderRadius: const BorderRadiusDirectional.only(
+                    topStart: Radius.circular(20.0),
+                    bottomStart: Radius.circular(20.0),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.md,
+                    vertical: design.spacing.md,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        LucideIcons.lock,
+                        size: 28.0,
+                        color: design.colors.warning,
+                      ),
+                      SizedBox(width: design.spacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AppText.title(
+                              l10n.aiAccessRestrictedTitle,
+                              style: design.typography.title.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15.0,
+                                color: design.colors.textPrimary,
+                              ),
+                            ),
+                            SizedBox(height: design.spacing.xs / 2),
+                            AppText.bodySmall(
+                              l10n.aiAccessRestrictedMessage,
+                              color: design.colors.textSecondary,
+                              style: design.typography.bodySmall.copyWith(
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

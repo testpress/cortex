@@ -13,6 +13,7 @@ class AiAssistantCard extends StatelessWidget {
     required this.timestamp,
     this.isGenerating = false,
     this.hasGenerationError = false,
+    this.isStopped = false,
     this.onRetry,
     this.onCopy,
   });
@@ -24,6 +25,10 @@ class AiAssistantCard extends StatelessWidget {
   /// a typing indicator; partial text is rendered as it arrives.
   final bool isGenerating;
   final bool hasGenerationError;
+
+  /// True if generation was stopped. Renders partial text and subtle stopped label
+  /// without retry or error styling.
+  final bool isStopped;
   final VoidCallback? onRetry;
   final VoidCallback? onCopy;
 
@@ -172,6 +177,17 @@ class AiAssistantCard extends StatelessWidget {
                     ),
                   )
                 else ...[
+                  if (isStopped)
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: design.spacing.xs,
+                        top: design.spacing.xs,
+                      ),
+                      child: AppText.caption(
+                        l10n.aiStoppedResponse,
+                        color: design.colors.textSecondary,
+                      ),
+                    ),
                   // The copy glyph sits in a 48dp touch target; pull the
                   // target toward the card edge so the glyph keeps a 12dp inset.
                   Transform.translate(

@@ -1421,5 +1421,8 @@
   "enforceStudentDataLogout": "تسجيل الخروج",
   "enforceStudentDataContinue": "المتابعة إلى التطبيق",
   "enforceStudentDataIncomplete": "يرجى إكمال بياناتك وحفظها أولاً.",
-  "enforceStudentDataVerifyError": "تعذّر التحقق من بيانات الملف الشخصي. يرجى المحاولة مرة أخرى."
+  "enforceStudentDataVerifyError": "تعذّر التحقق من بيانات الملف الشخصي. يرجى المحاولة مرة أخرى.",
+  "aiStoppedResponse": "تم الإيقاف",
+  "aiAccessRestrictedTitle": "المحادثة بالذكاء الاصطناعي غير متوفرة",
+  "aiAccessRestrictedMessage": "المحادثة بالذكاء الاصطناعي غير مفعلة لحسابك.\nيُرجى التواصل مع المسؤول."
 }
