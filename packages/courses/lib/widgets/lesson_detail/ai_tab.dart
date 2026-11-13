@@ -61,9 +61,13 @@ class _AITabState extends ConsumerState<AITab>
     super.didChangeDependencies();
     if (!_hasAddedGreeting) {
       _hasAddedGreeting = true;
+      final l10n = L10n.of(context);
+      final greeting = widget.lesson.type == LessonType.pdf
+          ? l10n.pdfAiGreeting
+          : l10n.videoAiGreeting;
       _messages.add(
         _ChatMessage(
-          text: L10n.of(context).videoAiGreeting,
+          text: greeting,
           isAi: true,
         ),
       );

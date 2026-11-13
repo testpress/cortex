@@ -15,6 +15,8 @@ import '../widgets/lesson_detail/ask_doubt_fab.dart';
 import '../widgets/lesson_detail/lesson_detail_skeleton.dart';
 import '../widgets/lesson_detail/video_mcq_filter_sheet.dart';
 import '../widgets/lesson_detail/assignment_viewer.dart';
+import '../widgets/lesson_detail/pdf_ai_bottom_sheet.dart';
+import '../widgets/lesson_detail/pdf_actions_fab.dart';
 import '../providers/downloads_provider.dart';
 
 /// Orchestrator that decides which viewer to show for a given lesson.
@@ -75,6 +77,8 @@ class _LessonDetailOrchestratorState
   final ValueNotifier<double> _readingProgress = ValueNotifier<double>(0.0);
   bool _alreadyMarkedComplete = false;
   bool _isBookmarkSheetOpen = false;
+  bool _isPdfAiSheetOpen = false;
+  bool _isPdfActionsMenuOpen = false;
   bool _isCreateFolderDialogOpen = false;
   final ValueNotifier<bool> _isMcqFilterSheetOpen = ValueNotifier<bool>(false);
   String _mcqDifficulty = 'medium';
@@ -177,6 +181,18 @@ class _LessonDetailOrchestratorState
     }
   }
 
+  void _navigateToAskDoubt(LessonDto lesson) {
+    final uri = Uri(
+      path: '/home/discussions/doubts/ask',
+      queryParameters: {
+        'chapterContentId': int.tryParse(lesson.id)?.toString() ?? '',
+        'lessonTitle': lesson.title,
+        'lessonType': lesson.type.name,
+      },
+    );
+    context.push(uri.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     final lesson = widget.lesson;
@@ -209,6 +225,44 @@ class _LessonDetailOrchestratorState
         lesson.progressStatus == LessonProgressStatus.completed;
 
     final isLocked = lesson.isLocked && !lesson.isFreePreview;
+
+    final isPdfAiAvailable = lesson.type == LessonType.pdf &&
+        lesson.isAiEnabled &&
+        lesson.canEnableLearnlensAi &&
+        lesson.learnlensAssetStatus?.toLowerCase() == 'completed' &&
+        !lesson.hasEnded &&
+        !isLocked &&
+        !lesson.isScheduled &&
+        lesson.isComplete;
+
+    final showHelpdeskFab = widget.enableHelpdesk &&
+        !lesson.hasEnded &&
+        !isLocked &&
+        !lesson.isScheduled &&
+        lesson.isComplete &&
+        helpdeskEnabled &&
+        [
+          LessonType.pdf,
+          LessonType.notes,
+          LessonType.embedContent,
+          LessonType.attachment,
+        ].contains(lesson.type);
+
+    final isPdf = lesson.type == LessonType.pdf;
+    final showFallbackDoubtFab = showHelpdeskFab &&
+        (!isPdf || (lesson.isDetailFetched && !isPdfAiAvailable));
+
+    final hasStickyFooter = lesson.type != LessonType.assignment &&
+        (lesson.hasEnded ||
+            isLocked ||
+            lesson.isScheduled ||
+            widget.error != null ||
+            (lesson.type != LessonType.video &&
+                lesson.type != LessonType.liveStream)) &&
+        (widget.onNext != null || widget.onPrevious != null);
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+    final fabBottom =
+        hasStickyFooter ? (92.0 + bottomInset) : (24.0 + bottomInset);
 
     return Stack(
       children: [
@@ -262,36 +316,44 @@ class _LessonDetailOrchestratorState
                       lesson.type != LessonType.liveStream)),
           child: _buildLessonContent(context),
         ),
-        if (widget.enableHelpdesk &&
-            !lesson.hasEnded &&
-            !isLocked &&
-            !lesson.isScheduled &&
-            lesson.isComplete &&
-            helpdeskEnabled &&
-            [
-              LessonType.pdf,
-              LessonType.notes,
-              LessonType.embedContent,
-              LessonType.attachment,
-            ].contains(lesson.type))
+        if (showFallbackDoubtFab)
           Positioned(
-            bottom: 106,
+            bottom: fabBottom,
             right: 24,
             child: AskDoubtFab(
-              onTap: () {
-                final uri = Uri(
-                  path: '/home/discussions/doubts/ask',
-                  queryParameters: {
-                    'chapterContentId':
-                        int.tryParse(lesson.id)?.toString() ?? '',
-                    'lessonTitle': lesson.title,
-                    'lessonType': lesson.type.name,
-                  },
-                );
-                context.push(uri.toString());
-              },
+              onTap: () => _navigateToAskDoubt(lesson),
             ),
           ),
+        if (isPdfAiAvailable) ...[
+          if (_isPdfActionsMenuOpen)
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => setState(() => _isPdfActionsMenuOpen = false),
+              ),
+            ),
+          Positioned(
+            bottom: fabBottom,
+            right: 24,
+            child: PdfActionsFab(
+              key: const ValueKey('pdf_actions_fab'),
+              isExpanded: _isPdfActionsMenuOpen,
+              onToggle: () => setState(
+                () => _isPdfActionsMenuOpen = !_isPdfActionsMenuOpen,
+              ),
+              onAskAi: () => setState(() {
+                _isPdfActionsMenuOpen = false;
+                _isPdfAiSheetOpen = true;
+              }),
+              onAskDoubt: showHelpdeskFab
+                  ? () {
+                      setState(() => _isPdfActionsMenuOpen = false);
+                      _navigateToAskDoubt(lesson);
+                    }
+                  : null,
+            ),
+          ),
+        ],
         AppBottomSheet(
           key: const ValueKey('bookmark_sheet'),
           isOpen: _isBookmarkSheetOpen,
@@ -307,6 +369,15 @@ class _LessonDetailOrchestratorState
                 _isCreateFolderDialogOpen = true;
               });
             },
+          ),
+        ),
+        AppBottomSheet(
+          key: const ValueKey('pdf_ai_sheet'),
+          isOpen: _isPdfAiSheetOpen,
+          onClose: () => setState(() => _isPdfAiSheetOpen = false),
+          child: PdfAiBottomSheet(
+            lesson: lesson,
+            onClose: () => setState(() => _isPdfAiSheetOpen = false),
           ),
         ),
         ValueListenableBuilder<bool>(
