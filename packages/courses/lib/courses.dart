@@ -49,3 +49,4 @@ export 'screens/downloads_screen.dart';
 export 'providers/downloads_provider.dart';
 export 'providers/assignment_sso_provider.dart';
 export 'widgets/lesson_detail/assignment_viewer.dart';
+export 'widgets/lesson_detail/pdf_ai_bottom_sheet.dart';

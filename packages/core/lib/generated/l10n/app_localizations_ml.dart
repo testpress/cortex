@@ -1086,6 +1086,19 @@ class AppLocalizationsMl extends AppLocalizations {
       'നമസ്കാരം! ഞാൻ നിങ്ങളുടെ AI പഠന സഹായിയാണ്. ഈ ലെക്ചറിനെക്കുറിച്ച് എന്തും ചോദിക്കാം!';
 
   @override
+  String get pdfAiGreeting =>
+      'നമസ്കാരം! ഞാൻ നിങ്ങളുടെ AI പഠന സഹായിയാണ്. ഈ പ്രമാണത്തെക്കുറിച്ച് എന്തും ചോദിക്കാം!';
+
+  @override
+  String get pdfAiStudyAssistant => 'AI പഠന സഹായി';
+
+  @override
+  String get labelAskAi => 'AI യോട് ചോദിക്കുക';
+
+  @override
+  String get labelAskAiPdf => 'AI യോട് ചോദിക്കുക (PDF)';
+
+  @override
   String get videoTranscodingProcessing =>
       'ഈ വീഡിയോ ഇപ്പോൾ പ്രോസസ്സ് ചെയ്തുകൊണ്ടിരിക്കുകയാണ്. ദയവായി കുറച്ചുസമയം കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.';
 

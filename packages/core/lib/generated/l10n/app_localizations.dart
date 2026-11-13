@@ -2033,6 +2033,30 @@ abstract class AppLocalizations {
   /// **'Hello! I\'m your AI study assistant. Ask me anything about this lecture!'**
   String get videoAiGreeting;
 
+  /// No description provided for @pdfAiGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! I\'m your AI study assistant. Ask me anything about this document!'**
+  String get pdfAiGreeting;
+
+  /// No description provided for @pdfAiStudyAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Study Assistant'**
+  String get pdfAiStudyAssistant;
+
+  /// No description provided for @labelAskAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI'**
+  String get labelAskAi;
+
+  /// No description provided for @labelAskAiPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI (PDF)'**
+  String get labelAskAiPdf;
+
   /// No description provided for @videoTranscodingProcessing.
   ///
   /// In en, this message translates to:
