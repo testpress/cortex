@@ -255,9 +255,13 @@ class _AiScreenState extends ConsumerState<AiScreen>
     final canvasColor = aiChatCanvasColor(design);
 
     final noticeBanner = isAccessRestricted
-        ? const _AiRestrictedAccessCard()
+        ? _AiNoticeCard(
+            icon: LucideIcons.lock,
+            title: l10n.aiAccessRestrictedTitle,
+            message: l10n.aiAccessRestrictedMessage,
+          )
         : (chatState.quotaError != null && chatState.hasActiveRateLimit
-              ? _AiNoticeBanner(message: chatState.quotaError!)
+              ? _AiNoticeCard(message: chatState.quotaError!)
               : null);
 
     Widget buildComposer() {
@@ -287,7 +291,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
                 horizontal: design.spacing.md,
                 vertical: design.spacing.xs,
               ),
-              child: _AiNoticeBanner(
+              child: _AiNoticeCard(
                 message: l10n.aiInitErrorBanner,
                 actionLabel: l10n.labelRetry,
                 onAction: () =>
@@ -553,90 +557,31 @@ class _AiEmptyState extends StatelessWidget {
   }
 }
 
-/// Inline warning banner for connection and quota notices.
-class _AiNoticeBanner extends StatelessWidget {
-  const _AiNoticeBanner({
+/// Shared notice card for warning, restriction, and connection states in AI chat.
+class _AiNoticeCard extends StatelessWidget {
+  const _AiNoticeCard({
     required this.message,
+    this.title,
+    this.icon = LucideIcons.alertTriangle,
     this.actionLabel,
     this.onAction,
   });
 
   final String message;
+  final String? title;
+  final IconData icon;
   final String? actionLabel;
   final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final color = design.colors.warning;
     final actionLabel = this.actionLabel;
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: actionLabel != null
-            ? design.spacing.xs
-            : design.spacing.xs + 2,
-      ),
-      decoration: BoxDecoration(
-        color: design.colors.warning.withValues(alpha: 0.12),
-        borderRadius: design.radius.card,
-        border: Border.all(color: design.colors.warning.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            LucideIcons.alertTriangle,
-            size: 16.0,
-            color: design.colors.warning,
-          ),
-          SizedBox(width: design.spacing.xs),
-          Expanded(
-            child: AppText.labelSmall(
-              message,
-              color: design.colors.textPrimary,
-            ),
-          ),
-          if (actionLabel != null) ...[
-            SizedBox(width: design.spacing.xs),
-            AppSemantics.button(
-              label: actionLabel,
-              onTap: onAction,
-              child: GestureDetector(
-                onTap: onAction,
-                behavior: HitTestBehavior.opaque,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 48.0,
-                    minHeight: 48.0,
-                  ),
-                  child: Center(
-                    child: AppText.labelBold(
-                      actionLabel,
-                      color: design.colors.primary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Dedicated access restriction card when the student is not permitted to generate.
-class _AiRestrictedAccessCard extends StatelessWidget {
-  const _AiRestrictedAccessCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
+    final hasTitle = title != null && title!.isNotEmpty;
 
     return AppSemantics.container(
-      label:
-          '${l10n.aiAccessRestrictedTitle}. ${l10n.aiAccessRestrictedMessage}',
+      label: hasTitle ? '$title. $message' : message,
       child: AppCard(
         padding: EdgeInsets.zero,
         child: ClipRRect(
@@ -645,50 +590,74 @@ class _AiRestrictedAccessCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  width: design.spacing.xs,
-                  color: design.colors.warning,
-                ),
+                Container(width: design.spacing.xs, color: color),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.md,
-                      vertical: design.spacing.sm * 1.5,
+                      vertical: design.spacing.sm,
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
-                          LucideIcons.lock,
-                          size: design.iconSize.lg,
-                          color: design.colors.warning,
+                          icon,
+                          size: hasTitle
+                              ? design.iconSize.lg
+                              : design.iconSize.sm,
+                          color: color,
                         ),
-                        SizedBox(width: design.spacing.md),
+                        SizedBox(width: design.spacing.sm),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              AppText.title(
-                                l10n.aiAccessRestrictedTitle,
-                                style: design.typography.title.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize:
-                                      design.typographyScale.base.fontSize,
+                              if (hasTitle) ...[
+                                AppText.base(
+                                  title!,
+                                  color: design.colors.textPrimary,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.25,
+                                  ),
+                                ),
+                                SizedBox(height: design.spacing.xs),
+                                AppText.bodySmall(
+                                  message,
+                                  color: design.colors.textSecondary,
+                                ),
+                              ] else
+                                AppText.labelSmall(
+                                  message,
                                   color: design.colors.textPrimary,
                                 ),
-                              ),
-                              SizedBox(height: design.spacing.xs / 2),
-                              AppText.bodySmall(
-                                l10n.aiAccessRestrictedMessage,
-                                color: design.colors.textSecondary,
-                                style: design.typography.bodySmall.copyWith(
-                                  height: 1.35,
-                                ),
-                              ),
                             ],
                           ),
                         ),
+                        if (actionLabel != null) ...[
+                          SizedBox(width: design.spacing.xs),
+                          AppSemantics.button(
+                            label: actionLabel,
+                            onTap: onAction,
+                            child: GestureDetector(
+                              onTap: onAction,
+                              behavior: HitTestBehavior.opaque,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minWidth: 48.0,
+                                  minHeight: 48.0,
+                                ),
+                                child: Center(
+                                  child: AppText.labelBold(
+                                    actionLabel,
+                                    color: design.colors.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

@@ -1811,34 +1811,6 @@ void main() {
       },
     );
 
-    test('state.isStreaming reflects streaming message in thread', () {
-      final stateWithout = GenericAiChatState(
-        messages: [
-          GenericAiChatMessage(
-            id: 'm1',
-            text: 'Completed',
-            isUser: false,
-            timestamp: DateTime.now(),
-            isStreaming: false,
-          ),
-        ],
-      );
-      expect(stateWithout.isStreaming, isFalse);
-
-      final stateWith = GenericAiChatState(
-        messages: [
-          GenericAiChatMessage(
-            id: 'm2',
-            text: 'In progress',
-            isUser: false,
-            timestamp: DateTime.now(),
-            isStreaming: true,
-          ),
-        ],
-      );
-      expect(stateWith.isStreaming, isTrue);
-    });
-
     test('recovers turn with stopped generation status', () async {
       final notifier = container.read(genericAiChatProvider.notifier);
       notifier.useStreaming = false;
@@ -2040,6 +2012,65 @@ void main() {
         await notifier.syncCanonicalState();
 
         expect(fakeRepository.getStatusCalls, callsBefore);
+      },
+    );
+
+    test(
+      'syncCanonicalState coalesces concurrent calls and guards against duplicate in-flight requests',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(currentChatId: 'chat-inflight-1');
+
+        fakeRepository.nextStatusResponse = const AiConversationDto(
+          chatId: 'chat-inflight-1',
+          title: 'In Flight Chat',
+        );
+        fakeRepository.nextMessagePage = const AiMessagePageResult(items: []);
+
+        final callsBefore = fakeRepository.getStatusCalls;
+
+        // Fire multiple concurrent sync calls (as triggered by rapid resumed events)
+        await Future.wait([
+          notifier.syncCanonicalState(),
+          notifier.syncCanonicalState(),
+          notifier.syncCanonicalState(),
+        ]);
+
+        // Only one network status call should have been made
+        expect(fakeRepository.getStatusCalls, callsBefore + 1);
+      },
+    );
+
+    test(
+      'syncCanonicalState aborts and preserves optimistic sending messages if sendMessage starts during sync',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.useStreaming = false;
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(currentChatId: 'chat-race-1');
+
+        fakeRepository.nextStatusResponse = const AiConversationDto(
+          chatId: 'chat-race-1',
+          title: 'Race Chat',
+        );
+        fakeRepository.nextMessagePage = const AiMessagePageResult(items: []);
+
+        // Start sync in flight
+        final syncFuture = notifier.syncCanonicalState();
+
+        // Send message while sync is in flight
+        await notifier.sendMessage('Hello while syncing');
+
+        await syncFuture;
+
+        final state = container.read(genericAiChatProvider);
+        expect(
+          state.messages.any((m) => m.text == 'Hello while syncing'),
+          isTrue,
+        );
       },
     );
   });

@@ -28,7 +28,7 @@ void main() {
                     child: AiAssistantCard(
                       message: '',
                       timestamp: '',
-                      isGenerating: true,
+                      status: AiAssistantStatus.generating,
                     ),
                   ),
                   pageRouteBuilder: <T>(settings, builder) =>
@@ -72,7 +72,7 @@ void main() {
               child: AiAssistantCard(
                 message: 'Partial retained answer',
                 timestamp: '10:30 AM',
-                isStopped: true,
+                status: AiAssistantStatus.stopped,
               ),
             ),
             pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(

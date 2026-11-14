@@ -301,7 +301,7 @@ void main() {
           const AiAssistantCard(
             message: 'Partial answer',
             timestamp: '14:36',
-            isGenerating: true,
+            status: AiAssistantStatus.generating,
           ),
         ),
       );
@@ -322,7 +322,7 @@ void main() {
           AiAssistantCard(
             message: '',
             timestamp: '14:36',
-            hasGenerationError: true,
+            status: AiAssistantStatus.failed,
             onRetry: () => retryCount++,
           ),
         ),

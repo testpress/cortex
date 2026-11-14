@@ -145,9 +145,6 @@ class GenericAiChatState {
     return DateTime.now().toUtc().isBefore(retryAt!);
   }
 
-  /// True if any message in the active thread is currently streaming chunks.
-  bool get isStreaming => messages.any((m) => m.isStreaming);
-
   GenericAiChatState copyWith({
     Object? currentChatId = _sentinel,
     String? currentTitle,
@@ -220,6 +217,7 @@ class GenericAiChat extends _$GenericAiChat {
 
   Timer? _pollingTimer;
   int _operationToken = 0;
+  Future<void>? _syncInFlight;
 
   /// Streams that are still open. Stale streams keep draining in the
   /// background (their events are ignored via [_operationToken]) and are
@@ -237,6 +235,7 @@ class GenericAiChat extends _$GenericAiChat {
   GenericAiChatState build() {
     ref.onDispose(() {
       _operationToken++;
+      _syncInFlight = null;
       _cancelPolling();
       _cancelActiveStreams();
     });
@@ -285,7 +284,8 @@ class GenericAiChat extends _$GenericAiChat {
       return;
     }
 
-    final token = _operationToken;
+    _syncInFlight = null;
+    final token = ++_operationToken;
     final requestId = customRequestId ?? UuidUtils.v4();
 
     // Replays keep their original target; new submissions use the active chat.
@@ -1021,6 +1021,7 @@ class GenericAiChat extends _$GenericAiChat {
   Future<void> selectConversation(String chatId) async {
     _cancelPolling();
     _submissionTargets.clear();
+    _syncInFlight = null;
     final token = ++_operationToken;
 
     state = state.copyWith(
@@ -1074,8 +1075,14 @@ class GenericAiChat extends _$GenericAiChat {
   }
 
   /// Re-synchronizes conversation status and message history with LearnLens
-  /// without creating duplicate turns.
-  Future<void> syncCanonicalState() async {
+  /// without creating duplicate turns or duplicate in-flight network requests.
+  Future<void> syncCanonicalState() {
+    return _syncInFlight ??= _performSyncCanonicalState().whenComplete(() {
+      _syncInFlight = null;
+    });
+  }
+
+  Future<void> _performSyncCanonicalState() async {
     final token = _operationToken;
 
     // Re-evaluate session policy if cached/updated on resume
@@ -1098,8 +1105,10 @@ class GenericAiChat extends _$GenericAiChat {
       final page = await _repository.getMessages(chatId: chatId);
 
       if (token != _operationToken || state.currentChatId != chatId) return;
-      // Do not clobber if an active SSE stream subscription is live
-      if (_activeStreams.isNotEmpty) return;
+      // Do not clobber if a message is sending or generating, or if an SSE stream is active
+      if (state.isSending || state.isGenerating || _activeStreams.isNotEmpty) {
+        return;
+      }
 
       final gen = status.generation;
       final isStillProcessing =
@@ -1109,10 +1118,10 @@ class GenericAiChat extends _$GenericAiChat {
           .map(GenericAiChatMessage.fromDto)
           .toList();
 
-      // Preserve uncommitted local messages with send errors, deduplicating
-      // by stable requestId to avoid duplicates if the turn was accepted on the server.
-      final uncommittedFailedMessages = state.messages.where((localMsg) {
-        if (!localMsg.hasSendError) return false;
+      // Preserve uncommitted local messages (failed turns or pending sends),
+      // deduplicating by stable requestId to avoid duplicates if the turn was accepted on the server.
+      final uncommittedLocalMessages = state.messages.where((localMsg) {
+        if (!localMsg.hasSendError && !localMsg.isSending) return false;
         final reqId = localMsg.requestId;
         if (reqId == null || reqId.isEmpty) return true;
         final alreadyOnServer = serverMessages.any(
@@ -1126,7 +1135,7 @@ class GenericAiChat extends _$GenericAiChat {
         currentTitle: status.title.isNotEmpty
             ? status.title
             : state.currentTitle,
-        messages: [...serverMessages, ...uncommittedFailedMessages],
+        messages: [...serverMessages, ...uncommittedLocalMessages],
         isSending: false,
         isGenerating: isStillProcessing,
       );
@@ -1151,9 +1160,9 @@ class GenericAiChat extends _$GenericAiChat {
       }
     } catch (error, stackTrace) {
       dev.log(
-        'Failed to sync canonical AI chat state for chatId: $chatId',
+        'Failed to sync canonical AI chat state for chatId: $chatId (${error.runtimeType})',
         name: 'GenericAiChatNotifier',
-        error: error,
+        error: error.runtimeType.toString(),
         stackTrace: stackTrace,
       );
     }
@@ -1162,6 +1171,7 @@ class GenericAiChat extends _$GenericAiChat {
   /// Clears active conversation state and presents a clean empty canvas.
   void startNewChat() {
     _operationToken++;
+    _syncInFlight = null;
     _cancelPolling();
     _submissionTargets.clear();
     state = state.copyWith(

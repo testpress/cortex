@@ -41,3 +41,9 @@
 - [x] 5.13 Update `AiScreen` and widget tests to verify `AiAssistantStatus` modes
 - [x] 5.14 Log non-fatal errors in `syncCanonicalState()` via `dev.log` instead of silently swallowing
 - [x] 5.15 Refactor `_AiRestrictedAccessCard` to use core `AppCard` primitive and design tokens
+- [x] 5.16 Guard `syncCanonicalState()` against duplicate concurrent in-flight requests via `_syncInFlight` and verify with unit test
+- [x] 5.17 Invalidate in-flight sync on `sendMessage` via `_operationToken` bump, guard post-await `isSending`/`isGenerating`, and preserve optimistic sending messages
+- [x] 5.18 Extract shared `_AiNoticeCard` consolidating `_AiNoticeBanner` and `_AiRestrictedAccessCard` using pure design tokens without overrides or derived math
+- [x] 5.19 Remove unused `GenericAiChatState.isStreaming` getter and eliminate temporary preview overrides
+- [x] 5.20 Sanitize generic error logging in `syncCanonicalState()` to log `error.runtimeType` rather than raw payload
+- [x] 5.21 Add comment documenting fail-open policy for `can_generate` in `AiChatPolicyDto.fromJson`

@@ -6,35 +6,21 @@ import '../core.dart';
 enum AiAssistantStatus { completed, generating, failed, stopped }
 
 class AiAssistantCard extends StatelessWidget {
+  /// Share of the chat column a card may occupy before wrapping.
   static const double maxWidthFactor = 0.75;
 
   const AiAssistantCard({
     super.key,
     required this.message,
     required this.timestamp,
-    this.status,
-    this.isGenerating = false,
-    this.hasGenerationError = false,
-    this.isStopped = false,
+    this.status = AiAssistantStatus.completed,
     this.onRetry,
     this.onCopy,
-  }) : resolvedStatus =
-           status ??
-           (hasGenerationError
-               ? AiAssistantStatus.failed
-               : isGenerating
-               ? AiAssistantStatus.generating
-               : isStopped
-               ? AiAssistantStatus.stopped
-               : AiAssistantStatus.completed);
+  });
 
   final String message;
   final String timestamp;
-  final AiAssistantStatus? status;
-  final AiAssistantStatus resolvedStatus;
-  final bool isGenerating;
-  final bool hasGenerationError;
-  final bool isStopped;
+  final AiAssistantStatus status;
 
   final VoidCallback? onRetry;
   final VoidCallback? onCopy;
@@ -138,7 +124,7 @@ class AiAssistantCard extends StatelessWidget {
                     ),
                     border: Border.all(color: design.colors.border, width: 1.0),
                   ),
-                  child: resolvedStatus == AiAssistantStatus.failed
+                  child: status == AiAssistantStatus.failed
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
@@ -176,7 +162,7 @@ class AiAssistantCard extends StatelessWidget {
                             ),
                           ],
                         )
-                      : resolvedStatus == AiAssistantStatus.generating &&
+                      : status == AiAssistantStatus.generating &&
                             message.isEmpty
                       ? ExcludeSemantics(
                           child: Padding(
@@ -191,9 +177,9 @@ class AiAssistantCard extends StatelessWidget {
                           textStyle: design.typography.body,
                         ),
                 ),
-                if (resolvedStatus == AiAssistantStatus.failed)
+                if (status == AiAssistantStatus.failed)
                   tryAgainButton
-                else if (resolvedStatus == AiAssistantStatus.generating)
+                else if (status == AiAssistantStatus.generating)
                   Padding(
                     padding: EdgeInsetsDirectional.only(
                       start: design.spacing.xs,
@@ -205,7 +191,7 @@ class AiAssistantCard extends StatelessWidget {
                     ),
                   )
                 else ...[
-                  if (resolvedStatus == AiAssistantStatus.stopped)
+                  if (status == AiAssistantStatus.stopped)
                     Padding(
                       padding: EdgeInsetsDirectional.only(
                         start: design.spacing.xs,
