@@ -30,3 +30,14 @@
 - [x] 5.2 Add `_operationToken` guard and stream state check to `syncCanonicalState()` in `generic_ai_chat_provider.dart`
 - [x] 5.3 Wrap `_AiRestrictedAccessCard` with `AppSemantics.container()` in `ai_screen.dart`
 - [x] 5.4 Add unit test verifying `syncCanonicalState()` discards update on conversation switch
+- [x] 5.5 Add `_isAccessDeniedError` helper and map 403 / `student_restricted` errors to `hasAccessDenied: true` in `_handleSendError`
+- [x] 5.6 Re-evaluate `policy.canGenerate` and map 403 errors to `hasAccessDenied: true` in `syncCanonicalState`
+- [x] 5.7 Add unit tests for mid-session access revocation and resume policy synchronization
+- [x] 5.8 Preserve and deduplicate failed local messages (`hasSendError`) by `requestId` in `syncCanonicalState()`
+- [x] 5.9 Add unit test verifying `syncCanonicalState()` preserves uncommitted failed messages and deduplicates against server messages
+- [x] 5.10 Add unit test verifying `sendMessage` is a no-op when `hasAccessDenied` is true
+- [x] 5.11 Add unit test verifying `initialize()` sets `hasAccessDenied: true` when session initialization returns 403
+- [x] 5.12 Introduce `AiAssistantStatus` enum and refactor `AiAssistantCard` to use `resolvedStatus` with backward compatibility
+- [x] 5.13 Update `AiScreen` and widget tests to verify `AiAssistantStatus` modes
+- [x] 5.14 Log non-fatal errors in `syncCanonicalState()` via `dev.log` instead of silently swallowing
+- [x] 5.15 Refactor `_AiRestrictedAccessCard` to use core `AppCard` primitive and design tokens

@@ -358,12 +358,18 @@ class _AiScreenState extends ConsumerState<AiScreen>
                               onRetry: () => _handleRetry(item.id, true),
                             );
                           }
+                          final status = item.hasGenerationError
+                              ? AiAssistantStatus.failed
+                              : item.isStreaming
+                              ? AiAssistantStatus.generating
+                              : item.isStopped
+                              ? AiAssistantStatus.stopped
+                              : AiAssistantStatus.completed;
+
                           return AiAssistantCard(
                             message: item.text,
                             timestamp: DateFormatter.formatTime(item.timestamp),
-                            isGenerating: item.isStreaming,
-                            hasGenerationError: item.hasGenerationError,
-                            isStopped: item.isStopped,
+                            status: status,
                             onRetry: () => _handleRetry(item.id, false),
                             onCopy: () => _handleCopy(item.text),
                           );
@@ -631,74 +637,64 @@ class _AiRestrictedAccessCard extends StatelessWidget {
     return AppSemantics.container(
       label:
           '${l10n.aiAccessRestrictedTitle}. ${l10n.aiAccessRestrictedMessage}',
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: design.colors.warning.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(
-            color: design.colors.warning.withValues(alpha: 0.25),
-            width: 1.0,
-          ),
-        ),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                width: 5.0,
-                decoration: BoxDecoration(
+      child: AppCard(
+        padding: EdgeInsets.zero,
+        child: ClipRRect(
+          borderRadius: design.radius.card,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: design.spacing.xs,
                   color: design.colors.warning,
-                  borderRadius: const BorderRadiusDirectional.only(
-                    topStart: Radius.circular(20.0),
-                    bottomStart: Radius.circular(20.0),
-                  ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.md,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        LucideIcons.lock,
-                        size: 28.0,
-                        color: design.colors.warning,
-                      ),
-                      SizedBox(width: design.spacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AppText.title(
-                              l10n.aiAccessRestrictedTitle,
-                              style: design.typography.title.copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 15.0,
-                                color: design.colors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: design.spacing.xs / 2),
-                            AppText.bodySmall(
-                              l10n.aiAccessRestrictedMessage,
-                              color: design.colors.textSecondary,
-                              style: design.typography.bodySmall.copyWith(
-                                height: 1.35,
-                              ),
-                            ),
-                          ],
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.sm * 1.5,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          LucideIcons.lock,
+                          size: design.iconSize.lg,
+                          color: design.colors.warning,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: design.spacing.md),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AppText.title(
+                                l10n.aiAccessRestrictedTitle,
+                                style: design.typography.title.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize:
+                                      design.typographyScale.base.fontSize,
+                                  color: design.colors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(height: design.spacing.xs / 2),
+                              AppText.bodySmall(
+                                l10n.aiAccessRestrictedMessage,
+                                color: design.colors.textSecondary,
+                                style: design.typography.bodySmall.copyWith(
+                                  height: 1.35,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

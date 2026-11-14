@@ -1685,6 +1685,42 @@ void main() {
     );
 
     test(
+      'initialize sets hasAccessDenied when session creation returns 403 or student_restricted',
+      () async {
+        fakeRepository.ensureSessionError = const LearnLensException(
+          message: 'Student access restricted',
+          statusCode: 403,
+          code: 'student_restricted',
+          type: ApiErrorType.forbidden,
+        );
+        final notifier = container.read(genericAiChatProvider.notifier);
+
+        await notifier.initialize();
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.hasAccessDenied, isTrue);
+        expect(state.hasInitError, isFalse);
+      },
+    );
+
+    test('sendMessage is a no-op when hasAccessDenied is true', () async {
+      final notifier = container.read(genericAiChatProvider.notifier);
+      container.read(genericAiChatProvider.notifier).state = container
+          .read(genericAiChatProvider)
+          .copyWith(hasAccessDenied: true);
+
+      final startCallsBefore = fakeRepository.startConversationCalls;
+      final streamCallsBefore = fakeRepository.streamConversationCalls;
+
+      await notifier.sendMessage('Blocked message');
+
+      final state = container.read(genericAiChatProvider);
+      expect(state.messages, isEmpty);
+      expect(fakeRepository.startConversationCalls, startCallsBefore);
+      expect(fakeRepository.streamConversationCalls, streamCallsBefore);
+    });
+
+    test(
       'syncCanonicalState refreshes canonical status and messages',
       () async {
         final notifier = container.read(genericAiChatProvider.notifier);
@@ -1829,5 +1865,182 @@ void main() {
       expect(state.messages.last.text, 'Partial answer');
       expect(state.isGenerating, isFalse);
     });
+
+    test(
+      'sendMessage sets hasAccessDenied when server returns 403 or student_restricted',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.useStreaming = false;
+
+        fakeRepository.errorToThrow = const LearnLensException(
+          message: 'Student restricted from using AI chat',
+          statusCode: 403,
+          code: 'student_restricted',
+          type: ApiErrorType.forbidden,
+        );
+
+        await notifier.sendMessage('Generate answer');
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.hasAccessDenied, isTrue);
+        expect(state.isSending, isFalse);
+        expect(state.isGenerating, isFalse);
+      },
+    );
+
+    test(
+      'syncCanonicalState re-synchronizes policy.canGenerate on resume',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(hasAccessDenied: true);
+
+        // Policy updated in repository to allow generation
+        fakeRepository.customPolicy = const AiChatPolicyDto(canGenerate: true);
+
+        await notifier.syncCanonicalState();
+
+        expect(container.read(genericAiChatProvider).hasAccessDenied, isFalse);
+      },
+    );
+
+    test(
+      'syncCanonicalState sets hasAccessDenied when getConversationStatus returns 403',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(currentChatId: 'chat-revoked-1', hasAccessDenied: false);
+
+        fakeRepository.getStatusError = const LearnLensException(
+          message: 'Access revoked',
+          statusCode: 403,
+          code: 'access_denied',
+          type: ApiErrorType.forbidden,
+        );
+
+        await notifier.syncCanonicalState();
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.hasAccessDenied, isTrue);
+        expect(state.isSending, isFalse);
+        expect(state.isGenerating, isFalse);
+      },
+    );
+
+    test(
+      'syncCanonicalState preserves uncommitted failed messages with hasSendError',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final failedUserMsg = GenericAiChatMessage(
+          id: 'failed-local-1',
+          text: 'Unsent user query',
+          isUser: true,
+          timestamp: DateTime.now(),
+          hasSendError: true,
+          requestId: 'req-uncommitted-1',
+        );
+
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(
+              currentChatId: 'chat-preserve-1',
+              messages: [failedUserMsg],
+            );
+
+        fakeRepository.nextStatusResponse = const AiConversationDto(
+          chatId: 'chat-preserve-1',
+          title: 'Preserved Chat',
+        );
+        fakeRepository.nextMessagePage = AiMessagePageResult(
+          items: [
+            AiMessageDto(
+              messageId: 'm-server-1',
+              role: 'assistant',
+              content: 'Previous Answer',
+              createdAt: DateTime.now(),
+            ),
+          ],
+        );
+
+        await notifier.syncCanonicalState();
+
+        final messages = container.read(genericAiChatProvider).messages;
+        expect(messages.length, 2);
+        expect(messages.first.id, 'm-server-1');
+        expect(messages.last.id, 'failed-local-1');
+        expect(messages.last.hasSendError, isTrue);
+        expect(messages.last.text, 'Unsent user query');
+      },
+    );
+
+    test(
+      'syncCanonicalState deduplicates failed message if server response already includes it by requestId',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        const sharedRequestId = 'req-dedup-1';
+
+        final failedLocalMsg = GenericAiChatMessage(
+          id: 'temp-local-1',
+          text: 'Did it succeed?',
+          isUser: true,
+          timestamp: DateTime.now(),
+          hasSendError: true,
+          requestId: sharedRequestId,
+        );
+
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(
+              currentChatId: 'chat-dedup-1',
+              messages: [failedLocalMsg],
+            );
+
+        fakeRepository.nextStatusResponse = const AiConversationDto(
+          chatId: 'chat-dedup-1',
+          title: 'Dedup Chat',
+        );
+        fakeRepository.nextMessagePage = AiMessagePageResult(
+          items: [
+            AiMessageDto(
+              messageId: 'm-server-confirmed',
+              role: 'user',
+              content: 'Did it succeed?',
+              createdAt: DateTime.now(),
+              generation: AiGenerationDto(
+                generationId: 'gen-confirmed',
+                requestId: sharedRequestId,
+                userMessageId: 'm-server-confirmed',
+                status: 'completed',
+                createdAt: DateTime.now().toUtc(),
+              ),
+            ),
+          ],
+        );
+
+        await notifier.syncCanonicalState();
+
+        final messages = container.read(genericAiChatProvider).messages;
+        expect(messages.length, 1);
+        expect(messages.first.id, 'm-server-confirmed');
+      },
+    );
+
+    test(
+      'syncCanonicalState skips synchronization when state.isSending is true',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(currentChatId: 'chat-sending-1', isSending: true);
+
+        final callsBefore = fakeRepository.getStatusCalls;
+
+        await notifier.syncCanonicalState();
+
+        expect(fakeRepository.getStatusCalls, callsBefore);
+      },
+    );
   });
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -251,9 +252,7 @@ class GenericAiChat extends _$GenericAiChat {
         state = state.copyWith(hasAccessDenied: true);
       }
     } on LearnLensException catch (e) {
-      if (e.statusCode == 403 ||
-          e.code == 'access_denied' ||
-          e.code == 'student_restricted') {
+      if (_isAccessDeniedError(e)) {
         state = state.copyWith(hasAccessDenied: true, hasInitError: false);
       } else {
         state = state.copyWith(hasInitError: true);
@@ -261,6 +260,16 @@ class GenericAiChat extends _$GenericAiChat {
     } catch (e) {
       state = state.copyWith(hasInitError: true);
     }
+  }
+
+  bool _isAccessDeniedError(Object error) {
+    if (error is LearnLensException) {
+      if (error.isQuotaOrRateLimit) return false;
+      return error.code == 'student_restricted' ||
+          error.code == 'access_denied' ||
+          error.statusCode == 403;
+    }
+    return false;
   }
 
   /// Sends a user message. If no conversation is active, starts a new conversation;
@@ -772,6 +781,7 @@ class GenericAiChat extends _$GenericAiChat {
     String? errorCode;
     DateTime? retryAt;
     String? quotaError;
+    final isAccessDenied = _isAccessDeniedError(error);
 
     if (error is LearnLensException) {
       errorMessage = error.message;
@@ -805,6 +815,7 @@ class GenericAiChat extends _$GenericAiChat {
       isGenerating: false,
       quotaError: quotaError,
       retryAt: retryAt,
+      hasAccessDenied: isAccessDenied ? true : state.hasAccessDenied,
     );
   }
 
@@ -1065,27 +1076,57 @@ class GenericAiChat extends _$GenericAiChat {
   /// Re-synchronizes conversation status and message history with LearnLens
   /// without creating duplicate turns.
   Future<void> syncCanonicalState() async {
+    final token = _operationToken;
+
+    // Re-evaluate session policy if cached/updated on resume
+    final policy = _repository.policy;
+    if (policy != null) {
+      final isDenied = !policy.canGenerate;
+      if (state.hasAccessDenied != isDenied) {
+        state = state.copyWith(hasAccessDenied: isDenied);
+      }
+    }
+
     final chatId = state.currentChatId;
     if (chatId == null || chatId.isEmpty) return;
-    final token = _operationToken;
+
+    // Do not race with an active message send in flight
+    if (state.isSending) return;
 
     try {
       final status = await _repository.getConversationStatus(chatId: chatId);
       final page = await _repository.getMessages(chatId: chatId);
 
       if (token != _operationToken || state.currentChatId != chatId) return;
-      // Avoid wiping in-flight streaming turn if user resumes during an active SSE stream
-      if (state.isStreaming || _activeStreams.isNotEmpty) return;
+      // Do not clobber if an active SSE stream subscription is live
+      if (_activeStreams.isNotEmpty) return;
 
       final gen = status.generation;
       final isStillProcessing =
           gen != null && (gen.isProcessing || gen.isUnresolved);
 
+      final serverMessages = page.items
+          .map(GenericAiChatMessage.fromDto)
+          .toList();
+
+      // Preserve uncommitted local messages with send errors, deduplicating
+      // by stable requestId to avoid duplicates if the turn was accepted on the server.
+      final uncommittedFailedMessages = state.messages.where((localMsg) {
+        if (!localMsg.hasSendError) return false;
+        final reqId = localMsg.requestId;
+        if (reqId == null || reqId.isEmpty) return true;
+        final alreadyOnServer = serverMessages.any(
+          (serverMsg) =>
+              serverMsg.requestId == reqId || serverMsg.id == localMsg.id,
+        );
+        return !alreadyOnServer;
+      }).toList();
+
       state = state.copyWith(
         currentTitle: status.title.isNotEmpty
             ? status.title
             : state.currentTitle,
-        messages: page.items.map(GenericAiChatMessage.fromDto).toList(),
+        messages: [...serverMessages, ...uncommittedFailedMessages],
         isSending: false,
         isGenerating: isStillProcessing,
       );
@@ -1093,9 +1134,28 @@ class GenericAiChat extends _$GenericAiChat {
       if (isStillProcessing) {
         _startStatusPolling(chatId, gen.requestId, token);
       }
-    } catch (_) {
-      // Silently catch exceptions so background/resume transient network drops
-      // do not disrupt the current chat view.
+    } on LearnLensException catch (e, stackTrace) {
+      if (_isAccessDeniedError(e) && token == _operationToken) {
+        state = state.copyWith(
+          hasAccessDenied: true,
+          isSending: false,
+          isGenerating: false,
+        );
+      } else {
+        dev.log(
+          'Failed to sync canonical AI chat state for chatId: $chatId',
+          name: 'GenericAiChatNotifier',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+    } catch (error, stackTrace) {
+      dev.log(
+        'Failed to sync canonical AI chat state for chatId: $chatId',
+        name: 'GenericAiChatNotifier',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 

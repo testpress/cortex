@@ -93,4 +93,37 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'renders stopped response when using explicit AiAssistantStatus.stopped',
+    (tester) async {
+      await tester.pumpWidget(
+        DesignProvider(
+          config: DesignConfig.defaults(context: null),
+          child: WidgetsApp(
+            color: const Color(0xFF000000),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
+            home: const Center(
+              child: AiAssistantCard(
+                message: 'Enum stopped response',
+                timestamp: '11:00 AM',
+                status: AiAssistantStatus.stopped,
+              ),
+            ),
+            pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
+              settings: settings,
+              pageBuilder: (context, _, _) => builder(context),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Enum stopped response'), findsOneWidget);
+      expect(find.text('Stopped'), findsOneWidget);
+      expect(find.text('Try again'), findsNothing);
+    },
+  );
 }
