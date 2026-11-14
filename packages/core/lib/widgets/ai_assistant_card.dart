@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 import '../core.dart';
 
+enum AiAssistantStatus { completed, generating, failed, stopped }
+
 class AiAssistantCard extends StatelessWidget {
   /// Share of the chat column a card may occupy before wrapping.
   static const double maxWidthFactor = 0.75;
@@ -11,19 +13,15 @@ class AiAssistantCard extends StatelessWidget {
     super.key,
     required this.message,
     required this.timestamp,
-    this.isGenerating = false,
-    this.hasGenerationError = false,
+    this.status = AiAssistantStatus.completed,
     this.onRetry,
     this.onCopy,
   });
 
   final String message;
   final String timestamp;
+  final AiAssistantStatus status;
 
-  /// True while the answer is still being streamed. An empty [message] shows
-  /// a typing indicator; partial text is rendered as it arrives.
-  final bool isGenerating;
-  final bool hasGenerationError;
   final VoidCallback? onRetry;
   final VoidCallback? onCopy;
 
@@ -74,6 +72,26 @@ class AiAssistantCard extends StatelessWidget {
       ),
     );
 
+    final copyButton = Transform.translate(
+      offset: Offset(isRtl ? design.spacing.xs : -design.spacing.xs, 0),
+      child: AppIconButton(
+        icon: LucideIcons.copy,
+        size: design.iconSize.sm,
+        color: design.colors.onSurfaceVariant,
+        accessibilityLabel: l10n.aiCopyMessageSemantic,
+        onTap:
+            onCopy ??
+            () {
+              Clipboard.setData(ClipboardData(text: message));
+            },
+      ),
+    );
+
+    final timestampLabel = Padding(
+      padding: EdgeInsetsDirectional.only(start: design.spacing.xs),
+      child: AppText.caption(timestamp, color: design.colors.textSecondary),
+    );
+
     return Align(
       alignment: AlignmentDirectional.centerStart,
       child: Padding(
@@ -106,7 +124,7 @@ class AiAssistantCard extends StatelessWidget {
                     ),
                     border: Border.all(color: design.colors.border, width: 1.0),
                   ),
-                  child: hasGenerationError
+                  child: status == AiAssistantStatus.failed
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
@@ -144,7 +162,8 @@ class AiAssistantCard extends StatelessWidget {
                             ),
                           ],
                         )
-                      : isGenerating && message.isEmpty
+                      : status == AiAssistantStatus.generating &&
+                            message.isEmpty
                       ? ExcludeSemantics(
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -158,9 +177,9 @@ class AiAssistantCard extends StatelessWidget {
                           textStyle: design.typography.body,
                         ),
                 ),
-                if (hasGenerationError)
+                if (status == AiAssistantStatus.failed)
                   tryAgainButton
-                else if (isGenerating)
+                else if (status == AiAssistantStatus.generating)
                   Padding(
                     padding: EdgeInsetsDirectional.only(
                       start: design.spacing.xs,
@@ -172,34 +191,19 @@ class AiAssistantCard extends StatelessWidget {
                     ),
                   )
                 else ...[
-                  // The copy glyph sits in a 48dp touch target; pull the
-                  // target toward the card edge so the glyph keeps a 12dp inset.
-                  Transform.translate(
-                    offset: Offset(
-                      isRtl ? design.spacing.xs : -design.spacing.xs,
-                      0,
+                  if (status == AiAssistantStatus.stopped)
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: design.spacing.xs,
+                        top: design.spacing.xs,
+                      ),
+                      child: AppText.caption(
+                        l10n.aiStoppedResponse,
+                        color: design.colors.textSecondary,
+                      ),
                     ),
-                    child: AppIconButton(
-                      icon: LucideIcons.copy,
-                      size: design.iconSize.sm,
-                      color: design.colors.onSurfaceVariant,
-                      accessibilityLabel: l10n.aiCopyMessageSemantic,
-                      onTap:
-                          onCopy ??
-                          () {
-                            Clipboard.setData(ClipboardData(text: message));
-                          },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      start: design.spacing.xs,
-                    ),
-                    child: AppText.caption(
-                      timestamp,
-                      color: design.colors.textSecondary,
-                    ),
-                  ),
+                  copyButton,
+                  timestampLabel,
                 ],
               ],
             );

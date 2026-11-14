@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,6 +23,7 @@ class GenericAiChatMessage {
   /// True while an assistant answer is still being streamed. The text is
   /// provisional and will be replaced by the authoritative answer.
   final bool isStreaming;
+  final bool isStopped;
   final bool hasSendError;
   final bool hasGenerationError;
   final String? errorMessage;
@@ -35,6 +37,7 @@ class GenericAiChatMessage {
     required this.timestamp,
     this.isSending = false,
     this.isStreaming = false,
+    this.isStopped = false,
     this.hasSendError = false,
     this.hasGenerationError = false,
     this.errorMessage,
@@ -49,6 +52,7 @@ class GenericAiChatMessage {
     DateTime? timestamp,
     bool? isSending,
     bool? isStreaming,
+    bool? isStopped,
     bool? hasSendError,
     bool? hasGenerationError,
     Object? errorMessage = _sentinel,
@@ -62,6 +66,7 @@ class GenericAiChatMessage {
       timestamp: timestamp ?? this.timestamp,
       isSending: isSending ?? this.isSending,
       isStreaming: isStreaming ?? this.isStreaming,
+      isStopped: isStopped ?? this.isStopped,
       hasSendError: hasSendError ?? this.hasSendError,
       hasGenerationError: hasGenerationError ?? this.hasGenerationError,
       errorMessage: errorMessage == _sentinel
@@ -76,6 +81,7 @@ class GenericAiChatMessage {
     final gen = dto.generation;
     final isGenFailed = gen?.isFailed == true;
     final isProcessing = gen?.isProcessing == true;
+    final isStopped = gen?.isStopped == true;
 
     return GenericAiChatMessage(
       id: dto.messageId,
@@ -83,6 +89,7 @@ class GenericAiChatMessage {
       isUser: dto.isUser,
       timestamp: dto.createdAt,
       isSending: isProcessing,
+      isStopped: isStopped,
       hasGenerationError: isGenFailed,
       errorMessage: gen?.errorMessage,
       errorCode: isGenFailed ? (gen?.status ?? 'generation_failed') : null,
@@ -110,6 +117,7 @@ class GenericAiChatState {
   final bool hasHistoryError;
   final Object? historyError;
   final bool hasInitError;
+  final bool hasAccessDenied;
 
   const GenericAiChatState({
     this.currentChatId,
@@ -129,6 +137,7 @@ class GenericAiChatState {
     this.hasHistoryError = false,
     this.historyError,
     this.hasInitError = false,
+    this.hasAccessDenied = false,
   });
 
   bool get hasActiveRateLimit {
@@ -154,6 +163,7 @@ class GenericAiChatState {
     bool? hasHistoryError,
     Object? historyError = _sentinel,
     bool? hasInitError,
+    bool? hasAccessDenied,
   }) {
     return GenericAiChatState(
       currentChatId: currentChatId == _sentinel
@@ -183,6 +193,7 @@ class GenericAiChatState {
           ? this.historyError
           : historyError,
       hasInitError: hasInitError ?? this.hasInitError,
+      hasAccessDenied: hasAccessDenied ?? this.hasAccessDenied,
     );
   }
 }
@@ -206,6 +217,7 @@ class GenericAiChat extends _$GenericAiChat {
 
   Timer? _pollingTimer;
   int _operationToken = 0;
+  Future<void>? _syncInFlight;
 
   /// Streams that are still open. Stale streams keep draining in the
   /// background (their events are ignored via [_operationToken]) and are
@@ -223,6 +235,7 @@ class GenericAiChat extends _$GenericAiChat {
   GenericAiChatState build() {
     ref.onDispose(() {
       _operationToken++;
+      _syncInFlight = null;
       _cancelPolling();
       _cancelActiveStreams();
     });
@@ -232,11 +245,30 @@ class GenericAiChat extends _$GenericAiChat {
   /// Prepares the generic chat session when the AI tab opens.
   Future<void> initialize() async {
     try {
-      state = state.copyWith(hasInitError: false);
+      state = state.copyWith(hasInitError: false, hasAccessDenied: false);
       await _repository.ensureGenericChatSession();
+      if (_repository.policy?.canGenerate == false) {
+        state = state.copyWith(hasAccessDenied: true);
+      }
+    } on LearnLensException catch (e) {
+      if (_isAccessDeniedError(e)) {
+        state = state.copyWith(hasAccessDenied: true, hasInitError: false);
+      } else {
+        state = state.copyWith(hasInitError: true);
+      }
     } catch (e) {
       state = state.copyWith(hasInitError: true);
     }
+  }
+
+  bool _isAccessDeniedError(Object error) {
+    if (error is LearnLensException) {
+      if (error.isQuotaOrRateLimit) return false;
+      return error.code == 'student_restricted' ||
+          error.code == 'access_denied' ||
+          error.statusCode == 403;
+    }
+    return false;
   }
 
   /// Sends a user message. If no conversation is active, starts a new conversation;
@@ -244,7 +276,7 @@ class GenericAiChat extends _$GenericAiChat {
   Future<void> sendMessage(String query, {String? customRequestId}) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
-    if (state.isSending || state.isGenerating) {
+    if (state.hasAccessDenied || state.isSending || state.isGenerating) {
       return;
     }
 
@@ -252,7 +284,8 @@ class GenericAiChat extends _$GenericAiChat {
       return;
     }
 
-    final token = _operationToken;
+    _syncInFlight = null;
+    final token = ++_operationToken;
     final requestId = customRequestId ?? UuidUtils.v4();
 
     // Replays keep their original target; new submissions use the active chat.
@@ -586,7 +619,7 @@ class GenericAiChat extends _$GenericAiChat {
         return;
       }
 
-      if (gen.isCompleted) {
+      if (gen.isCompleted || gen.isStopped) {
         final page = await _repository.getMessages(chatId: chatId);
         if (token != _operationToken) return;
         _submissionTargets.remove(requestId);
@@ -715,6 +748,7 @@ class GenericAiChat extends _$GenericAiChat {
         isUser: false,
         timestamp: turn.generation.finishedAt ?? DateTime.now(),
         requestId: turn.generation.requestId,
+        isStopped: turn.generation.isStopped,
       );
 
       final messages = state.messages;
@@ -747,6 +781,7 @@ class GenericAiChat extends _$GenericAiChat {
     String? errorCode;
     DateTime? retryAt;
     String? quotaError;
+    final isAccessDenied = _isAccessDeniedError(error);
 
     if (error is LearnLensException) {
       errorMessage = error.message;
@@ -780,6 +815,7 @@ class GenericAiChat extends _$GenericAiChat {
       isGenerating: false,
       quotaError: quotaError,
       retryAt: retryAt,
+      hasAccessDenied: isAccessDenied ? true : state.hasAccessDenied,
     );
   }
 
@@ -902,7 +938,7 @@ class GenericAiChat extends _$GenericAiChat {
               messages: [..._withoutStreaming(state.messages), failureMessage],
               isGenerating: false,
             );
-          } else if (gen.isCompleted) {
+          } else if (gen.isCompleted || gen.isStopped) {
             // Reconcile messages from server
             final messagePage = await _repository.getMessages(chatId: chatId);
             if (token != _operationToken) return;
@@ -985,6 +1021,7 @@ class GenericAiChat extends _$GenericAiChat {
   Future<void> selectConversation(String chatId) async {
     _cancelPolling();
     _submissionTargets.clear();
+    _syncInFlight = null;
     final token = ++_operationToken;
 
     state = state.copyWith(
@@ -1037,9 +1074,104 @@ class GenericAiChat extends _$GenericAiChat {
     state = state.copyWith(messages: messages);
   }
 
+  /// Re-synchronizes conversation status and message history with LearnLens
+  /// without creating duplicate turns or duplicate in-flight network requests.
+  Future<void> syncCanonicalState() {
+    return _syncInFlight ??= _performSyncCanonicalState().whenComplete(() {
+      _syncInFlight = null;
+    });
+  }
+
+  Future<void> _performSyncCanonicalState() async {
+    final token = _operationToken;
+
+    // Re-evaluate session policy if cached/updated on resume
+    final policy = _repository.policy;
+    if (policy != null) {
+      final isDenied = !policy.canGenerate;
+      if (state.hasAccessDenied != isDenied) {
+        state = state.copyWith(hasAccessDenied: isDenied);
+      }
+    }
+
+    final chatId = state.currentChatId;
+    if (chatId == null || chatId.isEmpty) return;
+
+    // Do not race with an active message send in flight
+    if (state.isSending) return;
+
+    try {
+      final status = await _repository.getConversationStatus(chatId: chatId);
+      final page = await _repository.getMessages(chatId: chatId);
+
+      if (token != _operationToken || state.currentChatId != chatId) return;
+      // Do not clobber if a message is sending or generating, or if an SSE stream is active
+      if (state.isSending || state.isGenerating || _activeStreams.isNotEmpty) {
+        return;
+      }
+
+      final gen = status.generation;
+      final isStillProcessing =
+          gen != null && (gen.isProcessing || gen.isUnresolved);
+
+      final serverMessages = page.items
+          .map(GenericAiChatMessage.fromDto)
+          .toList();
+
+      // Preserve uncommitted local messages (failed turns or pending sends),
+      // deduplicating by stable requestId to avoid duplicates if the turn was accepted on the server.
+      final uncommittedLocalMessages = state.messages.where((localMsg) {
+        if (!localMsg.hasSendError && !localMsg.isSending) return false;
+        final reqId = localMsg.requestId;
+        if (reqId == null || reqId.isEmpty) return true;
+        final alreadyOnServer = serverMessages.any(
+          (serverMsg) =>
+              serverMsg.requestId == reqId || serverMsg.id == localMsg.id,
+        );
+        return !alreadyOnServer;
+      }).toList();
+
+      state = state.copyWith(
+        currentTitle: status.title.isNotEmpty
+            ? status.title
+            : state.currentTitle,
+        messages: [...serverMessages, ...uncommittedLocalMessages],
+        isSending: false,
+        isGenerating: isStillProcessing,
+      );
+
+      if (isStillProcessing) {
+        _startStatusPolling(chatId, gen.requestId, token);
+      }
+    } on LearnLensException catch (e, stackTrace) {
+      if (_isAccessDeniedError(e) && token == _operationToken) {
+        state = state.copyWith(
+          hasAccessDenied: true,
+          isSending: false,
+          isGenerating: false,
+        );
+      } else {
+        dev.log(
+          'Failed to sync canonical AI chat state for chatId: $chatId',
+          name: 'GenericAiChatNotifier',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+    } catch (error, stackTrace) {
+      dev.log(
+        'Failed to sync canonical AI chat state for chatId: $chatId (${error.runtimeType})',
+        name: 'GenericAiChatNotifier',
+        error: error.runtimeType.toString(),
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   /// Clears active conversation state and presents a clean empty canvas.
   void startNewChat() {
     _operationToken++;
+    _syncInFlight = null;
     _cancelPolling();
     _submissionTargets.clear();
     state = state.copyWith(

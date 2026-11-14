@@ -6838,6 +6838,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to verify profile details. Please try again.'**
   String get enforceStudentDataVerifyError;
+
+  /// Label indicating an AI assistant generation was stopped by the user or system
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get aiStoppedResponse;
+
+  /// Title for restricted AI chat card
+  ///
+  /// In en, this message translates to:
+  /// **'AI chat not available'**
+  String get aiAccessRestrictedTitle;
+
+  /// Body message displayed in the restricted AI chat card
+  ///
+  /// In en, this message translates to:
+  /// **'AI chat is not enabled for your account.\nPlease contact your administrator.'**
+  String get aiAccessRestrictedMessage;
 }
 
 class _AppLocalizationsDelegate

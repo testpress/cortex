@@ -1421,5 +1421,8 @@
   "enforceStudentDataLogout": "ലോഗ്ഔട്ട്",
   "enforceStudentDataContinue": "ആപ്പിലേക്ക് തുടരുക",
   "enforceStudentDataIncomplete": "ദയവായി ആദ്യം നിങ്ങളുടെ വിവരങ്ങൾ പൂർത്തിയാക്കി സേവ് ചെയ്യുക.",
-  "enforceStudentDataVerifyError": "പ്രൊഫൈൽ വിവരങ്ങൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക."
+  "enforceStudentDataVerifyError": "പ്രൊഫൈൽ വിവരങ്ങൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.",
+  "aiStoppedResponse": "നിർത്തി",
+  "aiAccessRestrictedTitle": "AI ചാറ്റ് ലഭ്യമല്ല",
+  "aiAccessRestrictedMessage": "നിങ്ങളുടെ അക്കൗണ്ടിനായി AI ചാറ്റ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല.\nദയവായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ ബന്ധപ്പെടുക."
 }

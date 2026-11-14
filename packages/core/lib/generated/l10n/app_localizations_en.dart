@@ -3817,4 +3817,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get enforceStudentDataVerifyError =>
       'Unable to verify profile details. Please try again.';
+
+  @override
+  String get aiStoppedResponse => 'Stopped';
+
+  @override
+  String get aiAccessRestrictedTitle => 'AI chat not available';
+
+  @override
+  String get aiAccessRestrictedMessage =>
+      'AI chat is not enabled for your account.\nPlease contact your administrator.';
 }

@@ -32,7 +32,8 @@ class AiScreen extends ConsumerStatefulWidget {
   ConsumerState<AiScreen> createState() => _AiScreenState();
 }
 
-class _AiScreenState extends ConsumerState<AiScreen> {
+class _AiScreenState extends ConsumerState<AiScreen>
+    with WidgetsBindingObserver {
   late final ScrollController _scrollController;
   late final TextEditingController _composerController;
   late final FocusNode _composerFocusNode;
@@ -44,6 +45,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController();
     _composerController = TextEditingController();
     _composerFocusNode = FocusNode();
@@ -60,10 +62,18 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     _composerController.dispose();
     _composerFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      ref.read(genericAiChatProvider.notifier).syncCanonicalState().ignore();
+    }
   }
 
   void _scrollToBottom({bool animate = false}) {
@@ -226,11 +236,14 @@ class _AiScreenState extends ConsumerState<AiScreen> {
       });
     }
 
+    final isAccessRestricted = chatState.hasAccessDenied;
+
     final isInputBlocked =
         chatState.isSending ||
         chatState.isGenerating ||
         chatState.hasActiveRateLimit ||
-        chatState.hasMessagesError;
+        chatState.hasMessagesError ||
+        isAccessRestricted;
 
     final showEmptyState =
         displayMessages.isEmpty &&
@@ -241,10 +254,15 @@ class _AiScreenState extends ConsumerState<AiScreen> {
         chatState.currentChatId != null || displayMessages.isNotEmpty;
     final canvasColor = aiChatCanvasColor(design);
 
-    final quotaBanner =
-        chatState.quotaError != null && chatState.hasActiveRateLimit
-        ? _AiNoticeBanner(message: chatState.quotaError!)
-        : null;
+    final noticeBanner = isAccessRestricted
+        ? _AiNoticeCard(
+            icon: LucideIcons.lock,
+            title: l10n.aiAccessRestrictedTitle,
+            message: l10n.aiAccessRestrictedMessage,
+          )
+        : (chatState.quotaError != null && chatState.hasActiveRateLimit
+              ? _AiNoticeCard(message: chatState.quotaError!)
+              : null);
 
     Widget buildComposer() {
       return AiComposer(
@@ -273,7 +291,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                 horizontal: design.spacing.md,
                 vertical: design.spacing.xs,
               ),
-              child: _AiNoticeBanner(
+              child: _AiNoticeCard(
                 message: l10n.aiInitErrorBanner,
                 actionLabel: l10n.labelRetry,
                 onAction: () =>
@@ -304,7 +322,7 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                     top: false,
                     bottom: bottomInset == 0,
                     child: _AiEmptyState(
-                      notice: quotaBanner,
+                      notice: noticeBanner,
                       composer: buildComposer(),
                       onSuggestion: isInputBlocked ? null : _handleSuggestion,
                     ),
@@ -344,11 +362,18 @@ class _AiScreenState extends ConsumerState<AiScreen> {
                               onRetry: () => _handleRetry(item.id, true),
                             );
                           }
+                          final status = item.hasGenerationError
+                              ? AiAssistantStatus.failed
+                              : item.isStreaming
+                              ? AiAssistantStatus.generating
+                              : item.isStopped
+                              ? AiAssistantStatus.stopped
+                              : AiAssistantStatus.completed;
+
                           return AiAssistantCard(
                             message: item.text,
                             timestamp: DateFormatter.formatTime(item.timestamp),
-                            isGenerating: item.isStreaming,
-                            hasGenerationError: item.hasGenerationError,
+                            status: status,
                             onRetry: () => _handleRetry(item.id, false),
                             onCopy: () => _handleCopy(item.text),
                           );
@@ -360,13 +385,13 @@ class _AiScreenState extends ConsumerState<AiScreen> {
 
           if (!showEmptyState) ...[
             // Quota / Rate-limit warning banner if active
-            if (quotaBanner != null)
+            if (noticeBanner != null)
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: design.spacing.md,
                   vertical: design.spacing.xs,
                 ),
-                child: quotaBanner,
+                child: noticeBanner,
               ),
 
             // Composer docked to bottom
@@ -517,7 +542,7 @@ class _AiEmptyState extends StatelessWidget {
                       SizedBox(height: design.spacing.lg),
                       if (notice != null) ...[
                         notice!,
-                        SizedBox(height: design.spacing.sm),
+                        SizedBox(height: design.spacing.md),
                       ],
                       composer,
                     ],
@@ -532,73 +557,115 @@ class _AiEmptyState extends StatelessWidget {
   }
 }
 
-/// Inline warning banner for connection and quota notices.
-class _AiNoticeBanner extends StatelessWidget {
-  const _AiNoticeBanner({
+/// Shared notice card for warning, restriction, and connection states in AI chat.
+class _AiNoticeCard extends StatelessWidget {
+  const _AiNoticeCard({
     required this.message,
+    this.title,
+    this.icon = LucideIcons.alertTriangle,
     this.actionLabel,
     this.onAction,
   });
 
   final String message;
+  final String? title;
+  final IconData icon;
   final String? actionLabel;
   final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final color = design.colors.warning;
     final actionLabel = this.actionLabel;
+    final hasTitle = title != null && title!.isNotEmpty;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: design.spacing.md,
-        vertical: actionLabel != null
-            ? design.spacing.xs
-            : design.spacing.xs + 2,
-      ),
-      decoration: BoxDecoration(
-        color: design.colors.warning.withValues(alpha: 0.12),
-        borderRadius: design.radius.card,
-        border: Border.all(color: design.colors.warning.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            LucideIcons.alertTriangle,
-            size: 16.0,
-            color: design.colors.warning,
-          ),
-          SizedBox(width: design.spacing.xs),
-          Expanded(
-            child: AppText.labelSmall(
-              message,
-              color: design.colors.textPrimary,
-            ),
-          ),
-          if (actionLabel != null) ...[
-            SizedBox(width: design.spacing.xs),
-            AppSemantics.button(
-              label: actionLabel,
-              onTap: onAction,
-              child: GestureDetector(
-                onTap: onAction,
-                behavior: HitTestBehavior.opaque,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 48.0,
-                    minHeight: 48.0,
-                  ),
-                  child: Center(
-                    child: AppText.labelBold(
-                      actionLabel,
-                      color: design.colors.primary,
+    return AppSemantics.container(
+      label: hasTitle ? '$title. $message' : message,
+      child: AppCard(
+        padding: EdgeInsets.zero,
+        child: ClipRRect(
+          borderRadius: design.radius.card,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(width: design.spacing.xs, color: color),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.sm,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          icon,
+                          size: hasTitle
+                              ? design.iconSize.lg
+                              : design.iconSize.sm,
+                          color: color,
+                        ),
+                        SizedBox(width: design.spacing.sm),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (hasTitle) ...[
+                                AppText.base(
+                                  title!,
+                                  color: design.colors.textPrimary,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.25,
+                                  ),
+                                ),
+                                SizedBox(height: design.spacing.xs),
+                                AppText.bodySmall(
+                                  message,
+                                  color: design.colors.textSecondary,
+                                ),
+                              ] else
+                                AppText.labelSmall(
+                                  message,
+                                  color: design.colors.textPrimary,
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (actionLabel != null) ...[
+                          SizedBox(width: design.spacing.xs),
+                          AppSemantics.button(
+                            label: actionLabel,
+                            onTap: onAction,
+                            child: GestureDetector(
+                              onTap: onAction,
+                              behavior: HitTestBehavior.opaque,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minWidth: 48.0,
+                                  minHeight: 48.0,
+                                ),
+                                child: Center(
+                                  child: AppText.labelBold(
+                                    actionLabel,
+                                    color: design.colors.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ],
+          ),
+        ),
       ),
     );
   }
