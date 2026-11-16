@@ -110,11 +110,18 @@ class _AppErrorViewState extends State<AppErrorView> {
           displayTitle ??= l10n.errorGenericTitle;
           break;
       }
-      displayMessage ??= apiError.message;
+      final cleanMsg = ApiException.sanitizeErrorMessage(apiError.message);
+      if (cleanMsg != null) {
+        displayMessage ??= cleanMsg;
+      }
     }
 
     displayTitle ??= l10n.errorGenericTitle;
     displayMessage ??= l10n.errorGenericMessage;
+
+    if (ApiException.isTechnicalErrorMessage(displayMessage)) {
+      displayMessage = l10n.errorGenericMessage;
+    }
 
     return Container(
       color: widget.backgroundColor ?? design.colors.surface,
