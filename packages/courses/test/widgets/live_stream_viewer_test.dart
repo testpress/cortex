@@ -8,6 +8,8 @@ import 'package:courses/courses.dart';
 import 'package:courses/repositories/course_repository.dart';
 import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
 import 'package:courses/widgets/lesson_detail/fermion_lobby_view.dart';
+import 'package:courses/widgets/lesson_detail/custom_video_player.dart';
+import 'package:courses/providers/video_attempt_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
@@ -265,16 +267,55 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     });
 
-    testWidgets('renders inline player for TpStreams session without chat',
+    testWidgets(
+        'renders inline player for TpStreams session without chat and passes lessonId without onComplete',
         (tester) async {
       await tester.pumpWidget(
-          wrap(LiveStreamViewer(lesson: testTpStreamsRunningLesson)));
+        wrap(
+          LiveStreamViewer(
+            lesson: testTpStreamsRunningLesson,
+            onComplete: () {},
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(FermionLobbyView), findsNothing);
       expect(find.byType(ScheduledMessageView), findsNothing);
       expect(find.byType(AppWebView), findsNothing);
       expect(find.byType(ColoredBox), findsOneWidget);
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      expect(playerFinder, findsOneWidget);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      expect(player.lessonId, testTpStreamsRunningLesson.id);
+      expect(player.assetId, testTpStreamsRunningLesson.uuid);
+      expect(player.thumbnailUrl, testTpStreamsRunningLesson.image);
+      expect(player.onComplete, isNull);
+    });
+
+    testWidgets(
+        'subscribes to videoAttemptNotifierProvider for attempt tracking when lessonId is passed',
+        (tester) async {
+      const explicitContentId = 12345;
+      final lessonWithExplicitId = testTpStreamsRunningLesson.copyWith(
+        id: explicitContentId.toString(),
+      );
+
+      await tester.pumpWidget(
+        wrap(LiveStreamViewer(lesson: lessonWithExplicitId)),
+      );
+      await tester.pump();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(LiveStreamViewer)),
+      );
+      expect(
+        container.exists(videoAttemptNotifierProvider(explicitContentId)),
+        isTrue,
+      );
+
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('renders AppWebView with theme=light in light mode',

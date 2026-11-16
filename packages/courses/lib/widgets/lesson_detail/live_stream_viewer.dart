@@ -140,7 +140,9 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
         AspectRatio(
           aspectRatio: 16 / 9,
           child: CustomVideoPlayer(
+            lessonId: lesson.id,
             assetId: lesson.uuid,
+            thumbnailUrl: lesson.image,
           ),
         ),
         Expanded(
