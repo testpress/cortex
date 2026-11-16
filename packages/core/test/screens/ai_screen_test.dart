@@ -27,9 +27,11 @@ class _TestLearnLensRepository implements LearnLensRepository {
   )?
   streamFactory;
 
+  AiChatPolicyDto? customPolicy;
+
   @override
   AiChatPolicyDto? get policy =>
-      const AiChatPolicyDto(maxMessageCharacters: 4000);
+      customPolicy ?? const AiChatPolicyDto(maxMessageCharacters: 4000);
 
   @override
   Stream<AiChatStreamEvent> streamConversation({
@@ -163,11 +165,14 @@ class _TestLearnLensRepository implements LearnLensRepository {
     );
   }
 
+  int getConversationStatusCalls = 0;
+
   @override
   Future<AiConversationDto> getConversationStatus({
     required String chatId,
     CancelToken? cancelToken,
   }) async {
+    getConversationStatusCalls++;
     return AiConversationDto(
       chatId: chatId,
       title: 'Status',
@@ -1271,4 +1276,58 @@ void main() {
       expect(composer.enabled, isTrue);
     },
   );
+
+  testWidgets(
+    'displays access restricted banner and disables composer when canGenerate is false',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository()
+        ..customPolicy = const AiChatPolicyDto(canGenerate: false);
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      expect(find.text('AI chat not available'), findsOneWidget);
+      expect(
+        find.textContaining('AI chat is not enabled for your account'),
+        findsOneWidget,
+      );
+      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+
+      final composer = tester.widget<AiComposer>(find.byType(AiComposer));
+      expect(composer.enabled, isFalse);
+    },
+  );
+
+  testWidgets('triggers canonical state sync on AppLifecycleState.resumed', (
+    tester,
+  ) async {
+    final testRepo = _TestLearnLensRepository();
+    final initialMessages = [
+      GenericAiChatMessage(
+        id: 'u-sync',
+        text: 'Sync me',
+        isUser: true,
+        timestamp: DateTime.now(),
+      ),
+    ];
+
+    await tester.pumpWidget(
+      buildSubject(repository: testRepo, initialMessages: initialMessages),
+    );
+    await tester.pumpAndSettle();
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AiScreen)),
+    );
+    container.read(genericAiChatProvider.notifier).state = container
+        .read(genericAiChatProvider)
+        .copyWith(currentChatId: 'chat-active-resume');
+
+    final callsBefore = testRepo.getConversationStatusCalls;
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+
+    expect(testRepo.getConversationStatusCalls, greaterThan(callsBefore));
+  });
 }

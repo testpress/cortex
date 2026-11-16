@@ -3876,4 +3876,14 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get enforceStudentDataVerifyError =>
       'പ്രൊഫൈൽ വിവരങ്ങൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String get aiStoppedResponse => 'നിർത്തി';
+
+  @override
+  String get aiAccessRestrictedTitle => 'AI ചാറ്റ് ലഭ്യമല്ല';
+
+  @override
+  String get aiAccessRestrictedMessage =>
+      'നിങ്ങളുടെ അക്കൗണ്ടിനായി AI ചാറ്റ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല.\nദയവായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ ബന്ധപ്പെടുക.';
 }

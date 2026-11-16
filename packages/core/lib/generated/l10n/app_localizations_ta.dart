@@ -3877,4 +3877,14 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get enforceStudentDataVerifyError =>
       'சுயவிவர விவரங்களைச் சரிபார்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get aiStoppedResponse => 'நிறுத்தப்பட்டது';
+
+  @override
+  String get aiAccessRestrictedTitle => 'AI அரட்டை கிடைக்கவில்லை';
+
+  @override
+  String get aiAccessRestrictedMessage =>
+      'உங்கள் கணக்கிற்கு AI அரட்டை இயக்கப்படவில்லை.\nஉங்கள் நிர்வாகியைத் தொடர்பு கொள்ளவும்.';
 }
