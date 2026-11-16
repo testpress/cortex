@@ -143,7 +143,6 @@ class _LiveStreamViewerState extends ConsumerState<LiveStreamViewer> {
             lessonId: lesson.id,
             assetId: lesson.uuid,
             thumbnailUrl: lesson.image,
-            onComplete: widget.onComplete,
           ),
         ),
         Expanded(

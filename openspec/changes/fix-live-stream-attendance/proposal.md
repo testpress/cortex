@@ -4,9 +4,9 @@ TPStreams live classes played on Android (Cortex Flutter) stream the video succe
 
 ## What Changes
 
-- Pass `lessonId: lesson.id`, `thumbnailUrl: lesson.image`, and `onComplete: widget.onComplete` to `CustomVideoPlayer` in `LiveStreamViewer`.
+- Pass `lessonId: lesson.id` and `thumbnailUrl: lesson.image` to `CustomVideoPlayer` in `LiveStreamViewer` (omitting `onComplete` so temporary stream stalls or live-edge buffering do not prematurely mark the lesson as completed).
 - Ensure `CustomVideoPlayer` activates `videoAttemptNotifierProvider` for live streams, initializing an attempt session via `POST /api/v2.3/contents/<id>/attempts/` and syncing watch intervals.
-- Add widget tests verifying that `LiveStreamViewer` passes `lessonId` to `CustomVideoPlayer`.
+- Add widget tests verifying that `LiveStreamViewer` passes `lessonId` to `CustomVideoPlayer` without `onComplete`.
 
 ## Capabilities
 

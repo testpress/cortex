@@ -7,9 +7,10 @@ While `VideoLessonViewer` passes `lessonId: widget.lesson.id`, `LiveStreamViewer
 ## Goals / Non-Goals
 
 **Goals:**
-- Provide `lessonId`, `thumbnailUrl`, and `onComplete` to `CustomVideoPlayer` in `LiveStreamViewer`.
+- Provide `lessonId` and `thumbnailUrl` to `CustomVideoPlayer` in `LiveStreamViewer`.
 - Activate attempt tracking and attendance logging for TPStreams live streams on mobile without disturbing video rendering or chat integration.
-- Verify through unit/widget tests that `LiveStreamViewer` passes `lessonId` to `CustomVideoPlayer`.
+- Omit `onComplete` to avoid premature completion triggers during stream stalls or live-head playback.
+- Verify through unit/widget tests that `LiveStreamViewer` passes `lessonId` without `onComplete` to `CustomVideoPlayer`.
 
 **Non-Goals:**
 - Modifying offline player behavior (which intentionally omits `lessonId` for downloaded content).
@@ -25,6 +26,10 @@ While `VideoLessonViewer` passes `lessonId: widget.lesson.id`, `LiveStreamViewer
 ### Decision 2: Maintain default `initialPosition: 0.0`
 - **Choice**: Do not parse or pass `lastWatchedDuration` for live streams.
 - **Rationale**: Live streams are live events playing in real-time, unlike on-demand video where resuming at previous positions is desirable. Defaulting to 0.0 ensures playback attaches to the live head.
+
+### Decision 3: Omit `onComplete` callback
+- **Choice**: Do not pass `onComplete` to `CustomVideoPlayer` for live streams.
+- **Rationale**: In ExoPlayer, `position >= duration` can fire when catching up to the live edge or during transient network interruptions. Live streams must only complete when the backend flags `isStreamCompleted`. Attendance tracking is driven entirely by `lessonId` and does not rely on `onComplete`.
 
 ## Risks / Trade-offs
 
