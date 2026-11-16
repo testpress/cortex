@@ -2003,15 +2003,31 @@ void main() {
       'syncCanonicalState skips synchronization when state.isSending is true',
       () async {
         final notifier = container.read(genericAiChatProvider.notifier);
+        final optimisticMsg = GenericAiChatMessage(
+          id: 'opt-sending-1',
+          text: 'Sending query in progress',
+          isUser: true,
+          timestamp: DateTime.now(),
+          isSending: true,
+        );
+
         container.read(genericAiChatProvider.notifier).state = container
             .read(genericAiChatProvider)
-            .copyWith(currentChatId: 'chat-sending-1', isSending: true);
+            .copyWith(
+              currentChatId: 'chat-sending-1',
+              isSending: true,
+              messages: [optimisticMsg],
+            );
 
         final callsBefore = fakeRepository.getStatusCalls;
 
         await notifier.syncCanonicalState();
 
         expect(fakeRepository.getStatusCalls, callsBefore);
+        final state = container.read(genericAiChatProvider);
+        expect(state.messages.length, 1);
+        expect(state.messages.first.text, 'Sending query in progress');
+        expect(state.messages.first.isSending, isTrue);
       },
     );
 
@@ -2071,6 +2087,75 @@ void main() {
           state.messages.any((m) => m.text == 'Hello while syncing'),
           isTrue,
         );
+      },
+    );
+
+    test(
+      'syncCanonicalState applies completed canonical state when resumed with isGenerating: true and no active stream',
+      () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        container.read(genericAiChatProvider.notifier).state = container
+            .read(genericAiChatProvider)
+            .copyWith(
+              currentChatId: 'chat-bg-gen',
+              isGenerating: true,
+              messages: [
+                GenericAiChatMessage(
+                  id: 'usr-1',
+                  text: 'What is photosynthesis?',
+                  isUser: true,
+                  timestamp: DateTime.now(),
+                ),
+                GenericAiChatMessage(
+                  id: 'stream_prov-1',
+                  text: 'Photosynthesis is',
+                  isUser: false,
+                  timestamp: DateTime.now(),
+                  isStreaming: true,
+                ),
+              ],
+            );
+
+        fakeRepository.nextStatusResponse = AiConversationDto(
+          chatId: 'chat-bg-gen',
+          title: 'Biology Chat',
+          generation: AiGenerationDto(
+            generationId: 'gen-done-1',
+            requestId: 'req-bg-1',
+            userMessageId: 'msg-usr-1',
+            status: 'completed',
+            createdAt: DateTime.now().toUtc(),
+          ),
+        );
+        fakeRepository.nextMessagePage = AiMessagePageResult(
+          items: [
+            AiMessageDto(
+              messageId: 'msg-usr-1',
+              content: 'What is photosynthesis?',
+              role: 'user',
+              createdAt: DateTime.now(),
+            ),
+            AiMessageDto(
+              messageId: 'msg-ast-1',
+              content: 'Photosynthesis is the process used by plants.',
+              role: 'assistant',
+              createdAt: DateTime.now(),
+            ),
+          ],
+        );
+
+        await notifier.syncCanonicalState();
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.isGenerating, isFalse);
+        expect(state.isSending, isFalse);
+        expect(state.messages.length, 2);
+        expect(
+          state.messages.last.text,
+          'Photosynthesis is the process used by plants.',
+        );
+        expect(state.messages.last.isStreaming, isFalse);
+        expect(state.currentTitle, 'Biology Chat');
       },
     );
   });

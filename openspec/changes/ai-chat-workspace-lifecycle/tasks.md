@@ -47,3 +47,5 @@
 - [x] 5.19 Remove unused `GenericAiChatState.isStreaming` getter and eliminate temporary preview overrides
 - [x] 5.20 Sanitize generic error logging in `syncCanonicalState()` to log `error.runtimeType` rather than raw payload
 - [x] 5.21 Add comment documenting fail-open policy for `can_generate` in `AiChatPolicyDto.fromJson`
+- [x] 5.22 Remove `state.isGenerating` guard from `syncCanonicalState()` post-await check so completed background generations reconcile on resume
+- [x] 5.23 Guard `_syncInFlight` cleanup with `identical()` check to prevent preempted sync from clearing newer sync reference

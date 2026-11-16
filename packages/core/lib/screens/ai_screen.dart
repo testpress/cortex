@@ -595,7 +595,7 @@ class _AiNoticeCard extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.md,
-                      vertical: design.spacing.sm,
+                      vertical: design.spacing.sm + design.spacing.xs,
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -614,16 +614,9 @@ class _AiNoticeCard extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (hasTitle) ...[
-                                AppText.base(
-                                  title!,
-                                  color: design.colors.textPrimary,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.25,
-                                  ),
-                                ),
+                                AppText.cardTitle(title!),
                                 SizedBox(height: design.spacing.xs),
-                                AppText.bodySmall(
+                                AppText.caption(
                                   message,
                                   color: design.colors.textSecondary,
                                 ),

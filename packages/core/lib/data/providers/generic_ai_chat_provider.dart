@@ -1077,9 +1077,15 @@ class GenericAiChat extends _$GenericAiChat {
   /// Re-synchronizes conversation status and message history with LearnLens
   /// without creating duplicate turns or duplicate in-flight network requests.
   Future<void> syncCanonicalState() {
-    return _syncInFlight ??= _performSyncCanonicalState().whenComplete(() {
-      _syncInFlight = null;
-    });
+    if (_syncInFlight != null) return _syncInFlight!;
+    late final Future<void> future;
+    return _syncInFlight = future = _performSyncCanonicalState().whenComplete(
+      () {
+        if (identical(_syncInFlight, future)) {
+          _syncInFlight = null;
+        }
+      },
+    );
   }
 
   Future<void> _performSyncCanonicalState() async {
@@ -1105,8 +1111,8 @@ class GenericAiChat extends _$GenericAiChat {
       final page = await _repository.getMessages(chatId: chatId);
 
       if (token != _operationToken || state.currentChatId != chatId) return;
-      // Do not clobber if a message is sending or generating, or if an SSE stream is active
-      if (state.isSending || state.isGenerating || _activeStreams.isNotEmpty) {
+      // Do not clobber if a user message send is in-flight or if an SSE stream is active
+      if (state.isSending || _activeStreams.isNotEmpty) {
         return;
       }
 

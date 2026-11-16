@@ -152,6 +152,7 @@ class AiChatPolicyDto {
           (json['max_message_characters'] as num?)?.toInt() ?? 4000,
       instituteTimezone:
           json['institute_timezone'] as String? ?? 'Asia/Kolkata',
+      // Fails open to true if omitted for backward compatibility.
       canGenerate: json['can_generate'] as bool? ?? true,
     );
   }
