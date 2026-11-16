@@ -3887,4 +3887,25 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get aiAccessRestrictedMessage =>
       'உங்கள் கணக்கிற்கு AI அரட்டை இயக்கப்படவில்லை.\nஉங்கள் நிர்வாகியைத் தொடர்பு கொள்ளவும்.';
+
+  @override
+  String get aiDeleteConversationTitle => 'உரையாடலை நீக்கவா?';
+
+  @override
+  String get aiDeleteConversationMessage =>
+      'இந்த உரையாடலை நிச்சயமாக நீக்க விரும்புகிறீர்களா? இந்த செயலை மாற்ற முடியாது.';
+
+  @override
+  String get aiDeleteConversationAction => 'நீக்கு';
+
+  @override
+  String get aiConversationDeleted => 'உரையாடல் நீக்கப்பட்டது';
+
+  @override
+  String get aiCannotDeleteWhileGenerating =>
+      'பதில் உருவாகும் போது உரையாடலை நீக்க முடியாது.';
+
+  @override
+  String get aiDeleteConversationFailed =>
+      'உரையாடலை நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 }

@@ -1665,5 +1665,11 @@
   "enforceStudentDataVerifyError": "சுயவிவர விவரங்களைச் சரிபார்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
   "aiStoppedResponse": "நிறுத்தப்பட்டது",
   "aiAccessRestrictedTitle": "AI அரட்டை கிடைக்கவில்லை",
-  "aiAccessRestrictedMessage": "உங்கள் கணக்கிற்கு AI அரட்டை இயக்கப்படவில்லை.\nஉங்கள் நிர்வாகியைத் தொடர்பு கொள்ளவும்."
+  "aiAccessRestrictedMessage": "உங்கள் கணக்கிற்கு AI அரட்டை இயக்கப்படவில்லை.\nஉங்கள் நிர்வாகியைத் தொடர்பு கொள்ளவும்.",
+  "aiDeleteConversationTitle": "உரையாடலை நீக்கவா?",
+  "aiDeleteConversationMessage": "இந்த உரையாடலை நிச்சயமாக நீக்க விரும்புகிறீர்களா? இந்த செயலை மாற்ற முடியாது.",
+  "aiDeleteConversationAction": "நீக்கு",
+  "aiConversationDeleted": "உரையாடல் நீக்கப்பட்டது",
+  "aiCannotDeleteWhileGenerating": "பதில் உருவாகும் போது உரையாடலை நீக்க முடியாது.",
+  "aiDeleteConversationFailed": "உரையாடலை நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 }

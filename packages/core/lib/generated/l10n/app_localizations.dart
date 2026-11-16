@@ -6856,6 +6856,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI chat is not enabled for your account.\nPlease contact your administrator.'**
   String get aiAccessRestrictedMessage;
+
+  /// Title for the confirmation dialog when deleting an AI chat conversation
+  ///
+  /// In en, this message translates to:
+  /// **'Delete conversation?'**
+  String get aiDeleteConversationTitle;
+
+  /// Message in confirmation dialog warning that conversation deletion is irreversible
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this conversation? This action cannot be undone.'**
+  String get aiDeleteConversationMessage;
+
+  /// Button label for confirming conversation deletion
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get aiDeleteConversationAction;
+
+  /// Feedback message shown after a conversation is successfully deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation deleted'**
+  String get aiConversationDeleted;
+
+  /// Warning message when user tries to delete a conversation while generation is in flight
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot delete conversation while a response is generating.'**
+  String get aiCannotDeleteWhileGenerating;
+
+  /// Error message when conversation deletion fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete conversation. Please try again.'**
+  String get aiDeleteConversationFailed;
 }
 
 class _AppLocalizationsDelegate

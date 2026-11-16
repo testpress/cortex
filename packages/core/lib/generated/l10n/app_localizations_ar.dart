@@ -3831,4 +3831,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get aiAccessRestrictedMessage =>
       'المحادثة بالذكاء الاصطناعي غير مفعلة لحسابك.\nيُرجى التواصل مع المسؤول.';
+
+  @override
+  String get aiDeleteConversationTitle => 'حذف المحادثة؟';
+
+  @override
+  String get aiDeleteConversationMessage =>
+      'هل أنت متأكد من رغبتك في حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get aiDeleteConversationAction => 'حذف';
+
+  @override
+  String get aiConversationDeleted => 'تم حذف المحادثة';
+
+  @override
+  String get aiCannotDeleteWhileGenerating =>
+      'لا يمكن حذف المحادثة أثناء إنشاء الرد.';
+
+  @override
+  String get aiDeleteConversationFailed =>
+      'فشل حذف المحادثة. يرجى المحاولة مرة أخرى.';
 }

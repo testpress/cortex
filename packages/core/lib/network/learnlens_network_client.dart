@@ -228,6 +228,17 @@ class LearnLensNetworkClient {
     });
   }
 
+  /// Deletes a conversation and all its messages permanently from LearnLens.
+  Future<void> deleteConversation({
+    required String chatId,
+    CancelToken? cancelToken,
+  }) async {
+    return _guard(() async {
+      final baseUrl = await _resolveBaseUrl();
+      await _dio.delete('$baseUrl/chats/$chatId/', cancelToken: cancelToken);
+    });
+  }
+
   /// Fetches a paginated slice of messages in a conversation.
   Future<AiMessageListDto> getMessages({
     required String chatId,

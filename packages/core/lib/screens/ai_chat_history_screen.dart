@@ -69,6 +69,67 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     _dismiss();
   }
 
+  bool _hasActiveGeneration(String chatId) {
+    final state = ref.read(genericAiChatProvider);
+    return state.currentChatId == chatId &&
+        (state.isGenerating || state.isSending);
+  }
+
+  Future<void> _deleteConversation(String chatId) async {
+    final l10n = L10n.of(context);
+    final initialChatState = ref.read(genericAiChatProvider);
+    if (initialChatState.isDeletingConversation) return;
+
+    if (_hasActiveGeneration(chatId)) {
+      AppToast.show(
+        context,
+        message: l10n.aiCannotDeleteWhileGenerating,
+        isError: true,
+      );
+      return;
+    }
+
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: l10n.aiDeleteConversationTitle,
+      content: l10n.aiDeleteConversationMessage,
+      confirmText: l10n.aiDeleteConversationAction,
+      cancelText: l10n.labelCancel,
+    );
+
+    if (!confirmed || !mounted) return;
+
+    if (_hasActiveGeneration(chatId)) {
+      AppToast.show(
+        context,
+        message: l10n.aiCannotDeleteWhileGenerating,
+        isError: true,
+      );
+      return;
+    }
+
+    final isCurrentActive =
+        ref.read(genericAiChatProvider).currentChatId == chatId;
+    final success = await ref
+        .read(genericAiChatProvider.notifier)
+        .deleteConversation(chatId);
+
+    if (!mounted) return;
+
+    if (success) {
+      AppToast.show(context, message: l10n.aiConversationDeleted);
+      if (isCurrentActive) {
+        _dismiss();
+      }
+    } else {
+      AppToast.show(
+        context,
+        message: l10n.aiDeleteConversationFailed,
+        isError: true,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -245,6 +306,7 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                   ? DateFormatter.formatTimeAgo(session.updatedAt!)
                   : '',
               onTap: () => _openConversation(session.chatId),
+              onDelete: () => _deleteConversation(session.chatId),
             ),
             rowDivider,
           ],
@@ -334,45 +396,80 @@ class _HistoryItem extends StatelessWidget {
     required this.title,
     required this.timestamp,
     required this.onTap,
+    this.onDelete,
   });
 
   final String title;
   final String timestamp;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    return AppSemantics.button(
-      label: l10n.openChatSession(title),
-      onTap: onTap,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 48.0),
-          padding: EdgeInsets.symmetric(
-            horizontal: design.spacing.md,
-            vertical: design.spacing.sm * 1.5,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppText.bodySmall(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+    return Container(
+      constraints: const BoxConstraints(minHeight: 48.0),
+      padding: EdgeInsets.only(left: design.spacing.md),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppSemantics.button(
+              label: l10n.openChatSession(title),
+              onTap: onTap,
+              child: GestureDetector(
+                onTap: onTap,
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: design.spacing.sm * 1.5,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppText.bodySmall(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (timestamp.isNotEmpty) ...[
+                        SizedBox(height: design.spacing.xs),
+                        AppText.caption(
+                          timestamp,
+                          color: design.colors.textTertiary,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
               ),
-              if (timestamp.isNotEmpty) ...[
-                SizedBox(height: design.spacing.xs),
-                AppText.caption(timestamp, color: design.colors.textTertiary),
-              ],
-            ],
+            ),
           ),
-        ),
+          if (onDelete != null)
+            AppSemantics.button(
+              label: '${l10n.aiDeleteConversationAction}: $title',
+              onTap: onDelete,
+              child: GestureDetector(
+                onTap: onDelete,
+                behavior: HitTestBehavior.opaque,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 48.0,
+                    minHeight: 48.0,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      LucideIcons.trash2,
+                      size: design.iconSize.sm,
+                      color: design.colors.textTertiary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

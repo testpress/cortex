@@ -159,6 +159,14 @@ class LearnLensRepository {
     );
   }
 
+  /// Deletes a conversation and all its messages permanently from LearnLens.
+  Future<void> deleteConversation({
+    required String chatId,
+    CancelToken? cancelToken,
+  }) {
+    return _client.deleteConversation(chatId: chatId, cancelToken: cancelToken);
+  }
+
   /// Loads a paginated list of messages for a conversation.
   Future<AiMessagePageResult> getMessages({
     required String chatId,

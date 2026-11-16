@@ -118,6 +118,7 @@ class GenericAiChatState {
   final Object? historyError;
   final bool hasInitError;
   final bool hasAccessDenied;
+  final bool isDeletingConversation;
 
   const GenericAiChatState({
     this.currentChatId,
@@ -138,6 +139,7 @@ class GenericAiChatState {
     this.historyError,
     this.hasInitError = false,
     this.hasAccessDenied = false,
+    this.isDeletingConversation = false,
   });
 
   bool get hasActiveRateLimit {
@@ -164,6 +166,7 @@ class GenericAiChatState {
     Object? historyError = _sentinel,
     bool? hasInitError,
     bool? hasAccessDenied,
+    bool? isDeletingConversation,
   }) {
     return GenericAiChatState(
       currentChatId: currentChatId == _sentinel
@@ -194,6 +197,8 @@ class GenericAiChatState {
           : historyError,
       hasInitError: hasInitError ?? this.hasInitError,
       hasAccessDenied: hasAccessDenied ?? this.hasAccessDenied,
+      isDeletingConversation:
+          isDeletingConversation ?? this.isDeletingConversation,
     );
   }
 }
@@ -1171,6 +1176,41 @@ class GenericAiChat extends _$GenericAiChat {
         error: error.runtimeType.toString(),
         stackTrace: stackTrace,
       );
+    }
+  }
+
+  /// Deletes a conversation permanently from LearnLens and updates in-memory history.
+  Future<bool> deleteConversation(String chatId) async {
+    if (state.isDeletingConversation) {
+      return false;
+    }
+
+    if ((state.isGenerating || state.isSending) &&
+        (state.currentChatId == chatId || state.currentChatId == null)) {
+      return false;
+    }
+
+    state = state.copyWith(isDeletingConversation: true);
+    try {
+      await _repository.deleteConversation(chatId: chatId);
+
+      final updatedHistory = state.conversationHistory
+          .where((c) => c.chatId != chatId)
+          .toList();
+
+      state = state.copyWith(
+        conversationHistory: updatedHistory,
+        isDeletingConversation: false,
+      );
+
+      if (state.currentChatId == chatId) {
+        startNewChat();
+      }
+
+      return true;
+    } catch (e) {
+      state = state.copyWith(isDeletingConversation: false);
+      return false;
     }
   }
 

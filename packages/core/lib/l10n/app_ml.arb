@@ -1424,5 +1424,11 @@
   "enforceStudentDataVerifyError": "പ്രൊഫൈൽ വിവരങ്ങൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.",
   "aiStoppedResponse": "നിർത്തി",
   "aiAccessRestrictedTitle": "AI ചാറ്റ് ലഭ്യമല്ല",
-  "aiAccessRestrictedMessage": "നിങ്ങളുടെ അക്കൗണ്ടിനായി AI ചാറ്റ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല.\nദയവായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ ബന്ധപ്പെടുക."
+  "aiAccessRestrictedMessage": "നിങ്ങളുടെ അക്കൗണ്ടിനായി AI ചാറ്റ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല.\nദയവായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ ബന്ധപ്പെടുക.",
+  "aiDeleteConversationTitle": "സംഭാഷണം ഇല്ലാതാക്കണോ?",
+  "aiDeleteConversationMessage": "ഈ സംഭാഷണം ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.",
+  "aiDeleteConversationAction": "ഇല്ലാതാക്കുക",
+  "aiConversationDeleted": "സംഭാഷണം ഇല്ലാതാക്കി",
+  "aiCannotDeleteWhileGenerating": "മറുപടി തയ്യാറാക്കുമ്പോൾ സംഭാഷണം ഇല്ലാതാക്കാൻ കഴിയില്ല.",
+  "aiDeleteConversationFailed": "സംഭാഷണം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
 }

@@ -3886,4 +3886,25 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get aiAccessRestrictedMessage =>
       'നിങ്ങളുടെ അക്കൗണ്ടിനായി AI ചാറ്റ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല.\nദയവായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ ബന്ധപ്പെടുക.';
+
+  @override
+  String get aiDeleteConversationTitle => 'സംഭാഷണം ഇല്ലാതാക്കണോ?';
+
+  @override
+  String get aiDeleteConversationMessage =>
+      'ഈ സംഭാഷണം ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.';
+
+  @override
+  String get aiDeleteConversationAction => 'ഇല്ലാതാക്കുക';
+
+  @override
+  String get aiConversationDeleted => 'സംഭാഷണം ഇല്ലാതാക്കി';
+
+  @override
+  String get aiCannotDeleteWhileGenerating =>
+      'മറുപടി തയ്യാറാക്കുമ്പോൾ സംഭാഷണം ഇല്ലാതാക്കാൻ കഴിയില്ല.';
+
+  @override
+  String get aiDeleteConversationFailed =>
+      'സംഭാഷണം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
 }

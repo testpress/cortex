@@ -210,6 +210,16 @@ class _TestLearnLensRepository implements LearnLensRepository {
     return const AiConversationListDto(items: []);
   }
 
+  int deleteConversationCalls = 0;
+
+  @override
+  Future<void> deleteConversation({
+    required String chatId,
+    CancelToken? cancelToken,
+  }) async {
+    deleteConversationCalls++;
+  }
+
   @override
   void validateMessage(String query) {}
 
