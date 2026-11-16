@@ -297,16 +297,23 @@ void main() {
     testWidgets(
         'subscribes to videoAttemptNotifierProvider for attempt tracking when lessonId is passed',
         (tester) async {
+      const explicitContentId = 12345;
+      final lessonWithExplicitId = testTpStreamsRunningLesson.copyWith(
+        id: explicitContentId.toString(),
+      );
+
       await tester.pumpWidget(
-        wrap(LiveStreamViewer(lesson: testTpStreamsRunningLesson)),
+        wrap(LiveStreamViewer(lesson: lessonWithExplicitId)),
       );
       await tester.pump();
 
       final container = ProviderScope.containerOf(
         tester.element(find.byType(LiveStreamViewer)),
       );
-      final contentId = int.parse(testTpStreamsRunningLesson.id);
-      expect(container.exists(videoAttemptNotifierProvider(contentId)), isTrue);
+      expect(
+        container.exists(videoAttemptNotifierProvider(explicitContentId)),
+        isTrue,
+      );
 
       await tester.pumpWidget(const SizedBox());
     });
