@@ -147,6 +147,10 @@ class GenericAiChatState {
     return DateTime.now().toUtc().isBefore(retryAt!);
   }
 
+  bool hasActiveGeneration(String chatId) {
+    return currentChatId == chatId && (isGenerating || isSending);
+  }
+
   GenericAiChatState copyWith({
     Object? currentChatId = _sentinel,
     String? currentTitle,
@@ -281,7 +285,10 @@ class GenericAiChat extends _$GenericAiChat {
   Future<void> sendMessage(String query, {String? customRequestId}) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
-    if (state.hasAccessDenied || state.isSending || state.isGenerating) {
+    if (state.hasAccessDenied ||
+        state.isSending ||
+        state.isGenerating ||
+        state.isDeletingConversation) {
       return;
     }
 
@@ -1208,7 +1215,13 @@ class GenericAiChat extends _$GenericAiChat {
       }
 
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      dev.log(
+        'Failed to delete conversation: $chatId',
+        name: 'GenericAiChatNotifier',
+        error: e,
+        stackTrace: stackTrace,
+      );
       state = state.copyWith(isDeletingConversation: false);
       return false;
     }

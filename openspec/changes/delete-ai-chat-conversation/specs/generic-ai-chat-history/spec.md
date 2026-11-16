@@ -3,9 +3,13 @@
 ### Requirement: Conversation Deletion Action and Confirmation
 The history drawer SHALL provide a confirmation-gated delete action on conversation items.
 
-#### Scenario: Display delete action
+#### Scenario: Display options action
 - **WHEN** conversation history items are rendered in the history drawer
-- **THEN** each item SHALL display an accessible delete button with at least 48×48dp touch target.
+- **THEN** each item SHALL display an accessible options button (3 dots) with at least 48×48dp touch target.
+
+#### Scenario: Opening conversation actions
+- **WHEN** the user taps the options action on a conversation item
+- **THEN** the system SHALL display an anchored contextual options menu positioned adjacent to the options button offering conversation options including deletion.
 
 #### Scenario: Non-overlapping interactive semantics
 - **WHEN** conversation history items are rendered with delete actions

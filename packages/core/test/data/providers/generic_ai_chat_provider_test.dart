@@ -2317,6 +2317,31 @@ void main() {
           );
         },
       );
+
+      test(
+        'hasActiveGeneration returns true only for currentChatId when generating or sending',
+        () {
+          const state1 = GenericAiChatState(
+            currentChatId: 'chat-1',
+            isGenerating: true,
+          );
+          expect(state1.hasActiveGeneration('chat-1'), isTrue);
+          expect(state1.hasActiveGeneration('chat-2'), isFalse);
+
+          const state2 = GenericAiChatState(
+            currentChatId: 'chat-1',
+            isSending: true,
+          );
+          expect(state2.hasActiveGeneration('chat-1'), isTrue);
+
+          const state3 = GenericAiChatState(
+            currentChatId: 'chat-1',
+            isGenerating: false,
+            isSending: false,
+          );
+          expect(state3.hasActiveGeneration('chat-1'), isFalse);
+        },
+      );
     });
   });
 }
