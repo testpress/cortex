@@ -1077,6 +1077,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hello! I\'m your AI study assistant. Ask me anything about this lecture!';
 
   @override
+  String get pdfAiGreeting =>
+      'Hello! I\'m your AI study assistant. Ask me anything about this document!';
+
+  @override
+  String get pdfAiStudyAssistant => 'AI Study Assistant';
+
+  @override
+  String get labelAskAi => 'Ask AI';
+
+  @override
+  String get labelAskAiPdf => 'Ask AI (PDF)';
+
+  @override
   String get videoTranscodingProcessing =>
       'This video is currently being processed. Please check back shortly.';
 
