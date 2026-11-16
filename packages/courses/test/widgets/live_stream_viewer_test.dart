@@ -8,6 +8,7 @@ import 'package:courses/courses.dart';
 import 'package:courses/repositories/course_repository.dart';
 import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
 import 'package:courses/widgets/lesson_detail/fermion_lobby_view.dart';
+import 'package:courses/widgets/lesson_detail/custom_video_player.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
@@ -265,7 +266,8 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     });
 
-    testWidgets('renders inline player for TpStreams session without chat',
+    testWidgets(
+        'renders inline player for TpStreams session without chat and passes lessonId',
         (tester) async {
       await tester.pumpWidget(
           wrap(LiveStreamViewer(lesson: testTpStreamsRunningLesson)));
@@ -275,6 +277,12 @@ void main() {
       expect(find.byType(ScheduledMessageView), findsNothing);
       expect(find.byType(AppWebView), findsNothing);
       expect(find.byType(ColoredBox), findsOneWidget);
+
+      final playerFinder = find.byType(CustomVideoPlayer);
+      expect(playerFinder, findsOneWidget);
+      final player = tester.widget<CustomVideoPlayer>(playerFinder);
+      expect(player.lessonId, testTpStreamsRunningLesson.id);
+      expect(player.assetId, testTpStreamsRunningLesson.uuid);
     });
 
     testWidgets('renders AppWebView with theme=light in light mode',
