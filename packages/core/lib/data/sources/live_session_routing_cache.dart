@@ -17,6 +17,7 @@ class LiveSessionRoutingCache {
   bool isNonexistent(String id) => _nonexistentSessionIds.contains(id);
 
   void markOneOnOne(String id) {
+    if (_oneOnOneSessionIds.contains(id)) return;
     if (_oneOnOneSessionIds.length >= maxEntries) {
       _oneOnOneSessionIds.remove(_oneOnOneSessionIds.first);
     }
@@ -24,6 +25,7 @@ class LiveSessionRoutingCache {
   }
 
   void markNonexistent(String id) {
+    if (_nonexistentSessionIds.contains(id)) return;
     if (_nonexistentSessionIds.length >= maxEntries) {
       _nonexistentSessionIds.remove(_nonexistentSessionIds.first);
     }

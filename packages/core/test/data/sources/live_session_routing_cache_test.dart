@@ -49,6 +49,31 @@ void main() {
       expect(cache.isNonexistent('40'), isTrue);
     });
 
+    test(
+      'does not evict entries when re-marking an already cached id at capacity',
+      () {
+        cache.markOneOnOne('1');
+        cache.markOneOnOne('2');
+        cache.markOneOnOne('3');
+
+        // Re-marking '2' (already in set) must not evict '1'
+        cache.markOneOnOne('2');
+        expect(cache.isKnownOneOnOne('1'), isTrue);
+        expect(cache.isKnownOneOnOne('2'), isTrue);
+        expect(cache.isKnownOneOnOne('3'), isTrue);
+
+        cache.markNonexistent('10');
+        cache.markNonexistent('20');
+        cache.markNonexistent('30');
+
+        // Re-marking '20' must not evict '10'
+        cache.markNonexistent('20');
+        expect(cache.isNonexistent('10'), isTrue);
+        expect(cache.isNonexistent('20'), isTrue);
+        expect(cache.isNonexistent('30'), isTrue);
+      },
+    );
+
     test('clear wipes both caches', () {
       cache.markOneOnOne('1');
       cache.markNonexistent('2');
