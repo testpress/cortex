@@ -173,10 +173,6 @@ void main() {
 
       expect(find.byType(AppFocusable), findsOneWidget);
 
-      // Tab into the popup to focus the Delete item
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-
       final focusNode = tester
           .widget<Focus>(
             find.descendant(
@@ -185,6 +181,13 @@ void main() {
             ),
           )
           .focusNode;
+      // Pin that the item does NOT auto-focus on presentation (prevents mobile focus ring)
+      expect(focusNode?.hasFocus, isFalse);
+
+      // Tab into the popup to focus the Delete item
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+
       expect(focusNode?.hasFocus, isTrue);
 
       // Enter key triggers the focused item
