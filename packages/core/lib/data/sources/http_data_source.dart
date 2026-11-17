@@ -304,17 +304,41 @@ class HttpDataSource implements DataSource {
     }
   }
 
-  @override
-  Future<LessonDto> getLiveClassDetail(String id) async {
+  final Map<String, String> _sessionTypeCache = {};
+
+  Future<LessonDto> _fetchLiveClassDetail(String uri) async {
     try {
       return await performNetworkRequest(
-        _dio.get(ApiEndpoints.liveClassDetail(id)),
+        _dio.get(uri),
         fromJson: LessonDto.fromJson,
       );
     } on ApiException catch (e) {
       final data = e.data;
       if (data is Map<String, dynamic> && data['error_code'] == 'scheduled') {
         return LessonDto.fromJson(data);
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<LessonDto> getLiveClassDetail(String id) async {
+    final isKnownOneOnOne = _sessionTypeCache[id] == 'one_on_one';
+    if (isKnownOneOnOne) {
+      return _fetchLiveClassDetail(
+        ApiEndpoints.liveClassLearningSessionDetail(id),
+      );
+    }
+
+    try {
+      return await _fetchLiveClassDetail(ApiEndpoints.liveClassDetail(id));
+    } on ApiException catch (e) {
+      if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
+        final result = await _fetchLiveClassDetail(
+          ApiEndpoints.liveClassLearningSessionDetail(id),
+        );
+        _sessionTypeCache[id] = 'one_on_one';
+        return result;
       }
       rethrow;
     }
@@ -328,7 +352,7 @@ class HttpDataSource implements DataSource {
     String? listRangeFrom,
     String? listRangeTo,
   }) async {
-    return performNetworkRequest(
+    final response = await performNetworkRequest(
       _dio.get(
         ApiEndpoints.liveClasses,
         queryParameters: {
@@ -343,6 +367,14 @@ class HttpDataSource implements DataSource {
       ),
       fromJson: LiveClassDto.fromListResponse,
     );
+
+    for (final item in response.results) {
+      if (item.sessionType != null && item.sessionType!.isNotEmpty) {
+        _sessionTypeCache[item.id] = item.sessionType!;
+      }
+    }
+
+    return response;
   }
 
   @override
