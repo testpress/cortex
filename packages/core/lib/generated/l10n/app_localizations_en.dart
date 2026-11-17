@@ -3556,7 +3556,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiCopyMessageSemantic => 'Copy message';
 
   @override
-  String get aiMoreActionsSemantic => 'More actions';
+  String aiMoreActionsSemantic(String title) {
+    return 'More actions: $title';
+  }
 
   @override
   String get aiMessageSendFailed => 'Couldn\'t send message. ';
@@ -3827,4 +3829,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aiAccessRestrictedMessage =>
       'AI chat is not enabled for your account.\nPlease contact your administrator.';
+
+  @override
+  String get aiDeleteConversationTitle => 'Delete conversation?';
+
+  @override
+  String get aiDeleteConversationMessage =>
+      'Are you sure you want to delete this conversation? This action cannot be undone.';
+
+  @override
+  String aiDeleteConversationNamedMessage(String title) {
+    return 'Are you sure you want to delete "$title"? This action cannot be undone.';
+  }
+
+  @override
+  String get aiDeleteConversationAction => 'Delete';
+
+  @override
+  String get aiConversationDeleted => 'Conversation deleted';
+
+  @override
+  String get aiCannotDeleteWhileGenerating =>
+      'Cannot delete conversation while a response is generating.';
+
+  @override
+  String get aiDeleteConversationFailed =>
+      'Failed to delete conversation. Please try again.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return 'Delete: $title';
+  }
 }

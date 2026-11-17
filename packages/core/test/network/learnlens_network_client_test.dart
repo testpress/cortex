@@ -88,6 +88,9 @@ void main() {
         }
 
         if (options.path.endsWith('/chats/chat-1/')) {
+          if (options.method == 'DELETE') {
+            return ResponseBody.fromString('', 204);
+          }
           return ResponseBody.fromString(
             '{"chat_id":"chat-1","title":"Chat 1","updated_at":"2026-10-12T12:00:00Z","generation":{"generation_id":"gen-1","request_id":"req-1","user_message_id":"usr-1","assistant_message_id":"ast-1","status":"completed","created_at":"2026-10-12T12:00:00Z"}}',
             200,
@@ -177,6 +180,42 @@ void main() {
       expect(req['method'], 'GET');
       expect(req['path'], contains('/chats/chat-1/'));
     });
+
+    test('deleteConversation sends DELETE /chats/<id>/', () async {
+      await client.deleteConversation(chatId: 'chat-1');
+
+      final req = capturedRequests.first;
+      expect(req['method'], 'DELETE');
+      expect(req['path'], contains('/chats/chat-1/'));
+    });
+
+    test(
+      'deleteConversation throws LearnLensException on 409 conflict',
+      () async {
+        mockClientDio.httpClientAdapter = _MockHttpClientAdapter((
+          options,
+        ) async {
+          return ResponseBody.fromString(
+            '{"detail":"generation_in_progress"}',
+            409,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        });
+
+        expect(
+          () => client.deleteConversation(chatId: 'chat-1'),
+          throwsA(
+            isA<LearnLensException>().having(
+              (e) => e.statusCode,
+              'statusCode',
+              409,
+            ),
+          ),
+        );
+      },
+    );
 
     test(
       'getMessages sends GET /chats/<id>/messages/ with before cursor',

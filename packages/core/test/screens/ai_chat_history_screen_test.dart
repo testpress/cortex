@@ -12,6 +12,7 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
   List<AiConversationDto> conversations;
   bool failListConversations = false;
   final List<String> loadedChatIds = [];
+  final List<String> deletedChatIds = [];
 
   @override
   AiChatPolicyDto? get policy =>
@@ -19,6 +20,20 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
 
   @override
   Future<void> ensureGenericChatSession() async {}
+
+  Completer<void>? deleteCompleter;
+
+  @override
+  Future<void> deleteConversation({
+    required String chatId,
+    CancelToken? cancelToken,
+  }) async {
+    if (deleteCompleter != null) {
+      await deleteCompleter!.future;
+    }
+    deletedChatIds.add(chatId);
+    conversations = conversations.where((c) => c.chatId != chatId).toList();
+  }
 
   @override
   Future<AiConversationListDto> listConversations({
@@ -40,6 +55,31 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
   }) async {
     loadedChatIds.add(chatId);
     return const AiMessagePageResult(items: []);
+  }
+
+  Completer<AiChatTurnResponseDto>? followUpCompleter;
+
+  @override
+  Stream<AiChatStreamEvent> streamFollowUpMessage({
+    required String chatId,
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) {
+    return StreamController<AiChatStreamEvent>().stream;
+  }
+
+  @override
+  Future<AiChatTurnResponseDto> sendFollowUpMessage({
+    required String chatId,
+    required String requestId,
+    required String query,
+    CancelToken? cancelToken,
+  }) async {
+    if (followUpCompleter != null) {
+      return followUpCompleter!.future;
+    }
+    return Completer<AiChatTurnResponseDto>().future;
   }
 }
 
@@ -175,15 +215,20 @@ void main() {
     expect(time.top, greaterThanOrEqualTo(title.bottom));
     expect(time.left, title.left);
 
-    final row = find
+    final titleButton = find
         .ancestor(
           of: find.text("Explain Newton's Laws of Motion"),
           matching: find.byType(GestureDetector),
         )
         .first;
-    expect(tester.getSize(row).height, greaterThanOrEqualTo(48.0));
+    expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(48.0));
+
+    final rowContainer = find
+        .ancestor(of: titleButton, matching: find.byType(Container))
+        .first;
+    expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(48.0));
     expect(
-      tester.getSize(row).width,
+      tester.getSize(rowContainer).width,
       tester.getSize(find.byKey(drawerKey)).width,
     );
   });
@@ -406,5 +451,185 @@ void main() {
     expect(tester.getRect(find.byKey(drawerKey)).left, 0.0);
 
     await tester.pumpAndSettle();
+  });
+
+  group('Conversation deletion', () {
+    testWidgets(
+      'renders options icon (3-dots) for each history item with accessible semantics',
+      (tester) async {
+        await tester.pumpWidget(
+          buildSubject(
+            repository: _FakeLearnLensRepository(
+              conversations: sampleConversations(),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(LucideIcons.moreVertical), findsNWidgets(2));
+        expect(
+          find.bySemanticsLabel(
+            "More actions: Explain Newton's Laws of Motion",
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'tapping options icon shows action sheet and cancelling keeps item',
+      (tester) async {
+        final repo = _FakeLearnLensRepository(
+          conversations: sampleConversations(),
+        );
+        await tester.pumpWidget(buildSubject(repository: repo));
+        await tester.pumpAndSettle();
+
+        final firstOptionsButton = find.byIcon(LucideIcons.moreVertical).first;
+        await tester.tap(firstOptionsButton);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Delete'), findsOneWidget);
+
+        // Tap Delete in options sheet
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Delete conversation?'), findsOneWidget);
+        expect(
+          find.text(
+            'Are you sure you want to delete "Explain Newton\'s Laws of Motion"? This action cannot be undone.',
+          ),
+          findsOneWidget,
+        );
+
+        // Tap Cancel
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Delete conversation?'), findsNothing);
+        expect(find.text("Explain Newton's Laws of Motion"), findsOneWidget);
+        expect(repo.deletedChatIds, isEmpty);
+      },
+    );
+
+    testWidgets(
+      'confirming deletion via options sheet calls repository and removes conversation item',
+      (tester) async {
+        final repo = _FakeLearnLensRepository(
+          conversations: sampleConversations(),
+        );
+        await tester.pumpWidget(buildSubject(repository: repo));
+        await tester.pumpAndSettle();
+
+        final firstOptionsButton = find.byIcon(LucideIcons.moreVertical).first;
+        await tester.tap(firstOptionsButton);
+        await tester.pumpAndSettle();
+
+        // Tap Delete in options sheet
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
+
+        // Tap Delete in confirmation dialog
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(seconds: 3));
+
+        expect(repo.deletedChatIds, ['chat-1']);
+        expect(find.text("Explain Newton's Laws of Motion"), findsNothing);
+        expect(find.text('Organic Chemistry Reactions'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'tapping delete when active conversation is generating does not show confirmation dialog',
+      (tester) async {
+        final repo = _FakeLearnLensRepository(
+          conversations: sampleConversations(),
+        );
+        final followUpCompleter = Completer<AiChatTurnResponseDto>();
+        repo.followUpCompleter = followUpCompleter;
+
+        await tester.pumpWidget(buildSubject(repository: repo));
+        await tester.pumpAndSettle();
+
+        final container = containerOf(tester);
+        final notifier = container.read(genericAiChatProvider.notifier);
+        notifier.useStreaming = false;
+        await notifier.selectConversation('chat-1');
+
+        // Put active conversation into generating state
+        unawaited(notifier.sendMessage('Explain Newton laws in detail'));
+        await tester.pump();
+
+        final firstOptionsButton = find.byIcon(LucideIcons.moreVertical).first;
+        await tester.tap(firstOptionsButton);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Delete'));
+        await tester.pump();
+
+        expect(find.text('Delete conversation?'), findsNothing);
+        expect(repo.deletedChatIds, isEmpty);
+
+        // Resolve in-flight turn and drain toast timers/animations
+        followUpCompleter.complete(
+          AiChatTurnResponseDto(
+            chatId: 'chat-1',
+            title: "Explain Newton's Laws of Motion",
+            generation: AiGenerationDto(
+              requestId: 'req-1',
+              generationId: 'gen-1',
+              userMessageId: 'user-msg-1',
+              status: 'completed',
+              createdAt: DateTime.now(),
+            ),
+          ),
+        );
+        await tester.pump(const Duration(seconds: 4));
+        await tester.pumpAndSettle();
+      },
+    );
+
+    testWidgets(
+      'options button is visually disabled and non-interactive while deletion is in flight',
+      (tester) async {
+        final repo = _FakeLearnLensRepository(
+          conversations: sampleConversations(),
+        );
+        repo.deleteCompleter = Completer<void>();
+
+        await tester.pumpWidget(buildSubject(repository: repo));
+        await tester.pumpAndSettle();
+
+        final firstOptionsButton = find.byIcon(LucideIcons.moreVertical).first;
+        await tester.tap(firstOptionsButton);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
+
+        // Tap Delete in confirmation dialog to start in-flight delete
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
+
+        final opacityFinder = find.ancestor(
+          of: find.byIcon(LucideIcons.moreVertical).first,
+          matching: find.byType(Opacity),
+        );
+        expect(tester.widget<Opacity>(opacityFinder).opacity, 0.35);
+
+        final secondOptionsButton = find.byIcon(LucideIcons.moreVertical).last;
+        await tester.tap(secondOptionsButton);
+        await tester.pump();
+        expect(find.text('Delete'), findsNothing);
+
+        repo.deleteCompleter!.complete();
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(seconds: 3));
+
+        expect(repo.deletedChatIds, ['chat-1']);
+      },
+    );
   });
 }

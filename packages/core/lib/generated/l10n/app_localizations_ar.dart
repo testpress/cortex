@@ -3562,7 +3562,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiCopyMessageSemantic => 'نسخ الرسالة';
 
   @override
-  String get aiMoreActionsSemantic => 'مزيد من الإجراءات';
+  String aiMoreActionsSemantic(String title) {
+    return 'مزيد من الإجراءات: $title';
+  }
 
   @override
   String get aiMessageSendFailed => 'تعذر إرسال الرسالة. ';
@@ -3831,4 +3833,35 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get aiAccessRestrictedMessage =>
       'المحادثة بالذكاء الاصطناعي غير مفعلة لحسابك.\nيُرجى التواصل مع المسؤول.';
+
+  @override
+  String get aiDeleteConversationTitle => 'حذف المحادثة؟';
+
+  @override
+  String get aiDeleteConversationMessage =>
+      'هل أنت متأكد من رغبتك في حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String aiDeleteConversationNamedMessage(String title) {
+    return 'هل أنت متأكد من رغبتك في حذف "$title"؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get aiDeleteConversationAction => 'حذف';
+
+  @override
+  String get aiConversationDeleted => 'تم حذف المحادثة';
+
+  @override
+  String get aiCannotDeleteWhileGenerating =>
+      'لا يمكن حذف المحادثة أثناء إنشاء الرد.';
+
+  @override
+  String get aiDeleteConversationFailed =>
+      'فشل حذف المحادثة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return 'حذف: $title';
+  }
 }

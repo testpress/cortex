@@ -3610,7 +3610,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiCopyMessageSemantic => 'സന്ദേശം പകർത്തുക';
 
   @override
-  String get aiMoreActionsSemantic => 'കൂടുതൽ പ്രവർത്തനങ്ങൾ';
+  String aiMoreActionsSemantic(String title) {
+    return 'കൂടുതൽ പ്രവർത്തനങ്ങൾ: $title';
+  }
 
   @override
   String get aiMessageSendFailed => 'സന്ദേശം അയക്കാൻ കഴിഞ്ഞില്ല. ';
@@ -3886,4 +3888,35 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get aiAccessRestrictedMessage =>
       'നിങ്ങളുടെ അക്കൗണ്ടിനായി AI ചാറ്റ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടില്ല.\nദയവായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ ബന്ധപ്പെടുക.';
+
+  @override
+  String get aiDeleteConversationTitle => 'സംഭാഷണം ഇല്ലാതാക്കണോ?';
+
+  @override
+  String get aiDeleteConversationMessage =>
+      'ഈ സംഭാഷണം ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.';
+
+  @override
+  String aiDeleteConversationNamedMessage(String title) {
+    return '"$title" ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.';
+  }
+
+  @override
+  String get aiDeleteConversationAction => 'ഇല്ലാതാക്കുക';
+
+  @override
+  String get aiConversationDeleted => 'സംഭാഷണം ഇല്ലാതാക്കി';
+
+  @override
+  String get aiCannotDeleteWhileGenerating =>
+      'മറുപടി തയ്യാറാക്കുമ്പോൾ സംഭാഷണം ഇല്ലാതാക്കാൻ കഴിയില്ല.';
+
+  @override
+  String get aiDeleteConversationFailed =>
+      'സംഭാഷണം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return '$title സംഭാഷണം ഇല്ലാതാക്കുക';
+  }
 }

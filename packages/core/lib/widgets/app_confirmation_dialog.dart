@@ -11,6 +11,7 @@ Future<bool> showConfirmationDialog(
   required String content,
   String? confirmText,
   String? cancelText,
+  bool isDestructive = false,
 }) async {
   final l10n = L10n.of(context);
   final design = Design.of(context);
@@ -55,6 +56,9 @@ Future<bool> showConfirmationDialog(
                 children: [
                   AppButton.secondary(
                     label: cancelText ?? l10n.labelCancel,
+                    borderColor: design.isDark
+                        ? design.colors.border
+                        : design.colors.textTertiary.withValues(alpha: 0.5),
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.md,
                       vertical: design.spacing.sm,
@@ -64,6 +68,10 @@ Future<bool> showConfirmationDialog(
                   SizedBox(width: design.spacing.sm),
                   AppButton.primary(
                     label: confirmText ?? l10n.labelConfirm,
+                    backgroundColor: isDestructive ? design.colors.error : null,
+                    foregroundColor: isDestructive
+                        ? design.colors.onError
+                        : null,
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.md,
                       vertical: design.spacing.sm,

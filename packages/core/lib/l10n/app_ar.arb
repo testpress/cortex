@@ -1342,7 +1342,7 @@
   "aiGenerationError": "تعذر إنشاء استجابة. يُرجى المحاولة مرة أخرى.",
   "aiTryAgain": "إعادة المحاولة",
   "aiCopyMessageSemantic": "نسخ الرسالة",
-  "aiMoreActionsSemantic": "مزيد من الإجراءات",
+  "aiMoreActionsSemantic": "مزيد من الإجراءات: {title}",
   "aiMessageSendFailed": "تعذر إرسال الرسالة. ",
   "aiRetrySendMessageSemantic": "انقر لإعادة إرسال الرسالة",
   "aiTapToRetry": "انقر لإعادة المحاولة",
@@ -1424,5 +1424,13 @@
   "enforceStudentDataVerifyError": "تعذّر التحقق من بيانات الملف الشخصي. يرجى المحاولة مرة أخرى.",
   "aiStoppedResponse": "تم الإيقاف",
   "aiAccessRestrictedTitle": "المحادثة بالذكاء الاصطناعي غير متوفرة",
-  "aiAccessRestrictedMessage": "المحادثة بالذكاء الاصطناعي غير مفعلة لحسابك.\nيُرجى التواصل مع المسؤول."
+  "aiAccessRestrictedMessage": "المحادثة بالذكاء الاصطناعي غير مفعلة لحسابك.\nيُرجى التواصل مع المسؤول.",
+  "aiDeleteConversationTitle": "حذف المحادثة؟",
+  "aiDeleteConversationMessage": "هل أنت متأكد من رغبتك في حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.",
+  "aiDeleteConversationNamedMessage": "هل أنت متأكد من رغبتك في حذف \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+  "aiDeleteConversationAction": "حذف",
+  "aiConversationDeleted": "تم حذف المحادثة",
+  "aiCannotDeleteWhileGenerating": "لا يمكن حذف المحادثة أثناء إنشاء الرد.",
+  "aiDeleteConversationFailed": "فشل حذف المحادثة. يرجى المحاولة مرة أخرى.",
+  "aiDeleteConversationNamed": "حذف: {title}"
 }

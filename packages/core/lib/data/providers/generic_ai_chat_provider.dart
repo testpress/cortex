@@ -118,6 +118,7 @@ class GenericAiChatState {
   final Object? historyError;
   final bool hasInitError;
   final bool hasAccessDenied;
+  final bool isDeletingConversation;
 
   const GenericAiChatState({
     this.currentChatId,
@@ -138,11 +139,16 @@ class GenericAiChatState {
     this.historyError,
     this.hasInitError = false,
     this.hasAccessDenied = false,
+    this.isDeletingConversation = false,
   });
 
   bool get hasActiveRateLimit {
     if (retryAt == null) return false;
     return DateTime.now().toUtc().isBefore(retryAt!);
+  }
+
+  bool hasActiveGeneration(String chatId) {
+    return currentChatId == chatId && (isGenerating || isSending);
   }
 
   GenericAiChatState copyWith({
@@ -164,6 +170,7 @@ class GenericAiChatState {
     Object? historyError = _sentinel,
     bool? hasInitError,
     bool? hasAccessDenied,
+    bool? isDeletingConversation,
   }) {
     return GenericAiChatState(
       currentChatId: currentChatId == _sentinel
@@ -194,6 +201,8 @@ class GenericAiChatState {
           : historyError,
       hasInitError: hasInitError ?? this.hasInitError,
       hasAccessDenied: hasAccessDenied ?? this.hasAccessDenied,
+      isDeletingConversation:
+          isDeletingConversation ?? this.isDeletingConversation,
     );
   }
 }
@@ -276,7 +285,10 @@ class GenericAiChat extends _$GenericAiChat {
   Future<void> sendMessage(String query, {String? customRequestId}) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
-    if (state.hasAccessDenied || state.isSending || state.isGenerating) {
+    if (state.hasAccessDenied ||
+        state.isSending ||
+        state.isGenerating ||
+        state.isDeletingConversation) {
       return;
     }
 
@@ -821,7 +833,10 @@ class GenericAiChat extends _$GenericAiChat {
 
   /// Retries a previously failed user message using the same [requestId] for idempotency.
   Future<void> retryLastSend({String? messageId}) async {
-    if (state.isSending || state.isGenerating || state.hasActiveRateLimit) {
+    if (state.isSending ||
+        state.isGenerating ||
+        state.hasActiveRateLimit ||
+        state.isDeletingConversation) {
       return;
     }
 
@@ -843,7 +858,10 @@ class GenericAiChat extends _$GenericAiChat {
 
   /// Retries generation after an assistant response failure.
   Future<void> retryGeneration() async {
-    if (state.isSending || state.isGenerating || state.hasActiveRateLimit) {
+    if (state.isSending ||
+        state.isGenerating ||
+        state.hasActiveRateLimit ||
+        state.isDeletingConversation) {
       return;
     }
 
@@ -1171,6 +1189,46 @@ class GenericAiChat extends _$GenericAiChat {
         error: error.runtimeType.toString(),
         stackTrace: stackTrace,
       );
+    }
+  }
+
+  /// Deletes a conversation permanently from LearnLens and updates in-memory history.
+  Future<bool> deleteConversation(String chatId) async {
+    if (state.isDeletingConversation) {
+      return false;
+    }
+
+    if (state.hasActiveGeneration(chatId)) {
+      return false;
+    }
+
+    state = state.copyWith(isDeletingConversation: true);
+    try {
+      await _repository.deleteConversation(chatId: chatId);
+
+      final updatedHistory = state.conversationHistory
+          .where((c) => c.chatId != chatId)
+          .toList();
+
+      state = state.copyWith(
+        conversationHistory: updatedHistory,
+        isDeletingConversation: false,
+      );
+
+      if (state.currentChatId == chatId) {
+        startNewChat();
+      }
+
+      return true;
+    } catch (e, stackTrace) {
+      dev.log(
+        'Failed to delete conversation: $chatId',
+        name: 'GenericAiChatNotifier',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      state = state.copyWith(isDeletingConversation: false);
+      return false;
     }
   }
 

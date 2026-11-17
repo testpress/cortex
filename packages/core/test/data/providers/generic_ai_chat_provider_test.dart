@@ -11,10 +11,12 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   int getMessagesCalls = 0;
   int listConversationsCalls = 0;
   int ensureSessionCalls = 0;
+  int deleteConversationCalls = 0;
 
   String? lastQuery;
   String? lastRequestId;
   String? lastChatId;
+  String? lastDeletedChatId;
 
   AiChatTurnResponseDto? nextTurnResponse;
   AiConversationDto? nextStatusResponse;
@@ -245,6 +247,23 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   }
 
   Object? listConversationsError;
+  Object? deleteConversationError;
+  Completer<void>? deleteConversationCompleter;
+
+  @override
+  Future<void> deleteConversation({
+    required String chatId,
+    CancelToken? cancelToken,
+  }) async {
+    deleteConversationCalls++;
+    lastDeletedChatId = chatId;
+    if (deleteConversationCompleter != null) {
+      await deleteConversationCompleter!.future;
+    }
+    if (deleteConversationError != null) {
+      throw deleteConversationError!;
+    }
+  }
 
   @override
   Future<AiConversationListDto> listConversations({
@@ -2158,5 +2177,217 @@ void main() {
         expect(state.currentTitle, 'Biology Chat');
       },
     );
+
+    group('deleteConversation', () {
+      test(
+        'deleting an inactive conversation removes it from history and preserves active chat',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [
+              AiConversationDto(chatId: 'chat-active', title: 'Active Chat'),
+              AiConversationDto(chatId: 'chat-other', title: 'Other Chat'),
+            ],
+          );
+          await notifier.loadConversations(refresh: true);
+          await notifier.selectConversation('chat-active');
+
+          expect(
+            container.read(genericAiChatProvider).currentChatId,
+            'chat-active',
+          );
+          expect(
+            container.read(genericAiChatProvider).conversationHistory.length,
+            2,
+          );
+
+          final success = await notifier.deleteConversation('chat-other');
+
+          expect(success, isTrue);
+          expect(fakeRepository.deleteConversationCalls, 1);
+          expect(fakeRepository.lastDeletedChatId, 'chat-other');
+
+          final state = container.read(genericAiChatProvider);
+          expect(state.currentChatId, 'chat-active');
+          expect(state.conversationHistory.length, 1);
+          expect(state.conversationHistory.first.chatId, 'chat-active');
+        },
+      );
+
+      test(
+        'deleting the active conversation removes it from history and resets to new chat',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [
+              AiConversationDto(chatId: 'chat-active', title: 'Active Chat'),
+              AiConversationDto(chatId: 'chat-other', title: 'Other Chat'),
+            ],
+          );
+          await notifier.loadConversations(refresh: true);
+          await notifier.selectConversation('chat-active');
+
+          expect(
+            container.read(genericAiChatProvider).currentChatId,
+            'chat-active',
+          );
+
+          final success = await notifier.deleteConversation('chat-active');
+
+          expect(success, isTrue);
+          expect(fakeRepository.deleteConversationCalls, 1);
+          expect(fakeRepository.lastDeletedChatId, 'chat-active');
+
+          final state = container.read(genericAiChatProvider);
+          expect(state.currentChatId, isNull);
+          expect(state.currentTitle, isEmpty);
+          expect(state.messages, isEmpty);
+          expect(state.conversationHistory.length, 1);
+          expect(state.conversationHistory.first.chatId, 'chat-other');
+        },
+      );
+
+      test(
+        'deleting active conversation while generation is in progress returns false without calling repository',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.selectConversation('chat-active');
+          fakeRepository.turnCompleter = Completer<AiChatTurnResponseDto>();
+          notifier.sendMessage('Hello generating turn');
+
+          expect(container.read(genericAiChatProvider).isGenerating, isTrue);
+
+          final success = await notifier.deleteConversation('chat-active');
+
+          expect(success, isFalse);
+          expect(fakeRepository.deleteConversationCalls, 0);
+        },
+      );
+
+      test(
+        'returns false when repository throws error and retains conversation in history',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [AiConversationDto(chatId: 'chat-err', title: 'Error Chat')],
+          );
+          await notifier.loadConversations(refresh: true);
+          fakeRepository.deleteConversationError = Exception('Network error');
+
+          final success = await notifier.deleteConversation('chat-err');
+
+          expect(success, isFalse);
+          expect(fakeRepository.deleteConversationCalls, 1);
+          expect(
+            container.read(genericAiChatProvider).conversationHistory.length,
+            1,
+          );
+          expect(
+            container.read(genericAiChatProvider).isDeletingConversation,
+            isFalse,
+          );
+        },
+      );
+
+      test(
+        'returns false and does not call repository when already deleting',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final completer = Completer<void>();
+          fakeRepository.deleteConversationCompleter = completer;
+
+          // Start first delete operation
+          final firstDelete = notifier.deleteConversation('chat-1');
+          expect(
+            container.read(genericAiChatProvider).isDeletingConversation,
+            isTrue,
+          );
+
+          // Attempt second delete while first is in-flight
+          final secondDelete = await notifier.deleteConversation('chat-2');
+          expect(secondDelete, isFalse);
+          expect(fakeRepository.deleteConversationCalls, 1);
+
+          completer.complete();
+          final firstSuccess = await firstDelete;
+          expect(firstSuccess, isTrue);
+          expect(
+            container.read(genericAiChatProvider).isDeletingConversation,
+            isFalse,
+          );
+        },
+      );
+
+      test(
+        'hasActiveGeneration returns true only for currentChatId when generating or sending',
+        () {
+          const state1 = GenericAiChatState(
+            currentChatId: 'chat-1',
+            isGenerating: true,
+          );
+          expect(state1.hasActiveGeneration('chat-1'), isTrue);
+          expect(state1.hasActiveGeneration('chat-2'), isFalse);
+
+          const state2 = GenericAiChatState(
+            currentChatId: 'chat-1',
+            isSending: true,
+          );
+          expect(state2.hasActiveGeneration('chat-1'), isTrue);
+
+          const state3 = GenericAiChatState(
+            currentChatId: 'chat-1',
+            isGenerating: false,
+            isSending: false,
+          );
+          expect(state3.hasActiveGeneration('chat-1'), isFalse);
+        },
+      );
+
+      test(
+        'retryLastSend and retryGeneration are no-ops when isDeletingConversation is true',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final failedUserMsg = GenericAiChatMessage(
+            id: 'msg-fail',
+            text: 'Retry question',
+            isUser: true,
+            timestamp: DateTime.now(),
+            hasSendError: true,
+            requestId: 'req-1',
+          );
+          final failedGenMsg = GenericAiChatMessage(
+            id: 'msg-gen-fail',
+            text: '',
+            isUser: false,
+            timestamp: DateTime.now(),
+            hasGenerationError: true,
+          );
+
+          notifier.setInitialMessages([failedUserMsg, failedGenMsg]);
+          final completer = Completer<void>();
+          fakeRepository.deleteConversationCompleter = completer;
+
+          // Put state into isDeletingConversation
+          final deleteFuture = notifier.deleteConversation('chat-1');
+          expect(
+            container.read(genericAiChatProvider).isDeletingConversation,
+            isTrue,
+          );
+
+          // Attempt retryLastSend while deleting
+          await notifier.retryLastSend(messageId: 'msg-fail');
+          // Messages must remain unmutated
+          expect(container.read(genericAiChatProvider).messages.length, 2);
+
+          // Attempt retryGeneration while deleting
+          await notifier.retryGeneration();
+          // Messages must still remain unmutated
+          expect(container.read(genericAiChatProvider).messages.length, 2);
+
+          completer.complete();
+          await deleteFuture;
+        },
+      );
+    });
   });
 }
