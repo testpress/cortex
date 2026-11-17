@@ -52,6 +52,20 @@ void main() {
 
       expect(dto.status, LiveClassStatus.cancelled);
     });
+
+    test('parses session_type and sets isOneOnOne correctly', () {
+      final json = {
+        'id': 96,
+        'title': '1-on-1 Mentorship',
+        'session_type': 'one_on_one',
+        'status': 'upcoming',
+      };
+
+      final dto = LiveClassDto.fromJson(json, 'General');
+
+      expect(dto.sessionType, 'one_on_one');
+      expect(dto.isOneOnOne, isTrue);
+    });
   });
 
   group('LiveClassDto.fromListResponse', () {

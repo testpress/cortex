@@ -13,6 +13,7 @@ class LiveClassDto {
   final String? provider;
   final LiveClassStatus status;
   final int? durationMinutes;
+  final String? sessionType;
 
   const LiveClassDto({
     required this.id,
@@ -26,6 +27,7 @@ class LiveClassDto {
     this.provider,
     required this.status,
     this.durationMinutes,
+    this.sessionType,
   }) : title = title ?? topic ?? '',
        courseName = courseName ?? subject ?? '',
        start = start ?? time ?? '';
@@ -34,6 +36,9 @@ class LiveClassDto {
   String get topic => title;
   String get subject => courseName;
   String get time => start;
+
+  /// Whether this is a 1-on-1 session.
+  bool get isOneOnOne => sessionType == 'one_on_one';
 
   /// Parsed start DateTime from ISO 8601 string.
   DateTime? get startDateTime => DateTime.tryParse(start);
@@ -56,6 +61,7 @@ class LiveClassDto {
     final startTimeStr = json['start'] as String? ?? '';
     final providerStr = json['provider'] as String?;
     final durationInt = json['duration'] as int? ?? 0;
+    final sessionTypeStr = json['session_type'] as String?;
 
     return LiveClassDto(
       id: (json['id'] ?? '').toString(),
@@ -66,6 +72,7 @@ class LiveClassDto {
       provider: providerStr,
       status: statusVal,
       durationMinutes: durationInt > 0 ? durationInt : null,
+      sessionType: sessionTypeStr,
     );
   }
 

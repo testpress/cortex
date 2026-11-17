@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/network_utils.dart';
 import 'curriculum_parser.dart';
+import 'live_session_routing_cache.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
@@ -10,8 +11,11 @@ import 'curriculum_parser.dart';
 /// Activate via: flutter run --dart-define=USE_MOCK=false
 class HttpDataSource implements DataSource {
   final Dio _dio;
+  final LiveSessionRoutingCache _liveSessionCache;
 
-  HttpDataSource({required Dio dio}) : _dio = dio;
+  HttpDataSource({required Dio dio, LiveSessionRoutingCache? liveSessionCache})
+    : _dio = dio,
+      _liveSessionCache = liveSessionCache ?? LiveSessionRoutingCache();
 
   @override
   Future<PaginatedResponseDto<CourseDto>> getCourses({
@@ -304,17 +308,51 @@ class HttpDataSource implements DataSource {
     }
   }
 
-  @override
-  Future<LessonDto> getLiveClassDetail(String id) async {
+  Future<LessonDto> _fetchLiveClassDetail(String uri) async {
     try {
       return await performNetworkRequest(
-        _dio.get(ApiEndpoints.liveClassDetail(id)),
+        _dio.get(uri),
         fromJson: LessonDto.fromJson,
       );
     } on ApiException catch (e) {
       final data = e.data;
       if (data is Map<String, dynamic> && data['error_code'] == 'scheduled') {
         return LessonDto.fromJson(data);
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<LessonDto> getLiveClassDetail(String id) async {
+    if (_liveSessionCache.isKnownOneOnOne(id)) {
+      return _fetchLiveClassDetail(
+        ApiEndpoints.liveClassLearningSessionDetail(id),
+      );
+    }
+
+    try {
+      return await _fetchLiveClassDetail(ApiEndpoints.liveClassDetail(id));
+    } on ApiException catch (originalError) {
+      final isNotFound =
+          originalError.statusCode == 404 ||
+          originalError.type == ApiErrorType.notFound;
+
+      if (isNotFound && !_liveSessionCache.isNonexistent(id)) {
+        try {
+          final result = await _fetchLiveClassDetail(
+            ApiEndpoints.liveClassLearningSessionDetail(id),
+          );
+          _liveSessionCache.markOneOnOne(id);
+          return result;
+        } on ApiException catch (fallbackError) {
+          if (fallbackError.statusCode == 404 ||
+              fallbackError.type == ApiErrorType.notFound) {
+            _liveSessionCache.markNonexistent(id);
+            throw originalError;
+          }
+          rethrow;
+        }
       }
       rethrow;
     }
@@ -328,7 +366,7 @@ class HttpDataSource implements DataSource {
     String? listRangeFrom,
     String? listRangeTo,
   }) async {
-    return performNetworkRequest(
+    final response = await performNetworkRequest(
       _dio.get(
         ApiEndpoints.liveClasses,
         queryParameters: {
@@ -343,6 +381,14 @@ class HttpDataSource implements DataSource {
       ),
       fromJson: LiveClassDto.fromListResponse,
     );
+
+    for (final item in response.results) {
+      if (item.isOneOnOne) {
+        _liveSessionCache.markOneOnOne(item.id);
+      }
+    }
+
+    return response;
   }
 
   @override

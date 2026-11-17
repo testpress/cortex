@@ -61,6 +61,8 @@ class ApiEndpoints {
   static const String liveClasses = '/api/v3/live-classes/';
   static String liveClassDetail(String id) =>
       '/api/v3/live-classes/contents/$id/';
+  static String liveClassLearningSessionDetail(String id) =>
+      '/api/v3/live-classes/learning-sessions/$id/';
 
   // Posts / Announcements
   static const String posts = '/api/v3/posts/';
