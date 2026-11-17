@@ -33,6 +33,7 @@ The updated header requires callbacks for each discrete user action:
 The 3-dot menu opens an anchored popup menu positioned using `CompositedTransformFollower` and `LayerLink`, identical to the pattern used in `AiChatHistoryScreen`.
 - *Rationale*: Consistency across the app for dropdown option sheets without introducing heavy third-party dropdown packages or raw Material `PopupMenuButton`.
 - *Motion Preferences*: Respects `MotionPreferences.duration(context, design.motion.fast)` and `design.motion.easeOut`. When reduced motion is requested, duration is `Duration.zero` (instant); when animations are enabled, a subtle 150ms `FadeTransition` provides a smooth appearance.
+- *Keyboard Accessibility*: The popup action is wrapped in `AppFocusable` (`autofocus: false`) to support Tab and Enter/Space keyboard navigation, while using `ExcludeSemantics` on inner text to ensure a single unified button node for screen readers.
 - *Note on Primitives*: `packages/core` currently lacks a dedicated anchored popup/menu primitive (`AppPopover`/`AppMenu`). Existing overlay primitives like `AppBottomSheet` (viewport-anchored bottom sheet) and `AppDrawer` (viewport-anchored side navigation) are not suited for anchored desktop/tablet dropdown menus. Hand-rolling via `showGeneralDialog` serves as the current approach until a core `AppPopover` is introduced across the SDK.
 
 ### Decision 3: Active Conversation Deletion Flow

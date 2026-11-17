@@ -200,9 +200,11 @@ class _HeaderOptionsPopup extends StatelessWidget {
                         color: design.colors.error,
                       ),
                       SizedBox(width: design.spacing.sm),
-                      AppText.bodySmall(
-                        l10n.aiDeleteConversationAction,
-                        color: design.colors.error,
+                      ExcludeSemantics(
+                        child: AppText.bodySmall(
+                          l10n.aiDeleteConversationAction,
+                          color: design.colors.error,
+                        ),
                       ),
                     ],
                   ),

@@ -159,7 +159,7 @@ void main() {
   });
 
   testWidgets(
-    'delete popup item is wrapped in AppFocusable and triggers on Enter key',
+    'delete popup item is reachable via Tab key and triggers on Enter key',
     (tester) async {
       var deleteTapped = false;
 
@@ -173,6 +173,10 @@ void main() {
 
       expect(find.byType(AppFocusable), findsOneWidget);
 
+      // Tab into the popup to focus the Delete item
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+
       final focusNode = tester
           .widget<Focus>(
             find.descendant(
@@ -181,15 +185,61 @@ void main() {
             ),
           )
           .focusNode;
-      focusNode?.requestFocus();
-      await tester.pump();
+      expect(focusNode?.hasFocus, isTrue);
 
+      // Enter key triggers the focused item
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
 
       expect(deleteTapped, isTrue);
+      expect(find.text('Delete'), findsNothing);
     },
   );
+
+  testWidgets('dismisses options popup when Escape key is pressed', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(title: 'Active Chat', onDelete: () {}),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(LucideIcons.moreVertical));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete'), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete'), findsNothing);
+  });
+
+  testWidgets('verifies single unified semantics node for delete popup item', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(title: 'Active Chat', onDelete: () {}),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(LucideIcons.moreVertical));
+    await tester.pumpAndSettle();
+
+    final semanticsFinder = find.bySemanticsLabel('Delete');
+    expect(semanticsFinder, findsOneWidget);
+
+    expect(
+      tester.getSemantics(semanticsFinder),
+      matchesSemantics(
+        label: 'Delete',
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        hasTapAction: true,
+      ),
+    );
+  });
 
   testWidgets(
     'guarantees 48x48dp minimum touch targets for all action buttons',
