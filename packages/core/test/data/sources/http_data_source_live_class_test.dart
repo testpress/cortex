@@ -6,6 +6,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  const jsonHeaders = {
+    Headers.contentTypeHeader: [Headers.jsonContentType],
+  };
+
   group('HttpDataSource.getLiveClassDetail', () {
     late Dio dio;
     late List<Map<String, dynamic>> recordedRequests;
@@ -30,9 +34,7 @@ void main() {
           return ResponseBody.fromString(
             validLessonJson,
             200,
-            headers: {
-              Headers.contentTypeHeader: [Headers.jsonContentType],
-            },
+            headers: jsonHeaders,
           );
         }
         return ResponseBody.fromString('Not Found', 404);
@@ -75,9 +77,7 @@ void main() {
             return ResponseBody.fromString(
               listResponseJson,
               200,
-              headers: {
-                Headers.contentTypeHeader: [Headers.jsonContentType],
-              },
+              headers: jsonHeaders,
             );
           }
           if (options.path ==
@@ -85,9 +85,7 @@ void main() {
             return ResponseBody.fromString(
               validLessonJson,
               200,
-              headers: {
-                Headers.contentTypeHeader: [Headers.jsonContentType],
-              },
+              headers: jsonHeaders,
             );
           }
           return ResponseBody.fromString('Not Found', 404);
@@ -112,6 +110,74 @@ void main() {
     );
 
     test(
+      'ignores items with null or empty session_type so they route to contents endpoint',
+      () async {
+        final listResponseJson = jsonEncode({
+          'count': 2,
+          'next': null,
+          'previous': null,
+          'results': {
+            'courses': [],
+            'live_classes': [
+              {
+                'id': 101,
+                'title': 'Null Session Type Class',
+                'session_type': null,
+                'status': 'upcoming',
+              },
+              {
+                'id': 102,
+                'title': 'Empty Session Type Class',
+                'session_type': '',
+                'status': 'upcoming',
+              },
+            ],
+          },
+        });
+
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          recordedRequests.add({'path': options.path});
+          if (options.path == ApiEndpoints.liveClasses) {
+            return ResponseBody.fromString(
+              listResponseJson,
+              200,
+              headers: jsonHeaders,
+            );
+          }
+          if (options.path == ApiEndpoints.liveClassDetail('101') ||
+              options.path == ApiEndpoints.liveClassDetail('102')) {
+            return ResponseBody.fromString(
+              validLessonJson,
+              200,
+              headers: jsonHeaders,
+            );
+          }
+          return ResponseBody.fromString('Not Found', 404);
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+
+        await dataSource.getLiveClasses();
+
+        recordedRequests.clear();
+        await dataSource.getLiveClassDetail('101');
+        expect(recordedRequests.length, 1);
+        expect(
+          recordedRequests.first['path'],
+          ApiEndpoints.liveClassDetail('101'),
+        );
+
+        recordedRequests.clear();
+        await dataSource.getLiveClassDetail('102');
+        expect(recordedRequests.length, 1);
+        expect(
+          recordedRequests.first['path'],
+          ApiEndpoints.liveClassDetail('102'),
+        );
+      },
+    );
+
+    test(
       'falls back to learning-sessions endpoint on 404 from contents endpoint',
       () async {
         dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
@@ -120,9 +186,7 @@ void main() {
             return ResponseBody.fromString(
               jsonEncode({'detail': 'Not found.'}),
               404,
-              headers: {
-                Headers.contentTypeHeader: [Headers.jsonContentType],
-              },
+              headers: jsonHeaders,
             );
           }
           if (options.path ==
@@ -130,9 +194,7 @@ void main() {
             return ResponseBody.fromString(
               validLessonJson,
               200,
-              headers: {
-                Headers.contentTypeHeader: [Headers.jsonContentType],
-              },
+              headers: jsonHeaders,
             );
           }
           return ResponseBody.fromString('Not Found', 404);
@@ -160,27 +222,52 @@ void main() {
       },
     );
 
-    test('rethrows 404 if fallback to learning-sessions also fails', () async {
-      dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
-        recordedRequests.add({'path': options.path});
-        return ResponseBody.fromString(
-          jsonEncode({'detail': 'Not found.'}),
-          404,
-          headers: {
-            Headers.contentTypeHeader: [Headers.jsonContentType],
-          },
+    test(
+      'rethrows original contents-endpoint 404 if fallback also fails',
+      () async {
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          recordedRequests.add({'path': options.path});
+          return ResponseBody.fromString(
+            jsonEncode({'detail': 'Not found.'}),
+            404,
+            headers: jsonHeaders,
+          );
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+
+        await expectLater(
+          dataSource.getLiveClassDetail('999'),
+          throwsA(
+            isA<ApiException>()
+                .having((e) => e.statusCode, 'statusCode', 404)
+                .having(
+                  (e) => e.dioDiagnostics?.requestUri,
+                  'requestUri',
+                  contains(ApiEndpoints.liveClassDetail('999')),
+                ),
+          ),
         );
-      });
 
-      final dataSource = HttpDataSource(dio: dio);
+        // Initial attempt made 2 calls (contents + fallback)
+        expect(recordedRequests.length, 2);
 
-      expect(
-        () => dataSource.getLiveClassDetail('999'),
-        throwsA(
-          isA<ApiException>().having((e) => e.statusCode, 'statusCode', 404),
-        ),
-      );
-    });
+        // Verify that negative cache prevents repeated fallback on retry
+        recordedRequests.clear();
+        await expectLater(
+          dataSource.getLiveClassDetail('999'),
+          throwsA(isA<ApiException>()),
+        );
+        expect(
+          recordedRequests.length,
+          1,
+        ); // Retry only made 1 call (skipped fallback)
+        expect(
+          recordedRequests.first['path'],
+          ApiEndpoints.liveClassDetail('999'),
+        );
+      },
+    );
   });
 }
 

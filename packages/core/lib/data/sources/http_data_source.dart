@@ -10,6 +10,8 @@ import 'curriculum_parser.dart';
 /// Activate via: flutter run --dart-define=USE_MOCK=false
 class HttpDataSource implements DataSource {
   final Dio _dio;
+  final Set<String> _oneOnOneSessionIds = {};
+  final Set<String> _nonexistentSessionIds = {};
 
   HttpDataSource({required Dio dio}) : _dio = dio;
 
@@ -304,8 +306,6 @@ class HttpDataSource implements DataSource {
     }
   }
 
-  final Map<String, String> _sessionTypeCache = {};
-
   Future<LessonDto> _fetchLiveClassDetail(String uri) async {
     try {
       return await performNetworkRequest(
@@ -323,7 +323,7 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<LessonDto> getLiveClassDetail(String id) async {
-    final isKnownOneOnOne = _sessionTypeCache[id] == 'one_on_one';
+    final isKnownOneOnOne = _oneOnOneSessionIds.contains(id);
     if (isKnownOneOnOne) {
       return _fetchLiveClassDetail(
         ApiEndpoints.liveClassLearningSessionDetail(id),
@@ -332,13 +332,22 @@ class HttpDataSource implements DataSource {
 
     try {
       return await _fetchLiveClassDetail(ApiEndpoints.liveClassDetail(id));
-    } on ApiException catch (e) {
-      if (e.statusCode == 404 || e.type == ApiErrorType.notFound) {
-        final result = await _fetchLiveClassDetail(
-          ApiEndpoints.liveClassLearningSessionDetail(id),
-        );
-        _sessionTypeCache[id] = 'one_on_one';
-        return result;
+    } on ApiException catch (originalError) {
+      final isNotFound =
+          originalError.statusCode == 404 ||
+          originalError.type == ApiErrorType.notFound;
+
+      if (isNotFound && !_nonexistentSessionIds.contains(id)) {
+        try {
+          final result = await _fetchLiveClassDetail(
+            ApiEndpoints.liveClassLearningSessionDetail(id),
+          );
+          _oneOnOneSessionIds.add(id);
+          return result;
+        } catch (_) {
+          _nonexistentSessionIds.add(id);
+          throw originalError;
+        }
       }
       rethrow;
     }
@@ -369,8 +378,8 @@ class HttpDataSource implements DataSource {
     );
 
     for (final item in response.results) {
-      if (item.sessionType != null && item.sessionType!.isNotEmpty) {
-        _sessionTypeCache[item.id] = item.sessionType!;
+      if (item.isOneOnOne) {
+        _oneOnOneSessionIds.add(item.id);
       }
     }
 
