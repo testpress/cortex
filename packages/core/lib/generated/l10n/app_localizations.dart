@@ -6362,8 +6362,8 @@ abstract class AppLocalizations {
   /// No description provided for @aiMoreActionsSemantic.
   ///
   /// In en, this message translates to:
-  /// **'More actions'**
-  String get aiMoreActionsSemantic;
+  /// **'More actions: {title}'**
+  String aiMoreActionsSemantic(String title);
 
   /// No description provided for @aiMessageSendFailed.
   ///
@@ -6868,6 +6868,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this conversation? This action cannot be undone.'**
   String get aiDeleteConversationMessage;
+
+  /// Message in confirmation dialog with conversation title warning that deletion is irreversible
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{title}\"? This action cannot be undone.'**
+  String aiDeleteConversationNamedMessage(String title);
 
   /// Button label for confirming conversation deletion
   ///

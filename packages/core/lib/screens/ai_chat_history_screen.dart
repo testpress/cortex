@@ -71,6 +71,7 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
 
   Future<void> _showConversationOptions(
     String chatId,
+    String title,
     LayerLink layerLink,
   ) async {
     final action = await _showConversationOptionsMenu(
@@ -81,7 +82,7 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
 
     switch (action) {
       case _ConversationAction.delete:
-        await _deleteConversation(chatId);
+        await _deleteConversation(chatId, title: title);
     }
   }
 
@@ -97,19 +98,24 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     return false;
   }
 
-  Future<void> _deleteConversation(String chatId) async {
+  Future<void> _deleteConversation(String chatId, {String? title}) async {
     final l10n = L10n.of(context);
     final chatState = ref.read(genericAiChatProvider);
     if (chatState.isDeletingConversation) return;
 
     if (_warnIfGenerating(chatId)) return;
 
+    final content = title != null && title.trim().isNotEmpty
+        ? l10n.aiDeleteConversationNamedMessage(title)
+        : l10n.aiDeleteConversationMessage;
+
     final confirmed = await showConfirmationDialog(
       context,
       title: l10n.aiDeleteConversationTitle,
-      content: l10n.aiDeleteConversationMessage,
+      content: content,
       confirmText: l10n.aiDeleteConversationAction,
       cancelText: l10n.labelCancel,
+      isDestructive: true,
     );
 
     if (!confirmed || !mounted) return;
@@ -316,8 +322,13 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
               onTap: () => _openConversation(session.chatId),
               onOptions: chatState.isDeletingConversation
                   ? null
-                  : (layerLink) =>
-                        _showConversationOptions(session.chatId, layerLink),
+                  : (layerLink) => _showConversationOptions(
+                      session.chatId,
+                      session.title.trim().isNotEmpty
+                          ? session.title
+                          : l10n.aiNewChatHeader,
+                      layerLink,
+                    ),
               isDeleting: chatState.isDeletingConversation,
             ),
             rowDivider,
@@ -486,14 +497,14 @@ Future<_ConversationAction?> _showConversationOptionsMenu(
     context: context,
     barrierDismissible: true,
     barrierLabel: l10n.labelClose,
-    barrierColor: const Color(0x01000000),
+    barrierColor: design.colors.transparent,
     transitionDuration: Duration.zero,
     pageBuilder: (dialogContext, anim1, anim2) {
       return Stack(
         children: [
           Positioned.fill(
             child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
+              behavior: HitTestBehavior.opaque,
               onTap: () => Navigator.of(dialogContext).pop(),
             ),
           ),
@@ -583,7 +594,7 @@ class _HistoryItemState extends State<_HistoryItem> {
           ),
           if (widget.onOptions != null || widget.isDeleting)
             AppSemantics.button(
-              label: '${l10n.aiMoreActionsSemantic}: ${widget.title}',
+              label: l10n.aiMoreActionsSemantic(widget.title),
               onTap: widget.isDeleting
                   ? null
                   : () => widget.onOptions?.call(_layerLink),

@@ -498,7 +498,7 @@ void main() {
         expect(find.text('Delete conversation?'), findsOneWidget);
         expect(
           find.text(
-            'Are you sure you want to delete this conversation? This action cannot be undone.',
+            'Are you sure you want to delete "Explain Newton\'s Laws of Motion"? This action cannot be undone.',
           ),
           findsOneWidget,
         );

@@ -3611,7 +3611,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiCopyMessageSemantic => 'செய்தியை நகலெடு';
 
   @override
-  String get aiMoreActionsSemantic => 'கூடுதல் செயல்கள்';
+  String aiMoreActionsSemantic(String title) {
+    return 'கூடுதல் செயல்கள்: $title';
+  }
 
   @override
   String get aiMessageSendFailed => 'செய்தியை அனுப்ப முடியவில்லை. ';
@@ -3894,6 +3896,11 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get aiDeleteConversationMessage =>
       'இந்த உரையாடலை நிச்சயமாக நீக்க விரும்புகிறீர்களா? இந்த செயலை மாற்ற முடியாது.';
+
+  @override
+  String aiDeleteConversationNamedMessage(String title) {
+    return '"$title"-ஐ நிச்சயமாக நீக்க விரும்புகிறீர்களா? இந்தச் செயலைத் திரும்பப் பெற முடியாது.';
+  }
 
   @override
   String get aiDeleteConversationAction => 'நீக்கு';

@@ -3562,7 +3562,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiCopyMessageSemantic => 'نسخ الرسالة';
 
   @override
-  String get aiMoreActionsSemantic => 'مزيد من الإجراءات';
+  String aiMoreActionsSemantic(String title) {
+    return 'مزيد من الإجراءات: $title';
+  }
 
   @override
   String get aiMessageSendFailed => 'تعذر إرسال الرسالة. ';
@@ -3838,6 +3840,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get aiDeleteConversationMessage =>
       'هل أنت متأكد من رغبتك في حذف هذه المحادثة؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String aiDeleteConversationNamedMessage(String title) {
+    return 'هل أنت متأكد من رغبتك في حذف "$title"؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
 
   @override
   String get aiDeleteConversationAction => 'حذف';
