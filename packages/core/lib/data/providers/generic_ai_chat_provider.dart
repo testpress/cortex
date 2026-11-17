@@ -1042,8 +1042,16 @@ class GenericAiChat extends _$GenericAiChat {
     _syncInFlight = null;
     final token = ++_operationToken;
 
+    final matchingTitle = state.conversationHistory
+        .firstWhere(
+          (c) => c.chatId == chatId,
+          orElse: () => const AiConversationDto(chatId: ''),
+        )
+        .title;
+
     state = state.copyWith(
       currentChatId: chatId,
+      currentTitle: matchingTitle,
       messages: const [],
       isLoadingMessages: true,
       hasMessagesError: false,
@@ -1062,16 +1070,8 @@ class GenericAiChat extends _$GenericAiChat {
 
       final loaded = page.items.map(GenericAiChatMessage.fromDto).toList();
 
-      final matchingTitle = state.conversationHistory
-          .firstWhere(
-            (c) => c.chatId == chatId,
-            orElse: () => const AiConversationDto(chatId: ''),
-          )
-          .title;
-
       state = state.copyWith(
         messages: loaded,
-        currentTitle: matchingTitle,
         isLoadingMessages: false,
         hasMessagesError: false,
         messagesError: null,
