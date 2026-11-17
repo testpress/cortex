@@ -56,6 +56,9 @@ Future<bool> showConfirmationDialog(
                 children: [
                   AppButton.secondary(
                     label: cancelText ?? l10n.labelCancel,
+                    borderColor: design.isDark
+                        ? design.colors.border
+                        : design.colors.textTertiary.withValues(alpha: 0.5),
                     padding: EdgeInsets.symmetric(
                       horizontal: design.spacing.md,
                       vertical: design.spacing.sm,
