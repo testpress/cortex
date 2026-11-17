@@ -34,9 +34,10 @@ Currently, `AiChatHistoryScreen` lists conversations with cursor-based paginatio
   - If `state.activeConversationId == chatId`, invoke `startNewChat()` to clear active messages and reset to the clean canvas.
 
 ### 3. UI Presentation & Confirmation
-- Add a trailing delete button (`LucideIcons.trash2`, min 48×48dp touch target) in each history item row of `AiChatHistoryScreen`.
-- Tapping opens an `AppDialog` / confirmation prompt with localized title, description, cancel action, and destructive delete action.
-- On confirmation, dispatch `deleteConversation(item.id)`. On failure, show an error snackbar.
+- Add a trailing options button (`LucideIcons.moreVertical`, min 48×48dp touch target) in each history item row of `AiChatHistoryScreen`.
+- Tapping opens an anchored contextual options menu with a destructive delete action.
+- Tapping Delete opens a confirmation dialog with localized title, conversation name, cancel action, and a destructive delete action (`isDestructive: true`).
+- On confirmation, dispatch `deleteConversation(item.id)`. On failure, show an error toast.
 
 ## Risks / Trade-offs
 

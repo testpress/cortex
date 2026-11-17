@@ -12,8 +12,8 @@
 ## 3. UI & Localization
 
 - [x] 3.1 Add localized strings for deletion prompt and notifications across ARB files and regenerate L10n
-- [x] 3.2 Add accessible delete action button (`LucideIcons.trash2`) to conversation items in `packages/core/lib/screens/ai_chat_history_screen.dart`
-- [x] 3.3 Implement confirmation dialog prior to dispatching deletion and surface feedback toast
+- [x] 3.2 Add accessible options button (`LucideIcons.moreVertical`) with contextual delete menu to conversation items in `packages/core/lib/screens/ai_chat_history_screen.dart`
+- [x] 3.3 Implement destructive confirmation dialog displaying conversation title prior to dispatching deletion and surface feedback toast
 
 ## 4. Testing & Verification
 

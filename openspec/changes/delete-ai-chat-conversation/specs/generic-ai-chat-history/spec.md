@@ -17,7 +17,7 @@ The history drawer SHALL provide a confirmation-gated delete action on conversat
 
 #### Scenario: Confirming conversation deletion
 - **WHEN** the user taps the delete action on a conversation item
-- **THEN** the system SHALL display a confirmation dialog prompting the user before dispatching the deletion.
+- **THEN** the system SHALL display a confirmation dialog prompting the user with the conversation title and a destructive confirm action before dispatching the deletion.
 
 #### Scenario: Deletion attempted during active generation
 - **WHEN** the user taps the delete action on a conversation while a response is actively generating for it

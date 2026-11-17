@@ -10,7 +10,7 @@ Students need the ability to delete past AI chat conversations from their histor
   - Guard against active generation conflicts (handling HTTP 409 `generation_in_progress`).
   - Remove the deleted conversation from the in-memory `state.conversations` list.
   - Reset the active chat to a clean empty state (`startNewChat()`) if the deleted conversation is currently active.
-- Add an accessible delete action on each conversation item in `AiChatHistoryScreen` with a confirmation dialog.
+- Add an accessible options action (3-dots) on each conversation item in `AiChatHistoryScreen` with an anchored options menu and a destructive confirmation dialog displaying the conversation title.
 - Add localized strings for delete confirmation and status notifications.
 - Add unit and widget tests covering deletion success, active conversation reset, and in-flight generation conflict handling.
 
