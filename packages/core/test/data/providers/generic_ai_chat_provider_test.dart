@@ -2342,6 +2342,52 @@ void main() {
           expect(state3.hasActiveGeneration('chat-1'), isFalse);
         },
       );
+
+      test(
+        'retryLastSend and retryGeneration are no-ops when isDeletingConversation is true',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final failedUserMsg = GenericAiChatMessage(
+            id: 'msg-fail',
+            text: 'Retry question',
+            isUser: true,
+            timestamp: DateTime.now(),
+            hasSendError: true,
+            requestId: 'req-1',
+          );
+          final failedGenMsg = GenericAiChatMessage(
+            id: 'msg-gen-fail',
+            text: '',
+            isUser: false,
+            timestamp: DateTime.now(),
+            hasGenerationError: true,
+          );
+
+          notifier.setInitialMessages([failedUserMsg, failedGenMsg]);
+          final completer = Completer<void>();
+          fakeRepository.deleteConversationCompleter = completer;
+
+          // Put state into isDeletingConversation
+          final deleteFuture = notifier.deleteConversation('chat-1');
+          expect(
+            container.read(genericAiChatProvider).isDeletingConversation,
+            isTrue,
+          );
+
+          // Attempt retryLastSend while deleting
+          await notifier.retryLastSend(messageId: 'msg-fail');
+          // Messages must remain unmutated
+          expect(container.read(genericAiChatProvider).messages.length, 2);
+
+          // Attempt retryGeneration while deleting
+          await notifier.retryGeneration();
+          // Messages must still remain unmutated
+          expect(container.read(genericAiChatProvider).messages.length, 2);
+
+          completer.complete();
+          await deleteFuture;
+        },
+      );
     });
   });
 }

@@ -3908,4 +3908,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get aiDeleteConversationFailed =>
       'உரையாடலை நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return '$title உரையாடலை நீக்கு';
+  }
 }

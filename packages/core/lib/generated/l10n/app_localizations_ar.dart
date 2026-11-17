@@ -3852,4 +3852,9 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get aiDeleteConversationFailed =>
       'فشل حذف المحادثة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return 'حذف: $title';
+  }
 }

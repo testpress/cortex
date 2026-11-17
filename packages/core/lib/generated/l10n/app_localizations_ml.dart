@@ -3907,4 +3907,9 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get aiDeleteConversationFailed =>
       'സംഭാഷണം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return '$title സംഭാഷണം ഇല്ലാതാക്കുക';
+  }
 }

@@ -2027,5 +2027,14 @@
   "aiDeleteConversationFailed": "Failed to delete conversation. Please try again.",
   "@aiDeleteConversationFailed": {
     "description": "Error message when conversation deletion fails"
+  },
+  "aiDeleteConversationNamed": "Delete: {title}",
+  "@aiDeleteConversationNamed": {
+    "description": "Accessibility label for deleting a specific conversation from history",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

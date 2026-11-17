@@ -69,25 +69,40 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     _dismiss();
   }
 
-  bool _hasActiveGeneration(String chatId) {
-    final state = ref.read(genericAiChatProvider);
-    return state.currentChatId == chatId &&
-        (state.isGenerating || state.isSending);
+  Future<void> _showConversationOptions(
+    String chatId,
+    LayerLink layerLink,
+  ) async {
+    final action = await _showConversationOptionsMenu(
+      context,
+      layerLink: layerLink,
+    );
+    if (!mounted || action == null) return;
+
+    switch (action) {
+      case _ConversationAction.delete:
+        await _deleteConversation(chatId);
+    }
+  }
+
+  bool _warnIfGenerating(String chatId) {
+    if (ref.read(genericAiChatProvider).hasActiveGeneration(chatId)) {
+      AppToast.show(
+        context,
+        message: L10n.of(context).aiCannotDeleteWhileGenerating,
+        isError: true,
+      );
+      return true;
+    }
+    return false;
   }
 
   Future<void> _deleteConversation(String chatId) async {
     final l10n = L10n.of(context);
-    final initialChatState = ref.read(genericAiChatProvider);
-    if (initialChatState.isDeletingConversation) return;
+    final chatState = ref.read(genericAiChatProvider);
+    if (chatState.isDeletingConversation) return;
 
-    if (_hasActiveGeneration(chatId)) {
-      AppToast.show(
-        context,
-        message: l10n.aiCannotDeleteWhileGenerating,
-        isError: true,
-      );
-      return;
-    }
+    if (_warnIfGenerating(chatId)) return;
 
     final confirmed = await showConfirmationDialog(
       context,
@@ -99,14 +114,7 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
 
     if (!confirmed || !mounted) return;
 
-    if (_hasActiveGeneration(chatId)) {
-      AppToast.show(
-        context,
-        message: l10n.aiCannotDeleteWhileGenerating,
-        isError: true,
-      );
-      return;
-    }
+    if (_warnIfGenerating(chatId)) return;
 
     final isCurrentActive =
         ref.read(genericAiChatProvider).currentChatId == chatId;
@@ -306,7 +314,11 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                   ? DateFormatter.formatTimeAgo(session.updatedAt!)
                   : '',
               onTap: () => _openConversation(session.chatId),
-              onDelete: () => _deleteConversation(session.chatId),
+              onOptions: chatState.isDeletingConversation
+                  ? null
+                  : (layerLink) =>
+                        _showConversationOptions(session.chatId, layerLink),
+              isDeleting: chatState.isDeletingConversation,
             ),
             rowDivider,
           ],
@@ -391,18 +403,140 @@ class _NewChatButton extends StatelessWidget {
   }
 }
 
-class _HistoryItem extends StatelessWidget {
+enum _ConversationAction { delete }
+
+class _ConversationOptionsPopup extends StatelessWidget {
+  const _ConversationOptionsPopup({required this.onDelete});
+
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    return IntrinsicWidth(
+      child: Container(
+        decoration: BoxDecoration(
+          color: design.colors.card,
+          borderRadius: BorderRadius.circular(design.radius.md),
+          border: Border.all(
+            color: design.colors.border.withValues(
+              alpha: design.isDark ? 0.6 : 0.8,
+            ),
+          ),
+          boxShadow: design.shadows.floating,
+        ),
+        padding: EdgeInsets.all(design.spacing.xs * 0.5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppSemantics.button(
+              label: l10n.aiDeleteConversationAction,
+              onTap: onDelete,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onDelete,
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 48.0,
+                    minHeight: 48.0,
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: design.spacing.sm,
+                    vertical: design.spacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(design.radius.sm),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        LucideIcons.trash2,
+                        size: design.iconSize.sm,
+                        color: design.colors.error,
+                      ),
+                      SizedBox(width: design.spacing.sm),
+                      AppText.bodySmall(
+                        l10n.aiDeleteConversationAction,
+                        color: design.colors.error,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<_ConversationAction?> _showConversationOptionsMenu(
+  BuildContext context, {
+  required LayerLink layerLink,
+}) {
+  final design = Design.of(context);
+  final l10n = L10n.of(context);
+
+  return showGeneralDialog<_ConversationAction>(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: l10n.labelClose,
+    barrierColor: const Color(0x01000000),
+    transitionDuration: Duration.zero,
+    pageBuilder: (dialogContext, anim1, anim2) {
+      return Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () => Navigator.of(dialogContext).pop(),
+            ),
+          ),
+          CompositedTransformFollower(
+            link: layerLink,
+            showWhenUnlinked: false,
+            targetAnchor: Alignment.bottomRight,
+            followerAnchor: Alignment.topRight,
+            offset: Offset(0, design.spacing.xs),
+            child: _ConversationOptionsPopup(
+              onDelete: () =>
+                  Navigator.of(dialogContext).pop(_ConversationAction.delete),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+typedef _OptionsCallback = void Function(LayerLink layerLink);
+
+class _HistoryItem extends StatefulWidget {
   const _HistoryItem({
     required this.title,
     required this.timestamp,
     required this.onTap,
-    this.onDelete,
+    this.onOptions,
+    this.isDeleting = false,
   });
 
   final String title;
   final String timestamp;
   final VoidCallback onTap;
-  final VoidCallback? onDelete;
+  final _OptionsCallback? onOptions;
+  final bool isDeleting;
+
+  @override
+  State<_HistoryItem> createState() => _HistoryItemState();
+}
+
+class _HistoryItemState extends State<_HistoryItem> {
+  final LayerLink _layerLink = LayerLink();
 
   @override
   Widget build(BuildContext context) {
@@ -416,10 +550,10 @@ class _HistoryItem extends StatelessWidget {
         children: [
           Expanded(
             child: AppSemantics.button(
-              label: l10n.openChatSession(title),
-              onTap: onTap,
+              label: l10n.openChatSession(widget.title),
+              onTap: widget.onTap,
               child: GestureDetector(
-                onTap: onTap,
+                onTap: widget.onTap,
                 behavior: HitTestBehavior.opaque,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -430,14 +564,14 @@ class _HistoryItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppText.bodySmall(
-                        title,
+                        widget.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (timestamp.isNotEmpty) ...[
+                      if (widget.timestamp.isNotEmpty) ...[
                         SizedBox(height: design.spacing.xs),
                         AppText.caption(
-                          timestamp,
+                          widget.timestamp,
                           color: design.colors.textTertiary,
                         ),
                       ],
@@ -447,12 +581,16 @@ class _HistoryItem extends StatelessWidget {
               ),
             ),
           ),
-          if (onDelete != null)
+          if (widget.onOptions != null || widget.isDeleting)
             AppSemantics.button(
-              label: '${l10n.aiDeleteConversationAction}: $title',
-              onTap: onDelete,
+              label: '${l10n.aiMoreActionsSemantic}: ${widget.title}',
+              onTap: widget.isDeleting
+                  ? null
+                  : () => widget.onOptions?.call(_layerLink),
               child: GestureDetector(
-                onTap: onDelete,
+                onTap: widget.isDeleting
+                    ? null
+                    : () => widget.onOptions?.call(_layerLink),
                 behavior: HitTestBehavior.opaque,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
@@ -460,10 +598,16 @@ class _HistoryItem extends StatelessWidget {
                     minHeight: 48.0,
                   ),
                   child: Center(
-                    child: Icon(
-                      LucideIcons.trash2,
-                      size: design.iconSize.sm,
-                      color: design.colors.textTertiary,
+                    child: Opacity(
+                      opacity: widget.isDeleting ? 0.35 : 1.0,
+                      child: CompositedTransformTarget(
+                        link: _layerLink,
+                        child: Icon(
+                          LucideIcons.moreVertical,
+                          size: design.iconSize.sm,
+                          color: design.colors.textTertiary,
+                        ),
+                      ),
                     ),
                   ),
                 ),

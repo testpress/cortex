@@ -6892,6 +6892,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to delete conversation. Please try again.'**
   String get aiDeleteConversationFailed;
+
+  /// Accessibility label for deleting a specific conversation from history
+  ///
+  /// In en, this message translates to:
+  /// **'Delete: {title}'**
+  String aiDeleteConversationNamed(String title);
 }
 
 class _AppLocalizationsDelegate

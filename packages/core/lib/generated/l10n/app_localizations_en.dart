@@ -3848,4 +3848,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aiDeleteConversationFailed =>
       'Failed to delete conversation. Please try again.';
+
+  @override
+  String aiDeleteConversationNamed(String title) {
+    return 'Delete: $title';
+  }
 }

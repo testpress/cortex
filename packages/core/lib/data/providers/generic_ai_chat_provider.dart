@@ -833,7 +833,10 @@ class GenericAiChat extends _$GenericAiChat {
 
   /// Retries a previously failed user message using the same [requestId] for idempotency.
   Future<void> retryLastSend({String? messageId}) async {
-    if (state.isSending || state.isGenerating || state.hasActiveRateLimit) {
+    if (state.isSending ||
+        state.isGenerating ||
+        state.hasActiveRateLimit ||
+        state.isDeletingConversation) {
       return;
     }
 
@@ -855,7 +858,10 @@ class GenericAiChat extends _$GenericAiChat {
 
   /// Retries generation after an assistant response failure.
   Future<void> retryGeneration() async {
-    if (state.isSending || state.isGenerating || state.hasActiveRateLimit) {
+    if (state.isSending ||
+        state.isGenerating ||
+        state.hasActiveRateLimit ||
+        state.isDeletingConversation) {
       return;
     }
 
@@ -1192,8 +1198,7 @@ class GenericAiChat extends _$GenericAiChat {
       return false;
     }
 
-    if ((state.isGenerating || state.isSending) &&
-        (state.currentChatId == chatId || state.currentChatId == null)) {
+    if (state.hasActiveGeneration(chatId)) {
       return false;
     }
 
