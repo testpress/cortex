@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:core/data/data.dart';
 import '../../network/network_utils.dart';
 import 'curriculum_parser.dart';
+import 'live_session_routing_cache.dart';
 
 /// HTTP data source stub — to be implemented when a real backend is available.
 /// All methods throw [UnimplementedError] to surface accidental usage in tests.
@@ -10,10 +11,11 @@ import 'curriculum_parser.dart';
 /// Activate via: flutter run --dart-define=USE_MOCK=false
 class HttpDataSource implements DataSource {
   final Dio _dio;
-  final Set<String> _oneOnOneSessionIds = {};
-  final Set<String> _nonexistentSessionIds = {};
+  final LiveSessionRoutingCache _liveSessionCache;
 
-  HttpDataSource({required Dio dio}) : _dio = dio;
+  HttpDataSource({required Dio dio, LiveSessionRoutingCache? liveSessionCache})
+    : _dio = dio,
+      _liveSessionCache = liveSessionCache ?? LiveSessionRoutingCache();
 
   @override
   Future<PaginatedResponseDto<CourseDto>> getCourses({
@@ -323,8 +325,7 @@ class HttpDataSource implements DataSource {
 
   @override
   Future<LessonDto> getLiveClassDetail(String id) async {
-    final isKnownOneOnOne = _oneOnOneSessionIds.contains(id);
-    if (isKnownOneOnOne) {
+    if (_liveSessionCache.isKnownOneOnOne(id)) {
       return _fetchLiveClassDetail(
         ApiEndpoints.liveClassLearningSessionDetail(id),
       );
@@ -337,16 +338,20 @@ class HttpDataSource implements DataSource {
           originalError.statusCode == 404 ||
           originalError.type == ApiErrorType.notFound;
 
-      if (isNotFound && !_nonexistentSessionIds.contains(id)) {
+      if (isNotFound && !_liveSessionCache.isNonexistent(id)) {
         try {
           final result = await _fetchLiveClassDetail(
             ApiEndpoints.liveClassLearningSessionDetail(id),
           );
-          _oneOnOneSessionIds.add(id);
+          _liveSessionCache.markOneOnOne(id);
           return result;
-        } catch (_) {
-          _nonexistentSessionIds.add(id);
-          throw originalError;
+        } on ApiException catch (fallbackError) {
+          if (fallbackError.statusCode == 404 ||
+              fallbackError.type == ApiErrorType.notFound) {
+            _liveSessionCache.markNonexistent(id);
+            throw originalError;
+          }
+          rethrow;
         }
       }
       rethrow;
@@ -379,7 +384,7 @@ class HttpDataSource implements DataSource {
 
     for (final item in response.results) {
       if (item.isOneOnOne) {
-        _oneOnOneSessionIds.add(item.id);
+        _liveSessionCache.markOneOnOne(item.id);
       }
     }
 

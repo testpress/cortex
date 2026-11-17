@@ -223,6 +223,54 @@ void main() {
     );
 
     test(
+      'does not cache id as nonexistent when fallback fails with non-404 error',
+      () async {
+        var fallbackCallCount = 0;
+
+        dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+          recordedRequests.add({'path': options.path});
+          if (options.path == ApiEndpoints.liveClassDetail('96')) {
+            return ResponseBody.fromString(
+              jsonEncode({'detail': 'Not found.'}),
+              404,
+              headers: jsonHeaders,
+            );
+          }
+          if (options.path ==
+              ApiEndpoints.liveClassLearningSessionDetail('96')) {
+            fallbackCallCount++;
+            // Simulate a server error (5xx) — not a 404
+            return ResponseBody.fromString(
+              jsonEncode({'detail': 'Internal Server Error'}),
+              500,
+              headers: jsonHeaders,
+            );
+          }
+          return ResponseBody.fromString('Not Found', 404);
+        });
+
+        final dataSource = HttpDataSource(dio: dio);
+
+        // First call: contents → 404, fallback → 500 (should rethrow 500, NOT cache as nonexistent)
+        await expectLater(
+          dataSource.getLiveClassDetail('96'),
+          throwsA(
+            isA<ApiException>().having((e) => e.statusCode, 'statusCode', 500),
+          ),
+        );
+        expect(fallbackCallCount, 1);
+
+        // Second call: id must NOT be in nonexistent cache, so fallback is retried
+        recordedRequests.clear();
+        await expectLater(
+          dataSource.getLiveClassDetail('96'),
+          throwsA(isA<ApiException>()),
+        );
+        expect(fallbackCallCount, 2); // fallback was retried, not skipped
+      },
+    );
+
+    test(
       'rethrows original contents-endpoint 404 if fallback also fails',
       () async {
         dio.httpClientAdapter = _MockHttpClientAdapter((options) async {
