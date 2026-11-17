@@ -52,25 +52,20 @@ void main() {
     test(
       'does not evict entries when re-marking an already cached id at capacity',
       () {
-        cache.markOneOnOne('1');
-        cache.markOneOnOne('2');
-        cache.markOneOnOne('3');
+        final smallCache = LiveSessionRoutingCache(maxEntries: 2);
 
-        // Re-marking '2' (already in set) must not evict '1'
-        cache.markOneOnOne('2');
-        expect(cache.isKnownOneOnOne('1'), isTrue);
-        expect(cache.isKnownOneOnOne('2'), isTrue);
-        expect(cache.isKnownOneOnOne('3'), isTrue);
+        // Marking a, b, then a again should leave both a and b in cache
+        smallCache.markOneOnOne('a');
+        smallCache.markOneOnOne('b');
+        smallCache.markOneOnOne('a');
+        expect(smallCache.isKnownOneOnOne('a'), isTrue);
+        expect(smallCache.isKnownOneOnOne('b'), isTrue);
 
-        cache.markNonexistent('10');
-        cache.markNonexistent('20');
-        cache.markNonexistent('30');
-
-        // Re-marking '20' must not evict '10'
-        cache.markNonexistent('20');
-        expect(cache.isNonexistent('10'), isTrue);
-        expect(cache.isNonexistent('20'), isTrue);
-        expect(cache.isNonexistent('30'), isTrue);
+        smallCache.markNonexistent('x');
+        smallCache.markNonexistent('y');
+        smallCache.markNonexistent('x');
+        expect(smallCache.isNonexistent('x'), isTrue);
+        expect(smallCache.isNonexistent('y'), isTrue);
       },
     );
 

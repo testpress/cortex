@@ -264,7 +264,9 @@ void main() {
         recordedRequests.clear();
         await expectLater(
           dataSource.getLiveClassDetail('96'),
-          throwsA(isA<ApiException>()),
+          throwsA(
+            isA<ApiException>().having((e) => e.statusCode, 'statusCode', 500),
+          ),
         );
         expect(fallbackCallCount, 2); // fallback was retried, not skipped
       },
