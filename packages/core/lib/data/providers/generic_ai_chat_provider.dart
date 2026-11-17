@@ -1042,12 +1042,10 @@ class GenericAiChat extends _$GenericAiChat {
     _syncInFlight = null;
     final token = ++_operationToken;
 
-    final matchingTitle = state.conversationHistory
-        .firstWhere(
-          (c) => c.chatId == chatId,
-          orElse: () => const AiConversationDto(chatId: ''),
-        )
-        .title;
+    final matching = state.conversationHistory
+        .where((c) => c.chatId == chatId)
+        .firstOrNull;
+    final matchingTitle = matching?.title ?? '';
 
     state = state.copyWith(
       currentChatId: chatId,

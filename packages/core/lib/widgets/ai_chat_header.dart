@@ -5,14 +5,12 @@ import '../core.dart';
 class AiChatHeader extends StatefulWidget {
   const AiChatHeader({
     super.key,
-    this.onBack,
     required this.onMenu,
     this.title,
     this.onNewChat,
     this.onDelete,
   });
 
-  final VoidCallback? onBack;
   final VoidCallback onMenu;
   final String? title;
   final VoidCallback? onNewChat;
@@ -35,7 +33,22 @@ class _AiChatHeaderState extends State<AiChatHeader> {
       barrierDismissible: true,
       barrierLabel: l10n.labelClose,
       barrierColor: design.colors.transparent,
-      transitionDuration: Duration.zero,
+      transitionDuration: MotionPreferences.duration(
+        context,
+        design.motion.fast,
+      ),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        if (!MotionPreferences.shouldAnimate(context)) {
+          return child;
+        }
+        return FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: MotionPreferences.curve(context, design.motion.easeOut),
+          ),
+          child: child,
+        );
+      },
       pageBuilder: (dialogContext, anim1, anim2) {
         return Stack(
           children: [
@@ -89,17 +102,9 @@ class _AiChatHeaderState extends State<AiChatHeader> {
           ),
           child: Row(
             children: [
-              if (widget.onBack != null)
-                AppIconButton(
-                  icon: LucideIcons.arrowLeft,
-                  size: 22.0,
-                  color: design.colors.onSurface,
-                  accessibilityLabel: l10n.commonBackSemantic,
-                  onTap: widget.onBack!,
-                ),
               AppIconButton(
                 icon: LucideIcons.menu,
-                size: 22.0,
+                size: design.iconSize.md,
                 color: design.colors.onSurface,
                 accessibilityLabel: l10n.aiChatHistoryTitle,
                 onTap: widget.onMenu,
@@ -115,7 +120,7 @@ class _AiChatHeaderState extends State<AiChatHeader> {
               if (widget.onNewChat != null)
                 AppIconButton(
                   icon: LucideIcons.squarePen,
-                  size: 20.0,
+                  size: design.iconSize.md,
                   color: design.colors.onSurface,
                   accessibilityLabel: l10n.aiStartNewChat,
                   onTap: widget.onNewChat!,
@@ -125,7 +130,7 @@ class _AiChatHeaderState extends State<AiChatHeader> {
                   link: _layerLink,
                   child: AppIconButton(
                     icon: LucideIcons.moreVertical,
-                    size: 20.0,
+                    size: design.iconSize.md,
                     color: design.colors.onSurface,
                     accessibilityLabel: l10n.aiMoreActionsSemantic(
                       displayTitle,
@@ -163,7 +168,7 @@ class _HeaderOptionsPopup extends StatelessWidget {
           ),
           boxShadow: design.shadows.floating,
         ),
-        padding: EdgeInsets.all(design.spacing.xs * 0.5),
+        padding: EdgeInsets.all(design.spacing.xs),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

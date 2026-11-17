@@ -213,6 +213,8 @@ class _TestLearnLensRepository implements LearnLensRepository {
   }
 
   int deleteConversationCalls = 0;
+  bool failDeleteConversation = false;
+  Object? deleteConversationError;
 
   @override
   Future<void> deleteConversation({
@@ -220,6 +222,9 @@ class _TestLearnLensRepository implements LearnLensRepository {
     CancelToken? cancelToken,
   }) async {
     deleteConversationCalls++;
+    if (failDeleteConversation) {
+      throw deleteConversationError ?? Exception('Delete failed');
+    }
   }
 
   @override
@@ -266,7 +271,6 @@ void main() {
     List<AiChatMessageItem> initialMessages = const [],
     List<Override> overrides = const [],
     _TestLearnLensRepository? repository,
-    VoidCallback? onBack,
     VoidCallback? onOpenHistory,
   }) {
     final testRepo = repository ?? _TestLearnLensRepository();
@@ -288,7 +292,6 @@ void main() {
           ),
           home: AiScreen(
             initialMessages: initialMessages,
-            onBack: onBack,
             onOpenHistory: onOpenHistory,
           ),
         ),
@@ -1467,6 +1470,142 @@ void main() {
         findsOneWidget,
       );
       expect(testRepo.deleteConversationCalls, equals(0));
+
+      await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'shows failure toast and preserves active chat when deletion fails from header',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-fail-1',
+          title: 'Quantum Mechanics Discussion',
+        ),
+      ];
+      testRepo.failDeleteConversation = true;
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-fail-1');
+      await tester.pumpAndSettle();
+
+      notifier.state = notifier.state.copyWith(
+        messages: [
+          GenericAiChatMessage(
+            id: 'm-1',
+            text: 'Tell me about quantum mechanics',
+            isUser: true,
+            timestamp: DateTime.now().toUtc(),
+          ),
+        ],
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Quantum Mechanics Discussion'), findsOneWidget);
+      expect(find.text('Tell me about quantum mechanics'), findsOneWidget);
+
+      // Open header 3-dot overflow menu
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Delete conversation?'), findsOneWidget);
+
+      // Confirm deletion in dialog
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Delete was called on repo, but failed
+      expect(testRepo.deleteConversationCalls, equals(1));
+
+      // Failure toast shown
+      expect(
+        find.text('Failed to delete conversation. Please try again.'),
+        findsOneWidget,
+      );
+
+      // Active chat stays loaded (not reset to landing empty state)
+      expect(
+        container.read(genericAiChatProvider).currentChatId,
+        equals('chat-fail-1'),
+      );
+      expect(find.text('Quantum Mechanics Discussion'), findsOneWidget);
+      expect(find.text('Tell me about quantum mechanics'), findsOneWidget);
+      expect(find.text('What can I help with?'), findsNothing);
+
+      await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'aborts deletion if generation starts while confirmation dialog is open',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-generating-2',
+          title: 'Active Solar Systems',
+        ),
+      ];
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-generating-2');
+      await tester.pumpAndSettle();
+
+      // Tap 3-dot menu and select Delete while not generating
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      // Dialog is open
+      expect(find.text('Delete conversation?'), findsOneWidget);
+
+      // Background generation starts while dialog is waiting for user
+      notifier.state = notifier.state.copyWith(isGenerating: true);
+
+      // User confirms delete
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Deletion is blocked by post-confirm guard
+      expect(testRepo.deleteConversationCalls, equals(0));
+      expect(
+        find.text('Cannot delete conversation while a response is generating.'),
+        findsOneWidget,
+      );
+
+      // Chat remains active
+      expect(
+        container.read(genericAiChatProvider).currentChatId,
+        equals('chat-generating-2'),
+      );
 
       await tester.pump(const Duration(seconds: 3));
     },

@@ -4,7 +4,6 @@ import 'package:core/core.dart';
 
 void main() {
   Widget buildSubject({
-    VoidCallback? onBack,
     VoidCallback? onMenu,
     String? title,
     VoidCallback? onNewChat,
@@ -24,7 +23,6 @@ void main() {
         home: Align(
           alignment: Alignment.topCenter,
           child: AiChatHeader(
-            onBack: onBack,
             onMenu: onMenu ?? () {},
             title: title,
             onNewChat: onNewChat,
@@ -136,6 +134,27 @@ void main() {
 
     expect(deleteTapped, isTrue);
     expect(find.text('Delete'), findsNothing);
+  });
+
+  testWidgets('renders FadeTransition when opening popup with motion enabled', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(title: 'Active Chat', onDelete: () {}),
+    );
+    await tester.pumpAndSettle();
+
+    final moreFinder = find.byIcon(LucideIcons.moreVertical);
+    expect(moreFinder, findsOneWidget);
+
+    await tester.tap(moreFinder);
+    await tester.pump();
+
+    // Verify FadeTransition wraps the popup during entry transition
+    expect(find.byType(FadeTransition), findsWidgets);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete'), findsOneWidget);
   });
 
   testWidgets(

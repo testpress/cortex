@@ -12,17 +12,11 @@ class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({
     super.key,
     this.initialMessages = const [],
-    this.onBack,
     this.onOpenHistory,
   });
 
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
-
-  /// Optional fallback for back navigation when no conversation is active.
-  /// The landing header hides Back; conversation Back resets the chat first.
-  /// If null, the fallback pops if possible ([Navigator.canPop]).
-  final VoidCallback? onBack;
 
   /// Optional menu/history navigation callback.
   /// If null, opens the [AiChatHistoryScreen] drawer.
