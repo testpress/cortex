@@ -176,9 +176,9 @@ class _HeaderOptionsPopup extends StatelessWidget {
             AppSemantics.button(
               label: l10n.aiDeleteConversationAction,
               onTap: onDelete,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: AppFocusable(
                 onTap: onDelete,
+                borderRadius: BorderRadius.circular(design.radius.sm),
                 child: Container(
                   constraints: const BoxConstraints(
                     minWidth: 48.0,

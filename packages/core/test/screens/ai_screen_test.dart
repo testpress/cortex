@@ -215,6 +215,7 @@ class _TestLearnLensRepository implements LearnLensRepository {
   int deleteConversationCalls = 0;
   bool failDeleteConversation = false;
   Object? deleteConversationError;
+  Completer<void>? deleteConversationCompleter;
 
   @override
   Future<void> deleteConversation({
@@ -222,6 +223,9 @@ class _TestLearnLensRepository implements LearnLensRepository {
     CancelToken? cancelToken,
   }) async {
     deleteConversationCalls++;
+    if (deleteConversationCompleter != null) {
+      await deleteConversationCompleter!.future;
+    }
     if (failDeleteConversation) {
       throw deleteConversationError ?? Exception('Delete failed');
     }
@@ -1608,6 +1612,59 @@ void main() {
       );
 
       await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'does not show toast or throw error if screen is unmounted during deletion',
+    (tester) async {
+      final deleteCompleter = Completer<void>();
+      final testRepo = _TestLearnLensRepository();
+      testRepo.deleteConversationCompleter = deleteCompleter;
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-unmount-1',
+          title: 'Unmount Test Chat',
+        ),
+      ];
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-unmount-1');
+      await tester.pumpAndSettle();
+
+      // Open header 3-dot overflow menu
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      // Confirm deletion in dialog
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(testRepo.deleteConversationCalls, equals(1));
+
+      // Unmount the screen while delete is in flight
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      // Complete delete request after unmount
+      deleteCompleter.complete();
+      await tester.pumpAndSettle();
+
+      // Context check (!context.mounted) safely suppressed toast and prevented lifecycle crash
+      expect(find.text('Conversation deleted'), findsNothing);
     },
   );
 }

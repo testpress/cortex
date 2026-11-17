@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/core.dart';
@@ -156,6 +157,39 @@ void main() {
 
     expect(find.text('Delete'), findsOneWidget);
   });
+
+  testWidgets(
+    'delete popup item is wrapped in AppFocusable and triggers on Enter key',
+    (tester) async {
+      var deleteTapped = false;
+
+      await tester.pumpWidget(
+        buildSubject(title: 'Active Chat', onDelete: () => deleteTapped = true),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppFocusable), findsOneWidget);
+
+      final focusNode = tester
+          .widget<Focus>(
+            find.descendant(
+              of: find.byType(AppFocusable),
+              matching: find.byType(Focus),
+            ),
+          )
+          .focusNode;
+      focusNode?.requestFocus();
+      await tester.pump();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+
+      expect(deleteTapped, isTrue);
+    },
+  );
 
   testWidgets(
     'guarantees 48x48dp minimum touch targets for all action buttons',

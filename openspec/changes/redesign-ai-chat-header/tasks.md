@@ -10,6 +10,7 @@
 - [x] 2.4 Add trailing 3-dot overflow menu button (`LucideIcons.moreVertical`) with anchored popup option to delete active chat.
 - [x] 2.5 Respect motion preferences in header overflow popup: smooth fade transition when enabled, zero duration when disabled.
 - [x] 2.6 Remove unused `onBack` parameter from `AiChatHeader` and `AiScreen`.
+- [x] 2.7 Wrap popup delete action in `AppFocusable` for keyboard focus and Enter/Space activation without autofocus outline.
 
 ## 3. Screen Integration
 
@@ -24,4 +25,4 @@
 - [x] 4.1 Update and expand `ai_chat_header_test.dart` for new button positions, title, and actions.
 - [x] 4.2 Update `ai_screen_test.dart` to verify header integration and active conversation deletion.
 - [x] 4.3 Run `flutter analyze packages/core` and full AI test suite to verify 0 regressions.
-- [x] 4.4 Add tests in `ai_screen_test.dart` for delete failure path (toast shown, chat stays active) and in-flight generating guards.
+- [x] 4.4 Add tests in `ai_screen_test.dart` for delete failure path (toast shown, chat stays active), in-flight generating guards, and unmounted screen suppression.

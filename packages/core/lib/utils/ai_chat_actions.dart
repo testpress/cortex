@@ -63,12 +63,14 @@ Future<bool> confirmAndDeleteConversation({
 
   if (!context.mounted) return success;
 
+  final currentL10n = L10n.of(context);
+
   if (success) {
-    AppToast.show(context, message: l10n.aiConversationDeleted);
+    AppToast.show(context, message: currentL10n.aiConversationDeleted);
   } else {
     AppToast.show(
       context,
-      message: l10n.aiDeleteConversationFailed,
+      message: currentL10n.aiDeleteConversationFailed,
       isError: true,
     );
   }
