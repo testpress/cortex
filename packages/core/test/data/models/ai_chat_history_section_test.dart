@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:core/data/models/ai_chat_history_section.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../core.dart';
+import '../data/models/ai_chat_history_section.dart';
 
 /// Conversation history, presented as a start-side drawer over a dimmed chat.
 ///
@@ -16,18 +17,18 @@ class AiChatHistoryScreen extends ConsumerStatefulWidget {
       _AiChatHistoryScreenState();
 }
 
-class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
-    with WidgetsBindingObserver {
+class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
   /// Share of the screen the drawer may cover on narrow phones.
   static const double _maxWidthFactor = 0.85;
 
+  /// Distance in pixels from the bottom of the list at which the next page is fetched.
+  static const double _paginationScrollThreshold = 200.0;
+
   late final ScrollController _scrollController;
-  DateTime _currentNow = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController()..addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -37,19 +38,9 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && mounted) {
-      setState(() {
-        _currentNow = DateTime.now();
-      });
-    }
   }
 
   void _onScroll() {
@@ -57,7 +48,8 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
     final position = _scrollController.position;
     if (position.maxScrollExtent <= 0 || position.pixels <= 0) return;
 
-    if (position.pixels >= position.maxScrollExtent - 200) {
+    if (position.pixels >=
+        position.maxScrollExtent - _paginationScrollThreshold) {
       final state = ref.read(genericAiChatProvider);
       if (!state.isLoadingHistory && state.hasMoreHistory) {
         ref.read(genericAiChatProvider.notifier).loadConversations();
@@ -145,8 +137,9 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final isRtl = Directionality.of(context) == TextDirection.rtl;
-    final chatState = ref.watch(genericAiChatProvider);
-    final isNewChatActive = chatState.currentChatId == null;
+    final isNewChatActive = ref.watch(
+      genericAiChatProvider.select((s) => s.currentChatId == null),
+    );
 
     final routeAnimation = ModalRoute.of(context)?.animation;
     final animation =
@@ -228,11 +221,9 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        design.spacing.md,
-                        design.spacing.xs,
-                        design.spacing.md,
-                        design.spacing.sm * 1.5,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.sm,
+                        vertical: design.spacing.xs,
                       ),
                       child: _NewChatButton(
                         onTap: _startNewChat,
@@ -298,10 +289,8 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
       );
     }
 
-    final sections = buildHistorySections(
-      conversations: history,
-      now: _currentNow,
-    );
+    final now = DateTime.now();
+    final sections = buildHistorySections(conversations: history, now: now);
 
     return AppSemantics.scrollableList(
       itemCount: history.length,
@@ -314,9 +303,7 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
         ),
         children: [
           for (final section in sections) ...[
-            _SectionHeader(
-              title: _resolveSectionTitle(context, section, _currentNow),
-            ),
+            _SectionHeader(title: _resolveSectionTitle(context, section, now)),
             for (final session in section.items)
               _HistoryItem(
                 title: session.title.trim().isNotEmpty
@@ -370,7 +357,7 @@ class _SectionHeader extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        design.spacing.sm,
+        design.spacing.md - design.spacing.xs,
         design.spacing.md * 1.25,
         design.spacing.sm,
         design.spacing.xs,
@@ -390,6 +377,8 @@ class _NewChatButton extends StatelessWidget {
 
   final VoidCallback onTap;
   final bool isActive;
+
+  static const double _indicatorWidth = 3.5;
 
   @override
   Widget build(BuildContext context) {
@@ -412,61 +401,61 @@ class _NewChatButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(design.radius.sm),
               child: Container(
                 width: double.infinity,
-                constraints: const BoxConstraints(minHeight: 44.0),
+                constraints: const BoxConstraints(minHeight: 48.0),
                 decoration: BoxDecoration(
                   color: isActive
                       ? design.colors.surfaceVariant
-                      : design.colors.card,
+                      : design.colors.transparent,
                   borderRadius: BorderRadius.circular(design.radius.sm),
-                  border: Border.all(color: design.colors.border),
                 ),
-                child: IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        width: 3.5,
-                        decoration: BoxDecoration(
-                          color: design.colors.textPrimary,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(design.radius.sm),
-                            bottomLeft: Radius.circular(design.radius.sm),
-                          ),
-                        ),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.sm,
+                        vertical: design.spacing.sm * 1.5,
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: design.spacing.md,
-                            vertical: design.spacing.sm,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                LucideIcons.squarePen,
-                                size: design.iconSize.sm,
+                      child: ExcludeSemantics(
+                        child: Row(
+                          children: [
+                            Icon(
+                              LucideIcons.squarePen,
+                              size: design.iconSize.md,
+                              color: contentColor,
+                            ),
+                            SizedBox(width: design.spacing.sm * 1.5),
+                            Flexible(
+                              child: AppText.body(
+                                l10n.aiNewChatHeader,
                                 color: contentColor,
-                              ),
-                              SizedBox(width: design.spacing.sm),
-                              Flexible(
-                                child: AppText.label(
-                                  l10n.aiNewChatHeader,
-                                  color: contentColor,
-                                  style: TextStyle(
-                                    fontWeight: isActive
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isActive)
+                      PositionedDirectional(
+                        start: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: _indicatorWidth,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: design.colors.textPrimary,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(design.radius.sm),
+                              bottomLeft: Radius.circular(design.radius.sm),
+                            ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -618,17 +607,14 @@ class _HistoryItemState extends State<_HistoryItem> {
     final l10n = L10n.of(context);
 
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: design.spacing.xs,
-        vertical: 2.0,
-      ),
+      margin: EdgeInsets.symmetric(horizontal: design.spacing.xs),
       decoration: BoxDecoration(
         color: widget.isActive
             ? design.colors.surfaceVariant
             : design.colors.transparent,
         borderRadius: BorderRadius.circular(design.radius.sm),
       ),
-      constraints: const BoxConstraints(minHeight: 44.0),
+      constraints: const BoxConstraints(minHeight: 48.0),
       padding: EdgeInsetsDirectional.only(
         start: design.spacing.sm,
         end: design.spacing.xs,
@@ -643,7 +629,7 @@ class _HistoryItemState extends State<_HistoryItem> {
                 onTap: widget.onTap,
                 behavior: HitTestBehavior.opaque,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 44.0),
+                  constraints: const BoxConstraints(minHeight: 48.0),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: design.spacing.xs * 1.5,
@@ -675,8 +661,8 @@ class _HistoryItemState extends State<_HistoryItem> {
                 behavior: HitTestBehavior.opaque,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    minWidth: 44.0,
-                    minHeight: 44.0,
+                    minWidth: 48.0,
+                    minHeight: 48.0,
                   ),
                   child: Center(
                     child: Opacity(

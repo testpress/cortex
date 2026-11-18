@@ -217,12 +217,12 @@ void main() {
             matching: find.byType(GestureDetector),
           )
           .first;
-      expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(44.0));
+      expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(48.0));
 
       final rowContainer = find
           .ancestor(of: titleButton, matching: find.byType(Container))
           .first;
-      expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(44.0));
+      expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(48.0));
       expect(
         tester.getSize(rowContainer).width,
         lessThanOrEqualTo(tester.getSize(find.byKey(drawerKey)).width),
