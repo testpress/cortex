@@ -86,61 +86,19 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     }
   }
 
-  bool _warnIfGenerating(String chatId) {
-    if (ref.read(genericAiChatProvider).hasActiveGeneration(chatId)) {
-      AppToast.show(
-        context,
-        message: L10n.of(context).aiCannotDeleteWhileGenerating,
-        isError: true,
-      );
-      return true;
-    }
-    return false;
-  }
-
   Future<void> _deleteConversation(String chatId, {String? title}) async {
-    final l10n = L10n.of(context);
-    final chatState = ref.read(genericAiChatProvider);
-    if (chatState.isDeletingConversation) return;
-
-    if (_warnIfGenerating(chatId)) return;
-
-    final content = title != null && title.trim().isNotEmpty
-        ? l10n.aiDeleteConversationNamedMessage(title)
-        : l10n.aiDeleteConversationMessage;
-
-    final confirmed = await showConfirmationDialog(
-      context,
-      title: l10n.aiDeleteConversationTitle,
-      content: content,
-      confirmText: l10n.aiDeleteConversationAction,
-      cancelText: l10n.labelCancel,
-      isDestructive: true,
-    );
-
-    if (!confirmed || !mounted) return;
-
-    if (_warnIfGenerating(chatId)) return;
-
     final isCurrentActive =
         ref.read(genericAiChatProvider).currentChatId == chatId;
-    final success = await ref
-        .read(genericAiChatProvider.notifier)
-        .deleteConversation(chatId);
+    final success = await confirmAndDeleteConversation(
+      context: context,
+      ref: ref,
+      chatId: chatId,
+      title: title,
+    );
 
     if (!mounted) return;
-
-    if (success) {
-      AppToast.show(context, message: l10n.aiConversationDeleted);
-      if (isCurrentActive) {
-        _dismiss();
-      }
-    } else {
-      AppToast.show(
-        context,
-        message: l10n.aiDeleteConversationFailed,
-        isError: true,
-      );
+    if (success && isCurrentActive) {
+      _dismiss();
     }
   }
 

@@ -1,0 +1,51 @@
+## Context
+
+The design for the AI chat header has been updated. The previous layout featured a textual Back button and a trailing menu icon. The updated design moves the history menu to the leading position, displays the active conversation title, and adds trailing controls for starting a new chat and accessing conversation options (such as deleting the conversation).
+
+This document outlines the technical changes needed across `AiChatHeader` and `AiScreen` to reflect this updated design.
+
+## Goals / Non-Goals
+
+**Goals:**
+- Update `AiChatHeader` to match the updated header layout using design tokens.
+- Display the active conversation title with single-line truncation.
+- Wire the New Chat button to reset the chat session via `startNewChat()`.
+- Wire the 3-dot overflow menu to trigger conversation deletion with confirmation.
+- Adhere strictly to WCAG 2.5.5 (48×48dp touch targets) and neutral UI guidelines (zero raw Material widgets).
+
+**Non-Goals:**
+- In-place conversation renaming (deferred until backend renaming API integration).
+- Tablet/desktop split-view responsive rail transformations (managed under a separate responsive layout milestone).
+
+## Decisions
+
+### Decision 1: `AiChatHeader` parameter signature
+The updated header requires callbacks for each discrete user action:
+- `onMenu`: Invoked when tapping the leading hamburger button.
+- `title`: Optional/nullable title displayed next to the menu icon.
+- `onNewChat`: Optional callback when tapping the compose button.
+- `onDelete`: Optional callback when selecting "Delete" from the overflow menu.
+- `onBack`: Removed from both `AiChatHeader` and `AiScreen` since AI chat is a root tab destination; session reset is handled via `onNewChat` and history via `onMenu`.
+
+*Rationale*: Keeping the header purely presentational maintains clean separation of concerns and eliminates dead navigation callbacks.
+
+### Decision 2: 3-Dot Overflow Menu via Anchored Popup
+The 3-dot menu opens an anchored popup menu positioned using `CompositedTransformFollower` and `LayerLink`, identical to the pattern used in `AiChatHistoryScreen`.
+- *Rationale*: Consistency across the app for dropdown option sheets without introducing heavy third-party dropdown packages or raw Material `PopupMenuButton`.
+- *Motion Preferences*: Respects `MotionPreferences.duration(context, design.motion.fast)` and `design.motion.easeOut`. When reduced motion is requested, duration is `Duration.zero` (instant); when animations are enabled, a subtle 150ms `FadeTransition` provides a smooth appearance.
+- *Keyboard Accessibility*: The popup action is wrapped in `AppFocusable` (`autofocus: false`) to support Tab and Enter/Space keyboard navigation, while using `ExcludeSemantics` on inner text to ensure a single unified button node for screen readers.
+- *Note on Primitives*: `packages/core` currently lacks a dedicated anchored popup/menu primitive (`AppPopover`/`AppMenu`). Existing overlay primitives like `AppBottomSheet` (viewport-anchored bottom sheet) and `AppDrawer` (viewport-anchored side navigation) are not suited for anchored desktop/tablet dropdown menus. Hand-rolling via `showGeneralDialog` serves as the current approach until a core `AppPopover` is introduced across the SDK.
+
+### Decision 3: Active Conversation Deletion Flow
+When "Delete chat" is selected from the header's 3-dot menu:
+1. `showConfirmationDialog` is displayed asking the learner to confirm deletion.
+2. Upon confirmation, `genericAiChatProvider.notifier.deleteConversation(chatId)` is called.
+3. Since the active chat is being deleted, `deleteConversation` automatically resets the canvas via `startNewChat()`.
+4. A toast confirmation (`aiConversationDeleted`) is shown to the user.
+
+*Shared Action Helper*: To prevent screens from depending on each other, the deletion workflow logic (`confirmAndDeleteConversation` and private `_warnIfAiGenerating`) is placed in `packages/core/lib/utils/ai_chat_actions.dart` and exported via `core.dart`, shared cleanly across `AiScreen` and `AiChatHistoryScreen`.
+
+## Risks / Trade-offs
+
+- **[Risk]** Long conversation titles might crowd the trailing action buttons on narrow mobile screens (e.g. 320dp width). → **Mitigation**: Title is wrapped in `Expanded` with `TextOverflow.ellipsis` and `maxLines: 1`. Trailing buttons have fixed widths.
+- **[Risk]** Learner taps Delete while AI is actively generating. → **Mitigation**: Delete action checks `hasActiveGeneration(chatId)` and displays `aiCannotDeleteWhileGenerating` toast if in flight.

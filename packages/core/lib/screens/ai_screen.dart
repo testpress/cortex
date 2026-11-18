@@ -12,17 +12,11 @@ class AiScreen extends ConsumerStatefulWidget {
   const AiScreen({
     super.key,
     this.initialMessages = const [],
-    this.onBack,
     this.onOpenHistory,
   });
 
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
-
-  /// Optional fallback for back navigation when no conversation is active.
-  /// The landing header hides Back; conversation Back resets the chat first.
-  /// If null, the fallback pops if possible ([Navigator.canPop]).
-  final VoidCallback? onBack;
 
   /// Optional menu/history navigation callback.
   /// If null, opens the [AiChatHistoryScreen] drawer.
@@ -136,17 +130,17 @@ class _AiScreenState extends ConsumerState<AiScreen>
     }
   }
 
-  void _handleBack() {
-    final chatState = ref.read(genericAiChatProvider);
-    if (chatState.currentChatId != null || chatState.messages.isNotEmpty) {
-      ref.read(genericAiChatProvider.notifier).startNewChat();
-      return;
-    }
-    if (widget.onBack != null) {
-      widget.onBack!();
-    } else if (context.canPop()) {
-      context.pop();
-    }
+  void _handleNewChat() {
+    ref.read(genericAiChatProvider.notifier).startNewChat();
+  }
+
+  Future<void> _handleDeleteActiveConversation(String chatId) async {
+    await confirmAndDeleteConversation(
+      context: context,
+      ref: ref,
+      chatId: chatId,
+      title: ref.read(genericAiChatProvider).currentTitle,
+    );
   }
 
   void _handleMenu() {
@@ -157,11 +151,6 @@ class _AiScreenState extends ConsumerState<AiScreen>
       context.push('/ai/history');
     }
   }
-
-  // Reserved for future attachment support in the composer.
-  // void _handleNewChat() {
-  //   ref.read(genericAiChatProvider.notifier).startNewChat();
-  // }
 
   /// Prefills the composer with a starter prompt for the student to finish.
   void _handleSuggestion(String prompt) {
@@ -250,7 +239,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
         !chatState.isLoadingMessages &&
         !chatState.hasMessagesError;
 
-    final showBack =
+    final hasActiveContent =
         chatState.currentChatId != null || displayMessages.isNotEmpty;
     final canvasColor = aiChatCanvasColor(design);
 
@@ -270,7 +259,6 @@ class _AiScreenState extends ConsumerState<AiScreen>
         onSend: _handleSend,
         controller: _composerController,
         focusNode: _composerFocusNode,
-        // onNewChat: _handleNewChat, // Reserved for future attachments.
       );
     }
 
@@ -281,8 +269,13 @@ class _AiScreenState extends ConsumerState<AiScreen>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AiChatHeader(
-            onBack: showBack ? _handleBack : null,
             onMenu: _handleMenu,
+            title: chatState.currentTitle,
+            onNewChat: hasActiveContent ? _handleNewChat : null,
+            onDelete: chatState.currentChatId != null
+                ? () =>
+                      _handleDeleteActiveConversation(chatState.currentChatId!)
+                : null,
           ),
 
           if (chatState.hasInitError)

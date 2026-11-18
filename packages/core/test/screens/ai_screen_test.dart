@@ -202,15 +202,20 @@ class _TestLearnLensRepository implements LearnLensRepository {
     return const AiMessagePageResult(items: []);
   }
 
+  List<AiConversationDto> conversations = const [];
+
   @override
   Future<AiConversationListDto> listConversations({
     int limit = 20,
     String? cursor,
   }) async {
-    return const AiConversationListDto(items: []);
+    return AiConversationListDto(items: conversations);
   }
 
   int deleteConversationCalls = 0;
+  bool failDeleteConversation = false;
+  Object? deleteConversationError;
+  Completer<void>? deleteConversationCompleter;
 
   @override
   Future<void> deleteConversation({
@@ -218,6 +223,12 @@ class _TestLearnLensRepository implements LearnLensRepository {
     CancelToken? cancelToken,
   }) async {
     deleteConversationCalls++;
+    if (deleteConversationCompleter != null) {
+      await deleteConversationCompleter!.future;
+    }
+    if (failDeleteConversation) {
+      throw deleteConversationError ?? Exception('Delete failed');
+    }
   }
 
   @override
@@ -264,7 +275,6 @@ void main() {
     List<AiChatMessageItem> initialMessages = const [],
     List<Override> overrides = const [],
     _TestLearnLensRepository? repository,
-    VoidCallback? onBack,
     VoidCallback? onOpenHistory,
   }) {
     final testRepo = repository ?? _TestLearnLensRepository();
@@ -286,7 +296,6 @@ void main() {
           ),
           home: AiScreen(
             initialMessages: initialMessages,
-            onBack: onBack,
             onOpenHistory: onOpenHistory,
           ),
         ),
@@ -294,13 +303,18 @@ void main() {
     );
   }
 
-  testWidgets('renders landing header with only Menu icon', (tester) async {
+  testWidgets('renders landing header with only Menu icon and default title', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildSubject());
     await tester.pumpAndSettle();
 
     expect(find.text('Back'), findsNothing);
     expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
     expect(find.byIcon(LucideIcons.menu), findsOneWidget);
+    expect(find.text('AI Chat'), findsOneWidget);
+    expect(find.byIcon(LucideIcons.squarePen), findsNothing);
+    expect(find.byIcon(LucideIcons.moreVertical), findsNothing);
   });
 
   testWidgets(
@@ -422,7 +436,7 @@ void main() {
   );
 
   testWidgets(
-    'docks the composer without plus and returns via conversation Back',
+    'docks the composer without plus and resets via New Chat button',
     (tester) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -444,17 +458,16 @@ void main() {
       expect(find.byType(AiSuggestionCard), findsNothing);
       expect(find.byType(AiComposer), findsOneWidget);
       expect(find.byIcon(LucideIcons.plus), findsNothing);
-      expect(find.text('Back'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.squarePen), findsOneWidget);
 
       // The composer is pinned below the message list.
       final listBottom = tester.getBottomLeft(find.byType(ListView)).dy;
       final composerTop = tester.getTopLeft(find.byType(AiComposer)).dy;
       expect(composerTop, greaterThanOrEqualTo(listBottom));
 
-      await tester.tap(find.text('Back'));
+      await tester.tap(find.byIcon(LucideIcons.squarePen));
       await tester.pumpAndSettle();
 
-      expect(find.text('Back'), findsNothing);
       expect(find.text('Hello world'), findsNothing);
       expect(find.text('What can I help with?'), findsOneWidget);
       expect(find.byIcon(LucideIcons.plus), findsNothing);
@@ -852,10 +865,15 @@ void main() {
 
     final menuFinder = find.byIcon(LucideIcons.menu);
     expect(menuFinder, findsOneWidget);
-    // Menu icon sits near the trailing edge of the 1200dp screen
+    // Menu icon sits near the leading edge
+    expect(tester.getTopLeft(menuFinder).dx, lessThan(design.spacing.md * 2));
+
+    // New Chat icon sits near the trailing edge of the 1200dp screen
+    final newChatFinder = find.byIcon(LucideIcons.squarePen);
+    expect(newChatFinder, findsOneWidget);
     expect(
-      tester.getTopRight(menuFinder).dx,
-      greaterThan(1200.0 - (design.spacing.md * 2)),
+      tester.getTopRight(newChatFinder).dx,
+      greaterThan(1200.0 - (design.spacing.md * 6)),
     );
   });
 
@@ -1274,7 +1292,20 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('partial text'), findsNothing);
-      expect(find.text('Break it'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AiChatHeader),
+          matching: find.text('Break it'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text('Break it'),
+        ),
+        findsOneWidget,
+      );
       expect(
         find.text("Couldn't generate a response. Please try again."),
         findsOneWidget,
@@ -1340,4 +1371,300 @@ void main() {
 
     expect(testRepo.getConversationStatusCalls, greaterThan(callsBefore));
   });
+
+  testWidgets(
+    'deleting active conversation via header 3-dot overflow menu resets canvas',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-delete-header',
+          title: 'Active Solar System',
+        ),
+      ];
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-delete-header');
+      await tester.pumpAndSettle();
+
+      // Title and 3-dot menu are visible
+      expect(find.text('Active Solar System'), findsOneWidget);
+      final moreFinder = find.byIcon(LucideIcons.moreVertical);
+      expect(moreFinder, findsOneWidget);
+
+      // Tap 3-dot menu
+      await tester.tap(moreFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Delete'), findsOneWidget);
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      // Confirmation dialog appears with title
+      expect(find.text('Delete conversation?'), findsOneWidget);
+      expect(
+        find.text(
+          'Are you sure you want to delete "Active Solar System"? This action cannot be undone.',
+        ),
+        findsOneWidget,
+      );
+
+      // Confirm deletion
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      // Deleted via repo and reset to landing state
+      expect(testRepo.deleteConversationCalls, equals(1));
+      expect(container.read(genericAiChatProvider).currentChatId, isNull);
+      expect(find.text('What can I help with?'), findsOneWidget);
+      expect(find.text('Conversation deleted'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'cannot delete active conversation from header while generation is in flight',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-generating-1',
+          title: 'Active Generating Chat',
+        ),
+      ];
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-generating-1');
+      await tester.pumpAndSettle();
+
+      // Put into generating state
+      notifier.state = notifier.state.copyWith(isGenerating: true);
+      await tester.pumpAndSettle();
+
+      // Tap 3-dot menu
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+
+      // Warning toast appears and confirmation dialog is NOT shown
+      expect(find.text('Delete conversation?'), findsNothing);
+      expect(
+        find.text('Cannot delete conversation while a response is generating.'),
+        findsOneWidget,
+      );
+      expect(testRepo.deleteConversationCalls, equals(0));
+
+      await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'shows failure toast and preserves active chat when deletion fails from header',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-fail-1',
+          title: 'Quantum Mechanics Discussion',
+        ),
+      ];
+      testRepo.failDeleteConversation = true;
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-fail-1');
+      await tester.pumpAndSettle();
+
+      notifier.state = notifier.state.copyWith(
+        messages: [
+          GenericAiChatMessage(
+            id: 'm-1',
+            text: 'Tell me about quantum mechanics',
+            isUser: true,
+            timestamp: DateTime.now().toUtc(),
+          ),
+        ],
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Quantum Mechanics Discussion'), findsOneWidget);
+      expect(find.text('Tell me about quantum mechanics'), findsOneWidget);
+
+      // Open header 3-dot overflow menu
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Delete conversation?'), findsOneWidget);
+
+      // Confirm deletion in dialog
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Delete was called on repo, but failed
+      expect(testRepo.deleteConversationCalls, equals(1));
+
+      // Failure toast shown
+      expect(
+        find.text('Failed to delete conversation. Please try again.'),
+        findsOneWidget,
+      );
+
+      // Active chat stays loaded (not reset to landing empty state)
+      expect(
+        container.read(genericAiChatProvider).currentChatId,
+        equals('chat-fail-1'),
+      );
+      expect(find.text('Quantum Mechanics Discussion'), findsOneWidget);
+      expect(find.text('Tell me about quantum mechanics'), findsOneWidget);
+      expect(find.text('What can I help with?'), findsNothing);
+
+      await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'aborts deletion if generation starts while confirmation dialog is open',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-generating-2',
+          title: 'Active Solar Systems',
+        ),
+      ];
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-generating-2');
+      await tester.pumpAndSettle();
+
+      // Tap 3-dot menu and select Delete while not generating
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      // Dialog is open
+      expect(find.text('Delete conversation?'), findsOneWidget);
+
+      // Background generation starts while dialog is waiting for user
+      notifier.state = notifier.state.copyWith(isGenerating: true);
+
+      // User confirms delete
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Deletion is blocked by post-confirm guard
+      expect(testRepo.deleteConversationCalls, equals(0));
+      expect(
+        find.text('Cannot delete conversation while a response is generating.'),
+        findsOneWidget,
+      );
+
+      // Chat remains active
+      expect(
+        container.read(genericAiChatProvider).currentChatId,
+        equals('chat-generating-2'),
+      );
+
+      await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'does not show toast or throw error if screen is unmounted during deletion',
+    (tester) async {
+      final deleteCompleter = Completer<void>();
+      final testRepo = _TestLearnLensRepository();
+      testRepo.deleteConversationCompleter = deleteCompleter;
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-unmount-1',
+          title: 'Unmount Test Chat',
+        ),
+      ];
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-unmount-1');
+      await tester.pumpAndSettle();
+
+      // Open header 3-dot overflow menu
+      await tester.tap(find.byIcon(LucideIcons.moreVertical));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+
+      // Confirm deletion in dialog
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(testRepo.deleteConversationCalls, equals(1));
+
+      // Unmount the screen while delete is in flight
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      // Complete delete request after unmount
+      deleteCompleter.complete();
+      await tester.pumpAndSettle();
+
+      // Context check (!context.mounted) safely suppressed toast and prevented lifecycle crash
+      expect(find.text('Conversation deleted'), findsNothing);
+    },
+  );
 }
