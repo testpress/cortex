@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../core.dart';
 
@@ -15,15 +16,18 @@ class AiChatHistoryScreen extends ConsumerStatefulWidget {
       _AiChatHistoryScreenState();
 }
 
-class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
+class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen>
+    with WidgetsBindingObserver {
   /// Share of the screen the drawer may cover on narrow phones.
   static const double _maxWidthFactor = 0.85;
 
   late final ScrollController _scrollController;
+  DateTime _currentNow = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController()..addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -33,9 +37,19 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      setState(() {
+        _currentNow = DateTime.now();
+      });
+    }
   }
 
   void _onScroll() {
@@ -102,11 +116,37 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     }
   }
 
+  String _resolveSectionTitle(
+    BuildContext context,
+    AiChatHistorySection section,
+    DateTime now,
+  ) {
+    final l10n = L10n.of(context);
+    switch (section.type) {
+      case HistorySectionType.today:
+        return l10n.aiHistoryToday;
+      case HistorySectionType.yesterday:
+        return l10n.aiHistoryYesterday;
+      case HistorySectionType.previous7Days:
+        return l10n.aiHistoryPrevious7Days;
+      case HistorySectionType.monthYear:
+        final date = DateTime(section.year ?? now.year, section.month ?? 1);
+        final locale = Localizations.localeOf(context).toString();
+        if (section.year == now.year) {
+          return DateFormat.MMMM(locale).format(date);
+        } else {
+          return DateFormat.yMMMM(locale).format(date);
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final chatState = ref.watch(genericAiChatProvider);
+    final isNewChatActive = chatState.currentChatId == null;
 
     final routeAnimation = ModalRoute.of(context)?.animation;
     final animation =
@@ -160,8 +200,6 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                     Padding(
                       padding: EdgeInsetsDirectional.only(
                         start: design.spacing.md,
-                        // The close icon sits in a 48dp touch target; trim
-                        // the inset so the glyph lands near the content edge.
                         end: design.spacing.sm,
                         top: design.spacing.sm,
                       ),
@@ -196,7 +234,10 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                         design.spacing.md,
                         design.spacing.sm * 1.5,
                       ),
-                      child: _NewChatButton(onTap: _startNewChat),
+                      child: _NewChatButton(
+                        onTap: _startNewChat,
+                        isActive: isNewChatActive,
+                      ),
                     ),
                     Container(height: 1.0, color: design.colors.border),
                     Expanded(child: _buildBody(context)),
@@ -257,9 +298,9 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
       );
     }
 
-    final rowDivider = Container(
-      height: 1.0,
-      color: design.colors.border.withValues(alpha: 0.5),
+    final sections = buildHistorySections(
+      conversations: history,
+      now: _currentNow,
     );
 
     return AppSemantics.scrollableList(
@@ -267,29 +308,33 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
       label: l10n.aiChatHistoryTitle,
       child: AppScroll(
         controller: _scrollController,
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.xs,
+          vertical: design.spacing.xs,
+        ),
         children: [
-          for (final session in history) ...[
-            _HistoryItem(
-              title: session.title.trim().isNotEmpty
-                  ? session.title
-                  : l10n.aiNewChatHeader,
-              timestamp: session.updatedAt != null
-                  ? DateFormatter.formatTimeAgo(session.updatedAt!)
-                  : '',
-              onTap: () => _openConversation(session.chatId),
-              onOptions: chatState.isDeletingConversation
-                  ? null
-                  : (layerLink) => _showConversationOptions(
-                      session.chatId,
-                      session.title.trim().isNotEmpty
-                          ? session.title
-                          : l10n.aiNewChatHeader,
-                      layerLink,
-                    ),
-              isDeleting: chatState.isDeletingConversation,
+          for (final section in sections) ...[
+            _SectionHeader(
+              title: _resolveSectionTitle(context, section, _currentNow),
             ),
-            rowDivider,
+            for (final session in section.items)
+              _HistoryItem(
+                title: session.title.trim().isNotEmpty
+                    ? session.title
+                    : l10n.aiNewChatHeader,
+                isActive: chatState.currentChatId == session.chatId,
+                onTap: () => _openConversation(session.chatId),
+                onOptions: chatState.isDeletingConversation
+                    ? null
+                    : (layerLink) => _showConversationOptions(
+                        session.chatId,
+                        session.title.trim().isNotEmpty
+                            ? session.title
+                            : l10n.aiNewChatHeader,
+                        layerLink,
+                      ),
+                isDeleting: chatState.isDeletingConversation,
+              ),
           ],
           if (chatState.isLoadingHistory)
             Padding(
@@ -314,15 +359,44 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
   }
 }
 
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        design.spacing.sm,
+        design.spacing.md * 1.25,
+        design.spacing.sm,
+        design.spacing.xs,
+      ),
+      child: AppSemantics.header(
+        label: title,
+        child: ExcludeSemantics(
+          child: AppText.subtitle(title, color: design.colors.textSecondary),
+        ),
+      ),
+    );
+  }
+}
+
 class _NewChatButton extends StatelessWidget {
-  const _NewChatButton({required this.onTap});
+  const _NewChatButton({required this.onTap, this.isActive = false});
 
   final VoidCallback onTap;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+
+    final contentColor = design.colors.textPrimary;
 
     return AppSemantics.button(
       label: l10n.aiStartNewChat,
@@ -334,34 +408,65 @@ class _NewChatButton extends StatelessWidget {
           constraints: const BoxConstraints(minHeight: 48.0),
           child: Center(
             heightFactor: 1.0,
-            child: Container(
-              width: double.infinity,
-              constraints: const BoxConstraints(minHeight: 40.0),
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: design.colors.textPrimary,
-                borderRadius: design.radius.button,
-              ),
-              child: ExcludeSemantics(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.plus,
-                      size: design.iconSize.sm,
-                      color: design.colors.textInverse,
-                    ),
-                    SizedBox(width: design.spacing.xs * 1.5),
-                    Flexible(
-                      child: AppText.label(
-                        l10n.aiNewChatHeader,
-                        color: design.colors.textInverse,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(design.radius.sm),
+              child: Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(minHeight: 44.0),
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? design.colors.surfaceVariant
+                      : design.colors.card,
+                  borderRadius: BorderRadius.circular(design.radius.sm),
+                  border: Border.all(color: design.colors.border),
+                ),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        width: 3.5,
+                        decoration: BoxDecoration(
+                          color: design.colors.textPrimary,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(design.radius.sm),
+                            bottomLeft: Radius.circular(design.radius.sm),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: design.spacing.md,
+                            vertical: design.spacing.sm,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                LucideIcons.squarePen,
+                                size: design.iconSize.sm,
+                                color: contentColor,
+                              ),
+                              SizedBox(width: design.spacing.sm),
+                              Flexible(
+                                child: AppText.label(
+                                  l10n.aiNewChatHeader,
+                                  color: contentColor,
+                                  style: TextStyle(
+                                    fontWeight: isActive
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -488,16 +593,16 @@ typedef _OptionsCallback = void Function(LayerLink layerLink);
 class _HistoryItem extends StatefulWidget {
   const _HistoryItem({
     required this.title,
-    required this.timestamp,
     required this.onTap,
     this.onOptions,
+    this.isActive = false,
     this.isDeleting = false,
   });
 
   final String title;
-  final String timestamp;
   final VoidCallback onTap;
   final _OptionsCallback? onOptions;
+  final bool isActive;
   final bool isDeleting;
 
   @override
@@ -513,8 +618,21 @@ class _HistoryItemState extends State<_HistoryItem> {
     final l10n = L10n.of(context);
 
     return Container(
-      constraints: const BoxConstraints(minHeight: 48.0),
-      padding: EdgeInsets.only(left: design.spacing.md),
+      margin: EdgeInsets.symmetric(
+        horizontal: design.spacing.xs,
+        vertical: 2.0,
+      ),
+      decoration: BoxDecoration(
+        color: widget.isActive
+            ? design.colors.surfaceVariant
+            : design.colors.transparent,
+        borderRadius: BorderRadius.circular(design.radius.sm),
+      ),
+      constraints: const BoxConstraints(minHeight: 44.0),
+      padding: EdgeInsetsDirectional.only(
+        start: design.spacing.sm,
+        end: design.spacing.xs,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -524,27 +642,21 @@ class _HistoryItemState extends State<_HistoryItem> {
               child: GestureDetector(
                 onTap: widget.onTap,
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: design.spacing.sm * 1.5,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppText.bodySmall(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 44.0),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: design.spacing.xs * 1.5,
+                    ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: AppText.bodySmall(
                         widget.title,
+                        color: design.colors.textPrimary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (widget.timestamp.isNotEmpty) ...[
-                        SizedBox(height: design.spacing.xs),
-                        AppText.caption(
-                          widget.timestamp,
-                          color: design.colors.textTertiary,
-                        ),
-                      ],
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -563,8 +675,8 @@ class _HistoryItemState extends State<_HistoryItem> {
                 behavior: HitTestBehavior.opaque,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    minWidth: 48.0,
-                    minHeight: 48.0,
+                    minWidth: 44.0,
+                    minHeight: 44.0,
                   ),
                   child: Center(
                     child: Opacity(

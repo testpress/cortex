@@ -1832,6 +1832,18 @@
   "aiNewChatHeader": "New Chat",
   "aiComposerGreeting": "How can I help you today?",
   "aiChatHistoryTitle": "Chat History",
+  "aiHistoryToday": "Today",
+  "@aiHistoryToday": {
+    "description": "Section header for conversations updated today"
+  },
+  "aiHistoryYesterday": "Yesterday",
+  "@aiHistoryYesterday": {
+    "description": "Section header for conversations updated yesterday"
+  },
+  "aiHistoryPrevious7Days": "Previous 7 days",
+  "@aiHistoryPrevious7Days": {
+    "description": "Section header for conversations updated in the previous 7 days"
+  },
   "aiNoChatHistory": "No conversations yet",
   "aiInitErrorBanner": "Unable to connect to AI assistant. Check your connection.",
   "aiComposerPlaceholder": "Message",

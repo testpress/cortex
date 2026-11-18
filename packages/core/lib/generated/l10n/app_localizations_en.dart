@@ -3524,6 +3524,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChatHistoryTitle => 'Chat History';
 
   @override
+  String get aiHistoryToday => 'Today';
+
+  @override
+  String get aiHistoryYesterday => 'Yesterday';
+
+  @override
+  String get aiHistoryPrevious7Days => 'Previous 7 days';
+
+  @override
   String get aiNoChatHistory => 'No conversations yet';
 
   @override
@@ -3839,7 +3848,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String aiDeleteConversationNamedMessage(String title) {
-    return 'Are you sure you want to delete "$title"? This action cannot be undone.';
+    return 'Are you sure you want to delete \"$title\"? This action cannot be undone.';
   }
 
   @override

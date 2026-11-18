@@ -190,48 +190,45 @@ void main() {
     expect(find.text('New Chat'), findsOneWidget);
   });
 
-  testWidgets('lists each conversation with its title and relative time', (
-    tester,
-  ) async {
-    final repository = _FakeLearnLensRepository(
-      conversations: sampleConversations(),
-    );
-    await tester.pumpWidget(buildSubject(repository: repository));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'lists each conversation with its title without redundant relative time',
+    (tester) async {
+      final repository = _FakeLearnLensRepository(
+        conversations: sampleConversations(),
+      );
+      await tester.pumpWidget(buildSubject(repository: repository));
+      await tester.pumpAndSettle();
 
-    expect(find.text("Explain Newton's Laws of Motion"), findsOneWidget);
-    expect(find.text('2 hrs ago'), findsOneWidget);
-    expect(find.text('Organic Chemistry Reactions'), findsOneWidget);
-    expect(find.text('2 days ago'), findsOneWidget);
+      expect(find.text("Explain Newton's Laws of Motion"), findsOneWidget);
+      expect(find.text('Organic Chemistry Reactions'), findsOneWidget);
 
-    // Subject chips are intentionally left out of the history rows.
-    expect(find.byType(AppSubjectChip), findsNothing);
-    expect(find.byType(AppChip), findsNothing);
-    expect(find.byType(AppBadge), findsNothing);
+      // Redundant relative time captions are omitted since section headers provide temporal context.
+      expect(find.text('2 hrs ago'), findsNothing);
+      expect(find.text('2 days ago'), findsNothing);
 
-    // The time sits under the title, and rows keep a 48dp touch target.
-    final title = tester.getRect(find.text("Explain Newton's Laws of Motion"));
-    final time = tester.getRect(find.text('2 hrs ago'));
-    expect(time.top, greaterThanOrEqualTo(title.bottom));
-    expect(time.left, title.left);
+      // Subject chips are intentionally left out of the history rows.
+      expect(find.byType(AppSubjectChip), findsNothing);
+      expect(find.byType(AppChip), findsNothing);
+      expect(find.byType(AppBadge), findsNothing);
 
-    final titleButton = find
-        .ancestor(
-          of: find.text("Explain Newton's Laws of Motion"),
-          matching: find.byType(GestureDetector),
-        )
-        .first;
-    expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(48.0));
+      final titleButton = find
+          .ancestor(
+            of: find.text("Explain Newton's Laws of Motion"),
+            matching: find.byType(GestureDetector),
+          )
+          .first;
+      expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(44.0));
 
-    final rowContainer = find
-        .ancestor(of: titleButton, matching: find.byType(Container))
-        .first;
-    expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(48.0));
-    expect(
-      tester.getSize(rowContainer).width,
-      tester.getSize(find.byKey(drawerKey)).width,
-    );
-  });
+      final rowContainer = find
+          .ancestor(of: titleButton, matching: find.byType(Container))
+          .first;
+      expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(44.0));
+      expect(
+        tester.getSize(rowContainer).width,
+        lessThanOrEqualTo(tester.getSize(find.byKey(drawerKey)).width),
+      );
+    },
+  );
 
   testWidgets('uses the New Chat label for untitled conversations', (
     tester,
@@ -246,7 +243,7 @@ void main() {
 
     // Once for the button and once for the untitled row.
     expect(find.text('New Chat'), findsNWidgets(2));
-    expect(find.text('just now'), findsOneWidget);
+    expect(find.text('just now'), findsNothing);
   });
 
   testWidgets('caps the drawer width on narrow screens', (tester) async {

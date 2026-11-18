@@ -3530,6 +3530,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiChatHistoryTitle => 'سجل المحادثات';
 
   @override
+  String get aiHistoryToday => 'اليوم';
+
+  @override
+  String get aiHistoryYesterday => 'أمس';
+
+  @override
+  String get aiHistoryPrevious7Days => 'آخر 7 أيام';
+
+  @override
   String get aiNoChatHistory => 'لا توجد محادثات بعد';
 
   @override
@@ -3843,7 +3852,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String aiDeleteConversationNamedMessage(String title) {
-    return 'هل أنت متأكد من رغبتك في حذف "$title"؟ لا يمكن التراجع عن هذا الإجراء.';
+    return 'هل أنت متأكد من رغبتك في حذف \"$title\"؟ لا يمكن التراجع عن هذا الإجراء.';
   }
 
   @override

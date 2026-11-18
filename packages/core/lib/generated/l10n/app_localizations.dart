@@ -6299,6 +6299,24 @@ abstract class AppLocalizations {
   /// **'Chat History'**
   String get aiChatHistoryTitle;
 
+  /// Section header for conversations updated today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get aiHistoryToday;
+
+  /// Section header for conversations updated yesterday
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get aiHistoryYesterday;
+
+  /// Section header for conversations updated in the previous 7 days
+  ///
+  /// In en, this message translates to:
+  /// **'Previous 7 days'**
+  String get aiHistoryPrevious7Days;
+
   /// No description provided for @aiNoChatHistory.
   ///
   /// In en, this message translates to:
