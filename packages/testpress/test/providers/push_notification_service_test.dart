@@ -1,8 +1,13 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+// ignore: depend_on_referenced_packages
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+// ignore: depend_on_referenced_packages
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:testpress/navigation/app_router.dart';
@@ -20,12 +25,30 @@ class _FakeAuth extends Auth {
   }
 }
 
+class _MockUrlLauncherPlatform extends Fake
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {
+  bool launchUrlResult = true;
+  String? launchedUrl;
+  LaunchOptions? launchedOptions;
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    launchedUrl = url;
+    launchedOptions = options;
+    return launchUrlResult;
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late GoRouter fakeRouter;
+  late _MockUrlLauncherPlatform mockUrlLauncher;
 
   setUp(() {
+    mockUrlLauncher = _MockUrlLauncherPlatform();
+    UrlLauncherPlatform.instance = mockUrlLauncher;
     fakeRouter = GoRouter(
       initialLocation: '/home',
       routes: [
@@ -97,6 +120,61 @@ void main() {
         expect(service.pendingDeepLink, isNull);
       },
     );
+
+    test(
+      'dispatches external URL immediately without queueing when unauthenticated',
+      () {
+        final fakeAuth = _FakeAuth(initialLoggedIn: false);
+        final container = ProviderContainer(
+          overrides: [
+            authProvider.overrideWith(() => fakeAuth),
+            goRouterProvider.overrideWithValue(fakeRouter),
+            instituteSettingsProvider.overrideWith(
+              (ref) => InstituteSettings.fromJson(const {}),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final service = container.read(pushNotificationServiceProvider);
+        service.handleDeepLink('https://forms.google.com/test-form');
+
+        expect(service.pendingDeepLink, isNull);
+        expect(
+          mockUrlLauncher.launchedUrl,
+          'https://forms.google.com/test-form',
+        );
+        expect(
+          mockUrlLauncher.launchedOptions?.mode,
+          PreferredLaunchMode.externalApplication,
+        );
+      },
+    );
+
+    test('dispatches pending external URL to browser on flushPendingLink', () {
+      final fakeAuth = _FakeAuth(initialLoggedIn: true);
+      final container = ProviderContainer(
+        overrides: [
+          authProvider.overrideWith(() => fakeAuth),
+          goRouterProvider.overrideWithValue(fakeRouter),
+          instituteSettingsProvider.overrideWith(
+            (ref) => InstituteSettings.fromJson(const {}),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final service = container.read(pushNotificationServiceProvider);
+      service.setPendingDeepLink(
+        'https://example.com/external-event',
+        DateTime.now(),
+      );
+
+      service.flushPendingLink();
+
+      expect(service.pendingDeepLink, isNull);
+      expect(mockUrlLauncher.launchedUrl, 'https://example.com/external-event');
+    });
 
     test(
       'dispatches and clears pending link when bootstrap transitions to authenticated',
@@ -329,5 +407,123 @@ void main() {
         PushNotificationChannels.contentsName,
       );
     });
+
+    test('extracts image URLs from various payload keys', () {
+      final msg1 = RemoteMessage(
+        data: const {'image_url': 'https://example.com/img1.png'},
+      );
+      final msg2 = RemoteMessage(
+        data: const {'image': 'https://example.com/img2.png'},
+      );
+      final msg3 = RemoteMessage(
+        data: const {'picture': 'https://example.com/img3.png'},
+      );
+      final msg4 = RemoteMessage(
+        notification: const RemoteNotification(
+          android: AndroidNotification(
+            imageUrl: 'https://example.com/img4.png',
+          ),
+        ),
+      );
+      final msg5 = RemoteMessage(
+        data: const {'push_image': 'https://example.com/img5.png'},
+      );
+      final msg6 = RemoteMessage(
+        data: const {'remote_image_url': 'https://example.com/img6.png'},
+      );
+      final msgEmpty = RemoteMessage(data: const {'image_url': '   '});
+
+      expect(
+        notificationImageUrlFromMessage(msg1),
+        'https://example.com/img1.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg2),
+        'https://example.com/img2.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg3),
+        'https://example.com/img3.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg4),
+        'https://example.com/img4.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg5),
+        'https://example.com/img5.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg6),
+        'https://example.com/img6.png',
+      );
+      expect(notificationImageUrlFromMessage(msgEmpty), isNull);
+    });
+
+    test(
+      'extracts destination_url, dest_url, and redirect_url from payload',
+      () {
+        final msgDestination = RemoteMessage(
+          data: const {'destination_url': 'https://example.com/destination'},
+        );
+        final msgDest = RemoteMessage(
+          data: const {'dest_url': 'https://example.com/dest'},
+        );
+        final msgRedirect = RemoteMessage(
+          data: const {'redirect_url': 'https://example.com/redirect'},
+        );
+        expect(
+          notificationUrlFromMessage(msgDestination),
+          'https://example.com/destination',
+        );
+        expect(notificationUrlFromMessage(msgDest), 'https://example.com/dest');
+        expect(
+          notificationUrlFromMessage(msgRedirect),
+          'https://example.com/redirect',
+        );
+      },
+    );
+
+    test(
+      'creates BigPictureStyleInformation when imageFilePath is provided',
+      () {
+        final detailsWithImage = notificationDetailsForChannel(
+          PushNotificationChannels.postsId,
+          imageFilePath: '/tmp/test_image.jpg',
+          title: 'Image Title',
+          body: 'Image Body',
+        );
+
+        expect(
+          detailsWithImage.android?.styleInformation,
+          isA<BigPictureStyleInformation>(),
+        );
+        final style =
+            detailsWithImage.android?.styleInformation
+                as BigPictureStyleInformation;
+        expect(style.contentTitle, 'Image Title');
+        expect(style.summaryText, 'Image Body');
+        expect(detailsWithImage.iOS?.attachments?.length, 1);
+      },
+    );
+
+    test('omits BigPictureStyleInformation when imageFilePath is null', () {
+      final details = notificationDetailsForChannel(
+        PushNotificationChannels.postsId,
+      );
+
+      expect(details.android?.styleInformation, isNull);
+      expect(details.iOS?.attachments, isNull);
+    });
+
+    test(
+      'downloadNotificationImage returns null for invalid or null URLs',
+      () async {
+        expect(await downloadNotificationImage(null), isNull);
+        expect(await downloadNotificationImage('   '), isNull);
+        expect(await downloadNotificationImage('ftp://invalid.com'), isNull);
+        expect(await downloadNotificationImage('not-a-url'), isNull);
+      },
+    );
   });
 }

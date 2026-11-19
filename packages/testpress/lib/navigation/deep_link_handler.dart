@@ -231,13 +231,20 @@ class DeepLinkHandler {
   /// Automatically strips query parameters, fragments, and trailing slashes.
   /// If the URL is empty, invalid, or unrecognized, [defaultRoute] is returned.
   static String resolve(String? rawUrl) {
-    if (rawUrl == null) return defaultRoute;
+    return tryResolve(rawUrl) ?? defaultRoute;
+  }
+
+  /// Attempts to resolve an incoming [rawUrl] to an internal GoRouter route.
+  ///
+  /// Returns `null` if the URL does not match any internal deep link rule.
+  static String? tryResolve(String? rawUrl) {
+    if (rawUrl == null) return null;
 
     final trimmed = rawUrl.trim();
-    if (trimmed.isEmpty) return defaultRoute;
+    if (trimmed.isEmpty) return null;
 
     final uri = Uri.tryParse(trimmed);
-    if (uri == null) return defaultRoute;
+    if (uri == null) return null;
 
     List<String> segments = uri.pathSegments
         .where((s) => s.trim().isNotEmpty)
@@ -252,7 +259,17 @@ class DeepLinkHandler {
       segments = [uri.host, ...segments];
     }
 
-    if (segments.isEmpty) return defaultRoute;
+    if (segments.isEmpty) {
+      if (trimmed == '/' ||
+          trimmed == '/home' ||
+          trimmed == '/dashboard' ||
+          trimmed == '/learn' ||
+          trimmed == '/leaderboard' ||
+          (uri.host.endsWith('testpress.in') && uri.path.isEmpty)) {
+        return defaultRoute;
+      }
+      return null;
+    }
 
     for (final rule in rules) {
       final matched = rule.match(segments);
@@ -261,7 +278,26 @@ class DeepLinkHandler {
       }
     }
 
-    return defaultRoute;
+    return null;
+  }
+
+  /// Returns `true` if [rawUrl] is an external web URL with an http/https scheme
+  /// that does not map to any recognized internal app route.
+  static bool isExternalUrl(String? rawUrl) {
+    if (rawUrl == null) return false;
+    final trimmed = rawUrl.trim();
+    if (trimmed.isEmpty) return false;
+
+    final uri = Uri.tryParse(trimmed);
+    if (uri == null) return false;
+
+    if (uri.scheme != 'http' && uri.scheme != 'https') return false;
+    if (uri.host.isEmpty) return false;
+
+    final internalRoute = tryResolve(trimmed);
+    if (internalRoute != null) return false;
+
+    return true;
   }
 
   /// Filters a resolved [route] based on active navigation tabs and feature flags.
