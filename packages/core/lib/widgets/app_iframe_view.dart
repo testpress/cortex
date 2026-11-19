@@ -90,6 +90,21 @@ class AppIframeView extends StatefulWidget {
     return uri.path.startsWith('/embed/');
   }
 
+  /// Ensures `rel=0` is set on YouTube embed URLs.
+  static String sanitizeYouTubeEmbedUrl(String rawUrl) {
+    final normalized = normalizeUrl(rawUrl);
+    if (normalized.isEmpty) return '';
+    if (!isSupportedUrl(normalized)) return normalized;
+
+    final uri = Uri.tryParse(normalized);
+    if (uri == null) return normalized;
+
+    final updatedParams = Map<String, String>.from(uri.queryParameters);
+    updatedParams['rel'] = '0';
+
+    return uri.replace(queryParameters: updatedParams).toString();
+  }
+
   static String _escapeHtmlAttribute(String value) {
     return value
         .replaceAll('&', '&amp;')
@@ -218,7 +233,8 @@ class _AppIframeViewState extends State<AppIframeView> {
       return;
     }
 
-    final escapedSrc = AppIframeView._escapeHtmlAttribute(normalized);
+    final sanitized = AppIframeView.sanitizeYouTubeEmbedUrl(normalized);
+    final escapedSrc = AppIframeView._escapeHtmlAttribute(sanitized);
     final html =
         '''
 <!DOCTYPE html>

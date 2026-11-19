@@ -86,6 +86,72 @@ void main() {
     });
   });
 
+  group('AppIframeView.sanitizeYouTubeEmbedUrl', () {
+    test('appends rel=0 to plain YouTube embed URL', () {
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl(
+          'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        ),
+        'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0',
+      );
+    });
+
+    test('preserves existing query parameters when appending rel=0', () {
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl(
+          'https://www.youtube.com/embed/dQw4w9WgXcQ?start=30&autoplay=1',
+        ),
+        'https://www.youtube.com/embed/dQw4w9WgXcQ?start=30&autoplay=1&rel=0',
+      );
+    });
+
+    test('overrides existing rel parameter to 0 without duplication', () {
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl(
+          'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=1',
+        ),
+        'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0',
+      );
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl(
+          'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0',
+        ),
+        'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0',
+      );
+    });
+
+    test('supports youtube-nocookie.com and protocol-relative embeds', () {
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl(
+          'https://www.youtube-nocookie.com/embed/xyz',
+        ),
+        'https://www.youtube-nocookie.com/embed/xyz?rel=0',
+      );
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl('//www.youtube.com/embed/xyz'),
+        'https://www.youtube.com/embed/xyz?rel=0',
+      );
+    });
+
+    test('leaves non-YouTube embed URLs untouched', () {
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl(
+          'https://player.vimeo.com/video/12345',
+        ),
+        'https://player.vimeo.com/video/12345',
+      );
+      expect(
+        AppIframeView.sanitizeYouTubeEmbedUrl('https://example.com/embed/123'),
+        'https://example.com/embed/123',
+      );
+    });
+
+    test('returns empty string for invalid schemes or empty input', () {
+      expect(AppIframeView.sanitizeYouTubeEmbedUrl(''), '');
+      expect(AppIframeView.sanitizeYouTubeEmbedUrl('javascript:alert(1)'), '');
+    });
+  });
+
   group('AppIframeView Widget', () {
     setUpAll(() {
       WebViewPlatform.instance = _FakeWebViewPlatform();
@@ -127,6 +193,10 @@ void main() {
       final aspectRatioWidget = tester.widget<AspectRatio>(aspectRatioFinder);
       expect(aspectRatioWidget.aspectRatio, 16 / 9);
       expect(find.byType(ClipRRect), findsOneWidget);
+      expect(
+        _lastWebViewController?.lastLoadedHtml,
+        contains('src="https://www.youtube.com/embed/test?rel=0"'),
+      );
     });
 
     testWidgets('respects custom aspect ratio', (tester) async {
@@ -413,7 +483,9 @@ void main() {
       final loadedHtml = _lastWebViewController?.lastLoadedHtml ?? '';
       expect(
         loadedHtml,
-        contains('src="https://www.youtube.com/embed/test?a=1&amp;b=2"'),
+        contains(
+          'src="https://www.youtube.com/embed/test?a=1&amp;b=2&amp;rel=0"',
+        ),
       );
       expect(loadedHtml, isNot(contains('&b=2"')));
     });
