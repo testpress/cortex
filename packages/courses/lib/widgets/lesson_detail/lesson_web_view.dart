@@ -32,6 +32,18 @@ class LessonWebView extends StatefulWidget {
   /// Default origin used when rendering HTML content strings.
   static const defaultBaseUrl = 'https://www.testpress.in';
 
+  static const _socialShareHosts = {
+    'whatsapp.com',
+    'wa.me',
+    'facebook.com',
+    'reddit.com',
+    'twitter.com',
+    'x.com',
+    'linkedin.com',
+    'pinterest.com',
+    't.me',
+  };
+
   /// Static helper to handle navigation requests with external link delegation.
   static NavigationDecision handleNavigationRequest({
     required NavigationRequest request,
@@ -58,6 +70,26 @@ class LessonWebView extends StatefulWidget {
       }
     }
 
+    // Suppress outbound navigation to YouTube and social player share dialogs.
+    final host = uri.host.toLowerCase();
+    final isYouTube = host == 'youtube.com' ||
+        host.endsWith('.youtube.com') ||
+        host == 'youtube-nocookie.com' ||
+        host.endsWith('.youtube-nocookie.com') ||
+        host == 'youtu.be';
+
+    final isShareHost = _socialShareHosts.any(
+      (shareHost) => host == shareHost || host.endsWith('.$shareHost'),
+    );
+
+    final rawUrl = request.url.toLowerCase();
+    final isSharingYouTube = isShareHost &&
+        (rawUrl.contains('youtu.be') || rawUrl.contains('youtube.com'));
+
+    if (isYouTube || isSharingYouTube) {
+      return NavigationDecision.prevent;
+    }
+
     if (['http', 'https'].contains(uri.scheme)) {
       final launcher = urlLauncher ?? launchUrl;
       unawaited(
@@ -74,6 +106,30 @@ class LessonWebView extends StatefulWidget {
     return NavigationDecision.prevent;
   }
 
+  static final _iframeRegex = RegExp(
+    r'''(<iframe\b[^>]*?\bsrc=(["']))([^"']+)(\2)''',
+    caseSensitive: false,
+  );
+
+  /// Injects `rel=0` into YouTube iframe embed URLs in raw HTML.
+  static String sanitizeIframeEmbeds(String rawHtml) {
+    if (rawHtml.isEmpty) return rawHtml;
+
+    return rawHtml.replaceAllMapped(_iframeRegex, (match) {
+      final prefix = match.group(1)!;
+      final rawSrc = match.group(3)!;
+      final suffix = match.group(4)!;
+
+      // Unescape &amp; in query strings so URI parsing correctly detects parameters
+      final unescapedSrc = rawSrc.replaceAll('&amp;', '&');
+      final sanitized = AppIframeView.sanitizeYouTubeEmbedUrl(unescapedSrc);
+      // Re-escape & as &amp; in the HTML attribute
+      final escapedSrc = sanitized.replaceAll('&', '&amp;');
+
+      return '$prefix$escapedSrc$suffix';
+    });
+  }
+
   /// Formats raw HTML with responsive styling, design system colors, and typography.
   static String buildStyledHtml({
     required String? htmlContent,
@@ -83,6 +139,12 @@ class LessonWebView extends StatefulWidget {
     final textColor = _colorToHexString(colors.textPrimary);
     final backgroundColor = _colorToHexString(colors.canvas);
     final primaryColor = _colorToHexString(colors.primary);
+
+    final sanitizedContent =
+        htmlContent != null ? sanitizeIframeEmbeds(htmlContent) : '';
+    final sanitizedDescription = description != null && description.isNotEmpty
+        ? sanitizeIframeEmbeds(description)
+        : null;
 
     return '''
       <!DOCTYPE html>
@@ -126,8 +188,8 @@ class LessonWebView extends StatefulWidget {
         </head>
         <body>
           <div class="content-wrapper">
-            ${htmlContent ?? ''}
-            ${description != null && description.isNotEmpty ? '<div style="margin-top: 16px;">$description</div>' : ''}
+            $sanitizedContent
+            ${sanitizedDescription != null ? '<div style="margin-top: 16px;">$sanitizedDescription</div>' : ''}
           </div>
         </body>
       </html>
