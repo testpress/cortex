@@ -19,6 +19,10 @@ class DoubtDetailScreen extends ConsumerStatefulWidget {
 
   const DoubtDetailScreen({super.key, required this.doubtId});
 
+  @visibleForTesting
+  static bool canCloseDoubt(List<DoubtReplyDto>? replies) =>
+      replies?.any((r) => r.isMentor) ?? false;
+
   @override
   ConsumerState<DoubtDetailScreen> createState() => _DoubtDetailScreenState();
 }
@@ -35,6 +39,11 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     // when the widget tree changes below (e.g. between loading and data states).
     // This entirely prevents the auto-dispose infinite API loop.
     final repliesAsync = ref.watch(doubtRepliesProvider(widget.doubtId));
+    final canClose = ref.watch(
+      doubtRepliesProvider(
+        widget.doubtId,
+      ).select((async) => DoubtDetailScreen.canCloseDoubt(async.valueOrNull)),
+    );
 
     final detailAsync = ref.watch(doubtDetailProvider(widget.doubtId));
     final design = Design.of(context);
@@ -44,7 +53,12 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
 
     return AppShell(
       backgroundColor: design.colors.card,
-      bottomSheet: _buildActionSheet(design, l10n, detailAsync.valueOrNull),
+      bottomSheet: _buildActionSheet(
+        design,
+        l10n,
+        detailAsync.valueOrNull,
+        canClose: canClose,
+      ),
       child: detailAsync.when(
         skipLoadingOnReload: true,
         data: (doubt) => _buildContent(
@@ -57,6 +71,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
           widget.doubtId,
           repliesAsync,
           false,
+          canClose: canClose,
         ),
         loading: () => Skeletonizer(
           enabled: true,
@@ -70,6 +85,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
             widget.doubtId,
             repliesAsync,
             true,
+            canClose: false,
           ),
         ),
         error: (err, _) => AppErrorView(
@@ -83,8 +99,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
   Widget _buildActionSheet(
     DesignConfig design,
     AppLocalizations l10n,
-    DoubtDto? doubt,
-  ) {
+    DoubtDto? doubt, {
+    required bool canClose,
+  }) {
     return AppBottomSheet(
       isOpen: _isMenuOpen,
       onClose: _closeMenu,
@@ -131,6 +148,8 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                 AppFocusable(
                   onTap: () async {
                     _closeMenu();
+                    // Guard against canClose becoming false while the sheet is open.
+                    if (!canClose) return;
                     final confirmed = await showConfirmationDialog(
                       context,
                       title: l10n.dialogCloseDoubtTitle,
@@ -177,8 +196,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     DoubtDto doubt,
     String doubtId,
     AsyncValue<List<DoubtReplyDto>> repliesAsync,
-    bool isLoading,
-  ) {
+    bool isLoading, {
+    required bool canClose,
+  }) {
     // If the doubt is loading, pretend replies are loading too
     final effectiveRepliesAsync = isLoading
         ? const AsyncValue<List<DoubtReplyDto>>.loading()
@@ -196,7 +216,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
             title: l10n.doubtDetailTitle,
             leading: AppBackButton(onTap: () => context.pop()),
             actions: [
-              if (doubt.status != DoubtStatus.closed)
+              if (doubt.status != DoubtStatus.closed && canClose)
                 AppFocusable(
                   onTap: _openMenu,
                   child: Icon(
