@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,12 +46,15 @@ void main() {
   Widget buildScreen({
     DoubtDto? doubt,
     List<DoubtReplyDto> replies = const [],
+    Stream<List<DoubtReplyDto>>? repliesStream,
   }) {
     final effectiveDoubt = doubt ?? testDoubt;
     return ProviderScope(
       overrides: [
         doubtDetailProvider('1').overrideWith((ref) async => effectiveDoubt),
-        doubtRepliesProvider('1').overrideWith((ref) => Stream.value(replies)),
+        doubtRepliesProvider(
+          '1',
+        ).overrideWith((ref) => repliesStream ?? Stream.value(replies)),
       ],
       child: DesignProvider(
         config: DesignConfig.defaults(),
@@ -92,11 +96,13 @@ void main() {
 
         expect(find.byIcon(LucideIcons.moreVertical), findsOneWidget);
 
+        final l10n = L10n.of(tester.element(find.byType(DoubtDetailScreen)));
+
         await tester.tap(find.byIcon(LucideIcons.moreVertical));
         await tester.pumpAndSettle();
 
         expect(find.byIcon(LucideIcons.xCircle), findsOneWidget);
-        expect(find.text('Close Doubt'), findsOneWidget);
+        expect(find.text(l10n.actionCloseDoubt), findsOneWidget);
       },
     );
 
@@ -109,6 +115,43 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byIcon(LucideIcons.moreVertical), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'prevents closing if mentor reply is removed while sheet is already open',
+      (tester) async {
+        final repliesController =
+            StreamController<List<DoubtReplyDto>>.broadcast();
+        addTearDown(repliesController.close);
+
+        await tester.pumpWidget(
+          buildScreen(repliesStream: repliesController.stream),
+        );
+
+        // Initially emit with a mentor reply so the menu is accessible
+        repliesController.add([testStudentReply, testMentorReply]);
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(LucideIcons.moreVertical), findsOneWidget);
+
+        // Open action sheet
+        await tester.tap(find.byIcon(LucideIcons.moreVertical));
+        await tester.pumpAndSettle();
+
+        final l10n = L10n.of(tester.element(find.byType(DoubtDetailScreen)));
+        expect(find.text(l10n.actionCloseDoubt), findsOneWidget);
+
+        // Stream updates and flips canClose to false while sheet remains open
+        repliesController.add([testStudentReply]);
+        await tester.pumpAndSettle();
+
+        // Tap Close Doubt
+        await tester.tap(find.text(l10n.actionCloseDoubt));
+        await tester.pumpAndSettle();
+
+        // Confirmation dialog must NOT be displayed because canClose is now false
+        expect(find.text(l10n.dialogCloseDoubtContent), findsNothing);
       },
     );
   });

@@ -12,7 +12,7 @@ In `packages/discussions/lib/screens/doubt_detail_screen.dart`, students view an
 - Add automated widget test coverage verifying the close action visibility based on mentor replies.
 
 **Non-Goals:**
-- Modifying backend API endpoints or database schemas (validation is client-side in the discussions UI; backend API endpoints already handle closing).
+- Server-side / backend enforcement: Modifying backend API endpoints or server validation. This restriction is enforced strictly on the client side (UI) within the app.
 - Changing mentor reply author resolution logic or AI bot tagging.
 
 ## Decisions
@@ -32,5 +32,7 @@ In `packages/discussions/lib/screens/doubt_detail_screen.dart`, students view an
 
 ## Risks / Trade-offs
 
+- **[Risk]** Client-only enforcement: This restriction is client-side only by design. If a user bypasses the app and calls the backend API endpoint (`POST /api/v3/helpdesk/<pk>/followup/` with `should_close: true`) directly, the backend will still process the close request unless backend-level validation is added on the server.
+  → **Mitigation**: Documented as client-side only by design for this mobile app scope. Full enforcement requires a corresponding validation on the backend service.
 - **[Risk]** If replies are still loading when the screen opens, `repliesAsync.valueOrNull` is null, so `hasMentorReply` is false.
   → **Mitigation**: Once replies load, `repliesAsync` automatically updates the widget via Riverpod and reveals the menu if a mentor reply exists. This is the desired behavior.

@@ -23,4 +23,4 @@ None.
 
 - **Affected Code**: `packages/discussions/lib/screens/doubt_detail_screen.dart` and its related tests.
 - **Affected Packages**: `packages/discussions`
-- **APIs**: No backend schema changes required; relies on the existing `isMentor` flag on `DoubtReplyDto`.
+- **APIs**: Client-side only by design. No backend schema or API changes made; relies on existing `isMentor` flag on `DoubtReplyDto`. Server-side validation is deferred to backend service if needed.
