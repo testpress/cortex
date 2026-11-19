@@ -36,6 +36,7 @@ class LocalizationProvider extends StatefulWidget {
       AppLocalizations.supportedLocales;
 
   /// Initializes localized date formatting symbols for intl.
+  /// Must be awaited before [runApp] for localized dates.
   static Future<void> initializeDateFormatting([String? locale]) =>
       intl_date.initializeDateFormatting(locale);
 }
