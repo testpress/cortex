@@ -51,11 +51,19 @@ The system SHALL implement `Skeletonizer` to display a shimmering placeholder of
 - **THEN** the system displays a skeleton layout of the title, body, and 2-3 mock replies.
 
 ### Requirement: Mark Resolved Action
-The doubt thread header or detail screen SHALL provide a button for the student to resolve their doubt.
-- **Action**: Tapping "Mark Resolved" SHALL submit a POST request to `/api/v3/helpdesk/<pk>/followup/` with the body `{"should_resolve": true}` and update the status in the UI to "Resolved".
+The doubt thread detail screen SHALL provide an action for the student to resolve/close their doubt ONLY when the doubt has received at least one reply from a mentor (`isMentor == true`).
+- **Eligibility**: If no reply with `isMentor == true` exists in the reply thread, the close/resolve action SHALL NOT be accessible to the student.
+- **Action**: When eligible and active (not already closed), selecting the close doubt action and confirming SHALL submit the close request and update the status in the UI to closed.
 
-#### Scenario: Resolving a doubt
-- **GIVEN** the student is viewing their active doubt details
-- **WHEN** they tap "Mark Resolved"
-- **THEN** the ticket is resolved on the backend and the status in the app transitions to "Resolved"
+#### Scenario: Attempting to close doubt without mentor reply
+- **GIVEN** a student is viewing their active doubt details
+- **AND** there are no replies with `isMentor == true` in the thread
+- **WHEN** the student views the header actions
+- **THEN** the close doubt action is not accessible
+
+#### Scenario: Resolving a doubt after mentor reply
+- **GIVEN** a student is viewing their active doubt details
+- **AND** there is at least one reply with `isMentor == true` in the thread
+- **WHEN** the student triggers the close action and confirms
+- **THEN** the doubt close request is submitted and the status transitions to closed
 
