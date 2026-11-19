@@ -84,6 +84,10 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
 }
 
 void main() {
+  setUpAll(() async {
+    await LocalizationProvider.initializeDateFormatting();
+  });
+
   const drawerKey = ValueKey('ai_chat_history_drawer');
 
   List<AiConversationDto> sampleConversations() => [
@@ -134,6 +138,7 @@ void main() {
     required _FakeLearnLensRepository repository,
     GoRouter? router,
     bool reducedMotion = false,
+    Locale locale = const Locale('en'),
   }) {
     final routerConfig = router ?? buildRouter();
     return ProviderScope(
@@ -150,7 +155,7 @@ void main() {
               routerConfig: routerConfig,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
-              locale: const Locale('en'),
+              locale: locale,
             ),
           ),
         ),
@@ -190,48 +195,45 @@ void main() {
     expect(find.text('New Chat'), findsOneWidget);
   });
 
-  testWidgets('lists each conversation with its title and relative time', (
-    tester,
-  ) async {
-    final repository = _FakeLearnLensRepository(
-      conversations: sampleConversations(),
-    );
-    await tester.pumpWidget(buildSubject(repository: repository));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'lists each conversation with its title without redundant relative time',
+    (tester) async {
+      final repository = _FakeLearnLensRepository(
+        conversations: sampleConversations(),
+      );
+      await tester.pumpWidget(buildSubject(repository: repository));
+      await tester.pumpAndSettle();
 
-    expect(find.text("Explain Newton's Laws of Motion"), findsOneWidget);
-    expect(find.text('2 hrs ago'), findsOneWidget);
-    expect(find.text('Organic Chemistry Reactions'), findsOneWidget);
-    expect(find.text('2 days ago'), findsOneWidget);
+      expect(find.text("Explain Newton's Laws of Motion"), findsOneWidget);
+      expect(find.text('Organic Chemistry Reactions'), findsOneWidget);
 
-    // Subject chips are intentionally left out of the history rows.
-    expect(find.byType(AppSubjectChip), findsNothing);
-    expect(find.byType(AppChip), findsNothing);
-    expect(find.byType(AppBadge), findsNothing);
+      // Redundant relative time captions are omitted since section headers provide temporal context.
+      expect(find.text('2 hrs ago'), findsNothing);
+      expect(find.text('2 days ago'), findsNothing);
 
-    // The time sits under the title, and rows keep a 48dp touch target.
-    final title = tester.getRect(find.text("Explain Newton's Laws of Motion"));
-    final time = tester.getRect(find.text('2 hrs ago'));
-    expect(time.top, greaterThanOrEqualTo(title.bottom));
-    expect(time.left, title.left);
+      // Subject chips are intentionally left out of the history rows.
+      expect(find.byType(AppSubjectChip), findsNothing);
+      expect(find.byType(AppChip), findsNothing);
+      expect(find.byType(AppBadge), findsNothing);
 
-    final titleButton = find
-        .ancestor(
-          of: find.text("Explain Newton's Laws of Motion"),
-          matching: find.byType(GestureDetector),
-        )
-        .first;
-    expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(48.0));
+      final titleButton = find
+          .ancestor(
+            of: find.text("Explain Newton's Laws of Motion"),
+            matching: find.byType(GestureDetector),
+          )
+          .first;
+      expect(tester.getSize(titleButton).height, greaterThanOrEqualTo(48.0));
 
-    final rowContainer = find
-        .ancestor(of: titleButton, matching: find.byType(Container))
-        .first;
-    expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(48.0));
-    expect(
-      tester.getSize(rowContainer).width,
-      tester.getSize(find.byKey(drawerKey)).width,
-    );
-  });
+      final rowContainer = find
+          .ancestor(of: titleButton, matching: find.byType(Container))
+          .first;
+      expect(tester.getSize(rowContainer).height, greaterThanOrEqualTo(48.0));
+      expect(
+        tester.getSize(rowContainer).width,
+        lessThanOrEqualTo(tester.getSize(find.byKey(drawerKey)).width),
+      );
+    },
+  );
 
   testWidgets('uses the New Chat label for untitled conversations', (
     tester,
@@ -246,7 +248,7 @@ void main() {
 
     // Once for the button and once for the untitled row.
     expect(find.text('New Chat'), findsNWidgets(2));
-    expect(find.text('just now'), findsOneWidget);
+    expect(find.text('just now'), findsNothing);
   });
 
   testWidgets('caps the drawer width on narrow screens', (tester) async {
@@ -629,6 +631,136 @@ void main() {
         await tester.pump(const Duration(seconds: 3));
 
         expect(repo.deletedChatIds, ['chat-1']);
+      },
+    );
+
+    testWidgets(
+      'renders month and year headers for older conversations across locales without throwing',
+      (tester) async {
+        final now = DateTime.now();
+        final olderHistory = [
+          AiConversationDto(
+            chatId: 'chat-old-1',
+            title: 'Chat from earlier this year',
+            updatedAt: DateTime(now.year, now.month > 2 ? now.month - 2 : 1, 1),
+          ),
+          AiConversationDto(
+            chatId: 'chat-old-2',
+            title: 'Chat from previous year',
+            updatedAt: DateTime(now.year - 1, 6, 15),
+          ),
+        ];
+
+        for (final locale in const [
+          Locale('en'),
+          Locale('ar'),
+          Locale('ta'),
+          Locale('ml'),
+        ]) {
+          final repo = _FakeLearnLensRepository(conversations: olderHistory);
+          await tester.pumpWidget(
+            buildSubject(repository: repo, locale: locale),
+          );
+          await tester.pumpAndSettle();
+
+          expect(find.byType(AiChatHistoryScreen), findsOneWidget);
+          expect(find.text('Chat from earlier this year'), findsOneWidget);
+          expect(find.text('Chat from previous year'), findsOneWidget);
+        }
+      },
+    );
+
+    testWidgets('marks active new chat button as selected in semantics', (
+      tester,
+    ) async {
+      final repository = _FakeLearnLensRepository(
+        conversations: sampleConversations(),
+      );
+      await tester.pumpWidget(buildSubject(repository: repository));
+      await tester.pumpAndSettle();
+
+      final newChatSemantics = find.bySemanticsLabel('Start new chat');
+      expect(
+        tester.getSemantics(newChatSemantics),
+        matchesSemantics(
+          label: 'Start new chat',
+          isButton: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          hasSelectedState: true,
+          isSelected: true,
+          hasTapAction: true,
+        ),
+      );
+    });
+
+    testWidgets(
+      'marks active history row as selected and new chat button as unselected in semantics',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        );
+        final router = buildRouter(initialLocation: '/ai/history');
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        // Select the first conversation, loading it and dismissing the drawer.
+        await tester.tap(find.text("Explain Newton's Laws of Motion"));
+        await tester.pumpAndSettle();
+
+        // Reopen the drawer while chat-1 is active.
+        router.go('/ai/history');
+        await tester.pumpAndSettle();
+
+        final newChatSemantics = find.bySemanticsLabel('Start new chat');
+        final activeRowSemantics = find.bySemanticsLabel(
+          "Open chat: Explain Newton's Laws of Motion",
+        );
+        final inactiveRowSemantics = find.bySemanticsLabel(
+          'Open chat: Organic Chemistry Reactions',
+        );
+
+        expect(
+          tester.getSemantics(newChatSemantics),
+          matchesSemantics(
+            label: 'Start new chat',
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasSelectedState: true,
+            isSelected: false,
+            hasTapAction: true,
+          ),
+        );
+
+        expect(
+          tester.getSemantics(activeRowSemantics),
+          matchesSemantics(
+            label: "Open chat: Explain Newton's Laws of Motion",
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasSelectedState: true,
+            isSelected: true,
+            hasTapAction: true,
+          ),
+        );
+
+        expect(
+          tester.getSemantics(inactiveRowSemantics),
+          matchesSemantics(
+            label: 'Open chat: Organic Chemistry Reactions',
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasSelectedState: true,
+            isSelected: false,
+            hasTapAction: true,
+          ),
+        );
       },
     );
   });

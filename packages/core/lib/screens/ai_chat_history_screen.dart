@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../core.dart';
+import '../data/models/ai_chat_history_section.dart';
 
 /// Conversation history, presented as a start-side drawer over a dimmed chat.
 ///
@@ -18,6 +20,9 @@ class AiChatHistoryScreen extends ConsumerStatefulWidget {
 class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
   /// Share of the screen the drawer may cover on narrow phones.
   static const double _maxWidthFactor = 0.85;
+
+  /// Distance in pixels from the bottom of the list at which the next page is fetched.
+  static const double _paginationScrollThreshold = 200.0;
 
   late final ScrollController _scrollController;
 
@@ -43,7 +48,8 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     final position = _scrollController.position;
     if (position.maxScrollExtent <= 0 || position.pixels <= 0) return;
 
-    if (position.pixels >= position.maxScrollExtent - 200) {
+    if (position.pixels >=
+        position.maxScrollExtent - _paginationScrollThreshold) {
       final state = ref.read(genericAiChatProvider);
       if (!state.isLoadingHistory && state.hasMoreHistory) {
         ref.read(genericAiChatProvider.notifier).loadConversations();
@@ -102,11 +108,38 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     }
   }
 
+  String _resolveSectionTitle(
+    BuildContext context,
+    AiChatHistorySection section,
+    DateTime now,
+  ) {
+    final l10n = L10n.of(context);
+    switch (section.type) {
+      case HistorySectionType.today:
+        return l10n.aiHistoryToday;
+      case HistorySectionType.yesterday:
+        return l10n.aiHistoryYesterday;
+      case HistorySectionType.previous7Days:
+        return l10n.aiHistoryPrevious7Days;
+      case HistorySectionType.monthYear:
+        final date = DateTime(section.year ?? now.year, section.month ?? 1);
+        final locale = Localizations.localeOf(context).toString();
+        if (section.year == now.year) {
+          return DateFormat.MMMM(locale).format(date);
+        } else {
+          return DateFormat.yMMMM(locale).format(date);
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final isNewChatActive = ref.watch(
+      genericAiChatProvider.select((s) => s.currentChatId == null),
+    );
 
     final routeAnimation = ModalRoute.of(context)?.animation;
     final animation =
@@ -160,8 +193,6 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                     Padding(
                       padding: EdgeInsetsDirectional.only(
                         start: design.spacing.md,
-                        // The close icon sits in a 48dp touch target; trim
-                        // the inset so the glyph lands near the content edge.
                         end: design.spacing.sm,
                         top: design.spacing.sm,
                       ),
@@ -190,13 +221,14 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        design.spacing.md,
-                        design.spacing.xs,
-                        design.spacing.md,
-                        design.spacing.sm * 1.5,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.sm,
+                        vertical: design.spacing.xs,
                       ),
-                      child: _NewChatButton(onTap: _startNewChat),
+                      child: _NewChatButton(
+                        onTap: _startNewChat,
+                        isActive: isNewChatActive,
+                      ),
                     ),
                     Container(height: 1.0, color: design.colors.border),
                     Expanded(child: _buildBody(context)),
@@ -257,39 +289,39 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
       );
     }
 
-    final rowDivider = Container(
-      height: 1.0,
-      color: design.colors.border.withValues(alpha: 0.5),
-    );
+    final now = DateTime.now();
+    final sections = buildHistorySections(conversations: history, now: now);
 
     return AppSemantics.scrollableList(
       itemCount: history.length,
       label: l10n.aiChatHistoryTitle,
       child: AppScroll(
         controller: _scrollController,
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.xs,
+          vertical: design.spacing.xs,
+        ),
         children: [
-          for (final session in history) ...[
-            _HistoryItem(
-              title: session.title.trim().isNotEmpty
-                  ? session.title
-                  : l10n.aiNewChatHeader,
-              timestamp: session.updatedAt != null
-                  ? DateFormatter.formatTimeAgo(session.updatedAt!)
-                  : '',
-              onTap: () => _openConversation(session.chatId),
-              onOptions: chatState.isDeletingConversation
-                  ? null
-                  : (layerLink) => _showConversationOptions(
-                      session.chatId,
-                      session.title.trim().isNotEmpty
-                          ? session.title
-                          : l10n.aiNewChatHeader,
-                      layerLink,
-                    ),
-              isDeleting: chatState.isDeletingConversation,
-            ),
-            rowDivider,
+          for (final section in sections) ...[
+            _SectionHeader(title: _resolveSectionTitle(context, section, now)),
+            for (final session in section.items)
+              _HistoryItem(
+                title: session.title.trim().isNotEmpty
+                    ? session.title
+                    : l10n.aiNewChatHeader,
+                isActive: chatState.currentChatId == session.chatId,
+                onTap: () => _openConversation(session.chatId),
+                onOptions: chatState.isDeletingConversation
+                    ? null
+                    : (layerLink) => _showConversationOptions(
+                        session.chatId,
+                        session.title.trim().isNotEmpty
+                            ? session.title
+                            : l10n.aiNewChatHeader,
+                        layerLink,
+                      ),
+                isDeleting: chatState.isDeletingConversation,
+              ),
           ],
           if (chatState.isLoadingHistory)
             Padding(
@@ -314,57 +346,107 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
   }
 }
 
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    final textStartOffset = design.spacing.md - design.spacing.xs;
+    final sectionTopSpacing = design.spacing.md * 1.25;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        textStartOffset,
+        sectionTopSpacing,
+        design.spacing.sm,
+        design.spacing.xs,
+      ),
+      child: AppSemantics.header(
+        label: title,
+        child: ExcludeSemantics(
+          child: AppText.subtitle(title, color: design.colors.textSecondary),
+        ),
+      ),
+    );
+  }
+}
+
 class _NewChatButton extends StatelessWidget {
-  const _NewChatButton({required this.onTap});
+  const _NewChatButton({required this.onTap, this.isActive = false});
 
   final VoidCallback onTap;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
+    final contentColor = design.colors.textPrimary;
+
     return AppSemantics.button(
       label: l10n.aiStartNewChat,
+      selected: isActive,
       onTap: onTap,
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
-        child: ConstrainedBox(
+        child: Container(
+          width: double.infinity,
           constraints: const BoxConstraints(minHeight: 48.0),
-          child: Center(
-            heightFactor: 1.0,
-            child: Container(
-              width: double.infinity,
-              constraints: const BoxConstraints(minHeight: 40.0),
-              padding: EdgeInsets.symmetric(horizontal: design.spacing.md),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: design.colors.textPrimary,
-                borderRadius: design.radius.button,
-              ),
-              child: ExcludeSemantics(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.plus,
-                      size: design.iconSize.sm,
-                      color: design.colors.textInverse,
-                    ),
-                    SizedBox(width: design.spacing.xs * 1.5),
-                    Flexible(
-                      child: AppText.label(
-                        l10n.aiNewChatHeader,
-                        color: design.colors.textInverse,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+          decoration: BoxDecoration(
+            color: isActive
+                ? design.colors.surfaceVariant
+                : design.colors.transparent,
+            borderRadius: BorderRadius.circular(design.radius.sm),
+          ),
+          child: Stack(
+            alignment: AlignmentDirectional.centerStart,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
+                child: ExcludeSemantics(
+                  child: Row(
+                    children: [
+                      Icon(
+                        LucideIcons.squarePen,
+                        size: design.iconSize.md,
+                        color: contentColor,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: design.spacing.sm * 1.5),
+                      Flexible(
+                        child: AppText.labelBold(
+                          l10n.aiNewChatHeader,
+                          color: contentColor,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+              if (isActive)
+                PositionedDirectional(
+                  start: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: design.spacing.xs,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: design.colors.textPrimary,
+                      borderRadius: BorderRadiusDirectional.only(
+                        topStart: Radius.circular(design.radius.sm),
+                        bottomStart: Radius.circular(design.radius.sm),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -488,16 +570,16 @@ typedef _OptionsCallback = void Function(LayerLink layerLink);
 class _HistoryItem extends StatefulWidget {
   const _HistoryItem({
     required this.title,
-    required this.timestamp,
     required this.onTap,
     this.onOptions,
+    this.isActive = false,
     this.isDeleting = false,
   });
 
   final String title;
-  final String timestamp;
   final VoidCallback onTap;
   final _OptionsCallback? onOptions;
+  final bool isActive;
   final bool isDeleting;
 
   @override
@@ -513,38 +595,43 @@ class _HistoryItemState extends State<_HistoryItem> {
     final l10n = L10n.of(context);
 
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+      decoration: BoxDecoration(
+        color: widget.isActive
+            ? design.colors.surfaceVariant
+            : design.colors.transparent,
+        borderRadius: BorderRadius.circular(design.radius.sm),
+      ),
       constraints: const BoxConstraints(minHeight: 48.0),
-      padding: EdgeInsets.only(left: design.spacing.md),
+      padding: EdgeInsetsDirectional.only(
+        start: design.spacing.sm,
+        end: design.spacing.xs,
+      ),
       child: Row(
         children: [
           Expanded(
             child: AppSemantics.button(
               label: l10n.openChatSession(widget.title),
+              selected: widget.isActive,
               onTap: widget.onTap,
               child: GestureDetector(
                 onTap: widget.onTap,
                 behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: design.spacing.sm * 1.5,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppText.bodySmall(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48.0),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: design.spacing.xs * 1.5,
+                    ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: AppText.bodySmall(
                         widget.title,
+                        color: design.colors.textPrimary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (widget.timestamp.isNotEmpty) ...[
-                        SizedBox(height: design.spacing.xs),
-                        AppText.caption(
-                          widget.timestamp,
-                          color: design.colors.textTertiary,
-                        ),
-                      ],
-                    ],
+                    ),
                   ),
                 ),
               ),

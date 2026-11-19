@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart' as intl_date;
 import '../generated/l10n/app_localizations.dart';
 
 class LocalizationProvider extends StatefulWidget {
@@ -33,6 +34,11 @@ class LocalizationProvider extends StatefulWidget {
   /// Helper for supported locales.
   static Iterable<Locale> get supportedLocales =>
       AppLocalizations.supportedLocales;
+
+  /// Initializes localized date formatting symbols for intl.
+  /// Must be awaited before [runApp] for localized dates.
+  static Future<void> initializeDateFormatting([String? locale]) =>
+      intl_date.initializeDateFormatting(locale);
 }
 
 abstract class LocalizationProviderScope {

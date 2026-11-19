@@ -3578,6 +3578,15 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiChatHistoryTitle => 'ചാറ്റ് ചരിത്രം';
 
   @override
+  String get aiHistoryToday => 'ഇന്ന്';
+
+  @override
+  String get aiHistoryYesterday => 'ഇന്നലെ';
+
+  @override
+  String get aiHistoryPrevious7Days => 'കഴിഞ്ഞ 7 ദിവസങ്ങൾ';
+
+  @override
   String get aiNoChatHistory => 'ഇതുവരെ സംഭാഷണങ്ങളൊന്നുമില്ല';
 
   @override
@@ -3898,7 +3907,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String aiDeleteConversationNamedMessage(String title) {
-    return '"$title" ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.';
+    return '\"$title\" ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.';
   }
 
   @override
