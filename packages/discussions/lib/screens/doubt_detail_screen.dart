@@ -35,6 +35,8 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     // when the widget tree changes below (e.g. between loading and data states).
     // This entirely prevents the auto-dispose infinite API loop.
     final repliesAsync = ref.watch(doubtRepliesProvider(widget.doubtId));
+    final hasMentorReply =
+        repliesAsync.valueOrNull?.any((r) => r.isMentor) ?? false;
 
     final detailAsync = ref.watch(doubtDetailProvider(widget.doubtId));
     final design = Design.of(context);
@@ -44,7 +46,12 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
 
     return AppShell(
       backgroundColor: design.colors.card,
-      bottomSheet: _buildActionSheet(design, l10n, detailAsync.valueOrNull),
+      bottomSheet: _buildActionSheet(
+        design,
+        l10n,
+        detailAsync.valueOrNull,
+        hasMentorReply: hasMentorReply,
+      ),
       child: detailAsync.when(
         skipLoadingOnReload: true,
         data: (doubt) => _buildContent(
@@ -57,6 +64,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
           widget.doubtId,
           repliesAsync,
           false,
+          hasMentorReply: hasMentorReply,
         ),
         loading: () => Skeletonizer(
           enabled: true,
@@ -70,6 +78,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
             widget.doubtId,
             repliesAsync,
             true,
+            hasMentorReply: false,
           ),
         ),
         error: (err, _) => AppErrorView(
@@ -83,8 +92,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
   Widget _buildActionSheet(
     DesignConfig design,
     AppLocalizations l10n,
-    DoubtDto? doubt,
-  ) {
+    DoubtDto? doubt, {
+    required bool hasMentorReply,
+  }) {
     return AppBottomSheet(
       isOpen: _isMenuOpen,
       onClose: _closeMenu,
@@ -130,6 +140,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                 SizedBox(height: design.spacing.lg),
                 AppFocusable(
                   onTap: () async {
+                    if (!hasMentorReply) return;
                     _closeMenu();
                     final confirmed = await showConfirmationDialog(
                       context,
@@ -177,8 +188,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     DoubtDto doubt,
     String doubtId,
     AsyncValue<List<DoubtReplyDto>> repliesAsync,
-    bool isLoading,
-  ) {
+    bool isLoading, {
+    required bool hasMentorReply,
+  }) {
     // If the doubt is loading, pretend replies are loading too
     final effectiveRepliesAsync = isLoading
         ? const AsyncValue<List<DoubtReplyDto>>.loading()
@@ -196,7 +208,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
             title: l10n.doubtDetailTitle,
             leading: AppBackButton(onTap: () => context.pop()),
             actions: [
-              if (doubt.status != DoubtStatus.closed)
+              if (doubt.status != DoubtStatus.closed && hasMentorReply)
                 AppFocusable(
                   onTap: _openMenu,
                   child: Icon(
