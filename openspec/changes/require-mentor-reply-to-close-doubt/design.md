@@ -20,7 +20,7 @@ In `packages/discussions/lib/screens/doubt_detail_screen.dart`, students view an
 ### Decision 1: Expose `canCloseDoubt` and derive `canClose` via Riverpod selector
 - Expose the evaluation rule as a pure, static `@visibleForTesting` method `canCloseDoubt` on `DoubtDetailScreen`.
 - In `DoubtDetailScreen.build`, derive `canClose` using Riverpod's `.select()` over `doubtRepliesProvider`.
-- Rationale: Isolating the rule into a static method keeps business logic decoupled and directly testable without pumping widgets. Using `.select()` ensures `build()` remains pure with zero mutable state, and only rebuilds when the boolean value transitions.
+- Rationale: Isolating the rule into a static method keeps business logic decoupled and directly testable without pumping widgets. Using `.select()` clearly derives the boolean state from `doubtRepliesProvider` using `async.valueOrNull`, keeping `build()` declarative and pure with zero local mutable state.
 
 ### Decision 2: Guard the header action menu and action sheet
 - In `AppHeader`, only display the `moreVertical` action if the doubt is not closed and `canClose` is true.
@@ -32,4 +32,4 @@ In `packages/discussions/lib/screens/doubt_detail_screen.dart`, students view an
 - **[Risk]** Client-only enforcement: This restriction is client-side only by design. If a user bypasses the app and calls the backend API endpoint (`POST /api/v3/helpdesk/<pk>/followup/` with `should_close: true`) directly, the backend will still process the close request unless backend-level validation is added on the server.
   → **Mitigation**: Documented as client-side only by design for this mobile app scope. Full enforcement requires a corresponding validation on the backend service.
 - **[Risk]** Initial loading and stream re-sync states:
-  → **Mitigation**: On initial load, `async.valueOrNull` is null, so `canClose` evaluates to false until the initial replies arrive. During subsequent background re-syncs, Riverpod preserves the previous value on `AsyncValue`, and `.select()` avoids rebuilding unless the boolean transitions, preventing UI flicker.
+  → **Mitigation**: On initial load, `async.valueOrNull` is null, so `canClose` evaluates to false until the initial replies arrive. During subsequent background re-syncs, Riverpod preserves the previous value on `AsyncValue` (`valueOrNull`), preventing UI flicker when replies reload or refresh.
