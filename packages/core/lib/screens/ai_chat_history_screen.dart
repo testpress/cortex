@@ -124,10 +124,18 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
       case HistorySectionType.monthYear:
         final date = DateTime(section.year ?? now.year, section.month ?? 1);
         final locale = Localizations.localeOf(context).toString();
-        if (section.year == now.year) {
-          return DateFormat.MMMM(locale).format(date);
-        } else {
-          return DateFormat.yMMMM(locale).format(date);
+        try {
+          if (section.year == now.year) {
+            return DateFormat.MMMM(locale).format(date);
+          } else {
+            return DateFormat.yMMMM(locale).format(date);
+          }
+        } catch (_) {
+          if (section.year == now.year) {
+            return DateFormat.MMMM().format(date);
+          } else {
+            return DateFormat.yMMMM().format(date);
+          }
         }
     }
   }
@@ -378,8 +386,6 @@ class _NewChatButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool isActive;
 
-  static const double _indicatorWidth = 3.5;
-
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -389,76 +395,68 @@ class _NewChatButton extends StatelessWidget {
 
     return AppSemantics.button(
       label: l10n.aiStartNewChat,
+      selected: isActive,
       onTap: onTap,
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
-        child: ConstrainedBox(
+        child: Container(
+          width: double.infinity,
           constraints: const BoxConstraints(minHeight: 48.0),
-          child: Center(
-            heightFactor: 1.0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(design.radius.sm),
-              child: Container(
-                width: double.infinity,
-                constraints: const BoxConstraints(minHeight: 48.0),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? design.colors.surfaceVariant
-                      : design.colors.transparent,
-                  borderRadius: BorderRadius.circular(design.radius.sm),
+          decoration: BoxDecoration(
+            color: isActive
+                ? design.colors.surfaceVariant
+                : design.colors.transparent,
+            borderRadius: BorderRadius.circular(design.radius.sm),
+          ),
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: design.spacing.sm,
+                  vertical: design.spacing.sm * 1.5,
                 ),
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: design.spacing.sm,
-                        vertical: design.spacing.sm * 1.5,
+                child: ExcludeSemantics(
+                  child: Row(
+                    children: [
+                      Icon(
+                        LucideIcons.squarePen,
+                        size: design.iconSize.md,
+                        color: contentColor,
                       ),
-                      child: ExcludeSemantics(
-                        child: Row(
-                          children: [
-                            Icon(
-                              LucideIcons.squarePen,
-                              size: design.iconSize.md,
-                              color: contentColor,
-                            ),
-                            SizedBox(width: design.spacing.sm * 1.5),
-                            Flexible(
-                              child: AppText.body(
-                                l10n.aiNewChatHeader,
-                                color: contentColor,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (isActive)
-                      PositionedDirectional(
-                        start: 0,
-                        top: 0,
-                        bottom: 0,
-                        width: _indicatorWidth,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: design.colors.textPrimary,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(design.radius.sm),
-                              bottomLeft: Radius.circular(design.radius.sm),
-                            ),
+                      SizedBox(width: design.spacing.sm * 1.5),
+                      Flexible(
+                        child: AppText.base(
+                          l10n.aiNewChatHeader,
+                          color: contentColor,
+                          style: TextStyle(
+                            fontWeight: design.typography.title.fontWeight,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
+              if (isActive)
+                PositionedDirectional(
+                  start: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: design.spacing.xs,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: design.colors.textPrimary,
+                      borderRadius: BorderRadiusDirectional.only(
+                        topStart: Radius.circular(design.radius.sm),
+                        bottomStart: Radius.circular(design.radius.sm),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -624,6 +622,7 @@ class _HistoryItemState extends State<_HistoryItem> {
           Expanded(
             child: AppSemantics.button(
               label: l10n.openChatSession(widget.title),
+              selected: widget.isActive,
               onTap: widget.onTap,
               child: GestureDetector(
                 onTap: widget.onTap,

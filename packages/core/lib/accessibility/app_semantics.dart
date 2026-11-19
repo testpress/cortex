@@ -13,6 +13,8 @@ class AppSemantics {
   /// Use this for interactive elements that behave like buttons.
   /// Screen readers will announce "button" and the label.
   ///
+  /// Set [selected] when the button represents an active or selected state.
+  ///
   /// Example:
   /// ```dart
   /// AppSemantics.button(
@@ -27,11 +29,13 @@ class AppSemantics {
     VoidCallback? onTap,
     required Widget child,
     bool enabled = true,
+    bool? selected,
   }) {
     return Semantics(
       button: true,
       label: label,
       enabled: enabled,
+      selected: selected,
       onTap: enabled ? onTap : null,
       child: child,
     );

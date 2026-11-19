@@ -134,6 +134,7 @@ void main() {
     required _FakeLearnLensRepository repository,
     GoRouter? router,
     bool reducedMotion = false,
+    Locale locale = const Locale('en'),
   }) {
     final routerConfig = router ?? buildRouter();
     return ProviderScope(
@@ -150,7 +151,7 @@ void main() {
               routerConfig: routerConfig,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
-              locale: const Locale('en'),
+              locale: locale,
             ),
           ),
         ),
@@ -628,5 +629,65 @@ void main() {
         expect(repo.deletedChatIds, ['chat-1']);
       },
     );
+
+    testWidgets(
+      'renders month and year headers for older conversations across locales without throwing',
+      (tester) async {
+        final now = DateTime.now();
+        final olderHistory = [
+          AiConversationDto(
+            chatId: 'chat-old-1',
+            title: 'Chat from earlier this year',
+            updatedAt: DateTime(now.year, now.month > 2 ? now.month - 2 : 1, 1),
+          ),
+          AiConversationDto(
+            chatId: 'chat-old-2',
+            title: 'Chat from previous year',
+            updatedAt: DateTime(now.year - 1, 6, 15),
+          ),
+        ];
+
+        for (final locale in const [
+          Locale('en'),
+          Locale('ar'),
+          Locale('ta'),
+          Locale('ml'),
+        ]) {
+          final repo = _FakeLearnLensRepository(conversations: olderHistory);
+          await tester.pumpWidget(
+            buildSubject(repository: repo, locale: locale),
+          );
+          await tester.pumpAndSettle();
+
+          expect(find.byType(AiChatHistoryScreen), findsOneWidget);
+          expect(find.text('Chat from earlier this year'), findsOneWidget);
+          expect(find.text('Chat from previous year'), findsOneWidget);
+        }
+      },
+    );
+
+    testWidgets('marks active new chat button as selected in semantics', (
+      tester,
+    ) async {
+      final repository = _FakeLearnLensRepository(
+        conversations: sampleConversations(),
+      );
+      await tester.pumpWidget(buildSubject(repository: repository));
+      await tester.pumpAndSettle();
+
+      final newChatSemantics = find.bySemanticsLabel('Start new chat');
+      expect(
+        tester.getSemantics(newChatSemantics),
+        matchesSemantics(
+          label: 'Start new chat',
+          isButton: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          hasSelectedState: true,
+          isSelected: true,
+          hasTapAction: true,
+        ),
+      );
+    });
   });
 }
