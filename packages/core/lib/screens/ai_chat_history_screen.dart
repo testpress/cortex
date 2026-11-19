@@ -410,12 +410,10 @@ class _NewChatButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(design.radius.sm),
           ),
           child: Stack(
+            alignment: AlignmentDirectional.centerStart,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.sm,
-                  vertical: design.spacing.sm * 1.5,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.sm),
                 child: ExcludeSemantics(
                   child: Row(
                     children: [
@@ -426,12 +424,9 @@ class _NewChatButton extends StatelessWidget {
                       ),
                       SizedBox(width: design.spacing.sm * 1.5),
                       Flexible(
-                        child: AppText.base(
+                        child: AppText.labelBold(
                           l10n.aiNewChatHeader,
                           color: contentColor,
-                          style: TextStyle(
-                            fontWeight: design.typography.title.fontWeight,
-                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
