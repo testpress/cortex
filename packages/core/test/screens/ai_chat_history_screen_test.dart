@@ -84,6 +84,10 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
 }
 
 void main() {
+  setUpAll(() async {
+    await LocalizationProvider.initializeDateFormatting();
+  });
+
   const drawerKey = ValueKey('ai_chat_history_drawer');
 
   List<AiConversationDto> sampleConversations() => [
@@ -689,5 +693,75 @@ void main() {
         ),
       );
     });
+
+    testWidgets(
+      'marks active history row as selected and new chat button as unselected in semantics',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        );
+        final router = buildRouter(initialLocation: '/ai/history');
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        // Select the first conversation, loading it and dismissing the drawer.
+        await tester.tap(find.text("Explain Newton's Laws of Motion"));
+        await tester.pumpAndSettle();
+
+        // Reopen the drawer while chat-1 is active.
+        router.go('/ai/history');
+        await tester.pumpAndSettle();
+
+        final newChatSemantics = find.bySemanticsLabel('Start new chat');
+        final activeRowSemantics = find.bySemanticsLabel(
+          "Open chat: Explain Newton's Laws of Motion",
+        );
+        final inactiveRowSemantics = find.bySemanticsLabel(
+          'Open chat: Organic Chemistry Reactions',
+        );
+
+        expect(
+          tester.getSemantics(newChatSemantics),
+          matchesSemantics(
+            label: 'Start new chat',
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasSelectedState: true,
+            isSelected: false,
+            hasTapAction: true,
+          ),
+        );
+
+        expect(
+          tester.getSemantics(activeRowSemantics),
+          matchesSemantics(
+            label: "Open chat: Explain Newton's Laws of Motion",
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasSelectedState: true,
+            isSelected: true,
+            hasTapAction: true,
+          ),
+        );
+
+        expect(
+          tester.getSemantics(inactiveRowSemantics),
+          matchesSemantics(
+            label: 'Open chat: Organic Chemistry Reactions',
+            isButton: true,
+            hasEnabledState: true,
+            isEnabled: true,
+            hasSelectedState: true,
+            isSelected: false,
+            hasTapAction: true,
+          ),
+        );
+      },
+    );
   });
 }

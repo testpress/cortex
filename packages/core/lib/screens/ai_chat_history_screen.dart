@@ -124,18 +124,10 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
       case HistorySectionType.monthYear:
         final date = DateTime(section.year ?? now.year, section.month ?? 1);
         final locale = Localizations.localeOf(context).toString();
-        try {
-          if (section.year == now.year) {
-            return DateFormat.MMMM(locale).format(date);
-          } else {
-            return DateFormat.yMMMM(locale).format(date);
-          }
-        } catch (_) {
-          if (section.year == now.year) {
-            return DateFormat.MMMM().format(date);
-          } else {
-            return DateFormat.yMMMM().format(date);
-          }
+        if (section.year == now.year) {
+          return DateFormat.MMMM(locale).format(date);
+        } else {
+          return DateFormat.yMMMM(locale).format(date);
         }
     }
   }
@@ -363,10 +355,13 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final design = Design.of(context);
 
+    final textStartOffset = design.spacing.md - design.spacing.xs;
+    final sectionTopSpacing = design.spacing.md * 1.25;
+
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        design.spacing.md - design.spacing.xs,
-        design.spacing.md * 1.25,
+        textStartOffset,
+        sectionTopSpacing,
         design.spacing.sm,
         design.spacing.xs,
       ),

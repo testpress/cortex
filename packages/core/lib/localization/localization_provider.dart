@@ -54,7 +54,6 @@ class _LocalizationProviderState extends State<LocalizationProvider>
   void initState() {
     super.initState();
     _locale = widget.initialLocale;
-    LocalizationProvider.initializeDateFormatting();
   }
 
   @override
