@@ -29,18 +29,9 @@ class DoubtDetailScreen extends ConsumerStatefulWidget {
 
 class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
   bool _isMenuOpen = false;
-  bool _canClose = false;
 
   void _openMenu() => setState(() => _isMenuOpen = true);
   void _closeMenu() => setState(() => _isMenuOpen = false);
-
-  @override
-  void didUpdateWidget(covariant DoubtDetailScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.doubtId != widget.doubtId) {
-      _canClose = false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +39,11 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     // when the widget tree changes below (e.g. between loading and data states).
     // This entirely prevents the auto-dispose infinite API loop.
     final repliesAsync = ref.watch(doubtRepliesProvider(widget.doubtId));
-    if (repliesAsync.hasValue) {
-      _canClose = DoubtDetailScreen.canCloseDoubt(repliesAsync.value);
-    }
-    final canClose = _canClose;
+    final canClose = ref.watch(
+      doubtRepliesProvider(
+        widget.doubtId,
+      ).select((async) => DoubtDetailScreen.canCloseDoubt(async.valueOrNull)),
+    );
 
     final detailAsync = ref.watch(doubtDetailProvider(widget.doubtId));
     final design = Design.of(context);
@@ -156,7 +148,7 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                 AppFocusable(
                   onTap: () async {
                     _closeMenu();
-                    // Guard against stream re-syncs or multi-action sheet expansions.
+                    // Guard against canClose becoming false while the sheet is open.
                     if (!canClose) return;
                     final confirmed = await showConfirmationDialog(
                       context,

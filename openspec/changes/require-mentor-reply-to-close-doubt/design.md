@@ -8,8 +8,8 @@ In `packages/discussions/lib/screens/doubt_detail_screen.dart`, students view an
 
 **Goals:**
 - Restrict the doubt closure action so it is only accessible when the doubt has at least one reply where `isMentor == true`.
-- Ensure clean UI behavior when no mentor reply is present (hide or disable the action).
-- Add automated widget test coverage verifying the close action visibility based on mentor replies.
+- Ensure clean UI behavior when no mentor reply is present (hide the action menu).
+- Expose the rule as a testable pure static method `canCloseDoubt` and add automated unit and widget test coverage.
 
 **Non-Goals:**
 - Server-side / backend enforcement: Modifying backend API endpoints or server validation. This restriction is enforced strictly on the client side (UI) within the app.
@@ -17,22 +17,19 @@ In `packages/discussions/lib/screens/doubt_detail_screen.dart`, students view an
 
 ## Decisions
 
-### Decision 1: Derive `hasMentorReply` from `repliesAsync`
-- In `DoubtDetailScreen`, `repliesAsync` (`ref.watch(doubtRepliesProvider(widget.doubtId))`) is already watched at the root of `build`.
-- Check:
-  ```dart
-  final hasMentorReply = repliesAsync.valueOrNull?.any((r) => r.isMentor) ?? false;
-  ```
-- Rationale: Since replies are already reactively streamed / cached by Riverpod, this check is instant, declarative, and requires no extra network calls.
+### Decision 1: Expose `canCloseDoubt` and derive `canClose` via Riverpod selector
+- Expose the evaluation rule as a pure, static `@visibleForTesting` method `canCloseDoubt` on `DoubtDetailScreen`.
+- In `DoubtDetailScreen.build`, derive `canClose` using Riverpod's `.select()` over `doubtRepliesProvider`.
+- Rationale: Isolating the rule into a static method keeps business logic decoupled and directly testable without pumping widgets. Using `.select()` ensures `build()` remains pure with zero mutable state, and only rebuilds when the boolean value transitions.
 
 ### Decision 2: Guard the header action menu and action sheet
-- In `AppHeader`, only display the `moreVertical` action if `doubt.status != DoubtStatus.closed && hasMentorReply`.
-- In `_buildActionSheet`, also verify `hasMentorReply` before showing/executing the close action as defense-in-depth.
-- Rationale: Currently "Close doubt" is the only option in the 3-dots menu. Showing an empty or disabled menu provides unnecessary friction. Hiding the menu until a mentor replies keeps the UI clean and directly fulfills the requirement.
+- In `AppHeader`, only display the `moreVertical` action if the doubt is not closed and `canClose` is true.
+- In `_buildActionSheet`, call `_closeMenu()` to dismiss the sheet first, and verify `canClose` before confirmation dialog dispatch.
+- Rationale: Dismissing the sheet first avoids leaving it stuck open if the state transitions while open. Hiding the menu until a mentor replies keeps the UI clean and directly fulfills the requirement.
 
 ## Risks / Trade-offs
 
 - **[Risk]** Client-only enforcement: This restriction is client-side only by design. If a user bypasses the app and calls the backend API endpoint (`POST /api/v3/helpdesk/<pk>/followup/` with `should_close: true`) directly, the backend will still process the close request unless backend-level validation is added on the server.
   → **Mitigation**: Documented as client-side only by design for this mobile app scope. Full enforcement requires a corresponding validation on the backend service.
-- **[Risk]** If replies are still loading when the screen opens, `repliesAsync.valueOrNull` is null, so `hasMentorReply` is false.
-  → **Mitigation**: Once replies load, `repliesAsync` automatically updates the widget via Riverpod and reveals the menu if a mentor reply exists. This is the desired behavior.
+- **[Risk]** Initial loading and stream re-sync states:
+  → **Mitigation**: On initial load, `async.valueOrNull` is null, so `canClose` evaluates to false until the initial replies arrive. During subsequent background re-syncs, Riverpod preserves the previous value on `AsyncValue`, and `.select()` avoids rebuilding unless the boolean transitions, preventing UI flicker.
