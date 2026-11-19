@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:profile/providers/notification_preferences_provider.dart';
@@ -71,6 +72,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
     final url = notificationUrlFromMessage(message);
     final channelId = notificationChannelIdForUrl(url);
+    final imageUrl = notificationImageUrlFromMessage(message);
+
+    final imageFilePath = await downloadNotificationImage(imageUrl);
+
     final localNotifications = FlutterLocalNotificationsPlugin();
 
     await localNotifications.initialize(
@@ -85,7 +90,12 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       notificationIdForMessage(message),
       title,
       body,
-      notificationDetailsForChannel(channelId),
+      notificationDetailsForChannel(
+        channelId,
+        imageFilePath: imageFilePath,
+        title: title,
+        body: body,
+      ),
       payload: url,
     );
   } catch (error, stackTrace) {
@@ -149,12 +159,107 @@ String? _firstNonBlank(Iterable<String?> values) {
 }
 
 String? notificationUrlFromMessage(RemoteMessage message) {
-  final url =
-      message.data['short_url'] ?? message.data['url'] ?? message.data['link'];
-  if (url != null && url.trim().isNotEmpty) {
-    return url.trim();
+  return _firstNonBlank([
+    message.data['destination_url']?.toString(),
+    message.data['dest_url']?.toString(),
+    message.data['short_url']?.toString(),
+    message.data['url']?.toString(),
+    message.data['link']?.toString(),
+    message.data['redirect_url']?.toString(),
+  ]);
+}
+
+String? notificationImageUrlFromMessage(RemoteMessage message) {
+  return _firstNonBlank([
+    message.data['image_url']?.toString(),
+    message.data['image']?.toString(),
+    message.data['picture']?.toString(),
+    message.data['push_image']?.toString(),
+    message.data['remote_image_url']?.toString(),
+    message.notification?.android?.imageUrl,
+    message.notification?.apple?.imageUrl,
+  ]);
+}
+
+Uri? _parseAndValidateImageUrl(String? imageUrl) {
+  if (imageUrl == null) return null;
+  final trimmed = imageUrl.trim();
+  if (trimmed.isEmpty) return null;
+
+  final uri = Uri.tryParse(trimmed);
+  if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
+    return null;
   }
-  return null;
+  return uri;
+}
+
+Future<List<int>?> _fetchImageBytes(
+  Uri uri, {
+  Duration timeout = const Duration(seconds: 5),
+  HttpClient? client,
+}) async {
+  final httpClient = client ?? HttpClient();
+  try {
+    final request = await httpClient.getUrl(uri).timeout(timeout);
+    final response = await request.close().timeout(timeout);
+    if (response.statusCode != HttpStatus.ok) {
+      return null;
+    }
+
+    final bytes = await response
+        .fold<List<int>>(<int>[], (buffer, chunk) => buffer..addAll(chunk))
+        .timeout(timeout);
+
+    return bytes.isEmpty ? null : bytes;
+  } finally {
+    if (client == null) {
+      httpClient.close();
+    }
+  }
+}
+
+String _resolveImageExtension(Uri uri) {
+  if (uri.pathSegments.isNotEmpty && uri.pathSegments.last.contains('.')) {
+    final rawExt = uri.pathSegments.last.split('.').last.toLowerCase();
+    const validExtensions = {'jpg', 'jpeg', 'png', 'webp', 'gif'};
+    if (validExtensions.contains(rawExt)) {
+      return rawExt;
+    }
+  }
+  return 'jpg';
+}
+
+Future<String> _saveToTempFile(List<int> bytes, Uri uri) async {
+  Directory tempDir;
+  try {
+    tempDir = await getTemporaryDirectory();
+  } catch (_) {
+    tempDir = Directory.systemTemp;
+  }
+
+  final ext = _resolveImageExtension(uri);
+  final fileName = 'notif_img_${DateTime.now().microsecondsSinceEpoch}.$ext';
+  final file = File('${tempDir.path}/$fileName');
+  await file.writeAsBytes(bytes);
+  return file.path;
+}
+
+Future<String?> downloadNotificationImage(
+  String? imageUrl, {
+  Duration timeout = const Duration(seconds: 5),
+  HttpClient? client,
+}) async {
+  final uri = _parseAndValidateImageUrl(imageUrl);
+  if (uri == null) return null;
+
+  try {
+    final bytes = await _fetchImageBytes(uri, timeout: timeout, client: client);
+    if (bytes == null || bytes.isEmpty) return null;
+
+    return await _saveToTempFile(bytes, uri);
+  } catch (_) {
+    return null;
+  }
 }
 
 NotificationCategory notificationCategoryForUrl(String? url) {
@@ -185,19 +290,42 @@ int notificationIdForMessage(RemoteMessage message) {
   return rawId & 0x7FFFFFFF;
 }
 
-NotificationDetails notificationDetailsForChannel(String channelId) {
+NotificationDetails notificationDetailsForChannel(
+  String channelId, {
+  String? imageFilePath,
+  String? title,
+  String? body,
+}) {
   final isPosts = channelId == PushNotificationChannels.postsId;
+  final channelName = isPosts
+      ? PushNotificationChannels.postsName
+      : PushNotificationChannels.contentsName;
+
+  final BigPictureStyleInformation? bigPictureStyleInformation =
+      imageFilePath != null
+      ? BigPictureStyleInformation(
+          FilePathAndroidBitmap(imageFilePath),
+          largeIcon: FilePathAndroidBitmap(imageFilePath),
+          contentTitle: title,
+          summaryText: body,
+          hideExpandedLargeIcon: true,
+        )
+      : null;
+
   return NotificationDetails(
     android: AndroidNotificationDetails(
       channelId,
-      isPosts
-          ? PushNotificationChannels.postsName
-          : PushNotificationChannels.contentsName,
+      channelName,
       importance: Importance.high,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
+      styleInformation: bigPictureStyleInformation,
     ),
-    iOS: const DarwinNotificationDetails(),
+    iOS: DarwinNotificationDetails(
+      attachments: imageFilePath != null
+          ? [DarwinNotificationAttachment(imageFilePath)]
+          : null,
+    ),
   );
 }
 
@@ -269,7 +397,8 @@ class PushNotificationService {
 
     // 5. Listen to Taps when app is in Background (but running)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleDeepLink(_extractUrl(message));
+      final url = _extractUrl(message);
+      _handleDeepLink(url);
     });
 
     // 6. Listen to Token Refreshes
@@ -280,7 +409,8 @@ class PushNotificationService {
     // 7. Handle App Launches from Terminated State
     final initialMessage = await messaging.getInitialMessage();
     if (initialMessage != null) {
-      _handleDeepLink(_extractUrl(initialMessage));
+      final url = _extractUrl(initialMessage);
+      _handleDeepLink(url);
     }
 
     // 8. Initial Token Sync if user is logged in
@@ -323,7 +453,7 @@ class PushNotificationService {
     await _createNotificationChannels(_localNotifications);
   }
 
-  void _showLocalNotification(RemoteMessage message) {
+  Future<void> _showLocalNotification(RemoteMessage message) async {
     final title = notificationTitleFromMessage(message);
     final summary = notificationBodyFromMessage(message);
     final url = _extractUrl(message);
@@ -342,29 +472,36 @@ class PushNotificationService {
 
       if (!shouldShow) return;
 
-      _localNotifications.show(
+      final imageUrl = notificationImageUrlFromMessage(message);
+      final imageFilePath = await downloadNotificationImage(imageUrl);
+
+      await _localNotifications.show(
         notificationIdForMessage(message),
         title,
         summary,
-        notificationDetailsForChannel(channelId),
+        notificationDetailsForChannel(
+          channelId,
+          imageFilePath: imageFilePath,
+          title: title,
+          body: summary,
+        ),
         payload: url,
       );
     }
   }
 
   String? _extractUrl(RemoteMessage message) {
-    final url =
-        message.data['short_url'] ??
-        message.data['url'] ??
-        message.data['link'];
-    if (url != null && url.trim().isNotEmpty) {
-      return url.trim();
-    }
-    return null;
+    return notificationUrlFromMessage(message);
   }
 
   void _handleDeepLink(String? url) {
     if (url == null || url.trim().isEmpty) return;
+
+    final isExternal = DeepLinkHandler.isExternalUrl(url);
+    if (isExternal) {
+      _dispatchRoute(url);
+      return;
+    }
 
     final bootstrapState = _ref.read(bootstrapProvider);
 
@@ -376,14 +513,26 @@ class PushNotificationService {
       if (candidateRoute == '/login' || candidateRoute == '/signup') {
         _dispatchRoute(url);
       } else {
-        // Store raw link to resolve at dispatch time once authenticated & settings loaded
         _pendingDeepLink = url;
         _pendingDeepLinkTimestamp = DateTime.now();
       }
     }
   }
 
-  void _dispatchRoute(String rawUrl) {
+  Future<void> _dispatchRoute(String rawUrl) async {
+    if (DeepLinkHandler.isExternalUrl(rawUrl)) {
+      final uri = Uri.tryParse(rawUrl.trim());
+      if (uri != null) {
+        try {
+          final launched = await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+          if (launched) return;
+        } catch (_) {}
+      }
+    }
+
     var targetPath = DeepLinkHandler.resolve(rawUrl);
 
     // Validate against loaded settings and feature flags at dispatch time

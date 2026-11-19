@@ -615,5 +615,64 @@ void main() {
       expect(DeepLinkHandler.resolve('/learn'), '/home');
       expect(DeepLinkHandler.resolve('/dashboard'), '/home');
     });
+
+    test('distinguishes external web URLs from internal app routes', () {
+      // External URLs
+      expect(DeepLinkHandler.isExternalUrl('https://google.com'), isTrue);
+      expect(
+        DeepLinkHandler.isExternalUrl('https://forms.google.com/d/e/1FAIpQLSc'),
+        isTrue,
+      );
+      expect(
+        DeepLinkHandler.isExternalUrl('http://example.org/survey'),
+        isTrue,
+      );
+      expect(
+        DeepLinkHandler.isExternalUrl('https://www.youtube.com/watch?v=123'),
+        isTrue,
+      );
+
+      // Internal routes and deep links
+      expect(
+        DeepLinkHandler.isExternalUrl('https://staging.testpress.in/courses/8'),
+        isFalse,
+      );
+      expect(
+        DeepLinkHandler.isExternalUrl(
+          'https://learn.siddhiprep.com/posts/welcome-post',
+        ),
+        isFalse,
+      );
+      expect(
+        DeepLinkHandler.isExternalUrl('https://staging.testpress.in'),
+        isFalse,
+      );
+      expect(DeepLinkHandler.isExternalUrl('/courses/8'), isFalse);
+      expect(DeepLinkHandler.isExternalUrl('/home'), isFalse);
+      expect(
+        DeepLinkHandler.isExternalUrl('mailto:support@testpress.in'),
+        isFalse,
+      );
+      expect(DeepLinkHandler.isExternalUrl(null), isFalse);
+      expect(DeepLinkHandler.isExternalUrl(''), isFalse);
+    });
+
+    test(
+      'tryResolve returns internal route or null for external destinations',
+      () {
+        expect(DeepLinkHandler.tryResolve('/login'), '/login');
+        expect(
+          DeepLinkHandler.tryResolve('https://staging.testpress.in/courses/8'),
+          '/study/course/8/chapters',
+        );
+        expect(DeepLinkHandler.tryResolve('https://google.com'), isNull);
+        expect(
+          DeepLinkHandler.tryResolve('https://forms.google.com/xyz'),
+          isNull,
+        );
+        expect(DeepLinkHandler.tryResolve(null), isNull);
+        expect(DeepLinkHandler.tryResolve('   '), isNull);
+      },
+    );
   });
 }
