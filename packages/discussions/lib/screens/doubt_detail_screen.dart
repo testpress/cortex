@@ -19,18 +19,28 @@ class DoubtDetailScreen extends ConsumerStatefulWidget {
 
   const DoubtDetailScreen({super.key, required this.doubtId});
 
+  @visibleForTesting
+  static bool canCloseDoubt(List<DoubtReplyDto>? replies) =>
+      replies?.any((r) => r.isMentor) ?? false;
+
   @override
   ConsumerState<DoubtDetailScreen> createState() => _DoubtDetailScreenState();
 }
 
 class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
   bool _isMenuOpen = false;
+  bool _canClose = false;
 
   void _openMenu() => setState(() => _isMenuOpen = true);
   void _closeMenu() => setState(() => _isMenuOpen = false);
 
-  bool _canCloseDoubt(List<DoubtReplyDto>? replies) =>
-      replies?.any((r) => r.isMentor) ?? false;
+  @override
+  void didUpdateWidget(covariant DoubtDetailScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.doubtId != widget.doubtId) {
+      _canClose = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +48,10 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
     // when the widget tree changes below (e.g. between loading and data states).
     // This entirely prevents the auto-dispose infinite API loop.
     final repliesAsync = ref.watch(doubtRepliesProvider(widget.doubtId));
-    final canClose = _canCloseDoubt(repliesAsync.valueOrNull);
+    if (repliesAsync.hasValue) {
+      _canClose = DoubtDetailScreen.canCloseDoubt(repliesAsync.value);
+    }
+    final canClose = _canClose;
 
     final detailAsync = ref.watch(doubtDetailProvider(widget.doubtId));
     final design = Design.of(context);
@@ -142,9 +155,9 @@ class _DoubtDetailScreenState extends ConsumerState<DoubtDetailScreen> {
                 SizedBox(height: design.spacing.lg),
                 AppFocusable(
                   onTap: () async {
+                    _closeMenu();
                     // Guard against stream re-syncs or multi-action sheet expansions.
                     if (!canClose) return;
-                    _closeMenu();
                     final confirmed = await showConfirmationDialog(
                       context,
                       title: l10n.dialogCloseDoubtTitle,

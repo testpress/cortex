@@ -69,6 +69,27 @@ void main() {
     );
   }
 
+  group('DoubtDetailScreen.canCloseDoubt unit tests', () {
+    test('returns false when replies is null', () {
+      expect(DoubtDetailScreen.canCloseDoubt(null), isFalse);
+    });
+
+    test('returns false when replies is empty', () {
+      expect(DoubtDetailScreen.canCloseDoubt([]), isFalse);
+    });
+
+    test('returns false when replies contain no mentor reply', () {
+      expect(DoubtDetailScreen.canCloseDoubt([testStudentReply]), isFalse);
+    });
+
+    test('returns true when at least one reply is from a mentor', () {
+      expect(
+        DoubtDetailScreen.canCloseDoubt([testStudentReply, testMentorReply]),
+        isTrue,
+      );
+    });
+  });
+
   group('DoubtDetailScreen close doubt restriction', () {
     testWidgets('hides more menu when there are no replies', (tester) async {
       await tester.pumpWidget(buildScreen(replies: []));
@@ -152,6 +173,32 @@ void main() {
 
         // Confirmation dialog must NOT be displayed because canClose is now false
         expect(find.text(l10n.dialogCloseDoubtContent), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'retains more menu visibility when stream encounters an error or reload',
+      (tester) async {
+        final repliesController =
+            StreamController<List<DoubtReplyDto>>.broadcast();
+        addTearDown(repliesController.close);
+
+        await tester.pumpWidget(
+          buildScreen(repliesStream: repliesController.stream),
+        );
+
+        // Initially emit with a mentor reply so the menu is visible
+        repliesController.add([testStudentReply, testMentorReply]);
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(LucideIcons.moreVertical), findsOneWidget);
+
+        // Stream encounters an error during background re-sync
+        repliesController.addError(Exception('Network timeout'));
+        await tester.pumpAndSettle();
+
+        // The more menu MUST still be visible (no flicker)
+        expect(find.byIcon(LucideIcons.moreVertical), findsOneWidget);
       },
     );
   });
