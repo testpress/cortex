@@ -28,7 +28,8 @@ void main() {
     link: 'https://example.com/2',
   );
 
-  testWidgets('renders indicator capsule when multiple banners are present',
+  testWidgets(
+      'renders correct dot count with active dot expanded for multiple banners',
       (tester) async {
     await tester.pumpWidget(
       wrap(
@@ -39,21 +40,43 @@ void main() {
     );
     await tester.pump();
 
-    // Verify indicator capsule container exists
-    final capsuleFinder = find.byWidgetPredicate((widget) {
-      if (widget is Container && widget.decoration is BoxDecoration) {
+    // Verify indicator dots count and dimensions (decoupled from styling colors)
+    final dotFinders = find.byType(AnimatedContainer);
+    expect(dotFinders, findsNWidgets(2));
+
+    final containers =
+        tester.widgetList<AnimatedContainer>(dotFinders).toList();
+
+    // First dot is active (expanded width 20dp)
+    expect(containers[0].constraints?.maxWidth, 20.0);
+    expect(containers[0].constraints?.maxHeight, 6.0);
+
+    // Second dot is inactive (compact width 6dp)
+    expect(containers[1].constraints?.maxWidth, 6.0);
+    expect(containers[1].constraints?.maxHeight, 6.0);
+  });
+
+  testWidgets('does not render dark gradient overlay over banner images',
+      (tester) async {
+    await tester.pumpWidget(
+      wrap(
+        const HeroBannerCarousel(
+          banners: [banner1, banner2],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Regression check: ensure no gradient overlay exists over the banner
+    final gradientFinder = find.byWidgetPredicate((widget) {
+      if (widget is DecoratedBox && widget.decoration is BoxDecoration) {
         final decoration = widget.decoration as BoxDecoration;
-        return decoration.color == const Color(0x59000000) &&
-            decoration.borderRadius == BorderRadius.circular(12);
+        return decoration.gradient is LinearGradient;
       }
       return false;
     });
 
-    expect(capsuleFinder, findsOneWidget);
-
-    // Verify dots are rendered (2 dots for 2 banners)
-    final animatedContainerFinder = find.byType(AnimatedContainer);
-    expect(animatedContainerFinder, findsNWidgets(2));
+    expect(gradientFinder, findsNothing);
   });
 
   testWidgets('does not render indicators when only one banner is present',
@@ -68,5 +91,22 @@ void main() {
     await tester.pump();
 
     expect(find.byType(AnimatedContainer), findsNothing);
+  });
+
+  testWidgets('renders accessibility semantics for banner items and indicator',
+      (tester) async {
+    await tester.pumpWidget(
+      wrap(
+        const HeroBannerCarousel(
+          banners: [banner1, banner2],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Verify banner title semantics
+    expect(find.bySemanticsLabel('Banner 1'), findsOneWidget);
+    // Verify indicator page semantics
+    expect(find.bySemanticsLabel('Page 1 of 2'), findsOneWidget);
   });
 }
