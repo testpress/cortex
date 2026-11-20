@@ -2064,5 +2064,9 @@
         "type": "String"
       }
     }
+  },
+  "cropImage": "Crop Image",
+  "@cropImage": {
+    "description": "Title displayed on the image cropping screen or toolbar"
   }
 }
