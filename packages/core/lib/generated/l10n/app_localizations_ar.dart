@@ -3864,4 +3864,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String aiDeleteConversationNamed(String title) {
     return 'حذف: $title';
   }
+
+  @override
+  String get cropImage => 'قص الصورة';
 }

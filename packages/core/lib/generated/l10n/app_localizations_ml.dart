@@ -3919,4 +3919,7 @@ class AppLocalizationsMl extends AppLocalizations {
   String aiDeleteConversationNamed(String title) {
     return '$title സംഭാഷണം ഇല്ലാതാക്കുക';
   }
+
+  @override
+  String get cropImage => 'ചിത്രം ക്രോപ്പ് ചെയ്യുക';
 }

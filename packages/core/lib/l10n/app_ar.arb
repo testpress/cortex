@@ -1432,5 +1432,6 @@
   "aiConversationDeleted": "تم حذف المحادثة",
   "aiCannotDeleteWhileGenerating": "لا يمكن حذف المحادثة أثناء إنشاء الرد.",
   "aiDeleteConversationFailed": "فشل حذف المحادثة. يرجى المحاولة مرة أخرى.",
-  "aiDeleteConversationNamed": "حذف: {title}"
+  "aiDeleteConversationNamed": "حذف: {title}",
+  "cropImage": "قص الصورة"
 }

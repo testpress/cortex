@@ -3920,4 +3920,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String aiDeleteConversationNamed(String title) {
     return '$title உரையாடலை நீக்கு';
   }
+
+  @override
+  String get cropImage => 'படத்தை செதுக்குக';
 }

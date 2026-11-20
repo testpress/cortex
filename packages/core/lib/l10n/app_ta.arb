@@ -1673,5 +1673,6 @@
   "aiConversationDeleted": "உரையாடல் நீக்கப்பட்டது",
   "aiCannotDeleteWhileGenerating": "பதில் உருவாகும் போது உரையாடலை நீக்க முடியாது.",
   "aiDeleteConversationFailed": "உரையாடலை நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
-  "aiDeleteConversationNamed": "{title} உரையாடலை நீக்கு"
+  "aiDeleteConversationNamed": "{title} உரையாடலை நீக்கு",
+  "cropImage": "படத்தை செதுக்குக"
 }

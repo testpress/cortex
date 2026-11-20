@@ -6904,6 +6904,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete: {title}'**
   String aiDeleteConversationNamed(String title);
+
+  /// Title displayed on the image cropping screen or toolbar
+  ///
+  /// In en, this message translates to:
+  /// **'Crop Image'**
+  String get cropImage;
 }
 
 class _AppLocalizationsDelegate

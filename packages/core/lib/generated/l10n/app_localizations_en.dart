@@ -3860,4 +3860,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String aiDeleteConversationNamed(String title) {
     return 'Delete: $title';
   }
+
+  @override
+  String get cropImage => 'Crop Image';
 }
