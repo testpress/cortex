@@ -151,77 +151,94 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                           itemCount: widget.banners.length,
                           itemBuilder: (context, index) {
                             final banner = widget.banners[index];
-                            return Container(
-                              color: design.colors.surfaceVariant,
-                              child: banner.imageUrl.isNotEmpty
-                                  ? CachedNetworkImage(
-                                      imageUrl: banner.imageUrl,
-                                      fit: BoxFit.contain,
-                                      fadeInDuration: Duration.zero,
-                                      filterQuality: FilterQuality.high,
-                                      memCacheWidth: 800,
-                                      alignment: Alignment.topCenter,
-                                      placeholder: (context, url) => Container(
+                            return AppSemantics.container(
+                              label: banner.title.isNotEmpty
+                                  ? banner.title
+                                  : 'Banner ${index + 1}',
+                              child: Container(
+                                color: design.colors.surfaceVariant,
+                                child: banner.imageUrl.isNotEmpty
+                                    ? CachedNetworkImage(
+                                        imageUrl: banner.imageUrl,
+                                        fit: BoxFit.contain,
+                                        fadeInDuration: Duration.zero,
+                                        filterQuality: FilterQuality.high,
+                                        memCacheWidth: 800,
+                                        alignment: Alignment.topCenter,
+                                        placeholder: (context, url) =>
+                                            Container(
+                                          color: Color.lerp(
+                                            design.colors.primaryContainer,
+                                            design.colors.surfaceVariant,
+                                            0.5,
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                          color: Color.lerp(
+                                            design.colors.primaryContainer,
+                                            design.colors.surfaceVariant,
+                                            0.5,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
                                         color: Color.lerp(
                                           design.colors.primaryContainer,
                                           design.colors.surfaceVariant,
                                           0.5,
                                         ),
                                       ),
-                                      errorWidget: (context, url, error) =>
-                                          Container(
-                                        color: Color.lerp(
-                                          design.colors.primaryContainer,
-                                          design.colors.surfaceVariant,
-                                          0.5,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      color: Color.lerp(
-                                        design.colors.primaryContainer,
-                                        design.colors.surfaceVariant,
-                                        0.5,
-                                      ),
-                                    ),
+                              ),
                             );
                           },
                         ),
                       ),
                       if (widget.banners.length > 1)
                         Positioned(
-                          bottom: 10,
+                          bottom: design.spacing.sm,
                           left: 0,
                           right: 0,
-                          child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0x59000000),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: List.generate(widget.banners.length,
-                                    (index) {
-                                  final isActive = _currentIndex == index;
-                                  return AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 3),
-                                    height: 6,
-                                    width: isActive ? 20 : 6,
-                                    decoration: BoxDecoration(
-                                      color: isActive
-                                          ? const Color(0xFFFFFFFF)
-                                          : const Color(0x80FFFFFF),
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                  );
-                                }),
+                          child: AppSemantics.container(
+                            label:
+                                'Page ${_currentIndex + 1} of ${widget.banners.length}',
+                            child: Center(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: design.spacing.sm,
+                                  vertical: design.spacing.xs,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: design.colors.overlay
+                                      .withValues(alpha: 0.4),
+                                  borderRadius: BorderRadius.circular(
+                                    design.radius.lg,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: List.generate(widget.banners.length,
+                                      (index) {
+                                    final isActive = _currentIndex == index;
+                                    return AnimatedContainer(
+                                      duration: MotionPreferences.duration(
+                                        context,
+                                        design.motion.normal,
+                                      ),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      height: 6,
+                                      width: isActive ? 20 : 6,
+                                      decoration: BoxDecoration(
+                                        color: isActive
+                                            ? design.colors.onPrimary
+                                            : design.colors.onPrimary
+                                                .withValues(alpha: 0.6),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
                             ),
                           ),
