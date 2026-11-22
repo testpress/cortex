@@ -742,5 +742,42 @@ void main() {
         );
       },
     );
+
+    test(
+      'resolves tenant domain root URL to defaultRoute and not external',
+      () {
+        const tenantHost = 'custom.tenant.com';
+
+        // Both with and without trailing slash
+        expect(
+          DeepLinkHandler.tryResolve(
+            'https://custom.tenant.com',
+            appHost: tenantHost,
+          ),
+          '/home',
+        );
+        expect(
+          DeepLinkHandler.tryResolve(
+            'https://custom.tenant.com/',
+            appHost: tenantHost,
+          ),
+          '/home',
+        );
+        expect(
+          DeepLinkHandler.isExternalUrl(
+            'https://custom.tenant.com',
+            appHost: tenantHost,
+          ),
+          isFalse,
+        );
+        expect(
+          DeepLinkHandler.isExternalUrl(
+            'https://custom.tenant.com/',
+            appHost: tenantHost,
+          ),
+          isFalse,
+        );
+      },
+    );
   });
 }

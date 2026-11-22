@@ -202,6 +202,7 @@ Future<List<int>?> _fetchImageBytes(
   }
   try {
     final request = await httpClient.getUrl(uri);
+    request.followRedirects = false;
     final response = await request.close();
     if (response.statusCode != HttpStatus.ok) {
       return null;
@@ -306,20 +307,29 @@ Future<String?> downloadNotificationImage(
   final uri = _parseAndValidateImageUrl(imageUrl);
   if (uri == null) return null;
 
+  final httpClient = client ?? HttpClient()
+    ..connectionTimeout = timeout;
+
   try {
     Future<String?> executeDownload() async {
       final bytes = await _fetchImageBytes(
         uri,
         timeout: timeout,
         maxBytes: maxBytes,
-        client: client,
+        client: httpClient,
       );
       if (bytes == null || bytes.isEmpty) return null;
 
       return await _saveToTempFile(bytes, uri);
     }
 
-    return await executeDownload().timeout(timeout);
+    return await executeDownload().timeout(
+      timeout,
+      onTimeout: () {
+        if (client == null) httpClient.close(force: true);
+        return null;
+      },
+    );
   } catch (error, stackTrace) {
     dev.log(
       'Failed to download notification image: $imageUrl',
@@ -328,6 +338,8 @@ Future<String?> downloadNotificationImage(
       stackTrace: stackTrace,
     );
     return null;
+  } finally {
+    if (client == null) httpClient.close(force: true);
   }
 }
 

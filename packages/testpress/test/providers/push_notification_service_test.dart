@@ -617,6 +617,23 @@ void main() {
     );
 
     test(
+      'downloadNotificationImage returns null on redirect (3xx) response',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(statusCode: HttpStatus.movedPermanently),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/redirect.jpg',
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
       'prunes old notification images when count reaches threshold',
       () async {
         final tempDir = Directory.systemTemp.createTempSync('notif_test_');
@@ -654,6 +671,10 @@ class _FakeHttpClient extends Fake implements HttpClient {
   final _FakeHttpClientRequest request;
   _FakeHttpClient(this.request);
 
+  // Absorb connectionTimeout assignment from downloadNotificationImage.
+  @override
+  set connectionTimeout(Duration? timeout) {}
+
   @override
   Future<HttpClientRequest> getUrl(Uri url) async => request;
 
@@ -667,6 +688,9 @@ class _FakeHttpClientRequest extends Fake implements HttpClientRequest {
   _FakeHttpClientRequest(this.response, {this.delay});
 
   @override
+  set followRedirects(bool follow) {}
+
+  @override
   Future<HttpClientResponse> close() async {
     if (delay != null) {
       await Future<void>.delayed(delay!);
@@ -678,12 +702,13 @@ class _FakeHttpClientRequest extends Fake implements HttpClientRequest {
 class _FakeHttpClientResponse extends Stream<List<int>>
     implements HttpClientResponse {
   @override
-  int get statusCode => HttpStatus.ok;
+  final int statusCode;
   @override
   final int contentLength;
   final Stream<List<int>> _stream;
 
   _FakeHttpClientResponse({
+    this.statusCode = HttpStatus.ok,
     this.contentLength = -1,
     List<List<int>> chunks = const [],
   }) : _stream = Stream<List<int>>.fromIterable(chunks);

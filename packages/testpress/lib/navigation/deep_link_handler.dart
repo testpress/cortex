@@ -280,9 +280,7 @@ class DeepLinkHandler {
     }
 
     if (segments.isEmpty) {
-      final isTestpressHost =
-          uri.host == 'testpress.in' || uri.host.endsWith('.testpress.in');
-      if (trimmed == '/' || (isTestpressHost && uri.path.isEmpty)) {
+      if (trimmed == '/' || isInternalHost(uri.host, appHost: appHost)) {
         return defaultRoute;
       }
       return null;
