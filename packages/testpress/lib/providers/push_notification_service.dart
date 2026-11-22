@@ -184,7 +184,7 @@ Uri? _parseAndValidateImageUrl(String? imageUrl) {
   if (trimmed.isEmpty) return null;
 
   final uri = Uri.tryParse(trimmed);
-  if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
+  if (uri == null || uri.scheme != 'https' || uri.host.isEmpty) {
     return null;
   }
   return uri;
@@ -192,14 +192,17 @@ Uri? _parseAndValidateImageUrl(String? imageUrl) {
 
 Future<List<int>?> _fetchImageBytes(
   Uri uri, {
-  Duration timeout = const Duration(seconds: 5),
+  Duration timeout = const Duration(seconds: 8),
   int maxBytes = 2 * 1024 * 1024,
   HttpClient? client,
 }) async {
   final httpClient = client ?? HttpClient();
+  if (client == null) {
+    httpClient.connectionTimeout = timeout;
+  }
   try {
-    final request = await httpClient.getUrl(uri).timeout(timeout);
-    final response = await request.close().timeout(timeout);
+    final request = await httpClient.getUrl(uri);
+    final response = await request.close();
     if (response.statusCode != HttpStatus.ok) {
       return null;
     }
@@ -209,7 +212,7 @@ Future<List<int>?> _fetchImageBytes(
     }
 
     final buffer = <int>[];
-    await for (final chunk in response.timeout(timeout)) {
+    await for (final chunk in response) {
       if (buffer.length + chunk.length > maxBytes) {
         return null;
       }
@@ -257,8 +260,12 @@ Future<void> _pruneOldNotificationImages(
         await files[i].delete();
       }
     }
-  } catch (_) {
-    // Best-effort cleanup, ignore failures
+  } catch (error) {
+    dev.log(
+      'Failed to prune old notification images',
+      name: 'PushNotificationService',
+      error: error,
+    );
   }
 }
 
@@ -272,7 +279,12 @@ Future<String> _saveToTempFile(List<int> bytes, Uri uri) async {
   Directory tempDir;
   try {
     tempDir = await getTemporaryDirectory();
-  } catch (_) {
+  } catch (error) {
+    dev.log(
+      'Failed to get temporary directory, falling back to system temp',
+      name: 'PushNotificationService',
+      error: error,
+    );
     tempDir = Directory.systemTemp;
   }
 
@@ -287,7 +299,7 @@ Future<String> _saveToTempFile(List<int> bytes, Uri uri) async {
 
 Future<String?> downloadNotificationImage(
   String? imageUrl, {
-  Duration timeout = const Duration(seconds: 5),
+  Duration timeout = const Duration(seconds: 8),
   int maxBytes = 2 * 1024 * 1024,
   HttpClient? client,
 }) async {
@@ -295,15 +307,19 @@ Future<String?> downloadNotificationImage(
   if (uri == null) return null;
 
   try {
-    final bytes = await _fetchImageBytes(
-      uri,
-      timeout: timeout,
-      maxBytes: maxBytes,
-      client: client,
-    );
-    if (bytes == null || bytes.isEmpty) return null;
+    Future<String?> executeDownload() async {
+      final bytes = await _fetchImageBytes(
+        uri,
+        timeout: timeout,
+        maxBytes: maxBytes,
+        client: client,
+      );
+      if (bytes == null || bytes.isEmpty) return null;
 
-    return await _saveToTempFile(bytes, uri);
+      return await _saveToTempFile(bytes, uri);
+    }
+
+    return await executeDownload().timeout(timeout);
   } catch (error, stackTrace) {
     dev.log(
       'Failed to download notification image: $imageUrl',
@@ -508,38 +524,47 @@ class PushNotificationService {
   }
 
   Future<void> _showLocalNotification(RemoteMessage message) async {
-    final title = notificationTitleFromMessage(message);
-    final summary = notificationBodyFromMessage(message);
-    final url = _extractUrl(message);
+    try {
+      final title = notificationTitleFromMessage(message);
+      final summary = notificationBodyFromMessage(message);
+      final url = _extractUrl(message);
 
-    if (title != null && summary != null) {
-      final preferences = _ref.read(notificationPreferencesProvider);
+      if (title != null && summary != null) {
+        final preferences = _ref.read(notificationPreferencesProvider);
 
-      final category = notificationCategoryForUrl(url);
-      final channelId = notificationChannelIdForUrl(url);
-      final shouldShow = switch (category) {
-        NotificationCategory.contents => preferences.testAssessmentAlerts,
-        NotificationCategory.posts => preferences.announcementsUpdates,
-        NotificationCategory.live => preferences.liveClassReminders,
-        NotificationCategory.other => true,
-      };
+        final category = notificationCategoryForUrl(url);
+        final channelId = notificationChannelIdForUrl(url);
+        final shouldShow = switch (category) {
+          NotificationCategory.contents => preferences.testAssessmentAlerts,
+          NotificationCategory.posts => preferences.announcementsUpdates,
+          NotificationCategory.live => preferences.liveClassReminders,
+          NotificationCategory.other => true,
+        };
 
-      if (!shouldShow) return;
+        if (!shouldShow) return;
 
-      final imageUrl = notificationImageUrlFromMessage(message);
-      final imageFilePath = await downloadNotificationImage(imageUrl);
+        final imageUrl = notificationImageUrlFromMessage(message);
+        final imageFilePath = await downloadNotificationImage(imageUrl);
 
-      await _localNotifications.show(
-        notificationIdForMessage(message),
-        title,
-        summary,
-        notificationDetailsForChannel(
-          channelId,
-          imageFilePath: imageFilePath,
-          title: title,
-          body: summary,
-        ),
-        payload: url,
+        await _localNotifications.show(
+          notificationIdForMessage(message),
+          title,
+          summary,
+          notificationDetailsForChannel(
+            channelId,
+            imageFilePath: imageFilePath,
+            title: title,
+            body: summary,
+          ),
+          payload: url,
+        );
+      }
+    } catch (error, stackTrace) {
+      dev.log(
+        'Foreground notification display failed',
+        name: 'PushNotificationService',
+        error: error,
+        stackTrace: stackTrace,
       );
     }
   }
@@ -548,10 +573,19 @@ class PushNotificationService {
     return notificationUrlFromMessage(message);
   }
 
+  String? _getAppHost() {
+    final domainUrl = _ref.read(instituteSettingsProvider)?.domainUrl;
+    if (domainUrl != null && domainUrl.trim().isNotEmpty) {
+      return Uri.tryParse(domainUrl.trim())?.host;
+    }
+    return null;
+  }
+
   void _handleDeepLink(String? url) {
     if (url == null || url.trim().isEmpty) return;
 
-    final isExternal = DeepLinkHandler.isExternalUrl(url);
+    final appHost = _getAppHost();
+    final isExternal = DeepLinkHandler.isExternalUrl(url, appHost: appHost);
     if (isExternal) {
       unawaited(_dispatchRoute(url));
       return;
@@ -563,7 +597,7 @@ class PushNotificationService {
       unawaited(_dispatchRoute(url));
     } else {
       // Check if it is a public auth destination that can bypass authentication
-      final candidateRoute = DeepLinkHandler.resolve(url);
+      final candidateRoute = DeepLinkHandler.resolve(url, appHost: appHost);
       if (candidateRoute == '/login' || candidateRoute == '/signup') {
         unawaited(_dispatchRoute(url));
       } else {
@@ -574,45 +608,55 @@ class PushNotificationService {
   }
 
   Future<void> _dispatchRoute(String rawUrl) async {
-    if (DeepLinkHandler.isExternalUrl(rawUrl)) {
-      final uri = Uri.tryParse(rawUrl.trim());
-      if (uri != null) {
-        try {
-          final launched = await launchUrl(
-            uri,
-            mode: LaunchMode.externalApplication,
-          );
-          if (launched) return;
-          dev.log(
-            'Could not launch external URL: $rawUrl',
-            name: 'PushNotificationService',
-          );
-        } catch (error, stackTrace) {
-          dev.log(
-            'Error launching external URL: $rawUrl',
-            name: 'PushNotificationService',
-            error: error,
-            stackTrace: stackTrace,
-          );
+    try {
+      final appHost = _getAppHost();
+      if (DeepLinkHandler.isExternalUrl(rawUrl, appHost: appHost)) {
+        final uri = Uri.tryParse(rawUrl.trim());
+        if (uri != null) {
+          try {
+            final launched = await launchUrl(
+              uri,
+              mode: LaunchMode.externalApplication,
+            );
+            if (launched) return;
+            dev.log(
+              'Could not launch external URL: $rawUrl',
+              name: 'PushNotificationService',
+            );
+          } catch (error, stackTrace) {
+            dev.log(
+              'Error launching external URL: $rawUrl',
+              name: 'PushNotificationService',
+              error: error,
+              stackTrace: stackTrace,
+            );
+          }
         }
       }
-    }
 
-    var targetPath = DeepLinkHandler.resolve(rawUrl);
+      var targetPath = DeepLinkHandler.resolve(rawUrl, appHost: appHost);
 
-    // Validate against loaded settings and feature flags at dispatch time
-    final settings = _ref.read(instituteSettingsProvider);
-    targetPath = DeepLinkHandler.filterRouteByAvailability(
-      targetPath,
-      settings: settings,
-    );
+      // Validate against loaded settings and feature flags at dispatch time
+      final settings = _ref.read(instituteSettingsProvider);
+      targetPath = DeepLinkHandler.filterRouteByAvailability(
+        targetPath,
+        settings: settings,
+      );
 
-    final router = _ref.read(goRouterProvider);
-    final isTabRoute = NavTab.values.any((tab) => tab.id == targetPath);
-    if (isTabRoute) {
-      router.go(targetPath);
-    } else {
-      router.push(targetPath);
+      final router = _ref.read(goRouterProvider);
+      final isTabRoute = NavTab.values.any((tab) => tab.id == targetPath);
+      if (isTabRoute) {
+        router.go(targetPath);
+      } else {
+        router.push(targetPath);
+      }
+    } catch (error, stackTrace) {
+      dev.log(
+        'Deep link dispatch failed for $rawUrl',
+        name: 'PushNotificationService',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
   }
 

@@ -28,6 +28,10 @@ The system SHALL extract target URLs from the notification payload and route use
 - **WHEN** a user taps on a notification containing an external http or https URL not mapped to an internal route
 - **THEN** the system MUST launch the URL in the system browser using external application mode.
 
+#### Scenario: Tapping on an external URL while unauthenticated
+- **WHEN** a user taps on a notification containing an external website URL while unauthenticated
+- **THEN** the system MUST intentionally launch the external URL directly in the system browser without gating behind user login or queuing for post-authentication.
+
 #### Scenario: Tapping on a notification with an unmapped or invalid URL
 - **WHEN** a user taps on a notification without a valid or recognized destination
 - **THEN** the system MUST fall back safely to the application home dashboard.

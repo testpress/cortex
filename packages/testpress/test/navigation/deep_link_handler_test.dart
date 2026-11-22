@@ -584,6 +584,7 @@ void main() {
       expect(
         DeepLinkHandler.resolve(
           'https://learn.siddhiprep.com/courses/8/contents/3899/?content_detail_v2=true',
+          appHost: 'learn.siddhiprep.com',
         ),
         '/study/lesson/3899',
       );
@@ -632,15 +633,34 @@ void main() {
         isTrue,
       );
 
-      // Internal routes and deep links
+      // External URLs that share path shapes with internal routes
       expect(
-        DeepLinkHandler.isExternalUrl('https://staging.testpress.in/courses/8'),
-        isFalse,
+        DeepLinkHandler.isExternalUrl('https://evil.com/courses/8'),
+        isTrue,
+      );
+      expect(
+        DeepLinkHandler.isExternalUrl('https://udemy.com/courses/8'),
+        isTrue,
       );
       expect(
         DeepLinkHandler.isExternalUrl(
           'https://learn.siddhiprep.com/posts/welcome-post',
         ),
+        isTrue,
+        reason: 'Treated as external when appHost is not configured',
+      );
+      expect(
+        DeepLinkHandler.isExternalUrl(
+          'https://learn.siddhiprep.com/posts/welcome-post',
+          appHost: 'learn.siddhiprep.com',
+        ),
+        isFalse,
+        reason: 'Treated as internal when appHost matches configured tenant',
+      );
+
+      // Internal routes and deep links
+      expect(
+        DeepLinkHandler.isExternalUrl('https://staging.testpress.in/courses/8'),
         isFalse,
       );
       expect(
@@ -669,6 +689,17 @@ void main() {
         expect(
           DeepLinkHandler.tryResolve('https://forms.google.com/xyz'),
           isNull,
+        );
+        expect(
+          DeepLinkHandler.tryResolve('https://evil.com/courses/8'),
+          isNull,
+        );
+        expect(
+          DeepLinkHandler.tryResolve(
+            'https://learn.siddhiprep.com/posts/welcome-post',
+            appHost: 'learn.siddhiprep.com',
+          ),
+          '/home/posts/welcome-post',
         );
         expect(DeepLinkHandler.tryResolve(null), isNull);
         expect(DeepLinkHandler.tryResolve('   '), isNull);

@@ -521,6 +521,10 @@ void main() {
         expect(await downloadNotificationImage(null), isNull);
         expect(await downloadNotificationImage('   '), isNull);
         expect(await downloadNotificationImage('ftp://invalid.com'), isNull);
+        expect(
+          await downloadNotificationImage('http://example.com/cleartext.jpg'),
+          isNull,
+        );
         expect(await downloadNotificationImage('not-a-url'), isNull);
       },
     );
@@ -591,6 +595,28 @@ void main() {
     );
 
     test(
+      'downloadNotificationImage returns null when overall timeout expires',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: 100,
+              chunks: [List.filled(100, 1)],
+            ),
+            delay: const Duration(milliseconds: 100),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/slow.jpg',
+          timeout: const Duration(milliseconds: 10),
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
       'prunes old notification images when count reaches threshold',
       () async {
         final tempDir = Directory.systemTemp.createTempSync('notif_test_');
@@ -637,10 +663,16 @@ class _FakeHttpClient extends Fake implements HttpClient {
 
 class _FakeHttpClientRequest extends Fake implements HttpClientRequest {
   final _FakeHttpClientResponse response;
-  _FakeHttpClientRequest(this.response);
+  final Duration? delay;
+  _FakeHttpClientRequest(this.response, {this.delay});
 
   @override
-  Future<HttpClientResponse> close() async => response;
+  Future<HttpClientResponse> close() async {
+    if (delay != null) {
+      await Future<void>.delayed(delay!);
+    }
+    return response;
+  }
 }
 
 class _FakeHttpClientResponse extends Stream<List<int>>

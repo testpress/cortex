@@ -77,6 +77,19 @@ class DeepLinkHandler {
   /// Default fallback destination when a route cannot be resolved or is invalid.
   static const String defaultRoute = '/home';
 
+  /// Returns `true` if [host] belongs to Testpress or matches [appHost].
+  static bool isInternalHost(String host, {String? appHost}) {
+    if (host.isEmpty) return false;
+    final target = host.toLowerCase();
+    final tenant = appHost?.trim().toLowerCase();
+
+    return target == 'testpress.in' ||
+        target.endsWith('.testpress.in') ||
+        (tenant != null &&
+            tenant.isNotEmpty &&
+            (target == tenant || target.endsWith('.$tenant')));
+  }
+
   /// Declarative table of URL pattern to internal target route rules.
   static final List<DeepLinkRule> rules = [
     // Dashboard & Home aliases
@@ -230,14 +243,14 @@ class DeepLinkHandler {
   ///
   /// Automatically strips query parameters, fragments, and trailing slashes.
   /// If the URL is empty, invalid, or unrecognized, [defaultRoute] is returned.
-  static String resolve(String? rawUrl) {
-    return tryResolve(rawUrl) ?? defaultRoute;
+  static String resolve(String? rawUrl, {String? appHost}) {
+    return tryResolve(rawUrl, appHost: appHost) ?? defaultRoute;
   }
 
   /// Attempts to resolve an incoming [rawUrl] to an internal GoRouter route.
   ///
   /// Returns `null` if the URL does not match any internal deep link rule.
-  static String? tryResolve(String? rawUrl) {
+  static String? tryResolve(String? rawUrl, {String? appHost}) {
     if (rawUrl == null) return null;
 
     final trimmed = rawUrl.trim();
@@ -245,6 +258,13 @@ class DeepLinkHandler {
 
     final uri = Uri.tryParse(trimmed);
     if (uri == null) return null;
+
+    final isHttp = uri.scheme == 'http' || uri.scheme == 'https';
+    if (isHttp &&
+        uri.host.isNotEmpty &&
+        !isInternalHost(uri.host, appHost: appHost)) {
+      return null;
+    }
 
     List<String> segments = uri.pathSegments
         .where((s) => s.trim().isNotEmpty)
@@ -280,7 +300,7 @@ class DeepLinkHandler {
 
   /// Returns `true` if [rawUrl] is an external web URL with an http/https scheme
   /// that does not map to any recognized internal app route.
-  static bool isExternalUrl(String? rawUrl) {
+  static bool isExternalUrl(String? rawUrl, {String? appHost}) {
     if (rawUrl == null) return false;
     final trimmed = rawUrl.trim();
     if (trimmed.isEmpty) return false;
@@ -291,7 +311,7 @@ class DeepLinkHandler {
     if (uri.scheme != 'http' && uri.scheme != 'https') return false;
     if (uri.host.isEmpty) return false;
 
-    final internalRoute = tryResolve(trimmed);
+    final internalRoute = tryResolve(trimmed, appHost: appHost);
     if (internalRoute != null) return false;
 
     return true;
