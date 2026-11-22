@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -161,7 +162,6 @@ String? _firstNonBlank(Iterable<String?> values) {
 String? notificationUrlFromMessage(RemoteMessage message) {
   return _firstNonBlank([
     message.data['destination_url']?.toString(),
-    message.data['dest_url']?.toString(),
     message.data['short_url']?.toString(),
     message.data['url']?.toString(),
     message.data['link']?.toString(),
@@ -173,9 +173,6 @@ String? notificationImageUrlFromMessage(RemoteMessage message) {
   return _firstNonBlank([
     message.data['image_url']?.toString(),
     message.data['image']?.toString(),
-    message.data['picture']?.toString(),
-    message.data['push_image']?.toString(),
-    message.data['remote_image_url']?.toString(),
     message.notification?.android?.imageUrl,
     message.notification?.apple?.imageUrl,
   ]);
@@ -196,6 +193,7 @@ Uri? _parseAndValidateImageUrl(String? imageUrl) {
 Future<List<int>?> _fetchImageBytes(
   Uri uri, {
   Duration timeout = const Duration(seconds: 5),
+  int maxBytes = 2 * 1024 * 1024,
   HttpClient? client,
 }) async {
   final httpClient = client ?? HttpClient();
@@ -206,14 +204,22 @@ Future<List<int>?> _fetchImageBytes(
       return null;
     }
 
-    final bytes = await response
-        .fold<List<int>>(<int>[], (buffer, chunk) => buffer..addAll(chunk))
-        .timeout(timeout);
+    if (response.contentLength > maxBytes) {
+      return null;
+    }
 
-    return bytes.isEmpty ? null : bytes;
+    final buffer = <int>[];
+    await for (final chunk in response.timeout(timeout)) {
+      if (buffer.length + chunk.length > maxBytes) {
+        return null;
+      }
+      buffer.addAll(chunk);
+    }
+
+    return buffer.isEmpty ? null : buffer;
   } finally {
     if (client == null) {
-      httpClient.close();
+      httpClient.close(force: true);
     }
   }
 }
@@ -229,6 +235,39 @@ String _resolveImageExtension(Uri uri) {
   return 'jpg';
 }
 
+Future<void> _pruneOldNotificationImages(
+  Directory tempDir, {
+  int maxFiles = 5,
+}) async {
+  try {
+    final files = <File>[];
+    await for (final entity in tempDir.list()) {
+      if (entity is File &&
+          entity.uri.pathSegments.isNotEmpty &&
+          entity.uri.pathSegments.last.startsWith('notif_img_')) {
+        files.add(entity);
+      }
+    }
+    if (files.length >= maxFiles) {
+      files.sort(
+        (a, b) => a.lastModifiedSync().compareTo(b.lastModifiedSync()),
+      );
+      final deleteCount = files.length - maxFiles + 1;
+      for (var i = 0; i < deleteCount; i++) {
+        await files[i].delete();
+      }
+    }
+  } catch (_) {
+    // Best-effort cleanup, ignore failures
+  }
+}
+
+@visibleForTesting
+Future<void> pruneOldNotificationImagesForTesting(
+  Directory tempDir, {
+  int maxFiles = 5,
+}) => _pruneOldNotificationImages(tempDir, maxFiles: maxFiles);
+
 Future<String> _saveToTempFile(List<int> bytes, Uri uri) async {
   Directory tempDir;
   try {
@@ -236,6 +275,8 @@ Future<String> _saveToTempFile(List<int> bytes, Uri uri) async {
   } catch (_) {
     tempDir = Directory.systemTemp;
   }
+
+  await _pruneOldNotificationImages(tempDir);
 
   final ext = _resolveImageExtension(uri);
   final fileName = 'notif_img_${DateTime.now().microsecondsSinceEpoch}.$ext';
@@ -247,17 +288,29 @@ Future<String> _saveToTempFile(List<int> bytes, Uri uri) async {
 Future<String?> downloadNotificationImage(
   String? imageUrl, {
   Duration timeout = const Duration(seconds: 5),
+  int maxBytes = 2 * 1024 * 1024,
   HttpClient? client,
 }) async {
   final uri = _parseAndValidateImageUrl(imageUrl);
   if (uri == null) return null;
 
   try {
-    final bytes = await _fetchImageBytes(uri, timeout: timeout, client: client);
+    final bytes = await _fetchImageBytes(
+      uri,
+      timeout: timeout,
+      maxBytes: maxBytes,
+      client: client,
+    );
     if (bytes == null || bytes.isEmpty) return null;
 
     return await _saveToTempFile(bytes, uri);
-  } catch (_) {
+  } catch (error, stackTrace) {
+    dev.log(
+      'Failed to download notification image: $imageUrl',
+      name: 'PushNotificationService',
+      error: error,
+      stackTrace: stackTrace,
+    );
     return null;
   }
 }
@@ -301,11 +354,13 @@ NotificationDetails notificationDetailsForChannel(
       ? PushNotificationChannels.postsName
       : PushNotificationChannels.contentsName;
 
-  final BigPictureStyleInformation? bigPictureStyleInformation =
-      imageFilePath != null
+  final bitmap = imageFilePath != null
+      ? FilePathAndroidBitmap(imageFilePath)
+      : null;
+
+  final BigPictureStyleInformation? bigPictureStyleInformation = bitmap != null
       ? BigPictureStyleInformation(
-          FilePathAndroidBitmap(imageFilePath),
-          largeIcon: FilePathAndroidBitmap(imageFilePath),
+          bitmap,
           contentTitle: title,
           summaryText: body,
           hideExpandedLargeIcon: true,
@@ -319,6 +374,7 @@ NotificationDetails notificationDetailsForChannel(
       importance: Importance.high,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
+      largeIcon: bitmap,
       styleInformation: bigPictureStyleInformation,
     ),
     iOS: DarwinNotificationDetails(
@@ -371,7 +427,7 @@ class PushNotificationService {
       clearPendingLink();
       if (timestamp != null &&
           DateTime.now().difference(timestamp) <= _pendingLinkTtl) {
-        _dispatchRoute(path);
+        unawaited(_dispatchRoute(path));
       }
     }
   }
@@ -392,25 +448,23 @@ class PushNotificationService {
 
     // 4. Listen to Foreground Messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _showLocalNotification(message);
+      unawaited(_showLocalNotification(message));
     });
 
     // 5. Listen to Taps when app is in Background (but running)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      final url = _extractUrl(message);
-      _handleDeepLink(url);
+      _handleDeepLink(_extractUrl(message));
     });
 
     // 6. Listen to Token Refreshes
     messaging.onTokenRefresh.listen((token) {
-      _syncDeviceToken(token);
+      unawaited(_syncDeviceToken(token));
     });
 
     // 7. Handle App Launches from Terminated State
     final initialMessage = await messaging.getInitialMessage();
     if (initialMessage != null) {
-      final url = _extractUrl(initialMessage);
-      _handleDeepLink(url);
+      _handleDeepLink(_extractUrl(initialMessage));
     }
 
     // 8. Initial Token Sync if user is logged in
@@ -499,19 +553,19 @@ class PushNotificationService {
 
     final isExternal = DeepLinkHandler.isExternalUrl(url);
     if (isExternal) {
-      _dispatchRoute(url);
+      unawaited(_dispatchRoute(url));
       return;
     }
 
     final bootstrapState = _ref.read(bootstrapProvider);
 
     if (bootstrapState == BootstrapState.authenticated) {
-      _dispatchRoute(url);
+      unawaited(_dispatchRoute(url));
     } else {
       // Check if it is a public auth destination that can bypass authentication
       final candidateRoute = DeepLinkHandler.resolve(url);
       if (candidateRoute == '/login' || candidateRoute == '/signup') {
-        _dispatchRoute(url);
+        unawaited(_dispatchRoute(url));
       } else {
         _pendingDeepLink = url;
         _pendingDeepLinkTimestamp = DateTime.now();
@@ -529,7 +583,18 @@ class PushNotificationService {
             mode: LaunchMode.externalApplication,
           );
           if (launched) return;
-        } catch (_) {}
+          dev.log(
+            'Could not launch external URL: $rawUrl',
+            name: 'PushNotificationService',
+          );
+        } catch (error, stackTrace) {
+          dev.log(
+            'Error launching external URL: $rawUrl',
+            name: 'PushNotificationService',
+            error: error,
+            stackTrace: stackTrace,
+          );
+        }
       }
     }
 
@@ -589,7 +654,7 @@ PushNotificationService pushNotificationService(
     if (user != null) {
       final token = await FirebaseMessaging.instance.getToken();
       if (token != null) {
-        service._syncDeviceToken(token);
+        unawaited(service._syncDeviceToken(token));
       }
     }
   });

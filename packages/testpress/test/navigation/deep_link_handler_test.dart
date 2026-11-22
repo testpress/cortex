@@ -674,5 +674,42 @@ void main() {
         expect(DeepLinkHandler.tryResolve('   '), isNull);
       },
     );
+
+    test(
+      'rejects evil host / suffix spoofing domains and classifies them as external',
+      () {
+        // Domains that end with 'testpress.in' but are not testpress.in or a subdomain of it
+        const evilDomains = [
+          'https://eviltestpress.in',
+          'https://nottestpress.in',
+          'https://faketestpress.in',
+          'https://attacker-testpress.in',
+        ];
+
+        for (final evilUrl in evilDomains) {
+          expect(
+            DeepLinkHandler.tryResolve(evilUrl),
+            isNull,
+            reason: '$evilUrl should not resolve to internal route',
+          );
+          expect(
+            DeepLinkHandler.isExternalUrl(evilUrl),
+            isTrue,
+            reason: '$evilUrl should be treated as external URL',
+          );
+        }
+
+        // Legitimate testpress hosts resolve to defaultRoute
+        expect(DeepLinkHandler.tryResolve('https://testpress.in'), '/home');
+        expect(
+          DeepLinkHandler.tryResolve('https://demo.testpress.in'),
+          '/home',
+        );
+        expect(
+          DeepLinkHandler.tryResolve('https://staging.testpress.in'),
+          '/home',
+        );
+      },
+    );
   });
 }

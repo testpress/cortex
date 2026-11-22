@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -408,7 +409,7 @@ void main() {
       );
     });
 
-    test('extracts image URLs from various payload keys', () {
+    test('extracts image URLs from supported payload keys', () {
       final msg1 = RemoteMessage(
         data: const {'image_url': 'https://example.com/img1.png'},
       );
@@ -416,20 +417,16 @@ void main() {
         data: const {'image': 'https://example.com/img2.png'},
       );
       final msg3 = RemoteMessage(
-        data: const {'picture': 'https://example.com/img3.png'},
-      );
-      final msg4 = RemoteMessage(
         notification: const RemoteNotification(
           android: AndroidNotification(
-            imageUrl: 'https://example.com/img4.png',
+            imageUrl: 'https://example.com/img3.png',
           ),
         ),
       );
-      final msg5 = RemoteMessage(
-        data: const {'push_image': 'https://example.com/img5.png'},
-      );
-      final msg6 = RemoteMessage(
-        data: const {'remote_image_url': 'https://example.com/img6.png'},
+      final msg4 = RemoteMessage(
+        notification: const RemoteNotification(
+          apple: AppleNotification(imageUrl: 'https://example.com/img4.png'),
+        ),
       );
       final msgEmpty = RemoteMessage(data: const {'image_url': '   '});
 
@@ -449,34 +446,30 @@ void main() {
         notificationImageUrlFromMessage(msg4),
         'https://example.com/img4.png',
       );
-      expect(
-        notificationImageUrlFromMessage(msg5),
-        'https://example.com/img5.png',
-      );
-      expect(
-        notificationImageUrlFromMessage(msg6),
-        'https://example.com/img6.png',
-      );
       expect(notificationImageUrlFromMessage(msgEmpty), isNull);
     });
 
     test(
-      'extracts destination_url, dest_url, and redirect_url from payload',
+      'extracts URL with destination_url taking precedence over short_url, and falling back to short_url when blank',
       () {
-        final msgDestination = RemoteMessage(
-          data: const {'destination_url': 'https://example.com/destination'},
+        final msgBoth = RemoteMessage(
+          data: const {
+            'destination_url': 'https://example.com/destination',
+            'short_url': '/dashboard',
+          },
         );
-        final msgDest = RemoteMessage(
-          data: const {'dest_url': 'https://example.com/dest'},
+        final msgFallback = RemoteMessage(
+          data: const {'destination_url': '', 'short_url': '/dashboard'},
         );
         final msgRedirect = RemoteMessage(
           data: const {'redirect_url': 'https://example.com/redirect'},
         );
+
         expect(
-          notificationUrlFromMessage(msgDestination),
+          notificationUrlFromMessage(msgBoth),
           'https://example.com/destination',
         );
-        expect(notificationUrlFromMessage(msgDest), 'https://example.com/dest');
+        expect(notificationUrlFromMessage(msgFallback), '/dashboard');
         expect(
           notificationUrlFromMessage(msgRedirect),
           'https://example.com/redirect',
@@ -498,11 +491,16 @@ void main() {
           detailsWithImage.android?.styleInformation,
           isA<BigPictureStyleInformation>(),
         );
+        expect(
+          detailsWithImage.android?.largeIcon,
+          isA<FilePathAndroidBitmap>(),
+        );
         final style =
             detailsWithImage.android?.styleInformation
                 as BigPictureStyleInformation;
         expect(style.contentTitle, 'Image Title');
         expect(style.summaryText, 'Image Body');
+        expect(style.hideExpandedLargeIcon, isTrue);
         expect(detailsWithImage.iOS?.attachments?.length, 1);
       },
     );
@@ -513,6 +511,7 @@ void main() {
       );
 
       expect(details.android?.styleInformation, isNull);
+      expect(details.android?.largeIcon, isNull);
       expect(details.iOS?.attachments, isNull);
     });
 
@@ -525,5 +524,153 @@ void main() {
         expect(await downloadNotificationImage('not-a-url'), isNull);
       },
     );
+
+    test(
+      'downloadNotificationImage rejects images exceeding maxBytes via Content-Length',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: 3 * 1024 * 1024,
+              chunks: [List.filled(100, 1)],
+            ),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/oversized.jpg',
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
+      'downloadNotificationImage aborts stream early when streamed bytes exceed maxBytes',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: -1,
+              chunks: [
+                List.filled(1024 * 1024, 1),
+                List.filled(1024 * 1024, 1),
+                List.filled(1024, 1),
+              ],
+            ),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/streamed_too_large.jpg',
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
+      'downloadNotificationImage successfully downloads images within maxBytes',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: 100,
+              chunks: [List.filled(100, 1)],
+            ),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/valid.jpg',
+          client: client,
+        );
+        expect(result, isNotNull);
+        expect(result, endsWith('.jpg'));
+      },
+    );
+
+    test(
+      'prunes old notification images when count reaches threshold',
+      () async {
+        final tempDir = Directory.systemTemp.createTempSync('notif_test_');
+        addTearDown(() => tempDir.deleteSync(recursive: true));
+
+        for (var i = 0; i < 6; i++) {
+          final file = File('${tempDir.path}/notif_img_${i + 1}.jpg');
+          file.writeAsStringSync('data $i');
+          file.setLastModifiedSync(
+            DateTime.now().subtract(Duration(minutes: 10 - i)),
+          );
+        }
+
+        expect(
+          tempDir.listSync().where((e) => e.path.contains('notif_img_')).length,
+          6,
+        );
+
+        await pruneOldNotificationImagesForTesting(tempDir, maxFiles: 5);
+
+        final remaining = tempDir
+            .listSync()
+            .where((e) => e.path.contains('notif_img_'))
+            .toList();
+        expect(remaining.length, 4);
+        expect(File('${tempDir.path}/notif_img_1.jpg').existsSync(), isFalse);
+        expect(File('${tempDir.path}/notif_img_2.jpg').existsSync(), isFalse);
+        expect(File('${tempDir.path}/notif_img_6.jpg').existsSync(), isTrue);
+      },
+    );
   });
+}
+
+class _FakeHttpClient extends Fake implements HttpClient {
+  final _FakeHttpClientRequest request;
+  _FakeHttpClient(this.request);
+
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async => request;
+
+  @override
+  void close({bool force = false}) {}
+}
+
+class _FakeHttpClientRequest extends Fake implements HttpClientRequest {
+  final _FakeHttpClientResponse response;
+  _FakeHttpClientRequest(this.response);
+
+  @override
+  Future<HttpClientResponse> close() async => response;
+}
+
+class _FakeHttpClientResponse extends Stream<List<int>>
+    implements HttpClientResponse {
+  @override
+  int get statusCode => HttpStatus.ok;
+  @override
+  final int contentLength;
+  final Stream<List<int>> _stream;
+
+  _FakeHttpClientResponse({
+    this.contentLength = -1,
+    List<List<int>> chunks = const [],
+  }) : _stream = Stream<List<int>>.fromIterable(chunks);
+
+  @override
+  StreamSubscription<List<int>> listen(
+    void Function(List<int> event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return _stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

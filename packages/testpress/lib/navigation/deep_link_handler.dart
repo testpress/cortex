@@ -260,12 +260,9 @@ class DeepLinkHandler {
     }
 
     if (segments.isEmpty) {
-      if (trimmed == '/' ||
-          trimmed == '/home' ||
-          trimmed == '/dashboard' ||
-          trimmed == '/learn' ||
-          trimmed == '/leaderboard' ||
-          (uri.host.endsWith('testpress.in') && uri.path.isEmpty)) {
+      final isTestpressHost =
+          uri.host == 'testpress.in' || uri.host.endsWith('.testpress.in');
+      if (trimmed == '/' || (isTestpressHost && uri.path.isEmpty)) {
         return defaultRoute;
       }
       return null;
