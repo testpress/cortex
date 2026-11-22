@@ -1,8 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+// ignore: depend_on_referenced_packages
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+// ignore: depend_on_referenced_packages
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:core/core.dart';
 import 'package:core/data/data.dart';
 import 'package:testpress/navigation/app_router.dart';
@@ -20,12 +26,30 @@ class _FakeAuth extends Auth {
   }
 }
 
+class _MockUrlLauncherPlatform extends Fake
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {
+  bool launchUrlResult = true;
+  String? launchedUrl;
+  LaunchOptions? launchedOptions;
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    launchedUrl = url;
+    launchedOptions = options;
+    return launchUrlResult;
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late GoRouter fakeRouter;
+  late _MockUrlLauncherPlatform mockUrlLauncher;
 
   setUp(() {
+    mockUrlLauncher = _MockUrlLauncherPlatform();
+    UrlLauncherPlatform.instance = mockUrlLauncher;
     fakeRouter = GoRouter(
       initialLocation: '/home',
       routes: [
@@ -97,6 +121,61 @@ void main() {
         expect(service.pendingDeepLink, isNull);
       },
     );
+
+    test(
+      'dispatches external URL immediately without queueing when unauthenticated',
+      () {
+        final fakeAuth = _FakeAuth(initialLoggedIn: false);
+        final container = ProviderContainer(
+          overrides: [
+            authProvider.overrideWith(() => fakeAuth),
+            goRouterProvider.overrideWithValue(fakeRouter),
+            instituteSettingsProvider.overrideWith(
+              (ref) => InstituteSettings.fromJson(const {}),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        final service = container.read(pushNotificationServiceProvider);
+        service.handleDeepLink('https://forms.google.com/test-form');
+
+        expect(service.pendingDeepLink, isNull);
+        expect(
+          mockUrlLauncher.launchedUrl,
+          'https://forms.google.com/test-form',
+        );
+        expect(
+          mockUrlLauncher.launchedOptions?.mode,
+          PreferredLaunchMode.externalApplication,
+        );
+      },
+    );
+
+    test('dispatches pending external URL to browser on flushPendingLink', () {
+      final fakeAuth = _FakeAuth(initialLoggedIn: true);
+      final container = ProviderContainer(
+        overrides: [
+          authProvider.overrideWith(() => fakeAuth),
+          goRouterProvider.overrideWithValue(fakeRouter),
+          instituteSettingsProvider.overrideWith(
+            (ref) => InstituteSettings.fromJson(const {}),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final service = container.read(pushNotificationServiceProvider);
+      service.setPendingDeepLink(
+        'https://example.com/external-event',
+        DateTime.now(),
+      );
+
+      service.flushPendingLink();
+
+      expect(service.pendingDeepLink, isNull);
+      expect(mockUrlLauncher.launchedUrl, 'https://example.com/external-event');
+    });
 
     test(
       'dispatches and clears pending link when bootstrap transitions to authenticated',
@@ -329,5 +408,330 @@ void main() {
         PushNotificationChannels.contentsName,
       );
     });
+
+    test('extracts image URLs from supported payload keys', () {
+      final msg1 = RemoteMessage(
+        data: const {'image_url': 'https://example.com/img1.png'},
+      );
+      final msg2 = RemoteMessage(
+        data: const {'image': 'https://example.com/img2.png'},
+      );
+      final msg3 = RemoteMessage(
+        notification: const RemoteNotification(
+          android: AndroidNotification(
+            imageUrl: 'https://example.com/img3.png',
+          ),
+        ),
+      );
+      final msg4 = RemoteMessage(
+        notification: const RemoteNotification(
+          apple: AppleNotification(imageUrl: 'https://example.com/img4.png'),
+        ),
+      );
+      final msgEmpty = RemoteMessage(data: const {'image_url': '   '});
+
+      expect(
+        notificationImageUrlFromMessage(msg1),
+        'https://example.com/img1.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg2),
+        'https://example.com/img2.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg3),
+        'https://example.com/img3.png',
+      );
+      expect(
+        notificationImageUrlFromMessage(msg4),
+        'https://example.com/img4.png',
+      );
+      expect(notificationImageUrlFromMessage(msgEmpty), isNull);
+    });
+
+    test(
+      'extracts URL with destination_url taking precedence over short_url, and falling back to short_url when blank',
+      () {
+        final msgBoth = RemoteMessage(
+          data: const {
+            'destination_url': 'https://example.com/destination',
+            'short_url': '/dashboard',
+          },
+        );
+        final msgFallback = RemoteMessage(
+          data: const {'destination_url': '', 'short_url': '/dashboard'},
+        );
+        final msgRedirect = RemoteMessage(
+          data: const {'redirect_url': 'https://example.com/redirect'},
+        );
+
+        expect(
+          notificationUrlFromMessage(msgBoth),
+          'https://example.com/destination',
+        );
+        expect(notificationUrlFromMessage(msgFallback), '/dashboard');
+        expect(
+          notificationUrlFromMessage(msgRedirect),
+          'https://example.com/redirect',
+        );
+      },
+    );
+
+    test(
+      'creates BigPictureStyleInformation when imageFilePath is provided',
+      () {
+        final detailsWithImage = notificationDetailsForChannel(
+          PushNotificationChannels.postsId,
+          imageFilePath: '/tmp/test_image.jpg',
+          title: 'Image Title',
+          body: 'Image Body',
+        );
+
+        expect(
+          detailsWithImage.android?.styleInformation,
+          isA<BigPictureStyleInformation>(),
+        );
+        expect(
+          detailsWithImage.android?.largeIcon,
+          isA<FilePathAndroidBitmap>(),
+        );
+        final style =
+            detailsWithImage.android?.styleInformation
+                as BigPictureStyleInformation;
+        expect(style.contentTitle, 'Image Title');
+        expect(style.summaryText, 'Image Body');
+        expect(style.hideExpandedLargeIcon, isTrue);
+        expect(detailsWithImage.iOS?.attachments?.length, 1);
+      },
+    );
+
+    test('omits BigPictureStyleInformation when imageFilePath is null', () {
+      final details = notificationDetailsForChannel(
+        PushNotificationChannels.postsId,
+      );
+
+      expect(details.android?.styleInformation, isNull);
+      expect(details.android?.largeIcon, isNull);
+      expect(details.iOS?.attachments, isNull);
+    });
+
+    test(
+      'downloadNotificationImage returns null for invalid or null URLs',
+      () async {
+        expect(await downloadNotificationImage(null), isNull);
+        expect(await downloadNotificationImage('   '), isNull);
+        expect(await downloadNotificationImage('ftp://invalid.com'), isNull);
+        expect(
+          await downloadNotificationImage('http://example.com/cleartext.jpg'),
+          isNull,
+        );
+        expect(await downloadNotificationImage('not-a-url'), isNull);
+      },
+    );
+
+    test(
+      'downloadNotificationImage rejects images exceeding maxBytes via Content-Length',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: 3 * 1024 * 1024,
+              chunks: [List.filled(100, 1)],
+            ),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/oversized.jpg',
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
+      'downloadNotificationImage aborts stream early when streamed bytes exceed maxBytes',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: -1,
+              chunks: [
+                List.filled(1024 * 1024, 1),
+                List.filled(1024 * 1024, 1),
+                List.filled(1024, 1),
+              ],
+            ),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/streamed_too_large.jpg',
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
+      'downloadNotificationImage successfully downloads images within maxBytes',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: 100,
+              chunks: [List.filled(100, 1)],
+            ),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/valid.jpg',
+          client: client,
+        );
+        expect(result, isNotNull);
+        expect(result, endsWith('.jpg'));
+      },
+    );
+
+    test(
+      'downloadNotificationImage returns null when overall timeout expires',
+      () async {
+        final client = _FakeHttpClient(
+          _FakeHttpClientRequest(
+            _FakeHttpClientResponse(
+              contentLength: 100,
+              chunks: [List.filled(100, 1)],
+            ),
+            delay: const Duration(milliseconds: 100),
+          ),
+        );
+
+        final result = await downloadNotificationImage(
+          'https://example.com/slow.jpg',
+          timeout: const Duration(milliseconds: 10),
+          client: client,
+        );
+        expect(result, isNull);
+      },
+    );
+
+    test(
+      'downloadNotificationImage returns null on redirect (301/302) response',
+      () async {
+        for (final status in [HttpStatus.movedPermanently, HttpStatus.found]) {
+          final client = _FakeHttpClient(
+            _FakeHttpClientRequest(_FakeHttpClientResponse(statusCode: status)),
+          );
+
+          final result = await downloadNotificationImage(
+            'https://example.com/redirect.jpg',
+            client: client,
+          );
+          expect(
+            result,
+            isNull,
+            reason: 'HTTP $status redirect should return null',
+          );
+        }
+      },
+    );
+
+    test(
+      'prunes old notification images when count reaches threshold',
+      () async {
+        final tempDir = Directory.systemTemp.createTempSync('notif_test_');
+        addTearDown(() => tempDir.deleteSync(recursive: true));
+
+        for (var i = 0; i < 6; i++) {
+          final file = File('${tempDir.path}/notif_img_${i + 1}.jpg');
+          file.writeAsStringSync('data $i');
+          file.setLastModifiedSync(
+            DateTime.now().subtract(Duration(minutes: 10 - i)),
+          );
+        }
+
+        expect(
+          tempDir.listSync().where((e) => e.path.contains('notif_img_')).length,
+          6,
+        );
+
+        await pruneOldNotificationImagesForTesting(tempDir, maxFiles: 5);
+
+        final remaining = tempDir
+            .listSync()
+            .where((e) => e.path.contains('notif_img_'))
+            .toList();
+        expect(remaining.length, 4);
+        expect(File('${tempDir.path}/notif_img_1.jpg').existsSync(), isFalse);
+        expect(File('${tempDir.path}/notif_img_2.jpg').existsSync(), isFalse);
+        expect(File('${tempDir.path}/notif_img_6.jpg').existsSync(), isTrue);
+      },
+    );
   });
+}
+
+class _FakeHttpClient extends Fake implements HttpClient {
+  final _FakeHttpClientRequest request;
+  _FakeHttpClient(this.request);
+
+  // Absorb connectionTimeout assignment from downloadNotificationImage.
+  @override
+  set connectionTimeout(Duration? timeout) {}
+
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async => request;
+
+  @override
+  void close({bool force = false}) {}
+}
+
+class _FakeHttpClientRequest extends Fake implements HttpClientRequest {
+  final _FakeHttpClientResponse response;
+  final Duration? delay;
+  _FakeHttpClientRequest(this.response, {this.delay});
+
+  @override
+  set followRedirects(bool follow) {}
+
+  @override
+  Future<HttpClientResponse> close() async {
+    if (delay != null) {
+      await Future<void>.delayed(delay!);
+    }
+    return response;
+  }
+}
+
+class _FakeHttpClientResponse extends Stream<List<int>>
+    implements HttpClientResponse {
+  @override
+  final int statusCode;
+  @override
+  final int contentLength;
+  final Stream<List<int>> _stream;
+
+  _FakeHttpClientResponse({
+    this.statusCode = HttpStatus.ok,
+    this.contentLength = -1,
+    List<List<int>> chunks = const [],
+  }) : _stream = Stream<List<int>>.fromIterable(chunks);
+
+  @override
+  StreamSubscription<List<int>> listen(
+    void Function(List<int> event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return _stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
