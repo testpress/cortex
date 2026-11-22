@@ -192,40 +192,29 @@ Uri? _parseAndValidateImageUrl(String? imageUrl) {
 
 Future<List<int>?> _fetchImageBytes(
   Uri uri, {
-  Duration timeout = const Duration(seconds: 8),
+  required HttpClient client,
   int maxBytes = 2 * 1024 * 1024,
-  HttpClient? client,
 }) async {
-  final httpClient = client ?? HttpClient();
-  if (client == null) {
-    httpClient.connectionTimeout = timeout;
+  final request = await client.getUrl(uri);
+  request.followRedirects = false;
+  final response = await request.close();
+  if (response.statusCode != HttpStatus.ok) {
+    return null;
   }
-  try {
-    final request = await httpClient.getUrl(uri);
-    request.followRedirects = false;
-    final response = await request.close();
-    if (response.statusCode != HttpStatus.ok) {
+
+  if (response.contentLength > maxBytes) {
+    return null;
+  }
+
+  final buffer = <int>[];
+  await for (final chunk in response) {
+    if (buffer.length + chunk.length > maxBytes) {
       return null;
     }
-
-    if (response.contentLength > maxBytes) {
-      return null;
-    }
-
-    final buffer = <int>[];
-    await for (final chunk in response) {
-      if (buffer.length + chunk.length > maxBytes) {
-        return null;
-      }
-      buffer.addAll(chunk);
-    }
-
-    return buffer.isEmpty ? null : buffer;
-  } finally {
-    if (client == null) {
-      httpClient.close(force: true);
-    }
+    buffer.addAll(chunk);
   }
+
+  return buffer.isEmpty ? null : buffer;
 }
 
 String _resolveImageExtension(Uri uri) {
@@ -307,17 +296,18 @@ Future<String?> downloadNotificationImage(
   final uri = _parseAndValidateImageUrl(imageUrl);
   if (uri == null) return null;
 
+  final deadline = DateTime.now().add(timeout);
   final httpClient = client ?? (HttpClient()..connectionTimeout = timeout);
 
   try {
     Future<String?> executeDownload() async {
       final bytes = await _fetchImageBytes(
         uri,
-        timeout: timeout,
-        maxBytes: maxBytes,
         client: httpClient,
+        maxBytes: maxBytes,
       );
       if (bytes == null || bytes.isEmpty) return null;
+      if (DateTime.now().isAfter(deadline)) return null;
 
       return await _saveToTempFile(bytes, uri);
     }

@@ -617,19 +617,23 @@ void main() {
     );
 
     test(
-      'downloadNotificationImage returns null on redirect (3xx) response',
+      'downloadNotificationImage returns null on redirect (301/302) response',
       () async {
-        final client = _FakeHttpClient(
-          _FakeHttpClientRequest(
-            _FakeHttpClientResponse(statusCode: HttpStatus.movedPermanently),
-          ),
-        );
+        for (final status in [HttpStatus.movedPermanently, HttpStatus.found]) {
+          final client = _FakeHttpClient(
+            _FakeHttpClientRequest(_FakeHttpClientResponse(statusCode: status)),
+          );
 
-        final result = await downloadNotificationImage(
-          'https://example.com/redirect.jpg',
-          client: client,
-        );
-        expect(result, isNull);
+          final result = await downloadNotificationImage(
+            'https://example.com/redirect.jpg',
+            client: client,
+          );
+          expect(
+            result,
+            isNull,
+            reason: 'HTTP $status redirect should return null',
+          );
+        }
       },
     );
 
