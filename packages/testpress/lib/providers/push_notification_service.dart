@@ -307,8 +307,7 @@ Future<String?> downloadNotificationImage(
   final uri = _parseAndValidateImageUrl(imageUrl);
   if (uri == null) return null;
 
-  final httpClient = client ?? HttpClient()
-    ..connectionTimeout = timeout;
+  final httpClient = client ?? (HttpClient()..connectionTimeout = timeout);
 
   try {
     Future<String?> executeDownload() async {
@@ -688,12 +687,20 @@ class PushNotificationService {
           final iosInfo = await deviceInfo.iosInfo;
           hardwareId = iosInfo.identifierForVendor ?? token.hashCode.toString();
         }
-      } catch (_) {
-        // Fallback
+      } catch (error) {
+        dev.log(
+          'Failed to read device info, falling back to token hash',
+          name: 'PushNotificationService',
+          error: error,
+        );
       }
       await userRepo.registerDeviceToken(token, hardwareId);
-    } catch (_) {
-      // Fail silently, retry on next boot or token refresh
+    } catch (error) {
+      dev.log(
+        'Failed to sync device token',
+        name: 'PushNotificationService',
+        error: error,
+      );
     }
   }
 }
