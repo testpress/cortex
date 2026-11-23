@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Native uCrop dark theme overrides matching DesignColors.dark() in design_config.dart -->
+    <color name="ucrop_color_widget">#FAFAFA</color> <!-- textPrimary (Zinc-50) -->
+    <color name="ucrop_color_widget_background">#18181B</color> <!-- surface (Zinc-900) -->
+    <color name="ucrop_color_default_controls_color">#18181B</color> <!-- surface (Zinc-900, fallback; active tint passed from Dart) -->
+    <color name="ucrop_color_inactive_aspect_ratio">#D4D4D8</color> <!-- textSecondary (Zinc-300) -->
+    <color name="ucrop_color_inactive_controls_color">#A1A1AA</color> <!-- textTertiary (Zinc-400) -->
+    <color name="ucrop_color_widget_rotate_angle">#FAFAFA</color> <!-- textPrimary (Zinc-50) -->
+    <color name="ucrop_color_progress_wheel_line">#52525B</color> <!-- onSkeleton (Zinc-600) -->
+</resources>

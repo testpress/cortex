@@ -1435,5 +1435,6 @@
   "aiConversationDeleted": "സംഭാഷണം ഇല്ലാതാക്കി",
   "aiCannotDeleteWhileGenerating": "മറുപടി തയ്യാറാക്കുമ്പോൾ സംഭാഷണം ഇല്ലാതാക്കാൻ കഴിയില്ല.",
   "aiDeleteConversationFailed": "സംഭാഷണം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
-  "aiDeleteConversationNamed": "{title} സംഭാഷണം ഇല്ലാതാക്കുക"
+  "aiDeleteConversationNamed": "{title} സംഭാഷണം ഇല്ലാതാക്കുക",
+  "cropImage": "ചിത്രം ക്രോപ്പ് ചെയ്യുക"
 }

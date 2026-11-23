@@ -15,4 +15,6 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    <!-- Dedicated dark theme for UCropActivity to match media editor studio palette and prevent light background/dialog flashes -->
+    <style name="AppUCropTheme" parent="Theme.AppCompat.NoActionBar" />
 </resources>

@@ -58,6 +58,7 @@ export 'widgets/ai_user_message_bubble.dart';
 export 'widgets/ai_assistant_card.dart';
 export 'widgets/donut_chart.dart';
 export 'widgets/content_notice_view.dart';
+export 'widgets/image_cropper/app_image_cropper.dart';
 
 // Shell
 export 'shell/app_shell.dart';
