@@ -13,3 +13,10 @@
 ## 3. Verification and Quality Checks
 
 - [x] 3.1 Verify core test suite and static analysis
+
+## 4. Review Feedback & Refinements
+
+- [x] 4.1 Refactor `AppImageCropper` with constructor dependency injection and Sentry error logging
+- [x] 4.2 Remove fixed portrait orientation from `UCropActivity` to support tablets and landscape
+- [x] 4.3 Add native Android uCrop dark theme color and shape overrides in the app shell
+- [x] 4.4 Add unit test coverage for the thrown-exception error path

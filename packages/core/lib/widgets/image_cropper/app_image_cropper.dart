@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../design/design_provider.dart';
 import '../../localization/l10n_helper.dart';
 
@@ -34,18 +35,32 @@ class AppImageCropper {
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: l10n.cropImage,
-            toolbarColor: design.colors.surface,
-            toolbarWidgetColor: design.colors.textPrimary,
+            // Dedicated dark photo studio theme for media editing across light & dark modes
+            toolbarColor: const Color(0xFF18181B),
+            toolbarWidgetColor: const Color(0xFFFAFAFA),
             activeControlsWidgetColor: design.colors.primary,
+            statusBarLight: false,
+            navBarLight: false,
+            backgroundColor: const Color(0xFF09090B),
+            dimmedLayerColor: const Color(0x8A000000),
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
           ),
-          IOSUiSettings(title: l10n.cropImage),
+          IOSUiSettings(
+            title: l10n.cropImage,
+            aspectRatioLockEnabled: false,
+            resetAspectRatioEnabled: true,
+          ),
         ],
       );
 
       return croppedFile?.path;
-    } catch (_) {
+    } catch (e, stackTrace) {
+      await Sentry.captureException(
+        e,
+        stackTrace: stackTrace,
+        withScope: (scope) => scope.setTag('component', 'app_image_cropper'),
+      );
       return null;
     }
   }

@@ -26,14 +26,45 @@ class _FakeImageCropper extends Fake implements ImageCropper {
   }
 }
 
+class _ThrowingImageCropper extends Fake implements ImageCropper {
+  @override
+  Future<CroppedFile?> cropImage({
+    required String sourcePath,
+    int? maxWidth,
+    int? maxHeight,
+    CropAspectRatio? aspectRatio,
+    List<CropAspectRatioPreset>? aspectRatioPresets,
+    CropStyle? cropStyle,
+    ImageCompressFormat? compressFormat,
+    int? compressQuality,
+    List<PlatformUiSettings>? uiSettings,
+  }) async {
+    throw Exception('Platform error');
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   Widget wrap(Widget child) {
-    return DesignProvider(
-      config: DesignConfig.defaults(),
-      child: LocalizationProvider(
-        child: Directionality(textDirection: TextDirection.ltr, child: child),
+    return LocalizationProvider(
+      child: Builder(
+        builder: (context) {
+          final locale = LocalizationProvider.of(context).locale;
+          return WidgetsApp(
+            color: const Color(0xFF000000),
+            locale: locale,
+            localizationsDelegates: LocalizationProvider.delegates,
+            pageRouteBuilder:
+                <T>(RouteSettings settings, WidgetBuilder builder) =>
+                    PageRouteBuilder<T>(
+                      settings: settings,
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          builder(context),
+                    ),
+            home: DesignProvider(config: DesignConfig.defaults(), child: child),
+          );
+        },
       ),
     );
   }
@@ -130,7 +161,52 @@ void main() {
           .firstOrNull;
 
       expect(androidSettings?.toolbarTitle, equals('Crop Image'));
+      expect(androidSettings?.toolbarColor, equals(const Color(0xFF18181B)));
+      expect(
+        androidSettings?.toolbarWidgetColor,
+        equals(const Color(0xFFFAFAFA)),
+      );
+      expect(androidSettings?.statusBarLight, isFalse);
+      expect(androidSettings?.navBarLight, isFalse);
+      expect(androidSettings?.backgroundColor, equals(const Color(0xFF09090B)));
+      expect(
+        androidSettings?.dimmedLayerColor,
+        equals(const Color(0x8A000000)),
+      );
       expect(iosSettings?.title, equals('Crop Image'));
+    });
+
+    testWidgets('captures exception and returns null on cropper error', (
+      tester,
+    ) async {
+      final throwingCropper = _ThrowingImageCropper();
+      final cropper = AppImageCropper(throwingCropper);
+
+      late BuildContext capturedContext;
+      await tester.pumpWidget(
+        wrap(
+          Builder(
+            builder: (context) {
+              capturedContext = context;
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      final tempFile = File('${Directory.systemTemp.path}/test_error.jpg');
+      tempFile.writeAsStringSync('dummy');
+      addTearDown(() {
+        if (tempFile.existsSync()) {
+          tempFile.deleteSync();
+        }
+      });
+
+      final result = await tester.runAsync(() async {
+        return cropper.crop(capturedContext, imagePath: tempFile.path);
+      });
+
+      expect(result, isNull);
     });
   });
 }

@@ -24,13 +24,14 @@ This design introduces a reusable image cropping service (`AppImageCropper`) in 
 - **Decision**: Place `AppImageCropper` in `packages/core/lib/widgets/image_cropper/` and export through `packages/core/lib/core.dart`.
 - **Rationale**: `packages/core` is the platform SDK. Putting the cropper in `core` makes it available to all domain packages (`discussions`, `courses`, `profile`, `exams`) with zero cross-domain coupling.
 
-### 2. Platform UI Theming
-- **Decision**: Configure Android and iOS UI settings using runtime design tokens from `Design.of(context)` (surface color, text primary, brand primary) and localized titles via `L10n.of(context).cropImage`.
-- **Rationale**: Keeps native toolbar appearance aligned with the Cortex theme while ensuring full localization across Arabic, English, Malayalam, and Tamil.
+### 2. Platform UI Theming & Media Studio Palette
+- **Decision**: Configure a dedicated dark photo studio theme on Android (`#18181B` surface, `#FAFAFA` text, `#09090B` canvas, `#8A000000` dimmed overlay) matching media editing standards (Google Photos, iOS TOCropViewController). Override native Android uCrop resources (`res/values/colors.xml` and `res/drawable/ucrop_wrapper_controls_shape.xml`) to eliminate hardcoded white and navy blocks. Retain brand primary accent from `Design.of(context).colors.primary`.
+- **Rationale**: Provides consistent high-contrast, distraction-free photo evaluation across both light and dark app modes while maintaining full localization.
 
-### 3. File System & Cancellation Semantics
-- **Decision**: If the user cancels the crop screen, `AppImageCropper.crop` returns `null`. If confirmed, it returns the cropped file path. If the source file does not exist, it safely returns `null`.
+### 3. File System, Error Handling & Cancellation Semantics
+- **Decision**: If the user cancels the crop screen, `AppImageCropper.crop` returns `null`. If confirmed, it returns the cropped file path. If the source file does not exist, it safely returns `null`. Any unexpected platform/plugin exceptions are captured to Sentry with tag `component: app_image_cropper` before returning `null`.
+- **Rationale**: Prevents swallowed exceptions from hiding platform integration bugs while keeping the service fail-safe for caller UI widgets.
 
 ## Risks / Trade-offs
 
-- **[Trade-off] Native Cropper Activity**: Uses platform activities (`UCropActivity` on Android). Requires AndroidManifest activity declaration and appcompat dependency in `app/android`.
+- **[Trade-off] Native Cropper Activity**: Uses platform activities (`UCropActivity` on Android). Requires AndroidManifest activity declaration without fixed portrait orientation to support tablets and landscape, plus `appcompat` dependency in `app/android`.

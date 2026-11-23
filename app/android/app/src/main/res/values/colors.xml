@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- uCrop dark theme overrides matching Cortex Zinc palette -->
+    <color name="ucrop_color_widget">#FAFAFA</color>
+    <color name="ucrop_color_widget_background">#18181B</color>
+    <color name="ucrop_color_default_controls_color">#18181B</color>
+    <color name="ucrop_color_inactive_aspect_ratio">#D4D4D8</color>
+    <color name="ucrop_color_inactive_controls_color">#A1A1AA</color>
+</resources>
