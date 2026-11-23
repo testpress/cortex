@@ -53,15 +53,15 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   int? _finalizedTopicId;
 
   Future<void> _pickImages() async {
-    if (_attachments.length >= 3) return;
+    if (_attachments.length >= 3 || _isProcessingImage) return;
 
-    final picker = ref.read(imagePickerProvider);
-    final cropper = ref.read(imageCropperProvider);
+    setState(() => _isProcessingImage = true);
+    try {
+      final picker = ref.read(imagePickerProvider);
+      final cropper = ref.read(imageCropperProvider);
 
-    final images = await picker.pickMultiImage();
-    if (images.isNotEmpty && mounted) {
-      setState(() => _isProcessingImage = true);
-      try {
+      final images = await picker.pickMultiImage();
+      if (images.isNotEmpty && mounted) {
         final remaining = 3 - _attachments.length;
         final selectedImages = images.take(remaining).toList();
 
@@ -75,34 +75,34 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
             });
           }
         }
-      } finally {
-        if (mounted) {
-          setState(() => _isProcessingImage = false);
-        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessingImage = false);
       }
     }
   }
 
   Future<void> _pickFromCamera() async {
-    if (_attachments.length >= 3) return;
+    if (_attachments.length >= 3 || _isProcessingImage) return;
 
-    final picker = ref.read(imagePickerProvider);
-    final cropper = ref.read(imageCropperProvider);
+    setState(() => _isProcessingImage = true);
+    try {
+      final picker = ref.read(imagePickerProvider);
+      final cropper = ref.read(imageCropperProvider);
 
-    final image = await picker.pickImage(source: ImageSource.camera);
-    if (image != null && mounted) {
-      setState(() => _isProcessingImage = true);
-      try {
+      final image = await picker.pickImage(source: ImageSource.camera);
+      if (image != null && mounted) {
         final croppedPath = await cropper.crop(context, imagePath: image.path);
         if (croppedPath != null && mounted) {
           setState(() {
             _attachments.add(croppedPath);
           });
         }
-      } finally {
-        if (mounted) {
-          setState(() => _isProcessingImage = false);
-        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessingImage = false);
       }
     }
   }

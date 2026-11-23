@@ -50,6 +50,9 @@ class _FakeAppImageCropper extends Fake implements AppImageCropper {
 class _FakeImagePicker extends Fake implements ImagePicker {
   List<XFile> multiImages = [];
   XFile? cameraImage;
+  int pickMultiImageCallCount = 0;
+  int pickImageCallCount = 0;
+  FutureOr<List<XFile>> Function()? onPickMultiImage;
 
   @override
   Future<List<XFile>> pickMultiImage({
@@ -59,6 +62,10 @@ class _FakeImagePicker extends Fake implements ImagePicker {
     int? limit,
     bool requestFullMetadata = true,
   }) async {
+    pickMultiImageCallCount++;
+    if (onPickMultiImage != null) {
+      return await onPickMultiImage!();
+    }
     return multiImages;
   }
 
@@ -71,6 +78,7 @@ class _FakeImagePicker extends Fake implements ImagePicker {
     CameraDevice preferredCameraDevice = CameraDevice.rear,
     bool requestFullMetadata = true,
   }) async {
+    pickImageCallCount++;
     return cameraImage;
   }
 }
@@ -518,6 +526,51 @@ void main() {
           find.byType(ForumAttachmentPreview),
         );
         expect(preview.imageUrls, ['1.png_cropped']);
+      },
+    );
+
+    testWidgets(
+      'prevents concurrent image picking while a picker or crop operation is in progress',
+      (tester) async {
+        tester.view.physicalSize = const Size(800, 1600);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        final fakePicker = _FakeImagePicker();
+        final fakeCropper = _FakeAppImageCropper();
+        final completer = Completer<List<XFile>>();
+        fakePicker.onPickMultiImage = () => completer.future;
+
+        await tester.pumpWidget(
+          buildScreen(picker: fakePicker, cropper: fakeCropper),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Open Form'));
+        await tester.pumpAndSettle();
+
+        final galleryButton = find.byIcon(LucideIcons.image);
+        await tester.tap(galleryButton);
+        await tester
+            .pump(); // Starts first pickImages, _isProcessingImage = true
+
+        expect(fakePicker.pickMultiImageCallCount, 1);
+        expect(find.byType(AppLoadingIndicator), findsOneWidget);
+
+        // While first pick is pending, tapping camera or gallery again should be ignored
+        final cameraButton = find.byIcon(LucideIcons.camera);
+        await tester.tap(cameraButton, warnIfMissed: false);
+        await tester.pump();
+
+        expect(fakePicker.pickImageCallCount, 0);
+
+        completer.complete([XFile('1.png')]);
+        await tester.pumpAndSettle();
+
+        expect(fakeCropper.cropCallCount, 1);
       },
     );
   });
