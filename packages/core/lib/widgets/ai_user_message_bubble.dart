@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core.dart';
@@ -10,6 +11,7 @@ class AiUserMessageBubble extends StatelessWidget {
     super.key,
     required this.message,
     required this.timestamp,
+    this.attachments = const [],
     this.isSending = false,
     this.hasSendError = false,
     this.onRetry,
@@ -17,6 +19,7 @@ class AiUserMessageBubble extends StatelessWidget {
 
   final String message;
   final String timestamp;
+  final List<AiAttachmentDto> attachments;
   final bool isSending;
   final bool hasSendError;
   final VoidCallback? onRetry;
@@ -37,28 +40,112 @@ class AiUserMessageBubble extends StatelessWidget {
             LayoutBuilder(
               builder: (context, constraints) {
                 final maxBubbleWidth = constraints.maxWidth * maxWidthFactor;
-                return Container(
-                  constraints: BoxConstraints(
-                    maxWidth: maxBubbleWidth > 560.0 ? 560.0 : maxBubbleWidth,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.md,
-                    vertical: design.spacing.sm * 1.5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: design.colors.surfaceVariant,
-                    // The tightened top-end corner points at the sender side.
-                    borderRadius: BorderRadiusDirectional.only(
-                      topStart: Radius.circular(design.radius.xl),
-                      topEnd: Radius.circular(design.radius.md),
-                      bottomStart: Radius.circular(design.radius.xl),
-                      bottomEnd: Radius.circular(design.radius.xl),
-                    ),
-                  ),
-                  child: AppText.body(
-                    message,
-                    color: design.colors.textPrimary,
-                  ),
+                final resolvedMaxWidth = maxBubbleWidth > 560.0
+                    ? 560.0
+                    : maxBubbleWidth;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (attachments.isNotEmpty) ...[
+                      Wrap(
+                        alignment: WrapAlignment.end,
+                        spacing: design.spacing.xs,
+                        runSpacing: design.spacing.xs,
+                        children: [
+                          for (final attachment in attachments)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                design.radius.lg,
+                              ),
+                              child:
+                                  attachment.url != null &&
+                                      attachment.url!.isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl: attachment.url!,
+                                      width: attachments.length == 1
+                                          ? 180.0
+                                          : 88.0,
+                                      height: attachments.length == 1
+                                          ? 135.0
+                                          : 88.0,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        width: attachments.length == 1
+                                            ? 180.0
+                                            : 88.0,
+                                        height: attachments.length == 1
+                                            ? 135.0
+                                            : 88.0,
+                                        color: design.colors.surface,
+                                        child: const Center(
+                                          child: AppLoadingIndicator(),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                            width: attachments.length == 1
+                                                ? 180.0
+                                                : 88.0,
+                                            height: attachments.length == 1
+                                                ? 135.0
+                                                : 88.0,
+                                            color: design.colors.surface,
+                                            child: Center(
+                                              child: Icon(
+                                                LucideIcons.imageOff,
+                                                color:
+                                                    design.colors.textSecondary,
+                                                size: design.iconSize.sm,
+                                              ),
+                                            ),
+                                          ),
+                                    )
+                                  : Container(
+                                      width: attachments.length == 1
+                                          ? 180.0
+                                          : 88.0,
+                                      height: attachments.length == 1
+                                          ? 135.0
+                                          : 88.0,
+                                      color: design.colors.surface,
+                                      child: Center(
+                                        child: Icon(
+                                          LucideIcons.imageOff,
+                                          color: design.colors.textSecondary,
+                                          size: design.iconSize.sm,
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                        ],
+                      ),
+                      if (message.isNotEmpty)
+                        SizedBox(height: design.spacing.xs),
+                    ],
+                    if (message.isNotEmpty)
+                      Container(
+                        constraints: BoxConstraints(maxWidth: resolvedMaxWidth),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: design.spacing.md,
+                          vertical: design.spacing.sm * 1.25,
+                        ),
+                        decoration: BoxDecoration(
+                          color: design.colors.surfaceVariant,
+                          borderRadius: BorderRadiusDirectional.only(
+                            topStart: Radius.circular(design.radius.xl),
+                            topEnd: Radius.circular(design.radius.md),
+                            bottomStart: Radius.circular(design.radius.xl),
+                            bottomEnd: Radius.circular(design.radius.xl),
+                          ),
+                        ),
+                        child: AppText.body(
+                          message,
+                          color: design.colors.textPrimary,
+                        ),
+                      ),
+                  ],
                 );
               },
             ),

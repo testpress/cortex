@@ -1341,6 +1341,7 @@
   "aiComposerAttachImage": "إرفاق صورة",
   "aiComposerTakePhoto": "التقاط صورة",
   "aiComposerSendMessage": "إرسال رسالة",
+  "aiComposerDeleteAttachment": "إزالة المرفق",
   "aiAssistantLabel": "مساعد الذكاء الاصطناعي",
   "aiGenerationError": "تعذر إنشاء استجابة. يُرجى المحاولة مرة أخرى.",
   "aiTryAgain": "إعادة المحاولة",

@@ -3558,6 +3558,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiComposerSendMessage => 'إرسال رسالة';
 
   @override
+  String get aiComposerDeleteAttachment => 'إزالة المرفق';
+
+  @override
   String get aiAssistantLabel => 'مساعد الذكاء الاصطناعي';
 
   @override

@@ -1582,6 +1582,7 @@
   "aiComposerAttachImage": "படத்தை இணைக்கவும்",
   "aiComposerTakePhoto": "புகைப்படம் எடுக்கவும்",
   "aiComposerSendMessage": "செய்தி அனுப்பவும்",
+  "aiComposerDeleteAttachment": "இணைப்பை நீக்கு",
   "aiAssistantLabel": "AI உதவியாளர்",
   "aiGenerationError": "பதிலை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
   "aiTryAgain": "மீண்டும் முயற்சி செய்",

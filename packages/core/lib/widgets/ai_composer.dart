@@ -6,6 +6,10 @@ class AiComposer extends StatefulWidget {
   const AiComposer({
     super.key,
     this.onSend,
+    this.onAttachImage,
+    this.onRemoveAttachment,
+    this.stagedAttachments = const [],
+    this.maxAttachments = 4,
     this.enabled = true,
     this.hintText,
     this.controller,
@@ -14,6 +18,10 @@ class AiComposer extends StatefulWidget {
   });
 
   final ValueChanged<String>? onSend;
+  final VoidCallback? onAttachImage;
+  final ValueChanged<String>? onRemoveAttachment;
+  final List<StagedAttachment> stagedAttachments;
+  final int maxAttachments;
   final bool enabled;
   final String? hintText;
 
@@ -73,8 +81,11 @@ class _AiComposerState extends State<AiComposer> {
 
   void _submit() {
     if (!widget.enabled) return;
+    final hasUploading = widget.stagedAttachments.any((a) => a.isUploading);
+    if (hasUploading) return;
+
     final text = _controller.text.trim();
-    if (text.isNotEmpty) {
+    if (text.isNotEmpty || widget.stagedAttachments.isNotEmpty) {
       widget.onSend?.call(text);
       _controller.clear();
       _focusNode.unfocus();
@@ -87,6 +98,7 @@ class _AiComposerState extends State<AiComposer> {
     final l10n = L10n.of(context);
     final placeholder = widget.hintText ?? l10n.aiComposerPlaceholder;
     final onNewChat = widget.onNewChat;
+    final onAttachImage = widget.onAttachImage;
     final textInset = design.spacing.sm + design.spacing.xs;
 
     return Row(
@@ -133,105 +145,193 @@ class _AiComposerState extends State<AiComposer> {
             ),
             child: Padding(
               padding: EdgeInsetsDirectional.only(
-                start: design.spacing.md + design.spacing.xs,
+                start: onAttachImage != null
+                    ? design.spacing.xs
+                    : design.spacing.md + design.spacing.xs,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: _touchTarget,
-                        maxHeight: _maxInputHeight,
+                  if (widget.stagedAttachments.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: design.spacing.sm,
+                        end: design.spacing.sm,
+                        top: design.spacing.sm,
+                        bottom: design.spacing.xs / 2,
                       ),
-                      child: Stack(
-                        alignment: AlignmentDirectional.centerStart,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: textInset),
-                            child: EditableText(
-                              key: const ValueKey('ai_composer_editable_text'),
-                              controller: _controller,
-                              focusNode: _focusNode,
-                              scrollController: _textScrollController,
-                              readOnly: !widget.enabled,
-                              style: design.typography.body.copyWith(
-                                color: widget.enabled
-                                    ? design.colors.textPrimary
-                                    : design.colors.textTertiary,
-                              ),
-                              cursorColor: design.colors.primary,
-                              cursorWidth: 2.0,
-                              cursorHeight: 20.0,
-                              cursorRadius: const Radius.circular(1.0),
-                              backgroundCursorColor:
-                                  design.colors.textSecondary,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 4,
-                              minLines: 1,
-                            ),
-                          ),
-                          ValueListenableBuilder<TextEditingValue>(
-                            valueListenable: _controller,
-                            builder: (context, value, _) {
-                              if (value.text.isNotEmpty) {
-                                return const SizedBox.shrink();
-                              }
-                              return IgnorePointer(
-                                child: AppText.body(
-                                  placeholder,
-                                  color: design.colors.textSecondary,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                      child: SizedBox(
+                        height: 60.0,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.stagedAttachments.length,
+                          separatorBuilder: (_, _) =>
+                              SizedBox(width: design.spacing.xs),
+                          itemBuilder: (context, index) {
+                            final staged = widget.stagedAttachments[index];
+                            return _StagedAttachmentThumbnail(
+                              attachment: staged,
+                              onRemove: widget.onRemoveAttachment != null
+                                  ? () => widget.onRemoveAttachment!(
+                                      staged.localId,
+                                    )
+                                  : null,
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: design.spacing.xs),
-                  ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: _controller,
-                    builder: (context, value, _) {
-                      final hasText =
-                          value.text.trim().isNotEmpty && widget.enabled;
-                      return AppSemantics.button(
-                        label: l10n.aiComposerSendMessage,
-                        enabled: hasText,
-                        onTap: hasText ? _submit : null,
-                        child: GestureDetector(
-                          onTap: hasText ? _submit : null,
-                          behavior: HitTestBehavior.opaque,
-                          child: SizedBox(
-                            width: _touchTarget,
-                            height: _touchTarget,
-                            child: Center(
-                              child: Container(
-                                width: _sendButtonSize,
-                                height: _sendButtonSize,
-                                decoration: BoxDecoration(
-                                  color: hasText
-                                      ? design.colors.textPrimary
-                                      : design.colors.textPrimary.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                  shape: BoxShape.circle,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (onAttachImage != null) ...[
+                        Builder(
+                          builder: (context) {
+                            final canAttach =
+                                widget.enabled &&
+                                widget.stagedAttachments.length <
+                                    widget.maxAttachments;
+                            return AppSemantics.button(
+                              label: l10n.aiComposerAttachImage,
+                              enabled: canAttach,
+                              onTap: canAttach ? onAttachImage : null,
+                              child: GestureDetector(
+                                key: const ValueKey(
+                                  'ai_composer_attach_button',
                                 ),
+                                onTap: canAttach ? onAttachImage : null,
+                                behavior: HitTestBehavior.opaque,
+                                child: SizedBox(
+                                  width: _touchTarget,
+                                  height: _touchTarget,
+                                  child: Center(
+                                    child: Icon(
+                                      LucideIcons.plus,
+                                      color: canAttach
+                                          ? design.colors.textSecondary
+                                          : design.colors.textTertiary,
+                                      size: design.iconSize.md,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                      Expanded(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minHeight: _touchTarget,
+                            maxHeight: _maxInputHeight,
+                          ),
+                          child: Stack(
+                            alignment: AlignmentDirectional.centerStart,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: textInset,
+                                ),
+                                child: EditableText(
+                                  key: const ValueKey(
+                                    'ai_composer_editable_text',
+                                  ),
+                                  controller: _controller,
+                                  focusNode: _focusNode,
+                                  scrollController: _textScrollController,
+                                  readOnly: !widget.enabled,
+                                  style: design.typography.body.copyWith(
+                                    color: widget.enabled
+                                        ? design.colors.textPrimary
+                                        : design.colors.textTertiary,
+                                  ),
+                                  cursorColor: design.colors.primary,
+                                  cursorWidth: 2.0,
+                                  cursorHeight: 20.0,
+                                  cursorRadius: const Radius.circular(1.0),
+                                  backgroundCursorColor:
+                                      design.colors.textSecondary,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 4,
+                                  minLines: 1,
+                                ),
+                              ),
+                              ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: _controller,
+                                builder: (context, value, _) {
+                                  if (value.text.isNotEmpty) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return IgnorePointer(
+                                    child: AppText.body(
+                                      placeholder,
+                                      color: design.colors.textSecondary,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: design.spacing.xs),
+                      ValueListenableBuilder<TextEditingValue>(
+                        valueListenable: _controller,
+                        builder: (context, value, _) {
+                          final hasText = value.text.trim().isNotEmpty;
+                          final hasAttachments =
+                              widget.stagedAttachments.isNotEmpty;
+                          final hasUploading = widget.stagedAttachments.any(
+                            (a) => a.isUploading,
+                          );
+                          final hasUploadError = widget.stagedAttachments.any(
+                            (a) => a.hasError,
+                          );
+                          final canSend =
+                              (hasText || hasAttachments) &&
+                              !hasUploading &&
+                              !hasUploadError &&
+                              widget.enabled;
+
+                          return AppSemantics.button(
+                            label: l10n.aiComposerSendMessage,
+                            enabled: canSend,
+                            onTap: canSend ? _submit : null,
+                            child: GestureDetector(
+                              onTap: canSend ? _submit : null,
+                              behavior: HitTestBehavior.opaque,
+                              child: SizedBox(
+                                width: _touchTarget,
+                                height: _touchTarget,
                                 child: Center(
-                                  child: Icon(
-                                    LucideIcons.arrowUp,
-                                    color: design.colors.textInverse,
-                                    size: design.iconSize.sm,
+                                  child: Container(
+                                    width: _sendButtonSize,
+                                    height: _sendButtonSize,
+                                    decoration: BoxDecoration(
+                                      color: canSend
+                                          ? design.colors.textPrimary
+                                          : design.colors.textPrimary
+                                                .withValues(alpha: 0.3),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        LucideIcons.arrowUp,
+                                        color: design.colors.textInverse,
+                                        size: design.iconSize.sm,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -239,6 +339,106 @@ class _AiComposerState extends State<AiComposer> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _StagedAttachmentThumbnail extends StatelessWidget {
+  const _StagedAttachmentThumbnail({required this.attachment, this.onRemove});
+
+  final StagedAttachment attachment;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+
+    return SizedBox(
+      width: 56.0,
+      height: 56.0,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 56.0,
+            height: 56.0,
+            decoration: BoxDecoration(
+              color: design.colors.surfaceVariant,
+              borderRadius: BorderRadius.circular(design.radius.md),
+              border: Border.all(
+                color: attachment.hasError
+                    ? design.colors.error
+                    : design.colors.border,
+                width: 1.0,
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(design.radius.md),
+              child: attachment.bytes != null
+                  ? Image.memory(
+                      attachment.bytes!,
+                      fit: BoxFit.cover,
+                      width: 56.0,
+                      height: 56.0,
+                    )
+                  : Center(
+                      child: Icon(
+                        LucideIcons.image,
+                        color: design.colors.textSecondary,
+                        size: design.iconSize.sm,
+                      ),
+                    ),
+            ),
+          ),
+          if (attachment.isUploading)
+            Container(
+              width: 56.0,
+              height: 56.0,
+              decoration: BoxDecoration(
+                color: design.colors.surface.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(design.radius.md),
+              ),
+              child: const Center(child: AppLoadingIndicator()),
+            ),
+          if (onRemove != null)
+            PositionedDirectional(
+              top: -6.0,
+              end: -6.0,
+              child: AppSemantics.button(
+                label: l10n.aiComposerDeleteAttachment,
+                onTap: onRemove,
+                child: GestureDetector(
+                  onTap: onRemove,
+                  behavior: HitTestBehavior.opaque,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minWidth: 48.0,
+                      minHeight: 48.0,
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 20.0,
+                        height: 20.0,
+                        decoration: BoxDecoration(
+                          color: design.colors.textPrimary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            LucideIcons.x,
+                            size: 12.0,
+                            color: design.colors.textInverse,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

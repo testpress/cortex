@@ -100,6 +100,44 @@ void main() {
           );
         }
 
+        if (options.path.endsWith('/attachments/')) {
+          if (options.method == 'POST') {
+            return ResponseBody.fromString(
+              '{"items":[{"attachment_id":"att-1","content_type":"image/jpeg","size_bytes":100,"width":50,"height":50,"url":"https://cdn.example/img.jpg"}]}',
+              200,
+              headers: {
+                Headers.contentTypeHeader: [Headers.jsonContentType],
+              },
+            );
+          }
+        }
+
+        if (options.path.contains('/attachments/att-1/')) {
+          if (options.method == 'DELETE') {
+            return ResponseBody.fromString('', 204);
+          }
+        }
+
+        if (options.path.contains('/stop/')) {
+          return ResponseBody.fromString(
+            '{"answer":"Partial text","chat_id":"chat-1","title":"Chat 1","generation":{"generation_id":"gen-1","request_id":"req-1","user_message_id":"usr-1","status":"stopped","created_at":"2026-10-12T12:00:00Z"}}',
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        }
+
+        if (options.path.endsWith('/retry/')) {
+          return ResponseBody.fromString(
+            '{"answer":"Retried answer","chat_id":"chat-1","title":"Chat 1","generation":{"generation_id":"gen-retry","request_id":"req-retry","user_message_id":"usr-1","status":"completed","created_at":"2026-10-12T12:02:00Z"}}',
+            200,
+            headers: {
+              Headers.contentTypeHeader: [Headers.jsonContentType],
+            },
+          );
+        }
+
         return ResponseBody.fromString('Not Found', 404);
       });
 
@@ -234,6 +272,28 @@ void main() {
         expect(req['queryParameters']['before'], 'before-cursor-token');
       },
     );
+
+    test('uploadAttachments sends POST /attachments/', () async {
+      final file = MultipartFile.fromBytes([1, 2, 3], filename: 'test.jpg');
+      final result = await client.uploadAttachments(files: [file]);
+
+      expect(result.items.length, 1);
+      expect(result.items.first.attachmentId, 'att-1');
+      expect(result.items.first.url, 'https://cdn.example/img.jpg');
+
+      final req = capturedRequests.first;
+      expect(req['method'], 'POST');
+      expect(req['path'], contains('/attachments/'));
+      expect(req['data'], isA<FormData>());
+    });
+
+    test('deleteAttachment sends DELETE /attachments/<id>/', () async {
+      await client.deleteAttachment(attachmentId: 'att-1');
+
+      final req = capturedRequests.first;
+      expect(req['method'], 'DELETE');
+      expect(req['path'], contains('/attachments/att-1/'));
+    });
 
     test(
       'maps 429 quota error to LearnLensException with code and retryAt',

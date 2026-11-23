@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../core.dart';
 
@@ -13,6 +16,8 @@ class AiScreen extends ConsumerStatefulWidget {
     super.key,
     this.initialMessages = const [],
     this.onOpenHistory,
+    this.imagePicker,
+    this.imageCropper,
   });
 
   /// Optional seed messages for testing and state verification.
@@ -21,6 +26,12 @@ class AiScreen extends ConsumerStatefulWidget {
   /// Optional menu/history navigation callback.
   /// If null, opens the [AiChatHistoryScreen] drawer.
   final VoidCallback? onOpenHistory;
+
+  /// Optional [ImagePicker] instance for test injection.
+  final ImagePicker? imagePicker;
+
+  /// Optional [AppImageCropper] instance for test injection.
+  final AppImageCropper? imageCropper;
 
   @override
   ConsumerState<AiScreen> createState() => _AiScreenState();
@@ -35,6 +46,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
   int _lastStreamingTextLength = 0;
   double _lastBottomInset = 0;
   String? _activeChatId;
+  bool _isAttachmentSheetOpen = false;
 
   @override
   void initState() {
@@ -166,6 +178,48 @@ class _AiScreenState extends ConsumerState<AiScreen>
     _scrollToBottom(animate: true);
   }
 
+  void _handleAttachImage() {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isAttachmentSheetOpen = true;
+    });
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    setState(() {
+      _isAttachmentSheetOpen = false;
+    });
+    try {
+      final picker = widget.imagePicker ?? ImagePicker();
+      final picked = await picker.pickImage(source: source, imageQuality: 85);
+      if (picked != null && mounted) {
+        final cropper = widget.imageCropper ?? AppImageCropper();
+        final croppedPath = await cropper.crop(context, imagePath: picked.path);
+        if (croppedPath != null && mounted) {
+          final file = File(croppedPath);
+          final bytes = file.readAsBytesSync();
+          final fileName = file.uri.pathSegments.isNotEmpty
+              ? file.uri.pathSegments.last
+              : picked.name;
+          final mimeType = picked.mimeType ?? 'image/jpeg';
+          ref
+              .read(genericAiChatProvider.notifier)
+              .stageAttachment(
+                bytes: bytes,
+                fileName: fileName,
+                mimeType: mimeType,
+              );
+        }
+      }
+    } catch (_) {
+      // User cancelled picker or permission denied
+    }
+  }
+
+  void _handleRemoveAttachment(String localId) {
+    ref.read(genericAiChatProvider.notifier).removeAttachment(localId).ignore();
+  }
+
   void _handleRetry(String messageId, bool isUser) {
     if (isUser) {
       ref
@@ -256,7 +310,10 @@ class _AiScreenState extends ConsumerState<AiScreen>
     Widget buildComposer() {
       return AiComposer(
         enabled: !isInputBlocked,
+        stagedAttachments: chatState.stagedAttachments,
         onSend: _handleSend,
+        onAttachImage: _handleAttachImage,
+        onRemoveAttachment: _handleRemoveAttachment,
         controller: _composerController,
         focusNode: _composerFocusNode,
       );
@@ -264,153 +321,277 @@ class _AiScreenState extends ConsumerState<AiScreen>
 
     return Container(
       color: canvasColor,
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
         children: [
-          AiChatHeader(
-            onMenu: _handleMenu,
-            title: chatState.currentTitle,
-            onNewChat: hasActiveContent ? _handleNewChat : null,
-            onDelete: chatState.currentChatId != null
-                ? () =>
-                      _handleDeleteActiveConversation(chatState.currentChatId!)
-                : null,
-          ),
+          Container(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AiChatHeader(
+                  onMenu: _handleMenu,
+                  title: chatState.currentTitle,
+                  onNewChat: hasActiveContent ? _handleNewChat : null,
+                  onDelete: chatState.currentChatId != null
+                      ? () => _handleDeleteActiveConversation(
+                          chatState.currentChatId!,
+                        )
+                      : null,
+                ),
 
-          if (chatState.hasInitError)
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.xs,
-              ),
-              child: _AiNoticeCard(
-                message: l10n.aiInitErrorBanner,
-                actionLabel: l10n.labelRetry,
-                onAction: () =>
-                    ref.read(genericAiChatProvider.notifier).initialize(),
-              ),
-            ),
+                if (chatState.hasInitError)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.xs,
+                    ),
+                    child: _AiNoticeCard(
+                      message: l10n.aiInitErrorBanner,
+                      actionLabel: l10n.labelRetry,
+                      onAction: () =>
+                          ref.read(genericAiChatProvider.notifier).initialize(),
+                    ),
+                  ),
 
-          // Chat Canvas / Messages List
-          Expanded(
-            child: chatState.isLoadingMessages
-                ? const Center(child: AppLoadingIndicator())
-                : chatState.hasMessagesError && displayMessages.isEmpty
-                ? Center(
-                    child: AppErrorView(
-                      error: chatState.messagesError,
-                      backgroundColor: canvasColor,
-                      onRetry: () {
-                        if (chatState.currentChatId != null) {
-                          ref
-                              .read(genericAiChatProvider.notifier)
-                              .selectConversation(chatState.currentChatId!);
-                        }
-                      },
-                    ),
-                  )
-                : displayMessages.isEmpty
-                ? SafeArea(
-                    top: false,
-                    bottom: bottomInset == 0,
-                    child: _AiEmptyState(
-                      notice: noticeBanner,
-                      composer: buildComposer(),
-                      onSuggestion: isInputBlocked ? null : _handleSuggestion,
-                    ),
-                  )
-                : AppSemantics.scrollableList(
-                    itemCount: displayMessages.length,
-                    label: l10n.aiSupportTitle,
-                    child: NotificationListener<ScrollMetricsNotification>(
-                      onNotification: (notification) {
-                        if (notification.metrics.pixels >
-                                notification.metrics.maxScrollExtent &&
-                            notification.metrics.maxScrollExtent >= 0) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _clampScrollBounds();
-                          });
-                        }
-                        return false;
-                      },
-                      child: ListView.builder(
-                        key: ValueKey(chatState.currentChatId ?? 'new_chat'),
-                        controller: _scrollController,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: design.spacing.md,
-                          vertical: design.spacing.sm * 1.5,
-                        ),
-                        itemCount: displayMessages.length,
-                        itemBuilder: (context, index) {
-                          final item = displayMessages[index];
-                          if (item.isUser) {
-                            return AiUserMessageBubble(
-                              message: item.text,
-                              timestamp: DateFormatter.formatTime(
-                                item.timestamp,
+                // Chat Canvas / Messages List
+                Expanded(
+                  child: chatState.isLoadingMessages
+                      ? const Center(child: AppLoadingIndicator())
+                      : chatState.hasMessagesError && displayMessages.isEmpty
+                      ? Center(
+                          child: AppErrorView(
+                            error: chatState.messagesError,
+                            backgroundColor: canvasColor,
+                            onRetry: () {
+                              if (chatState.currentChatId != null) {
+                                ref
+                                    .read(genericAiChatProvider.notifier)
+                                    .selectConversation(
+                                      chatState.currentChatId!,
+                                    );
+                              }
+                            },
+                          ),
+                        )
+                      : displayMessages.isEmpty
+                      ? SafeArea(
+                          top: false,
+                          bottom: bottomInset == 0,
+                          child: _AiEmptyState(
+                            notice: noticeBanner,
+                            composer: buildComposer(),
+                            onSuggestion: isInputBlocked
+                                ? null
+                                : _handleSuggestion,
+                          ),
+                        )
+                      : AppSemantics.scrollableList(
+                          itemCount: displayMessages.length,
+                          label: l10n.aiSupportTitle,
+                          child:
+                              NotificationListener<ScrollMetricsNotification>(
+                                onNotification: (notification) {
+                                  if (notification.metrics.pixels >
+                                          notification
+                                              .metrics
+                                              .maxScrollExtent &&
+                                      notification.metrics.maxScrollExtent >=
+                                          0) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          _clampScrollBounds();
+                                        });
+                                  }
+                                  return false;
+                                },
+                                child: ListView.builder(
+                                  key: ValueKey(
+                                    chatState.currentChatId ?? 'new_chat',
+                                  ),
+                                  controller: _scrollController,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: design.spacing.md,
+                                    vertical: design.spacing.sm * 1.5,
+                                  ),
+                                  itemCount: displayMessages.length,
+                                  itemBuilder: (context, index) {
+                                    final item = displayMessages[index];
+                                    if (item.isUser) {
+                                      return AiUserMessageBubble(
+                                        message: item.text,
+                                        attachments: item.attachments,
+                                        timestamp: DateFormatter.formatTime(
+                                          item.timestamp,
+                                        ),
+                                        isSending: item.isSending,
+                                        hasSendError: item.hasSendError,
+                                        onRetry: () =>
+                                            _handleRetry(item.id, true),
+                                      );
+                                    }
+                                    final status = item.hasGenerationError
+                                        ? AiAssistantStatus.failed
+                                        : item.isStreaming
+                                        ? AiAssistantStatus.generating
+                                        : item.isStopped
+                                        ? AiAssistantStatus.stopped
+                                        : AiAssistantStatus.completed;
+
+                                    return AiAssistantCard(
+                                      message: item.text,
+                                      timestamp: DateFormatter.formatTime(
+                                        item.timestamp,
+                                      ),
+                                      status: status,
+                                      onRetry: () =>
+                                          _handleRetry(item.id, false),
+                                      onCopy: () => _handleCopy(item.text),
+                                    );
+                                  },
+                                ),
                               ),
-                              isSending: item.isSending,
-                              hasSendError: item.hasSendError,
-                              onRetry: () => _handleRetry(item.id, true),
-                            );
-                          }
-                          final status = item.hasGenerationError
-                              ? AiAssistantStatus.failed
-                              : item.isStreaming
-                              ? AiAssistantStatus.generating
-                              : item.isStopped
-                              ? AiAssistantStatus.stopped
-                              : AiAssistantStatus.completed;
+                        ),
+                ),
 
-                          return AiAssistantCard(
-                            message: item.text,
-                            timestamp: DateFormatter.formatTime(item.timestamp),
-                            status: status,
-                            onRetry: () => _handleRetry(item.id, false),
-                            onCopy: () => _handleCopy(item.text),
-                          );
-                        },
+                if (!showEmptyState) ...[
+                  // Quota / Rate-limit warning banner if active
+                  if (noticeBanner != null)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.xs,
+                      ),
+                      child: noticeBanner,
+                    ),
+
+                  // Composer docked to bottom
+                  Container(
+                    decoration: BoxDecoration(
+                      color: canvasColor,
+                      border: Border(
+                        top: BorderSide(
+                          color: design.colors.border,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      bottom: bottomInset == 0,
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: design.spacing.md,
+                          end: design.spacing.md,
+                          top: design.spacing.sm * 1.5,
+                          bottom: design.spacing.sm * 1.5,
+                        ),
+                        child: buildComposer(),
                       ),
                     ),
                   ),
-          ),
-
-          if (!showEmptyState) ...[
-            // Quota / Rate-limit warning banner if active
-            if (noticeBanner != null)
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.md,
-                  vertical: design.spacing.xs,
-                ),
-                child: noticeBanner,
-              ),
-
-            // Composer docked to bottom
-            Container(
-              decoration: BoxDecoration(
-                color: canvasColor,
-                border: Border(
-                  top: BorderSide(color: design.colors.border, width: 1.0),
-                ),
-              ),
-              child: SafeArea(
-                top: false,
-                bottom: bottomInset == 0,
-                child: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: design.spacing.md,
-                    end: design.spacing.md,
-                    top: design.spacing.sm * 1.5,
-                    bottom: design.spacing.sm * 1.5,
-                  ),
-                  child: buildComposer(),
-                ),
-              ),
+                ],
+              ],
             ),
-          ],
+          ),
+          _buildAttachmentSourceSheet(design, l10n),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAttachmentSourceSheet(DesignConfig design, dynamic l10n) {
+    return AppBottomSheet(
+      isOpen: _isAttachmentSheetOpen,
+      onClose: () => setState(() => _isAttachmentSheetOpen = false),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          design.spacing.sm,
+          0,
+          design.spacing.sm,
+          design.spacing.md,
+        ),
+        child: SafeArea(
+          top: false,
+          child: Container(
+            padding: EdgeInsets.fromLTRB(
+              design.spacing.lg,
+              design.spacing.md,
+              design.spacing.lg,
+              design.spacing.lg,
+            ),
+            decoration: BoxDecoration(
+              color: design.colors.card,
+              borderRadius: BorderRadius.all(
+                Radius.circular(design.radius.xxl),
+              ),
+              boxShadow: design.shadows.floating,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Handle Bar
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: design.spacing.xl * 1.5,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: design.colors.border,
+                      borderRadius: BorderRadius.circular(design.radius.full),
+                    ),
+                  ),
+                ),
+                SizedBox(height: design.spacing.md),
+                _buildSheetOption(
+                  key: const ValueKey('ai_attach_camera_option'),
+                  icon: LucideIcons.camera,
+                  label: l10n.aiComposerTakePhoto,
+                  design: design,
+                  onTap: () => _pickImage(ImageSource.camera),
+                ),
+                _buildSheetOption(
+                  key: const ValueKey('ai_attach_gallery_option'),
+                  icon: LucideIcons.image,
+                  label: l10n.aiComposerAttachImage,
+                  design: design,
+                  onTap: () => _pickImage(ImageSource.gallery),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSheetOption({
+    Key? key,
+    required IconData icon,
+    required String label,
+    required DesignConfig design,
+    required VoidCallback onTap,
+  }) {
+    return AppSemantics.button(
+      label: label,
+      onTap: onTap,
+      child: AppFocusable(
+        key: key,
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: design.spacing.md),
+          child: Row(
+            children: [
+              Icon(icon, size: 20, color: design.colors.textPrimary),
+              SizedBox(width: design.spacing.md),
+              AppText.bodySmall(
+                label,
+                color: design.colors.textPrimary,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

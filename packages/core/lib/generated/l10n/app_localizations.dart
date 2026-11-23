@@ -6353,6 +6353,12 @@ abstract class AppLocalizations {
   /// **'Send message'**
   String get aiComposerSendMessage;
 
+  /// No description provided for @aiComposerDeleteAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove attachment'**
+  String get aiComposerDeleteAttachment;
+
   /// No description provided for @aiAssistantLabel.
   ///
   /// In en, this message translates to:

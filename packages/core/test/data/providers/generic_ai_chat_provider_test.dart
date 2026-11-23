@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -12,11 +13,15 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   int listConversationsCalls = 0;
   int ensureSessionCalls = 0;
   int deleteConversationCalls = 0;
+  int uploadAttachmentsCalls = 0;
+  int deleteAttachmentCalls = 0;
 
   String? lastQuery;
   String? lastRequestId;
   String? lastChatId;
   String? lastDeletedChatId;
+  String? lastDeletedAttachmentId;
+  List<String>? lastAttachmentIds;
 
   AiChatTurnResponseDto? nextTurnResponse;
   AiConversationDto? nextStatusResponse;
@@ -46,9 +51,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   Stream<AiChatStreamEvent> streamConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     streamConversationCalls++;
+    lastAttachmentIds = attachmentIds;
     final factory = streamFactory;
     if (factory != null) {
       lastRequestId = requestId;
@@ -56,7 +63,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
       return factory(requestId, query, null);
     }
     return _synthesizeStream(
-      () => startConversation(requestId: requestId, query: query),
+      () => startConversation(
+        requestId: requestId,
+        query: query,
+        attachmentIds: attachmentIds,
+      ),
     );
   }
 
@@ -65,9 +76,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     streamFollowUpCalls++;
+    lastAttachmentIds = attachmentIds;
     final factory = streamFactory;
     if (factory != null) {
       lastChatId = chatId;
@@ -80,8 +93,35 @@ class _FakeLearnLensRepository implements LearnLensRepository {
         chatId: chatId,
         requestId: requestId,
         query: query,
+        attachmentIds: attachmentIds,
       ),
     );
+  }
+
+  @override
+  Future<AiAttachmentUploadResponseDto> uploadAttachments({
+    required List<MultipartFile> files,
+    CancelToken? cancelToken,
+  }) async {
+    uploadAttachmentsCalls++;
+    return AiAttachmentUploadResponseDto(
+      items: List.generate(
+        files.length,
+        (i) => AiAttachmentDto(
+          attachmentId: 'att-$i',
+          url: 'https://cdn.example.com/att-$i.png',
+        ),
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteAttachment({
+    required String attachmentId,
+    CancelToken? cancelToken,
+  }) async {
+    deleteAttachmentCalls++;
+    lastDeletedAttachmentId = attachmentId;
   }
 
   /// Mirrors the JSON turn behaviour as `accepted` + `done` events so the
@@ -122,11 +162,13 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   Future<AiChatTurnResponseDto> startConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     startConversationCalls++;
     lastRequestId = requestId;
     lastQuery = query;
+    lastAttachmentIds = attachmentIds;
 
     if (errorToThrow != null) {
       throw errorToThrow!;
@@ -156,12 +198,14 @@ class _FakeLearnLensRepository implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     sendFollowUpCalls++;
     lastChatId = chatId;
     lastRequestId = requestId;
     lastQuery = query;
+    lastAttachmentIds = attachmentIds;
 
     if (errorToThrow != null) {
       throw errorToThrow!;
@@ -2386,6 +2430,76 @@ void main() {
 
           completer.complete();
           await deleteFuture;
+        },
+      );
+    });
+
+    group('GenericAiChatNotifier - Attachments', () {
+      setUp(() {
+        fakeRepository.streamFactory = null;
+      });
+
+      test('stageAttachment stages image and completes upload', () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final bytes = Uint8List.fromList([1, 2, 3, 4]);
+
+        await notifier.stageAttachment(
+          bytes: bytes,
+          fileName: 'diagram.png',
+          mimeType: 'image/png',
+        );
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.stagedAttachments.length, 1);
+        final staged = state.stagedAttachments.first;
+        expect(staged.isUploading, isFalse);
+        expect(staged.hasError, isFalse);
+        expect(staged.attachmentId, 'att-0');
+        expect(fakeRepository.uploadAttachmentsCalls, 1);
+      });
+
+      test(
+        'removeAttachment removes staged item and calls repository deletion',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'question.jpg',
+          );
+
+          final staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.attachmentId, isNotNull);
+
+          await notifier.removeAttachment(staged.localId);
+
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+          expect(fakeRepository.deleteAttachmentCalls, 1);
+          expect(fakeRepository.lastDeletedAttachmentId, staged.attachmentId);
+        },
+      );
+
+      test(
+        'sendMessage passes attachmentIds and clears staged attachments',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'problem.png',
+          );
+
+          await notifier.sendMessage('Solve this equation');
+
+          expect(fakeRepository.lastAttachmentIds, ['att-0']);
+          final state = container.read(genericAiChatProvider);
+          expect(state.stagedAttachments, isEmpty);
+          expect(state.messages.first.attachments, hasLength(1));
+          expect(state.messages.first.attachments.first.attachmentId, 'att-0');
         },
       );
     });

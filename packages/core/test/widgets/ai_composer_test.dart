@@ -5,6 +5,9 @@ import 'package:core/core.dart';
 void main() {
   Widget buildSubject({
     ValueChanged<String>? onSend,
+    VoidCallback? onAttachImage,
+    ValueChanged<String>? onRemoveAttachment,
+    List<StagedAttachment> stagedAttachments = const [],
     bool enabled = true,
     String? hintText,
     TextEditingController? controller,
@@ -26,6 +29,9 @@ void main() {
           alignment: Alignment.topCenter,
           child: AiComposer(
             onSend: onSend,
+            onAttachImage: onAttachImage,
+            onRemoveAttachment: onRemoveAttachment,
+            stagedAttachments: stagedAttachments,
             enabled: enabled,
             hintText: hintText,
             controller: controller,
@@ -225,5 +231,51 @@ void main() {
     await tester.tap(find.byIcon(LucideIcons.plus));
     await tester.pump();
     expect(newChatCount, 1);
+  });
+
+  testWidgets(
+    'displays attach image button with plus icon and triggers onAttachImage',
+    (tester) async {
+      var attachCount = 0;
+      await tester.pumpWidget(buildSubject(onAttachImage: () => attachCount++));
+      await tester.pumpAndSettle();
+
+      final attachButton = find.byKey(
+        const ValueKey('ai_composer_attach_button'),
+      );
+      expect(attachButton, findsOneWidget);
+      expect(
+        find.descendant(
+          of: attachButton,
+          matching: find.byIcon(LucideIcons.plus),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(attachButton);
+      await tester.pump();
+      expect(attachCount, 1);
+    },
+  );
+
+  testWidgets('renders staged attachments and triggers onRemoveAttachment', (
+    tester,
+  ) async {
+    String? removedId;
+    await tester.pumpWidget(
+      buildSubject(
+        stagedAttachments: const [
+          StagedAttachment(localId: 'staged-1', fileName: 'photo.jpg'),
+        ],
+        onRemoveAttachment: (id) => removedId = id,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(LucideIcons.x), findsOneWidget);
+
+    await tester.tap(find.byIcon(LucideIcons.x));
+    await tester.pump();
+    expect(removedId, 'staged-1');
   });
 }

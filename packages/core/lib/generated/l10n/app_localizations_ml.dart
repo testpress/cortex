@@ -3606,6 +3606,9 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiComposerSendMessage => 'സന്ദേശം അയക്കുക';
 
   @override
+  String get aiComposerDeleteAttachment => 'അറ്റാച്ച്മെന്റ് നീക്കംചെയ്യുക';
+
+  @override
   String get aiAssistantLabel => 'AI അസിസ്റ്റന്റ്';
 
   @override

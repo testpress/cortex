@@ -3607,6 +3607,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiComposerSendMessage => 'செய்தி அனுப்பவும்';
 
   @override
+  String get aiComposerDeleteAttachment => 'இணைப்பை நீக்கு';
+
+  @override
   String get aiAssistantLabel => 'AI உதவியாளர்';
 
   @override

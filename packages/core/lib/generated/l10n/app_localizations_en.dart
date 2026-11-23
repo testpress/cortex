@@ -3552,6 +3552,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiComposerSendMessage => 'Send message';
 
   @override
+  String get aiComposerDeleteAttachment => 'Remove attachment';
+
+  @override
   String get aiAssistantLabel => 'AI Assistant';
 
   @override

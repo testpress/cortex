@@ -1341,6 +1341,7 @@
   "aiComposerAttachImage": "ചിത്രം ചേർക്കുക",
   "aiComposerTakePhoto": "ഫോട്ടോ എടുക്കുക",
   "aiComposerSendMessage": "സന്ദേശം അയക്കുക",
+  "aiComposerDeleteAttachment": "അറ്റാച്ച്മെന്റ് നീക്കംചെയ്യുക",
   "aiAssistantLabel": "AI അസിസ്റ്റന്റ്",
   "aiGenerationError": "പ്രതികരണം സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
   "aiTryAgain": "വീണ്ടും ശ്രമിക്കുക",
