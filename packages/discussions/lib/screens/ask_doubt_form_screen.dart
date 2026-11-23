@@ -9,6 +9,11 @@ import '../widgets/forum_composer.dart';
 import '../widgets/doubt_context_badge.dart';
 import '../widgets/hierarchical_topic_picker.dart';
 
+final imagePickerProvider = Provider<ImagePicker>((ref) => ImagePicker());
+final imageCropperProvider = Provider<AppImageCropper>(
+  (ref) => AppImageCropper(),
+);
+
 class AskDoubtFormScreen extends ConsumerStatefulWidget {
   final int? chapterContentId;
   final String? lessonTitle;
@@ -44,30 +49,61 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   final List<String> _attachments = [];
-  final ImagePicker _picker = ImagePicker();
 
   int? _finalizedTopicId;
 
   Future<void> _pickImages() async {
     if (_attachments.length >= 3) return;
 
-    final images = await _picker.pickMultiImage();
-    if (images.isNotEmpty) {
-      setState(() {
+    final picker = ref.read(imagePickerProvider);
+    final cropper = ref.read(imageCropperProvider);
+
+    final images = await picker.pickMultiImage();
+    if (images.isNotEmpty && mounted) {
+      setState(() => _isProcessingImage = true);
+      try {
         final remaining = 3 - _attachments.length;
-        _attachments.addAll(images.take(remaining).map((image) => image.path));
-      });
+        final selectedImages = images.take(remaining).toList();
+
+        for (final img in selectedImages) {
+          if (!mounted || _attachments.length >= 3) break;
+          final croppedPath = await cropper.crop(context, imagePath: img.path);
+          if (croppedPath == null) break;
+          if (mounted) {
+            setState(() {
+              _attachments.add(croppedPath);
+            });
+          }
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isProcessingImage = false);
+        }
+      }
     }
   }
 
   Future<void> _pickFromCamera() async {
     if (_attachments.length >= 3) return;
 
-    final image = await _picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      setState(() {
-        _attachments.add(image.path);
-      });
+    final picker = ref.read(imagePickerProvider);
+    final cropper = ref.read(imageCropperProvider);
+
+    final image = await picker.pickImage(source: ImageSource.camera);
+    if (image != null && mounted) {
+      setState(() => _isProcessingImage = true);
+      try {
+        final croppedPath = await cropper.crop(context, imagePath: image.path);
+        if (croppedPath != null && mounted) {
+          setState(() {
+            _attachments.add(croppedPath);
+          });
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isProcessingImage = false);
+        }
+      }
     }
   }
 
@@ -78,6 +114,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
   bool _isTopicFinalized = false;
   bool _isSubmitSheetOpen = false;
   bool _isSubmitting = false;
+  bool _isProcessingImage = false;
 
   Future<
     ({
@@ -214,7 +251,7 @@ class _AskDoubtFormScreenState extends ConsumerState<AskDoubtFormScreen> {
             },
           ),
         ),
-        if (_isSubmitting)
+        if (_isSubmitting || _isProcessingImage)
           Positioned.fill(
             child: Container(
               color: design.colors.card.withValues(alpha: 0.7),
