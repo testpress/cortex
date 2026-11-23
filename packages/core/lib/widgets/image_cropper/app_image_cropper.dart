@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import '../../design/design_config.dart';
 import '../../design/design_provider.dart';
 import '../../localization/l10n_helper.dart';
 
@@ -22,27 +23,28 @@ class AppImageCropper {
   }) async {
     final design = Design.of(context);
     final l10n = L10n.of(context);
-    final file = File(imagePath);
-    final exists = await file.exists();
-
-    if (!exists) {
-      return null;
-    }
+    final studioColors = DesignColors.dark();
 
     try {
+      final file = File(imagePath);
+      final exists = await file.exists();
+
+      if (!exists) {
+        return null;
+      }
+
       final croppedFile = await _cropper.cropImage(
         sourcePath: imagePath,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: l10n.cropImage,
-            // Dedicated dark photo studio theme for media editing across light & dark modes
-            toolbarColor: const Color(0xFF18181B),
-            toolbarWidgetColor: const Color(0xFFFAFAFA),
+            toolbarColor: studioColors.surface,
+            toolbarWidgetColor: studioColors.textPrimary,
             activeControlsWidgetColor: design.colors.primary,
             statusBarLight: false,
             navBarLight: false,
-            backgroundColor: const Color(0xFF09090B),
-            dimmedLayerColor: const Color(0x8A000000),
+            backgroundColor: studioColors.canvas,
+            dimmedLayerColor: studioColors.overlay,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
           ),

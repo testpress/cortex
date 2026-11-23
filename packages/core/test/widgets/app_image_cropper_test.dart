@@ -160,19 +160,17 @@ void main() {
           ?.whereType<IOSUiSettings>()
           .firstOrNull;
 
+      final studioColors = DesignColors.dark();
       expect(androidSettings?.toolbarTitle, equals('Crop Image'));
-      expect(androidSettings?.toolbarColor, equals(const Color(0xFF18181B)));
+      expect(androidSettings?.toolbarColor, equals(studioColors.surface));
       expect(
         androidSettings?.toolbarWidgetColor,
-        equals(const Color(0xFFFAFAFA)),
+        equals(studioColors.textPrimary),
       );
       expect(androidSettings?.statusBarLight, isFalse);
       expect(androidSettings?.navBarLight, isFalse);
-      expect(androidSettings?.backgroundColor, equals(const Color(0xFF09090B)));
-      expect(
-        androidSettings?.dimmedLayerColor,
-        equals(const Color(0x8A000000)),
-      );
+      expect(androidSettings?.backgroundColor, equals(studioColors.canvas));
+      expect(androidSettings?.dimmedLayerColor, equals(studioColors.overlay));
       expect(iosSettings?.title, equals('Crop Image'));
     });
 

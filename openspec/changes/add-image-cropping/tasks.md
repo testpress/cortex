@@ -20,3 +20,6 @@
 - [x] 4.2 Remove fixed portrait orientation from `UCropActivity` to support tablets and landscape
 - [x] 4.3 Add native Android uCrop dark theme color and shape overrides in the app shell
 - [x] 4.4 Add unit test coverage for the thrown-exception error path
+- [x] 4.5 Use `DesignColors.dark()` design tokens for Android cropper UI settings
+- [x] 4.6 Define `AppUCropTheme` with `fitsSystemWindows="true"` and `Theme.AppCompat.NoActionBar` in Android manifest and styles
+- [x] 4.7 Wrap `file.exists()` inside the `try` block to capture I/O exceptions in Sentry
