@@ -171,6 +171,7 @@ void main() {
       expect(androidSettings?.navBarLight, isFalse);
       expect(androidSettings?.backgroundColor, equals(studioColors.canvas));
       expect(androidSettings?.dimmedLayerColor, equals(studioColors.overlay));
+      expect(androidSettings?.lockAspectRatio, isFalse);
       expect(iosSettings?.title, equals('Crop Image'));
     });
 
