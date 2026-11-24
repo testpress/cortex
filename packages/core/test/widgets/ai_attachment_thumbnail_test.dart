@@ -78,6 +78,7 @@ void main() {
   Widget buildSubject({
     required StagedAttachment attachment,
     VoidCallback? onRemove,
+    VoidCallback? onRetry,
   }) {
     return DesignProvider(
       config: DesignConfig.defaults(),
@@ -94,6 +95,7 @@ void main() {
           child: AiAttachmentThumbnail(
             attachment: attachment,
             onRemove: onRemove,
+            onRetry: onRetry,
           ),
         ),
       ),
@@ -186,6 +188,54 @@ void main() {
 
       expect(find.byIcon(LucideIcons.alertCircle), findsOneWidget);
       expect(find.bySemanticsLabel('Failed to upload image'), findsOneWidget);
+    });
+
+    testWidgets('tapping error thumbnail triggers onRetry callback', (
+      tester,
+    ) async {
+      var retryCalled = false;
+      const attachment = StagedAttachment(
+        localId: 'local-retry',
+        fileName: 'failed.png',
+        hasError: true,
+        errorCode: 'upload_failed',
+      );
+
+      await tester.pumpWidget(
+        buildSubject(attachment: attachment, onRetry: () => retryCalled = true),
+      );
+
+      await tester.tap(find.byType(AiAttachmentThumbnail));
+      await tester.pump();
+
+      expect(retryCalled, isTrue);
+    });
+
+    testWidgets('tapping delete button triggers onRemove and not onRetry', (
+      tester,
+    ) async {
+      var removeCalled = false;
+      var retryCalled = false;
+      const attachment = StagedAttachment(
+        localId: 'local-remove-test',
+        fileName: 'failed.png',
+        hasError: true,
+        errorCode: 'upload_failed',
+      );
+
+      await tester.pumpWidget(
+        buildSubject(
+          attachment: attachment,
+          onRemove: () => removeCalled = true,
+          onRetry: () => retryCalled = true,
+        ),
+      );
+
+      await tester.tap(find.byIcon(LucideIcons.x));
+      await tester.pump();
+
+      expect(removeCalled, isTrue);
+      expect(retryCalled, isFalse);
     });
   });
 }

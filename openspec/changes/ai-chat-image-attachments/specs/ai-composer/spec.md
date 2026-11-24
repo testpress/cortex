@@ -20,3 +20,11 @@ The composer SHALL display a plus icon (`+`) attachment trigger action and horiz
 #### Scenario: Staged image upload failure display
 - **WHEN** an attachment upload fails
 - **THEN** composer SHALL mark the thumbnail with an error indicator and accessible localized failure label without hardcoding English strings in the provider.
+
+#### Scenario: Tap to retry failed attachment upload
+- **WHEN** the user taps an attachment thumbnail in an error state
+- **THEN** the composer SHALL invoke the retry callback for that attachment's local identifier.
+
+#### Scenario: Guard input text on keyboard submit with attachment error
+- **WHEN** the user submits via keyboard while any staged attachment has an error
+- **THEN** composer SHALL not clear the input text or dispatch the send callback.

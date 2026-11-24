@@ -297,4 +297,34 @@ void main() {
 
     expect(find.bySemanticsLabel('Failed to upload image'), findsOneWidget);
   });
+
+  testWidgets(
+    'submitting via enter does not clear text or send when attachment has error',
+    (tester) async {
+      String? sentText;
+      final controller = TextEditingController(text: 'My prompt');
+
+      await tester.pumpWidget(
+        buildSubject(
+          controller: controller,
+          onSend: (text) => sentText = text,
+          stagedAttachments: const [
+            StagedAttachment(
+              localId: 'local-err',
+              fileName: 'err.png',
+              hasError: true,
+              errorCode: 'upload_failed',
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+
+      expect(sentText, isNull);
+      expect(controller.text, 'My prompt');
+    },
+  );
 }

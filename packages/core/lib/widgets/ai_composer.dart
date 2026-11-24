@@ -8,6 +8,7 @@ class AiComposer extends StatefulWidget {
     this.onSend,
     this.onAttachImage,
     this.onRemoveAttachment,
+    this.onRetryAttachment,
     this.stagedAttachments = const [],
     this.maxAttachments = 4,
     this.enabled = true,
@@ -20,6 +21,7 @@ class AiComposer extends StatefulWidget {
   final ValueChanged<String>? onSend;
   final VoidCallback? onAttachImage;
   final ValueChanged<String>? onRemoveAttachment;
+  final ValueChanged<String>? onRetryAttachment;
   final List<StagedAttachment> stagedAttachments;
   final int maxAttachments;
   final bool enabled;
@@ -83,6 +85,9 @@ class _AiComposerState extends State<AiComposer> {
     if (!widget.enabled) return;
     final hasUploading = widget.stagedAttachments.any((a) => a.isUploading);
     if (hasUploading) return;
+
+    final hasError = widget.stagedAttachments.any((a) => a.hasError);
+    if (hasError) return;
 
     final text = _controller.text.trim();
     if (text.isNotEmpty || widget.stagedAttachments.isNotEmpty) {
@@ -175,6 +180,11 @@ class _AiComposerState extends State<AiComposer> {
                               attachment: staged,
                               onRemove: widget.onRemoveAttachment != null
                                   ? () => widget.onRemoveAttachment!(
+                                      staged.localId,
+                                    )
+                                  : null,
+                              onRetry: widget.onRetryAttachment != null
+                                  ? () => widget.onRetryAttachment!(
                                       staged.localId,
                                     )
                                   : null,

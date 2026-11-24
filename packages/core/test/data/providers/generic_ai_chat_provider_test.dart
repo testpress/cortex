@@ -2548,6 +2548,107 @@ void main() {
       );
 
       test(
+        'retryAttachment re-attempts upload and updates attachment state upon success',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.uploadAttachmentsError = Exception('Network dropped');
+
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'retry_test.png',
+          );
+
+          var staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.hasError, isTrue);
+
+          fakeRepository.uploadAttachmentsError = null;
+          await notifier.retryAttachment(staged.localId);
+
+          staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.hasError, isFalse);
+          expect(staged.isUploading, isFalse);
+          expect(staged.attachmentId, isNotNull);
+        },
+      );
+
+      test(
+        'retryAttachment ignores concurrent call when already uploading',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final completer = Completer<AiAttachmentUploadResponseDto>();
+          fakeRepository.uploadAttachmentsCompleter = completer;
+
+          final stageFuture = notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'concurrent.png',
+          );
+          final localId = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first
+              .localId;
+
+          // Calling retry while still uploading should return early
+          await notifier.retryAttachment(localId);
+          expect(fakeRepository.uploadAttachmentsCalls, 1);
+
+          completer.complete(
+            const AiAttachmentUploadResponseDto(
+              items: [
+                AiAttachmentDto(
+                  attachmentId: 'att-1',
+                  url: 'https://cdn/1.png',
+                ),
+              ],
+            ),
+          );
+          await stageFuture;
+        },
+      );
+
+      test(
+        'retryLastSend preserves attachments and permits image-only message retry',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'img_only.png',
+          );
+
+          // Simulate failed send
+          fakeRepository.errorToThrow = const LearnLensException(
+            message: 'Network offline',
+            code: 'network_error',
+          );
+
+          await notifier.sendMessage('');
+          var state = container.read(genericAiChatProvider);
+          expect(state.messages.length, 1);
+          final failedMsg = state.messages.first;
+          expect(failedMsg.hasSendError, isTrue);
+          expect(failedMsg.attachments.length, 1);
+
+          // Fix network and retry
+          fakeRepository.errorToThrow = null;
+          await notifier.retryLastSend(messageId: failedMsg.id);
+
+          state = container.read(genericAiChatProvider);
+          expect(state.messages.any((m) => m.hasSendError), isFalse);
+          expect(state.messages.first.attachments.length, 1);
+          expect(
+            state.messages.first.attachments.first.attachmentId,
+            isNotEmpty,
+          );
+        },
+      );
+
+      test(
         'sendMessage passes attachmentIds and clears staged attachments',
         () async {
           final notifier = container.read(genericAiChatProvider.notifier);

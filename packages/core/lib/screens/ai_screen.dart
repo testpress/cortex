@@ -54,6 +54,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
   double _lastBottomInset = 0;
   String? _activeChatId;
   bool _isAttachmentSheetOpen = false;
+  bool _isCroppingImage = false;
 
   @override
   void initState() {
@@ -206,6 +207,8 @@ class _AiScreenState extends ConsumerState<AiScreen>
       );
       if (picked == null || !mounted) return;
 
+      setState(() => _isCroppingImage = true);
+
       final cropper = widget.imageCropper ?? AppImageCropper();
       final croppedPath = await cropper.crop(context, imagePath: picked.path);
       if (croppedPath == null || !mounted) return;
@@ -287,6 +290,10 @@ class _AiScreenState extends ConsumerState<AiScreen>
         L10n.of(context).aiComposerAttachmentUploadFailed,
         isError: true,
       );
+    } finally {
+      if (mounted) {
+        setState(() => _isCroppingImage = false);
+      }
     }
   }
 
@@ -348,6 +355,10 @@ class _AiScreenState extends ConsumerState<AiScreen>
     ref.read(genericAiChatProvider.notifier).removeAttachment(localId).ignore();
   }
 
+  void _handleRetryAttachment(String localId) {
+    ref.read(genericAiChatProvider.notifier).retryAttachment(localId).ignore();
+  }
+
   void _handleRetry(String messageId, bool isUser) {
     if (isUser) {
       ref
@@ -368,6 +379,18 @@ class _AiScreenState extends ConsumerState<AiScreen>
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final chatState = ref.watch(genericAiChatProvider);
+
+    ref.listen<GenericAiChatState>(genericAiChatProvider, (previous, next) {
+      final prevErrors =
+          previous?.stagedAttachments.where((a) => a.hasError).length ?? 0;
+      final nextErrors = next.stagedAttachments.where((a) => a.hasError).length;
+      if (nextErrors > prevErrors) {
+        _showToast(
+          L10n.of(context).aiComposerAttachmentUploadFailed,
+          isError: true,
+        );
+      }
+    });
 
     final displayMessages = chatState.messages.isNotEmpty
         ? chatState.messages
@@ -444,6 +467,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
             ? _handleAttachImage
             : null,
         onRemoveAttachment: _handleRemoveAttachment,
+        onRetryAttachment: _handleRetryAttachment,
         controller: _composerController,
         focusNode: _composerFocusNode,
       );
@@ -629,6 +653,14 @@ class _AiScreenState extends ConsumerState<AiScreen>
             onSelectCamera: () => _pickImage(ImageSource.camera),
             onSelectGallery: () => _pickImage(ImageSource.gallery),
           ),
+          if (_isCroppingImage)
+            Positioned.fill(
+              key: const ValueKey('ai_crop_loading_overlay'),
+              child: Container(
+                color: design.colors.surface.withValues(alpha: 0.7),
+                child: const Center(child: AppLoadingIndicator()),
+              ),
+            ),
         ],
       ),
     );

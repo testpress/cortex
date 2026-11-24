@@ -8,17 +8,66 @@ class AiAttachmentThumbnail extends StatelessWidget {
     super.key,
     required this.attachment,
     this.onRemove,
+    this.onRetry,
   });
 
   final StagedAttachment attachment;
   final VoidCallback? onRemove;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
 
-    final chip = Padding(
+    Widget imageContent = Container(
+      width: 56.0,
+      height: 56.0,
+      decoration: BoxDecoration(
+        color: design.colors.surfaceVariant,
+        borderRadius: BorderRadius.circular(design.radius.md),
+        border: Border.all(
+          color: attachment.hasError
+              ? design.colors.error
+              : design.colors.border,
+          width: 1.0,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(design.radius.md),
+        child: attachment.bytes != null
+            ? Image.memory(
+                attachment.bytes!,
+                fit: BoxFit.cover,
+                width: 56.0,
+                height: 56.0,
+              )
+            : Center(
+                child: Icon(
+                  LucideIcons.image,
+                  color: design.colors.textSecondary,
+                  size: design.iconSize.sm,
+                ),
+              ),
+      ),
+    );
+
+    if (attachment.hasError) {
+      final childWidget = onRetry != null
+          ? GestureDetector(
+              onTap: onRetry,
+              behavior: HitTestBehavior.opaque,
+              child: imageContent,
+            )
+          : imageContent;
+      imageContent = AppSemantics.button(
+        label: l10n.aiComposerAttachmentUploadFailed,
+        onTap: onRetry,
+        child: childWidget,
+      );
+    }
+
+    return Padding(
       padding: const EdgeInsetsDirectional.only(top: 6.0, end: 6.0),
       child: SizedBox(
         width: 56.0,
@@ -26,37 +75,7 @@ class AiAttachmentThumbnail extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Container(
-              width: 56.0,
-              height: 56.0,
-              decoration: BoxDecoration(
-                color: design.colors.surfaceVariant,
-                borderRadius: BorderRadius.circular(design.radius.md),
-                border: Border.all(
-                  color: attachment.hasError
-                      ? design.colors.error
-                      : design.colors.border,
-                  width: 1.0,
-                ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(design.radius.md),
-                child: attachment.bytes != null
-                    ? Image.memory(
-                        attachment.bytes!,
-                        fit: BoxFit.cover,
-                        width: 56.0,
-                        height: 56.0,
-                      )
-                    : Center(
-                        child: Icon(
-                          LucideIcons.image,
-                          color: design.colors.textSecondary,
-                          size: design.iconSize.sm,
-                        ),
-                      ),
-              ),
-            ),
+            imageContent,
             if (attachment.isUploading)
               Container(
                 width: 56.0,
@@ -111,18 +130,20 @@ class AiAttachmentThumbnail extends StatelessWidget {
               PositionedDirectional(
                 bottom: 2.0,
                 end: 2.0,
-                child: Container(
-                  width: 16.0,
-                  height: 16.0,
-                  decoration: BoxDecoration(
-                    color: design.colors.error,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      LucideIcons.alertCircle,
-                      size: 10.0,
-                      color: design.colors.surface,
+                child: IgnorePointer(
+                  child: Container(
+                    width: 16.0,
+                    height: 16.0,
+                    decoration: BoxDecoration(
+                      color: design.colors.error,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.alertCircle,
+                        size: 10.0,
+                        color: design.colors.surface,
+                      ),
                     ),
                   ),
                 ),
@@ -131,14 +152,5 @@ class AiAttachmentThumbnail extends StatelessWidget {
         ),
       ),
     );
-
-    if (attachment.hasError) {
-      return AppSemantics.container(
-        label: l10n.aiComposerAttachmentUploadFailed,
-        child: chip,
-      );
-    }
-
-    return chip;
   }
 }

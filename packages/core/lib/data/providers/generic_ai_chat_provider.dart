@@ -381,6 +381,57 @@ class GenericAiChat extends _$GenericAiChat {
       stagedAttachments: [...state.stagedAttachments, newAttachment],
     );
 
+    await _performAttachmentUpload(
+      localId: localId,
+      bytes: bytes,
+      fileName: fileName,
+      mimeType: mimeType,
+    );
+  }
+
+  /// Retries uploading a failed staged attachment.
+  Future<void> retryAttachment(String localId) async {
+    final matching = state.stagedAttachments
+        .where((a) => a.localId == localId)
+        .firstOrNull;
+    if (matching == null || matching.bytes == null) {
+      return;
+    }
+    if (matching.isUploading) return;
+
+    final reset = state.stagedAttachments.map((a) {
+      if (a.localId == localId) {
+        return StagedAttachment(
+          localId: a.localId,
+          bytes: a.bytes,
+          fileName: a.fileName,
+          mimeType: a.mimeType,
+          previewUrl: a.previewUrl,
+          attachmentId: a.attachmentId,
+          isUploading: true,
+          hasError: false,
+          errorCode: null,
+          errorMessage: null,
+        );
+      }
+      return a;
+    }).toList();
+    state = state.copyWith(stagedAttachments: reset);
+
+    await _performAttachmentUpload(
+      localId: localId,
+      bytes: matching.bytes!,
+      fileName: matching.fileName ?? 'attachment.jpg',
+      mimeType: matching.mimeType ?? 'image/jpeg',
+    );
+  }
+
+  Future<void> _performAttachmentUpload({
+    required String localId,
+    required Uint8List bytes,
+    required String fileName,
+    required String mimeType,
+  }) async {
     try {
       DioMediaType? parsedContentType;
       try {
@@ -504,9 +555,15 @@ class GenericAiChat extends _$GenericAiChat {
 
   /// Sends a user message. If no conversation is active, starts a new conversation;
   /// otherwise sends a follow-up query in the existing conversation.
-  Future<void> sendMessage(String query, {String? customRequestId}) async {
+  Future<void> sendMessage(
+    String query, {
+    String? customRequestId,
+    List<AiAttachmentDto>? replayAttachments,
+  }) async {
     final trimmed = query.trim();
-    final hasAttachments = state.stagedAttachments.isNotEmpty;
+    final hasAttachments = replayAttachments != null
+        ? replayAttachments.isNotEmpty
+        : state.stagedAttachments.isNotEmpty;
     if (trimmed.isEmpty && !hasAttachments) return;
     if (state.hasAccessDenied ||
         state.isSending ||
@@ -561,13 +618,14 @@ class GenericAiChat extends _$GenericAiChat {
             (m) => m?.requestId == customRequestId && m?.isUser == true,
             orElse: () => null,
           );
-      attachmentIds = existingMsg != null
-          ? existingMsg.attachments
-                .map((a) => a.attachmentId)
-                .where((id) => id.isNotEmpty)
-                .toList()
-          : <String>[];
-      attachments = existingMsg?.attachments ?? const <AiAttachmentDto>[];
+      attachments =
+          replayAttachments ??
+          existingMsg?.attachments ??
+          const <AiAttachmentDto>[];
+      attachmentIds = attachments
+          .map((a) => a.attachmentId)
+          .where((id) => id.isNotEmpty)
+          .toList();
     }
 
     // Replays keep their original target; new submissions use the active chat.
@@ -1137,14 +1195,20 @@ class GenericAiChat extends _$GenericAiChat {
 
     if (msgIndex == -1) return;
     final failedMsg = state.messages[msgIndex];
-    if (failedMsg.text.trim().isEmpty) return;
+    if (failedMsg.text.trim().isEmpty && failedMsg.attachments.isEmpty) return;
+
+    final attachmentsToReplay = failedMsg.attachments;
 
     final updatedMessages = List<GenericAiChatMessage>.from(state.messages)
       ..removeAt(msgIndex);
 
     state = state.copyWith(messages: updatedMessages);
 
-    await sendMessage(failedMsg.text, customRequestId: failedMsg.requestId);
+    await sendMessage(
+      failedMsg.text,
+      customRequestId: failedMsg.requestId,
+      replayAttachments: attachmentsToReplay,
+    );
   }
 
   /// Retries generation after an assistant response failure.
@@ -1168,15 +1232,19 @@ class GenericAiChat extends _$GenericAiChat {
         .lastIndexWhere((m) => m.isUser);
     if (userMsgIndex == -1) return;
 
-    final query = state.messages[userMsgIndex].text;
-    if (query.trim().isEmpty) return;
+    final userMsg = state.messages[userMsgIndex];
+    if (userMsg.text.trim().isEmpty && userMsg.attachments.isEmpty) return;
 
     final updatedMessages = List<GenericAiChatMessage>.from(state.messages)
       ..removeAt(lastFailedIndex);
 
     state = state.copyWith(messages: updatedMessages);
 
-    await sendMessage(query);
+    await sendMessage(
+      userMsg.text,
+      customRequestId: userMsg.requestId,
+      replayAttachments: userMsg.attachments,
+    );
   }
 
   /// Starts polling `getConversationStatus` sequentially until the backend completes or fails generation,

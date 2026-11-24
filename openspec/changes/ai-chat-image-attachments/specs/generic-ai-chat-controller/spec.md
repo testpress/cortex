@@ -40,4 +40,14 @@ The controller SHALL construct `MultipartFile` using `DioMediaType.parse(mimeTyp
 - **WHEN** staging an attachment with a given `mimeType`
 - **THEN** the uploaded `MultipartFile` SHALL include `contentType` parsed from the specified `mimeType`.
 
+### Requirement: Attachment Upload Retry
+The controller SHALL allow retrying failed staged attachment uploads using stored local bytes and MIME type.
 
+#### Scenario: Retrying failed staged attachment upload
+- **WHEN** `retryAttachment` is invoked for a staged attachment with `hasError == true`
+- **THEN** the controller SHALL reset the attachment state to `isUploading == true` and `hasError == false`, re-attempt the upload with stored bytes and MIME type, and update the attachment ID upon success.
+- **AND** concurrent retry calls while `isUploading == true` SHALL be ignored.
+
+#### Scenario: Retrying failed message with attachments
+- **WHEN** `retryLastSend` or `retryGeneration` is invoked for a message containing attachments (including image-only messages)
+- **THEN** the controller SHALL preserve and re-dispatch the existing attachments with the request.

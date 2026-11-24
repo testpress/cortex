@@ -56,3 +56,14 @@ The AI chat screen SHALL validate that picked and cropped images match supported
 - **WHEN** a selected image has an unsupported format
 - **THEN** the screen SHALL display a localized toast (`aiChatUnsupportedImageFormat`) and discard the attachment without staging.
 
+### Requirement: Attachment Loading Feedback and Failure Toast
+The AI chat screen SHALL provide visual loading feedback during cropping transitions and surface error toasts when staged attachment uploads fail.
+
+#### Scenario: Visual indicator during image cropping preparation
+- **WHEN** the user initiates image attachment selection
+- **THEN** the screen SHALL display an `AppLoadingIndicator` overlay while cropping preparation is in progress.
+
+#### Scenario: Toast notification on attachment upload failure
+- **WHEN** an attachment upload fails in the generic AI chat state
+- **THEN** the screen SHALL display an error toast (`aiComposerAttachmentUploadFailed`) positioned above the bottom navigation bar.
+

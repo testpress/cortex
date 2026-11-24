@@ -1933,6 +1933,54 @@ void main() {
     },
   );
 
+  testWidgets(
+    'displays AppLoadingIndicator overlay while image cropping is in progress',
+    (tester) async {
+      final tempDir = Directory.systemTemp.createTempSync('ai_crop_loading');
+      addTearDown(() => tempDir.deleteSync(recursive: true));
+      final pickedFile = File('${tempDir.path}/picked.png')
+        ..writeAsBytesSync(_validPng);
+
+      final fakePicker = _FakeImagePicker()
+        ..pickedFile = XFile(pickedFile.path);
+      final completer = Completer<String?>();
+      final fakeCropper = _FakeAppImageCropper()..cropCompleter = completer;
+
+      await tester.pumpWidget(
+        buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+
+      expect(fakeCropper.cropCalls, 1);
+      expect(
+        find.byKey(const ValueKey('ai_crop_loading_overlay')),
+        findsOneWidget,
+      );
+
+      await tester.runAsync(() async {
+        completer.complete(pickedFile.path);
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+
+      expect(
+        find.byKey(const ValueKey('ai_crop_loading_overlay')),
+        findsNothing,
+      );
+    },
+  );
+
   testWidgets('does not stage attachment when user cancels cropping', (
     tester,
   ) async {
@@ -2327,6 +2375,7 @@ class _FakeImagePicker extends Fake implements ImagePicker {
 class _FakeAppImageCropper extends Fake implements AppImageCropper {
   String? cropResult;
   int cropCalls = 0;
+  Completer<String?>? cropCompleter;
 
   @override
   Future<String?> crop(
@@ -2334,6 +2383,9 @@ class _FakeAppImageCropper extends Fake implements AppImageCropper {
     required String imagePath,
   }) async {
     cropCalls++;
+    if (cropCompleter != null) {
+      return cropCompleter!.future;
+    }
     return cropResult;
   }
 }
