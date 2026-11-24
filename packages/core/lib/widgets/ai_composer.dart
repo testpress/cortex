@@ -16,6 +16,7 @@ class AiComposer extends StatefulWidget {
     this.controller,
     this.focusNode,
     this.onNewChat,
+    this.attachLayerLink,
   });
 
   final ValueChanged<String>? onSend;
@@ -26,6 +27,9 @@ class AiComposer extends StatefulWidget {
   final int maxAttachments;
   final bool enabled;
   final String? hintText;
+
+  /// Optional layer link for anchoring the attachment picker popover to the plus icon.
+  final LayerLink? attachLayerLink;
 
   /// Optional externally owned controller, for callers that prefill the input.
   final TextEditingController? controller;
@@ -52,6 +56,7 @@ class _AiComposerState extends State<AiComposer> {
   TextEditingController? _ownController;
   FocusNode? _ownFocusNode;
   late final ScrollController _textScrollController;
+  late final LayerLink _fallbackAttachLink = LayerLink();
 
   TextEditingController get _controller =>
       widget.controller ?? (_ownController ??= TextEditingController());
@@ -203,26 +208,30 @@ class _AiComposerState extends State<AiComposer> {
                                 widget.enabled &&
                                 widget.stagedAttachments.length <
                                     widget.maxAttachments;
-                            return AppSemantics.button(
-                              label: l10n.aiComposerAttachImage,
-                              enabled: canAttach,
-                              onTap: canAttach ? onAttachImage : null,
-                              child: GestureDetector(
-                                key: const ValueKey(
-                                  'ai_composer_attach_button',
-                                ),
+                            return CompositedTransformTarget(
+                              link:
+                                  widget.attachLayerLink ?? _fallbackAttachLink,
+                              child: AppSemantics.button(
+                                label: l10n.aiComposerAttachImage,
+                                enabled: canAttach,
                                 onTap: canAttach ? onAttachImage : null,
-                                behavior: HitTestBehavior.opaque,
-                                child: SizedBox(
-                                  width: _touchTarget,
-                                  height: _touchTarget,
-                                  child: Center(
-                                    child: Icon(
-                                      LucideIcons.plus,
-                                      color: canAttach
-                                          ? design.colors.textSecondary
-                                          : design.colors.textTertiary,
-                                      size: design.iconSize.md,
+                                child: GestureDetector(
+                                  key: const ValueKey(
+                                    'ai_composer_attach_button',
+                                  ),
+                                  onTap: canAttach ? onAttachImage : null,
+                                  behavior: HitTestBehavior.opaque,
+                                  child: SizedBox(
+                                    width: _touchTarget,
+                                    height: _touchTarget,
+                                    child: Center(
+                                      child: Icon(
+                                        LucideIcons.plus,
+                                        color: canAttach
+                                            ? design.colors.textSecondary
+                                            : design.colors.textTertiary,
+                                        size: design.iconSize.md,
+                                      ),
                                     ),
                                   ),
                                 ),

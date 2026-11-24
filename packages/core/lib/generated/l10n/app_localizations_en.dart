@@ -3543,10 +3543,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiComposerPlaceholder => 'Message';
 
   @override
-  String get aiComposerAttachImage => 'Attach image';
+  String get aiComposerAttachImage => 'Upload an image';
 
   @override
-  String get aiComposerTakePhoto => 'Take photo';
+  String get aiComposerTakePhoto => 'Take a photo';
 
   @override
   String get aiComposerSendMessage => 'Send message';

@@ -13,12 +13,12 @@ The system SHALL display user messages and assistant responses with formatted ti
 
 ## ADDED Requirements
 
-### Requirement: Attachment Source Selection Sheet
-The AI chat screen SHALL present a bottom sheet when the composer attachment action is tapped, offering camera and gallery sources, and invoke `AppImageCropper` prior to staging.
+### Requirement: Attachment Source Selection Popover
+The AI chat screen SHALL present a compact anchored popover above the attachment action when tapped, offering camera and gallery sources, and invoke `AppImageCropper` prior to staging.
 
 #### Scenario: Present camera and gallery source options with cropping
 - **WHEN** the user taps the composer attachment action
-- **THEN** an `AppBottomSheet` is displayed with Camera on top ("Take photo") and Gallery on the bottom ("Attach image"), encapsulated in `AiAttachmentPickerSheet`.
+- **THEN** a floating popover is displayed anchored above the attachment button with Gallery on top ("Upload an image") and Camera on the bottom ("Take a photo"), encapsulated in `AiAttachmentPickerSheet`.
 - **AND** selecting an image from either source invokes `AppImageCropper` for freeform cropping and rotation.
 - **AND** confirming the crop stages the cropped image attachment.
 - **AND** cancelling the crop discards the selection without staging.

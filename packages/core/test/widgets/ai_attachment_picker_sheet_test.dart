@@ -35,16 +35,23 @@ void main() {
       await tester.pumpWidget(buildSubject(isOpen: true));
       await tester.pumpAndSettle();
 
-      expect(
-        find.byKey(const ValueKey('ai_attach_camera_option')),
-        findsOneWidget,
+      final galleryOption = find.byKey(
+        const ValueKey('ai_attach_gallery_option'),
       );
-      expect(
-        find.byKey(const ValueKey('ai_attach_gallery_option')),
-        findsOneWidget,
+      final cameraOption = find.byKey(
+        const ValueKey('ai_attach_camera_option'),
       );
-      expect(find.text('Take photo'), findsOneWidget);
-      expect(find.text('Attach image'), findsOneWidget);
+
+      expect(galleryOption, findsOneWidget);
+      expect(cameraOption, findsOneWidget);
+      expect(find.text('Upload an image'), findsOneWidget);
+      expect(find.text('Take a photo'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.image), findsOneWidget);
+      expect(find.byIcon(LucideIcons.camera), findsOneWidget);
+
+      final galleryY = tester.getTopLeft(galleryOption).dy;
+      final cameraY = tester.getTopLeft(cameraOption).dy;
+      expect(galleryY, lessThan(cameraY));
     });
 
     testWidgets('tapping camera calls onSelectCamera', (tester) async {

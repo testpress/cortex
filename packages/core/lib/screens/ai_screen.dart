@@ -55,6 +55,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
   String? _activeChatId;
   bool _isAttachmentSheetOpen = false;
   bool _isCroppingImage = false;
+  final LayerLink _attachLayerLink = LayerLink();
 
   @override
   void initState() {
@@ -470,6 +471,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
         onRetryAttachment: _handleRetryAttachment,
         controller: _composerController,
         focusNode: _composerFocusNode,
+        attachLayerLink: _attachLayerLink,
       );
     }
 
@@ -649,6 +651,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
           ),
           AiAttachmentPickerSheet(
             isOpen: _isAttachmentSheetOpen,
+            anchorLink: _attachLayerLink,
             onClose: () => setState(() => _isAttachmentSheetOpen = false),
             onSelectCamera: () => _pickImage(ImageSource.camera),
             onSelectGallery: () => _pickImage(ImageSource.gallery),

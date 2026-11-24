@@ -1775,7 +1775,7 @@ void main() {
   );
 
   testWidgets(
-    'tapping attachment button opens bottom sheet with Camera top and Gallery bottom',
+    'tapping attachment button opens popover with Gallery top and Camera bottom',
     (tester) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -1798,20 +1798,24 @@ void main() {
       expect(cameraOption, findsOneWidget);
       expect(galleryOption, findsOneWidget);
 
-      expect(find.text('Take photo'), findsOneWidget);
-      expect(find.text('Attach image'), findsOneWidget);
+      expect(find.text('Upload an image'), findsOneWidget);
+      expect(find.text('Take a photo'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.image), findsOneWidget);
+      expect(find.byIcon(LucideIcons.camera), findsOneWidget);
 
-      // Verify Camera is above Gallery vertically
-      final cameraY = tester.getTopLeft(cameraOption).dy;
+      // Verify Gallery is above Camera vertically
       final galleryY = tester.getTopLeft(galleryOption).dy;
-      expect(cameraY, lessThan(galleryY));
+      final cameraY = tester.getTopLeft(cameraOption).dy;
+      expect(galleryY, lessThan(cameraY));
 
-      // Tapping an option dismisses the sheet
+      // Tapping an option dismisses the popover
       await tester.tap(cameraOption);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AppBottomSheet), findsOneWidget);
-      final sheet = tester.widget<AppBottomSheet>(find.byType(AppBottomSheet));
+      expect(find.byType(AiAttachmentPickerSheet), findsOneWidget);
+      final sheet = tester.widget<AiAttachmentPickerSheet>(
+        find.byType(AiAttachmentPickerSheet),
+      );
       expect(sheet.isOpen, isFalse);
     },
   );

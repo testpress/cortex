@@ -6338,13 +6338,13 @@ abstract class AppLocalizations {
   /// No description provided for @aiComposerAttachImage.
   ///
   /// In en, this message translates to:
-  /// **'Attach image'**
+  /// **'Upload an image'**
   String get aiComposerAttachImage;
 
   /// No description provided for @aiComposerTakePhoto.
   ///
   /// In en, this message translates to:
-  /// **'Take photo'**
+  /// **'Take a photo'**
   String get aiComposerTakePhoto;
 
   /// No description provided for @aiComposerSendMessage.
