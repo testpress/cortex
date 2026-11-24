@@ -1854,6 +1854,7 @@
   "aiComposerAttachmentUploadFailed": "Failed to upload image",
   "aiChatPermissionRequired": "Permission is required to attach images. Please enable it in Settings.",
   "aiChatAttachmentSizeExceeded": "Image size exceeds the 5 MB limit.",
+  "aiChatUnsupportedImageFormat": "Only JPEG, PNG, and WebP images are supported.",
   "aiAssistantLabel": "AI Assistant",
   "aiGenerationError": "Couldn't generate a response. Please try again.",
   "aiTryAgain": "Try again",

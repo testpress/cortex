@@ -7,12 +7,20 @@ The controller SHALL maintain staged attachment state, upload progress, and pass
 - **WHEN** sending turn in a new or existing conversation with staged attachments
 - **THEN** controller SHALL include the uploaded `attachment_ids` in `startConversation` or `sendFollowUpMessage` payload.
 
+#### Scenario: Gating staging by policy
+- **WHEN** `stageAttachment` is invoked while policy specifies `imageAttachmentsEnabled == false`
+- **THEN** the controller SHALL ignore the staging request.
+
 ### Requirement: Attachment Deletion and Cleanup Logging
 The controller SHALL attempt to delete staged attachments from the server when removed or cleared, logging any deletion failure without breaking local state.
 
 #### Scenario: Failed attachment deletion on remove
 - **WHEN** `removeAttachment` or `clearStagedAttachments` fails to delete an attachment on the server
 - **THEN** the failure SHALL be logged and the local staged state SHALL still be updated cleanly.
+
+#### Scenario: Clean up in-flight attachment upload cancelled before completion
+- **WHEN** an attachment upload completes after `clearStagedAttachments` or `removeAttachment` has removed the item from staged state
+- **THEN** the controller SHALL immediately delete the uploaded attachment from the server and log any deletion failure.
 
 ### Requirement: Guard Message Send on Upload and Ready State
 The controller SHALL block sending messages when any attachment is actively uploading or in an error state, and SHALL only submit attachments with valid server IDs.
@@ -24,5 +32,12 @@ The controller SHALL block sending messages when any attachment is actively uplo
 #### Scenario: Submitting only ready attachments
 - **WHEN** all staged attachments are ready (`isUploading == false`, `hasError == false`, and `attachmentId != null`)
 - **THEN** only valid `attachmentId` strings SHALL be passed to the turn submission and attached to the message.
+
+### Requirement: Upload Content Type Header
+The controller SHALL construct `MultipartFile` using `DioMediaType.parse(mimeType)` so image uploads carry their explicit content type header instead of generic binary stream.
+
+#### Scenario: Setting explicit content type on multipart file
+- **WHEN** staging an attachment with a given `mimeType`
+- **THEN** the uploaded `MultipartFile` SHALL include `contentType` parsed from the specified `mimeType`.
 
 

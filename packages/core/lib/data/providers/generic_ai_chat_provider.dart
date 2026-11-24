@@ -178,6 +178,7 @@ class GenericAiChatState {
   final bool hasInitError;
   final bool hasAccessDenied;
   final bool isDeletingConversation;
+  final bool imageAttachmentsEnabled;
 
   const GenericAiChatState({
     this.currentChatId,
@@ -200,6 +201,7 @@ class GenericAiChatState {
     this.hasInitError = false,
     this.hasAccessDenied = false,
     this.isDeletingConversation = false,
+    this.imageAttachmentsEnabled = false,
   });
 
   bool get hasActiveRateLimit {
@@ -232,6 +234,7 @@ class GenericAiChatState {
     bool? hasInitError,
     bool? hasAccessDenied,
     bool? isDeletingConversation,
+    bool? imageAttachmentsEnabled,
   }) {
     return GenericAiChatState(
       currentChatId: currentChatId == _sentinel
@@ -265,6 +268,8 @@ class GenericAiChatState {
       hasAccessDenied: hasAccessDenied ?? this.hasAccessDenied,
       isDeletingConversation:
           isDeletingConversation ?? this.isDeletingConversation,
+      imageAttachmentsEnabled:
+          imageAttachmentsEnabled ?? this.imageAttachmentsEnabled,
     );
   }
 }
@@ -311,7 +316,10 @@ class GenericAiChat extends _$GenericAiChat {
       _cancelPolling();
       _cancelActiveStreams();
     });
-    return const GenericAiChatState();
+    return GenericAiChatState(
+      imageAttachmentsEnabled:
+          _repository.policy?.imageAttachmentsEnabled ?? false,
+    );
   }
 
   /// Prepares the generic chat session when the AI tab opens.
@@ -319,9 +327,11 @@ class GenericAiChat extends _$GenericAiChat {
     try {
       state = state.copyWith(hasInitError: false, hasAccessDenied: false);
       await _repository.ensureGenericChatSession();
-      if (_repository.policy?.canGenerate == false) {
-        state = state.copyWith(hasAccessDenied: true);
-      }
+      final policy = _repository.policy;
+      state = state.copyWith(
+        hasAccessDenied: policy?.canGenerate == false,
+        imageAttachmentsEnabled: policy?.imageAttachmentsEnabled ?? false,
+      );
     } on LearnLensException catch (e) {
       if (_isAccessDeniedError(e)) {
         state = state.copyWith(hasAccessDenied: true, hasInitError: false);
@@ -349,7 +359,11 @@ class GenericAiChat extends _$GenericAiChat {
     required String fileName,
     String mimeType = 'image/jpeg',
   }) async {
-    final maxImages = _repository.policy?.maxImagesPerMessage ?? 4;
+    final policy = _repository.policy;
+    if (policy?.imageAttachmentsEnabled == false) {
+      return;
+    }
+    final maxImages = policy?.maxImagesPerMessage ?? 4;
     if (state.stagedAttachments.length >= maxImages) {
       return;
     }
@@ -368,7 +382,17 @@ class GenericAiChat extends _$GenericAiChat {
     );
 
     try {
-      final multipart = MultipartFile.fromBytes(bytes, filename: fileName);
+      DioMediaType? parsedContentType;
+      try {
+        parsedContentType = DioMediaType.parse(mimeType);
+      } catch (_) {
+        parsedContentType = DioMediaType('image', 'jpeg');
+      }
+      final multipart = MultipartFile.fromBytes(
+        bytes,
+        filename: fileName,
+        contentType: parsedContentType,
+      );
       final response = await _repository.uploadAttachments(files: [multipart]);
       if (response.items.isEmpty) {
         throw const LearnLensException(
@@ -377,6 +401,23 @@ class GenericAiChat extends _$GenericAiChat {
         );
       }
       final uploaded = response.items.first;
+
+      final isStillStaged = state.stagedAttachments.any(
+        (a) => a.localId == localId,
+      );
+      if (!isStillStaged) {
+        _repository
+            .deleteAttachment(attachmentId: uploaded.attachmentId)
+            .catchError((e, stackTrace) {
+              dev.log(
+                'Failed to delete orphaned in-flight attachment: ${uploaded.attachmentId}',
+                name: 'GenericAiChatNotifier',
+                error: e,
+                stackTrace: stackTrace,
+              );
+            });
+        return;
+      }
 
       final updated = state.stagedAttachments.map((a) {
         if (a.localId == localId) {
@@ -391,6 +432,9 @@ class GenericAiChat extends _$GenericAiChat {
 
       state = state.copyWith(stagedAttachments: updated);
     } catch (e) {
+      if (!state.stagedAttachments.any((a) => a.localId == localId)) {
+        return;
+      }
       final updated = state.stagedAttachments.map((a) {
         if (a.localId == localId) {
           return a.copyWith(
@@ -1360,8 +1404,13 @@ class GenericAiChat extends _$GenericAiChat {
     final policy = _repository.policy;
     if (policy != null) {
       final isDenied = !policy.canGenerate;
-      if (state.hasAccessDenied != isDenied) {
-        state = state.copyWith(hasAccessDenied: isDenied);
+      final attachmentsEnabled = policy.imageAttachmentsEnabled;
+      if (state.hasAccessDenied != isDenied ||
+          state.imageAttachmentsEnabled != attachmentsEnabled) {
+        state = state.copyWith(
+          hasAccessDenied: isDenied,
+          imageAttachmentsEnabled: attachmentsEnabled,
+        );
       }
     }
 

@@ -1345,6 +1345,7 @@
   "aiComposerAttachmentUploadFailed": "فشل تحميل الصورة",
   "aiChatPermissionRequired": "الإذن مطلوب لإرفاق الصور. يُرجى تمكينه في الإعدادات.",
   "aiChatAttachmentSizeExceeded": "حجم الصورة يتجاوز الحد الأقصى وهو 5 ميغابايت.",
+  "aiChatUnsupportedImageFormat": "يتم دعم صور JPEG و PNG و WebP فقط.",
   "aiAssistantLabel": "مساعد الذكاء الاصطناعي",
   "aiGenerationError": "تعذر إنشاء استجابة. يُرجى المحاولة مرة أخرى.",
   "aiTryAgain": "إعادة المحاولة",

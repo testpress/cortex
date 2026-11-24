@@ -10,7 +10,7 @@ import 'api_endpoints.dart';
 import 'learnlens_session_manager.dart';
 import 'sse_parser.dart';
 
-export 'package:dio/dio.dart' show CancelToken, MultipartFile;
+export 'package:dio/dio.dart' show CancelToken, DioMediaType, MultipartFile;
 
 export '../data/models/learnlens_dto.dart';
 export '../data/exceptions/learnlens_exception.dart';

@@ -29,6 +29,11 @@ The AI chat screen SHALL present a bottom sheet when the composer attachment act
 - **AND** unexpected failures SHALL be captured to Sentry and surface an error toast.
 - **AND** user cancellation SHALL remain silent without toasts.
 
+#### Scenario: Gating attachment action by policy
+- **WHEN** the session policy specifies `imageAttachmentsEnabled == false`
+- **THEN** the screen SHALL pass `null` for `onAttachImage`, hiding the attachment trigger from the composer.
+- **AND** when `imageAttachmentsEnabled == true`, the attachment trigger SHALL be enabled.
+
 ### Requirement: Attachment Size Limits and Compression
 The AI chat screen SHALL enforce image dimension downscaling (1920x1920 max) and a 5 MB file size cap using cross-platform web-safe APIs (`XFile`).
 
@@ -39,4 +44,15 @@ The AI chat screen SHALL enforce image dimension downscaling (1920x1920 max) and
 #### Scenario: Web-safe file reading
 - **WHEN** reading cropped image bytes
 - **THEN** the screen SHALL use `XFile.readAsBytes()` without importing or relying on `dart:io File`.
+
+### Requirement: Supported Image Format Filtering and MIME Type Derivation
+The AI chat screen SHALL validate that picked and cropped images match supported formats (`JPEG`, `JPG`, `PNG`, `WebP`), derive the MIME type from the cropped file extension, and reject unsupported formats.
+
+#### Scenario: Deriving MIME type from cropped image extension
+- **WHEN** an image is cropped
+- **THEN** the screen SHALL derive the MIME type from the cropped file (`image/jpeg`, `image/png`, or `image/webp`) and pass it to the controller.
+
+#### Scenario: Rejecting unsupported image formats
+- **WHEN** a selected image has an unsupported format
+- **THEN** the screen SHALL display a localized toast (`aiChatUnsupportedImageFormat`) and discard the attachment without staging.
 

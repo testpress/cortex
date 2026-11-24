@@ -34,7 +34,11 @@ class _TestLearnLensRepository implements LearnLensRepository {
 
   @override
   AiChatPolicyDto? get policy =>
-      customPolicy ?? const AiChatPolicyDto(maxMessageCharacters: 4000);
+      customPolicy ??
+      const AiChatPolicyDto(
+        maxMessageCharacters: 4000,
+        imageAttachmentsEnabled: true,
+      );
 
   @override
   Stream<AiChatStreamEvent> streamConversation({
@@ -304,6 +308,52 @@ class _TestLearnLensRepository implements LearnLensRepository {
   }
 }
 
+const _plainText = TextStyle();
+final _testScale = DesignTypographyScale(
+  xxs: _plainText.copyWith(fontSize: 10),
+  xs: _plainText.copyWith(fontSize: 12),
+  sm: _plainText.copyWith(fontSize: 14),
+  base: _plainText.copyWith(fontSize: 16),
+  lg: _plainText.copyWith(fontSize: 18),
+  xl: _plainText.copyWith(fontSize: 20),
+  xl2: _plainText.copyWith(fontSize: 24),
+  xl3: _plainText.copyWith(fontSize: 30),
+  xl4: _plainText.copyWith(fontSize: 36),
+  xl5: _plainText.copyWith(fontSize: 48),
+);
+final _testTypography = DesignTypography(
+  display: _plainText.copyWith(fontSize: 30, fontWeight: FontWeight.w700),
+  headline: _plainText.copyWith(fontSize: 20, fontWeight: FontWeight.w600),
+  title: _plainText.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+  subtitle: _plainText.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+  body: _plainText.copyWith(fontSize: 16, fontWeight: FontWeight.w400),
+  bodySmall: _plainText.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+  label: _plainText.copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+  labelSmall: _plainText.copyWith(fontSize: 11, fontWeight: FontWeight.w500),
+  labelBold: _plainText.copyWith(fontSize: 14, fontWeight: FontWeight.w700),
+  caption: _plainText.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+  cardTitle: _plainText.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+  cardSubtitle: _plainText.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+  cardCaption: _plainText.copyWith(fontSize: 10, fontWeight: FontWeight.w400),
+);
+
+final _testColors = DesignColors.light();
+final _testConfig = DesignConfig(
+  colors: _testColors,
+  spacing: DesignSpacing.defaults(),
+  typography: _testTypography,
+  typographyScale: _testScale,
+  motion: DesignMotion.defaults(),
+  radius: DesignRadius.defaults(),
+  iconSize: DesignIconSize.defaults(),
+  shadows: DesignShadows.light(),
+  layout: DesignLayout.defaults(),
+  subjectPalette: DesignSubjectPalette.light(),
+  statusColors: DesignStatusColors.light(),
+  shortcutPalette: DesignShortcutPalette.light(),
+  study: DesignStudyTheme.light(),
+);
+
 void main() {
   Widget buildSubject({
     List<AiChatMessageItem> initialMessages = const [],
@@ -320,7 +370,9 @@ void main() {
         ...overrides,
       ],
       child: DesignProvider(
-        config: DesignConfig.defaults(),
+        mode: DesignMode.light,
+        config: _testConfig,
+        darkConfig: _testConfig,
         child: WidgetsApp(
           color: const Color(0xFF000000),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -2071,7 +2123,178 @@ void main() {
 
     await tester.pump(const Duration(seconds: 4));
   });
+
+  testWidgets(
+    'hides attachment trigger when imageAttachmentsEnabled is false',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository()
+        ..customPolicy = const AiChatPolicyDto(imageAttachmentsEnabled: false);
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('ai_composer_attach_button')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets(
+    'shows unsupported format toast when image format is not JPEG, PNG, or WebP',
+    (tester) async {
+      final tempDir = Directory.systemTemp.createTempSync(
+        'ai_unsupported_format',
+      );
+      addTearDown(() => tempDir.deleteSync(recursive: true));
+      final unsupportedFile = File('${tempDir.path}/test.gif')
+        ..writeAsBytesSync(_validPng);
+
+      final fakePicker = _FakeImagePicker()
+        ..pickedFile = XFile(unsupportedFile.path);
+      final fakeCropper = _FakeAppImageCropper()
+        ..cropResult = unsupportedFile.path;
+
+      await tester.pumpWidget(
+        buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+        await Future.delayed(const Duration(milliseconds: 250));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fakePicker.pickCalls, 1);
+      expect(
+        find.text('Only JPEG, PNG, and WebP images are supported.'),
+        findsOneWidget,
+      );
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      expect(container.read(genericAiChatProvider).stagedAttachments, isEmpty);
+
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets('stages PNG attachment with derived image/png mimeType', (
+    tester,
+  ) async {
+    final tempDir = Directory.systemTemp.createTempSync('ai_png_format');
+    addTearDown(() => tempDir.deleteSync(recursive: true));
+    final pngFile = File('${tempDir.path}/test.png')
+      ..writeAsBytesSync(_validPng);
+
+    final fakePicker = _FakeImagePicker()..pickedFile = XFile(pngFile.path);
+    final fakeCropper = _FakeAppImageCropper()..cropResult = pngFile.path;
+
+    await tester.pumpWidget(
+      buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(() async {
+      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await Future.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump();
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AiScreen)),
+    );
+    expect(
+      container.read(genericAiChatProvider).stagedAttachments,
+      hasLength(1),
+    );
+    expect(
+      container.read(genericAiChatProvider).stagedAttachments.first.mimeType,
+      'image/png',
+    );
+  });
 }
+
+const _validPng = [
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE,
+  0x42,
+  0x60,
+  0x82,
+];
 
 class _FakeImagePicker extends Fake implements ImagePicker {
   XFile? pickedFile;

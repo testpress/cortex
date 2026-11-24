@@ -3572,6 +3572,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'حجم الصورة يتجاوز الحد الأقصى وهو 5 ميغابايت.';
 
   @override
+  String get aiChatUnsupportedImageFormat =>
+      'يتم دعم صور JPEG و PNG و WebP فقط.';
+
+  @override
   String get aiAssistantLabel => 'مساعد الذكاء الاصطناعي';
 
   @override

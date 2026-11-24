@@ -6377,6 +6377,12 @@ abstract class AppLocalizations {
   /// **'Image size exceeds the 5 MB limit.'**
   String get aiChatAttachmentSizeExceeded;
 
+  /// No description provided for @aiChatUnsupportedImageFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Only JPEG, PNG, and WebP images are supported.'**
+  String get aiChatUnsupportedImageFormat;
+
   /// No description provided for @aiAssistantLabel.
   ///
   /// In en, this message translates to:

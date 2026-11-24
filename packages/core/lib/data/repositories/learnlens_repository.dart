@@ -6,7 +6,7 @@ import '../../network/learnlens_network_client.dart';
 import '../../network/learnlens_session_manager.dart';
 
 export '../../network/learnlens_network_client.dart'
-    show CancelToken, MultipartFile;
+    show CancelToken, DioMediaType, MultipartFile;
 export '../models/learnlens_dto.dart';
 export '../exceptions/learnlens_exception.dart';
 

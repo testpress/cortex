@@ -3621,6 +3621,10 @@ class AppLocalizationsTa extends AppLocalizations {
       'படத்தின் அளவு 5 MB வரம்பை விட அதிகமாக உள்ளது.';
 
   @override
+  String get aiChatUnsupportedImageFormat =>
+      'JPEG, PNG மற்றும் WebP வடிவ படங்கள் மட்டுமே ஆதரிக்கப்படுகின்றன.';
+
+  @override
   String get aiAssistantLabel => 'AI உதவியாளர்';
 
   @override

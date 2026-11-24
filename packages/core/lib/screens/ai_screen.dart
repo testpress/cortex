@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../core.dart';
@@ -19,6 +20,12 @@ class AiScreen extends ConsumerStatefulWidget {
   });
 
   static const int maxAttachmentSizeBytes = 5 * 1024 * 1024;
+  static const Map<String, String> supportedImageFormats = {
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'webp': 'image/webp',
+  };
 
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
@@ -208,17 +215,49 @@ class _AiScreenState extends ConsumerState<AiScreen>
       if (!mounted) return;
 
       if (bytes.lengthInBytes > AiScreen.maxAttachmentSizeBytes) {
-        AppToast.show(
-          context,
-          message: L10n.of(context).aiChatAttachmentSizeExceeded,
+        _showToast(
+          L10n.of(context).aiChatAttachmentSizeExceeded,
+          isError: true,
         );
         return;
       }
 
-      final fileName = file.name.isNotEmpty
+      final candidateName = file.name.isNotEmpty
           ? file.name
-          : (picked.name.isNotEmpty ? picked.name : 'image.jpg');
-      final mimeType = picked.mimeType ?? 'image/jpeg';
+          : (file.path.isNotEmpty
+                ? file.path
+                : (picked.name.isNotEmpty ? picked.name : picked.path));
+      final dotIndex = candidateName.lastIndexOf('.');
+      final extension = dotIndex != -1 && dotIndex < candidateName.length - 1
+          ? candidateName.substring(dotIndex + 1).toLowerCase()
+          : '';
+
+      final mimeType =
+          AiScreen.supportedImageFormats[extension] ??
+          (AiScreen.supportedImageFormats.containsValue(picked.mimeType)
+              ? picked.mimeType
+              : null);
+
+      if (mimeType == null) {
+        _showToast(
+          L10n.of(context).aiChatUnsupportedImageFormat,
+          isError: true,
+        );
+        return;
+      }
+
+      final baseFileName = file.name.isNotEmpty
+          ? file.name
+          : (picked.name.isNotEmpty ? picked.name : 'image');
+      final extensionToUse = extension.isNotEmpty
+          ? extension
+          : (mimeType == 'image/png'
+                ? 'png'
+                : (mimeType == 'image/webp' ? 'webp' : 'jpg'));
+      final fileName = baseFileName.contains('.')
+          ? baseFileName
+          : '$baseFileName.$extensionToUse';
+
       ref
           .read(genericAiChatProvider.notifier)
           .stageAttachment(
@@ -233,25 +272,76 @@ class _AiScreenState extends ConsumerState<AiScreen>
           e.code == 'photo_access_denied' ||
           e.code.toLowerCase().contains('permission');
       if (isPermission) {
-        AppToast.show(
-          context,
-          message: L10n.of(context).aiChatPermissionRequired,
-        );
+        _showToast(L10n.of(context).aiChatPermissionRequired, isError: true);
       } else {
         ref.read(sentryServiceProvider).captureException(e);
-        AppToast.show(
-          context,
-          message: L10n.of(context).aiComposerAttachmentUploadFailed,
+        _showToast(
+          L10n.of(context).aiComposerAttachmentUploadFailed,
+          isError: true,
         );
       }
     } catch (e, stack) {
       if (!mounted) return;
       ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
-      AppToast.show(
-        context,
-        message: L10n.of(context).aiComposerAttachmentUploadFailed,
+      _showToast(
+        L10n.of(context).aiComposerAttachmentUploadFailed,
+        isError: true,
       );
     }
+  }
+
+  void _showToast(String message, {bool isError = false}) {
+    if (!mounted) return;
+    final fToast = FToast()..init(context);
+    fToast.removeCustomToast();
+
+    final design = Design.of(context);
+    final padding = MediaQuery.paddingOf(context);
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+
+    final bottomOffset = viewInsets.bottom > 0
+        ? viewInsets.bottom + design.spacing.md
+        : padding.bottom + design.spacing.md;
+
+    fToast.showToast(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.md,
+          vertical: design.spacing.sm * 1.5,
+        ),
+        decoration: BoxDecoration(
+          color: design.colors.textPrimary,
+          borderRadius: BorderRadius.circular(design.radius.xl),
+          boxShadow: design.shadows.floating,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isError ? LucideIcons.alertTriangle : LucideIcons.check,
+              size: 20,
+              color: isError ? design.colors.error : design.colors.success,
+            ),
+            SizedBox(width: design.spacing.sm),
+            Flexible(
+              child: AppText.labelBold(
+                message,
+                color: design.colors.textInverse,
+              ),
+            ),
+          ],
+        ),
+      ),
+      positionedToastBuilder: (context, child, gravity) {
+        return Positioned(
+          bottom: bottomOffset,
+          left: 24.0,
+          right: 24.0,
+          child: child,
+        );
+      },
+      toastDuration: const Duration(milliseconds: 2500),
+    );
   }
 
   void _handleRemoveAttachment(String localId) {
@@ -350,7 +440,9 @@ class _AiScreenState extends ConsumerState<AiScreen>
         enabled: !isInputBlocked,
         stagedAttachments: chatState.stagedAttachments,
         onSend: _handleSend,
-        onAttachImage: _handleAttachImage,
+        onAttachImage: chatState.imageAttachmentsEnabled
+            ? _handleAttachImage
+            : null,
         onRemoveAttachment: _handleRemoveAttachment,
         controller: _composerController,
         focusNode: _composerFocusNode,

@@ -3566,6 +3566,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Image size exceeds the 5 MB limit.';
 
   @override
+  String get aiChatUnsupportedImageFormat =>
+      'Only JPEG, PNG, and WebP images are supported.';
+
+  @override
   String get aiAssistantLabel => 'AI Assistant';
 
   @override
