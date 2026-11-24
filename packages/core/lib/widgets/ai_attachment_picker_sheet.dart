@@ -65,13 +65,22 @@ class AiAttachmentPickerSheet extends StatelessWidget {
       ),
     );
 
+    final semanticContent = AppSemantics.container(
+      label: l10n.aiComposerAttachImage,
+      child: content,
+    );
+
     return SizedBox.expand(
       child: Stack(
         children: [
           Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
+            child: AppSemantics.button(
+              label: l10n.labelClose,
               onTap: onClose,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onClose,
+              ),
             ),
           ),
           if (anchorLink != null)
@@ -83,13 +92,13 @@ class AiAttachmentPickerSheet extends StatelessWidget {
                   ? Alignment.bottomRight
                   : Alignment.bottomLeft,
               offset: Offset(0, -design.spacing.xs),
-              child: content,
+              child: semanticContent,
             )
           else
-            Positioned(
-              left: design.spacing.md,
+            PositionedDirectional(
+              start: design.spacing.md,
               bottom: design.spacing.xl * 2,
-              child: content,
+              child: semanticContent,
             ),
         ],
       ),
@@ -111,7 +120,7 @@ class AiAttachmentPickerSheet extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(design.radius.sm),
         child: Container(
-          constraints: const BoxConstraints(minWidth: 48.0, minHeight: 44.0),
+          constraints: const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
           padding: EdgeInsets.symmetric(
             horizontal: design.spacing.sm,
             vertical: design.spacing.xs * 1.5,
@@ -129,11 +138,7 @@ class AiAttachmentPickerSheet extends StatelessWidget {
               ),
               SizedBox(width: design.spacing.sm),
               ExcludeSemantics(
-                child: AppText.bodySmall(
-                  label,
-                  color: design.colors.textPrimary,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
+                child: AppText.label(label, color: design.colors.textPrimary),
               ),
             ],
           ),

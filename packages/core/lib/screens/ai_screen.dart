@@ -19,13 +19,21 @@ class AiScreen extends ConsumerStatefulWidget {
     this.imageCropper,
   });
 
-  static const int maxAttachmentSizeBytes = 5 * 1024 * 1024;
-  static const Map<String, String> supportedImageFormats = {
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'webp': 'image/webp',
-  };
+  static const int maxAttachmentSizeBytes =
+      AiAttachmentUtils.maxAttachmentSizeBytes;
+  static const Map<String, String> supportedImageFormats =
+      AiAttachmentUtils.supportedImageFormats;
+
+  /// Extracts the lowercased file extension from a file path or file name.
+  static String extractExtension(String pathOrName) =>
+      AiAttachmentUtils.extractExtension(pathOrName);
+
+  /// Validates whether a file format or MIME type is supported for attachment.
+  static bool isSupportedImageFile({String? pathOrName, String? mimeType}) =>
+      AiAttachmentUtils.isSupportedFile(
+        pathOrName: pathOrName,
+        mimeType: mimeType,
+      );
 
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
@@ -208,6 +216,14 @@ class _AiScreenState extends ConsumerState<AiScreen>
       );
       if (picked == null || !mounted) return;
 
+      if (!AiAttachmentUtils.isSupported(picked)) {
+        _showToast(
+          L10n.of(context).aiChatUnsupportedImageFormat,
+          isError: true,
+        );
+        return;
+      }
+
       setState(() => _isCroppingImage = true);
 
       final cropper = widget.imageCropper ?? AppImageCropper();
@@ -218,7 +234,7 @@ class _AiScreenState extends ConsumerState<AiScreen>
       final bytes = await file.readAsBytes();
       if (!mounted) return;
 
-      if (bytes.lengthInBytes > AiScreen.maxAttachmentSizeBytes) {
+      if (bytes.lengthInBytes > AiAttachmentUtils.maxAttachmentSizeBytes) {
         _showToast(
           L10n.of(context).aiChatAttachmentSizeExceeded,
           isError: true,
@@ -231,16 +247,12 @@ class _AiScreenState extends ConsumerState<AiScreen>
           : (file.path.isNotEmpty
                 ? file.path
                 : (picked.name.isNotEmpty ? picked.name : picked.path));
-      final dotIndex = candidateName.lastIndexOf('.');
-      final extension = dotIndex != -1 && dotIndex < candidateName.length - 1
-          ? candidateName.substring(dotIndex + 1).toLowerCase()
-          : '';
+      final extension = AiAttachmentUtils.extractExtension(candidateName);
 
-      final mimeType =
-          AiScreen.supportedImageFormats[extension] ??
-          (AiScreen.supportedImageFormats.containsValue(picked.mimeType)
-              ? picked.mimeType
-              : null);
+      final mimeType = AiAttachmentUtils.deriveMimeType(
+        pathOrName: candidateName,
+        mimeType: picked.mimeType,
+      );
 
       if (mimeType == null) {
         _showToast(

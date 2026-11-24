@@ -46,15 +46,15 @@ The AI chat screen SHALL enforce image dimension downscaling (1920x1920 max) and
 - **THEN** the screen SHALL use `XFile.readAsBytes()` without importing or relying on `dart:io File`.
 
 ### Requirement: Supported Image Format Filtering and MIME Type Derivation
-The AI chat screen SHALL validate that picked and cropped images match supported formats (`JPEG`, `JPG`, `PNG`, `WebP`), derive the MIME type from the cropped file extension, and reject unsupported formats.
+The AI chat screen SHALL validate that picked images (pre-crop) and cropped images match supported formats (`JPEG`, `JPG`, `PNG`, `WebP`), derive the MIME type from the cropped file extension, and reject unsupported formats before opening the cropper.
 
 #### Scenario: Deriving MIME type from cropped image extension
 - **WHEN** an image is cropped
 - **THEN** the screen SHALL derive the MIME type from the cropped file (`image/jpeg`, `image/png`, or `image/webp`) and pass it to the controller.
 
 #### Scenario: Rejecting unsupported image formats
-- **WHEN** a selected image has an unsupported format
-- **THEN** the screen SHALL display a localized toast (`aiChatUnsupportedImageFormat`) and discard the attachment without staging.
+- **WHEN** a selected image has an unsupported format (e.g. GIF, HEIC, BMP) either before cropping or after cropping
+- **THEN** the screen SHALL display a localized toast (`aiChatUnsupportedImageFormat`) and discard the attachment without staging or launching the cropper.
 
 ### Requirement: Attachment Loading Feedback and Failure Toast
 The AI chat screen SHALL provide visual loading feedback during cropping transitions and surface error toasts when staged attachment uploads fail.
@@ -66,4 +66,5 @@ The AI chat screen SHALL provide visual loading feedback during cropping transit
 #### Scenario: Toast notification on attachment upload failure
 - **WHEN** an attachment upload fails in the generic AI chat state
 - **THEN** the screen SHALL display an error toast (`aiComposerAttachmentUploadFailed`) positioned above the bottom navigation bar.
+
 

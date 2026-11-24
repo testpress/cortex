@@ -106,6 +106,7 @@ export 'utils/lesson_type_icon_x.dart';
 export 'utils/watermark_params.dart';
 export 'utils/device_orientation_helper.dart';
 export 'utils/ai_chat_actions.dart';
+export 'utils/ai_attachment_utils.dart';
 
 // Localization
 export 'localization/localization_provider.dart';

@@ -52,6 +52,10 @@ void main() {
       final galleryY = tester.getTopLeft(galleryOption).dy;
       final cameraY = tester.getTopLeft(cameraOption).dy;
       expect(galleryY, lessThan(cameraY));
+
+      // Touch target height satisfies WCAG 2.5.5 minimum of 48dp
+      expect(tester.getSize(galleryOption).height, greaterThanOrEqualTo(48.0));
+      expect(tester.getSize(cameraOption).height, greaterThanOrEqualTo(48.0));
     });
 
     testWidgets('tapping camera calls onSelectCamera', (tester) async {
@@ -75,5 +79,40 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('ai_attach_gallery_option')));
       expect(galleryTapped, isTrue);
     });
+
+    testWidgets('tapping scrim dismisses popover and has close semantics', (
+      tester,
+    ) async {
+      bool closed = false;
+      await tester.pumpWidget(
+        buildSubject(isOpen: true, onClose: () => closed = true),
+      );
+      await tester.pumpAndSettle();
+
+      final closeSemantics = find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Close' &&
+            widget.properties.button == true,
+      );
+      expect(closeSemantics, findsOneWidget);
+
+      await tester.tap(closeSemantics);
+      expect(closed, isTrue);
+    });
+
+    testWidgets(
+      'unanchored fallback uses PositionedDirectional for RTL support',
+      (tester) async {
+        await tester.pumpWidget(buildSubject(isOpen: true));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(PositionedDirectional), findsOneWidget);
+        final positioned = tester.widget<PositionedDirectional>(
+          find.byType(PositionedDirectional),
+        );
+        expect(positioned.start, isNotNull);
+      },
+    );
   });
 }

@@ -2223,6 +2223,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(fakePicker.pickCalls, 1);
+      expect(fakeCropper.cropCalls, 0);
       expect(
         find.text('Only JPEG, PNG, and WebP images are supported.'),
         findsOneWidget,
@@ -2276,6 +2277,30 @@ void main() {
       'image/png',
     );
   });
+
+  test(
+    'AiScreen format validation helpers correctly identify supported formats',
+    () {
+      expect(AiScreen.extractExtension('image.jpg'), 'jpg');
+      expect(AiScreen.extractExtension('path/to/image.PNG'), 'png');
+      expect(AiScreen.extractExtension('/folder.with.dot/image.webp'), 'webp');
+      expect(AiScreen.extractExtension('image.jpeg'), 'jpeg');
+      expect(AiScreen.extractExtension('animation.gif'), 'gif');
+      expect(AiScreen.extractExtension('photo.heic'), 'heic');
+      expect(AiScreen.extractExtension('no_ext'), '');
+
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.jpg'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.JPEG'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.png'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.webp'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.gif'), isFalse);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.heic'), isFalse);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.bmp'), isFalse);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.svg'), isFalse);
+      expect(AiScreen.isSupportedImageFile(mimeType: 'image/jpeg'), isTrue);
+      expect(AiScreen.isSupportedImageFile(mimeType: 'image/gif'), isFalse);
+    },
+  );
 }
 
 const _validPng = [
