@@ -1265,9 +1265,6 @@ class HttpDataSource implements DataSource {
       }
     }
 
-    // Sort review items by index to preserve order
-    allReviewItems.sort((a, b) => a.index.compareTo(b.index));
-
     return allReviewItems;
   }
 
