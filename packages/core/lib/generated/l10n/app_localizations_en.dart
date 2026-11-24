@@ -3555,6 +3555,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiComposerDeleteAttachment => 'Remove attachment';
 
   @override
+  String get aiComposerAttachmentUploadFailed => 'Failed to upload image';
+
+  @override
+  String get aiChatPermissionRequired =>
+      'Permission is required to attach images. Please enable it in Settings.';
+
+  @override
+  String get aiChatAttachmentSizeExceeded =>
+      'Image size exceeds the 5 MB limit.';
+
+  @override
   String get aiAssistantLabel => 'AI Assistant';
 
   @override

@@ -3610,6 +3610,17 @@ class AppLocalizationsTa extends AppLocalizations {
   String get aiComposerDeleteAttachment => 'இணைப்பை நீக்கு';
 
   @override
+  String get aiComposerAttachmentUploadFailed => 'படத்தை பதிவேற்ற முடியவில்லை';
+
+  @override
+  String get aiChatPermissionRequired =>
+      'படங்களை இணைக்க அனுமதி தேவை. அமைப்புகளில் அதை இயக்கவும்.';
+
+  @override
+  String get aiChatAttachmentSizeExceeded =>
+      'படத்தின் அளவு 5 MB வரம்பை விட அதிகமாக உள்ளது.';
+
+  @override
   String get aiAssistantLabel => 'AI உதவியாளர்';
 
   @override

@@ -6359,6 +6359,24 @@ abstract class AppLocalizations {
   /// **'Remove attachment'**
   String get aiComposerDeleteAttachment;
 
+  /// No description provided for @aiComposerAttachmentUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload image'**
+  String get aiComposerAttachmentUploadFailed;
+
+  /// No description provided for @aiChatPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission is required to attach images. Please enable it in Settings.'**
+  String get aiChatPermissionRequired;
+
+  /// No description provided for @aiChatAttachmentSizeExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Image size exceeds the 5 MB limit.'**
+  String get aiChatAttachmentSizeExceeded;
+
   /// No description provided for @aiAssistantLabel.
   ///
   /// In en, this message translates to:

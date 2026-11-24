@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +17,8 @@ class AiScreen extends ConsumerStatefulWidget {
     this.imagePicker,
     this.imageCropper,
   });
+
+  static const int maxAttachmentSizeBytes = 5 * 1024 * 1024;
 
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
@@ -191,28 +191,66 @@ class _AiScreenState extends ConsumerState<AiScreen>
     });
     try {
       final picker = widget.imagePicker ?? ImagePicker();
-      final picked = await picker.pickImage(source: source, imageQuality: 85);
-      if (picked != null && mounted) {
-        final cropper = widget.imageCropper ?? AppImageCropper();
-        final croppedPath = await cropper.crop(context, imagePath: picked.path);
-        if (croppedPath != null && mounted) {
-          final file = File(croppedPath);
-          final bytes = file.readAsBytesSync();
-          final fileName = file.uri.pathSegments.isNotEmpty
-              ? file.uri.pathSegments.last
-              : picked.name;
-          final mimeType = picked.mimeType ?? 'image/jpeg';
-          ref
-              .read(genericAiChatProvider.notifier)
-              .stageAttachment(
-                bytes: bytes,
-                fileName: fileName,
-                mimeType: mimeType,
-              );
-        }
+      final picked = await picker.pickImage(
+        source: source,
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
+      );
+      if (picked == null || !mounted) return;
+
+      final cropper = widget.imageCropper ?? AppImageCropper();
+      final croppedPath = await cropper.crop(context, imagePath: picked.path);
+      if (croppedPath == null || !mounted) return;
+
+      final file = XFile(croppedPath);
+      final bytes = await file.readAsBytes();
+      if (!mounted) return;
+
+      if (bytes.lengthInBytes > AiScreen.maxAttachmentSizeBytes) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).aiChatAttachmentSizeExceeded,
+        );
+        return;
       }
-    } catch (_) {
-      // User cancelled picker or permission denied
+
+      final fileName = file.name.isNotEmpty
+          ? file.name
+          : (picked.name.isNotEmpty ? picked.name : 'image.jpg');
+      final mimeType = picked.mimeType ?? 'image/jpeg';
+      ref
+          .read(genericAiChatProvider.notifier)
+          .stageAttachment(
+            bytes: bytes,
+            fileName: fileName,
+            mimeType: mimeType,
+          );
+    } on PlatformException catch (e) {
+      if (!mounted) return;
+      final isPermission =
+          e.code == 'camera_access_denied' ||
+          e.code == 'photo_access_denied' ||
+          e.code.toLowerCase().contains('permission');
+      if (isPermission) {
+        AppToast.show(
+          context,
+          message: L10n.of(context).aiChatPermissionRequired,
+        );
+      } else {
+        ref.read(sentryServiceProvider).captureException(e);
+        AppToast.show(
+          context,
+          message: L10n.of(context).aiComposerAttachmentUploadFailed,
+        );
+      }
+    } catch (e, stack) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      AppToast.show(
+        context,
+        message: L10n.of(context).aiComposerAttachmentUploadFailed,
+      );
     }
   }
 
@@ -493,105 +531,13 @@ class _AiScreenState extends ConsumerState<AiScreen>
               ],
             ),
           ),
-          _buildAttachmentSourceSheet(design, l10n),
+          AiAttachmentPickerSheet(
+            isOpen: _isAttachmentSheetOpen,
+            onClose: () => setState(() => _isAttachmentSheetOpen = false),
+            onSelectCamera: () => _pickImage(ImageSource.camera),
+            onSelectGallery: () => _pickImage(ImageSource.gallery),
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildAttachmentSourceSheet(DesignConfig design, dynamic l10n) {
-    return AppBottomSheet(
-      isOpen: _isAttachmentSheetOpen,
-      onClose: () => setState(() => _isAttachmentSheetOpen = false),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          design.spacing.sm,
-          0,
-          design.spacing.sm,
-          design.spacing.md,
-        ),
-        child: SafeArea(
-          top: false,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(
-              design.spacing.lg,
-              design.spacing.md,
-              design.spacing.lg,
-              design.spacing.lg,
-            ),
-            decoration: BoxDecoration(
-              color: design.colors.card,
-              borderRadius: BorderRadius.all(
-                Radius.circular(design.radius.xxl),
-              ),
-              boxShadow: design.shadows.floating,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Handle Bar
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: design.spacing.xl * 1.5,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: design.colors.border,
-                      borderRadius: BorderRadius.circular(design.radius.full),
-                    ),
-                  ),
-                ),
-                SizedBox(height: design.spacing.md),
-                _buildSheetOption(
-                  key: const ValueKey('ai_attach_camera_option'),
-                  icon: LucideIcons.camera,
-                  label: l10n.aiComposerTakePhoto,
-                  design: design,
-                  onTap: () => _pickImage(ImageSource.camera),
-                ),
-                _buildSheetOption(
-                  key: const ValueKey('ai_attach_gallery_option'),
-                  icon: LucideIcons.image,
-                  label: l10n.aiComposerAttachImage,
-                  design: design,
-                  onTap: () => _pickImage(ImageSource.gallery),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSheetOption({
-    Key? key,
-    required IconData icon,
-    required String label,
-    required DesignConfig design,
-    required VoidCallback onTap,
-  }) {
-    return AppSemantics.button(
-      label: label,
-      onTap: onTap,
-      child: AppFocusable(
-        key: key,
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: design.spacing.md),
-          child: Row(
-            children: [
-              Icon(icon, size: 20, color: design.colors.textPrimary),
-              SizedBox(width: design.spacing.md),
-              AppText.bodySmall(
-                label,
-                color: design.colors.textPrimary,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -14,3 +14,9 @@ The composer SHALL display a plus icon (`+`) attachment trigger action and horiz
 #### Scenario: Display staged image preview chips
 - **WHEN** one or more images are staged
 - **THEN** composer SHALL render image thumbnail previews above the text input field, each with a close/delete button.
+- **AND** individual thumbnail previews SHALL be encapsulated in the dedicated `AiAttachmentThumbnail` widget.
+- **AND** the thumbnail close button SHALL be visually anchored to the top-trailing corner of the thumbnail while preserving a minimum 48dp touch target.
+
+#### Scenario: Staged image upload failure display
+- **WHEN** an attachment upload fails
+- **THEN** composer SHALL mark the thumbnail with an error indicator and accessible localized failure label without hardcoding English strings in the provider.

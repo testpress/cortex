@@ -3609,6 +3609,18 @@ class AppLocalizationsMl extends AppLocalizations {
   String get aiComposerDeleteAttachment => 'അറ്റാച്ച്മെന്റ് നീക്കംചെയ്യുക';
 
   @override
+  String get aiComposerAttachmentUploadFailed =>
+      'ചിത്രം അപ്‌ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു';
+
+  @override
+  String get aiChatPermissionRequired =>
+      'ചിത്രങ്ങൾ ചേർക്കാൻ അനുമതി ആവശ്യമാണ്. ക്രമീകരണങ്ങളിൽ ഇത് പ്രവർത്തനക്ഷമമാക്കുക.';
+
+  @override
+  String get aiChatAttachmentSizeExceeded =>
+      'ചിത്രത്തിന്റെ വലുപ്പം 5 MB പരിധി കവിയുന്നു.';
+
+  @override
   String get aiAssistantLabel => 'AI അസിസ്റ്റന്റ്';
 
   @override

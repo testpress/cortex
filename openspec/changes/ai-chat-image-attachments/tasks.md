@@ -22,6 +22,7 @@
 - [x] 4.3 Update `AiScreen` to show camera/gallery source bottom sheet (camera top, gallery bottom) on attachment trigger
 - [x] 4.4 Delegate picked images through `AppImageCropper` before staging in `AiScreen`
 - [x] 4.5 Wire attachment staging and chip deletion callbacks
+- [x] 4.6 Anchor staged attachment thumbnail delete button to top-trailing corner with 48dp touch target and non-clipping preview container
 
 ## 5. Tests & Verification
 

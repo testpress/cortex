@@ -53,6 +53,8 @@ export 'widgets/app_confirmation_dialog.dart';
 export 'widgets/ai_chat_canvas.dart';
 export 'widgets/ai_suggestion_card.dart';
 export 'widgets/ai_composer.dart';
+export 'widgets/ai_attachment_thumbnail.dart';
+export 'widgets/ai_attachment_picker_sheet.dart';
 export 'widgets/ai_chat_header.dart';
 export 'widgets/ai_user_message_bubble.dart';
 export 'widgets/ai_assistant_card.dart';

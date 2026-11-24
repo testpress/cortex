@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1856,12 +1857,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap camera option
-      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 350));
       await tester.pump();
 
       expect(fakePicker.pickCalls, 1);
+      expect(fakePicker.lastMaxWidth, 1920);
+      expect(fakePicker.lastMaxHeight, 1920);
+      expect(fakePicker.lastImageQuality, 85);
       expect(fakeCropper.cropCalls, 1);
 
       // Verify staged thumbnail is displayed
@@ -1980,11 +1987,99 @@ void main() {
     final staged = container.read(genericAiChatProvider).stagedAttachments;
     expect(staged, isEmpty);
   });
+
+  testWidgets(
+    'shows permission toast when picker throws permission denial PlatformException',
+    (tester) async {
+      final fakePicker = _FakeImagePicker()
+        ..pickError = PlatformException(code: 'camera_access_denied');
+
+      await tester.pumpWidget(buildSubject(imagePicker: fakePicker));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fakePicker.pickCalls, 1);
+      expect(
+        find.text(
+          'Permission is required to attach images. Please enable it in Settings.',
+        ),
+        findsOneWidget,
+      );
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets('shows error toast when picker throws unexpected exception', (
+    tester,
+  ) async {
+    final fakePicker = _FakeImagePicker()
+      ..pickError = Exception('Storage read failure');
+
+    await tester.pumpWidget(buildSubject(imagePicker: fakePicker));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_attach_gallery_option')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(fakePicker.pickCalls, 1);
+    expect(find.text('Failed to upload image'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 4));
+  });
+
+  testWidgets('shows size exceeded toast when cropped file exceeds 5MB', (
+    tester,
+  ) async {
+    final tempDir = Directory.systemTemp.createTempSync('ai_size_exceeded');
+    addTearDown(() => tempDir.deleteSync(recursive: true));
+    final largeFile = File('${tempDir.path}/large.jpg')
+      ..writeAsBytesSync(Uint8List(AiScreen.maxAttachmentSizeBytes + 1));
+
+    final fakePicker = _FakeImagePicker()..pickedFile = XFile(largeFile.path);
+    final fakeCropper = _FakeAppImageCropper()..cropResult = largeFile.path;
+
+    await tester.pumpWidget(
+      buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(() async {
+      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await Future.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Image size exceeds the 5 MB limit.'), findsOneWidget);
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AiScreen)),
+    );
+    expect(container.read(genericAiChatProvider).stagedAttachments, isEmpty);
+
+    await tester.pump(const Duration(seconds: 4));
+  });
 }
 
 class _FakeImagePicker extends Fake implements ImagePicker {
   XFile? pickedFile;
+  Object? pickError;
   int pickCalls = 0;
+  double? lastMaxWidth;
+  double? lastMaxHeight;
+  int? lastImageQuality;
 
   @override
   Future<XFile?> pickImage({
@@ -1996,6 +2091,12 @@ class _FakeImagePicker extends Fake implements ImagePicker {
     bool requestFullMetadata = true,
   }) async {
     pickCalls++;
+    lastMaxWidth = maxWidth;
+    lastMaxHeight = maxHeight;
+    lastImageQuality = imageQuality;
+    if (pickError != null) {
+      throw pickError!;
+    }
     return pickedFile;
   }
 }

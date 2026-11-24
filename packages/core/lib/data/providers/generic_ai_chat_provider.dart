@@ -113,6 +113,7 @@ class StagedAttachment {
   final String? previewUrl;
   final bool isUploading;
   final bool hasError;
+  final String? errorCode;
   final String? errorMessage;
 
   const StagedAttachment({
@@ -124,6 +125,7 @@ class StagedAttachment {
     this.previewUrl,
     this.isUploading = false,
     this.hasError = false,
+    this.errorCode,
     this.errorMessage,
   });
 
@@ -136,6 +138,7 @@ class StagedAttachment {
     String? previewUrl,
     bool? isUploading,
     bool? hasError,
+    String? errorCode,
     String? errorMessage,
   }) {
     return StagedAttachment(
@@ -147,6 +150,7 @@ class StagedAttachment {
       previewUrl: previewUrl ?? this.previewUrl,
       isUploading: isUploading ?? this.isUploading,
       hasError: hasError ?? this.hasError,
+      errorCode: errorCode ?? this.errorCode,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -368,8 +372,8 @@ class GenericAiChat extends _$GenericAiChat {
       final response = await _repository.uploadAttachments(files: [multipart]);
       if (response.items.isEmpty) {
         throw const LearnLensException(
-          message: 'Upload failed',
           code: 'upload_failed',
+          message: 'Upload response was empty',
         );
       }
       final uploaded = response.items.first;
@@ -392,7 +396,10 @@ class GenericAiChat extends _$GenericAiChat {
           return a.copyWith(
             isUploading: false,
             hasError: true,
-            errorMessage: e is LearnLensException ? e.message : 'Upload failed',
+            errorCode: e is LearnLensException
+                ? (e.code ?? 'upload_failed')
+                : 'upload_failed',
+            errorMessage: e is LearnLensException ? e.message : null,
           );
         }
         return a;
@@ -418,8 +425,13 @@ class GenericAiChat extends _$GenericAiChat {
     if (attId != null && attId.isNotEmpty) {
       try {
         await _repository.deleteAttachment(attachmentId: attId);
-      } catch (_) {
-        // Silently ignore deletion error for uncommitted attachment
+      } catch (e, stackTrace) {
+        dev.log(
+          'Failed to delete uncommitted attachment: $attId',
+          name: 'GenericAiChatNotifier',
+          error: e,
+          stackTrace: stackTrace,
+        );
       }
     }
   }
@@ -431,7 +443,17 @@ class GenericAiChat extends _$GenericAiChat {
     for (final item in current) {
       final attId = item.attachmentId;
       if (attId != null && attId.isNotEmpty) {
-        _repository.deleteAttachment(attachmentId: attId).ignore();
+        _repository.deleteAttachment(attachmentId: attId).catchError((
+          e,
+          stackTrace,
+        ) {
+          dev.log(
+            'Failed to delete uncommitted attachment: $attId',
+            name: 'GenericAiChatNotifier',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        });
       }
     }
   }
@@ -453,6 +475,12 @@ class GenericAiChat extends _$GenericAiChat {
       return;
     }
 
+    if (customRequestId == null) {
+      if (state.stagedAttachments.any((a) => a.isUploading || a.hasError)) {
+        return;
+      }
+    }
+
     _syncInFlight = null;
     final token = ++_operationToken;
     final requestId = customRequestId ?? UuidUtils.v4();
@@ -468,9 +496,16 @@ class GenericAiChat extends _$GenericAiChat {
           .where((id) => id.isNotEmpty)
           .toList();
       attachments = staged
+          .where(
+            (a) =>
+                !a.isUploading &&
+                !a.hasError &&
+                a.attachmentId != null &&
+                a.attachmentId!.isNotEmpty,
+          )
           .map(
             (a) => AiAttachmentDto(
-              attachmentId: a.attachmentId ?? a.localId,
+              attachmentId: a.attachmentId!,
               url: a.previewUrl,
             ),
           )

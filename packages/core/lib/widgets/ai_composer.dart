@@ -158,19 +158,20 @@ class _AiComposerState extends State<AiComposer> {
                       padding: EdgeInsetsDirectional.only(
                         start: design.spacing.sm,
                         end: design.spacing.sm,
-                        top: design.spacing.sm,
+                        top: design.spacing.xs,
                         bottom: design.spacing.xs / 2,
                       ),
                       child: SizedBox(
-                        height: 60.0,
+                        height: 64.0,
                         child: ListView.separated(
+                          clipBehavior: Clip.none,
                           scrollDirection: Axis.horizontal,
                           itemCount: widget.stagedAttachments.length,
                           separatorBuilder: (_, _) =>
                               SizedBox(width: design.spacing.xs),
                           itemBuilder: (context, index) {
                             final staged = widget.stagedAttachments[index];
-                            return _StagedAttachmentThumbnail(
+                            return AiAttachmentThumbnail(
                               attachment: staged,
                               onRemove: widget.onRemoveAttachment != null
                                   ? () => widget.onRemoveAttachment!(
@@ -339,106 +340,6 @@ class _AiComposerState extends State<AiComposer> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _StagedAttachmentThumbnail extends StatelessWidget {
-  const _StagedAttachmentThumbnail({required this.attachment, this.onRemove});
-
-  final StagedAttachment attachment;
-  final VoidCallback? onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final design = Design.of(context);
-    final l10n = L10n.of(context);
-
-    return SizedBox(
-      width: 56.0,
-      height: 56.0,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 56.0,
-            height: 56.0,
-            decoration: BoxDecoration(
-              color: design.colors.surfaceVariant,
-              borderRadius: BorderRadius.circular(design.radius.md),
-              border: Border.all(
-                color: attachment.hasError
-                    ? design.colors.error
-                    : design.colors.border,
-                width: 1.0,
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(design.radius.md),
-              child: attachment.bytes != null
-                  ? Image.memory(
-                      attachment.bytes!,
-                      fit: BoxFit.cover,
-                      width: 56.0,
-                      height: 56.0,
-                    )
-                  : Center(
-                      child: Icon(
-                        LucideIcons.image,
-                        color: design.colors.textSecondary,
-                        size: design.iconSize.sm,
-                      ),
-                    ),
-            ),
-          ),
-          if (attachment.isUploading)
-            Container(
-              width: 56.0,
-              height: 56.0,
-              decoration: BoxDecoration(
-                color: design.colors.surface.withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(design.radius.md),
-              ),
-              child: const Center(child: AppLoadingIndicator()),
-            ),
-          if (onRemove != null)
-            PositionedDirectional(
-              top: -6.0,
-              end: -6.0,
-              child: AppSemantics.button(
-                label: l10n.aiComposerDeleteAttachment,
-                onTap: onRemove,
-                child: GestureDetector(
-                  onTap: onRemove,
-                  behavior: HitTestBehavior.opaque,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minWidth: 48.0,
-                      minHeight: 48.0,
-                    ),
-                    child: Center(
-                      child: Container(
-                        width: 20.0,
-                        height: 20.0,
-                        decoration: BoxDecoration(
-                          color: design.colors.textPrimary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            LucideIcons.x,
-                            size: 12.0,
-                            color: design.colors.textInverse,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

@@ -3561,6 +3561,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aiComposerDeleteAttachment => 'إزالة المرفق';
 
   @override
+  String get aiComposerAttachmentUploadFailed => 'فشل تحميل الصورة';
+
+  @override
+  String get aiChatPermissionRequired =>
+      'الإذن مطلوب لإرفاق الصور. يُرجى تمكينه في الإعدادات.';
+
+  @override
+  String get aiChatAttachmentSizeExceeded =>
+      'حجم الصورة يتجاوز الحد الأقصى وهو 5 ميغابايت.';
+
+  @override
   String get aiAssistantLabel => 'مساعد الذكاء الاصطناعي';
 
   @override

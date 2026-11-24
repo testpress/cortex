@@ -278,4 +278,23 @@ void main() {
     await tester.pump();
     expect(removedId, 'staged-1');
   });
+
+  testWidgets('renders failed staged attachment with error semantics label', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        stagedAttachments: const [
+          StagedAttachment(
+            localId: 'staged-err',
+            hasError: true,
+            errorCode: 'upload_failed',
+          ),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.bySemanticsLabel('Failed to upload image'), findsOneWidget);
+  });
 }
