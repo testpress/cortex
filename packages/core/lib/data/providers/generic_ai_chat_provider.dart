@@ -29,6 +29,7 @@ class GenericAiChatMessage {
   final String? errorMessage;
   final String? errorCode;
   final String? requestId;
+  final List<AiAttachmentDto> attachments;
 
   const GenericAiChatMessage({
     required this.id,
@@ -43,6 +44,7 @@ class GenericAiChatMessage {
     this.errorMessage,
     this.errorCode,
     this.requestId,
+    this.attachments = const [],
   });
 
   GenericAiChatMessage copyWith({
@@ -58,6 +60,7 @@ class GenericAiChatMessage {
     Object? errorMessage = _sentinel,
     Object? errorCode = _sentinel,
     Object? requestId = _sentinel,
+    List<AiAttachmentDto>? attachments,
   }) {
     return GenericAiChatMessage(
       id: id ?? this.id,
@@ -74,6 +77,7 @@ class GenericAiChatMessage {
           : errorMessage as String?,
       errorCode: errorCode == _sentinel ? this.errorCode : errorCode as String?,
       requestId: requestId == _sentinel ? this.requestId : requestId as String?,
+      attachments: attachments ?? this.attachments,
     );
   }
 
@@ -94,6 +98,60 @@ class GenericAiChatMessage {
       errorMessage: gen?.errorMessage,
       errorCode: isGenFailed ? (gen?.status ?? 'generation_failed') : null,
       requestId: gen?.requestId,
+      attachments: dto.attachments,
+    );
+  }
+}
+
+/// Represents an attachment staged in the composer before sending.
+class StagedAttachment {
+  final String localId;
+  final String? attachmentId;
+  final Uint8List? bytes;
+  final String? fileName;
+  final String? mimeType;
+  final String? previewUrl;
+  final bool isUploading;
+  final bool hasError;
+  final String? errorCode;
+  final String? errorMessage;
+
+  const StagedAttachment({
+    required this.localId,
+    this.attachmentId,
+    this.bytes,
+    this.fileName,
+    this.mimeType,
+    this.previewUrl,
+    this.isUploading = false,
+    this.hasError = false,
+    this.errorCode,
+    this.errorMessage,
+  });
+
+  StagedAttachment copyWith({
+    String? localId,
+    String? attachmentId,
+    Uint8List? bytes,
+    String? fileName,
+    String? mimeType,
+    String? previewUrl,
+    bool? isUploading,
+    bool? hasError,
+    String? errorCode,
+    String? errorMessage,
+  }) {
+    return StagedAttachment(
+      localId: localId ?? this.localId,
+      attachmentId: attachmentId ?? this.attachmentId,
+      bytes: bytes ?? this.bytes,
+      fileName: fileName ?? this.fileName,
+      mimeType: mimeType ?? this.mimeType,
+      previewUrl: previewUrl ?? this.previewUrl,
+      isUploading: isUploading ?? this.isUploading,
+      hasError: hasError ?? this.hasError,
+      errorCode: errorCode ?? this.errorCode,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }
@@ -103,6 +161,7 @@ class GenericAiChatState {
   final String? currentChatId;
   final String currentTitle;
   final List<GenericAiChatMessage> messages;
+  final List<StagedAttachment> stagedAttachments;
   final bool isSending;
   final bool isGenerating;
   final bool isLoadingMessages;
@@ -119,11 +178,13 @@ class GenericAiChatState {
   final bool hasInitError;
   final bool hasAccessDenied;
   final bool isDeletingConversation;
+  final bool imageAttachmentsEnabled;
 
   const GenericAiChatState({
     this.currentChatId,
     this.currentTitle = '',
     this.messages = const [],
+    this.stagedAttachments = const [],
     this.isSending = false,
     this.isGenerating = false,
     this.isLoadingMessages = false,
@@ -140,6 +201,7 @@ class GenericAiChatState {
     this.hasInitError = false,
     this.hasAccessDenied = false,
     this.isDeletingConversation = false,
+    this.imageAttachmentsEnabled = false,
   });
 
   bool get hasActiveRateLimit {
@@ -155,6 +217,7 @@ class GenericAiChatState {
     Object? currentChatId = _sentinel,
     String? currentTitle,
     List<GenericAiChatMessage>? messages,
+    List<StagedAttachment>? stagedAttachments,
     bool? isSending,
     bool? isGenerating,
     bool? isLoadingMessages,
@@ -171,6 +234,7 @@ class GenericAiChatState {
     bool? hasInitError,
     bool? hasAccessDenied,
     bool? isDeletingConversation,
+    bool? imageAttachmentsEnabled,
   }) {
     return GenericAiChatState(
       currentChatId: currentChatId == _sentinel
@@ -178,6 +242,7 @@ class GenericAiChatState {
           : currentChatId as String?,
       currentTitle: currentTitle ?? this.currentTitle,
       messages: messages ?? this.messages,
+      stagedAttachments: stagedAttachments ?? this.stagedAttachments,
       isSending: isSending ?? this.isSending,
       isGenerating: isGenerating ?? this.isGenerating,
       isLoadingMessages: isLoadingMessages ?? this.isLoadingMessages,
@@ -203,6 +268,8 @@ class GenericAiChatState {
       hasAccessDenied: hasAccessDenied ?? this.hasAccessDenied,
       isDeletingConversation:
           isDeletingConversation ?? this.isDeletingConversation,
+      imageAttachmentsEnabled:
+          imageAttachmentsEnabled ?? this.imageAttachmentsEnabled,
     );
   }
 }
@@ -232,6 +299,7 @@ class GenericAiChat extends _$GenericAiChat {
   /// background (their events are ignored via [_operationToken]) and are
   /// cancelled when the notifier is disposed.
   final Set<StreamSubscription<AiChatStreamEvent>> _activeStreams = {};
+  final List<Completer<void>> _activeCompleters = [];
 
   /// Submission target per request ID. `null` means the first-message route.
   /// A retry must replay the exact same target even if a `chat_id` was
@@ -248,7 +316,10 @@ class GenericAiChat extends _$GenericAiChat {
       _cancelPolling();
       _cancelActiveStreams();
     });
-    return const GenericAiChatState();
+    return GenericAiChatState(
+      imageAttachmentsEnabled:
+          _repository.policy?.imageAttachmentsEnabled ?? false,
+    );
   }
 
   /// Prepares the generic chat session when the AI tab opens.
@@ -256,9 +327,11 @@ class GenericAiChat extends _$GenericAiChat {
     try {
       state = state.copyWith(hasInitError: false, hasAccessDenied: false);
       await _repository.ensureGenericChatSession();
-      if (_repository.policy?.canGenerate == false) {
-        state = state.copyWith(hasAccessDenied: true);
-      }
+      final policy = _repository.policy;
+      state = state.copyWith(
+        hasAccessDenied: policy?.canGenerate == false,
+        imageAttachmentsEnabled: policy?.imageAttachmentsEnabled ?? false,
+      );
     } on LearnLensException catch (e) {
       if (_isAccessDeniedError(e)) {
         state = state.copyWith(hasAccessDenied: true, hasInitError: false);
@@ -280,11 +353,218 @@ class GenericAiChat extends _$GenericAiChat {
     return false;
   }
 
+  /// Stages a new image attachment by uploading it immediately to LearnLens.
+  Future<void> stageAttachment({
+    required Uint8List bytes,
+    required String fileName,
+    String mimeType = 'image/jpeg',
+  }) async {
+    final policy = _repository.policy;
+    if (policy?.imageAttachmentsEnabled == false) {
+      return;
+    }
+    final maxImages = policy?.maxImagesPerMessage ?? 4;
+    if (state.stagedAttachments.length >= maxImages) {
+      return;
+    }
+
+    final localId = UuidUtils.v4();
+    final newAttachment = StagedAttachment(
+      localId: localId,
+      bytes: bytes,
+      fileName: fileName,
+      mimeType: mimeType,
+      isUploading: true,
+    );
+
+    state = state.copyWith(
+      stagedAttachments: [...state.stagedAttachments, newAttachment],
+    );
+
+    await _performAttachmentUpload(
+      localId: localId,
+      bytes: bytes,
+      fileName: fileName,
+      mimeType: mimeType,
+    );
+  }
+
+  /// Retries uploading a failed staged attachment.
+  Future<void> retryAttachment(String localId) async {
+    final matching = state.stagedAttachments
+        .where((a) => a.localId == localId)
+        .firstOrNull;
+    if (matching == null || matching.bytes == null) {
+      return;
+    }
+    if (matching.isUploading) return;
+
+    final reset = state.stagedAttachments.map((a) {
+      if (a.localId == localId) {
+        return StagedAttachment(
+          localId: a.localId,
+          bytes: a.bytes,
+          fileName: a.fileName,
+          mimeType: a.mimeType,
+          previewUrl: a.previewUrl,
+          attachmentId: a.attachmentId,
+          isUploading: true,
+          hasError: false,
+          errorCode: null,
+          errorMessage: null,
+        );
+      }
+      return a;
+    }).toList();
+    state = state.copyWith(stagedAttachments: reset);
+
+    await _performAttachmentUpload(
+      localId: localId,
+      bytes: matching.bytes!,
+      fileName: matching.fileName ?? 'attachment.jpg',
+      mimeType: matching.mimeType ?? 'image/jpeg',
+    );
+  }
+
+  Future<void> _performAttachmentUpload({
+    required String localId,
+    required Uint8List bytes,
+    required String fileName,
+    required String mimeType,
+  }) async {
+    try {
+      DioMediaType? parsedContentType;
+      try {
+        parsedContentType = DioMediaType.parse(mimeType);
+      } catch (_) {
+        parsedContentType = DioMediaType('image', 'jpeg');
+      }
+      final multipart = MultipartFile.fromBytes(
+        bytes,
+        filename: fileName,
+        contentType: parsedContentType,
+      );
+      final response = await _repository.uploadAttachments(files: [multipart]);
+      if (response.items.isEmpty) {
+        throw const LearnLensException(
+          code: 'upload_failed',
+          message: 'Upload response was empty',
+        );
+      }
+      final uploaded = response.items.first;
+
+      final isStillStaged = state.stagedAttachments.any(
+        (a) => a.localId == localId,
+      );
+      if (!isStillStaged) {
+        _repository
+            .deleteAttachment(attachmentId: uploaded.attachmentId)
+            .catchError((e, stackTrace) {
+              dev.log(
+                'Failed to delete orphaned in-flight attachment: ${uploaded.attachmentId}',
+                name: 'GenericAiChatNotifier',
+                error: e,
+                stackTrace: stackTrace,
+              );
+            });
+        return;
+      }
+
+      final updated = state.stagedAttachments.map((a) {
+        if (a.localId == localId) {
+          return a.copyWith(
+            attachmentId: uploaded.attachmentId,
+            previewUrl: uploaded.url,
+            isUploading: false,
+          );
+        }
+        return a;
+      }).toList();
+
+      state = state.copyWith(stagedAttachments: updated);
+    } catch (e) {
+      if (!state.stagedAttachments.any((a) => a.localId == localId)) {
+        return;
+      }
+      final updated = state.stagedAttachments.map((a) {
+        if (a.localId == localId) {
+          return a.copyWith(
+            isUploading: false,
+            hasError: true,
+            errorCode: e is LearnLensException
+                ? (e.code ?? 'upload_failed')
+                : 'upload_failed',
+            errorMessage: e is LearnLensException ? e.message : null,
+          );
+        }
+        return a;
+      }).toList();
+
+      state = state.copyWith(stagedAttachments: updated);
+    }
+  }
+
+  /// Removes a staged attachment and cancels its upload on the server if already uploaded.
+  Future<void> removeAttachment(String localId) async {
+    final index = state.stagedAttachments.indexWhere(
+      (a) => a.localId == localId,
+    );
+    if (index == -1) return;
+
+    final item = state.stagedAttachments[index];
+    final updated = List<StagedAttachment>.from(state.stagedAttachments)
+      ..removeAt(index);
+    state = state.copyWith(stagedAttachments: updated);
+
+    final attId = item.attachmentId;
+    if (attId != null && attId.isNotEmpty) {
+      try {
+        await _repository.deleteAttachment(attachmentId: attId);
+      } catch (e, stackTrace) {
+        dev.log(
+          'Failed to delete uncommitted attachment: $attId',
+          name: 'GenericAiChatNotifier',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
+    }
+  }
+
+  /// Clears all staged attachments and releases server storage.
+  void clearStagedAttachments() {
+    final current = state.stagedAttachments;
+    state = state.copyWith(stagedAttachments: const []);
+    for (final item in current) {
+      final attId = item.attachmentId;
+      if (attId != null && attId.isNotEmpty) {
+        _repository.deleteAttachment(attachmentId: attId).catchError((
+          e,
+          stackTrace,
+        ) {
+          dev.log(
+            'Failed to delete uncommitted attachment: $attId',
+            name: 'GenericAiChatNotifier',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        });
+      }
+    }
+  }
+
   /// Sends a user message. If no conversation is active, starts a new conversation;
   /// otherwise sends a follow-up query in the existing conversation.
-  Future<void> sendMessage(String query, {String? customRequestId}) async {
+  Future<void> sendMessage(
+    String query, {
+    String? customRequestId,
+    List<AiAttachmentDto>? replayAttachments,
+  }) async {
     final trimmed = query.trim();
-    if (trimmed.isEmpty) return;
+    final hasAttachments = replayAttachments != null
+        ? replayAttachments.isNotEmpty
+        : state.stagedAttachments.isNotEmpty;
+    if (trimmed.isEmpty && !hasAttachments) return;
     if (state.hasAccessDenied ||
         state.isSending ||
         state.isGenerating ||
@@ -296,9 +576,57 @@ class GenericAiChat extends _$GenericAiChat {
       return;
     }
 
+    if (customRequestId == null) {
+      if (state.stagedAttachments.any((a) => a.isUploading || a.hasError)) {
+        return;
+      }
+    }
+
     _syncInFlight = null;
     final token = ++_operationToken;
     final requestId = customRequestId ?? UuidUtils.v4();
+
+    final List<String> attachmentIds;
+    final List<AiAttachmentDto> attachments;
+
+    if (customRequestId == null) {
+      final staged = state.stagedAttachments;
+      attachmentIds = staged
+          .map((a) => a.attachmentId)
+          .whereType<String>()
+          .where((id) => id.isNotEmpty)
+          .toList();
+      attachments = staged
+          .where(
+            (a) =>
+                !a.isUploading &&
+                !a.hasError &&
+                a.attachmentId != null &&
+                a.attachmentId!.isNotEmpty,
+          )
+          .map(
+            (a) => AiAttachmentDto(
+              attachmentId: a.attachmentId!,
+              url: a.previewUrl,
+            ),
+          )
+          .toList();
+    } else {
+      final existingMsg = state.messages
+          .cast<GenericAiChatMessage?>()
+          .firstWhere(
+            (m) => m?.requestId == customRequestId && m?.isUser == true,
+            orElse: () => null,
+          );
+      attachments =
+          replayAttachments ??
+          existingMsg?.attachments ??
+          const <AiAttachmentDto>[];
+      attachmentIds = attachments
+          .map((a) => a.attachmentId)
+          .where((id) => id.isNotEmpty)
+          .toList();
+    }
 
     // Replays keep their original target; new submissions use the active chat.
     final String? targetChatId;
@@ -320,10 +648,14 @@ class GenericAiChat extends _$GenericAiChat {
       timestamp: DateTime.now(),
       isSending: true,
       requestId: requestId,
+      attachments: attachments,
     );
 
     state = state.copyWith(
       messages: [...state.messages, optimisticUserMessage],
+      stagedAttachments: customRequestId == null
+          ? const []
+          : state.stagedAttachments,
       isSending: true,
       isGenerating: true,
       quotaError: null,
@@ -334,6 +666,7 @@ class GenericAiChat extends _$GenericAiChat {
       await _sendStreaming(
         requestId: requestId,
         query: trimmed,
+        attachmentIds: attachmentIds,
         targetChatId: targetChatId,
         tempUserId: tempUserId,
         token: token,
@@ -347,12 +680,14 @@ class GenericAiChat extends _$GenericAiChat {
         turn = await _repository.startConversation(
           requestId: requestId,
           query: trimmed,
+          attachmentIds: attachmentIds,
         );
       } else {
         turn = await _repository.sendFollowUpMessage(
           chatId: targetChatId,
           requestId: requestId,
           query: trimmed,
+          attachmentIds: attachmentIds,
         );
       }
 
@@ -373,6 +708,7 @@ class GenericAiChat extends _$GenericAiChat {
   Future<void> _sendStreaming({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     required String? targetChatId,
     required String tempUserId,
     required int token,
@@ -380,11 +716,16 @@ class GenericAiChat extends _$GenericAiChat {
     final Stream<AiChatStreamEvent> stream;
     try {
       stream = targetChatId == null
-          ? _repository.streamConversation(requestId: requestId, query: query)
+          ? _repository.streamConversation(
+              requestId: requestId,
+              query: query,
+              attachmentIds: attachmentIds,
+            )
           : _repository.streamFollowUpMessage(
               chatId: targetChatId,
               requestId: requestId,
               query: query,
+              attachmentIds: attachmentIds,
             );
     } catch (e) {
       if (token != _operationToken) return;
@@ -394,6 +735,7 @@ class GenericAiChat extends _$GenericAiChat {
 
     final provisionalId = 'stream_$requestId';
     final completer = Completer<void>();
+    _activeCompleters.add(completer);
     var accepted = false;
     var finished = false;
     String? knownChatId = targetChatId;
@@ -408,6 +750,7 @@ class GenericAiChat extends _$GenericAiChat {
       streamClosed = true;
       final active = subscription;
       if (active != null) _activeStreams.remove(active);
+      _activeCompleters.remove(completer);
       if (completer.isCompleted) return;
       final pending = recovery;
       if (pending == null) {
@@ -699,6 +1042,12 @@ class GenericAiChat extends _$GenericAiChat {
       subscription.cancel();
     }
     _activeStreams.clear();
+    for (final completer in _activeCompleters.toList()) {
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    }
+    _activeCompleters.clear();
   }
 
   // ---------------------------------------------------------------------------
@@ -846,14 +1195,20 @@ class GenericAiChat extends _$GenericAiChat {
 
     if (msgIndex == -1) return;
     final failedMsg = state.messages[msgIndex];
-    if (failedMsg.text.trim().isEmpty) return;
+    if (failedMsg.text.trim().isEmpty && failedMsg.attachments.isEmpty) return;
+
+    final attachmentsToReplay = failedMsg.attachments;
 
     final updatedMessages = List<GenericAiChatMessage>.from(state.messages)
       ..removeAt(msgIndex);
 
     state = state.copyWith(messages: updatedMessages);
 
-    await sendMessage(failedMsg.text, customRequestId: failedMsg.requestId);
+    await sendMessage(
+      failedMsg.text,
+      customRequestId: failedMsg.requestId,
+      replayAttachments: attachmentsToReplay,
+    );
   }
 
   /// Retries generation after an assistant response failure.
@@ -877,15 +1232,19 @@ class GenericAiChat extends _$GenericAiChat {
         .lastIndexWhere((m) => m.isUser);
     if (userMsgIndex == -1) return;
 
-    final query = state.messages[userMsgIndex].text;
-    if (query.trim().isEmpty) return;
+    final userMsg = state.messages[userMsgIndex];
+    if (userMsg.text.trim().isEmpty && userMsg.attachments.isEmpty) return;
 
     final updatedMessages = List<GenericAiChatMessage>.from(state.messages)
       ..removeAt(lastFailedIndex);
 
     state = state.copyWith(messages: updatedMessages);
 
-    await sendMessage(query);
+    await sendMessage(
+      userMsg.text,
+      customRequestId: userMsg.requestId,
+      replayAttachments: userMsg.attachments,
+    );
   }
 
   /// Starts polling `getConversationStatus` sequentially until the backend completes or fails generation,
@@ -1040,6 +1399,7 @@ class GenericAiChat extends _$GenericAiChat {
     _cancelPolling();
     _submissionTargets.clear();
     _syncInFlight = null;
+    clearStagedAttachments();
     final token = ++_operationToken;
 
     final matching = state.conversationHistory
@@ -1051,6 +1411,7 @@ class GenericAiChat extends _$GenericAiChat {
       currentChatId: chatId,
       currentTitle: matchingTitle,
       messages: const [],
+      stagedAttachments: const [],
       isLoadingMessages: true,
       hasMessagesError: false,
       messagesError: null,
@@ -1111,8 +1472,13 @@ class GenericAiChat extends _$GenericAiChat {
     final policy = _repository.policy;
     if (policy != null) {
       final isDenied = !policy.canGenerate;
-      if (state.hasAccessDenied != isDenied) {
-        state = state.copyWith(hasAccessDenied: isDenied);
+      final attachmentsEnabled = policy.imageAttachmentsEnabled;
+      if (state.hasAccessDenied != isDenied ||
+          state.imageAttachmentsEnabled != attachmentsEnabled) {
+        state = state.copyWith(
+          hasAccessDenied: isDenied,
+          imageAttachmentsEnabled: attachmentsEnabled,
+        );
       }
     }
 
@@ -1236,10 +1602,12 @@ class GenericAiChat extends _$GenericAiChat {
     _syncInFlight = null;
     _cancelPolling();
     _submissionTargets.clear();
+    clearStagedAttachments();
     state = state.copyWith(
       currentChatId: null,
       currentTitle: '',
       messages: const [],
+      stagedAttachments: const [],
       isLoadingMessages: false,
       hasMessagesError: false,
       messagesError: null,

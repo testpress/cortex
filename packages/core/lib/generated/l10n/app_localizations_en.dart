@@ -3543,13 +3543,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiComposerPlaceholder => 'Message';
 
   @override
-  String get aiComposerAttachImage => 'Attach image';
+  String get aiComposerAttachImage => 'Upload an image';
 
   @override
-  String get aiComposerTakePhoto => 'Take photo';
+  String get aiComposerTakePhoto => 'Take a photo';
 
   @override
   String get aiComposerSendMessage => 'Send message';
+
+  @override
+  String get aiComposerDeleteAttachment => 'Remove attachment';
+
+  @override
+  String get aiComposerAttachmentUploadFailed => 'Failed to upload image';
+
+  @override
+  String get aiChatPermissionRequired =>
+      'Permission is required to attach images. Please enable it in Settings.';
+
+  @override
+  String get aiChatAttachmentSizeExceeded =>
+      'Image size exceeds the 5 MB limit.';
+
+  @override
+  String get aiChatUnsupportedImageFormat =>
+      'Only JPEG, PNG, and WebP images are supported.';
 
   @override
   String get aiAssistantLabel => 'AI Assistant';

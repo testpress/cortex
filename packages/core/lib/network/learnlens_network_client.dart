@@ -10,7 +10,7 @@ import 'api_endpoints.dart';
 import 'learnlens_session_manager.dart';
 import 'sse_parser.dart';
 
-export 'package:dio/dio.dart' show CancelToken;
+export 'package:dio/dio.dart' show CancelToken, DioMediaType, MultipartFile;
 
 export '../data/models/learnlens_dto.dart';
 export '../data/exceptions/learnlens_exception.dart';
@@ -173,13 +173,19 @@ class LearnLensNetworkClient {
   Future<AiChatTurnResponseDto> startConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     return _guard(() async {
       final baseUrl = await _resolveBaseUrl();
       final response = await _dio.post(
         '$baseUrl/chats/',
-        data: {'request_id': requestId, 'query': query},
+        data: {
+          'request_id': requestId,
+          'query': query,
+          if (attachmentIds != null && attachmentIds.isNotEmpty)
+            'attachment_ids': attachmentIds,
+        },
         cancelToken: cancelToken,
       );
       final turn = AiChatTurnResponseDto.fromJson(
@@ -194,19 +200,61 @@ class LearnLensNetworkClient {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     return _guard(() async {
       final baseUrl = await _resolveBaseUrl();
       final response = await _dio.post(
         '$baseUrl/chats/$chatId/messages/',
-        data: {'request_id': requestId, 'query': query},
+        data: {
+          'request_id': requestId,
+          'query': query,
+          if (attachmentIds != null && attachmentIds.isNotEmpty)
+            'attachment_ids': attachmentIds,
+        },
         cancelToken: cancelToken,
       );
       final turn = AiChatTurnResponseDto.fromJson(
         response.data as Map<String, dynamic>,
       );
       return turn;
+    });
+  }
+
+  /// Uploads one or more images for a later message.
+  Future<AiAttachmentUploadResponseDto> uploadAttachments({
+    required List<MultipartFile> files,
+    CancelToken? cancelToken,
+  }) async {
+    return _guard(() async {
+      final baseUrl = await _resolveBaseUrl();
+      final formData = FormData();
+      for (final file in files) {
+        formData.files.add(MapEntry('files', file));
+      }
+      final response = await _dio.post(
+        '$baseUrl/attachments/',
+        data: formData,
+        cancelToken: cancelToken,
+      );
+      return AiAttachmentUploadResponseDto.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    });
+  }
+
+  /// Deletes an uploaded image attachment the learner decided not to send.
+  Future<void> deleteAttachment({
+    required String attachmentId,
+    CancelToken? cancelToken,
+  }) async {
+    return _guard(() async {
+      final baseUrl = await _resolveBaseUrl();
+      await _dio.delete(
+        '$baseUrl/attachments/$attachmentId/',
+        cancelToken: cancelToken,
+      );
     });
   }
 
@@ -271,12 +319,14 @@ class LearnLensNetworkClient {
   Stream<AiChatStreamEvent> streamConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     return _streamTurn(
       pathBuilder: (baseUrl) => '$baseUrl/chats/stream/',
       requestId: requestId,
       query: query,
+      attachmentIds: attachmentIds,
       cancelToken: cancelToken,
     );
   }
@@ -287,12 +337,14 @@ class LearnLensNetworkClient {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     return _streamTurn(
       pathBuilder: (baseUrl) => '$baseUrl/chats/$chatId/messages/stream/',
       requestId: requestId,
       query: query,
+      attachmentIds: attachmentIds,
       cancelToken: cancelToken,
     );
   }
@@ -301,6 +353,7 @@ class LearnLensNetworkClient {
     required String Function(String baseUrl) pathBuilder,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async* {
     final Response<ResponseBody> response;
@@ -308,7 +361,12 @@ class LearnLensNetworkClient {
       final baseUrl = await _resolveBaseUrl();
       response = await _dio.post<ResponseBody>(
         pathBuilder(baseUrl),
-        data: {'request_id': requestId, 'query': query},
+        data: {
+          'request_id': requestId,
+          if (query.isNotEmpty) 'query': query,
+          if (attachmentIds != null && attachmentIds.isNotEmpty)
+            'attachment_ids': attachmentIds,
+        },
         cancelToken: cancelToken,
         options: Options(
           responseType: ResponseType.stream,

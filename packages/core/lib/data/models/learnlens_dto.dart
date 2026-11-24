@@ -130,6 +130,8 @@ class AiChatPolicyDto {
   final int maxMessageCharacters;
   final String instituteTimezone;
   final bool canGenerate;
+  final bool imageAttachmentsEnabled;
+  final int maxImagesPerMessage;
 
   const AiChatPolicyDto({
     this.maxMessagesPerConversation = 20,
@@ -138,6 +140,8 @@ class AiChatPolicyDto {
     this.maxMessageCharacters = 4000,
     this.instituteTimezone = 'Asia/Kolkata',
     this.canGenerate = true,
+    this.imageAttachmentsEnabled = false,
+    this.maxImagesPerMessage = 4,
   });
 
   factory AiChatPolicyDto.fromJson(Map<String, dynamic> json) {
@@ -154,6 +158,10 @@ class AiChatPolicyDto {
           json['institute_timezone'] as String? ?? 'Asia/Kolkata',
       // Fails open for backward compatibility; access is enforced server-side (403).
       canGenerate: json['can_generate'] as bool? ?? true,
+      imageAttachmentsEnabled:
+          json['image_attachments_enabled'] as bool? ?? false,
+      maxImagesPerMessage:
+          (json['max_images_per_message'] as num?)?.toInt() ?? 4,
     );
   }
 
@@ -164,6 +172,8 @@ class AiChatPolicyDto {
     'max_message_characters': maxMessageCharacters,
     'institute_timezone': instituteTimezone,
     'can_generate': canGenerate,
+    'image_attachments_enabled': imageAttachmentsEnabled,
+    'max_images_per_message': maxImagesPerMessage,
   };
 }
 
@@ -349,6 +359,78 @@ class AiConversationListDto {
   }
 }
 
+/// An image attachment on an AI chat message or upload response.
+class AiAttachmentDto {
+  final String attachmentId;
+  final String contentType;
+  final int sizeBytes;
+  final int width;
+  final int height;
+  final String? url;
+  final DateTime? urlExpiresAt;
+  final DateTime? expiresAt;
+
+  const AiAttachmentDto({
+    required this.attachmentId,
+    this.contentType = 'image/jpeg',
+    this.sizeBytes = 0,
+    this.width = 0,
+    this.height = 0,
+    this.url,
+    this.urlExpiresAt,
+    this.expiresAt,
+  });
+
+  factory AiAttachmentDto.fromJson(Map<String, dynamic> json) {
+    return AiAttachmentDto(
+      attachmentId: json['attachment_id']?.toString() ?? '',
+      contentType: json['content_type'] as String? ?? 'image/jpeg',
+      sizeBytes: (json['size_bytes'] as num?)?.toInt() ?? 0,
+      width: (json['width'] as num?)?.toInt() ?? 0,
+      height: (json['height'] as num?)?.toInt() ?? 0,
+      url: json['url'] as String?,
+      urlExpiresAt: json['url_expires_at'] != null
+          ? DateTime.tryParse(json['url_expires_at'].toString())?.toUtc()
+          : null,
+      expiresAt: json['expires_at'] != null
+          ? DateTime.tryParse(json['expires_at'].toString())?.toUtc()
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'attachment_id': attachmentId,
+    'content_type': contentType,
+    'size_bytes': sizeBytes,
+    'width': width,
+    'height': height,
+    if (url != null) 'url': url,
+    if (urlExpiresAt != null) 'url_expires_at': urlExpiresAt!.toIso8601String(),
+    if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
+  };
+}
+
+/// Response payload from uploading image attachments.
+class AiAttachmentUploadResponseDto {
+  final List<AiAttachmentDto> items;
+
+  const AiAttachmentUploadResponseDto({required this.items});
+
+  factory AiAttachmentUploadResponseDto.fromJson(Map<String, dynamic> json) {
+    final list = json['items'] as List<dynamic>? ?? [];
+    return AiAttachmentUploadResponseDto(
+      items: list
+          .whereType<Map<String, dynamic>>()
+          .map(AiAttachmentDto.fromJson)
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'items': items.map((i) => i.toJson()).toList(),
+  };
+}
+
 /// A persisted chat message (user query or assistant response).
 class AiMessageDto {
   final String messageId;
@@ -357,6 +439,7 @@ class AiMessageDto {
   final String content;
   final List<dynamic> citations;
   final dynamic quiz;
+  final List<AiAttachmentDto> attachments;
   final DateTime createdAt;
   final AiGenerationDto? generation;
 
@@ -367,6 +450,7 @@ class AiMessageDto {
     required this.content,
     this.citations = const [],
     this.quiz,
+    this.attachments = const [],
     required this.createdAt,
     this.generation,
   });
@@ -382,6 +466,12 @@ class AiMessageDto {
       content: json['content'] as String? ?? '',
       citations: json['citations'] as List<dynamic>? ?? const [],
       quiz: json['quiz'],
+      attachments:
+          (json['attachments'] as List<dynamic>?)
+              ?.whereType<Map<String, dynamic>>()
+              .map(AiAttachmentDto.fromJson)
+              .toList() ??
+          const [],
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())?.toUtc() ??
                 DateTime.now().toUtc()
@@ -399,6 +489,8 @@ class AiMessageDto {
     'content': content,
     'citations': citations,
     'quiz': quiz,
+    if (attachments.isNotEmpty)
+      'attachments': attachments.map((a) => a.toJson()).toList(),
     'created_at': createdAt.toIso8601String(),
     if (generation != null) 'generation': generation!.toJson(),
   };

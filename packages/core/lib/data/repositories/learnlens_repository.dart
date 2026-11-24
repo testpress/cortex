@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../network/learnlens_network_client.dart';
 import '../../network/learnlens_session_manager.dart';
 
-export '../../network/learnlens_network_client.dart' show CancelToken;
+export '../../network/learnlens_network_client.dart'
+    show CancelToken, DioMediaType, MultipartFile;
 export '../models/learnlens_dto.dart';
 export '../exceptions/learnlens_exception.dart';
 
@@ -86,16 +87,18 @@ class LearnLensRepository {
     return _client.listConversations(limit: limit, cursor: cursor);
   }
 
-  /// Starts a new conversation with the initial user query.
+  /// Starts a new conversation with the initial user query and optional attachment IDs.
   Future<AiChatTurnResponseDto> startConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
-    _validateQuery(query);
+    _validateTurn(query: query, attachmentIds: attachmentIds);
     return _client.startConversation(
       requestId: requestId,
       query: query,
+      attachmentIds: attachmentIds,
       cancelToken: cancelToken,
     );
   }
@@ -105,13 +108,15 @@ class LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
-    _validateQuery(query);
+    _validateTurn(query: query, attachmentIds: attachmentIds);
     return _client.sendFollowUpMessage(
       chatId: chatId,
       requestId: requestId,
       query: query,
+      attachmentIds: attachmentIds,
       cancelToken: cancelToken,
     );
   }
@@ -121,12 +126,14 @@ class LearnLensRepository {
   Stream<AiChatStreamEvent> streamConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
-    _validateQuery(query);
+    _validateTurn(query: query, attachmentIds: attachmentIds);
     return _client.streamConversation(
       requestId: requestId,
       query: query,
+      attachmentIds: attachmentIds,
       cancelToken: cancelToken,
     );
   }
@@ -137,13 +144,34 @@ class LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
-    _validateQuery(query);
+    _validateTurn(query: query, attachmentIds: attachmentIds);
     return _client.streamFollowUpMessage(
       chatId: chatId,
       requestId: requestId,
       query: query,
+      attachmentIds: attachmentIds,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Uploads images for a message via `POST /generic/attachments/`.
+  Future<AiAttachmentUploadResponseDto> uploadAttachments({
+    required List<MultipartFile> files,
+    CancelToken? cancelToken,
+  }) {
+    return _client.uploadAttachments(files: files, cancelToken: cancelToken);
+  }
+
+  /// Removes an unsent attachment via `DELETE /generic/attachments/{id}/`.
+  Future<void> deleteAttachment({
+    required String attachmentId,
+    CancelToken? cancelToken,
+  }) {
+    return _client.deleteAttachment(
+      attachmentId: attachmentId,
       cancelToken: cancelToken,
     );
   }
@@ -189,14 +217,15 @@ class LearnLensRepository {
   }
 
   /// Enforces maximum query character limit locally before making network calls.
-  void _validateQuery(String query) {
-    final maxChars = policy?.maxMessageCharacters ?? 4000;
-    if (query.trim().isEmpty) {
+  void _validateTurn({required String query, List<String>? attachmentIds}) {
+    final hasAttachments = attachmentIds != null && attachmentIds.isNotEmpty;
+    if (query.trim().isEmpty && !hasAttachments) {
       throw const LearnLensException(
         message: 'Message cannot be empty.',
         code: 'invalid_message',
       );
     }
+    final maxChars = policy?.maxMessageCharacters ?? 4000;
     if (query.length > maxChars) {
       throw LearnLensException(
         message:
@@ -206,6 +235,8 @@ class LearnLensRepository {
       );
     }
   }
+
+  void _validateQuery(String query) => _validateTurn(query: query);
 
   void validateMessage(String query) => _validateQuery(query);
 

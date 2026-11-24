@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:core/core.dart';
 
 import 'package:core/data/repositories/learnlens_repository.dart';
@@ -31,17 +34,26 @@ class _TestLearnLensRepository implements LearnLensRepository {
 
   @override
   AiChatPolicyDto? get policy =>
-      customPolicy ?? const AiChatPolicyDto(maxMessageCharacters: 4000);
+      customPolicy ??
+      const AiChatPolicyDto(
+        maxMessageCharacters: 4000,
+        imageAttachmentsEnabled: true,
+      );
 
   @override
   Stream<AiChatStreamEvent> streamConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     if (streamFactory != null) return streamFactory!(requestId, query, null);
     return _synthesizeStream(
-      () => startConversation(requestId: requestId, query: query),
+      () => startConversation(
+        requestId: requestId,
+        query: query,
+        attachmentIds: attachmentIds,
+      ),
     );
   }
 
@@ -50,6 +62,7 @@ class _TestLearnLensRepository implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     if (streamFactory != null) return streamFactory!(requestId, query, chatId);
@@ -58,6 +71,7 @@ class _TestLearnLensRepository implements LearnLensRepository {
         chatId: chatId,
         requestId: requestId,
         query: query,
+        attachmentIds: attachmentIds,
       ),
     );
   }
@@ -97,6 +111,7 @@ class _TestLearnLensRepository implements LearnLensRepository {
   Future<AiChatTurnResponseDto> startConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     if (onStartConversation != null) {
@@ -146,6 +161,7 @@ class _TestLearnLensRepository implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     if (onSendFollowUp != null) {
@@ -164,6 +180,28 @@ class _TestLearnLensRepository implements LearnLensRepository {
       ),
     );
   }
+
+  @override
+  Future<AiAttachmentUploadResponseDto> uploadAttachments({
+    required List<MultipartFile> files,
+    CancelToken? cancelToken,
+  }) async {
+    return AiAttachmentUploadResponseDto(
+      items: List.generate(
+        files.length,
+        (i) => AiAttachmentDto(
+          attachmentId: 'att-$i',
+          url: 'https://cdn.example.com/att-$i.png',
+        ),
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteAttachment({
+    required String attachmentId,
+    CancelToken? cancelToken,
+  }) async {}
 
   int getConversationStatusCalls = 0;
 
@@ -270,12 +308,60 @@ class _TestLearnLensRepository implements LearnLensRepository {
   }
 }
 
+const _plainText = TextStyle();
+final _testScale = DesignTypographyScale(
+  xxs: _plainText.copyWith(fontSize: 10),
+  xs: _plainText.copyWith(fontSize: 12),
+  sm: _plainText.copyWith(fontSize: 14),
+  base: _plainText.copyWith(fontSize: 16),
+  lg: _plainText.copyWith(fontSize: 18),
+  xl: _plainText.copyWith(fontSize: 20),
+  xl2: _plainText.copyWith(fontSize: 24),
+  xl3: _plainText.copyWith(fontSize: 30),
+  xl4: _plainText.copyWith(fontSize: 36),
+  xl5: _plainText.copyWith(fontSize: 48),
+);
+final _testTypography = DesignTypography(
+  display: _plainText.copyWith(fontSize: 30, fontWeight: FontWeight.w700),
+  headline: _plainText.copyWith(fontSize: 20, fontWeight: FontWeight.w600),
+  title: _plainText.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+  subtitle: _plainText.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+  body: _plainText.copyWith(fontSize: 16, fontWeight: FontWeight.w400),
+  bodySmall: _plainText.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+  label: _plainText.copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+  labelSmall: _plainText.copyWith(fontSize: 11, fontWeight: FontWeight.w500),
+  labelBold: _plainText.copyWith(fontSize: 14, fontWeight: FontWeight.w700),
+  caption: _plainText.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+  cardTitle: _plainText.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+  cardSubtitle: _plainText.copyWith(fontSize: 12, fontWeight: FontWeight.w400),
+  cardCaption: _plainText.copyWith(fontSize: 10, fontWeight: FontWeight.w400),
+);
+
+final _testColors = DesignColors.light();
+final _testConfig = DesignConfig(
+  colors: _testColors,
+  spacing: DesignSpacing.defaults(),
+  typography: _testTypography,
+  typographyScale: _testScale,
+  motion: DesignMotion.defaults(),
+  radius: DesignRadius.defaults(),
+  iconSize: DesignIconSize.defaults(),
+  shadows: DesignShadows.light(),
+  layout: DesignLayout.defaults(),
+  subjectPalette: DesignSubjectPalette.light(),
+  statusColors: DesignStatusColors.light(),
+  shortcutPalette: DesignShortcutPalette.light(),
+  study: DesignStudyTheme.light(),
+);
+
 void main() {
   Widget buildSubject({
     List<AiChatMessageItem> initialMessages = const [],
     List<Override> overrides = const [],
     _TestLearnLensRepository? repository,
     VoidCallback? onOpenHistory,
+    ImagePicker? imagePicker,
+    AppImageCropper? imageCropper,
   }) {
     final testRepo = repository ?? _TestLearnLensRepository();
     return ProviderScope(
@@ -284,7 +370,9 @@ void main() {
         ...overrides,
       ],
       child: DesignProvider(
-        config: DesignConfig.defaults(),
+        mode: DesignMode.light,
+        config: _testConfig,
+        darkConfig: _testConfig,
         child: WidgetsApp(
           color: const Color(0xFF000000),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -297,6 +385,8 @@ void main() {
           home: AiScreen(
             initialMessages: initialMessages,
             onOpenHistory: onOpenHistory,
+            imagePicker: imagePicker,
+            imageCropper: imageCropper,
           ),
         ),
       ),
@@ -337,7 +427,11 @@ void main() {
       expect(find.byType(AiComposer), findsOneWidget);
       expect(find.text('Message'), findsOneWidget);
       // The new-chat action only appears once a conversation exists.
-      expect(find.byIcon(LucideIcons.plus), findsNothing);
+      expect(find.bySemanticsLabel('Start new chat'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('ai_composer_attach_button')),
+        findsOneWidget,
+      );
 
       // The composer sits directly below the suggestion cards.
       final lastCardBottom = tester
@@ -457,7 +551,13 @@ void main() {
       expect(find.text('What can I help with?'), findsNothing);
       expect(find.byType(AiSuggestionCard), findsNothing);
       expect(find.byType(AiComposer), findsOneWidget);
-      expect(find.byIcon(LucideIcons.plus), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(AiComposer),
+          matching: find.bySemanticsLabel('Start new chat'),
+        ),
+        findsNothing,
+      );
       expect(find.byIcon(LucideIcons.squarePen), findsOneWidget);
 
       // The composer is pinned below the message list.
@@ -470,7 +570,13 @@ void main() {
 
       expect(find.text('Hello world'), findsNothing);
       expect(find.text('What can I help with?'), findsOneWidget);
-      expect(find.byIcon(LucideIcons.plus), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(AiComposer),
+          matching: find.bySemanticsLabel('Start new chat'),
+        ),
+        findsNothing,
+      );
       expect(container.read(genericAiChatProvider).currentChatId, isNull);
     },
   );
@@ -1667,4 +1773,648 @@ void main() {
       expect(find.text('Conversation deleted'), findsNothing);
     },
   );
+
+  testWidgets(
+    'tapping attachment button opens popover with Gallery top and Camera bottom',
+    (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final attachButton = find.byKey(
+        const ValueKey('ai_composer_attach_button'),
+      );
+      expect(attachButton, findsOneWidget);
+
+      await tester.tap(attachButton);
+      await tester.pumpAndSettle();
+
+      final cameraOption = find.byKey(
+        const ValueKey('ai_attach_camera_option'),
+      );
+      final galleryOption = find.byKey(
+        const ValueKey('ai_attach_gallery_option'),
+      );
+
+      expect(cameraOption, findsOneWidget);
+      expect(galleryOption, findsOneWidget);
+
+      expect(find.text('Upload an image'), findsOneWidget);
+      expect(find.text('Take a photo'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.image), findsOneWidget);
+      expect(find.byIcon(LucideIcons.camera), findsOneWidget);
+
+      // Verify Gallery is above Camera vertically
+      final galleryY = tester.getTopLeft(galleryOption).dy;
+      final cameraY = tester.getTopLeft(cameraOption).dy;
+      expect(galleryY, lessThan(cameraY));
+
+      // Tapping an option dismisses the popover
+      await tester.tap(cameraOption);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AiAttachmentPickerSheet), findsOneWidget);
+      final sheet = tester.widget<AiAttachmentPickerSheet>(
+        find.byType(AiAttachmentPickerSheet),
+      );
+      expect(sheet.isOpen, isFalse);
+    },
+  );
+
+  testWidgets(
+    'delegates picked image to AppImageCropper and stages cropped file',
+    (tester) async {
+      final tempDir = Directory.systemTemp.createTempSync('ai_crop_test');
+      addTearDown(() => tempDir.deleteSync(recursive: true));
+      const validPng = [
+        0x89,
+        0x50,
+        0x4E,
+        0x47,
+        0x0D,
+        0x0A,
+        0x1A,
+        0x0A,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x06,
+        0x00,
+        0x00,
+        0x00,
+        0x1F,
+        0x15,
+        0xC4,
+        0x89,
+        0x00,
+        0x00,
+        0x00,
+        0x0A,
+        0x49,
+        0x44,
+        0x41,
+        0x54,
+        0x78,
+        0x9C,
+        0x63,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x05,
+        0x00,
+        0x01,
+        0x0D,
+        0x0A,
+        0x2D,
+        0xB4,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x49,
+        0x45,
+        0x4E,
+        0x44,
+        0xAE,
+        0x42,
+        0x60,
+        0x82,
+      ];
+      final sourceFile = File('${tempDir.path}/raw.png')
+        ..writeAsBytesSync(validPng);
+      final croppedFile = File('${tempDir.path}/cropped.png')
+        ..writeAsBytesSync(validPng);
+
+      final fakePicker = _FakeImagePicker()
+        ..pickedFile = XFile(sourceFile.path);
+      final fakeCropper = _FakeAppImageCropper()..cropResult = croppedFile.path;
+
+      await tester.pumpWidget(
+        buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+      );
+      await tester.pumpAndSettle();
+
+      // Tap attach button
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      // Tap camera option
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+
+      expect(fakePicker.pickCalls, 1);
+      expect(fakePicker.lastMaxWidth, 1920);
+      expect(fakePicker.lastMaxHeight, 1920);
+      expect(fakePicker.lastImageQuality, 85);
+      expect(fakeCropper.cropCalls, 1);
+
+      // Verify staged thumbnail is displayed
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final staged = container.read(genericAiChatProvider).stagedAttachments;
+      expect(staged.length, 1);
+      expect(staged.first.fileName, 'cropped.png');
+    },
+  );
+
+  testWidgets(
+    'displays AppLoadingIndicator overlay while image cropping is in progress',
+    (tester) async {
+      final tempDir = Directory.systemTemp.createTempSync('ai_crop_loading');
+      addTearDown(() => tempDir.deleteSync(recursive: true));
+      final pickedFile = File('${tempDir.path}/picked.png')
+        ..writeAsBytesSync(_validPng);
+
+      final fakePicker = _FakeImagePicker()
+        ..pickedFile = XFile(pickedFile.path);
+      final completer = Completer<String?>();
+      final fakeCropper = _FakeAppImageCropper()..cropCompleter = completer;
+
+      await tester.pumpWidget(
+        buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+
+      expect(fakeCropper.cropCalls, 1);
+      expect(
+        find.byKey(const ValueKey('ai_crop_loading_overlay')),
+        findsOneWidget,
+      );
+
+      await tester.runAsync(() async {
+        completer.complete(pickedFile.path);
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+
+      expect(
+        find.byKey(const ValueKey('ai_crop_loading_overlay')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets('does not stage attachment when user cancels cropping', (
+    tester,
+  ) async {
+    final tempDir = Directory.systemTemp.createTempSync('ai_crop_cancel');
+    addTearDown(() => tempDir.deleteSync(recursive: true));
+    const validPng = [
+      0x89,
+      0x50,
+      0x4E,
+      0x47,
+      0x0D,
+      0x0A,
+      0x1A,
+      0x0A,
+      0x00,
+      0x00,
+      0x00,
+      0x0D,
+      0x49,
+      0x48,
+      0x44,
+      0x52,
+      0x00,
+      0x00,
+      0x00,
+      0x01,
+      0x00,
+      0x00,
+      0x00,
+      0x01,
+      0x08,
+      0x06,
+      0x00,
+      0x00,
+      0x00,
+      0x1F,
+      0x15,
+      0xC4,
+      0x89,
+      0x00,
+      0x00,
+      0x00,
+      0x0A,
+      0x49,
+      0x44,
+      0x41,
+      0x54,
+      0x78,
+      0x9C,
+      0x63,
+      0x00,
+      0x01,
+      0x00,
+      0x00,
+      0x05,
+      0x00,
+      0x01,
+      0x0D,
+      0x0A,
+      0x2D,
+      0xB4,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x49,
+      0x45,
+      0x4E,
+      0x44,
+      0xAE,
+      0x42,
+      0x60,
+      0x82,
+    ];
+    final sourceFile = File('${tempDir.path}/raw.png')
+      ..writeAsBytesSync(validPng);
+
+    final fakePicker = _FakeImagePicker()..pickedFile = XFile(sourceFile.path);
+    final fakeCropper = _FakeAppImageCropper()
+      ..cropResult = null; // user cancelled crop
+
+    await tester.pumpWidget(
+      buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+    );
+    await tester.pumpAndSettle();
+
+    // Tap attach button
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    // Tap gallery option
+    await tester.tap(find.byKey(const ValueKey('ai_attach_gallery_option')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump();
+
+    expect(fakePicker.pickCalls, 1);
+    expect(fakeCropper.cropCalls, 1);
+
+    // Verify nothing is staged
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AiScreen)),
+    );
+    final staged = container.read(genericAiChatProvider).stagedAttachments;
+    expect(staged, isEmpty);
+  });
+
+  testWidgets(
+    'shows permission toast when picker throws permission denial PlatformException',
+    (tester) async {
+      final fakePicker = _FakeImagePicker()
+        ..pickError = PlatformException(code: 'camera_access_denied');
+
+      await tester.pumpWidget(buildSubject(imagePicker: fakePicker));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fakePicker.pickCalls, 1);
+      expect(
+        find.text(
+          'Permission is required to attach images. Please enable it in Settings.',
+        ),
+        findsOneWidget,
+      );
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets('shows error toast when picker throws unexpected exception', (
+    tester,
+  ) async {
+    final fakePicker = _FakeImagePicker()
+      ..pickError = Exception('Storage read failure');
+
+    await tester.pumpWidget(buildSubject(imagePicker: fakePicker));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_attach_gallery_option')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(fakePicker.pickCalls, 1);
+    expect(find.text('Failed to upload image'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 4));
+  });
+
+  testWidgets('shows size exceeded toast when cropped file exceeds 5MB', (
+    tester,
+  ) async {
+    final tempDir = Directory.systemTemp.createTempSync('ai_size_exceeded');
+    addTearDown(() => tempDir.deleteSync(recursive: true));
+    final largeFile = File('${tempDir.path}/large.jpg')
+      ..writeAsBytesSync(Uint8List(AiScreen.maxAttachmentSizeBytes + 1));
+
+    final fakePicker = _FakeImagePicker()..pickedFile = XFile(largeFile.path);
+    final fakeCropper = _FakeAppImageCropper()..cropResult = largeFile.path;
+
+    await tester.pumpWidget(
+      buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(() async {
+      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await Future.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Image size exceeds the 5 MB limit.'), findsOneWidget);
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AiScreen)),
+    );
+    expect(container.read(genericAiChatProvider).stagedAttachments, isEmpty);
+
+    await tester.pump(const Duration(seconds: 4));
+  });
+
+  testWidgets(
+    'hides attachment trigger when imageAttachmentsEnabled is false',
+    (tester) async {
+      final testRepo = _TestLearnLensRepository()
+        ..customPolicy = const AiChatPolicyDto(imageAttachmentsEnabled: false);
+
+      await tester.pumpWidget(buildSubject(repository: testRepo));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('ai_composer_attach_button')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets(
+    'shows unsupported format toast when image format is not JPEG, PNG, or WebP',
+    (tester) async {
+      final tempDir = Directory.systemTemp.createTempSync(
+        'ai_unsupported_format',
+      );
+      addTearDown(() => tempDir.deleteSync(recursive: true));
+      final unsupportedFile = File('${tempDir.path}/test.gif')
+        ..writeAsBytesSync(_validPng);
+
+      final fakePicker = _FakeImagePicker()
+        ..pickedFile = XFile(unsupportedFile.path);
+      final fakeCropper = _FakeAppImageCropper()
+        ..cropResult = unsupportedFile.path;
+
+      await tester.pumpWidget(
+        buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+        await Future.delayed(const Duration(milliseconds: 250));
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(fakePicker.pickCalls, 1);
+      expect(fakeCropper.cropCalls, 0);
+      expect(
+        find.text('Only JPEG, PNG, and WebP images are supported.'),
+        findsOneWidget,
+      );
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      expect(container.read(genericAiChatProvider).stagedAttachments, isEmpty);
+
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets('stages PNG attachment with derived image/png mimeType', (
+    tester,
+  ) async {
+    final tempDir = Directory.systemTemp.createTempSync('ai_png_format');
+    addTearDown(() => tempDir.deleteSync(recursive: true));
+    final pngFile = File('${tempDir.path}/test.png')
+      ..writeAsBytesSync(_validPng);
+
+    final fakePicker = _FakeImagePicker()..pickedFile = XFile(pngFile.path);
+    final fakeCropper = _FakeAppImageCropper()..cropResult = pngFile.path;
+
+    await tester.pumpWidget(
+      buildSubject(imagePicker: fakePicker, imageCropper: fakeCropper),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('ai_composer_attach_button')));
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(() async {
+      await tester.tap(find.byKey(const ValueKey('ai_attach_camera_option')));
+      await Future.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump();
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AiScreen)),
+    );
+    expect(
+      container.read(genericAiChatProvider).stagedAttachments,
+      hasLength(1),
+    );
+    expect(
+      container.read(genericAiChatProvider).stagedAttachments.first.mimeType,
+      'image/png',
+    );
+  });
+
+  test(
+    'AiScreen format validation helpers correctly identify supported formats',
+    () {
+      expect(AiScreen.extractExtension('image.jpg'), 'jpg');
+      expect(AiScreen.extractExtension('path/to/image.PNG'), 'png');
+      expect(AiScreen.extractExtension('/folder.with.dot/image.webp'), 'webp');
+      expect(AiScreen.extractExtension('image.jpeg'), 'jpeg');
+      expect(AiScreen.extractExtension('animation.gif'), 'gif');
+      expect(AiScreen.extractExtension('photo.heic'), 'heic');
+      expect(AiScreen.extractExtension('no_ext'), '');
+
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.jpg'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.JPEG'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.png'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.webp'), isTrue);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.gif'), isFalse);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.heic'), isFalse);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.bmp'), isFalse);
+      expect(AiScreen.isSupportedImageFile(pathOrName: 'test.svg'), isFalse);
+      expect(AiScreen.isSupportedImageFile(mimeType: 'image/jpeg'), isTrue);
+      expect(AiScreen.isSupportedImageFile(mimeType: 'image/gif'), isFalse);
+    },
+  );
+}
+
+const _validPng = [
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE,
+  0x42,
+  0x60,
+  0x82,
+];
+
+class _FakeImagePicker extends Fake implements ImagePicker {
+  XFile? pickedFile;
+  Object? pickError;
+  int pickCalls = 0;
+  double? lastMaxWidth;
+  double? lastMaxHeight;
+  int? lastImageQuality;
+
+  @override
+  Future<XFile?> pickImage({
+    required ImageSource source,
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    CameraDevice preferredCameraDevice = CameraDevice.rear,
+    bool requestFullMetadata = true,
+  }) async {
+    pickCalls++;
+    lastMaxWidth = maxWidth;
+    lastMaxHeight = maxHeight;
+    lastImageQuality = imageQuality;
+    if (pickError != null) {
+      throw pickError!;
+    }
+    return pickedFile;
+  }
+}
+
+class _FakeAppImageCropper extends Fake implements AppImageCropper {
+  String? cropResult;
+  int cropCalls = 0;
+  Completer<String?>? cropCompleter;
+
+  @override
+  Future<String?> crop(
+    BuildContext context, {
+    required String imagePath,
+  }) async {
+    cropCalls++;
+    if (cropCompleter != null) {
+      return cropCompleter!.future;
+    }
+    return cropResult;
+  }
 }

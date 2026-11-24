@@ -64,6 +64,7 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     return StreamController<AiChatStreamEvent>().stream;
@@ -74,6 +75,7 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     if (followUpCompleter != null) {

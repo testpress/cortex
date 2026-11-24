@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../core.dart';
 
@@ -13,7 +15,25 @@ class AiScreen extends ConsumerStatefulWidget {
     super.key,
     this.initialMessages = const [],
     this.onOpenHistory,
+    this.imagePicker,
+    this.imageCropper,
   });
+
+  static const int maxAttachmentSizeBytes =
+      AiAttachmentUtils.maxAttachmentSizeBytes;
+  static const Map<String, String> supportedImageFormats =
+      AiAttachmentUtils.supportedImageFormats;
+
+  /// Extracts the lowercased file extension from a file path or file name.
+  static String extractExtension(String pathOrName) =>
+      AiAttachmentUtils.extractExtension(pathOrName);
+
+  /// Validates whether a file format or MIME type is supported for attachment.
+  static bool isSupportedImageFile({String? pathOrName, String? mimeType}) =>
+      AiAttachmentUtils.isSupportedFile(
+        pathOrName: pathOrName,
+        mimeType: mimeType,
+      );
 
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
@@ -21,6 +41,12 @@ class AiScreen extends ConsumerStatefulWidget {
   /// Optional menu/history navigation callback.
   /// If null, opens the [AiChatHistoryScreen] drawer.
   final VoidCallback? onOpenHistory;
+
+  /// Optional [ImagePicker] instance for test injection.
+  final ImagePicker? imagePicker;
+
+  /// Optional [AppImageCropper] instance for test injection.
+  final AppImageCropper? imageCropper;
 
   @override
   ConsumerState<AiScreen> createState() => _AiScreenState();
@@ -35,6 +61,9 @@ class _AiScreenState extends ConsumerState<AiScreen>
   int _lastStreamingTextLength = 0;
   double _lastBottomInset = 0;
   String? _activeChatId;
+  bool _isAttachmentSheetOpen = false;
+  bool _isCroppingImage = false;
+  final LayerLink _attachLayerLink = LayerLink();
 
   @override
   void initState() {
@@ -166,6 +195,183 @@ class _AiScreenState extends ConsumerState<AiScreen>
     _scrollToBottom(animate: true);
   }
 
+  void _handleAttachImage() {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isAttachmentSheetOpen = true;
+    });
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    setState(() {
+      _isAttachmentSheetOpen = false;
+    });
+    try {
+      final picker = widget.imagePicker ?? ImagePicker();
+      final picked = await picker.pickImage(
+        source: source,
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
+      );
+      if (picked == null || !mounted) return;
+
+      if (!AiAttachmentUtils.isSupported(picked)) {
+        _showToast(
+          L10n.of(context).aiChatUnsupportedImageFormat,
+          isError: true,
+        );
+        return;
+      }
+
+      setState(() => _isCroppingImage = true);
+
+      final cropper = widget.imageCropper ?? AppImageCropper();
+      final croppedPath = await cropper.crop(context, imagePath: picked.path);
+      if (croppedPath == null || !mounted) return;
+
+      final file = XFile(croppedPath);
+      final bytes = await file.readAsBytes();
+      if (!mounted) return;
+
+      if (bytes.lengthInBytes > AiAttachmentUtils.maxAttachmentSizeBytes) {
+        _showToast(
+          L10n.of(context).aiChatAttachmentSizeExceeded,
+          isError: true,
+        );
+        return;
+      }
+
+      final candidateName = file.name.isNotEmpty
+          ? file.name
+          : (file.path.isNotEmpty
+                ? file.path
+                : (picked.name.isNotEmpty ? picked.name : picked.path));
+      final extension = AiAttachmentUtils.extractExtension(candidateName);
+
+      final mimeType = AiAttachmentUtils.deriveMimeType(
+        pathOrName: candidateName,
+        mimeType: picked.mimeType,
+      );
+
+      if (mimeType == null) {
+        _showToast(
+          L10n.of(context).aiChatUnsupportedImageFormat,
+          isError: true,
+        );
+        return;
+      }
+
+      final baseFileName = file.name.isNotEmpty
+          ? file.name
+          : (picked.name.isNotEmpty ? picked.name : 'image');
+      final extensionToUse = extension.isNotEmpty
+          ? extension
+          : (mimeType == 'image/png'
+                ? 'png'
+                : (mimeType == 'image/webp' ? 'webp' : 'jpg'));
+      final fileName = baseFileName.contains('.')
+          ? baseFileName
+          : '$baseFileName.$extensionToUse';
+
+      ref
+          .read(genericAiChatProvider.notifier)
+          .stageAttachment(
+            bytes: bytes,
+            fileName: fileName,
+            mimeType: mimeType,
+          );
+    } on PlatformException catch (e) {
+      if (!mounted) return;
+      final isPermission =
+          e.code == 'camera_access_denied' ||
+          e.code == 'photo_access_denied' ||
+          e.code.toLowerCase().contains('permission');
+      if (isPermission) {
+        _showToast(L10n.of(context).aiChatPermissionRequired, isError: true);
+      } else {
+        ref.read(sentryServiceProvider).captureException(e);
+        _showToast(
+          L10n.of(context).aiComposerAttachmentUploadFailed,
+          isError: true,
+        );
+      }
+    } catch (e, stack) {
+      if (!mounted) return;
+      ref.read(sentryServiceProvider).captureException(e, stackTrace: stack);
+      _showToast(
+        L10n.of(context).aiComposerAttachmentUploadFailed,
+        isError: true,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isCroppingImage = false);
+      }
+    }
+  }
+
+  void _showToast(String message, {bool isError = false}) {
+    if (!mounted) return;
+    final fToast = FToast()..init(context);
+    fToast.removeCustomToast();
+
+    final design = Design.of(context);
+    final padding = MediaQuery.paddingOf(context);
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+
+    final bottomOffset = viewInsets.bottom > 0
+        ? viewInsets.bottom + design.spacing.md
+        : padding.bottom + design.spacing.md;
+
+    fToast.showToast(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.md,
+          vertical: design.spacing.sm * 1.5,
+        ),
+        decoration: BoxDecoration(
+          color: design.colors.textPrimary,
+          borderRadius: BorderRadius.circular(design.radius.xl),
+          boxShadow: design.shadows.floating,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isError ? LucideIcons.alertTriangle : LucideIcons.check,
+              size: 20,
+              color: isError ? design.colors.error : design.colors.success,
+            ),
+            SizedBox(width: design.spacing.sm),
+            Flexible(
+              child: AppText.labelBold(
+                message,
+                color: design.colors.textInverse,
+              ),
+            ),
+          ],
+        ),
+      ),
+      positionedToastBuilder: (context, child, gravity) {
+        return Positioned(
+          bottom: bottomOffset,
+          left: 24.0,
+          right: 24.0,
+          child: child,
+        );
+      },
+      toastDuration: const Duration(milliseconds: 2500),
+    );
+  }
+
+  void _handleRemoveAttachment(String localId) {
+    ref.read(genericAiChatProvider.notifier).removeAttachment(localId).ignore();
+  }
+
+  void _handleRetryAttachment(String localId) {
+    ref.read(genericAiChatProvider.notifier).retryAttachment(localId).ignore();
+  }
+
   void _handleRetry(String messageId, bool isUser) {
     if (isUser) {
       ref
@@ -186,6 +392,18 @@ class _AiScreenState extends ConsumerState<AiScreen>
     final design = Design.of(context);
     final l10n = L10n.of(context);
     final chatState = ref.watch(genericAiChatProvider);
+
+    ref.listen<GenericAiChatState>(genericAiChatProvider, (previous, next) {
+      final prevErrors =
+          previous?.stagedAttachments.where((a) => a.hasError).length ?? 0;
+      final nextErrors = next.stagedAttachments.where((a) => a.hasError).length;
+      if (nextErrors > prevErrors) {
+        _showToast(
+          L10n.of(context).aiComposerAttachmentUploadFailed,
+          isError: true,
+        );
+      }
+    });
 
     final displayMessages = chatState.messages.isNotEmpty
         ? chatState.messages
@@ -256,160 +474,208 @@ class _AiScreenState extends ConsumerState<AiScreen>
     Widget buildComposer() {
       return AiComposer(
         enabled: !isInputBlocked,
+        stagedAttachments: chatState.stagedAttachments,
         onSend: _handleSend,
+        onAttachImage: chatState.imageAttachmentsEnabled
+            ? _handleAttachImage
+            : null,
+        onRemoveAttachment: _handleRemoveAttachment,
+        onRetryAttachment: _handleRetryAttachment,
         controller: _composerController,
         focusNode: _composerFocusNode,
+        attachLayerLink: _attachLayerLink,
       );
     }
 
     return Container(
       color: canvasColor,
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
         children: [
-          AiChatHeader(
-            onMenu: _handleMenu,
-            title: chatState.currentTitle,
-            onNewChat: hasActiveContent ? _handleNewChat : null,
-            onDelete: chatState.currentChatId != null
-                ? () =>
-                      _handleDeleteActiveConversation(chatState.currentChatId!)
-                : null,
-          ),
+          Container(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AiChatHeader(
+                  onMenu: _handleMenu,
+                  title: chatState.currentTitle,
+                  onNewChat: hasActiveContent ? _handleNewChat : null,
+                  onDelete: chatState.currentChatId != null
+                      ? () => _handleDeleteActiveConversation(
+                          chatState.currentChatId!,
+                        )
+                      : null,
+                ),
 
-          if (chatState.hasInitError)
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: design.spacing.md,
-                vertical: design.spacing.xs,
-              ),
-              child: _AiNoticeCard(
-                message: l10n.aiInitErrorBanner,
-                actionLabel: l10n.labelRetry,
-                onAction: () =>
-                    ref.read(genericAiChatProvider.notifier).initialize(),
-              ),
-            ),
+                if (chatState.hasInitError)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.md,
+                      vertical: design.spacing.xs,
+                    ),
+                    child: _AiNoticeCard(
+                      message: l10n.aiInitErrorBanner,
+                      actionLabel: l10n.labelRetry,
+                      onAction: () =>
+                          ref.read(genericAiChatProvider.notifier).initialize(),
+                    ),
+                  ),
 
-          // Chat Canvas / Messages List
-          Expanded(
-            child: chatState.isLoadingMessages
-                ? const Center(child: AppLoadingIndicator())
-                : chatState.hasMessagesError && displayMessages.isEmpty
-                ? Center(
-                    child: AppErrorView(
-                      error: chatState.messagesError,
-                      backgroundColor: canvasColor,
-                      onRetry: () {
-                        if (chatState.currentChatId != null) {
-                          ref
-                              .read(genericAiChatProvider.notifier)
-                              .selectConversation(chatState.currentChatId!);
-                        }
-                      },
-                    ),
-                  )
-                : displayMessages.isEmpty
-                ? SafeArea(
-                    top: false,
-                    bottom: bottomInset == 0,
-                    child: _AiEmptyState(
-                      notice: noticeBanner,
-                      composer: buildComposer(),
-                      onSuggestion: isInputBlocked ? null : _handleSuggestion,
-                    ),
-                  )
-                : AppSemantics.scrollableList(
-                    itemCount: displayMessages.length,
-                    label: l10n.aiSupportTitle,
-                    child: NotificationListener<ScrollMetricsNotification>(
-                      onNotification: (notification) {
-                        if (notification.metrics.pixels >
-                                notification.metrics.maxScrollExtent &&
-                            notification.metrics.maxScrollExtent >= 0) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _clampScrollBounds();
-                          });
-                        }
-                        return false;
-                      },
-                      child: ListView.builder(
-                        key: ValueKey(chatState.currentChatId ?? 'new_chat'),
-                        controller: _scrollController,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: design.spacing.md,
-                          vertical: design.spacing.sm * 1.5,
-                        ),
-                        itemCount: displayMessages.length,
-                        itemBuilder: (context, index) {
-                          final item = displayMessages[index];
-                          if (item.isUser) {
-                            return AiUserMessageBubble(
-                              message: item.text,
-                              timestamp: DateFormatter.formatTime(
-                                item.timestamp,
+                // Chat Canvas / Messages List
+                Expanded(
+                  child: chatState.isLoadingMessages
+                      ? const Center(child: AppLoadingIndicator())
+                      : chatState.hasMessagesError && displayMessages.isEmpty
+                      ? Center(
+                          child: AppErrorView(
+                            error: chatState.messagesError,
+                            backgroundColor: canvasColor,
+                            onRetry: () {
+                              if (chatState.currentChatId != null) {
+                                ref
+                                    .read(genericAiChatProvider.notifier)
+                                    .selectConversation(
+                                      chatState.currentChatId!,
+                                    );
+                              }
+                            },
+                          ),
+                        )
+                      : displayMessages.isEmpty
+                      ? SafeArea(
+                          top: false,
+                          bottom: bottomInset == 0,
+                          child: _AiEmptyState(
+                            notice: noticeBanner,
+                            composer: buildComposer(),
+                            onSuggestion: isInputBlocked
+                                ? null
+                                : _handleSuggestion,
+                          ),
+                        )
+                      : AppSemantics.scrollableList(
+                          itemCount: displayMessages.length,
+                          label: l10n.aiSupportTitle,
+                          child:
+                              NotificationListener<ScrollMetricsNotification>(
+                                onNotification: (notification) {
+                                  if (notification.metrics.pixels >
+                                          notification
+                                              .metrics
+                                              .maxScrollExtent &&
+                                      notification.metrics.maxScrollExtent >=
+                                          0) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          _clampScrollBounds();
+                                        });
+                                  }
+                                  return false;
+                                },
+                                child: ListView.builder(
+                                  key: ValueKey(
+                                    chatState.currentChatId ?? 'new_chat',
+                                  ),
+                                  controller: _scrollController,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: design.spacing.md,
+                                    vertical: design.spacing.sm * 1.5,
+                                  ),
+                                  itemCount: displayMessages.length,
+                                  itemBuilder: (context, index) {
+                                    final item = displayMessages[index];
+                                    if (item.isUser) {
+                                      return AiUserMessageBubble(
+                                        message: item.text,
+                                        attachments: item.attachments,
+                                        timestamp: DateFormatter.formatTime(
+                                          item.timestamp,
+                                        ),
+                                        isSending: item.isSending,
+                                        hasSendError: item.hasSendError,
+                                        onRetry: () =>
+                                            _handleRetry(item.id, true),
+                                      );
+                                    }
+                                    final status = item.hasGenerationError
+                                        ? AiAssistantStatus.failed
+                                        : item.isStreaming
+                                        ? AiAssistantStatus.generating
+                                        : item.isStopped
+                                        ? AiAssistantStatus.stopped
+                                        : AiAssistantStatus.completed;
+
+                                    return AiAssistantCard(
+                                      message: item.text,
+                                      timestamp: DateFormatter.formatTime(
+                                        item.timestamp,
+                                      ),
+                                      status: status,
+                                      onRetry: () =>
+                                          _handleRetry(item.id, false),
+                                      onCopy: () => _handleCopy(item.text),
+                                    );
+                                  },
+                                ),
                               ),
-                              isSending: item.isSending,
-                              hasSendError: item.hasSendError,
-                              onRetry: () => _handleRetry(item.id, true),
-                            );
-                          }
-                          final status = item.hasGenerationError
-                              ? AiAssistantStatus.failed
-                              : item.isStreaming
-                              ? AiAssistantStatus.generating
-                              : item.isStopped
-                              ? AiAssistantStatus.stopped
-                              : AiAssistantStatus.completed;
+                        ),
+                ),
 
-                          return AiAssistantCard(
-                            message: item.text,
-                            timestamp: DateFormatter.formatTime(item.timestamp),
-                            status: status,
-                            onRetry: () => _handleRetry(item.id, false),
-                            onCopy: () => _handleCopy(item.text),
-                          );
-                        },
+                if (!showEmptyState) ...[
+                  // Quota / Rate-limit warning banner if active
+                  if (noticeBanner != null)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: design.spacing.md,
+                        vertical: design.spacing.xs,
+                      ),
+                      child: noticeBanner,
+                    ),
+
+                  // Composer docked to bottom
+                  Container(
+                    decoration: BoxDecoration(
+                      color: canvasColor,
+                      border: Border(
+                        top: BorderSide(
+                          color: design.colors.border,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      bottom: bottomInset == 0,
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: design.spacing.md,
+                          end: design.spacing.md,
+                          top: design.spacing.sm * 1.5,
+                          bottom: design.spacing.sm * 1.5,
+                        ),
+                        child: buildComposer(),
                       ),
                     ),
                   ),
+                ],
+              ],
+            ),
           ),
-
-          if (!showEmptyState) ...[
-            // Quota / Rate-limit warning banner if active
-            if (noticeBanner != null)
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: design.spacing.md,
-                  vertical: design.spacing.xs,
-                ),
-                child: noticeBanner,
-              ),
-
-            // Composer docked to bottom
-            Container(
-              decoration: BoxDecoration(
-                color: canvasColor,
-                border: Border(
-                  top: BorderSide(color: design.colors.border, width: 1.0),
-                ),
-              ),
-              child: SafeArea(
-                top: false,
-                bottom: bottomInset == 0,
-                child: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: design.spacing.md,
-                    end: design.spacing.md,
-                    top: design.spacing.sm * 1.5,
-                    bottom: design.spacing.sm * 1.5,
-                  ),
-                  child: buildComposer(),
-                ),
+          AiAttachmentPickerSheet(
+            isOpen: _isAttachmentSheetOpen,
+            anchorLink: _attachLayerLink,
+            onClose: () => setState(() => _isAttachmentSheetOpen = false),
+            onSelectCamera: () => _pickImage(ImageSource.camera),
+            onSelectGallery: () => _pickImage(ImageSource.gallery),
+          ),
+          if (_isCroppingImage)
+            Positioned.fill(
+              key: const ValueKey('ai_crop_loading_overlay'),
+              child: Container(
+                color: design.colors.surface.withValues(alpha: 0.7),
+                child: const Center(child: AppLoadingIndicator()),
               ),
             ),
-          ],
         ],
       ),
     );

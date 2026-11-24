@@ -177,6 +177,22 @@ void main() {
       await tester.pump();
       expect(retryCount, 1);
     });
+
+    testWidgets('renders attachments thumbnails inside bubble', (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          const AiUserMessageBubble(
+            message: 'Check this diagram',
+            timestamp: '14:36',
+            attachments: [AiAttachmentDto(attachmentId: 'att-1', url: '')],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Check this diagram'), findsOneWidget);
+      expect(find.byIcon(LucideIcons.imageOff), findsOneWidget);
+    });
   });
 
   group('AiAssistantCard', () {

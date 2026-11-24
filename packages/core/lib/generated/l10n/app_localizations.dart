@@ -6338,13 +6338,13 @@ abstract class AppLocalizations {
   /// No description provided for @aiComposerAttachImage.
   ///
   /// In en, this message translates to:
-  /// **'Attach image'**
+  /// **'Upload an image'**
   String get aiComposerAttachImage;
 
   /// No description provided for @aiComposerTakePhoto.
   ///
   /// In en, this message translates to:
-  /// **'Take photo'**
+  /// **'Take a photo'**
   String get aiComposerTakePhoto;
 
   /// No description provided for @aiComposerSendMessage.
@@ -6352,6 +6352,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send message'**
   String get aiComposerSendMessage;
+
+  /// No description provided for @aiComposerDeleteAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove attachment'**
+  String get aiComposerDeleteAttachment;
+
+  /// No description provided for @aiComposerAttachmentUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload image'**
+  String get aiComposerAttachmentUploadFailed;
+
+  /// No description provided for @aiChatPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission is required to attach images. Please enable it in Settings.'**
+  String get aiChatPermissionRequired;
+
+  /// No description provided for @aiChatAttachmentSizeExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Image size exceeds the 5 MB limit.'**
+  String get aiChatAttachmentSizeExceeded;
+
+  /// No description provided for @aiChatUnsupportedImageFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Only JPEG, PNG, and WebP images are supported.'**
+  String get aiChatUnsupportedImageFormat;
 
   /// No description provided for @aiAssistantLabel.
   ///

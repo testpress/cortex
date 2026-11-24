@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:core/core.dart';
@@ -12,11 +13,16 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   int listConversationsCalls = 0;
   int ensureSessionCalls = 0;
   int deleteConversationCalls = 0;
+  int uploadAttachmentsCalls = 0;
+  int deleteAttachmentCalls = 0;
+  bool deleteAttachmentShouldThrow = false;
 
   String? lastQuery;
   String? lastRequestId;
   String? lastChatId;
   String? lastDeletedChatId;
+  String? lastDeletedAttachmentId;
+  List<String>? lastAttachmentIds;
 
   AiChatTurnResponseDto? nextTurnResponse;
   AiConversationDto? nextStatusResponse;
@@ -29,7 +35,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
 
   @override
   AiChatPolicyDto? get policy =>
-      customPolicy ?? const AiChatPolicyDto(maxMessageCharacters: 4000);
+      customPolicy ??
+      const AiChatPolicyDto(
+        maxMessageCharacters: 4000,
+        imageAttachmentsEnabled: true,
+      );
 
   int streamConversationCalls = 0;
   int streamFollowUpCalls = 0;
@@ -46,9 +56,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   Stream<AiChatStreamEvent> streamConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     streamConversationCalls++;
+    lastAttachmentIds = attachmentIds;
     final factory = streamFactory;
     if (factory != null) {
       lastRequestId = requestId;
@@ -56,7 +68,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
       return factory(requestId, query, null);
     }
     return _synthesizeStream(
-      () => startConversation(requestId: requestId, query: query),
+      () => startConversation(
+        requestId: requestId,
+        query: query,
+        attachmentIds: attachmentIds,
+      ),
     );
   }
 
@@ -65,9 +81,11 @@ class _FakeLearnLensRepository implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) {
     streamFollowUpCalls++;
+    lastAttachmentIds = attachmentIds;
     final factory = streamFactory;
     if (factory != null) {
       lastChatId = chatId;
@@ -80,8 +98,51 @@ class _FakeLearnLensRepository implements LearnLensRepository {
         chatId: chatId,
         requestId: requestId,
         query: query,
+        attachmentIds: attachmentIds,
       ),
     );
+  }
+
+  Object? uploadAttachmentsError;
+  Completer<AiAttachmentUploadResponseDto>? uploadAttachmentsCompleter;
+  DioMediaType? lastUploadedContentType;
+
+  @override
+  Future<AiAttachmentUploadResponseDto> uploadAttachments({
+    required List<MultipartFile> files,
+    CancelToken? cancelToken,
+  }) async {
+    uploadAttachmentsCalls++;
+    if (files.isNotEmpty) {
+      lastUploadedContentType = files.first.contentType;
+    }
+    if (uploadAttachmentsError != null) {
+      throw uploadAttachmentsError!;
+    }
+    if (uploadAttachmentsCompleter != null) {
+      return uploadAttachmentsCompleter!.future;
+    }
+    return AiAttachmentUploadResponseDto(
+      items: List.generate(
+        files.length,
+        (i) => AiAttachmentDto(
+          attachmentId: 'att-$i',
+          url: 'https://cdn.example.com/att-$i.png',
+        ),
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteAttachment({
+    required String attachmentId,
+    CancelToken? cancelToken,
+  }) async {
+    deleteAttachmentCalls++;
+    lastDeletedAttachmentId = attachmentId;
+    if (deleteAttachmentShouldThrow) {
+      throw Exception('Server error deleting attachment');
+    }
   }
 
   /// Mirrors the JSON turn behaviour as `accepted` + `done` events so the
@@ -122,11 +183,13 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   Future<AiChatTurnResponseDto> startConversation({
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     startConversationCalls++;
     lastRequestId = requestId;
     lastQuery = query;
+    lastAttachmentIds = attachmentIds;
 
     if (errorToThrow != null) {
       throw errorToThrow!;
@@ -156,12 +219,14 @@ class _FakeLearnLensRepository implements LearnLensRepository {
     required String chatId,
     required String requestId,
     required String query,
+    List<String>? attachmentIds,
     CancelToken? cancelToken,
   }) async {
     sendFollowUpCalls++;
     lastChatId = chatId;
     lastRequestId = requestId;
     lastQuery = query;
+    lastAttachmentIds = attachmentIds;
 
     if (errorToThrow != null) {
       throw errorToThrow!;
@@ -1703,6 +1768,20 @@ void main() {
       },
     );
 
+    test('initialize sets imageAttachmentsEnabled from policy', () async {
+      fakeRepository.customPolicy = const AiChatPolicyDto(
+        imageAttachmentsEnabled: true,
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      await notifier.initialize();
+
+      expect(
+        container.read(genericAiChatProvider).imageAttachmentsEnabled,
+        isTrue,
+      );
+    });
+
     test(
       'initialize sets hasAccessDenied when session creation returns 403 or student_restricted',
       () async {
@@ -2386,6 +2465,425 @@ void main() {
 
           completer.complete();
           await deleteFuture;
+        },
+      );
+    });
+
+    group('GenericAiChatNotifier - Attachments', () {
+      setUp(() {
+        fakeRepository.streamFactory = null;
+      });
+
+      test('stageAttachment stages image and completes upload', () async {
+        final notifier = container.read(genericAiChatProvider.notifier);
+        final bytes = Uint8List.fromList([1, 2, 3, 4]);
+
+        await notifier.stageAttachment(
+          bytes: bytes,
+          fileName: 'diagram.png',
+          mimeType: 'image/png',
+        );
+
+        final state = container.read(genericAiChatProvider);
+        expect(state.stagedAttachments.length, 1);
+        final staged = state.stagedAttachments.first;
+        expect(staged.isUploading, isFalse);
+        expect(staged.hasError, isFalse);
+        expect(staged.attachmentId, 'att-0');
+        expect(fakeRepository.uploadAttachmentsCalls, 1);
+      });
+
+      test(
+        'removeAttachment removes staged item and calls repository deletion',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'question.jpg',
+          );
+
+          final staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.attachmentId, isNotNull);
+
+          await notifier.removeAttachment(staged.localId);
+
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+          expect(fakeRepository.deleteAttachmentCalls, 1);
+          expect(fakeRepository.lastDeletedAttachmentId, staged.attachmentId);
+        },
+      );
+
+      test(
+        'removeAttachment logs and still removes staged item when deleteAttachment fails',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'question.jpg',
+          );
+
+          final staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.attachmentId, isNotNull);
+
+          fakeRepository.deleteAttachmentShouldThrow = true;
+
+          // Should not throw to caller
+          await notifier.removeAttachment(staged.localId);
+
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+          expect(fakeRepository.deleteAttachmentCalls, 1);
+        },
+      );
+
+      test(
+        'retryAttachment re-attempts upload and updates attachment state upon success',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.uploadAttachmentsError = Exception('Network dropped');
+
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'retry_test.png',
+          );
+
+          var staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.hasError, isTrue);
+
+          fakeRepository.uploadAttachmentsError = null;
+          await notifier.retryAttachment(staged.localId);
+
+          staged = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first;
+          expect(staged.hasError, isFalse);
+          expect(staged.isUploading, isFalse);
+          expect(staged.attachmentId, isNotNull);
+        },
+      );
+
+      test(
+        'retryAttachment ignores concurrent call when already uploading',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final completer = Completer<AiAttachmentUploadResponseDto>();
+          fakeRepository.uploadAttachmentsCompleter = completer;
+
+          final stageFuture = notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'concurrent.png',
+          );
+          final localId = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first
+              .localId;
+
+          // Calling retry while still uploading should return early
+          await notifier.retryAttachment(localId);
+          expect(fakeRepository.uploadAttachmentsCalls, 1);
+
+          completer.complete(
+            const AiAttachmentUploadResponseDto(
+              items: [
+                AiAttachmentDto(
+                  attachmentId: 'att-1',
+                  url: 'https://cdn/1.png',
+                ),
+              ],
+            ),
+          );
+          await stageFuture;
+        },
+      );
+
+      test(
+        'retryLastSend preserves attachments and permits image-only message retry',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'img_only.png',
+          );
+
+          // Simulate failed send
+          fakeRepository.errorToThrow = const LearnLensException(
+            message: 'Network offline',
+            code: 'network_error',
+          );
+
+          await notifier.sendMessage('');
+          var state = container.read(genericAiChatProvider);
+          expect(state.messages.length, 1);
+          final failedMsg = state.messages.first;
+          expect(failedMsg.hasSendError, isTrue);
+          expect(failedMsg.attachments.length, 1);
+
+          // Fix network and retry
+          fakeRepository.errorToThrow = null;
+          await notifier.retryLastSend(messageId: failedMsg.id);
+
+          state = container.read(genericAiChatProvider);
+          expect(state.messages.any((m) => m.hasSendError), isFalse);
+          expect(state.messages.first.attachments.length, 1);
+          expect(
+            state.messages.first.attachments.first.attachmentId,
+            isNotEmpty,
+          );
+        },
+      );
+
+      test(
+        'sendMessage passes attachmentIds and clears staged attachments',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'problem.png',
+          );
+
+          await notifier.sendMessage('Solve this equation');
+
+          expect(fakeRepository.lastAttachmentIds, ['att-0']);
+          final state = container.read(genericAiChatProvider);
+          expect(state.stagedAttachments, isEmpty);
+          expect(state.messages.first.attachments, hasLength(1));
+          expect(state.messages.first.attachments.first.attachmentId, 'att-0');
+        },
+      );
+
+      test(
+        'stageAttachment captures upload failure as errorCode without hardcoded string',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.uploadAttachmentsError = const LearnLensException(
+            code: 'payload_too_large',
+            message: 'File size exceeds limit',
+          );
+
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'large.png',
+          );
+
+          final state = container.read(genericAiChatProvider);
+          expect(state.stagedAttachments.length, 1);
+          final staged = state.stagedAttachments.first;
+          expect(staged.isUploading, isFalse);
+          expect(staged.hasError, isTrue);
+          expect(staged.errorCode, 'payload_too_large');
+          expect(staged.errorMessage, 'File size exceeds limit');
+        },
+      );
+
+      test(
+        'stageAttachment falls back to upload_failed code for non-LearnLens errors',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.uploadAttachmentsError = Exception(
+            'Socket connection reset',
+          );
+
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'test.png',
+          );
+
+          final state = container.read(genericAiChatProvider);
+          final staged = state.stagedAttachments.first;
+          expect(staged.hasError, isTrue);
+          expect(staged.errorCode, 'upload_failed');
+          expect(staged.errorMessage, isNull);
+        },
+      );
+
+      test(
+        'sendMessage does not send while an attachment is uploading',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final uploading = StagedAttachment(
+            localId: 'local-uploading',
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'uploading.png',
+            isUploading: true,
+          );
+          notifier.state = notifier.state.copyWith(
+            stagedAttachments: [uploading],
+          );
+
+          await notifier.sendMessage('Hello world');
+
+          expect(fakeRepository.startConversationCalls, 0);
+          expect(fakeRepository.sendFollowUpCalls, 0);
+          expect(container.read(genericAiChatProvider).messages, isEmpty);
+        },
+      );
+
+      test(
+        'sendMessage does not send while an attachment has an error',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final errored = StagedAttachment(
+            localId: 'local-err',
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'err.png',
+            isUploading: false,
+            hasError: true,
+          );
+          notifier.state = notifier.state.copyWith(
+            stagedAttachments: [errored],
+          );
+
+          await notifier.sendMessage('Hello world');
+
+          expect(fakeRepository.startConversationCalls, 0);
+          expect(fakeRepository.sendFollowUpCalls, 0);
+          expect(container.read(genericAiChatProvider).messages, isEmpty);
+        },
+      );
+
+      test(
+        'stageAttachment ignores staging when policy imageAttachmentsEnabled is false',
+        () async {
+          fakeRepository.customPolicy = const AiChatPolicyDto(
+            imageAttachmentsEnabled: false,
+          );
+          final notifier = container.read(genericAiChatProvider.notifier);
+
+          await notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'test.png',
+          );
+
+          expect(fakeRepository.uploadAttachmentsCalls, 0);
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+        },
+      );
+
+      test(
+        'clearing staged attachments while upload is in-flight deletes orphaned asset on completion',
+        () async {
+          final completer = Completer<AiAttachmentUploadResponseDto>();
+          fakeRepository.uploadAttachmentsCompleter = completer;
+
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final uploadFuture = notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'test.png',
+          );
+
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            hasLength(1),
+          );
+
+          notifier.clearStagedAttachments();
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+          expect(fakeRepository.deleteAttachmentCalls, 0);
+
+          completer.complete(
+            const AiAttachmentUploadResponseDto(
+              items: [
+                AiAttachmentDto(
+                  attachmentId: 'orphan-123',
+                  url: 'https://cdn.example.com/orphan-123.png',
+                ),
+              ],
+            ),
+          );
+
+          await uploadFuture;
+
+          expect(fakeRepository.deleteAttachmentCalls, 1);
+          expect(fakeRepository.lastDeletedAttachmentId, 'orphan-123');
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+        },
+      );
+
+      test(
+        'removing attachment while upload is in-flight deletes orphaned asset on completion',
+        () async {
+          final completer = Completer<AiAttachmentUploadResponseDto>();
+          fakeRepository.uploadAttachmentsCompleter = completer;
+
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final uploadFuture = notifier.stageAttachment(
+            bytes: Uint8List.fromList([1, 2, 3]),
+            fileName: 'test.png',
+          );
+
+          final localId = container
+              .read(genericAiChatProvider)
+              .stagedAttachments
+              .first
+              .localId;
+
+          await notifier.removeAttachment(localId);
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+          expect(fakeRepository.deleteAttachmentCalls, 0);
+
+          completer.complete(
+            const AiAttachmentUploadResponseDto(
+              items: [
+                AiAttachmentDto(
+                  attachmentId: 'orphan-456',
+                  url: 'https://cdn.example.com/orphan-456.png',
+                ),
+              ],
+            ),
+          );
+
+          await uploadFuture;
+
+          expect(fakeRepository.deleteAttachmentCalls, 1);
+          expect(fakeRepository.lastDeletedAttachmentId, 'orphan-456');
+          expect(
+            container.read(genericAiChatProvider).stagedAttachments,
+            isEmpty,
+          );
+        },
+      );
+
+      test(
+        'stageAttachment sends MultipartFile with explicit DioMediaType contentType',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          final bytes = Uint8List.fromList([1, 2, 3, 4]);
+
+          await notifier.stageAttachment(
+            bytes: bytes,
+            fileName: 'diagram.png',
+            mimeType: 'image/png',
+          );
+
+          expect(fakeRepository.lastUploadedContentType?.mimeType, 'image/png');
         },
       );
     });
