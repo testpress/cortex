@@ -94,24 +94,29 @@ class _OfflineExamActionButtonState
                         setState(() {
                           _isSyncing = true;
                         });
-                        final success = await ref
-                            .read(offlineExamsProvider.notifier)
-                            .syncExam(download.id);
-                        if (!context.mounted) return;
-                        setState(() {
-                          _isSyncing = false;
-                        });
-                        if (success) {
-                          AppToast.show(
-                            context,
-                            message: l10n.examSyncSuccessToast,
-                          );
-                        } else {
-                          AppToast.show(
-                            context,
-                            message: l10n.examSyncFailedToast,
-                            isError: true,
-                          );
+                        try {
+                          final success = await ref
+                              .read(offlineExamsProvider.notifier)
+                              .syncExam(download.id);
+                          if (!context.mounted) return;
+                          if (success) {
+                            AppToast.show(
+                              context,
+                              message: l10n.examSyncSuccessToast,
+                            );
+                          } else {
+                            AppToast.show(
+                              context,
+                              message: l10n.examSyncFailedToast,
+                              isError: true,
+                            );
+                          }
+                        } finally {
+                          if (mounted) {
+                            setState(() {
+                              _isSyncing = false;
+                            });
+                          }
                         }
                       },
               ),

@@ -2714,7 +2714,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get offlineExamSavedToast =>
-      'تم حفظ الاختبار. سيتم إرساله تلقائيًا عند عودتك إلى الإنترنت.';
+      'تم حفظ الاختبار. اتصل بالإنترنت واضغط على مزامنة للإرسال.';
 
   @override
   String get inProgressStatus => 'جارٍ التنفيذ';

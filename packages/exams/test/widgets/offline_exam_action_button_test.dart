@@ -72,32 +72,59 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Renders nothing (SizedBox.shrink) when download status is PENDING_SYNC',
-    (WidgetTester tester) async {
-      final pendingData = OfflineExamDownloadsTableData(
-        id: 1,
-        contentId: 'test_content_id',
-        examId: '1',
-        title: 'Sample Offline Exam',
-        duration: '01:00:00',
-        questionCount: 10,
-        status: 'PENDING_SYNC',
-        downloadedAt: DateTime.now(),
-        questionsJson: '[]',
-        elapsedSeconds: 100,
-      );
+  testWidgets('Renders Sync button when download status is PENDING_SYNC', (
+    WidgetTester tester,
+  ) async {
+    final pendingData = OfflineExamDownloadsTableData(
+      id: 1,
+      contentId: 'test_content_id',
+      examId: '1',
+      title: 'Sample Offline Exam',
+      duration: '01:00:00',
+      questionCount: 10,
+      status: 'PENDING_SYNC',
+      downloadedAt: DateTime.now(),
+      questionsJson: '[]',
+      elapsedSeconds: 100,
+    );
 
-      await tester.pumpWidget(
-        buildWidget(onStartOffline: () {}, download: pendingData),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      buildWidget(onStartOffline: () {}, download: pendingData),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text('Start offline exam'), findsNothing);
-      expect(find.text('Resume offline exam'), findsNothing);
-      expect(find.text('Download Exam (Offline)'), findsNothing);
-    },
-  );
+    expect(find.text('Sync'), findsOneWidget);
+    expect(find.text('Start offline exam'), findsNothing);
+    expect(find.text('Resume offline exam'), findsNothing);
+    expect(find.text('Download Exam (Offline)'), findsNothing);
+  });
+
+  testWidgets('Renders loading indicator when download status is SYNCING', (
+    WidgetTester tester,
+  ) async {
+    final syncingData = OfflineExamDownloadsTableData(
+      id: 1,
+      contentId: 'test_content_id',
+      examId: '1',
+      title: 'Sample Offline Exam',
+      duration: '01:00:00',
+      questionCount: 10,
+      status: 'SYNCING',
+      downloadedAt: DateTime.now(),
+      questionsJson: '[]',
+      elapsedSeconds: 100,
+    );
+
+    await tester.pumpWidget(
+      buildWidget(onStartOffline: () {}, download: syncingData),
+    );
+    await tester.pump();
+
+    expect(find.byType(AppLoadingIndicator), findsOneWidget);
+    expect(find.text('Start offline exam'), findsNothing);
+    expect(find.text('Resume offline exam'), findsNothing);
+    expect(find.text('Download Exam (Offline)'), findsNothing);
+  });
 
   testWidgets(
     'Renders Start offline exam button when download status is DOWNLOADED',

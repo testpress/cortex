@@ -955,7 +955,7 @@
     }
   },
   "testSavedLocallyOffline": "تم حفظ الاختبار محليًا. ستكون النتائج متاحة بمجرد المزامنة.",
-  "offlineExamSavedToast": "تم حفظ الاختبار. سيتم إرساله تلقائيًا عند عودتك إلى الإنترنت.",
+  "offlineExamSavedToast": "تم حفظ الاختبار. اتصل بالإنترنت واضغط على مزامنة للإرسال.",
   "inProgressStatus": "جارٍ التنفيذ",
   "syncingStatus": "جارٍ المزامنة…",
   "pendingSyncStatus": "في انتظار المزامنة",

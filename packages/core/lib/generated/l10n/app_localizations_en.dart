@@ -2707,7 +2707,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineExamSavedToast =>
-      'Exam saved. It will be submitted automatically when you\'re back online.';
+      'Exam saved. Connect to the internet and tap Sync to submit.';
 
   @override
   String get inProgressStatus => 'In Progress';
