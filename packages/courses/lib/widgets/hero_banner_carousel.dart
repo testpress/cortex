@@ -73,10 +73,11 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
       } else {
         _currentIndex = 0;
       }
+      final design = Design.of(context);
       _controller.animateToPage(
         _currentIndex,
         duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
+        curve: MotionPreferences.curve(context, design.motion.easeOut),
       );
     });
   }
@@ -105,6 +106,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final isSkeleton = widget.isLoading;
 
     if (widget.banners.isEmpty && !isSkeleton) {
@@ -154,7 +156,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                             return AppSemantics.container(
                               label: banner.title.isNotEmpty
                                   ? banner.title
-                                  : 'Banner ${index + 1}',
+                                  : l10n.heroBannerFallbackTitle(index + 1),
                               child: Container(
                                 color: design.colors.surfaceVariant,
                                 child: banner.imageUrl.isNotEmpty
@@ -200,8 +202,10 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                           left: 0,
                           right: 0,
                           child: AppSemantics.container(
-                            label:
-                                'Page ${_currentIndex + 1} of ${widget.banners.length}',
+                            label: l10n.heroBannerPageIndicator(
+                              _currentIndex + 1,
+                              widget.banners.length,
+                            ),
                             child: Center(
                               child: Container(
                                 padding: EdgeInsets.symmetric(

@@ -7,9 +7,20 @@ void main() {
   Widget wrap(Widget child) {
     return DesignProvider(
       config: DesignConfig.defaults(),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: child,
+      child: LocalizationProvider(
+        child: Builder(
+          builder: (context) {
+            final locale = LocalizationProvider.of(context).locale;
+            return Localizations(
+              locale: locale,
+              delegates: LocalizationProvider.delegates,
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: child,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -17,14 +28,14 @@ void main() {
   const banner1 = HeroBanner(
     id: '1',
     imageUrl: '',
-    title: 'Banner 1',
+    title: 'Special Offer',
     link: 'https://example.com/1',
   );
 
   const banner2 = HeroBanner(
     id: '2',
     imageUrl: '',
-    title: 'Banner 2',
+    title: '',
     link: 'https://example.com/2',
   );
 
@@ -104,9 +115,30 @@ void main() {
     );
     await tester.pump();
 
-    // Verify banner title semantics
-    expect(find.bySemanticsLabel('Banner 1'), findsOneWidget);
-    // Verify indicator page semantics
+    // Verify custom banner title semantics
+    expect(find.bySemanticsLabel('Special Offer'), findsOneWidget);
+    // Verify localized indicator page semantics
     expect(find.bySemanticsLabel('Page 1 of 2'), findsOneWidget);
+  });
+
+  testWidgets('renders localized fallback banner title when title is empty',
+      (tester) async {
+    const untitledBanner = HeroBanner(
+      id: '1',
+      imageUrl: '',
+      title: '',
+      link: 'https://example.com/1',
+    );
+    await tester.pumpWidget(
+      wrap(
+        const HeroBannerCarousel(
+          banners: [untitledBanner, banner2],
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Verify fallback title semantics
+    expect(find.bySemanticsLabel('Banner 1'), findsOneWidget);
   });
 }

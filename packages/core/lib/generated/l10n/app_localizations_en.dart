@@ -3890,4 +3890,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cropImage => 'Crop Image';
+
+  @override
+  String heroBannerPageIndicator(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String heroBannerFallbackTitle(int index) {
+    return 'Banner $index';
+  }
 }

@@ -6958,6 +6958,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Crop Image'**
   String get cropImage;
+
+  /// Accessibility semantic label for hero banner pagination indicator
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String heroBannerPageIndicator(int current, int total);
+
+  /// Accessibility semantic label fallback for hero banner without a title
+  ///
+  /// In en, this message translates to:
+  /// **'Banner {index}'**
+  String heroBannerFallbackTitle(int index);
 }
 
 class _AppLocalizationsDelegate

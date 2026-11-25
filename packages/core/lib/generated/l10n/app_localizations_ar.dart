@@ -3894,4 +3894,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cropImage => 'قص الصورة';
+
+  @override
+  String heroBannerPageIndicator(int current, int total) {
+    return 'صفحة $current من $total';
+  }
+
+  @override
+  String heroBannerFallbackTitle(int index) {
+    return 'إعلان $index';
+  }
 }

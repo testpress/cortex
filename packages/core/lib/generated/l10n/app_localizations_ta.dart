@@ -3950,4 +3950,14 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get cropImage => 'படத்தை செதுக்குக';
+
+  @override
+  String heroBannerPageIndicator(int current, int total) {
+    return 'பக்கம் $current / $total';
+  }
+
+  @override
+  String heroBannerFallbackTitle(int index) {
+    return 'பேனர் $index';
+  }
 }
