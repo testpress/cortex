@@ -9,6 +9,8 @@ import 'package:courses/widgets/lesson_detail/lesson_detail_skeleton.dart';
 import 'package:courses/widgets/lesson_detail/live_stream_viewer.dart';
 import 'package:courses/widgets/lesson_detail/video_conference_viewer.dart';
 import 'package:courses/widgets/lesson_detail/video_lesson_viewer.dart';
+import 'package:courses/widgets/lesson_detail/pdf_actions_fab.dart';
+import 'package:courses/widgets/lesson_detail/pdf_ai_bottom_sheet.dart';
 
 void main() {
   Widget wrap(Widget child, {List<Override> overrides = const []}) {
@@ -461,6 +463,206 @@ void main() {
       await tester.pump();
 
       expect(find.text('Ask Doubt'), findsNothing);
+    });
+  });
+
+  group('LessonDetailOrchestrator PDF AI Support', () {
+    const aiEnabledPdfLesson = LessonDto(
+      id: '301',
+      chapterId: 'chapter-1',
+      title: 'AI Enabled PDF Lesson',
+      type: LessonType.pdf,
+      progressStatus: LessonProgressStatus.notStarted,
+      duration: '10 min',
+      orderIndex: 1,
+      hasEnded: false,
+      isLocked: false,
+      isDetailFetched: true,
+      contentUrl: 'https://example.com/test.pdf',
+      isAiEnabled: true,
+      canEnableLearnlensAi: true,
+      learnlensAssetStatus: 'completed',
+      learnlensAssetId: 'asset-301',
+    );
+
+    testWidgets(
+        'renders PdfActionsFab when PDF lesson has LearnLens AI completed',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: aiEnabledPdfLesson,
+          enableHelpdesk: false,
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.byType(PdfActionsFab), findsOneWidget);
+      expect(find.byIcon(LucideIcons.sparkles), findsOneWidget);
+    });
+
+    testWidgets(
+        'omits PdfActionsFab when LearnLens AI is not enabled or incomplete',
+        (tester) async {
+      const pendingAiPdfLesson = LessonDto(
+        id: '302',
+        chapterId: 'chapter-1',
+        title: 'Pending AI PDF Lesson',
+        duration: '10 min',
+        type: LessonType.pdf,
+        progressStatus: LessonProgressStatus.notStarted,
+        orderIndex: 1,
+        hasEnded: false,
+        isLocked: false,
+        isDetailFetched: true,
+        contentUrl: 'https://example.com/test.pdf',
+        isAiEnabled: true,
+        canEnableLearnlensAi: true,
+        learnlensAssetStatus: 'processing',
+      );
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: pendingAiPdfLesson,
+          enableHelpdesk: false,
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.byType(PdfActionsFab), findsNothing);
+    });
+
+    testWidgets(
+        'renders single PdfActionsFab and expands actions menu when both AI and doubts are enabled',
+        (tester) async {
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+      });
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: aiEnabledPdfLesson,
+          enableHelpdesk: true,
+        ),
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+        ],
+      ));
+      await tester.pump();
+
+      // Exactly one unified FAB, no separate AskDoubtFab
+      expect(find.byType(AskDoubtFab), findsNothing);
+      expect(find.byType(PdfActionsFab), findsOneWidget);
+      expect(find.byIcon(LucideIcons.sparkles), findsOneWidget);
+      expect(find.text('Ask AI (PDF)'), findsNothing);
+      expect(find.text('Ask Doubt'), findsNothing);
+
+      // Tap FAB to expand actions menu
+      await tester.tap(find.byType(PdfActionsFab));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byIcon(LucideIcons.x), findsOneWidget);
+      expect(find.text('Ask AI (PDF)'), findsOneWidget);
+      expect(find.text('Ask Doubt'), findsOneWidget);
+
+      // Tapping Ask AI (PDF) opens bottom sheet
+      await tester.tap(find.text('Ask AI (PDF)'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+
+      expect(find.byType(PdfAiBottomSheet), findsOneWidget);
+    });
+
+    testWidgets(
+        'tapping PdfActionsFab directly opens sheet when doubt is disabled',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: aiEnabledPdfLesson,
+          enableHelpdesk: false,
+        ),
+      ));
+      await tester.pump();
+
+      await tester.tap(find.byType(PdfActionsFab));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
+
+      expect(find.byType(PdfAiBottomSheet), findsOneWidget);
+      expect(find.text('AI Chat'), findsOneWidget);
+    });
+
+    testWidgets(
+        'does not flash AskDoubtFab on PDF while detail is still being fetched',
+        (tester) async {
+      const shallowPdfLesson = LessonDto(
+        id: '303',
+        chapterId: 'chapter-1',
+        title: 'Shallow PDF Lesson',
+        duration: '10 min',
+        type: LessonType.pdf,
+        progressStatus: LessonProgressStatus.notStarted,
+        orderIndex: 1,
+        hasEnded: false,
+        isLocked: false,
+        isDetailFetched: false,
+        contentUrl: 'https://example.com/test.pdf',
+      );
+
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+      });
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: shallowPdfLesson,
+          enableHelpdesk: true,
+        ),
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+        ],
+      ));
+      await tester.pump();
+
+      expect(find.byType(AskDoubtFab), findsNothing);
+      expect(find.byType(PdfActionsFab), findsNothing);
+    });
+
+    testWidgets(
+        'renders AskDoubtFab on PDF when detail is fetched and AI is unavailable',
+        (tester) async {
+      const noAiPdfLesson = LessonDto(
+        id: '304',
+        chapterId: 'chapter-1',
+        title: 'No AI PDF Lesson',
+        duration: '10 min',
+        type: LessonType.pdf,
+        progressStatus: LessonProgressStatus.notStarted,
+        orderIndex: 1,
+        hasEnded: false,
+        isLocked: false,
+        isDetailFetched: true,
+        contentUrl: 'https://example.com/test.pdf',
+        isAiEnabled: false,
+      );
+
+      final enabledSettings = InstituteSettings.fromJson({
+        'is_helpdesk_enabled': true,
+      });
+
+      await tester.pumpWidget(wrap(
+        const LessonDetailOrchestrator(
+          lesson: noAiPdfLesson,
+          enableHelpdesk: true,
+        ),
+        overrides: [
+          instituteSettingsProvider.overrideWith((ref) => enabledSettings),
+        ],
+      ));
+      await tester.pump();
+
+      expect(find.byType(AskDoubtFab), findsOneWidget);
+      expect(find.byType(PdfActionsFab), findsNothing);
     });
   });
 }

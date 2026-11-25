@@ -1093,6 +1093,19 @@ class AppLocalizationsTa extends AppLocalizations {
       'வணக்கம்! நான் உங்கள் AI கற்றல் உதவியாளர். இந்த விரிவுரையைப் பற்றி எது வேண்டுமானாலும் கேட்கலாம்!';
 
   @override
+  String get pdfAiGreeting =>
+      'வணக்கம்! நான் உங்கள் AI கற்றல் உதவியாளர். இந்த ஆவணத்தைப் பற்றி எது வேண்டுமானாலும் கேட்கலாம்!';
+
+  @override
+  String get pdfAiStudyAssistant => 'AI கற்றல் உதவியாளர்';
+
+  @override
+  String get labelAskAi => 'AI இடம் கேள்';
+
+  @override
+  String get labelAskAiPdf => 'AI இடம் கேள் (PDF)';
+
+  @override
   String get videoTranscodingProcessing =>
       'இந்த வீடியோ தற்போது செயலாக்கப்பட்டு வருகிறது. சிறிது நேரம் கழித்து மீண்டும் பார்க்கவும்.';
 

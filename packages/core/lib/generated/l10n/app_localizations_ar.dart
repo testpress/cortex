@@ -1077,6 +1077,19 @@ class AppLocalizationsAr extends AppLocalizations {
       'مرحبًا! أنا مساعدك التعليمي بالذكاء الاصطناعي. لا تتردد في سؤالي عن أي شيء يخص هذه المحاضرة!';
 
   @override
+  String get pdfAiGreeting =>
+      'مرحبًا! أنا مساعدك التعليمي بالذكاء الاصطناعي. لا تتردد في سؤالي عن أي شيء يخص هذا المستند!';
+
+  @override
+  String get pdfAiStudyAssistant => 'مساعد الدراسة بالذكاء الاصطناعي';
+
+  @override
+  String get labelAskAi => 'اسأل الذكاء الاصطناعي';
+
+  @override
+  String get labelAskAiPdf => 'اسأل الذكاء الاصطناعي (PDF)';
+
+  @override
   String get videoTranscodingProcessing =>
       'يجري معالجة الفيديو حاليًا. يرجى التحقق لاحقًا.';
 
