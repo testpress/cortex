@@ -61,5 +61,54 @@ void main() {
       expect(apiException.type, ApiErrorType.unauthorized);
       expect(apiException.message, 'Token expired');
     });
+
+    test('isTechnicalErrorMessage detects Dio and HTTP debug text', () {
+      expect(
+        ApiException.isTechnicalErrorMessage(
+          'Response has a status code of 401 at https://developer.mozilla.org/status',
+        ),
+        isTrue,
+      );
+      expect(
+        ApiException.isTechnicalErrorMessage(
+          'The request returned an invalid status code of 400.',
+        ),
+        isTrue,
+      );
+      expect(
+        ApiException.isTechnicalErrorMessage(
+          'RequestOptions.validateStatus error',
+        ),
+        isTrue,
+      );
+      expect(
+        ApiException.isTechnicalErrorMessage('DioException [bad response]'),
+        isTrue,
+      );
+      expect(
+        ApiException.isTechnicalErrorMessage(
+          'The status code of this attempt is closed',
+        ),
+        isFalse,
+      );
+      expect(ApiException.isTechnicalErrorMessage('Session expired.'), isFalse);
+      expect(ApiException.isTechnicalErrorMessage(null), isFalse);
+      expect(ApiException.isTechnicalErrorMessage('   '), isFalse);
+    });
+
+    test('sanitizeErrorMessage strips technical or empty messages', () {
+      expect(
+        ApiException.sanitizeErrorMessage(
+          'DioException [bad response]: status code',
+        ),
+        isNull,
+      );
+      expect(ApiException.sanitizeErrorMessage(null), isNull);
+      expect(ApiException.sanitizeErrorMessage('   '), isNull);
+      expect(
+        ApiException.sanitizeErrorMessage('  Session expired.  '),
+        'Session expired.',
+      );
+    });
   });
 }

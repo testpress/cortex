@@ -172,7 +172,7 @@ void main() {
     );
 
     test(
-      'maps 401 with Session expired detail to serverError and sanitizes message',
+      'maps 401 with Session expired detail to unauthorized and preserves clean message',
       () {
         final dioException = DioException(
           requestOptions: RequestOptions(path: ''),
@@ -189,12 +189,118 @@ void main() {
         );
 
         expect(exception.statusCode, 401);
-        expect(exception.type, ApiErrorType.unknown);
-        expect(
-          exception.message,
-          'Unable to connect to AI assistant. Please try again.',
-        );
+        expect(exception.type, ApiErrorType.unauthorized);
+        expect(exception.code, 'error');
+        expect(exception.message, 'Session expired.');
       },
     );
+
+    test('sanitizes 401 with stringified JSON payload and unauthorized code', () {
+      final dioException = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        message:
+            'The status code of 401 has the following meaning: "Client error"\nRead more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+        response: Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 401,
+          data:
+              '{"error_code": "unauthorised_login", "detail": "Please Login and try again."}',
+        ),
+      );
+
+      final exception = LearnLensNetworkClient.parseDioException(dioException);
+
+      expect(exception.statusCode, 401);
+      expect(exception.type, ApiErrorType.unauthorized);
+      expect(exception.code, 'error');
+      expect(exception.message, 'Please Login and try again.');
+    });
+
+    test(
+      'never leaks developer MDN status code URLs from DioException message',
+      () {
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: ''),
+          type: DioExceptionType.badResponse,
+          message:
+              'This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.\nRead more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+          response: Response(
+            requestOptions: RequestOptions(path: ''),
+            statusCode: 401,
+            data: null,
+          ),
+        );
+
+        final exception = LearnLensNetworkClient.parseDioException(
+          dioException,
+        );
+
+        expect(exception.statusCode, 401);
+        expect(exception.type, ApiErrorType.unauthorized);
+        expect(exception.code, 'unauthorized');
+        expect(exception.message, isEmpty);
+      },
+    );
+
+    test('passes through non-401 error message unchanged', () {
+      final dioException = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        response: Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 403,
+          data: {'detail': 'Access denied for this student account.'},
+        ),
+      );
+
+      final exception = LearnLensNetworkClient.parseDioException(dioException);
+
+      expect(exception.statusCode, 403);
+      expect(exception.type, ApiErrorType.forbidden);
+      expect(exception.message, 'Access denied for this student account.');
+    });
+
+    test(
+      'handles malformed JSON starting with { by retaining raw payload without throwing',
+      () {
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: ''),
+          type: DioExceptionType.badResponse,
+          message:
+              'The request returned an invalid status code of 400.\nRead more at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status',
+          response: Response(
+            requestOptions: RequestOptions(path: ''),
+            statusCode: 400,
+            data: '{"malformed_json_without_closing_brace',
+          ),
+        );
+
+        final exception = LearnLensNetworkClient.parseDioException(
+          dioException,
+        );
+
+        expect(exception.statusCode, 400);
+        expect(exception.message, '{"malformed_json_without_closing_brace');
+      },
+    );
+
+    test('prefers backend message over generic Dio transport message', () {
+      final dioException = DioException(
+        requestOptions: RequestOptions(path: ''),
+        type: DioExceptionType.badResponse,
+        message: 'Non-technical transport failure message',
+        response: Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 400,
+          data: {'message': 'Student email already exists.'},
+        ),
+      );
+
+      final exception = LearnLensNetworkClient.parseDioException(dioException);
+
+      expect(exception.statusCode, 400);
+      expect(exception.message, 'Student email already exists.');
+    });
   });
 }
