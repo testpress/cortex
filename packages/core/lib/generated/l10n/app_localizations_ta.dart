@@ -2752,7 +2752,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get offlineExamSavedToast =>
-      'தேர்வு சேமிக்கப்பட்டது. நீங்கள் மீண்டும் ஆன்லைனில் இருக்கும்போது தானாக சமர்ப்பிக்கப்படும்.';
+      'தேர்வு சேமிக்கப்பட்டது. இணையத்துடன் இணைத்து சமர்ப்பிக்க ஒத்திசை (Sync) என்பதைத் தட்டவும்.';
 
   @override
   String get inProgressStatus => 'நடைபெறுகிறது';

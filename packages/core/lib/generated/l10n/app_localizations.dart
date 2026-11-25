@@ -4952,7 +4952,7 @@ abstract class AppLocalizations {
   /// No description provided for @offlineExamSavedToast.
   ///
   /// In en, this message translates to:
-  /// **'Exam saved. It will be submitted automatically when you\'re back online.'**
+  /// **'Exam saved. Connect to the internet and tap Sync to submit.'**
   String get offlineExamSavedToast;
 
   /// No description provided for @inProgressStatus.

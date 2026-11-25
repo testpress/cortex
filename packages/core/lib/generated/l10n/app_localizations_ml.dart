@@ -2753,7 +2753,7 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get offlineExamSavedToast =>
-      'പരീക്ഷ സേവ് ചെയ്തു. ഇന്റർനെറ്റ് ലഭ്യമാകുമ്പോൾ ഇത് സ്വയം സമർപ്പിക്കപ്പെടും.';
+      'പരീക്ഷ സേവ് ചെയ്തു. സമർപ്പിക്കുന്നതിനായി ഇന്റർനെറ്റുമായി ബന്ധിപ്പിച്ച് സിങ്ക് (Sync) ടാപ്പ് ചെയ്യുക.';
 
   @override
   String get inProgressStatus => 'പുരോഗതിയിൽ';

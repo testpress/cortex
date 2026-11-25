@@ -1344,7 +1344,7 @@
   "startOfflineExam": "Start offline exam",
   "downloadExamOffline": "Download Exam (Offline)",
   "testSavedLocallyOffline": "Test saved locally. Results will be available once synced.",
-  "offlineExamSavedToast": "Exam saved. It will be submitted automatically when you're back online.",
+  "offlineExamSavedToast": "Exam saved. Connect to the internet and tap Sync to submit.",
   "inProgressStatus": "In Progress",
   "syncingStatus": "Syncing…",
   "pendingSyncStatus": "Pending Sync",
