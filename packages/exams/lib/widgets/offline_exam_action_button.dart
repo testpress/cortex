@@ -51,6 +51,63 @@ class _OfflineExamActionButtonState
     }
   }
 
+  Future<void> _syncExam(BuildContext context, int downloadId) async {
+    final l10n = L10n.of(context);
+    setState(() {
+      _isSyncing = true;
+    });
+
+    try {
+      final success = await ref
+          .read(offlineExamsProvider.notifier)
+          .syncExam(downloadId);
+      if (!context.mounted) return;
+      if (success) {
+        AppToast.show(context, message: l10n.examSyncSuccessToast);
+      } else {
+        AppToast.show(
+          context,
+          message: l10n.examSyncFailedToast,
+          isError: true,
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        AppToast.show(
+          context,
+          message: l10n.examSyncFailedToast,
+          isError: true,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSyncing = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildSyncButton(
+    BuildContext context,
+    OfflineExamDownloadsTableData download,
+  ) {
+    final design = Design.of(context);
+    final l10n = L10n.of(context);
+    final isSyncing = _isSyncing || download.status == 'SYNCING';
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: design.spacing.md),
+      child: AppButton.primary(
+        label: l10n.syncExamAction,
+        fullWidth: true,
+        loading: isSyncing,
+        leading: isSyncing ? null : const Icon(LucideIcons.refreshCw, size: 18),
+        onPressed: isSyncing ? null : () => _syncExam(context, download.id),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
@@ -78,57 +135,7 @@ class _OfflineExamActionButtonState
 
           if (download.status == 'PENDING_SYNC' ||
               download.status == 'SYNCING') {
-            final isSyncing = _isSyncing || download.status == 'SYNCING';
-            return Padding(
-              padding: EdgeInsets.only(bottom: design.spacing.md),
-              child: AppButton.primary(
-                label: l10n.syncExamAction,
-                fullWidth: true,
-                loading: isSyncing,
-                leading: isSyncing
-                    ? null
-                    : const Icon(LucideIcons.refreshCw, size: 18),
-                onPressed: isSyncing
-                    ? null
-                    : () async {
-                        setState(() {
-                          _isSyncing = true;
-                        });
-                        try {
-                          final success = await ref
-                              .read(offlineExamsProvider.notifier)
-                              .syncExam(download.id);
-                          if (!context.mounted) return;
-                          if (success) {
-                            AppToast.show(
-                              context,
-                              message: l10n.examSyncSuccessToast,
-                            );
-                          } else {
-                            AppToast.show(
-                              context,
-                              message: l10n.examSyncFailedToast,
-                              isError: true,
-                            );
-                          }
-                        } catch (_) {
-                          if (context.mounted) {
-                            AppToast.show(
-                              context,
-                              message: l10n.examSyncFailedToast,
-                              isError: true,
-                            );
-                          }
-                        } finally {
-                          if (mounted) {
-                            setState(() {
-                              _isSyncing = false;
-                            });
-                          }
-                        }
-                      },
-              ),
-            );
+            return _buildSyncButton(context, download);
           }
 
           final isResuming = download.status == 'IN_PROGRESS';
