@@ -3950,4 +3950,14 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get cropImage => 'ചിത്രം ക്രോപ്പ് ചെയ്യുക';
+
+  @override
+  String heroBannerPageIndicator(int current, int total) {
+    return 'പേജ് $current / $total';
+  }
+
+  @override
+  String heroBannerFallbackTitle(int index) {
+    return 'ബാനർ $index';
+  }
 }

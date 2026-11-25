@@ -2073,5 +2073,26 @@
   "cropImage": "Crop Image",
   "@cropImage": {
     "description": "Title displayed on the image cropping screen or toolbar"
+  },
+  "heroBannerPageIndicator": "Page {current} of {total}",
+  "@heroBannerPageIndicator": {
+    "description": "Accessibility semantic label for hero banner pagination indicator",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "heroBannerFallbackTitle": "Banner {index}",
+  "@heroBannerFallbackTitle": {
+    "description": "Accessibility semantic label fallback for hero banner without a title",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
   }
 }

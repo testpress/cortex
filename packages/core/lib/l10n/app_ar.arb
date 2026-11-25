@@ -1441,5 +1441,7 @@
   "aiCannotDeleteWhileGenerating": "لا يمكن حذف المحادثة أثناء إنشاء الرد.",
   "aiDeleteConversationFailed": "فشل حذف المحادثة. يرجى المحاولة مرة أخرى.",
   "aiDeleteConversationNamed": "حذف: {title}",
-  "cropImage": "قص الصورة"
+  "cropImage": "قص الصورة",
+  "heroBannerPageIndicator": "صفحة {current} من {total}",
+  "heroBannerFallbackTitle": "إعلان {index}"
 }

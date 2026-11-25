@@ -73,10 +73,11 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
       } else {
         _currentIndex = 0;
       }
+      final design = Design.of(context);
       _controller.animateToPage(
         _currentIndex,
         duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
+        curve: MotionPreferences.curve(context, design.motion.easeOut),
       );
     });
   }
@@ -105,6 +106,7 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
+    final l10n = L10n.of(context);
     final isSkeleton = widget.isLoading;
 
     if (widget.banners.isEmpty && !isSkeleton) {
@@ -151,57 +153,44 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                           itemCount: widget.banners.length,
                           itemBuilder: (context, index) {
                             final banner = widget.banners[index];
-                            return Container(
-                              color: design.colors.surfaceVariant,
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  banner.imageUrl.isNotEmpty
-                                      ? CachedNetworkImage(
-                                          imageUrl: banner.imageUrl,
-                                          fit: BoxFit.contain,
-                                          fadeInDuration: Duration.zero,
-                                          filterQuality: FilterQuality.high,
-                                          memCacheWidth: 800,
-                                          alignment: Alignment.topCenter,
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            color: Color.lerp(
-                                              design.colors.primaryContainer,
-                                              design.colors.surfaceVariant,
-                                              0.5,
-                                            ),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              Container(
-                                            color: Color.lerp(
-                                              design.colors.primaryContainer,
-                                              design.colors.surfaceVariant,
-                                              0.5,
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
+                            return AppSemantics.container(
+                              label: banner.title.isNotEmpty
+                                  ? banner.title
+                                  : l10n.heroBannerFallbackTitle(index + 1),
+                              child: Container(
+                                color: design.colors.surfaceVariant,
+                                child: banner.imageUrl.isNotEmpty
+                                    ? CachedNetworkImage(
+                                        imageUrl: banner.imageUrl,
+                                        fit: BoxFit.contain,
+                                        fadeInDuration: Duration.zero,
+                                        filterQuality: FilterQuality.high,
+                                        memCacheWidth: 800,
+                                        alignment: Alignment.topCenter,
+                                        placeholder: (context, url) =>
+                                            Container(
                                           color: Color.lerp(
                                             design.colors.primaryContainer,
                                             design.colors.surfaceVariant,
                                             0.5,
                                           ),
                                         ),
-                                  // Soft gradient overlay for contrast
-                                  const DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Color(0x00000000),
-                                          Color(0x66000000)
-                                        ],
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                          color: Color.lerp(
+                                            design.colors.primaryContainer,
+                                            design.colors.surfaceVariant,
+                                            0.5,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        color: Color.lerp(
+                                          design.colors.primaryContainer,
+                                          design.colors.surfaceVariant,
+                                          0.5,
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             );
                           },
@@ -209,29 +198,53 @@ class _HeroBannerCarouselState extends State<HeroBannerCarousel> {
                       ),
                       if (widget.banners.length > 1)
                         Positioned(
-                          bottom: 12,
+                          bottom: design.spacing.sm,
                           left: 0,
                           right: 0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                                List.generate(widget.banners.length, (index) {
-                              final isActive = _currentIndex == index;
-                              return AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 3),
-                                height: 6,
-                                width: isActive ? 24 : 6,
-                                decoration: BoxDecoration(
-                                  color: isActive
-                                      ? design.colors.onPrimary
-                                      : design.colors.onPrimary
-                                          .withValues(alpha: 0.6),
-                                  borderRadius: BorderRadius.circular(3),
+                          child: AppSemantics.container(
+                            label: l10n.heroBannerPageIndicator(
+                              _currentIndex + 1,
+                              widget.banners.length,
+                            ),
+                            child: Center(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: design.spacing.sm,
+                                  vertical: design.spacing.xs,
                                 ),
-                              );
-                            }),
+                                decoration: BoxDecoration(
+                                  color: design.colors.overlay
+                                      .withValues(alpha: 0.4),
+                                  borderRadius: BorderRadius.circular(
+                                    design.radius.lg,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: List.generate(widget.banners.length,
+                                      (index) {
+                                    final isActive = _currentIndex == index;
+                                    return AnimatedContainer(
+                                      duration: MotionPreferences.duration(
+                                        context,
+                                        design.motion.normal,
+                                      ),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      height: 6,
+                                      width: isActive ? 20 : 6,
+                                      decoration: BoxDecoration(
+                                        color: isActive
+                                            ? design.colors.onPrimary
+                                            : design.colors.onPrimary
+                                                .withValues(alpha: 0.6),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                     ],
