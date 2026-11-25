@@ -27,6 +27,7 @@ class OfflineExamActionButton extends ConsumerStatefulWidget {
 class _OfflineExamActionButtonState
     extends ConsumerState<OfflineExamActionButton> {
   bool _isDownloading = false;
+  bool _isSyncing = false;
 
   Future<void> _downloadExam() async {
     setState(() {
@@ -71,9 +72,50 @@ class _OfflineExamActionButtonState
         }
 
         if (download != null) {
-          if (download.status == 'SYNCED' ||
-              download.status == 'PENDING_SYNC') {
+          if (download.status == 'SYNCED') {
             return const SizedBox.shrink();
+          }
+
+          if (download.status == 'PENDING_SYNC' ||
+              download.status == 'SYNCING') {
+            final isSyncing = _isSyncing || download.status == 'SYNCING';
+            return Padding(
+              padding: EdgeInsets.only(bottom: design.spacing.md),
+              child: AppButton.primary(
+                label: l10n.syncExamAction,
+                fullWidth: true,
+                loading: isSyncing,
+                leading: isSyncing
+                    ? null
+                    : const Icon(LucideIcons.refreshCw, size: 18),
+                onPressed: isSyncing
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isSyncing = true;
+                        });
+                        final success = await ref
+                            .read(offlineExamsProvider.notifier)
+                            .syncExam(download.id);
+                        if (!context.mounted) return;
+                        setState(() {
+                          _isSyncing = false;
+                        });
+                        if (success) {
+                          AppToast.show(
+                            context,
+                            message: l10n.examSyncSuccessToast,
+                          );
+                        } else {
+                          AppToast.show(
+                            context,
+                            message: l10n.examSyncFailedToast,
+                            isError: true,
+                          );
+                        }
+                      },
+              ),
+            );
           }
 
           final isResuming = download.status == 'IN_PROGRESS';
