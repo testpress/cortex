@@ -6,6 +6,25 @@ import 'package:core/data/data.dart';
 import 'package:exams/providers/exam_providers.dart';
 import 'package:exams/widgets/offline_exam_action_button.dart';
 
+class _FakeOfflineExams extends OfflineExams {
+  final Future<bool> Function(int id)? onSync;
+
+  _FakeOfflineExams({this.onSync});
+
+  @override
+  Stream<List<OfflineExamDownloadsTableData>> build() async* {
+    yield [];
+  }
+
+  @override
+  Future<bool> syncExam(int id) async {
+    if (onSync != null) {
+      return onSync!(id);
+    }
+    return true;
+  }
+}
+
 void main() {
   final examData = ExamDto(
     id: '1',
@@ -18,12 +37,15 @@ void main() {
   Widget buildWidget({
     required VoidCallback onStartOffline,
     OfflineExamDownloadsTableData? download,
+    OfflineExams Function()? offlineExamsBuilder,
   }) {
     return ProviderScope(
       overrides: [
         offlineExamDownloadProvider(
           'test_content_id',
         ).overrideWith((ref) => Stream.value(download)),
+        if (offlineExamsBuilder != null)
+          offlineExamsProvider.overrideWith(offlineExamsBuilder),
       ],
       child: WidgetsApp(
         color: const Color(0xFF000000),
@@ -33,11 +55,17 @@ void main() {
           textDirection: TextDirection.ltr,
           child: DesignProvider(
             config: DesignConfig.light(),
-            child: OfflineExamActionButton(
-              examId: 'test_content_id',
-              examData: examData,
-              attemptsUrl: 'https://example.com/attempts',
-              onStartOfflineAttempt: onStartOffline,
+            child: Overlay(
+              initialEntries: [
+                OverlayEntry(
+                  builder: (context) => OfflineExamActionButton(
+                    examId: 'test_content_id',
+                    examData: examData,
+                    attemptsUrl: 'https://example.com/attempts',
+                    onStartOfflineAttempt: onStartOffline,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -121,10 +149,147 @@ void main() {
     await tester.pump();
 
     expect(find.byType(AppLoadingIndicator), findsOneWidget);
+    final button = tester.widget<AppButton>(find.byType(AppButton));
+    expect(button.loading, isTrue);
+    expect(button.onPressed, isNull);
     expect(find.text('Start offline exam'), findsNothing);
     expect(find.text('Resume offline exam'), findsNothing);
     expect(find.text('Download Exam (Offline)'), findsNothing);
   });
+
+  testWidgets(
+    'Tap path: triggers sync and shows success toast on successful sync',
+    (WidgetTester tester) async {
+      int? syncedId;
+      final pendingData = OfflineExamDownloadsTableData(
+        id: 42,
+        contentId: 'test_content_id',
+        examId: '1',
+        title: 'Sample Offline Exam',
+        duration: '01:00:00',
+        questionCount: 10,
+        status: 'PENDING_SYNC',
+        downloadedAt: DateTime.now(),
+        questionsJson: '[]',
+        elapsedSeconds: 100,
+      );
+
+      await tester.pumpWidget(
+        buildWidget(
+          onStartOffline: () {},
+          download: pendingData,
+          offlineExamsBuilder: () => _FakeOfflineExams(
+            onSync: (id) async {
+              syncedId = id;
+              return true;
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sync'), findsOneWidget);
+      await tester.tap(find.text('Sync'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(syncedId, equals(42));
+      expect(find.text('Exam synced successfully.'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets(
+    'Tap path: shows failure toast and resets loading state when sync returns false',
+    (WidgetTester tester) async {
+      final pendingData = OfflineExamDownloadsTableData(
+        id: 42,
+        contentId: 'test_content_id',
+        examId: '1',
+        title: 'Sample Offline Exam',
+        duration: '01:00:00',
+        questionCount: 10,
+        status: 'PENDING_SYNC',
+        downloadedAt: DateTime.now(),
+        questionsJson: '[]',
+        elapsedSeconds: 100,
+      );
+
+      await tester.pumpWidget(
+        buildWidget(
+          onStartOffline: () {},
+          download: pendingData,
+          offlineExamsBuilder: () =>
+              _FakeOfflineExams(onSync: (id) async => false),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Sync'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.text(
+          'Failed to sync exam. Please check your internet connection.',
+        ),
+        findsOneWidget,
+      );
+
+      final button = tester.widget<AppButton>(find.byType(AppButton));
+      expect(button.loading, isFalse);
+      expect(button.onPressed, isNotNull);
+
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets(
+    'Tap path: shows failure toast and resets loading state on exception',
+    (WidgetTester tester) async {
+      final pendingData = OfflineExamDownloadsTableData(
+        id: 42,
+        contentId: 'test_content_id',
+        examId: '1',
+        title: 'Sample Offline Exam',
+        duration: '01:00:00',
+        questionCount: 10,
+        status: 'PENDING_SYNC',
+        downloadedAt: DateTime.now(),
+        questionsJson: '[]',
+        elapsedSeconds: 100,
+      );
+
+      await tester.pumpWidget(
+        buildWidget(
+          onStartOffline: () {},
+          download: pendingData,
+          offlineExamsBuilder: () => _FakeOfflineExams(
+            onSync: (id) async => throw Exception('Unexpected sync crash'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Sync'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(
+        find.text(
+          'Failed to sync exam. Please check your internet connection.',
+        ),
+        findsOneWidget,
+      );
+
+      final button = tester.widget<AppButton>(find.byType(AppButton));
+      expect(button.loading, isFalse);
+      expect(button.onPressed, isNotNull);
+
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
 
   testWidgets(
     'Renders Start offline exam button when download status is DOWNLOADED',

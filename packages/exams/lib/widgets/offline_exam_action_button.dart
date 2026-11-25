@@ -111,6 +111,14 @@ class _OfflineExamActionButtonState
                               isError: true,
                             );
                           }
+                        } catch (_) {
+                          if (context.mounted) {
+                            AppToast.show(
+                              context,
+                              message: l10n.examSyncFailedToast,
+                              isError: true,
+                            );
+                          }
                         } finally {
                           if (mounted) {
                             setState(() {
