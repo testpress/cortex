@@ -40,7 +40,7 @@ on:
           - completed
         default: draft
       app_version_baseline:
-        description: 'Highest existing app version (X.Y.Z). Deploy Testpress baseline support before using these inputs.'
+        description: 'Highest existing app version (X.Y.Z).'
         required: false
         type: string
         default: ''
