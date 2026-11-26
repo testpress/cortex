@@ -40,7 +40,7 @@ on:
           - completed
         default: draft
       app_version_baseline:
-        description: 'Highest existing app version (X.Y.Z)'
+        description: 'Highest existing app version (X.Y.Z). Deploy Testpress baseline support before using these inputs.'
         required: false
         type: string
         default: ''
@@ -50,7 +50,7 @@ on:
         type: string
         default: ''
       ios_build_number_baseline:
-        description: 'Highest existing iOS build number, even for an Android-only release'
+        description: 'Highest existing iOS build number (ios_version_code in Testpress), even for an Android-only release'
         required: false
         type: string
         default: ''
