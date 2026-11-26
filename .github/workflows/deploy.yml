@@ -40,14 +40,20 @@ on:
           - completed
         default: draft
       app_version_baseline:
-        description: 'Highest existing app version (X.Y.Z, optional)'
+        description: 'Highest existing app version (X.Y.Z)'
+        required: false
         type: string
+        default: ''
       android_version_code_baseline:
-        description: 'Highest Android version code already used (optional)'
+        description: 'Highest Android version code used, even for an iOS-only release'
+        required: false
         type: string
+        default: ''
       ios_build_number_baseline:
-        description: 'Highest existing iOS build number (optional)'
+        description: 'Highest existing iOS build number, even for an Android-only release'
+        required: false
         type: string
+        default: ''
 
 permissions:
   contents: read
@@ -61,6 +67,9 @@ jobs:
         env:
           BUILD_ANDROID: ${{ inputs.build_android }}
           BUILD_IOS: ${{ inputs.build_ios }}
+          APP_VERSION_BASELINE: ${{ inputs.app_version_baseline }}
+          ANDROID_VERSION_CODE_BASELINE: ${{ inputs.android_version_code_baseline }}
+          IOS_BUILD_NUMBER_BASELINE: ${{ inputs.ios_build_number_baseline }}
           SUBDOMAIN: ${{ inputs.subdomain }}
         run: |
           if [ "$BUILD_ANDROID" != "true" ] && [ "$BUILD_IOS" != "true" ]; then
@@ -71,6 +80,27 @@ jobs:
             echo "::error::Subdomain must contain only alphanumeric characters and hyphens"
             exit 1
           fi
+
+          VERSION_PATTERN='^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$'
+          if [[ -n "$APP_VERSION_BASELINE" ]] &&
+             [[ ! "$APP_VERSION_BASELINE" =~ $VERSION_PATTERN || ${#APP_VERSION_BASELINE} -gt 12 ]]; then
+            echo "::error::App version baseline must be in X.Y.Z format and at most 12 characters."
+            exit 1
+          fi
+
+          validate_build_baseline() {
+            local label="$1" value="$2" max="$3"
+            if [[ -z "$value" ]]; then
+              return
+            fi
+            if [[ ! "$value" =~ ^[1-9][0-9]{0,9}$ ]] || (( value > max )); then
+              echo "::error::$label baseline must be a positive integer no greater than $max."
+              exit 1
+            fi
+          }
+
+          validate_build_baseline "Android version code" "$ANDROID_VERSION_CODE_BASELINE" 2099999999
+          validate_build_baseline "iOS build number" "$IOS_BUILD_NUMBER_BASELINE" 2147483646
 
       - name: Bump Version on Cortex Server
         env:
@@ -101,6 +131,15 @@ jobs:
             echo "::error::Version bump failed with HTTP status $HTTP_STATUS. Check the bump type and version baselines."
             exit 1
           fi
+          if ! jq -e '
+            (.version | type == "string" and test("^[0-9]+[.][0-9]+[.][0-9]+$")) and
+            (.android_version_code | type == "number" and . > 0 and . == floor) and
+            (.ios_version_code | type == "number" and . > 0 and . == floor)
+          ' "$RESPONSE_FILE" >/dev/null 2>&1; then
+            echo "::error::The version endpoint returned missing or invalid version fields. It may already have bumped the version. Check the Cortex config before retrying."
+            exit 1
+          fi
+
           if ! jq -e --argjson request "$PAYLOAD" '
             def version_parts: split(".") | map(tonumber);
             (($request | has("app_version_baseline") | not) or
@@ -110,7 +149,7 @@ jobs:
             (($request | has("ios_build_number_baseline") | not) or
               (.ios_version_code > ($request.ios_build_number_baseline | tonumber)))
           ' "$RESPONSE_FILE" >/dev/null; then
-            echo "::error::The allocated release version did not exceed the supplied baselines."
+            echo "::error::The server bumped the version, but the result did not exceed the supplied baselines. Check the Cortex config before retrying."
             exit 1
           fi
           echo "Version successfully updated on server."
