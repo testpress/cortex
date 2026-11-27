@@ -22,7 +22,8 @@ class AiRoutes {
           parentNavigatorKey: rootNavigatorKey,
           pageBuilder: (context, state) {
             final renameChatId =
-                state.uri.queryParameters['rename'] ?? (state.extra as String?);
+                state.uri.queryParameters['rename'] ??
+                (state.extra is String ? state.extra as String : null);
             return overlayTransitionPage(
               context,
               state.pageKey,

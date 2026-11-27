@@ -992,7 +992,7 @@ void main() {
     );
 
     testWidgets(
-      'consumes pendingRenameChatId from provider and enters inline rename mode',
+      'does not enter inline rename mode when initialRenamingChatId is null',
       (tester) async {
         final conversations = sampleConversations();
         final repository = _FakeLearnLensRepository(
@@ -1000,49 +1000,18 @@ void main() {
         );
         final router = buildRouter(initialLocation: '/ai/history');
 
-        final container = ProviderContainer(
-          overrides: [
-            learnLensRepositoryProvider.overrideWithValue(repository),
-          ],
-        );
-        addTearDown(container.dispose);
-
-        // Pre-set pendingRenameChatId on the provider
-        container
-            .read(genericAiChatProvider.notifier)
-            .requestRenameConversation('chat-1');
-
         await tester.pumpWidget(
-          UncontrolledProviderScope(
-            container: container,
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: DesignProvider(
-                mode: DesignMode.light,
-                config: DesignConfig.defaults(),
-                darkConfig: DesignConfig.defaults(),
-                child: WidgetsApp.router(
-                  color: const Color(0xFF000000),
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  locale: const Locale('en'),
-                  routerConfig: router,
-                ),
-              ),
-            ),
-          ),
+          buildSubject(repository: repository, router: router),
         );
         await tester.pumpAndSettle();
 
-        // chat-1 should be in inline rename mode and pending state cleared
         expect(
           find.byKey(const ValueKey('editable_text_chat-1')),
-          findsOneWidget,
+          findsNothing,
         );
         expect(
-          container.read(genericAiChatProvider).pendingRenameChatId,
-          isNull,
+          find.byKey(const ValueKey('editable_text_chat-2')),
+          findsNothing,
         );
       },
     );

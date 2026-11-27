@@ -43,15 +43,11 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_onScroll);
-    final targetRenameChatId =
-        widget.initialRenamingChatId ??
-        ref.read(genericAiChatProvider).pendingRenameChatId;
-    if (targetRenameChatId != null) {
-      _renamingChatId = targetRenameChatId;
+    if (widget.initialRenamingChatId != null) {
+      _renamingChatId = widget.initialRenamingChatId;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      ref.read(genericAiChatProvider.notifier).clearPendingRename();
       ref.read(genericAiChatProvider.notifier).loadConversations(refresh: true);
     });
   }
@@ -134,7 +130,8 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     final trimmed = newTitle.trim();
     if (!mounted) return;
 
-    if (trimmed.isEmpty) {
+    if (trimmed.isEmpty ||
+        trimmed.length > GenericAiChat.maxConversationTitleLength) {
       _handleRenameCancel(chatId);
       return;
     }
@@ -591,9 +588,9 @@ class _ConversationOptionsPopup extends StatelessWidget {
               AppSemantics.button(
                 label: l10n.aiRenameConversationAction,
                 onTap: onRename,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                child: AppFocusable(
                   onTap: onRename,
+                  borderRadius: BorderRadius.circular(design.radius.sm),
                   child: Container(
                     constraints: const BoxConstraints(
                       minWidth: 48.0,
@@ -631,9 +628,9 @@ class _ConversationOptionsPopup extends StatelessWidget {
             AppSemantics.button(
               label: l10n.aiDeleteConversationAction,
               onTap: onDelete,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              child: AppFocusable(
                 onTap: onDelete,
+                borderRadius: BorderRadius.circular(design.radius.sm),
                 child: Container(
                   constraints: const BoxConstraints(
                     minWidth: 48.0,
@@ -803,6 +800,7 @@ class _HistoryItemState extends State<_HistoryItem> {
     final controller = _controller;
     if (controller == null) return;
     final text = controller.text.trim();
+    // Allow submission if the title changed, or to retry after a previous failure.
     if (text.isNotEmpty &&
         (text != widget.title || widget.errorMessage != null)) {
       widget.onRenameSubmit?.call(text);
@@ -876,6 +874,9 @@ class _HistoryItemState extends State<_HistoryItem> {
                         child: Semantics(
                           label: l10n.aiRenameConversationAction,
                           textField: true,
+                          // Uses EditableText instead of AppTextField because AppTextField
+                          // is a standalone form-field with full card styling and fixed
+                          // outer padding, unsuitable for compact inline list tile rows.
                           child: EditableText(
                             key: ValueKey('editable_text_${widget.chatId}'),
                             controller: _controller!,
@@ -894,7 +895,9 @@ class _HistoryItemState extends State<_HistoryItem> {
                             textInputAction: TextInputAction.done,
                             maxLines: 1,
                             inputFormatters: [
-                              LengthLimitingTextInputFormatter(80),
+                              LengthLimitingTextInputFormatter(
+                                GenericAiChat.maxConversationTitleLength,
+                              ),
                             ],
                             onSubmitted: (_) {
                               if (!widget.isSubmittingRename) {
@@ -921,10 +924,13 @@ class _HistoryItemState extends State<_HistoryItem> {
               SizedBox(height: design.spacing.xs * 0.75),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
-                child: AppText.caption(
-                  widget.errorMessage!,
-                  color: design.colors.error,
-                  maxLines: 2,
+                child: Semantics(
+                  liveRegion: true,
+                  child: AppText.caption(
+                    widget.errorMessage!,
+                    color: design.colors.error,
+                    maxLines: 2,
+                  ),
                 ),
               ),
             ],

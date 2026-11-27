@@ -16,9 +16,5 @@ The system SHALL support renaming an existing conversation via `LearnLensReposit
 - **THEN** the system SHALL return `false` without making a network call.
 
 #### Scenario: Guarding against renaming during in-flight generation
-- **WHEN** `renameConversation` or `requestRenameConversation` is called for a conversation that currently has an active AI generation in progress
+- **WHEN** `renameConversation` is called for a conversation that currently has an active AI generation in progress
 - **THEN** the system SHALL reject the operation, return `false`, and not call the repository.
-
-#### Scenario: Requesting rename on history opening
-- **WHEN** `requestRenameConversation(chatId)` is called
-- **THEN** the system SHALL store `pendingRenameChatId: chatId` so the history drawer opens directly with that conversation in inline editing mode.

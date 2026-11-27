@@ -1599,12 +1599,8 @@ void main() {
       await tester.tap(find.text('Rename'));
       await tester.pumpAndSettle();
 
-      // Verify onOpenHistory was invoked and pendingRenameChatId was recorded
+      // Verify onOpenHistory was invoked
       expect(openHistoryCalled, isTrue);
-      expect(
-        container.read(genericAiChatProvider).pendingRenameChatId,
-        'chat-rename-1',
-      );
     },
   );
 

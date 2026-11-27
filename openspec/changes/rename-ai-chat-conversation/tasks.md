@@ -3,7 +3,7 @@
 - [x] 1.1 Add `renameConversation` method to `LearnLensNetworkClient` invoking `PATCH /chats/{chat_id}/`
 - [x] 1.2 Expose `renameConversation` in `LearnLensRepository`
 - [x] 1.3 Add `renameConversation` to `GenericAiChat` provider with short-circuiting for unchanged titles
-- [x] 1.4 Add `pendingRenameChatId` and `requestRenameConversation` to `GenericAiChatState` and notifier
+- [x] 1.4 Route rename requests via route navigation parameter instead of global state
 
 ## 2. History Screen Inline Renaming
 

@@ -39,7 +39,7 @@ class AiScreen extends ConsumerStatefulWidget {
   final List<AiChatMessageItem> initialMessages;
 
   /// Optional menu/history navigation callback.
-  /// If null, opens the [AiChatHistoryScreen] drawer.
+  /// If null, opens the [AiChatHistoryScreen] drawer via route navigation.
   final VoidCallback? onOpenHistory;
 
   /// Optional [ImagePicker] instance for test injection.
@@ -182,7 +182,6 @@ class _AiScreenState extends ConsumerState<AiScreen>
       );
       return;
     }
-    ref.read(genericAiChatProvider.notifier).requestRenameConversation(chatId);
     _composerFocusNode.unfocus();
     if (widget.onOpenHistory != null) {
       widget.onOpenHistory!();

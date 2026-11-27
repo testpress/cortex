@@ -179,7 +179,6 @@ class GenericAiChatState {
   final bool hasAccessDenied;
   final bool isDeletingConversation;
   final bool isRenamingConversation;
-  final String? pendingRenameChatId;
   final bool imageAttachmentsEnabled;
 
   const GenericAiChatState({
@@ -204,7 +203,6 @@ class GenericAiChatState {
     this.hasAccessDenied = false,
     this.isDeletingConversation = false,
     this.isRenamingConversation = false,
-    this.pendingRenameChatId,
     this.imageAttachmentsEnabled = false,
   });
 
@@ -239,7 +237,6 @@ class GenericAiChatState {
     bool? hasAccessDenied,
     bool? isDeletingConversation,
     bool? isRenamingConversation,
-    Object? pendingRenameChatId = _sentinel,
     bool? imageAttachmentsEnabled,
   }) {
     return GenericAiChatState(
@@ -276,9 +273,6 @@ class GenericAiChatState {
           isDeletingConversation ?? this.isDeletingConversation,
       isRenamingConversation:
           isRenamingConversation ?? this.isRenamingConversation,
-      pendingRenameChatId: pendingRenameChatId == _sentinel
-          ? this.pendingRenameChatId
-          : pendingRenameChatId as String?,
       imageAttachmentsEnabled:
           imageAttachmentsEnabled ?? this.imageAttachmentsEnabled,
     );
@@ -1668,25 +1662,8 @@ class GenericAiChat extends _$GenericAiChat {
 
   List<AiConversationDto> _withUpdatedTitle(String chatId, String newTitle) {
     return state.conversationHistory.map((c) {
-      return c.chatId == chatId
-          ? AiConversationDto(
-              chatId: c.chatId,
-              title: newTitle,
-              updatedAt: c.updatedAt,
-              generation: c.generation,
-            )
-          : c;
+      return c.chatId == chatId ? c.copyWith(title: newTitle) : c;
     }).toList();
-  }
-
-  void requestRenameConversation(String chatId) {
-    state = state.copyWith(pendingRenameChatId: chatId);
-  }
-
-  void clearPendingRename() {
-    if (state.pendingRenameChatId != null) {
-      state = state.copyWith(pendingRenameChatId: null);
-    }
   }
 
   /// Clears active conversation state and presents a clean empty canvas.
