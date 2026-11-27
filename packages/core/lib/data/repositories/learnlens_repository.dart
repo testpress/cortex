@@ -195,6 +195,19 @@ class LearnLensRepository {
     return _client.deleteConversation(chatId: chatId, cancelToken: cancelToken);
   }
 
+  /// Renames an existing conversation on LearnLens.
+  Future<AiConversationDto> renameConversation({
+    required String chatId,
+    required String title,
+    CancelToken? cancelToken,
+  }) {
+    return _client.renameConversation(
+      chatId: chatId,
+      title: title,
+      cancelToken: cancelToken,
+    );
+  }
+
   /// Loads a paginated list of messages for a conversation.
   Future<AiMessagePageResult> getMessages({
     required String chatId,

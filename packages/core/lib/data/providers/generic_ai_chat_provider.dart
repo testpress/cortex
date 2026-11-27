@@ -178,6 +178,8 @@ class GenericAiChatState {
   final bool hasInitError;
   final bool hasAccessDenied;
   final bool isDeletingConversation;
+  final bool isRenamingConversation;
+  final String? pendingRenameChatId;
   final bool imageAttachmentsEnabled;
 
   const GenericAiChatState({
@@ -201,6 +203,8 @@ class GenericAiChatState {
     this.hasInitError = false,
     this.hasAccessDenied = false,
     this.isDeletingConversation = false,
+    this.isRenamingConversation = false,
+    this.pendingRenameChatId,
     this.imageAttachmentsEnabled = false,
   });
 
@@ -234,6 +238,8 @@ class GenericAiChatState {
     bool? hasInitError,
     bool? hasAccessDenied,
     bool? isDeletingConversation,
+    bool? isRenamingConversation,
+    Object? pendingRenameChatId = _sentinel,
     bool? imageAttachmentsEnabled,
   }) {
     return GenericAiChatState(
@@ -268,6 +274,11 @@ class GenericAiChatState {
       hasAccessDenied: hasAccessDenied ?? this.hasAccessDenied,
       isDeletingConversation:
           isDeletingConversation ?? this.isDeletingConversation,
+      isRenamingConversation:
+          isRenamingConversation ?? this.isRenamingConversation,
+      pendingRenameChatId: pendingRenameChatId == _sentinel
+          ? this.pendingRenameChatId
+          : pendingRenameChatId as String?,
       imageAttachmentsEnabled:
           imageAttachmentsEnabled ?? this.imageAttachmentsEnabled,
     );
@@ -279,6 +290,8 @@ class GenericAiChatState {
 class GenericAiChat extends _$GenericAiChat {
   /// Maximum polling attempts before timing out (30 attempts * 2s = 60s).
   static const int defaultMaxPollingAttempts = 30;
+
+  static const int maxConversationTitleLength = 80;
 
   @visibleForTesting
   int maxPollingAttempts = defaultMaxPollingAttempts;
@@ -1593,6 +1606,86 @@ class GenericAiChat extends _$GenericAiChat {
       );
       state = state.copyWith(isDeletingConversation: false);
       return false;
+    }
+  }
+
+  /// Renames an existing conversation on LearnLens and updates in-memory history.
+  Future<bool> renameConversation(String chatId, String newTitle) async {
+    if (state.isRenamingConversation || state.hasActiveGeneration(chatId)) {
+      return false;
+    }
+
+    final sanitized = _sanitizeConversationTitle(newTitle);
+    if (sanitized.isEmpty || sanitized.length > maxConversationTitleLength) {
+      return false;
+    }
+
+    if (_isTitleUnchanged(chatId, sanitized)) {
+      return true;
+    }
+
+    state = state.copyWith(isRenamingConversation: true);
+    try {
+      final updatedDto = await _repository.renameConversation(
+        chatId: chatId,
+        title: sanitized,
+      );
+
+      final resolvedTitle = updatedDto.title.isNotEmpty
+          ? updatedDto.title
+          : sanitized;
+
+      state = state.copyWith(
+        conversationHistory: _withUpdatedTitle(chatId, resolvedTitle),
+        currentTitle: state.currentChatId == chatId
+            ? resolvedTitle
+            : state.currentTitle,
+        isRenamingConversation: false,
+      );
+
+      return true;
+    } catch (e, stackTrace) {
+      dev.log(
+        'Failed to rename conversation: $chatId',
+        name: 'GenericAiChatNotifier',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      state = state.copyWith(isRenamingConversation: false);
+      return false;
+    }
+  }
+
+  String _sanitizeConversationTitle(String title) =>
+      title.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+  bool _isTitleUnchanged(String chatId, String sanitizedTitle) {
+    final existing = state.conversationHistory
+        .where((c) => c.chatId == chatId)
+        .firstOrNull;
+    return existing != null && existing.title.trim() == sanitizedTitle;
+  }
+
+  List<AiConversationDto> _withUpdatedTitle(String chatId, String newTitle) {
+    return state.conversationHistory.map((c) {
+      return c.chatId == chatId
+          ? AiConversationDto(
+              chatId: c.chatId,
+              title: newTitle,
+              updatedAt: c.updatedAt,
+              generation: c.generation,
+            )
+          : c;
+    }).toList();
+  }
+
+  void requestRenameConversation(String chatId) {
+    state = state.copyWith(pendingRenameChatId: chatId);
+  }
+
+  void clearPendingRename() {
+    if (state.pendingRenameChatId != null) {
+      state = state.copyWith(pendingRenameChatId: null);
     }
   }
 

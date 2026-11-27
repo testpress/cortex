@@ -227,6 +227,36 @@ void main() {
       expect(req['path'], contains('/chats/chat-1/'));
     });
 
+    test('renameConversation sends PATCH /chats/<id>/ with title', () async {
+      mockClientDio.httpClientAdapter = _MockHttpClientAdapter((options) async {
+        capturedRequests.add({
+          'method': options.method,
+          'path': options.path,
+          'data': options.data,
+        });
+        return ResponseBody.fromString(
+          '{"chat_id":"chat-1","title":"New Title","updated_at":"2026-11-27T10:00:00Z"}',
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      });
+
+      final result = await client.renameConversation(
+        chatId: 'chat-1',
+        title: 'New Title',
+      );
+
+      expect(result.chatId, 'chat-1');
+      expect(result.title, 'New Title');
+
+      final req = capturedRequests.first;
+      expect(req['method'], 'PATCH');
+      expect(req['path'], contains('/chats/chat-1/'));
+      expect(req['data'], {'title': 'New Title'});
+    });
+
     test(
       'deleteConversation throws LearnLensException on 409 conflict',
       () async {

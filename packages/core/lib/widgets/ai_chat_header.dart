@@ -9,12 +9,14 @@ class AiChatHeader extends StatefulWidget {
     this.title,
     this.onNewChat,
     this.onDelete,
+    this.onRename,
   });
 
   final VoidCallback onMenu;
   final String? title;
   final VoidCallback? onNewChat;
   final VoidCallback? onDelete;
+  final VoidCallback? onRename;
 
   @override
   State<AiChatHeader> createState() => _AiChatHeaderState();
@@ -67,10 +69,18 @@ class _AiChatHeaderState extends State<AiChatHeader> {
               followerAnchor: isRtl ? Alignment.topLeft : Alignment.topRight,
               offset: Offset(0, design.spacing.xs),
               child: _HeaderOptionsPopup(
-                onDelete: () {
-                  Navigator.of(dialogContext).pop();
-                  widget.onDelete?.call();
-                },
+                onRename: widget.onRename != null
+                    ? () {
+                        Navigator.of(dialogContext).pop();
+                        widget.onRename?.call();
+                      }
+                    : null,
+                onDelete: widget.onDelete != null
+                    ? () {
+                        Navigator.of(dialogContext).pop();
+                        widget.onDelete?.call();
+                      }
+                    : null,
               ),
             ),
           ],
@@ -125,7 +135,7 @@ class _AiChatHeaderState extends State<AiChatHeader> {
                   accessibilityLabel: l10n.aiStartNewChat,
                   onTap: widget.onNewChat!,
                 ),
-              if (widget.onDelete != null)
+              if (widget.onDelete != null || widget.onRename != null)
                 CompositedTransformTarget(
                   link: _layerLink,
                   child: AppIconButton(
@@ -147,9 +157,10 @@ class _AiChatHeaderState extends State<AiChatHeader> {
 }
 
 class _HeaderOptionsPopup extends StatelessWidget {
-  const _HeaderOptionsPopup({required this.onDelete});
+  const _HeaderOptionsPopup({this.onRename, this.onDelete});
 
-  final VoidCallback onDelete;
+  final VoidCallback? onRename;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -173,44 +184,86 @@ class _HeaderOptionsPopup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AppSemantics.button(
-              label: l10n.aiDeleteConversationAction,
-              onTap: onDelete,
-              child: AppFocusable(
-                onTap: onDelete,
-                borderRadius: BorderRadius.circular(design.radius.sm),
-                child: Container(
-                  constraints: const BoxConstraints(
-                    minWidth: 48.0,
-                    minHeight: 48.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.sm,
-                    vertical: design.spacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(design.radius.sm),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        LucideIcons.trash2,
-                        size: design.iconSize.sm,
-                        color: design.colors.error,
-                      ),
-                      SizedBox(width: design.spacing.sm),
-                      ExcludeSemantics(
-                        child: AppText.bodySmall(
-                          l10n.aiDeleteConversationAction,
-                          color: design.colors.error,
+            if (onRename != null) ...[
+              AppSemantics.button(
+                label: l10n.aiRenameConversationAction,
+                onTap: onRename,
+                child: AppFocusable(
+                  onTap: onRename,
+                  borderRadius: BorderRadius.circular(design.radius.sm),
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      minWidth: 48.0,
+                      minHeight: 48.0,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                      vertical: design.spacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(design.radius.sm),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.pencil,
+                          size: design.iconSize.sm,
+                          color: design.colors.textPrimary,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: design.spacing.sm),
+                        ExcludeSemantics(
+                          child: AppText.bodySmall(
+                            l10n.aiRenameConversationAction,
+                            color: design.colors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+              if (onDelete != null) SizedBox(height: design.spacing.xs),
+            ],
+            if (onDelete != null)
+              AppSemantics.button(
+                label: l10n.aiDeleteConversationAction,
+                onTap: onDelete,
+                child: AppFocusable(
+                  onTap: onDelete,
+                  borderRadius: BorderRadius.circular(design.radius.sm),
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      minWidth: 48.0,
+                      minHeight: 48.0,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: design.spacing.sm,
+                      vertical: design.spacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(design.radius.sm),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.trash2,
+                          size: design.iconSize.sm,
+                          color: design.colors.error,
+                        ),
+                        SizedBox(width: design.spacing.sm),
+                        ExcludeSemantics(
+                          child: AppText.bodySmall(
+                            l10n.aiDeleteConversationAction,
+                            color: design.colors.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

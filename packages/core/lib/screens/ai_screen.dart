@@ -172,6 +172,25 @@ class _AiScreenState extends ConsumerState<AiScreen>
     );
   }
 
+  void _handleRenameActiveConversation(String chatId) {
+    final chatState = ref.read(genericAiChatProvider);
+    if (chatState.hasActiveGeneration(chatId)) {
+      AppToast.show(
+        context,
+        message: L10n.of(context).aiCannotRenameWhileGenerating,
+        isError: true,
+      );
+      return;
+    }
+    ref.read(genericAiChatProvider.notifier).requestRenameConversation(chatId);
+    _composerFocusNode.unfocus();
+    if (widget.onOpenHistory != null) {
+      widget.onOpenHistory!();
+    } else {
+      context.push('/ai/history?rename=$chatId');
+    }
+  }
+
   void _handleMenu() {
     _composerFocusNode.unfocus();
     if (widget.onOpenHistory != null) {
@@ -500,6 +519,11 @@ class _AiScreenState extends ConsumerState<AiScreen>
                   onMenu: _handleMenu,
                   title: chatState.currentTitle,
                   onNewChat: hasActiveContent ? _handleNewChat : null,
+                  onRename: chatState.currentChatId != null
+                      ? () => _handleRenameActiveConversation(
+                          chatState.currentChatId!,
+                        )
+                      : null,
                   onDelete: chatState.currentChatId != null
                       ? () => _handleDeleteActiveConversation(
                           chatState.currentChatId!,

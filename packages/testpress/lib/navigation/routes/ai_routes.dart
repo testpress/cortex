@@ -20,11 +20,15 @@ class AiRoutes {
           name: 'ai_history',
           path: 'history',
           parentNavigatorKey: rootNavigatorKey,
-          pageBuilder: (context, state) => overlayTransitionPage(
-            context,
-            state.pageKey,
-            const AiChatHistoryScreen(),
-          ),
+          pageBuilder: (context, state) {
+            final renameChatId =
+                state.uri.queryParameters['rename'] ?? (state.extra as String?);
+            return overlayTransitionPage(
+              context,
+              state.pageKey,
+              AiChatHistoryScreen(initialRenamingChatId: renameChatId),
+            );
+          },
         ),
       ],
     ),

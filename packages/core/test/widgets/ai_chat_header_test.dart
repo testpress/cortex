@@ -9,6 +9,7 @@ void main() {
     String? title,
     VoidCallback? onNewChat,
     VoidCallback? onDelete,
+    VoidCallback? onRename,
   }) {
     return DesignProvider(
       config: DesignConfig.defaults(),
@@ -28,6 +29,7 @@ void main() {
             title: title,
             onNewChat: onNewChat,
             onDelete: onDelete,
+            onRename: onRename,
           ),
         ),
       ),
@@ -135,6 +137,49 @@ void main() {
 
     expect(deleteTapped, isTrue);
     expect(find.text('Delete'), findsNothing);
+  });
+
+  testWidgets('opens anchored overflow popup and triggers onRename callback', (
+    tester,
+  ) async {
+    var renameTapped = false;
+
+    await tester.pumpWidget(
+      buildSubject(title: 'Active Chat', onRename: () => renameTapped = true),
+    );
+    await tester.pumpAndSettle();
+
+    final moreFinder = find.byIcon(LucideIcons.moreVertical);
+    expect(moreFinder, findsOneWidget);
+
+    await tester.tap(moreFinder);
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(LucideIcons.pencil), findsOneWidget);
+    expect(find.text('Rename'), findsOneWidget);
+
+    await tester.tap(find.text('Rename'));
+    await tester.pumpAndSettle();
+
+    expect(renameTapped, isTrue);
+    expect(find.text('Rename'), findsNothing);
+  });
+
+  testWidgets('renders both Rename and Delete options in popup', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(title: 'Active Chat', onRename: () {}, onDelete: () {}),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(LucideIcons.moreVertical));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Rename'), findsOneWidget);
+    expect(find.text('Delete'), findsOneWidget);
+    expect(find.byIcon(LucideIcons.pencil), findsOneWidget);
+    expect(find.byIcon(LucideIcons.trash2), findsOneWidget);
   });
 
   testWidgets('renders FadeTransition when opening popup with motion enabled', (

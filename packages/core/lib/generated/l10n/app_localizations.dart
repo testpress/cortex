@@ -6953,6 +6953,24 @@ abstract class AppLocalizations {
   /// **'Delete: {title}'**
   String aiDeleteConversationNamed(String title);
 
+  /// Action label for renaming a conversation
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get aiRenameConversationAction;
+
+  /// Warning message when user tries to rename a conversation while generation is in flight
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot rename conversation while a response is generating.'**
+  String get aiCannotRenameWhileGenerating;
+
+  /// Error message when conversation renaming fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t reach AI Chat. Check your connection and try again.'**
+  String get aiRenameConversationFailed;
+
   /// Title displayed on the image cropping screen or toolbar
   ///
   /// In en, this message translates to:

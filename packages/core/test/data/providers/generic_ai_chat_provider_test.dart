@@ -13,6 +13,7 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   int listConversationsCalls = 0;
   int ensureSessionCalls = 0;
   int deleteConversationCalls = 0;
+  int renameConversationCalls = 0;
   int uploadAttachmentsCalls = 0;
   int deleteAttachmentCalls = 0;
   bool deleteAttachmentShouldThrow = false;
@@ -21,6 +22,8 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   String? lastRequestId;
   String? lastChatId;
   String? lastDeletedChatId;
+  String? lastRenamedChatId;
+  String? lastRenamedTitle;
   String? lastDeletedAttachmentId;
   List<String>? lastAttachmentIds;
 
@@ -314,6 +317,22 @@ class _FakeLearnLensRepository implements LearnLensRepository {
   Object? listConversationsError;
   Object? deleteConversationError;
   Completer<void>? deleteConversationCompleter;
+  Object? renameConversationError;
+
+  @override
+  Future<AiConversationDto> renameConversation({
+    required String chatId,
+    required String title,
+    CancelToken? cancelToken,
+  }) async {
+    renameConversationCalls++;
+    lastRenamedChatId = chatId;
+    lastRenamedTitle = title;
+    if (renameConversationError != null) {
+      throw renameConversationError!;
+    }
+    return AiConversationDto(chatId: chatId, title: title);
+  }
 
   @override
   Future<void> deleteConversation({
@@ -2465,6 +2484,153 @@ void main() {
 
           completer.complete();
           await deleteFuture;
+        },
+      );
+    });
+
+    group('renameConversation', () {
+      test(
+        'renaming an inactive conversation updates title in history and preserves active chat',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [
+              AiConversationDto(chatId: 'chat-active', title: 'Active Chat'),
+              AiConversationDto(chatId: 'chat-other', title: 'Other Chat'),
+            ],
+          );
+          await notifier.loadConversations(refresh: true);
+          await notifier.selectConversation('chat-active');
+
+          expect(
+            container.read(genericAiChatProvider).currentChatId,
+            'chat-active',
+          );
+          expect(
+            container.read(genericAiChatProvider).currentTitle,
+            'Active Chat',
+          );
+
+          final success = await notifier.renameConversation(
+            'chat-other',
+            'Renamed Other Chat',
+          );
+
+          expect(success, isTrue);
+          expect(fakeRepository.renameConversationCalls, 1);
+          expect(fakeRepository.lastRenamedChatId, 'chat-other');
+          expect(fakeRepository.lastRenamedTitle, 'Renamed Other Chat');
+
+          final state = container.read(genericAiChatProvider);
+          expect(state.currentTitle, 'Active Chat');
+          final renamedItem = state.conversationHistory.firstWhere(
+            (c) => c.chatId == 'chat-other',
+          );
+          expect(renamedItem.title, 'Renamed Other Chat');
+        },
+      );
+
+      test(
+        'renaming the active conversation updates both history title and currentTitle',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [
+              AiConversationDto(chatId: 'chat-active', title: 'Original Title'),
+            ],
+          );
+          await notifier.loadConversations(refresh: true);
+          await notifier.selectConversation('chat-active');
+
+          final success = await notifier.renameConversation(
+            'chat-active',
+            'Brand New Title',
+          );
+
+          expect(success, isTrue);
+          expect(fakeRepository.renameConversationCalls, 1);
+
+          final state = container.read(genericAiChatProvider);
+          expect(state.currentTitle, 'Brand New Title');
+          expect(state.conversationHistory.first.title, 'Brand New Title');
+        },
+      );
+
+      test(
+        'returns true and does not call repository when new title is unchanged',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [
+              AiConversationDto(chatId: 'chat-same', title: 'Unchanged Title'),
+            ],
+          );
+          await notifier.loadConversations(refresh: true);
+
+          final success = await notifier.renameConversation(
+            'chat-same',
+            'Unchanged Title',
+          );
+
+          expect(success, isTrue);
+          expect(fakeRepository.renameConversationCalls, 0);
+        },
+      );
+
+      test(
+        'returns false and does not call repository when new title is empty or exceeds 80 characters',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [AiConversationDto(chatId: 'chat-1', title: 'Title 1')],
+          );
+          await notifier.loadConversations(refresh: true);
+
+          // Empty / whitespace
+          final emptySuccess = await notifier.renameConversation(
+            'chat-1',
+            '   ',
+          );
+          expect(emptySuccess, isFalse);
+          expect(fakeRepository.renameConversationCalls, 0);
+
+          // Exceeds 80 chars
+          final tooLong = 'A' * 81;
+          final longSuccess = await notifier.renameConversation(
+            'chat-1',
+            tooLong,
+          );
+          expect(longSuccess, isFalse);
+          expect(fakeRepository.renameConversationCalls, 0);
+        },
+      );
+
+      test(
+        'returns false and preserves state when repository throws an error',
+        () async {
+          final notifier = container.read(genericAiChatProvider.notifier);
+          fakeRepository.nextConversationList = const AiConversationListDto(
+            items: [
+              AiConversationDto(chatId: 'chat-err', title: 'Before Title'),
+            ],
+          );
+          await notifier.loadConversations(refresh: true);
+          await notifier.selectConversation('chat-err');
+
+          fakeRepository.renameConversationError = Exception('Network error');
+
+          final success = await notifier.renameConversation(
+            'chat-err',
+            'Failed Rename',
+          );
+
+          expect(success, isFalse);
+          expect(fakeRepository.renameConversationCalls, 1);
+
+          final state = container.read(genericAiChatProvider);
+          expect(state.currentTitle, 'Before Title');
+          expect(state.conversationHistory.first.title, 'Before Title');
+          expect(state.isRenamingConversation, isFalse);
         },
       );
     });

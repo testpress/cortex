@@ -3889,6 +3889,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get aiRenameConversationAction => 'Rename';
+
+  @override
+  String get aiCannotRenameWhileGenerating =>
+      'Cannot rename conversation while a response is generating.';
+
+  @override
+  String get aiRenameConversationFailed =>
+      'Couldn’t reach AI Chat. Check your connection and try again.';
+
+  @override
   String get cropImage => 'Crop Image';
 
   @override

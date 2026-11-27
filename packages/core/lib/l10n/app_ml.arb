@@ -1441,6 +1441,9 @@
   "aiCannotDeleteWhileGenerating": "മറുപടി തയ്യാറാക്കുമ്പോൾ സംഭാഷണം ഇല്ലാതാക്കാൻ കഴിയില്ല.",
   "aiDeleteConversationFailed": "സംഭാഷണം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
   "aiDeleteConversationNamed": "{title} സംഭാഷണം ഇല്ലാതാക്കുക",
+  "aiRenameConversationAction": "പേര് മാറ്റുക",
+  "aiCannotRenameWhileGenerating": "മറുപടി തയ്യാറാക്കുമ്പോൾ സംഭാഷണത്തിന്റെ പേര് മാറ്റാൻ കഴിയില്ല.",
+  "aiRenameConversationFailed": "AI Chat-മായി ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
   "cropImage": "ചിത്രം ക്രോപ്പ് ചെയ്യുക",
   "heroBannerPageIndicator": "പേജ് {current} / {total}",
   "heroBannerFallbackTitle": "ബാനർ {index}"
