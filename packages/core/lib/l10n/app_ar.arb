@@ -1441,6 +1441,9 @@
   "aiCannotDeleteWhileGenerating": "لا يمكن حذف المحادثة أثناء إنشاء الرد.",
   "aiDeleteConversationFailed": "فشل حذف المحادثة. يرجى المحاولة مرة أخرى.",
   "aiDeleteConversationNamed": "حذف: {title}",
+  "aiRenameConversationAction": "إعادة تسمية",
+  "aiCannotRenameWhileGenerating": "لا يمكن إعادة تسمية المحادثة أثناء إنشاء الرد.",
+  "aiRenameConversationFailed": "تعذر الوصول إلى الدردشة بالذكاء الاصطناعي. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
   "cropImage": "قص الصورة",
   "heroBannerPageIndicator": "صفحة {current} من {total}",
   "heroBannerFallbackTitle": "إعلان {index}"

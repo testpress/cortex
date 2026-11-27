@@ -2070,6 +2070,18 @@
       }
     }
   },
+  "aiRenameConversationAction": "Rename",
+  "@aiRenameConversationAction": {
+    "description": "Action label for renaming a conversation"
+  },
+  "aiCannotRenameWhileGenerating": "Cannot rename conversation while a response is generating.",
+  "@aiCannotRenameWhileGenerating": {
+    "description": "Warning message when user tries to rename a conversation while generation is in flight"
+  },
+  "aiRenameConversationFailed": "Couldn’t reach AI Chat. Check your connection and try again.",
+  "@aiRenameConversationFailed": {
+    "description": "Error message when conversation renaming fails"
+  },
   "cropImage": "Crop Image",
   "@cropImage": {
     "description": "Title displayed on the image cropping screen or toolbar"

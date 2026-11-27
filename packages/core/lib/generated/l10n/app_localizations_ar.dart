@@ -3893,6 +3893,17 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get aiRenameConversationAction => 'إعادة تسمية';
+
+  @override
+  String get aiCannotRenameWhileGenerating =>
+      'لا يمكن إعادة تسمية المحادثة أثناء إنشاء الرد.';
+
+  @override
+  String get aiRenameConversationFailed =>
+      'تعذر الوصول إلى الدردشة بالذكاء الاصطناعي. يرجى التحقق من اتصالك والمحاولة مرة أخرى.';
+
+  @override
   String get cropImage => 'قص الصورة';
 
   @override

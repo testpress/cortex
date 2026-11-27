@@ -319,6 +319,20 @@ class AiConversationDto {
     this.generation,
   });
 
+  AiConversationDto copyWith({
+    String? chatId,
+    String? title,
+    DateTime? updatedAt,
+    AiGenerationDto? generation,
+  }) {
+    return AiConversationDto(
+      chatId: chatId ?? this.chatId,
+      title: title ?? this.title,
+      updatedAt: updatedAt ?? this.updatedAt,
+      generation: generation ?? this.generation,
+    );
+  }
+
   factory AiConversationDto.fromJson(Map<String, dynamic> json) {
     return AiConversationDto(
       chatId: json['chat_id']?.toString() ?? '',

@@ -255,6 +255,23 @@ class _TestLearnLensRepository implements LearnLensRepository {
   Object? deleteConversationError;
   Completer<void>? deleteConversationCompleter;
 
+  int renameConversationCalls = 0;
+  bool failRenameConversation = false;
+  Object? renameConversationError;
+
+  @override
+  Future<AiConversationDto> renameConversation({
+    required String chatId,
+    required String title,
+    CancelToken? cancelToken,
+  }) async {
+    renameConversationCalls++;
+    if (failRenameConversation) {
+      throw renameConversationError ?? Exception('Rename failed');
+    }
+    return AiConversationDto(chatId: chatId, title: title);
+  }
+
   @override
   Future<void> deleteConversation({
     required String chatId,
@@ -1535,6 +1552,55 @@ void main() {
       expect(find.text('Conversation deleted'), findsOneWidget);
 
       await tester.pump(const Duration(seconds: 3));
+    },
+  );
+
+  testWidgets(
+    'tapping rename in header with custom onOpenHistory invokes callback sensibly',
+    (tester) async {
+      var openHistoryCalled = false;
+      final testRepo = _TestLearnLensRepository();
+      testRepo.conversations = [
+        const AiConversationDto(
+          chatId: 'chat-rename-1',
+          title: 'Original Galaxy Title',
+        ),
+      ];
+
+      await tester.pumpWidget(
+        buildSubject(
+          repository: testRepo,
+          onOpenHistory: () => openHistoryCalled = true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiScreen)),
+      );
+      final notifier = container.read(genericAiChatProvider.notifier);
+
+      notifier.state = notifier.state.copyWith(
+        conversationHistory: testRepo.conversations,
+      );
+      await notifier.selectConversation('chat-rename-1');
+      await tester.pumpAndSettle();
+
+      // Title and 3-dot menu are visible
+      expect(find.text('Original Galaxy Title'), findsOneWidget);
+      final moreFinder = find.byIcon(LucideIcons.moreVertical);
+      expect(moreFinder, findsOneWidget);
+
+      // Tap 3-dot menu
+      await tester.tap(moreFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Rename'), findsOneWidget);
+      await tester.tap(find.text('Rename'));
+      await tester.pumpAndSettle();
+
+      // Verify onOpenHistory was invoked
+      expect(openHistoryCalled, isTrue);
     },
   );
 

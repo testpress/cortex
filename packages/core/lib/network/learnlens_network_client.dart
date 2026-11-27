@@ -287,6 +287,23 @@ class LearnLensNetworkClient {
     });
   }
 
+  /// Renames an existing conversation on LearnLens.
+  Future<AiConversationDto> renameConversation({
+    required String chatId,
+    required String title,
+    CancelToken? cancelToken,
+  }) async {
+    return _guard(() async {
+      final baseUrl = await _resolveBaseUrl();
+      final response = await _dio.patch(
+        '$baseUrl/chats/$chatId/',
+        data: {'title': title},
+        cancelToken: cancelToken,
+      );
+      return AiConversationDto.fromJson(response.data as Map<String, dynamic>);
+    });
+  }
+
   /// Fetches a paginated slice of messages in a conversation.
   Future<AiMessageListDto> getMessages({
     required String chatId,

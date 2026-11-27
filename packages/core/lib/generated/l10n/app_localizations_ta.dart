@@ -3949,6 +3949,17 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get aiRenameConversationAction => 'மறுபெயரிடு';
+
+  @override
+  String get aiCannotRenameWhileGenerating =>
+      'பதில் உருவாகும் போது உரையாடலின் பெயரை மாற்ற முடியாது.';
+
+  @override
+  String get aiRenameConversationFailed =>
+      'AI Chat-ஐ தொடர்பு கொள்ள முடியவில்லை. உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
+
+  @override
   String get cropImage => 'படத்தை செதுக்குக';
 
   @override

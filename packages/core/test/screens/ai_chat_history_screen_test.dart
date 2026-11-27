@@ -11,6 +11,7 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
 
   List<AiConversationDto> conversations;
   bool failListConversations = false;
+  bool failRename = false;
   final List<String> loadedChatIds = [];
   final List<String> deletedChatIds = [];
 
@@ -33,6 +34,27 @@ class _FakeLearnLensRepository extends Fake implements LearnLensRepository {
     }
     deletedChatIds.add(chatId);
     conversations = conversations.where((c) => c.chatId != chatId).toList();
+  }
+
+  Completer<AiConversationDto>? renameCompleter;
+
+  @override
+  Future<AiConversationDto> renameConversation({
+    required String chatId,
+    required String title,
+    CancelToken? cancelToken,
+  }) async {
+    if (failRename) {
+      throw Exception('Network error');
+    }
+    if (renameCompleter != null) {
+      return renameCompleter!.future;
+    }
+    final updated = AiConversationDto(chatId: chatId, title: title);
+    conversations = conversations
+        .map((c) => c.chatId == chatId ? updated : c)
+        .toList();
+    return updated;
   }
 
   @override
@@ -105,7 +127,10 @@ void main() {
     ),
   ];
 
-  GoRouter buildRouter({String initialLocation = '/ai/history'}) {
+  GoRouter buildRouter({
+    String initialLocation = '/ai/history',
+    String? initialRenamingChatId,
+  }) {
     final router = GoRouter(
       initialLocation: initialLocation,
       routes: [
@@ -125,7 +150,9 @@ void main() {
                     DesignConfig.defaults().motion.normal,
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) => child,
-                child: const AiChatHistoryScreen(),
+                child: AiChatHistoryScreen(
+                  initialRenamingChatId: initialRenamingChatId,
+                ),
               ),
             ),
           ],
@@ -762,6 +789,229 @@ void main() {
             isSelected: false,
             hasTapAction: true,
           ),
+        );
+      },
+    );
+
+    testWidgets(
+      'renders Rename option above Delete in history item options menu',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        );
+        final router = buildRouter(initialLocation: '/ai/history');
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        final moreButtons = find.byIcon(LucideIcons.moreVertical);
+        expect(moreButtons, findsNWidgets(2));
+
+        // Open options for the first conversation
+        await tester.tap(moreButtons.first);
+        await tester.pumpAndSettle();
+
+        final renameItem = find.text('Rename');
+        final deleteItem = find.text('Delete');
+
+        expect(renameItem, findsOneWidget);
+        expect(deleteItem, findsOneWidget);
+
+        // Verify Rename is above Delete visually
+        final renameTop = tester.getTopLeft(renameItem).dy;
+        final deleteTop = tester.getTopLeft(deleteItem).dy;
+        expect(renameTop, lessThan(deleteTop));
+      },
+    );
+
+    testWidgets(
+      'tapping Rename switches history item into inline editing mode with text preselected',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        );
+        final router = buildRouter(initialLocation: '/ai/history');
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        final moreButtons = find.byIcon(LucideIcons.moreVertical);
+        await tester.tap(moreButtons.first);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Rename'));
+        await tester.pumpAndSettle();
+
+        // The editable text field should be present
+        final editableFinder = find.byKey(
+          const ValueKey('editable_text_chat-1'),
+        );
+        expect(editableFinder, findsOneWidget);
+
+        final editable = tester.widget<EditableText>(editableFinder);
+        expect(editable.controller.text, "Explain Newton's Laws of Motion");
+        expect(
+          editable.controller.selection,
+          const TextSelection(baseOffset: 0, extentOffset: 31),
+        );
+
+        // Submit new title
+        editable.controller.text = 'Updated Title';
+        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.pumpAndSettle();
+
+        // The updated title is displayed and inline editing is finished
+        expect(find.text('Updated Title'), findsOneWidget);
+        expect(editableFinder, findsNothing);
+      },
+    );
+
+    testWidgets(
+      'shows loading indicator while rename submission is in flight',
+      (tester) async {
+        final conversations = sampleConversations();
+        final completer = Completer<AiConversationDto>();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        )..renameCompleter = completer;
+        final router = buildRouter(initialLocation: '/ai/history');
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        final moreButtons = find.byIcon(LucideIcons.moreVertical);
+        await tester.tap(moreButtons.first);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Rename'));
+        await tester.pumpAndSettle();
+
+        final editableFinder = find.byKey(
+          const ValueKey('editable_text_chat-1'),
+        );
+        final editable = tester.widget<EditableText>(editableFinder);
+        editable.controller.text = 'Saving New Title';
+
+        // Submit
+        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.pump();
+
+        // Loading indicator is visible on the history item
+        expect(find.byType(AppLoadingIndicator), findsOneWidget);
+
+        // Complete the network call
+        completer.complete(
+          const AiConversationDto(chatId: 'chat-1', title: 'Saving New Title'),
+        );
+        await tester.pumpAndSettle();
+
+        // Finishes editing, shows renamed title, loading indicator gone
+        expect(find.text('Saving New Title'), findsOneWidget);
+        expect(find.byType(AppLoadingIndicator), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'displays error message under inline input box on network failure and keeps input open',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        )..failRename = true;
+        final router = buildRouter(initialLocation: '/ai/history');
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        final moreButtons = find.byIcon(LucideIcons.moreVertical);
+        await tester.tap(moreButtons.first);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Rename'));
+        await tester.pumpAndSettle();
+
+        final editableFinder = find.byKey(
+          const ValueKey('editable_text_chat-1'),
+        );
+        expect(editableFinder, findsOneWidget);
+
+        final editable = tester.widget<EditableText>(editableFinder);
+        editable.controller.text = 'testing failure';
+        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.pumpAndSettle();
+
+        // The input box is still open and contains the typed text
+        expect(editableFinder, findsOneWidget);
+        expect(editable.controller.text, 'testing failure');
+
+        // The error message is displayed under the input box
+        expect(
+          find.text(
+            'Couldn’t reach AI Chat. Check your connection and try again.',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'immediately opens target conversation in inline rename mode when initialRenamingChatId is set',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        );
+        final router = buildRouter(
+          initialLocation: '/ai/history',
+          initialRenamingChatId: 'chat-2',
+        );
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        // The editable text field for chat-2 should be present immediately
+        final editableFinder = find.byKey(
+          const ValueKey('editable_text_chat-2'),
+        );
+        expect(editableFinder, findsOneWidget);
+
+        final editable = tester.widget<EditableText>(editableFinder);
+        expect(editable.controller.text, 'Organic Chemistry Reactions');
+        expect(
+          editable.controller.selection,
+          const TextSelection(baseOffset: 0, extentOffset: 27),
+        );
+      },
+    );
+
+    testWidgets(
+      'does not enter inline rename mode when initialRenamingChatId is null',
+      (tester) async {
+        final conversations = sampleConversations();
+        final repository = _FakeLearnLensRepository(
+          conversations: conversations,
+        );
+        final router = buildRouter(initialLocation: '/ai/history');
+
+        await tester.pumpWidget(
+          buildSubject(repository: repository, router: router),
+        );
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const ValueKey('editable_text_chat-1')),
+          findsNothing,
+        );
+        expect(
+          find.byKey(const ValueKey('editable_text_chat-2')),
+          findsNothing,
         );
       },
     );

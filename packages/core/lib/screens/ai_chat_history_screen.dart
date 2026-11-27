@@ -1,16 +1,27 @@
+import 'package:flutter/services.dart'
+    show
+        KeyDownEvent,
+        LengthLimitingTextInputFormatter,
+        LogicalKeyboardKey,
+        TextInputAction,
+        TextInputType;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../core.dart';
 import '../data/models/ai_chat_history_section.dart';
+import '../widgets/ai_menu_popup_item.dart';
 
 /// Conversation history, presented as a start-side drawer over a dimmed chat.
 ///
 /// Expects to be shown on a non-opaque route so the chat stays visible behind
 /// the scrim; the drawer animates itself from the route animation.
 class AiChatHistoryScreen extends ConsumerStatefulWidget {
-  const AiChatHistoryScreen({super.key});
+  const AiChatHistoryScreen({super.key, this.initialRenamingChatId});
+
+  /// Optional conversation ID to immediately enter inline rename mode upon opening.
+  final String? initialRenamingChatId;
 
   @override
   ConsumerState<AiChatHistoryScreen> createState() =>
@@ -25,11 +36,17 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
   static const double _paginationScrollThreshold = 200.0;
 
   late final ScrollController _scrollController;
+  String? _renamingChatId;
+  String? _submittingChatId;
+  String? _renameErrorMessage;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_onScroll);
+    if (widget.initialRenamingChatId != null) {
+      _renamingChatId = widget.initialRenamingChatId;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref.read(genericAiChatProvider.notifier).loadConversations(refresh: true);
@@ -87,8 +104,80 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
     if (!mounted || action == null) return;
 
     switch (action) {
+      case _ConversationAction.rename:
+        _startRenaming(chatId);
       case _ConversationAction.delete:
         await _deleteConversation(chatId, title: title);
+    }
+  }
+
+  void _startRenaming(String chatId) {
+    final chatState = ref.read(genericAiChatProvider);
+    if (chatState.hasActiveGeneration(chatId)) {
+      AppToast.show(
+        context,
+        message: L10n.of(context).aiCannotRenameWhileGenerating,
+        isError: true,
+      );
+      return;
+    }
+    setState(() {
+      _renamingChatId = chatId;
+      _renameErrorMessage = null;
+    });
+  }
+
+  Future<void> _handleRenameSubmit(String chatId, String newTitle) async {
+    final trimmed = newTitle.trim();
+    if (!mounted) return;
+
+    if (trimmed.isEmpty ||
+        trimmed.length > GenericAiChat.maxConversationTitleLength) {
+      _handleRenameCancel(chatId);
+      return;
+    }
+
+    final chatState = ref.read(genericAiChatProvider);
+    if (chatState.hasActiveGeneration(chatId)) {
+      if (mounted) {
+        setState(() {
+          _renameErrorMessage = L10n.of(context).aiCannotRenameWhileGenerating;
+        });
+      }
+      return;
+    }
+
+    setState(() {
+      _submittingChatId = chatId;
+      _renameErrorMessage = null;
+    });
+
+    final success = await ref
+        .read(genericAiChatProvider.notifier)
+        .renameConversation(chatId, trimmed);
+
+    if (!mounted) return;
+    if (success) {
+      setState(() {
+        _submittingChatId = null;
+        _renamingChatId = null;
+        _renameErrorMessage = null;
+      });
+    } else {
+      setState(() {
+        _submittingChatId = null;
+        _renameErrorMessage = L10n.of(context).aiRenameConversationFailed;
+      });
+    }
+  }
+
+  void _handleRenameCancel(String chatId) {
+    if (_renamingChatId == chatId) {
+      setState(() {
+        _submittingChatId = null;
+        _renamingChatId = null;
+        _renameErrorMessage = null;
+      });
     }
   }
 
@@ -306,12 +395,21 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
             _SectionHeader(title: _resolveSectionTitle(context, section, now)),
             for (final session in section.items)
               _HistoryItem(
+                key: ValueKey('history_item_${session.chatId}'),
+                chatId: session.chatId,
                 title: session.title.trim().isNotEmpty
                     ? session.title
                     : l10n.aiNewChatHeader,
                 isActive: chatState.currentChatId == session.chatId,
+                isRenaming: _renamingChatId == session.chatId,
+                isSubmittingRename: _submittingChatId == session.chatId,
+                errorMessage: _renamingChatId == session.chatId
+                    ? _renameErrorMessage
+                    : null,
                 onTap: () => _openConversation(session.chatId),
-                onOptions: chatState.isDeletingConversation
+                onOptions:
+                    (chatState.isDeletingConversation ||
+                        chatState.isRenamingConversation)
                     ? null
                     : (layerLink) => _showConversationOptions(
                         session.chatId,
@@ -320,6 +418,9 @@ class _AiChatHistoryScreenState extends ConsumerState<AiChatHistoryScreen> {
                             : l10n.aiNewChatHeader,
                         layerLink,
                       ),
+                onRenameSubmit: (newTitle) =>
+                    _handleRenameSubmit(session.chatId, newTitle),
+                onRenameCancel: () => _handleRenameCancel(session.chatId),
                 isDeleting: chatState.isDeletingConversation,
               ),
           ],
@@ -454,11 +555,12 @@ class _NewChatButton extends StatelessWidget {
   }
 }
 
-enum _ConversationAction { delete }
+enum _ConversationAction { rename, delete }
 
 class _ConversationOptionsPopup extends StatelessWidget {
-  const _ConversationOptionsPopup({required this.onDelete});
+  const _ConversationOptionsPopup({this.onRename, required this.onDelete});
 
+  final VoidCallback? onRename;
   final VoidCallback onDelete;
 
   @override
@@ -483,41 +585,20 @@ class _ConversationOptionsPopup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AppSemantics.button(
-              label: l10n.aiDeleteConversationAction,
-              onTap: onDelete,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: onDelete,
-                child: Container(
-                  constraints: const BoxConstraints(
-                    minWidth: 48.0,
-                    minHeight: 48.0,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: design.spacing.sm,
-                    vertical: design.spacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(design.radius.sm),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        LucideIcons.trash2,
-                        size: design.iconSize.sm,
-                        color: design.colors.error,
-                      ),
-                      SizedBox(width: design.spacing.sm),
-                      AppText.bodySmall(
-                        l10n.aiDeleteConversationAction,
-                        color: design.colors.error,
-                      ),
-                    ],
-                  ),
-                ),
+            if (onRename != null) ...[
+              AiMenuPopupItem(
+                label: l10n.aiRenameConversationAction,
+                icon: LucideIcons.pencil,
+                color: design.colors.textPrimary,
+                onTap: onRename!,
               ),
+              SizedBox(height: design.spacing.xs * 0.5),
+            ],
+            AiMenuPopupItem(
+              label: l10n.aiDeleteConversationAction,
+              icon: LucideIcons.trash2,
+              color: design.colors.error,
+              onTap: onDelete,
             ),
           ],
         ),
@@ -555,6 +636,8 @@ Future<_ConversationAction?> _showConversationOptionsMenu(
             followerAnchor: Alignment.topRight,
             offset: Offset(0, design.spacing.xs),
             child: _ConversationOptionsPopup(
+              onRename: () =>
+                  Navigator.of(dialogContext).pop(_ConversationAction.rename),
               onDelete: () =>
                   Navigator.of(dialogContext).pop(_ConversationAction.delete),
             ),
@@ -569,18 +652,31 @@ typedef _OptionsCallback = void Function(LayerLink layerLink);
 
 class _HistoryItem extends StatefulWidget {
   const _HistoryItem({
+    super.key,
+    required this.chatId,
     required this.title,
     required this.onTap,
     this.onOptions,
     this.isActive = false,
     this.isDeleting = false,
+    this.isRenaming = false,
+    this.isSubmittingRename = false,
+    this.errorMessage,
+    this.onRenameSubmit,
+    this.onRenameCancel,
   });
 
+  final String chatId;
   final String title;
   final VoidCallback onTap;
   final _OptionsCallback? onOptions;
   final bool isActive;
   final bool isDeleting;
+  final bool isRenaming;
+  final bool isSubmittingRename;
+  final String? errorMessage;
+  final ValueChanged<String>? onRenameSubmit;
+  final VoidCallback? onRenameCancel;
 
   @override
   State<_HistoryItem> createState() => _HistoryItemState();
@@ -588,11 +684,197 @@ class _HistoryItem extends StatefulWidget {
 
 class _HistoryItemState extends State<_HistoryItem> {
   final LayerLink _layerLink = LayerLink();
+  TextEditingController? _controller;
+  FocusNode? _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isRenaming) {
+      _initEditing();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _HistoryItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.isRenaming && widget.isRenaming) {
+      _initEditing();
+    } else if (oldWidget.isRenaming && !widget.isRenaming) {
+      _disposeEditing();
+    }
+  }
+
+  void _initEditing() {
+    _disposeEditing();
+    _controller = TextEditingController(text: widget.title);
+    _controller!.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: widget.title.length,
+    );
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.isRenaming) {
+        _focusNode?.requestFocus();
+      }
+    });
+  }
+
+  void _disposeEditing() {
+    _controller?.dispose();
+    _controller = null;
+    _focusNode?.dispose();
+    _focusNode = null;
+  }
+
+  @override
+  void dispose() {
+    _disposeEditing();
+    super.dispose();
+  }
+
+  void _submit() {
+    final controller = _controller;
+    if (controller == null) return;
+    final text = controller.text.trim();
+    // Allow submission if the title changed, or to retry after a previous failure.
+    if (text.isNotEmpty &&
+        (text != widget.title || widget.errorMessage != null)) {
+      widget.onRenameSubmit?.call(text);
+    } else {
+      widget.onRenameCancel?.call();
+    }
+  }
+
+  void _cancel() {
+    widget.onRenameCancel?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
     final design = Design.of(context);
     final l10n = L10n.of(context);
+
+    if (widget.isRenaming && _controller != null && _focusNode != null) {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: design.spacing.xs,
+          vertical: design.spacing.xs * 0.5,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: widget.isActive
+                    ? design.colors.surfaceVariant
+                    : design.colors.transparent,
+                borderRadius: BorderRadius.circular(design.radius.sm),
+                border: Border.all(
+                  color: design.colors.textPrimary,
+                  width: 1.5,
+                ),
+              ),
+              constraints: const BoxConstraints(minHeight: 48.0),
+              padding: EdgeInsets.symmetric(
+                horizontal: design.spacing.sm,
+                vertical: design.spacing.xs,
+              ),
+              alignment: AlignmentDirectional.centerStart,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Focus(
+                      onKeyEvent: (node, event) {
+                        if (widget.isSubmittingRename) {
+                          return KeyEventResult.handled;
+                        }
+                        if (event is KeyDownEvent &&
+                            event.logicalKey == LogicalKeyboardKey.escape) {
+                          _cancel();
+                          return KeyEventResult.handled;
+                        }
+                        return KeyEventResult.ignored;
+                      },
+                      child: TapRegion(
+                        onTapOutside: (_) {
+                          if (!widget.isSubmittingRename) {
+                            if (widget.errorMessage != null &&
+                                widget.errorMessage!.isNotEmpty) {
+                              _cancel();
+                            } else {
+                              _submit();
+                            }
+                          }
+                        },
+                        child: Semantics(
+                          label: l10n.aiRenameConversationAction,
+                          textField: true,
+                          // Uses EditableText instead of AppTextField because AppTextField
+                          // is a standalone form-field with full card styling and fixed
+                          // outer padding, unsuitable for compact inline list tile rows.
+                          child: EditableText(
+                            key: ValueKey('editable_text_${widget.chatId}'),
+                            controller: _controller!,
+                            focusNode: _focusNode!,
+                            readOnly: widget.isSubmittingRename,
+                            autofocus: true,
+                            style: design.typography.bodySmall.copyWith(
+                              color: design.colors.textPrimary,
+                            ),
+                            cursorColor: design.colors.primary,
+                            backgroundCursorColor: design.colors.textSecondary,
+                            selectionColor: design.colors.primary.withValues(
+                              alpha: 0.35,
+                            ),
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.done,
+                            maxLines: 1,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(
+                                GenericAiChat.maxConversationTitleLength,
+                              ),
+                            ],
+                            onSubmitted: (_) {
+                              if (!widget.isSubmittingRename) {
+                                _submit();
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (widget.isSubmittingRename) ...[
+                    SizedBox(width: design.spacing.xs),
+                    AppLoadingIndicator(
+                      size: design.iconSize.sm,
+                      color: design.colors.textSecondary,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (widget.errorMessage != null &&
+                widget.errorMessage!.isNotEmpty) ...[
+              SizedBox(height: design.spacing.xs * 0.75),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: design.spacing.xs),
+                child: Semantics(
+                  liveRegion: true,
+                  child: AppText.caption(
+                    widget.errorMessage!,
+                    color: design.colors.error,
+                    maxLines: 2,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: design.spacing.xs),

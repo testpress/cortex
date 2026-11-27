@@ -39,7 +39,8 @@ class AiScreen extends ConsumerStatefulWidget {
   final List<AiChatMessageItem> initialMessages;
 
   /// Optional menu/history navigation callback.
-  /// If null, opens the [AiChatHistoryScreen] drawer.
+  /// If null, opens the [AiChatHistoryScreen] drawer via route navigation.
+  /// Note: Rename intent is not forwarded when this callback is supplied.
   final VoidCallback? onOpenHistory;
 
   /// Optional [ImagePicker] instance for test injection.
@@ -170,6 +171,25 @@ class _AiScreenState extends ConsumerState<AiScreen>
       chatId: chatId,
       title: ref.read(genericAiChatProvider).currentTitle,
     );
+  }
+
+  void _handleRenameActiveConversation(String chatId) {
+    final chatState = ref.read(genericAiChatProvider);
+    if (chatState.hasActiveGeneration(chatId)) {
+      AppToast.show(
+        context,
+        message: L10n.of(context).aiCannotRenameWhileGenerating,
+        isError: true,
+      );
+      return;
+    }
+    _composerFocusNode.unfocus();
+    if (widget.onOpenHistory != null) {
+      // Host callback handles drawer opening only; rename intent is not forwarded.
+      widget.onOpenHistory!();
+    } else {
+      context.push('/ai/history', extra: chatId);
+    }
   }
 
   void _handleMenu() {
@@ -500,6 +520,11 @@ class _AiScreenState extends ConsumerState<AiScreen>
                   onMenu: _handleMenu,
                   title: chatState.currentTitle,
                   onNewChat: hasActiveContent ? _handleNewChat : null,
+                  onRename: chatState.currentChatId != null
+                      ? () => _handleRenameActiveConversation(
+                          chatState.currentChatId!,
+                        )
+                      : null,
                   onDelete: chatState.currentChatId != null
                       ? () => _handleDeleteActiveConversation(
                           chatState.currentChatId!,
