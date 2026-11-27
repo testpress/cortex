@@ -28,6 +28,8 @@ Guardrails:
 Implementation rules and UI constraints are defined in:
 packages/core/docs/ai_context.md
 
+For any screen with an approved design, follow [.agent/rules/design-implementation.md](./.agent/rules/design-implementation.md).
+
 Agents MUST respect those rules during implementation phases.
 
 Commit bodies must be short and scannable.
