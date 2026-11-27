@@ -5,6 +5,9 @@ alwaysApply: true
 
 # Building UI from an approved design
 
+> [!IMPORTANT]
+> **OpenSpec Workflow Integration**: This rule does not bypass the OpenSpec lifecycle defined in `AGENTS.md`. Always start with `openspec-new-change`. The approved design link or HTML path must be referenced in the change's `design.md`, `proposal.md`, or `tasks.md`. The two commits below are executed strictly during the `openspec-apply-change` phase.
+
 Approved mobile designs are standalone HTML prototypes (a link, or a file the designer shares). The HTML shows the screen inside a phone frame, with a side panel to switch theme and states. That HTML is the source of truth for layout, text, order, colours and every state.
 
 ## 1. Get the design
@@ -15,6 +18,8 @@ Approved mobile designs are standalone HTML prototypes (a link, or a file the de
 - Ignore the parts that are only for the preview: the page around the phone, the side panel, the device frame, the status bar and home bar. A `data-toast` on an element means "this navigates to or triggers X", not "show a toast".
 
 ## 2. Find this app's design system first
+
+Check the repo's `AGENTS.md` and any referenced architecture/AI context docs (`packages/core/docs/ai_context.md`) first to identify banned widgets and mandatory design token wrappers.
 
 Before writing UI code, find and list (file paths) this project's:
 
