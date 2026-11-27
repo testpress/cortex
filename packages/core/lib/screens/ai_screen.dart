@@ -38,7 +38,9 @@ class AiScreen extends ConsumerStatefulWidget {
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
 
-  /// Optional menu/history navigation callback; rename intent is not forwarded.
+  /// Optional menu/history navigation callback.
+  /// If null, opens the [AiChatHistoryScreen] drawer via route navigation.
+  /// Note: Rename intent is not forwarded when this callback is supplied.
   final VoidCallback? onOpenHistory;
 
   /// Optional [ImagePicker] instance for test injection.

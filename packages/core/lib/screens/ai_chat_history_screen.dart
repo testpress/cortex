@@ -11,6 +11,7 @@ import 'package:intl/intl.dart' show DateFormat;
 
 import '../core.dart';
 import '../data/models/ai_chat_history_section.dart';
+import '../widgets/ai_menu_popup_item.dart';
 
 /// Conversation history, presented as a start-side drawer over a dimmed chat.
 ///
