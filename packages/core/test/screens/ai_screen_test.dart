@@ -1556,7 +1556,7 @@ void main() {
   );
 
   testWidgets(
-    'tapping rename in header overflow menu opens conversation history sidebar',
+    'tapping rename in header with custom onOpenHistory invokes callback sensibly',
     (tester) async {
       var openHistoryCalled = false;
       final testRepo = _TestLearnLensRepository();

@@ -21,9 +21,9 @@ class AiRoutes {
           path: 'history',
           parentNavigatorKey: rootNavigatorKey,
           pageBuilder: (context, state) {
-            final renameChatId =
-                state.uri.queryParameters['rename'] ??
-                (state.extra is String ? state.extra as String : null);
+            final renameChatId = state.extra is String
+                ? state.extra as String
+                : null;
             return overlayTransitionPage(
               context,
               state.pageKey,

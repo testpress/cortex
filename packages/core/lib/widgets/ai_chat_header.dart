@@ -185,86 +185,70 @@ class _HeaderOptionsPopup extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (onRename != null) ...[
-              AppSemantics.button(
+              AiMenuPopupItem(
                 label: l10n.aiRenameConversationAction,
-                onTap: onRename,
-                child: AppFocusable(
-                  onTap: onRename,
-                  borderRadius: BorderRadius.circular(design.radius.sm),
-                  child: Container(
-                    constraints: const BoxConstraints(
-                      minWidth: 48.0,
-                      minHeight: 48.0,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.sm,
-                      vertical: design.spacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(design.radius.sm),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.pencil,
-                          size: design.iconSize.sm,
-                          color: design.colors.textPrimary,
-                        ),
-                        SizedBox(width: design.spacing.sm),
-                        ExcludeSemantics(
-                          child: AppText.bodySmall(
-                            l10n.aiRenameConversationAction,
-                            color: design.colors.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                icon: LucideIcons.pencil,
+                color: design.colors.textPrimary,
+                onTap: onRename!,
               ),
               if (onDelete != null) SizedBox(height: design.spacing.xs),
             ],
             if (onDelete != null)
-              AppSemantics.button(
+              AiMenuPopupItem(
                 label: l10n.aiDeleteConversationAction,
-                onTap: onDelete,
-                child: AppFocusable(
-                  onTap: onDelete,
-                  borderRadius: BorderRadius.circular(design.radius.sm),
-                  child: Container(
-                    constraints: const BoxConstraints(
-                      minWidth: 48.0,
-                      minHeight: 48.0,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: design.spacing.sm,
-                      vertical: design.spacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(design.radius.sm),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.trash2,
-                          size: design.iconSize.sm,
-                          color: design.colors.error,
-                        ),
-                        SizedBox(width: design.spacing.sm),
-                        ExcludeSemantics(
-                          child: AppText.bodySmall(
-                            l10n.aiDeleteConversationAction,
-                            color: design.colors.error,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                icon: LucideIcons.trash2,
+                color: design.colors.error,
+                onTap: onDelete!,
               ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Shared popup item for header and conversation options menus.
+class AiMenuPopupItem extends StatelessWidget {
+  const AiMenuPopupItem({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final design = Design.of(context);
+
+    return AppSemantics.button(
+      label: label,
+      onTap: onTap,
+      child: AppFocusable(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(design.radius.sm),
+        child: Container(
+          constraints: const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: design.spacing.sm,
+            vertical: design.spacing.xs,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(design.radius.sm),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: design.iconSize.sm, color: color),
+              SizedBox(width: design.spacing.sm),
+              ExcludeSemantics(child: AppText.bodySmall(label, color: color)),
+            ],
+          ),
         ),
       ),
     );

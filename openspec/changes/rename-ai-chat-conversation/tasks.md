@@ -16,7 +16,7 @@
 ## 3. Header Action Integration & Route Handling
 
 - [x] 3.1 Route header "Rename" action to open history drawer in rename mode for active conversation
-- [x] 3.2 Support `/ai/history?rename=:chatId` route parameter in `AiRoutes`
+- [x] 3.2 Support `/ai/history` route extra parameter in `AiRoutes`
 
 ## 4. Localization and Verification
 

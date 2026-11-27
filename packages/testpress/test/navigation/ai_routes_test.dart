@@ -119,7 +119,7 @@ void main() {
       expect(screen.initialRenamingChatId, 'chat-456');
     });
 
-    testWidgets('query parameter takes precedence over null extra', (
+    testWidgets('null extra resolves initialRenamingChatId to null', (
       tester,
     ) async {
       final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -133,14 +133,14 @@ void main() {
       await tester.pumpWidget(buildTestApp(router: router));
       await tester.pumpAndSettle();
 
-      router.push('/ai/history?rename=chat-789');
+      router.push('/ai/history');
       await tester.pumpAndSettle();
 
       expect(find.byType(AiChatHistoryScreen), findsOneWidget);
       final screen = tester.widget<AiChatHistoryScreen>(
         find.byType(AiChatHistoryScreen),
       );
-      expect(screen.initialRenamingChatId, 'chat-789');
+      expect(screen.initialRenamingChatId, isNull);
     });
   });
 }

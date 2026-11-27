@@ -38,8 +38,7 @@ class AiScreen extends ConsumerStatefulWidget {
   /// Optional seed messages for testing and state verification.
   final List<AiChatMessageItem> initialMessages;
 
-  /// Optional menu/history navigation callback.
-  /// If null, opens the [AiChatHistoryScreen] drawer via route navigation.
+  /// Optional menu/history navigation callback; rename intent is not forwarded.
   final VoidCallback? onOpenHistory;
 
   /// Optional [ImagePicker] instance for test injection.
@@ -184,9 +183,10 @@ class _AiScreenState extends ConsumerState<AiScreen>
     }
     _composerFocusNode.unfocus();
     if (widget.onOpenHistory != null) {
+      // Host callback handles drawer opening only; rename intent is not forwarded.
       widget.onOpenHistory!();
     } else {
-      context.push('/ai/history?rename=$chatId');
+      context.push('/ai/history', extra: chatId);
     }
   }
 

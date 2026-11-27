@@ -983,10 +983,10 @@ void main() {
         expect(editableFinder, findsOneWidget);
 
         final editable = tester.widget<EditableText>(editableFinder);
-        expect(editable.controller.text, 'Derive Quadratic Formula');
+        expect(editable.controller.text, 'Organic Chemistry Reactions');
         expect(
           editable.controller.selection,
-          const TextSelection(baseOffset: 0, extentOffset: 24),
+          const TextSelection(baseOffset: 0, extentOffset: 27),
         );
       },
     );
